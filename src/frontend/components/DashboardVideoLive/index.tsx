@@ -19,6 +19,16 @@ import {
 } from 'data/stores/useLivePanelState';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import { Video, liveState, LiveModeType } from 'types/tracks';
+import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
+import { usePictureInPicture } from 'data/stores/usePictureInPicture';
+import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
+import { Redirect } from 'react-router-dom';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { TeacherPIPControls } from './TeacherPIPControls';
+import { AudioControl } from 'components/JitsiControls/AudioControl';
+import { CameraControl } from 'components/JitsiControls/CameraControl';
+import { useJitsiApi } from 'data/stores/useJitsiApi';
+import { toolbarButtons } from 'components/DashboardVideoLiveJitsi/utils';
 
 interface DashboardVideoLiveProps {
   video: Video;
@@ -38,6 +48,8 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
   const [canShowStartButton, setCanShowStartButton] = useState(
     video.live_type === LiveModeType.RAW,
   );
+  const [pipState] = usePictureInPicture();
+  const [jitsiApi] = useJitsiApi();
 
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled
@@ -58,6 +70,18 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
       configPanel([]);
     }
   }, [video, configPanel]);
+
+  useEffect(() => {
+    if (jitsiApi && pipState.reversed) {
+      jitsiApi.executeCommand('overwriteConfig', {
+        toolbarButtons: [],
+      });
+    } else if (jitsiApi) {
+      jitsiApi.executeCommand('overwriteConfig', {
+        toolbarButtons: toolbarButtons,
+      });
+    }
+  }, [pipState, jitsiApi]);
 
   //  When the live is started,
   //  XMPP is ready to be used and therefore we can show chat and viewers buttons
@@ -111,10 +135,40 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               />
             }
             mainElement={
-              <TeacherLiveContent
-                setCanShowStartButton={setCanShowStartButton}
-                setCanStartLive={setCanStartLive}
-                video={video}
+              <PictureInPictureLayer
+                mainElement={
+                  <TeacherLiveContent
+                    setCanShowStartButton={setCanShowStartButton}
+                    setCanStartLive={setCanStartLive}
+                    video={video}
+                  />
+                }
+                secondElement={
+                  video.active_shared_live_media ? (
+                    video.active_shared_live_media.urls ? (
+                      <SharedMediaExplorer
+                        initialPage={1}
+                        pages={video.active_shared_live_media.urls.pages}
+                      >
+                        {video.active_shared_live_media.nb_pages &&
+                          video.active_shared_live_media.nb_pages > 1 && (
+                            <TeacherPIPControls
+                              video={video}
+                              maxPage={video.active_shared_live_media.nb_pages}
+                            />
+                          )}
+                      </SharedMediaExplorer>
+                    ) : (
+                      <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
+                    )
+                  ) : null
+                }
+                reversed={pipState.reversed}
+                pictureActions={
+                  pipState.reversed
+                    ? [<AudioControl />, <CameraControl />]
+                    : undefined
+                }
               />
             }
             sideElement={<LiveVideoPanel video={video} />}
