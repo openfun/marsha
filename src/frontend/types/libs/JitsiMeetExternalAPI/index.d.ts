@@ -22,22 +22,33 @@ declare class JitsiMeetExternalAPI {
   getLivestreamUrl: () => Promise<any>;
   executeCommand: (
     command: JitsiMeetExternalAPI.Command,
-    options:
+    options?:
       | JitsiMeetExternalAPI.RecordingMode
-      | JitsiMeetExternalAPI.RecordingOptions,
+      | JitsiMeetExternalAPI.RecordingOptions
+      | JitsiMeetExternalAPI.ConfigOption,
   ) => void;
   addListener: (eventName: string, callback: (event: any) => void) => void;
-
+  removeListener: (eventName: string, callback: (event: any) => void) => void;
+  isAudioMuted: () => Promise<boolean>;
+  isVideoMuted: () => Promise<boolean>;
   dispose: () => void;
 }
 
 // tslint:disable-next-line:no-namespace
 declare namespace JitsiMeetExternalAPI {
-  export type Command = 'startRecording' | 'stopRecording';
+  export type Command =
+    | 'startRecording'
+    | 'stopRecording'
+    | 'toggleAudio'
+    | 'toggleVideo'
+    | 'overwriteConfig';
   export type RecordingMode = 'stream' | 'file';
   export type RecordingOptions = {
     mode: RecordingMode;
     rtmpStreamKey: string;
+  };
+  type ConfigOption = {
+    toolbarButtons: string[];
   };
   export type ConfigOverwriteOptions = {
     constraints?: {
