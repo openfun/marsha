@@ -37,6 +37,7 @@ export const PictureInPictureElement = ({
 
   return (
     <Box
+      data-testid={id}
       id={id}
       ref={containerRef}
       background={isPicture ? 'white' : undefined}

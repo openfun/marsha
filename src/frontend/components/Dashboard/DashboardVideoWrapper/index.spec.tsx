@@ -4,6 +4,7 @@ import { Grommet } from 'grommet';
 import React, { Suspense } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
 import { modelName } from 'types/models';
 import {
@@ -126,13 +127,15 @@ describe('<DashboardVideoWrapper />', () => {
     render(
       wrapInIntlProvider(
         wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Grommet>
-              <Suspense fallback="loading...">
-                <DashboardVideoWrapper video={video} />
-              </Suspense>
-            </Grommet>
-          </QueryClientProvider>,
+          <LiveModaleConfigurationProvider value={null}>
+            <QueryClientProvider client={queryClient}>
+              <Grommet>
+                <Suspense fallback="loading...">
+                  <DashboardVideoWrapper video={video} />
+                </Suspense>
+              </Grommet>
+            </QueryClientProvider>
+          </LiveModaleConfigurationProvider>,
         ),
       ),
     );
