@@ -1,15 +1,17 @@
-import { cleanup, render, screen, waitFor } from '@testing-library/react';
+import { act, cleanup, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { PLAYER_ROUTE } from 'components/routes';
-import { useLiveSession } from 'data/stores/useLiveSession';
-import { JoinMode, LiveModeType, liveState } from 'types/tracks';
-import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
+import { LiveModeType, liveState } from 'types/tracks';
+import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
+import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 import * as mockWindow from 'utils/window';
 
 import DashboardVideoLiveJitsi from '.';
+import { initializeJitsi } from './utils';
 
 let events: any = {};
 const dispatch = (eventName: string, eventObject: any) => {
@@ -18,19 +20,34 @@ const dispatch = (eventName: string, eventObject: any) => {
 
 const mockExecuteCommand = jest.fn();
 const mockDispose = jest.fn();
-const mockJitsi = jest.fn().mockImplementation(() => ({
+const mockAddListener = jest
+  .fn()
+  .mockImplementation((eventName: string, callback: (event: any) => void) => {
+    events[eventName] = callback;
+  });
+const mockJitsi = {
   dispose: mockDispose,
   executeCommand: mockExecuteCommand,
-  addListener: (eventName: string, callback: (event: any) => void) => {
-    events[eventName] = callback;
+  addListener: mockAddListener,
+  removeListener: (eventName: string) => {
+    delete events[eventName];
   },
+};
+jest.mock('./utils', () => ({
+  initializeJitsi: jest.fn().mockImplementation(() => mockJitsi),
 }));
+const mockedInitialiseJitis = initializeJitsi as jest.MockedFunction<
+  typeof initializeJitsi
+>;
+
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+
 jest.mock('utils/window', () => ({
   converse: {
     participantLeaves: jest.fn(),
   },
 }));
+
 let mockDecodedJwtToken = {};
 jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockDecodedJwtToken,
@@ -54,7 +71,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     jest.useRealTimers();
   });
 
-  it('configures jitsi', () => {
+  it('configures jitsi', async () => {
     const video = videoMockFactory({
       live_info: {
         medialive: {
@@ -76,84 +93,36 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.IDLE,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
 
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
+    await waitFor(() => expect(mockedInitialiseJitis).toHaveBeenCalled());
+
+    await waitFor(() => expect(events.participantRoleChanged).toBeDefined());
 
     // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
-    });
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
 
-    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
-      'startRecording',
-      expect.any({}),
+    await waitFor(() =>
+      expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+        'startRecording',
+        expect.any({}),
+      ),
     );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',
@@ -167,19 +136,28 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // state switch to running, recording must start
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{ ...video, live_state: liveState.RUNNING }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={
+              convertVideoToJitsiLive({
+                ...video,
+                live_state: liveState.RUNNING,
+              })!
+            }
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
-      mode: 'stream',
-      rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
-    });
+    await waitFor(() =>
+      expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
+        mode: 'stream',
+        rtmpStreamKey: 'rtmp://1.2.3.4:1935/marsha/stream-key-primary',
+      }),
+    );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',
       expect.any(String),
@@ -188,303 +166,33 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // state switch to stopping, recording must stop
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{ ...video, live_state: liveState.STOPPING }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={
+              convertVideoToJitsiLive({
+                ...video,
+                live_state: liveState.STOPPING,
+              })!
+            }
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    expect(mockExecuteCommand).toHaveBeenCalledWith('stopRecording', 'stream');
+    await waitFor(() =>
+      expect(mockExecuteCommand).toHaveBeenCalledWith(
+        'stopRecording',
+        'stream',
+      ),
+    );
 
     expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
   });
 
-  it('configures jitsi in join mode forced for instructor', () => {
-    const video = videoMockFactory({
-      join_mode: JoinMode.FORCED,
-      live_info: {
-        medialive: {
-          input: {
-            endpoints: [
-              'rtmp://1.2.3.4:1935/stream-key-primary',
-              'rtmp://4.3.2.1:1935/stream-key-secondary',
-            ],
-          },
-        },
-        jitsi: {
-          domain: 'meet.jit.si',
-          external_api_url: 'https://meet.jit.si/external_api.js',
-          config_overwrite: {
-            prejoinPageEnabled: true,
-          },
-          interface_config_overwrite: {},
-          room_name: 'jitsi_conference',
-        },
-      },
-      live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
-    });
-    global.JitsiMeetExternalAPI = mockJitsi;
-
-    render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
-      ),
-    );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
-
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: true,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
-  });
-
-  it('configures jitsi in join mode forced for student', () => {
-    const video = videoMockFactory({
-      join_mode: JoinMode.FORCED,
-      live_info: {
-        medialive: {
-          input: {
-            endpoints: [
-              'rtmp://1.2.3.4:1935/stream-key-primary',
-              'rtmp://4.3.2.1:1935/stream-key-secondary',
-            ],
-          },
-        },
-        jitsi: {
-          domain: 'meet.jit.si',
-          external_api_url: 'https://meet.jit.si/external_api.js',
-          config_overwrite: {
-            prejoinPageEnabled: true,
-          },
-          interface_config_overwrite: {},
-          room_name: 'jitsi_conference',
-        },
-      },
-      live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
-    });
-    global.JitsiMeetExternalAPI = mockJitsi;
-
-    render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
-      ),
-    );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
-
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
-  });
-
-  it('configures jitsi with liveSession display name', () => {
-    const liveSession = liveSessionFactory({ display_name: 'l33t' });
-    useLiveSession.getState().setLiveSession(liveSession);
-    const video = videoMockFactory({
-      live_info: {
-        medialive: {
-          input: {
-            endpoints: [
-              'rtmp://1.2.3.4:1935/stream-key-primary',
-              'rtmp://4.3.2.1:1935/stream-key-secondary',
-            ],
-          },
-        },
-        jitsi: {
-          domain: 'meet.jit.si',
-          external_api_url: 'https://meet.jit.si/external_api.js',
-          config_overwrite: {},
-          interface_config_overwrite: {},
-          room_name: 'jitsi_conference',
-        },
-      },
-      live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
-    });
-    global.JitsiMeetExternalAPI = mockJitsi;
-
-    render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
-      ),
-    );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
-
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'l33t',
-      },
-    });
-  });
-
-  it('configures jitsi without username', () => {
+  it('configures jitsi without username', async () => {
     const decodedTokenWithoutUser = [
       {},
       {
@@ -494,7 +202,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
       },
     ];
 
-    decodedTokenWithoutUser.forEach((decodedToken) => {
+    for (const decodedToken of decodedTokenWithoutUser) {
       mockDecodedJwtToken = decodedToken;
       const video = videoMockFactory({
         live_info: {
@@ -517,81 +225,28 @@ describe('<DashboardVideoLiveJitsi />', () => {
         live_state: liveState.IDLE,
         live_type: LiveModeType.JITSI,
       });
-      global.JitsiMeetExternalAPI = mockJitsi;
 
       render(
         wrapInIntlProvider(
-          <DashboardVideoLiveJitsi
-            video={video}
-            setCanStartLive={jest.fn()}
-            setCanShowStartButton={jest.fn()}
-            isInstructor={true}
-          />,
+          <JitsiApiProvider value={undefined}>
+            <DashboardVideoLiveJitsi
+              liveJitsi={convertVideoToJitsiLive(video)!}
+              setCanStartLive={jest.fn()}
+              setCanShowStartButton={jest.fn()}
+              isInstructor={true}
+            />
+          </JitsiApiProvider>,
         ),
       );
-      const toolbarButtons = [
-        'microphone',
-        'camera',
-        'closedcaptions',
-        'desktop',
-        'fullscreen',
-        'fodeviceselection',
-        'hangup',
-        'profile',
-        'settings',
-        'raisehand',
-        'videoquality',
-        'filmstrip',
-        'feedback',
-        'shortcuts',
-        'tileview',
-        'select-background',
-        'help',
-        'mute-everyone',
-        'mute-video-everyone',
-        'security',
-      ];
-      expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-        configOverwrite: {
-          constraints: {
-            video: {
-              height: {
-                ideal: 720,
-                max: 720,
-                min: 240,
-              },
-            },
-          },
-          conferenceInfo: {
-            alwaysVisible: ['recording'],
 
-            autoHide: [],
-          },
-          disableDeepLinking: true,
-          disablePolls: true,
-          doNotStoreRoom: true,
-          hideConferenceSubject: true,
-          hideConferenceTimer: true,
-          prejoinPageEnabled: false,
-          resolution: 720,
-          toolbarButtons,
-        },
-        interfaceConfigOverwrite: {
-          HIDE_INVITE_MORE_HEADER: true,
-          TOOLBAR_BUTTONS: toolbarButtons,
-        },
-        parentNode: expect.any(HTMLElement),
-        roomName: 'jitsi_conference',
-        userInfo: {
-          displayName: undefined,
-        },
-      });
+      await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
       cleanup();
       jest.clearAllMocks();
-    });
+    }
   });
 
-  it('configures jitsi with a JWT', () => {
+  it('configures jitsi with a JWT', async () => {
     const video = videoMockFactory({
       live_info: {
         medialive: {
@@ -614,76 +269,21 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.IDLE,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
 
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      jwt: 'jitsi_jwt_token',
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
+    await waitFor(() => expect(mockedInitialiseJitis).toHaveBeenCalled());
   });
 
   it('manages recording interruption', async () => {
@@ -703,30 +303,41 @@ describe('<DashboardVideoLiveJitsi />', () => {
           config_overwrite: {},
           interface_config_overwrite: {},
           room_name: 'jitsi_conference',
+          token: 'some token',
         },
       },
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
+    const setCanShowStartButton = jest.fn();
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={setCanShowStartButton}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => {
+      expect(events.participantRoleChanged).toBeDefined();
     });
 
-    expect(events.recordingStatusChanged).toBeDefined();
+    // simulates moderator role granted
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
+
+    await waitFor(() => expect(events.recordingStatusChanged).toBeDefined());
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
@@ -741,13 +352,15 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
 
     // simulates recording interruption
-    dispatch('recordingStatusChanged', {
-      on: false,
-      mode: 'stream',
-      error: 'service unavailable',
-    });
+    act(() => {
+      dispatch('recordingStatusChanged', {
+        on: false,
+        mode: 'stream',
+        error: 'service unavailable',
+      });
 
-    jest.advanceTimersToNextTimer();
+      jest.advanceTimersToNextTimer();
+    });
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
@@ -784,25 +397,34 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => {
+      expect(events.participantRoleChanged).toBeDefined();
     });
 
-    expect(events.recordingStatusChanged).toBeDefined();
+    // simulates moderator role granted
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
+
+    await waitFor(() => expect(events.recordingStatusChanged).toBeDefined());
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
@@ -817,18 +439,20 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
 
     // simulates recording interruption
-    dispatch('recordingStatusChanged', {
-      on: false,
-      mode: 'stream',
-      error: 'unexpected-request',
+    act(() => {
+      dispatch('recordingStatusChanged', {
+        on: false,
+        mode: 'stream',
+        error: 'unexpected-request',
+      });
+
+      jest.advanceTimersToNextTimer();
     });
 
-    jest.advanceTimersToNextTimer();
-
-    expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockExecuteCommand).toHaveBeenCalledTimes(1));
   });
 
-  it('calls setCanStartLive when role changes', () => {
+  it('calls setCanStartLive when role changes', async () => {
     const video = videoMockFactory({
       live_info: {
         medialive: {
@@ -850,38 +474,48 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
     const mockCanStartLive = jest.fn();
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    expect(mockCanStartLive).not.toHaveBeenCalled();
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => expect(mockCanStartLive).toHaveBeenCalledTimes(1));
+    expect(mockCanStartLive).toHaveBeenCalledWith(false);
 
     // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
-    });
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
 
-    expect(mockCanStartLive).toHaveBeenLastCalledWith(true);
+    await waitFor(() => expect(mockCanStartLive).toHaveBeenCalledTimes(2));
+    expect(mockCanStartLive).toHaveBeenNthCalledWith(2, true);
 
     // simulates user is no longer moderator
-    dispatch('participantRoleChanged', {
-      role: 'participant',
-    });
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'participant',
+      }),
+    );
 
+    await waitFor(() => expect(mockCanStartLive).toHaveBeenCalledTimes(3));
     expect(mockCanStartLive).toHaveBeenLastCalledWith(false);
   });
 
-  it('calls setCanStartLive and setCanShowStartButton when participant leave the conference', () => {
+  it('calls setCanStartLive and setCanShowStartButton when participant leave the conference', async () => {
     const video = videoMockFactory({
       live_info: {
         medialive: {
@@ -903,129 +537,40 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
     const mockCanStartLive = jest.fn();
     const mockCanShowStartButton = jest.fn();
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
-    const toolbarButtons = [
-      'microphone',
-      'camera',
-      'closedcaptions',
-      'desktop',
-      'fullscreen',
-      'fodeviceselection',
-      'hangup',
-      'profile',
-      'settings',
-      'raisehand',
-      'videoquality',
-      'filmstrip',
-      'feedback',
-      'shortcuts',
-      'tileview',
-      'select-background',
-      'help',
-      'mute-everyone',
-      'mute-video-everyone',
-      'security',
-    ];
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
 
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalledTimes(1));
 
-    expect(mockCanStartLive).not.toHaveBeenCalled();
+    expect(mockCanStartLive).toHaveBeenCalledTimes(1);
     expect(mockCanShowStartButton).not.toHaveBeenCalled();
-    expect(mockJitsi).toHaveBeenCalledTimes(1);
 
     // simulates user leave the conference
-    dispatch('videoConferenceLeft', {});
+    act(() => dispatch('videoConferenceLeft', {}));
 
-    expect(mockCanStartLive).toHaveBeenLastCalledWith(false);
+    await waitFor(() =>
+      expect(mockCanStartLive).toHaveBeenLastCalledWith(false),
+    );
     expect(mockCanShowStartButton).toHaveBeenLastCalledWith(false);
     expect(mockDispose).toHaveBeenCalled();
 
-    expect(mockJitsi).toHaveBeenCalledWith('meet.jit.si', {
-      configOverwrite: {
-        constraints: {
-          video: {
-            height: {
-              ideal: 720,
-              max: 720,
-              min: 240,
-            },
-          },
-        },
-        conferenceInfo: {
-          alwaysVisible: ['recording'],
-
-          autoHide: [],
-        },
-        disableDeepLinking: true,
-        disablePolls: true,
-        doNotStoreRoom: true,
-        hideConferenceSubject: true,
-        hideConferenceTimer: true,
-        prejoinPageEnabled: false,
-        resolution: 720,
-        toolbarButtons,
-      },
-      interfaceConfigOverwrite: {
-        HIDE_INVITE_MORE_HEADER: true,
-        TOOLBAR_BUTTONS: toolbarButtons,
-      },
-      parentNode: expect.any(HTMLElement),
-      roomName: 'jitsi_conference',
-      userInfo: {
-        displayName: 'jane_doe',
-      },
-    });
-
-    expect(mockJitsi).toHaveBeenCalledTimes(2);
+    expect(initializeJitsi).toHaveBeenCalledTimes(2);
   });
 
-  it('calls setCanShowStartButton when participant join the conference', () => {
+  it('calls setCanShowStartButton when participant join the conference', async () => {
     const video = videoMockFactory({
       live_info: {
         medialive: {
@@ -1047,29 +592,36 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
     const mockCanShowStartButton = jest.fn();
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
+
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => expect(events.videoConferenceJoined).toBeDefined());
 
     expect(mockCanShowStartButton).not.toHaveBeenCalled();
 
     // simulates user leave the conference
-    dispatch('videoConferenceJoined', {});
+    act(() => dispatch('videoConferenceJoined', {}));
 
-    expect(mockCanShowStartButton).toHaveBeenLastCalledWith(true);
+    await waitFor(() =>
+      expect(mockCanShowStartButton).toHaveBeenLastCalledWith(true),
+    );
   });
 
-  it('does not start recording when isInstructor is False', () => {
+  it('does not start recording when isInstructor is False', async () => {
     const video = videoMockFactory({
       live_info: {
         jitsi: {
@@ -1083,44 +635,17 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
-
-    render(<DashboardVideoLiveJitsi video={video} isInstructor={false} />);
-
-    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
-      'startRecording',
-      expect.any({}),
-    );
-    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
-      'stopRecording',
-      expect.any(String),
-    );
-  });
-
-  it('does not start recording when the user is an instructor but not a moderator', () => {
-    const video = videoMockFactory({
-      live_info: {
-        jitsi: {
-          domain: 'meet.jit.si',
-          external_api_url: 'https://meet.jit.si/external_api.js',
-          config_overwrite: {},
-          interface_config_overwrite: {},
-          room_name: 'jitsi_conference',
-        },
-      },
-      live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
-    });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
-      <DashboardVideoLiveJitsi
-        video={video}
-        isInstructor={true}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-      />,
+      <JitsiApiProvider value={undefined}>
+        <DashboardVideoLiveJitsi
+          liveJitsi={convertVideoToJitsiLive(video)!}
+          isInstructor={false}
+        />
+      </JitsiApiProvider>,
     );
+
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
@@ -1132,7 +657,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     );
   });
 
-  it('redirects to the player when user leaves the conference and is not an instructor', () => {
+  it('does not start recording when the user is an instructor but not a moderator', async () => {
     const video = videoMockFactory({
       live_info: {
         jitsi: {
@@ -1146,11 +671,53 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
+
+    render(
+      <JitsiApiProvider value={undefined}>
+        <DashboardVideoLiveJitsi
+          liveJitsi={convertVideoToJitsiLive(video)!}
+          isInstructor={true}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+        />
+      </JitsiApiProvider>,
+    );
+
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'startRecording',
+      expect.any({}),
+    );
+    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+      'stopRecording',
+      expect.any(String),
+    );
+  });
+
+  it('redirects to the player when user leaves the conference and is not an instructor', async () => {
+    const video = videoMockFactory({
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+    });
 
     render(
       wrapInRouter(
-        <DashboardVideoLiveJitsi video={video} isInstructor={false} />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            isInstructor={false}
+          />
+        </JitsiApiProvider>,
         [
           {
             path: PLAYER_ROUTE(),
@@ -1162,10 +729,16 @@ describe('<DashboardVideoLiveJitsi />', () => {
       ),
     );
 
-    // simulates user leave the conference
-    dispatch('videoConferenceLeft', {});
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
 
-    expect(mockDispose).toHaveBeenCalled();
+    await waitFor(() => {
+      expect(events.videoConferenceLeft).toBeDefined();
+    });
+
+    // simulates user leave the conference
+    act(() => dispatch('videoConferenceLeft', {}));
+
+    await waitFor(() => expect(mockDispose).toHaveBeenCalled());
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
     screen.getByText('video player');
   });
@@ -1192,25 +765,34 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => {
+      expect(events.participantRoleChanged).toBeDefined();
     });
 
-    expect(events.recordingStatusChanged).toBeDefined();
+    // simulates moderator role granted
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
+
+    await waitFor(() => expect(events.recordingStatusChanged).toBeDefined());
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
@@ -1227,42 +809,56 @@ describe('<DashboardVideoLiveJitsi />', () => {
     // stop streaming
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{
-            ...video,
-            live_state: liveState.STOPPING,
-          }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={
+              convertVideoToJitsiLive({
+                ...video,
+                live_state: liveState.STOPPING,
+              })!
+            }
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
-    expect(mockExecuteCommand).toHaveBeenCalledWith(
-      'stopRecording',
-      expect.any(String),
+
+    await waitFor(() =>
+      expect(mockExecuteCommand).toHaveBeenCalledWith(
+        'stopRecording',
+        expect.any(String),
+      ),
     );
     expect(mockExecuteCommand).toHaveBeenCalledTimes(2);
     // simulates recording interruption without error
-    dispatch('recordingStatusChanged', {
-      on: false,
-      mode: 'stream',
-    });
+    act(() =>
+      dispatch('recordingStatusChanged', {
+        on: false,
+        mode: 'stream',
+      }),
+    );
 
     // resume streaming
     rerender(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={{
-            ...video,
-            live_state: liveState.RUNNING,
-          }}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={
+              convertVideoToJitsiLive({
+                ...video,
+                live_state: liveState.RUNNING,
+              })!
+            }
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
+
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
         mode: 'stream',
@@ -1294,25 +890,34 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => {
+      expect(events.participantRoleChanged).toBeDefined();
     });
 
-    expect(events.recordingStatusChanged).toBeDefined();
+    // simulates moderator role granted
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
+
+    await waitFor(() => expect(events.recordingStatusChanged).toBeDefined());
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
@@ -1327,15 +932,17 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
 
     // simulates recording interruption
-    dispatch('recordingStatusChanged', {
-      on: false,
-      mode: 'stream',
-      error: 'not-allowed',
-    });
+    act(() =>
+      dispatch('recordingStatusChanged', {
+        on: false,
+        mode: 'stream',
+        error: 'not-allowed',
+      }),
+    );
 
     jest.advanceTimersToNextTimer();
 
-    expect(mockExecuteCommand).toHaveBeenCalledTimes(1);
+    await waitFor(() => expect(mockExecuteCommand).toHaveBeenCalledTimes(1));
   });
 
   it('does not start streaming when loading the component and jitsi already streaming', async () => {
@@ -1360,33 +967,45 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() => {
+      expect(events.participantRoleChanged).toBeDefined();
+      expect(events.participantRoleChanged).toBeDefined();
+    });
+
     // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
+    act(() => {
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      });
+
+      // simulates recording already on
+      dispatch('recordingStatusChanged', {
+        on: true,
+        mode: 'stream',
+      });
     });
 
-    // simulates recording already on
-    dispatch('recordingStatusChanged', {
-      on: true,
-      mode: 'stream',
-    });
-
-    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
-      'startRecording',
-      expect.any(String),
+    await waitFor(() =>
+      expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+        'startRecording',
+        expect.any(String),
+      ),
     );
   });
 
@@ -1412,28 +1031,35 @@ describe('<DashboardVideoLiveJitsi />', () => {
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
     });
-    global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          video={video}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
-    expect(mockExecuteCommand).not.toHaveBeenCalledWith(
-      'startRecording',
-      expect.any(String),
+    await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
+
+    await waitFor(() =>
+      expect(mockExecuteCommand).not.toHaveBeenCalledWith(
+        'startRecording',
+        expect.any(String),
+      ),
     );
 
     // simulates moderator role granted
-    dispatch('participantRoleChanged', {
-      role: 'moderator',
-    });
+    act(() =>
+      dispatch('participantRoleChanged', {
+        role: 'moderator',
+      }),
+    );
 
     await waitFor(() => {
       expect(mockExecuteCommand).toHaveBeenCalledWith('startRecording', {
