@@ -40,6 +40,13 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     is_ready_to_show = serializers.BooleanField(read_only=True)
     urls = serializers.SerializerMethodField()
 
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        Force to return None if the thumbnail is deleted
+        """
+        return None if instance.deleted else super().to_representation(instance)
+
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
 
