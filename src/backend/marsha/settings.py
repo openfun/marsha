@@ -621,7 +621,15 @@ class Base(Configuration):
             "ALGORITHM": "HS256",
             "SIGNING_KEY": str(self.JWT_SIGNING_KEY),
             "USER_ID_CLAIM": "resource_id",
-            "AUTH_TOKEN_CLASSES": ("rest_framework_simplejwt.tokens.AccessToken",),
+            "AUTH_TOKEN_CLASSES": (
+                "rest_framework_simplejwt.tokens.AccessToken",
+                # For now ResourceAccessToken & UserAccessToken are also AccessToken
+                # but this will allow migration when types will differ.
+                # Note: AccessToken must remain enabled during the migration and removed
+                # only after (version N changes token types, N+1 removes AccessToken).
+                "marsha.core.simple_jwt.tokens.ResourceAccessToken",
+                "marsha.core.simple_jwt.tokens.UserAccessToken",
+            ),
         }
 
     # pylint: disable=invalid-name

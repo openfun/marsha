@@ -3,8 +3,8 @@ import logging
 from urllib.parse import parse_qs
 
 from channels.generic.websocket import AsyncWebsocketConsumer
-from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework_simplejwt.exceptions import InvalidToken
 
 
 logger = logging.getLogger(__name__)
@@ -43,7 +43,7 @@ class JWTMiddleware:
             token = self.validate_jwt(scope)
             scope["token"] = token
             return await self.application(scope, receive, send)
-        except TokenError:
+        except InvalidToken:
             # Deny the connection
             denier = WebsocketDenier()
             return await denier(scope, receive, send)
@@ -61,7 +61,9 @@ class JWTMiddleware:
             raise ValueError("jwt query string is missing")
 
         try:
-            return AccessToken(token=raw_token[0])
-        except TokenError as err:
+            # Try to validate token against all accepted token types defined in
+            # `api_settings.AUTH_TOKEN_CLASSES`.
+            return JWTAuthentication().get_validated_token(raw_token[0])
+        except InvalidToken as err:
             logger.debug("Invalid jwt token")
             raise err

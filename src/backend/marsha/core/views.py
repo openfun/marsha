@@ -8,7 +8,6 @@ import uuid
 from django.conf import settings
 from django.core.cache import cache
 from django.core.exceptions import (
-    ImproperlyConfigured,
     PermissionDenied,
     SuspiciousOperation,
     ValidationError as DjangoValidationError,
@@ -30,8 +29,13 @@ from pylti.common import LTIException
 from rest_framework.exceptions import ValidationError as DRFValidationError
 from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
+
+from marsha.core.simple_jwt.tokens import (
+    LTISelectFormAccessToken,
+    ResourceAccessToken,
+    UserAccessToken,
+)
 
 from .defaults import BBB, ENDED, LIVE_RAW, MARKDOWN, SENTRY
 from .lti import LTI
@@ -41,7 +45,7 @@ from .lti.utils import (
     get_selectable_resources,
 )
 from .models import Document, LiveSession, Playlist, Video
-from .models.account import NONE, LTIPassport
+from .models.account import LTIPassport
 from .serializers import (
     DocumentSelectLTISerializer,
     DocumentSerializer,
@@ -49,7 +53,6 @@ from .serializers import (
     VideoSelectLTISerializer,
     VideoSerializer,
 )
-from .utils.react_locales_utils import react_locale
 from .utils.url_utils import build_absolute_uri_behind_proxy
 
 
@@ -102,90 +105,6 @@ def _get_base_app_data():
     }
 
 
-def define_locales(lti):
-    """Define locales"""
-    try:
-        return (
-            react_locale(lti.launch_presentation_locale)
-            if lti
-            else settings.REACT_LOCALES[0]
-        )
-    except ImproperlyConfigured:
-        return settings.REACT_LOCALES[0]
-
-
-def build_jwt_token(
-    permissions, session_id, lti=None, playlist_id=None, resource_id=None
-):
-    """Build a JWT token.
-
-    Parameters
-    ----------
-    permissions: Type[Dict]
-        permissions to add to the token.
-
-    session_id: Type[str]
-        session id to add to the token.
-
-    lti: Type[LTI]
-        LTI request.
-
-    playlist_id: Type[str]
-        playlist id to add to the token.
-
-    resource_id: Type[str]
-        resource id to add to the token.
-
-    Returns
-    -------
-    AccessToken
-        JWT token containing:
-        - session_id
-        - resource_id
-        - roles
-        - locale
-        - permissions
-        - maintenance
-        - user:
-            - email
-            - id
-            - username
-            - user_fullname
-    """
-    user_id = getattr(lti, "user_id", None) if lti else None
-
-    locale = define_locales(lti)
-
-    # Create a short-lived JWT token for the resource selection
-    jwt_token = AccessToken()
-
-    if lti:
-        jwt_token.payload["context_id"] = lti.context_id
-        jwt_token.payload["consumer_site"] = str(lti.get_consumer_site().id)
-
-    if playlist_id:
-        jwt_token.payload["playlist_id"] = playlist_id
-
-    jwt_token.payload.update(
-        {
-            "session_id": session_id,
-            "resource_id": str(lti.resource_id) if lti else resource_id,
-            "roles": lti.roles if lti else [NONE],
-            "locale": locale,
-            "permissions": permissions,
-            "maintenance": settings.MAINTENANCE_MODE,
-        }
-    )
-    if user_id:
-        jwt_token.payload["user"] = {
-            "email": lti.email,
-            "id": user_id,
-            "username": lti.username,
-            "user_fullname": lti.user_fullname,
-        }
-    return jwt_token
-
-
 class SiteView(mixins.WaffleSwitchMixin, TemplateView):
     """
     View called to serve the first site pages a user lands on, wherever they come from.
@@ -199,9 +118,7 @@ class SiteView(mixins.WaffleSwitchMixin, TemplateView):
 
     def get_context_data(self, **kwargs):
         """Build the context necessary to run the frontend app for the site."""
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(self.request.user.id)
-        jwt_token.payload["user"] = {"id": str(self.request.user.id)}
+        jwt_token = UserAccessToken.for_user(self.request.user)
 
         app_data = _get_base_app_data()
         app_data.update(
@@ -380,7 +297,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            jwt_token = build_jwt_token(
+            jwt_token = ResourceAccessToken.for_resource_id(
                 permissions=permissions,
                 session_id=session_id,
                 lti=lti,
@@ -463,7 +380,7 @@ class BaseView(BaseLTIView, ABC):
             cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            jwt_token = build_jwt_token(
+            jwt_token = ResourceAccessToken.for_resource_id(
                 permissions={"can_access_dashboard": False, "can_update": False},
                 session_id=session_id,
                 lti=None,
@@ -615,39 +532,7 @@ class VideoView(BaseView):
                 )
                 cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(livesession.video.id)
-            jwt_token.payload["user"] = {
-                "email": livesession.email,
-            }
-
-            if livesession.is_from_lti_connection:
-
-                jwt_token.payload["consumer_site"] = str(livesession.consumer_site.id)
-                jwt_token.payload["context_id"] = str(livesession.video.playlist.lti_id)
-                jwt_token.payload["roles"] = ["student"]
-                jwt_token.payload["user"].update(
-                    {
-                        "id": livesession.lti_user_id,
-                        "username": livesession.username,
-                    }
-                )
-
-            else:
-
-                jwt_token.payload["user"].update(
-                    {"anonymous_id": str(livesession.anonymous_id)}
-                )
-                jwt_token.payload["roles"] = [NONE]
-
-            jwt_token.payload.update(
-                {
-                    "session_id": session_id,
-                    "locale": react_locale(livesession.language),
-                    "permissions": {"can_access_dashboard": False, "can_update": False},
-                    "maintenance": settings.MAINTENANCE_MODE,
-                }
-            )
+            jwt_token = ResourceAccessToken.for_live_session(livesession, session_id)
             app_data["jwt"] = str(jwt_token)
 
             return self.render_to_response(self._get_prepare_to_render(app_data))
@@ -813,8 +698,9 @@ class LTISelectView(TemplateResponseMixin, View):
         lti_select_form_data = self.request.POST.copy()
         lti_select_form_data["lti_message_type"] = "ContentItemSelection"
 
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        lti_select_form_data_jwt = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data
+        )
 
         activity_title = ""
         if self.request.POST.get("title") != settings.LTI_CONFIG_TITLE:
@@ -831,7 +717,7 @@ class LTISelectView(TemplateResponseMixin, View):
                 "frontend": "LTI",
                 "lti_select_form_action_url": reverse("respond_lti_view"),
                 "lti_select_form_data": {
-                    "jwt": str(jwt_token),
+                    "jwt": str(lti_select_form_data_jwt),
                     "activity_title": activity_title,
                     "activity_description": self.request.POST.get("text"),
                 },
@@ -847,13 +733,14 @@ class LTISelectView(TemplateResponseMixin, View):
         session_id = str(uuid.uuid4())
         permissions = {"can_access_dashboard": False, "can_update": True}
 
-        jwt_token = build_jwt_token(
-            permissions=permissions,
-            session_id=session_id,
-            lti=lti,
-            playlist_id=str(playlist.id),
+        app_data["jwt"] = str(
+            ResourceAccessToken.for_resource_id(
+                permissions=permissions,
+                session_id=session_id,
+                lti=lti,
+                playlist_id=str(playlist.id),
+            )
         )
-        app_data["jwt"] = str(jwt_token)
 
         return app_data
 
@@ -913,8 +800,7 @@ class LTIRespondView(TemplateResponseMixin, View):
 
         """
         try:
-            jwt_token = AccessToken(self.request.POST.get("jwt", ""))
-            jwt_token.verify()
+            jwt_token = LTISelectFormAccessToken(self.request.POST.get("jwt", ""))
         except TokenError as error:
             logger.warning(str(error))
             raise PermissionDenied from error
