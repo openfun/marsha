@@ -10,7 +10,9 @@ import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
 import { liveState, Live } from 'types/tracks';
@@ -105,5 +107,11 @@ export const PublicLiveDashboard = ({
     return <StudentLiveAdvertising video={live} />;
   }
 
-  return <StudentLiveWrapper video={live} playerType={playerType} />;
+  return (
+    <PictureInPictureProvider value={{ reversed: true }}>
+      <JitsiApiProvider value={undefined}>
+        <StudentLiveWrapper video={live} playerType={playerType} />
+      </JitsiApiProvider>
+    </PictureInPictureProvider>
+  );
 };
