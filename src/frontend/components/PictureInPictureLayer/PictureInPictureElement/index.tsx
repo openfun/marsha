@@ -42,6 +42,7 @@ export const PictureInPictureElement = ({
       id={id}
       ref={containerRef}
       background={isPicture ? 'white' : undefined}
+      border={isPicture ? { color: 'blue-focus' } : undefined}
       round={isPicture ? 'small' : undefined}
       style={style}
     >
