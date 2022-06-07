@@ -13,6 +13,7 @@ import { DashboardVideoLiveWidgetSchedulingAndDescription } from './widgets/Dash
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from './widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from './widgets/DashboardVideoLiveWidgetVOD';
 import { DashboardVideoLiveWidgetSharedLiveMedia } from './widgets/DashboardVideoLiveWidgetSharedLiveMedia';
+import { PIPWidget } from './widgets/PIPWidget';
 
 interface DashboardVideoLiveControlPaneProps {
   video: Video;
@@ -34,6 +35,7 @@ export const DashboardVideoLiveControlPane = ({
         <DeleteUploadModalProvider value={null}>
           <DashboardVideoLiveWidgetSharedLiveMedia video={video} />
         </DeleteUploadModalProvider>
+        <PIPWidget />
       </DashboardVideoLiveWidgetsContainer>
     </InfoWidgetModalProvider>
   );
