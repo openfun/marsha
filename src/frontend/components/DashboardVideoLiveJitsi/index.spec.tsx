@@ -1,12 +1,13 @@
 import { cleanup, render, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
+import { PLAYER_ROUTE } from 'components/routes';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { convertVideoToJitsiLive, LiveModeType, liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 import * as mockWindow from 'utils/window';
-import { PLAYER_ROUTE } from '../routes';
 
 import DashboardVideoLiveJitsi from '.';
 
@@ -79,12 +80,15 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+          ,
+        </JitsiApiProvider>,
       ),
     );
     const toolbarButtons = [
@@ -248,12 +252,15 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
       render(
         wrapInIntlProvider(
-          <DashboardVideoLiveJitsi
-            liveJitsi={convertVideoToJitsiLive(video)!}
-            setCanStartLive={jest.fn()}
-            setCanShowStartButton={jest.fn()}
-            isInstructor={true}
-          />,
+          <JitsiApiProvider value={undefined}>
+            <DashboardVideoLiveJitsi
+              liveJitsi={convertVideoToJitsiLive(video)!}
+              setCanStartLive={jest.fn()}
+              setCanShowStartButton={jest.fn()}
+              isInstructor={true}
+            />
+            ,
+          </JitsiApiProvider>,
         ),
       );
       const toolbarButtons = [
@@ -345,12 +352,15 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+          ,
+        </JitsiApiProvider>,
       ),
     );
     const toolbarButtons = [
@@ -440,12 +450,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -516,12 +528,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -583,12 +597,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -637,12 +653,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={mockCanStartLive}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={mockCanStartLive}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
     const toolbarButtons = [
@@ -780,12 +798,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={mockCanShowStartButton}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={mockCanShowStartButton}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -814,10 +834,12 @@ describe('<DashboardVideoLiveJitsi />', () => {
     global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
-      <DashboardVideoLiveJitsi
-        liveJitsi={convertVideoToJitsiLive(video)!}
-        isInstructor={false}
-      />,
+      <JitsiApiProvider value={undefined}>
+        <DashboardVideoLiveJitsi
+          liveJitsi={convertVideoToJitsiLive(video)!}
+          isInstructor={false}
+        />
+      </JitsiApiProvider>,
     );
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
@@ -847,12 +869,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
     global.JitsiMeetExternalAPI = mockJitsi;
 
     render(
-      <DashboardVideoLiveJitsi
-        liveJitsi={convertVideoToJitsiLive(video)!}
-        isInstructor={true}
-        setCanStartLive={jest.fn()}
-        setCanShowStartButton={jest.fn()}
-      />,
+      <JitsiApiProvider value={undefined}>
+        <DashboardVideoLiveJitsi
+          liveJitsi={convertVideoToJitsiLive(video)!}
+          isInstructor={true}
+          setCanStartLive={jest.fn()}
+          setCanShowStartButton={jest.fn()}
+        />
+      </JitsiApiProvider>,
     );
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
@@ -882,10 +906,12 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInRouter(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          isInstructor={false}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            isInstructor={false}
+          />
+        </JitsiApiProvider>,
         [
           {
             path: PLAYER_ROUTE(),
@@ -931,12 +957,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     const { rerender } = render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -1036,12 +1064,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -1101,12 +1131,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 
@@ -1153,12 +1185,14 @@ describe('<DashboardVideoLiveJitsi />', () => {
 
     render(
       wrapInIntlProvider(
-        <DashboardVideoLiveJitsi
-          liveJitsi={convertVideoToJitsiLive(video)!}
-          setCanStartLive={jest.fn()}
-          setCanShowStartButton={jest.fn()}
-          isInstructor={true}
-        />,
+        <JitsiApiProvider value={undefined}>
+          <DashboardVideoLiveJitsi
+            liveJitsi={convertVideoToJitsiLive(video)!}
+            setCanStartLive={jest.fn()}
+            setCanShowStartButton={jest.fn()}
+            isInstructor={true}
+          />
+        </JitsiApiProvider>,
       ),
     );
 

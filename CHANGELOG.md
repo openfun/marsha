@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add Legacy LTI configuration XML
 - Add an instructor widget to modify join the discussion mode
 - Prevent join API calls in join mode denied
+- Manage live media sharing with picture-in-picture on student side
 
 ### Changed
 

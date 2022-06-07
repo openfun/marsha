@@ -1,3 +1,4 @@
+import { Button } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
@@ -7,19 +8,22 @@ import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
+import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
+import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useJitsiApi } from 'data/stores/useJitsiApi';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { convertVideoToJitsiLive, Video } from 'types/tracks';
-import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -51,6 +55,8 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     (state) => state.accepted,
   );
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
+  const [pipState] = usePictureInPicture();
+  const [jitsiApi] = useJitsiApi();
 
   useEffect(() => {
     if (isParticipantOnstage) {
@@ -116,17 +122,61 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
           />
         }
         mainElement={
-          isParticipantOnstage && jitsiLive ? (
-            <JitsiApiProvider value={undefined}>
-              <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
-            </JitsiApiProvider>
-          ) : (
-            <VideoPlayer
-              playerType={playerType}
-              timedTextTracks={[]}
-              video={video}
-            />
-          )
+          <PictureInPictureLayer
+            mainElement={
+              isParticipantOnstage && jitsiLive ? (
+                <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
+              ) : (
+                <VideoPlayer
+                  playerType={playerType}
+                  timedTextTracks={[]}
+                  video={video}
+                />
+              )
+            }
+            secondElement={
+              video.active_shared_live_media &&
+              (video.active_shared_live_media.urls ? (
+                <SharedMediaExplorer
+                  initialPage={video.active_shared_live_media_page!}
+                  pages={video.active_shared_live_media.urls.pages}
+                />
+              ) : (
+                <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
+              ))
+            }
+            reversed={pipState.reversed}
+            pictureActions={
+              pipState.reversed && isParticipantOnstage && jitsiLive
+                ? [
+                    <Button
+                      key="mute-jitsi-button"
+                      label={'audio'}
+                      color="white"
+                      onClick={() => {
+                        if (!jitsiApi) {
+                          return;
+                        }
+
+                        jitsiApi.executeCommand('toggleAudio');
+                      }}
+                    />,
+                    <Button
+                      key="hide-cam-jitsi-button"
+                      label={'video'}
+                      color="white"
+                      onClick={() => {
+                        if (!jitsiApi) {
+                          return;
+                        }
+
+                        jitsiApi.executeCommand('toggleVideo');
+                      }}
+                    />,
+                  ]
+                : undefined
+            }
+          />
         }
         sideElement={<LiveVideoPanel video={video} />}
       />

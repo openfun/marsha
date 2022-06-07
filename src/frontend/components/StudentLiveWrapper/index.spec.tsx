@@ -1,25 +1,32 @@
-import React from 'react';
-import fetchMock from 'fetch-mock';
 import { act, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import faker from 'faker';
+import fetchMock from 'fetch-mock';
+import React from 'react';
 
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { LiveModeType, liveState } from 'types/tracks';
-import { PersistentStore } from 'types/XMPP';
-import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture/index';
 import { createPlayer } from 'Player/createPlayer';
 
-import { StudentLiveWrapper } from '.';
-
-import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { LiveModeType, liveState } from 'types/tracks';
+import { PersistentStore } from 'types/XMPP';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import {
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { wrapInRouter } from 'utils/tests/router';
+
+import { StudentLiveWrapper } from '.';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -144,7 +151,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -207,7 +218,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -268,7 +283,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -329,7 +348,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -384,7 +407,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -420,7 +447,11 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -437,6 +468,68 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
 
     screen.getByText('No title');
+  });
+
+  it('displays the video in the picture and shared media in background when a media is shared', async () => {
+    const videoId = faker.datatype.uuid();
+    const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+    const video = videoMockFactory({
+      id: videoId,
+      active_shared_live_media: sharedLiveMedia,
+      active_shared_live_media_page: 1,
+      title: 'live title',
+      live_info: {},
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.RAW,
+      shared_live_medias: [sharedLiveMedia],
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    const { container } = render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PictureInPictureProvider value={{ reversed: true }}>
+            <JitsiApiProvider value={undefined}>
+              <StudentLiveWrapper video={video} playerType={'player_type'} />
+            </JitsiApiProvider>
+          </PictureInPictureProvider>,
+        ),
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
+      ),
+    );
+
+    const pipMaster = container.querySelector('#picture-in-picture-master');
+    const pipSlave = container.querySelector('#picture-in-picture-slave');
+    expect(pipMaster!.getElementsByTagName('source')[0]).toHaveAttribute(
+      'src',
+      `https://example.com/mp4/1080`,
+    );
+    expect(pipSlave?.getElementsByTagName('img')[0]).toHaveAttribute(
+      'src',
+      `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/1`,
+    );
   });
 });
 
@@ -498,7 +591,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
     act(() => useLivePanelState.getState().setPanelVisibility(false));
@@ -551,7 +648,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -603,7 +704,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -654,7 +759,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -700,7 +809,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -751,7 +864,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -790,7 +907,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -846,7 +967,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     render(
       wrapInIntlProvider(
-        <StudentLiveWrapper video={video} playerType={'player_type'} />,
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <JitsiApiProvider value={undefined}>
+            <StudentLiveWrapper video={video} playerType={'player_type'} />
+          </JitsiApiProvider>
+        </PictureInPictureProvider>,
       ),
     );
 
@@ -883,6 +1008,68 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
         'en',
         expect.any(Function),
       ),
+    );
+  });
+
+  it('displays the jitsi player in the picture and shared media in background when a media is shared', async () => {
+    const videoId = faker.datatype.uuid();
+    const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+    const video = videoMockFactory({
+      id: videoId,
+      active_shared_live_media: sharedLiveMedia,
+      active_shared_live_media_page: 1,
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      shared_live_medias: [sharedLiveMedia],
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    const { container } = render(
+      wrapInIntlProvider(
+        wrapInRouter(
+          <PictureInPictureProvider value={{ reversed: true }}>
+            <JitsiApiProvider value={undefined}>
+              <StudentLiveWrapper video={video} playerType={'player_type'} />
+            </JitsiApiProvider>
+          </PictureInPictureProvider>,
+        ),
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+
+    const pipMaster = container.querySelector('#picture-in-picture-master');
+    const pipSlave = container.querySelector('#picture-in-picture-slave');
+    expect(pipMaster!.getElementsByTagName('button')[0]).toHaveTextContent(
+      'audio',
+    );
+    expect(pipMaster!.getElementsByTagName('button')[1]).toHaveTextContent(
+      'video',
+    );
+    expect(pipSlave!.getElementsByTagName('img')[0]).toHaveAttribute(
+      'src',
+      `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/1`,
     );
   });
 });
