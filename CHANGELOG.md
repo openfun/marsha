@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.5] - 2022-06-07
+
 ### Added
 
 - Push attendance when a student is on stage
@@ -1142,7 +1144,8 @@ the video to the ViewersList in the right panel
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.4...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.5...master
+[4.0.0-beta.5]: https://github.com/openfun/marsha/compare/v4.0.0-beta.4...v4.0.0-beta.5
 [4.0.0-beta.4]: https://github.com/openfun/marsha/compare/v4.0.0-beta.3...v4.0.0-beta.4
 [4.0.0-beta.3]: https://github.com/openfun/marsha/compare/v4.0.0-beta.2...v4.0.0-beta.3
 [4.0.0-beta.2]: https://github.com/openfun/marsha/compare/v4.0.0-beta.1...v4.0.0-beta.2
