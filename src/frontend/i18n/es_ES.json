@@ -7,10 +7,6 @@
     "description": "Accessible message for the spinner while loading the meetings in lti select view.",
     "message": "Loading meetings..."
   },
-  "apps.bbb.SelectContent.newMeeting": {
-    "description": "Default LTI consumer title for a new meeting.",
-    "message": "New meeting"
-  },
   "apps.bbb.SelectContent.notStarted": {
     "description": "Text helper displayed if a meeting is not started.",
     "message": "Not started"
@@ -188,6 +184,14 @@
     "message": "Video update has failed !"
   },
   "component.DashboardVideoLiveWidgetGeneralTitle.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
+  },
+  "component.DashboardVideoLiveWidgetJoinMode.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "component.DashboardVideoLiveWidgetJoinMode.updateVideoSucces": {
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
@@ -582,6 +586,26 @@
   "components.DashboardVideoLiveWidgetGeneralTitle.title": {
     "description": "Title of the widget used for setting live title and activate recording.",
     "message": "General"
+  },
+  "components.DashboardVideoLiveWidgetJoinMode.approvalLabel": {
+    "description": "The label associated to the approval join mode.",
+    "message": "Accept joining the discussion after approval"
+  },
+  "components.DashboardVideoLiveWidgetJoinMode.deniedLabel": {
+    "description": "The label associated to the denied join mode.",
+    "message": "Not allowed"
+  },
+  "components.DashboardVideoLiveWidgetJoinMode.info": {
+    "description": "Info of the widget used for setting join modes.",
+    "message": "This widget allows you to select permissions for students to join the discussion."
+  },
+  "components.DashboardVideoLiveWidgetJoinMode.selectLabel": {
+    "description": "The label for the select to set join modes.",
+    "message": "Select join the discussion mode"
+  },
+  "components.DashboardVideoLiveWidgetJoinMode.title": {
+    "description": "Title of the widget used for setting join modes.",
+    "message": "Join the discussion"
   },
   "components.DashboardVideoLiveWidgetSchedulingAndDescription.endDateWebinarLabel": {
     "description": "When the webinar will end.",
@@ -990,14 +1014,6 @@
   "components.SelectContent.copied": {
     "description": "Message displayed when playlist info are copied.",
     "message": "{text} copied!"
-  },
-  "components.SelectContent.newDocument": {
-    "description": "Default LTI consumer title for a new document.",
-    "message": "Nuevo Documento"
-  },
-  "components.SelectContent.newVideo": {
-    "description": "Default LTI consumer title for a new video.",
-    "message": "Nuevo vídeo"
   },
   "components.SelectContent.notReadyToShow": {
     "description": "Text helper displayed if a video or a document is not ready to show to students.",
