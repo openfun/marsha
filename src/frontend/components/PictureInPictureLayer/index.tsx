@@ -10,6 +10,7 @@ import React, {
 import { Nullable } from 'utils/types';
 
 import { PictureInPictureElement } from './PictureInPictureElement';
+import { PictureInPictureSwitchAction } from './PictureInPictureSwitchAction';
 import { usePIPDragger } from './usePIPDragger';
 import { defaultmarginSize, Point } from './usePIPDragger/utils';
 
@@ -66,6 +67,7 @@ export const PictureInPictureLayer = ({
     width: '20%',
     borderRadius: '6px',
     zIndex: 1,
+    minWidth: '140px',
   };
   if (shouldAnimate) {
     pictureStyle = {
@@ -74,13 +76,16 @@ export const PictureInPictureLayer = ({
     };
   }
 
+  const pipSwitch: ReactNode = <PictureInPictureSwitchAction />;
   return (
     <Box ref={containerBoxRef} style={{ position: 'relative' }}>
       <PictureInPictureElement
         id="picture-in-picture-master"
         containerRef={firstElementRef}
         isPicture={reversed}
-        pictureActions={reversed ? pictureActions : undefined}
+        pictureActions={
+          reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
+        }
         startDragging={reversed ? startDragging : undefined}
         style={reversed ? pictureStyle : containerStyle}
       >
@@ -92,7 +97,9 @@ export const PictureInPictureLayer = ({
           id="picture-in-picture-slave"
           containerRef={secondElementRef}
           isPicture={!reversed}
-          pictureActions={!reversed ? pictureActions : undefined}
+          pictureActions={
+            !reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
+          }
           startDragging={!reversed ? startDragging : undefined}
           style={!reversed ? pictureStyle : containerStyle}
         >
