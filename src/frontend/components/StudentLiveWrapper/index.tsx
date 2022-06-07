@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { Redirect } from 'react-router-dom';
 
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
@@ -15,7 +17,7 @@ import {
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { Video } from 'types/tracks';
+import { convertVideoToJitsiLive, Video } from 'types/tracks';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -93,6 +95,11 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     }
   }, [video.xmpp, currentItem, showPanelTrigger]);
 
+  const jitsiLive = convertVideoToJitsiLive(video);
+  if (isParticipantOnstage && !jitsiLive) {
+    return <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />;
+  }
+
   return (
     <LiveVideoLayout
       actionsElement={<StudentLiveControlBar video={video} />}
@@ -106,8 +113,8 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         />
       }
       mainElement={
-        isParticipantOnstage ? (
-          <DashboardVideoLiveJitsi video={video} />
+        isParticipantOnstage && jitsiLive ? (
+          <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
         ) : (
           <VideoPlayer
             playerType={playerType}
