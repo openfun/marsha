@@ -1,5 +1,6 @@
 """Structure of Thumbnail related models API responses with Django Rest Framework serializers."""
 from django.conf import settings
+from django.db.utils import IntegrityError
 
 from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
@@ -59,7 +60,29 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         user = self.context["request"].user
         if not validated_data.get("video_id") and isinstance(user, TokenUser):
             validated_data["video_id"] = user.id
-        return super().create(validated_data)
+        try:
+            return super().create(validated_data)
+        except IntegrityError as exc:
+            raise serializers.ValidationError(
+                {"video": ["Thumbnail with this Video already exists."]}
+            ) from exc
+
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        Depending if the serializer was instancianted with a Thumbnail
+        model instance or not, we have to fetch it in the database to avoid error
+        trying to work with a None instance in all the serializerMethodField
+        of this serializer.
+        """
+        if isinstance(instance, Thumbnail):
+            return super().to_representation(instance)
+
+        try:
+            thumbnail = instance.get()
+            return super().to_representation(thumbnail)
+        except Thumbnail.DoesNotExist:
+            return None
 
     def get_urls(self, obj):
         """Urls of the thumbnail.

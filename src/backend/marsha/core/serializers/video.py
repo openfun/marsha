@@ -49,6 +49,8 @@ class InitLiveStateSerializer(serializers.Serializer):
 class VideoBaseSerializer(serializers.ModelSerializer):
     """Base Serializer to factorize common Video attributes."""
 
+    thumbnail_instance = None
+
     class Meta:  # noqa
         model = Video
         fields = (
@@ -62,8 +64,30 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         )
 
     urls = serializers.SerializerMethodField()
-    thumbnail = ThumbnailSerializer(read_only=True, allow_null=True)
+    thumbnail = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
+
+    def to_representation(self, instance):
+        """
+        Object instance -> Dict of primitive datatypes.
+        Try to fetch existing thumbnail related to the current video.
+        If a thumbnail exists, we keep it in the serializer instance
+        to use it several times without having to fetch it again and again
+        in the database.
+        """
+        try:
+            self.thumbnail_instance = instance.thumbnail.get()
+        except Thumbnail.DoesNotExist:
+            pass
+
+        return super().to_representation(instance)
+
+    def get_thumbnail(self, _):
+        """Return a serialized thumbnail if it exists."""
+        if self.thumbnail_instance:
+            return ThumbnailSerializer(self.thumbnail_instance).data
+
+        return None
 
     def get_urls(self, obj):
         """Urls of the video for each type of encoding.
@@ -101,14 +125,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             return None
 
         thumbnail_urls = {}
-        try:
-            thumbnail = obj.thumbnail
-        except Thumbnail.DoesNotExist:
-            pass
-        else:
-            if thumbnail.uploaded_on is not None:
-                thumbnail_serialized = ThumbnailSerializer(thumbnail)
-                thumbnail_urls.update(thumbnail_serialized.data.get("urls"))
+        if self.thumbnail_instance and self.thumbnail_instance.uploaded_on is not None:
+            thumbnail_serialized = ThumbnailSerializer(self.thumbnail_instance)
+            thumbnail_urls.update(thumbnail_serialized.data.get("urls"))
 
         urls = {"mp4": {}, "thumbnails": {}}
 

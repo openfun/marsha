@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- A thumbnail resource can be deleted and recreated.
+
 ## [4.0.0-beta.5] - 2022-06-07
 
 ### Added

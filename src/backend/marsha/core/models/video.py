@@ -494,8 +494,8 @@ class Thumbnail(AbstractImage):
 
     RESOURCE_NAME = "thumbnails"
 
-    video = models.OneToOneField(
-        to="Video",
+    video = models.ForeignKey(
+        Video,
         related_name="thumbnail",
         verbose_name=_("video"),
         help_text=_("video for which this thumbnail is"),
@@ -509,6 +509,18 @@ class Thumbnail(AbstractImage):
         db_table = "video_thumbnail"
         verbose_name = _("thumbnail")
         ordering = ["-created_on", "id"]
+        # The relation with the video is a foreign key
+        # but we want the behavior of a OneToOneField. Unfortunately,
+        # this field doesn't work with django-safedelete so we have to manage
+        # the unicity with a unique constraint.
+        # see https://github.com/makinacorpus/django-safedelete/issues/211
+        constraints = [
+            models.UniqueConstraint(
+                fields=["video"],
+                condition=models.Q(deleted=None),
+                name="thumbnail_video_unique_idx",
+            )
+        ]
 
     def get_source_s3_key(self, stamp=None):
         """Compute the S3 key in the source bucket.
