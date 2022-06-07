@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-05-17 15:10+0000\n"
-"PO-Revision-Date: 2022-05-17 15:44\n"
+"POT-Creation-Date: 2022-05-31 08:19+0000\n"
+"PO-Revision-Date: 2022-06-07 09:48\n"
 "Last-Translator: \n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
@@ -123,19 +123,19 @@ msgid "playlist to which this meeting belongs"
 msgstr ""
 
 #: marsha/bbb/models.py:46 marsha/core/models/file.py:77
-#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:630
+#: marsha/core/models/playlist.py:19 marsha/core/models/video.py:639
 #: marsha/markdown/models.py:30
 msgid "lti id"
 msgstr ""
 
 #: marsha/bbb/models.py:47 marsha/core/models/file.py:78
-#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:627
+#: marsha/core/models/playlist.py:20 marsha/core/models/video.py:636
 #: marsha/markdown/models.py:31
 msgid "ID for synchronization with an external LTI tool"
 msgstr ""
 
 #: marsha/bbb/models.py:53 marsha/core/models/file.py:70
-#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:872
+#: marsha/core/models/playlist.py:15 marsha/core/models/video.py:881
 #: marsha/markdown/models.py:87
 msgid "title"
 msgstr ""
@@ -201,7 +201,7 @@ msgstr ""
 msgid "Start date and time at which a meeting is scheduled."
 msgstr ""
 
-#: marsha/bbb/models.py:117 marsha/core/models/video.py:57
+#: marsha/bbb/models.py:117 marsha/core/models/video.py:59
 msgid "estimated duration"
 msgstr ""
 
@@ -264,18 +264,18 @@ msgstr ""
 msgid "consumer sites"
 msgstr ""
 
-#: marsha/core/admin.py:299 marsha/core/models/video.py:42
-#: marsha/core/models/video.py:675 marsha/core/models/video.py:865
+#: marsha/core/admin.py:299 marsha/core/models/video.py:44
+#: marsha/core/models/video.py:684 marsha/core/models/video.py:874
 msgid "Video"
 msgstr ""
 
-#: marsha/core/admin.py:306 marsha/core/models/video.py:142
-#: marsha/core/models/video.py:326 marsha/core/models/video.py:491
-#: marsha/core/models/video.py:801
+#: marsha/core/admin.py:306 marsha/core/models/video.py:151
+#: marsha/core/models/video.py:335 marsha/core/models/video.py:500
+#: marsha/core/models/video.py:810
 msgid "video"
 msgstr ""
 
-#: marsha/core/admin.py:307 marsha/core/models/video.py:143
+#: marsha/core/admin.py:307 marsha/core/models/video.py:152
 msgid "videos"
 msgstr ""
 
@@ -317,64 +317,72 @@ msgstr ""
 msgid "Marsha"
 msgstr ""
 
-#: marsha/core/defaults.py:37
+#: marsha/core/defaults.py:41
 msgid "pending"
 msgstr ""
 
-#: marsha/core/defaults.py:38
+#: marsha/core/defaults.py:42
 msgid "processing"
 msgstr ""
 
-#: marsha/core/defaults.py:39
+#: marsha/core/defaults.py:43
 msgid "error"
 msgstr ""
 
-#: marsha/core/defaults.py:40
+#: marsha/core/defaults.py:44
 msgid "ready"
 msgstr ""
 
-#: marsha/core/defaults.py:41
+#: marsha/core/defaults.py:45
 msgid "deleted"
 msgstr ""
 
-#: marsha/core/defaults.py:45
+#: marsha/core/defaults.py:49
 msgid "ended"
 msgstr ""
 
-#: marsha/core/defaults.py:46
+#: marsha/core/defaults.py:50
 msgid "harvested"
 msgstr ""
 
-#: marsha/core/defaults.py:47
+#: marsha/core/defaults.py:51
 msgid "processing live to VOD"
 msgstr ""
 
-#: marsha/core/defaults.py:48
+#: marsha/core/defaults.py:52
 msgid "idle"
 msgstr ""
 
-#: marsha/core/defaults.py:49
+#: marsha/core/defaults.py:53
 msgid "running"
 msgstr ""
 
-#: marsha/core/defaults.py:50
+#: marsha/core/defaults.py:54
 msgid "starting"
 msgstr ""
 
-#: marsha/core/defaults.py:51
+#: marsha/core/defaults.py:55
 msgid "stopped"
 msgstr ""
 
-#: marsha/core/defaults.py:52
+#: marsha/core/defaults.py:56
 msgid "stopping"
 msgstr ""
 
-#: marsha/core/defaults.py:58
+#: marsha/core/defaults.py:62
 msgid "raw"
 msgstr ""
 
-#: marsha/core/defaults.py:58
+#: marsha/core/defaults.py:62
 msgid "jitsi"
+msgstr ""
+
+#: marsha/core/defaults.py:65
+msgid "approval"
+msgstr ""
+
+#: marsha/core/defaults.py:66
+msgid "denied"
 msgstr ""
 
 #: marsha/core/management/commands/send_reminders.py:134
@@ -712,8 +720,8 @@ msgstr ""
 msgid "file extension"
 msgstr ""
 
-#: marsha/core/models/file.py:152 marsha/core/models/video.py:395
-#: marsha/core/models/video.py:890
+#: marsha/core/models/file.py:152 marsha/core/models/video.py:404
+#: marsha/core/models/video.py:899
 msgid "extension"
 msgstr ""
 
@@ -805,319 +813,327 @@ msgstr ""
 msgid "playlist accesses"
 msgstr ""
 
-#: marsha/core/models/video.py:47
+#: marsha/core/models/video.py:49
 msgid "Current displayed page of the active shared live media"
 msgstr ""
 
-#: marsha/core/models/video.py:51
+#: marsha/core/models/video.py:53
 msgid "allow video recording"
 msgstr ""
 
-#: marsha/core/models/video.py:52
+#: marsha/core/models/video.py:54
 msgid "Allow video recording?"
 msgstr ""
 
-#: marsha/core/models/video.py:58
+#: marsha/core/models/video.py:60
 msgid "Estimated duration of the video."
 msgstr ""
 
-#: marsha/core/models/video.py:62
+#: marsha/core/models/video.py:64
 msgid "enable video chat"
 msgstr ""
 
-#: marsha/core/models/video.py:63
+#: marsha/core/models/video.py:65
 msgid "Enable video chat?"
 msgstr ""
 
-#: marsha/core/models/video.py:67
+#: marsha/core/models/video.py:69
 msgid "enable video live media"
 msgstr ""
 
-#: marsha/core/models/video.py:68
+#: marsha/core/models/video.py:70
 msgid "Enable video live media?"
 msgstr ""
 
-#: marsha/core/models/video.py:73
+#: marsha/core/models/video.py:74
+msgid "Join the discussion mode"
+msgstr ""
+
+#: marsha/core/models/video.py:75
+msgid "Join the discussion mode."
+msgstr ""
+
+#: marsha/core/models/video.py:82
 msgid "asking Live participants"
 msgstr ""
 
-#: marsha/core/models/video.py:74
+#: marsha/core/models/video.py:83
 msgid "Current list of users asking to join the live."
 msgstr ""
 
-#: marsha/core/models/video.py:79
+#: marsha/core/models/video.py:88
 msgid "live participants"
 msgstr ""
 
-#: marsha/core/models/video.py:80
+#: marsha/core/models/video.py:89
 msgid "Current participants list for the live."
 msgstr ""
 
-#: marsha/core/models/video.py:85
+#: marsha/core/models/video.py:94
 msgid "recording slices"
 msgstr ""
 
-#: marsha/core/models/video.py:86
+#: marsha/core/models/video.py:95
 msgid "Recording slices of the video."
 msgstr ""
 
-#: marsha/core/models/video.py:90
+#: marsha/core/models/video.py:99
 msgid "starting at"
 msgstr ""
 
-#: marsha/core/models/video.py:91
+#: marsha/core/models/video.py:100
 msgid "date and time at which a video live is scheduled"
 msgstr ""
 
-#: marsha/core/models/video.py:96
+#: marsha/core/models/video.py:105
 msgid "use subtitle as transcript"
 msgstr ""
 
-#: marsha/core/models/video.py:98
+#: marsha/core/models/video.py:107
 msgid "When there is at least one subtitle but no transcript this flag allows to use subtitles as transcripts."
 msgstr ""
 
-#: marsha/core/models/video.py:106
+#: marsha/core/models/video.py:115
 msgid "video sizes"
 msgstr ""
 
-#: marsha/core/models/video.py:107
+#: marsha/core/models/video.py:116
 msgid "List of available sizes for this video"
 msgstr ""
 
-#: marsha/core/models/video.py:112
+#: marsha/core/models/video.py:121
 msgid "Live info"
 msgstr ""
 
-#: marsha/core/models/video.py:113
+#: marsha/core/models/video.py:122
 msgid "Information needed to manage live streaming"
 msgstr ""
 
-#: marsha/core/models/video.py:117
+#: marsha/core/models/video.py:126
 msgid "live state"
 msgstr ""
 
-#: marsha/core/models/video.py:118
+#: marsha/core/models/video.py:127
 msgid "state of the live mode."
 msgstr ""
 
-#: marsha/core/models/video.py:125
+#: marsha/core/models/video.py:134
 msgid "type of live"
 msgstr ""
 
-#: marsha/core/models/video.py:126
+#: marsha/core/models/video.py:135
 msgid "type of live."
 msgstr ""
 
-#: marsha/core/models/video.py:133
+#: marsha/core/models/video.py:142
 msgid "is video public"
 msgstr ""
 
-#: marsha/core/models/video.py:134
+#: marsha/core/models/video.py:143
 msgid "Is the video publicly accessible?"
 msgstr ""
 
-#: marsha/core/models/video.py:327
+#: marsha/core/models/video.py:336
 msgid "video for which this track is"
 msgstr ""
 
-#: marsha/core/models/video.py:334 marsha/core/models/video.py:592
+#: marsha/core/models/video.py:343 marsha/core/models/video.py:601
 msgid "language"
 msgstr ""
 
-#: marsha/core/models/video.py:335
+#: marsha/core/models/video.py:344
 msgid "language of this track"
 msgstr ""
 
-#: marsha/core/models/video.py:351
+#: marsha/core/models/video.py:360
 msgid "audio track"
 msgstr ""
 
-#: marsha/core/models/video.py:352
+#: marsha/core/models/video.py:361
 msgid "audio tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:372
+#: marsha/core/models/video.py:381
 msgid "Subtitle"
 msgstr ""
 
-#: marsha/core/models/video.py:373
+#: marsha/core/models/video.py:382
 msgid "Transcript"
 msgstr ""
 
-#: marsha/core/models/video.py:374
+#: marsha/core/models/video.py:383
 msgid "Closed captioning"
 msgstr ""
 
-#: marsha/core/models/video.py:378
+#: marsha/core/models/video.py:387
 msgid "mode"
 msgstr ""
 
-#: marsha/core/models/video.py:382
+#: marsha/core/models/video.py:391
 msgid "Activate a special mode for this timed text track: simple subtitles, closed captioning (for deaf or hard of hearing viewers) or transcription (complete text below aside of the player)."
 msgstr ""
 
-#: marsha/core/models/video.py:392
+#: marsha/core/models/video.py:401
 msgid "timed text track extension"
 msgstr ""
 
-#: marsha/core/models/video.py:402
+#: marsha/core/models/video.py:411
 msgid "timed text track"
 msgstr ""
 
-#: marsha/core/models/video.py:403
+#: marsha/core/models/video.py:412
 msgid "timed text tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:472
+#: marsha/core/models/video.py:481
 msgid "signs language track"
 msgstr ""
 
-#: marsha/core/models/video.py:473
+#: marsha/core/models/video.py:482
 msgid "signs language tracks"
 msgstr ""
 
-#: marsha/core/models/video.py:492
+#: marsha/core/models/video.py:501
 msgid "video for which this thumbnail is"
 msgstr ""
 
-#: marsha/core/models/video.py:501
+#: marsha/core/models/video.py:510
 msgid "thumbnail"
 msgstr ""
 
-#: marsha/core/models/video.py:573
+#: marsha/core/models/video.py:582
 msgid "Display username"
 msgstr ""
 
-#: marsha/core/models/video.py:576
+#: marsha/core/models/video.py:585
 msgid "email address"
 msgstr ""
 
-#: marsha/core/models/video.py:580
+#: marsha/core/models/video.py:589
 msgid "Only present for lti users."
 msgstr ""
 
-#: marsha/core/models/video.py:585
+#: marsha/core/models/video.py:594
 msgid "LTI consumer site"
 msgstr ""
 
-#: marsha/core/models/video.py:593
+#: marsha/core/models/video.py:602
 msgid "language of this livesession"
 msgstr ""
 
-#: marsha/core/models/video.py:599
+#: marsha/core/models/video.py:608
 msgid "is the user registered"
 msgstr ""
 
-#: marsha/core/models/video.py:600
+#: marsha/core/models/video.py:609
 msgid "Is the user registered?"
 msgstr ""
 
-#: marsha/core/models/video.py:604
+#: marsha/core/models/video.py:613
 msgid "registered at"
 msgstr ""
 
-#: marsha/core/models/video.py:605
+#: marsha/core/models/video.py:614
 msgid "date and time at which the user registered"
 msgstr ""
 
-#: marsha/core/models/video.py:613
+#: marsha/core/models/video.py:622
 msgid "Field to build url with encryption to target the record"
 msgstr ""
 
-#: marsha/core/models/video.py:621
+#: marsha/core/models/video.py:630
 msgid "Live attendance"
 msgstr ""
 
-#: marsha/core/models/video.py:622
+#: marsha/core/models/video.py:631
 msgid "Live online presence"
 msgstr ""
 
-#: marsha/core/models/video.py:637
+#: marsha/core/models/video.py:646
 msgid "Unique identifier for the user on the tool consumer, only present for lti users."
 msgstr ""
 
-#: marsha/core/models/video.py:641
+#: marsha/core/models/video.py:650
 msgid "LTI user identifier"
 msgstr ""
 
-#: marsha/core/models/video.py:648 marsha/core/models/video.py:649
+#: marsha/core/models/video.py:657 marsha/core/models/video.py:658
 msgid "List of new notifications to send"
 msgstr ""
 
-#: marsha/core/models/video.py:655
+#: marsha/core/models/video.py:664
 msgid "List of reminders already sent"
 msgstr ""
 
-#: marsha/core/models/video.py:657
+#: marsha/core/models/video.py:666
 msgid "List of reminders sent"
 msgstr ""
 
-#: marsha/core/models/video.py:663
+#: marsha/core/models/video.py:672
 msgid "whether user reminders are enabled for this live"
 msgstr ""
 
-#: marsha/core/models/video.py:664
+#: marsha/core/models/video.py:673
 msgid "should send reminders"
 msgstr ""
 
-#: marsha/core/models/video.py:668
+#: marsha/core/models/video.py:677
 msgid "Username"
 msgstr ""
 
-#: marsha/core/models/video.py:682
+#: marsha/core/models/video.py:691
 msgid "Websocket channel_name"
 msgstr ""
 
-#: marsha/core/models/video.py:736
+#: marsha/core/models/video.py:745
 msgid "live session"
 msgstr ""
 
-#: marsha/core/models/video.py:794
+#: marsha/core/models/video.py:803
 msgid "secret"
 msgstr ""
 
-#: marsha/core/models/video.py:795
+#: marsha/core/models/video.py:804
 msgid "live pairing secret"
 msgstr ""
 
-#: marsha/core/models/video.py:802
+#: marsha/core/models/video.py:811
 msgid "live pairing video"
 msgstr ""
 
-#: marsha/core/models/video.py:812
+#: marsha/core/models/video.py:821
 msgid "live pairing"
 msgstr ""
 
-#: marsha/core/models/video.py:813
+#: marsha/core/models/video.py:822
 msgid "live pairings"
 msgstr ""
 
-#: marsha/core/models/video.py:852
+#: marsha/core/models/video.py:861
 msgid "device"
 msgstr ""
 
-#: marsha/core/models/video.py:853
+#: marsha/core/models/video.py:862
 msgid "devices"
 msgstr ""
 
-#: marsha/core/models/video.py:873
+#: marsha/core/models/video.py:882
 msgid "title of the shared live media"
 msgstr ""
 
-#: marsha/core/models/video.py:881
+#: marsha/core/models/video.py:890
 msgid "Number of pages contained by the media"
 msgstr ""
 
-#: marsha/core/models/video.py:887
+#: marsha/core/models/video.py:896
 msgid "media extension"
 msgstr ""
 
-#: marsha/core/models/video.py:897
+#: marsha/core/models/video.py:906
 msgid "shared live media"
 msgstr ""
 
-#: marsha/core/models/video.py:898
+#: marsha/core/models/video.py:907
 msgid "shared live medias"
 msgstr ""
 
@@ -1332,27 +1348,27 @@ msgstr ""
 msgid "french"
 msgstr ""
 
-#: marsha/settings.py:416
+#: marsha/settings.py:426
 msgid "5 minutes"
 msgstr ""
 
-#: marsha/settings.py:420
+#: marsha/settings.py:430
 msgid "Live starts in less than 5 minutes"
 msgstr ""
 
-#: marsha/settings.py:423
+#: marsha/settings.py:433
 msgid "3 hours"
 msgstr ""
 
-#: marsha/settings.py:429
+#: marsha/settings.py:439
 msgid "Live starts in less than 3 hours"
 msgstr ""
 
-#: marsha/settings.py:432
+#: marsha/settings.py:442
 msgid "3 days"
 msgstr ""
 
-#: marsha/settings.py:437
+#: marsha/settings.py:447
 msgid "Live starts in less than 3 days"
 msgstr ""
 
