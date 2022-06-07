@@ -1,4 +1,4 @@
-import { Nullable } from 'utils/types';
+import { Maybe, Nullable } from 'utils/types';
 import { Document } from './file';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
@@ -105,6 +105,13 @@ export interface Thumbnail extends Resource {
   video: Video['id'];
 }
 
+export interface SharedLiveMediaUrls {
+  media?: string;
+  pages: {
+    [key in number]: string;
+  };
+}
+
 /** A SharedLiveMedia record as it exists on the backend. */
 export interface SharedLiveMedia extends Resource {
   active_stamp: Nullable<number>;
@@ -114,12 +121,7 @@ export interface SharedLiveMedia extends Resource {
   show_download: boolean;
   title: Nullable<string>;
   upload_state: uploadState;
-  urls: Nullable<{
-    media?: string;
-    pages: {
-      [key in number]: string;
-    };
-  }>;
+  urls: Nullable<SharedLiveMediaUrls>;
   video: Video['id'];
 }
 
@@ -157,6 +159,27 @@ export interface LiveSession extends Resource {
   video: Video['id'];
 }
 
+interface JitsiConnectionInfos {
+  external_api_url: string;
+  domain: string;
+  config_overwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions;
+  interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
+  token?: string;
+  room_name: string;
+}
+
+interface VideoJitsiConnectionInfos
+  extends Omit<JitsiConnectionInfos, 'external_api_url' | 'domain'> {
+  external_api_url?: string;
+  domain?: string;
+}
+
+interface VideoMedialiveInfos {
+  input: {
+    endpoints: string[];
+  };
+}
+
 /** A Video record as it exists on the backend. */
 export interface Video extends Resource {
   active_shared_live_media: Nullable<SharedLiveMedia>;
@@ -184,19 +207,8 @@ export interface Video extends Resource {
   join_mode: JoinMode;
   live_state: Nullable<liveState>;
   live_info: {
-    medialive?: {
-      input: {
-        endpoints: string[];
-      };
-    };
-    jitsi?: {
-      external_api_url?: string;
-      domain?: string;
-      config_overwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions;
-      interface_config_overwrite: JitsiMeetExternalAPI.InterfaceConfigOverwrtieOptions;
-      room_name: string;
-      token?: string;
-    };
+    medialive?: VideoMedialiveInfos;
+    jitsi?: VideoJitsiConnectionInfos;
     paused_at?: string;
   };
   live_type: Nullable<LiveModeType>;
@@ -210,9 +222,74 @@ export interface Live extends Omit<Video, 'live_state'> {
   live_state: Exclude<liveState, liveState.ENDED>;
 }
 
+export interface LiveJitsi extends Omit<Live, 'live_type' | 'live_info'> {
+  live_type: LiveModeType.JITSI;
+  live_info: {
+    medialive?: VideoMedialiveInfos;
+    jitsi: JitsiConnectionInfos;
+    paused_at?: string;
+  };
+}
+
 export type UploadableObject =
   | TimedText
   | Video
   | Thumbnail
   | Document
   | SharedLiveMedia;
+
+export const convertVideoToLive = (video: Video): Maybe<Live> => {
+  if (video.live_state !== null && video.live_state !== liveState.ENDED) {
+    return { ...video, live_state: video.live_state };
+  }
+
+  return undefined;
+};
+
+export const convertLiveToJitsiLive = (live: Live): Maybe<LiveJitsi> => {
+  if (
+    live.live_type === LiveModeType.JITSI &&
+    live.live_info.jitsi?.external_api_url &&
+    live.live_info.jitsi.domain
+  ) {
+    return {
+      ...live,
+      live_info: {
+        ...live.live_info,
+        jitsi: {
+          ...live.live_info.jitsi,
+          external_api_url: live.live_info.jitsi.external_api_url,
+          domain: live.live_info.jitsi.domain,
+        },
+      },
+      live_type: LiveModeType.JITSI,
+    };
+  }
+
+  return undefined;
+};
+
+export const convertVideoToJitsiLive = (video: Video): Maybe<LiveJitsi> => {
+  if (
+    video.live_type === LiveModeType.JITSI &&
+    video.live_info.jitsi?.external_api_url &&
+    video.live_info.jitsi.domain &&
+    video.live_state !== null &&
+    video.live_state !== liveState.ENDED
+  ) {
+    return {
+      ...video,
+      live_state: video.live_state,
+      live_info: {
+        ...video.live_info,
+        jitsi: {
+          ...video.live_info.jitsi,
+          external_api_url: video.live_info.jitsi.external_api_url,
+          domain: video.live_info.jitsi.domain,
+        },
+      },
+      live_type: LiveModeType.JITSI,
+    };
+  }
+  return undefined;
+};
