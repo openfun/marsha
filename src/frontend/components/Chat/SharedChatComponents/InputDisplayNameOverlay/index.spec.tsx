@@ -342,4 +342,12 @@ describe('<InputDisplayNameOverlay />', () => {
   it('displays the component and compares it with previous render. [screenshot]', async () => {
     await renderImageSnapshot(<InputDisplayNameOverlay />);
   });
+
+  it('hides close button when inline', async () => {
+    render(wrapInIntlProvider(<InputDisplayNameOverlay inline={true} />));
+
+    expect(
+      screen.queryByTitle('Click this button to close the overlay'),
+    ).not.toBeInTheDocument();
+  });
 });

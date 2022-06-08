@@ -83,7 +83,13 @@ const messages = defineMessages({
   },
 });
 
-export const InputDisplayNameOverlay = () => {
+interface InputDisplayNameOverlayProps {
+  inline?: boolean;
+}
+
+export const InputDisplayNameOverlay = ({
+  inline,
+}: InputDisplayNameOverlayProps) => {
   const intl = useIntl();
   const [_, setDiplayName] = useSetDisplayName();
   const [alertsState, setAlertsState] = useState<string[]>([]);
@@ -190,26 +196,28 @@ export const InputDisplayNameOverlay = () => {
 
   return (
     <Box height="100%">
-      <Box
-        direction="row-reverse"
-        margin={{
-          right: '5px',
-          top: '5px',
-        }}
-      >
+      {!inline && (
         <Box
-          onClick={handleExitCrossClick}
-          title={intl.formatMessage(messages.closeButtonTitle)}
+          direction="row-reverse"
+          margin={{
+            right: '5px',
+            top: '5px',
+          }}
         >
-          <ExitCrossSVG
-            containerStyle={{
-              height: '20px',
-              width: '20px',
-            }}
-            iconColor="blue-focus"
-          />
+          <Box
+            onClick={handleExitCrossClick}
+            title={intl.formatMessage(messages.closeButtonTitle)}
+          >
+            <ExitCrossSVG
+              containerStyle={{
+                height: '20px',
+                width: '20px',
+              }}
+              iconColor="blue-focus"
+            />
+          </Box>
         </Box>
-      </Box>
+      )}
       <Box
         margin={{
           bottom: 'medium',

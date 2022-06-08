@@ -1,18 +1,22 @@
 import { act, cleanup, render, waitFor, screen } from '@testing-library/react';
 import React from 'react';
+import userEvent from '@testing-library/user-event';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
+import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
 import { JoinMode, Live, liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
-import { videoMockFactory } from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
+import { Nullable } from 'utils/types';
+import { converse } from 'utils/window';
 
 import { StudentLiveStarter } from '.';
 
@@ -54,8 +58,21 @@ jest.mock('utils/window', () => ({
   converse: {
     acceptParticipantToJoin: jest.fn(),
     askParticipantToJoin: jest.fn(),
+    claimNewNicknameInChatRoom: jest.fn(),
   },
 }));
+
+jest.mock('data/sideEffects/setLiveSessionDisplayName', () => ({
+  setLiveSessionDisplayName: jest.fn(),
+}));
+
+const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
+  typeof converse.claimNewNicknameInChatRoom
+>;
+const mockSetLiveSessionDisplayName =
+  setLiveSessionDisplayName as jest.MockedFunction<
+    typeof setLiveSessionDisplayName
+  >;
 
 describe('StudentLiveStarter', () => {
   beforeEach(() => {
@@ -454,25 +471,53 @@ describe('StudentLiveStarter', () => {
   });
 
   it('displays the player without manifest pull and put the user on stage when join mode is forced', async () => {
+    mockConverse.mockImplementation(
+      async (
+        _displayName: string,
+        callbackSuccess: () => void,
+        _callbackError: (stanza: Nullable<HTMLElement>) => void,
+      ) => {
+        callbackSuccess();
+      },
+    );
     useLiveStateStarted.setState({
       isStarted: false,
     });
+
     const video = videoMockFactory();
     const live: Live = {
       ...video,
       live_state: liveState.RUNNING,
       join_mode: JoinMode.FORCED,
     };
+    mockSetLiveSessionDisplayName.mockResolvedValue({
+      success: liveSessionFactory({ display_name: 'John_Doe' }),
+    });
 
     render(
       wrapInIntlProvider(
         <StudentLiveStarter live={live} playerType="someplayer" />,
       ),
     );
-    await screen.findByText(/Live is starting/);
+
+    // waiting room
+    await screen.findByText(/Live has started/);
+
+    const inputTextbox = screen.getByRole('textbox');
+    const validateButton = screen.getByRole('button');
+    userEvent.type(inputTextbox, 'John_Doe');
+    act(() => {
+      userEvent.click(validateButton);
+    });
+    await waitFor(() =>
+      expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
+    );
+
     expect(mockedPollForLive).not.toHaveBeenCalled();
 
-    expect(useParticipantWorkflow.getState().asked).toBe(true);
+    await waitFor(() =>
+      expect(useParticipantWorkflow.getState().asked).toBe(true),
+    );
 
     // join accepted
     act(() => {
