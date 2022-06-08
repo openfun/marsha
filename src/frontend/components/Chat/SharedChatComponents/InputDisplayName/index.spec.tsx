@@ -10,17 +10,11 @@ import {
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
 import { liveSessionFactory } from 'utils/tests/factories';
-import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
-import { InputDisplayNameOverlay } from '.';
-
-const mockSetDisplayName = jest.fn();
-jest.mock('data/stores/useSetDisplayName', () => ({
-  useSetDisplayName: () => [false, mockSetDisplayName],
-}));
+import { InputDisplayName } from '.';
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -48,7 +42,7 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
-describe('<InputDisplayNameOverlay />', () => {
+describe('<InputDisplayName />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -59,7 +53,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -76,7 +70,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -93,7 +87,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -125,7 +119,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -167,7 +161,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -212,7 +206,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -257,7 +251,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -296,7 +290,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -314,25 +308,9 @@ describe('<InputDisplayNameOverlay />', () => {
     );
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     expect(useLiveSession.getState().liveSession).toEqual(liveSession);
-
-    expect(mockSetDisplayName).toHaveBeenCalled();
-    expect(mockSetDisplayName).toHaveBeenCalledWith(false);
   });
 
-  it('closes the window.', () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
-
-    const closeButton = screen.getByTitle(
-      'Click this button to close the overlay.',
-    );
-    act(() => userEvent.click(closeButton));
-    expect(mockSetLiveSessionDisplayName).not.toHaveBeenCalled();
-
-    expect(mockSetDisplayName).toHaveBeenCalled();
-    expect(mockSetDisplayName).toHaveBeenCalledWith(false);
-  });
-
-  it('displays the component and use liveragistration username as default value', () => {
+  it('displays the component and use liveSession username as default value', () => {
     mockDecodedJwtToken = {
       user: {
         id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
@@ -342,7 +320,7 @@ describe('<InputDisplayNameOverlay />', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });
@@ -355,12 +333,8 @@ describe('<InputDisplayNameOverlay />', () => {
       },
     };
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInIntlProvider(<InputDisplayName />));
 
     expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
-  });
-
-  it('displays the component and compares it with previous render. [screenshot]', async () => {
-    await renderImageSnapshot(<InputDisplayNameOverlay />);
   });
 });

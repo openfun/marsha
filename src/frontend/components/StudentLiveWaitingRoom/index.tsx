@@ -4,9 +4,8 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { StudentLiveDescription } from 'components/StudentLiveAdvertising/StudentLiveDescription';
-import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/InputDisplayNameOverlay';
+import { InputDisplayName } from 'components/Chat/SharedChatComponents/InputDisplayName';
 import { appData } from 'data/appData';
-import { SetDisplayNameProvider } from 'data/stores/useSetDisplayName';
 import { Video } from 'types/tracks';
 
 const messages = defineMessages({
@@ -39,47 +38,45 @@ export const StudentLiveWaitingRoom = ({
   }
 
   return (
-    <SetDisplayNameProvider value={false}>
+    <Box
+      background={{
+        image: `url(${appData.static.img.liveBackground})`,
+        position: 'top',
+        repeat: 'no-repeat',
+        size: 'cover',
+      }}
+      flex="grow"
+    >
       <Box
-        background={{
-          image: `url(${appData.static.img.liveBackground})`,
-          position: 'top',
-          repeat: 'no-repeat',
-          size: 'cover',
-        }}
-        flex="grow"
+        margin="auto"
+        pad={{ horizontal: 'none', vertical: 'large' }}
+        style={containerStyle}
       >
-        <Box
-          margin="auto"
-          pad={{ horizontal: 'none', vertical: 'large' }}
-          style={containerStyle}
+        <AdvertisingBox
+          margin={{ bottom: 'small', horizontal: 'auto', top: 'none' }}
+          pad="large"
         >
-          <AdvertisingBox
-            margin={{ bottom: 'small', horizontal: 'auto', top: 'none' }}
-            pad="large"
+          <Heading
+            color="blue-active"
+            level={1}
+            margin={{ bottom: 'small' }}
+            size="medium"
+            textAlign="center"
           >
-            <Heading
-              color="blue-active"
-              level={1}
-              margin={{ bottom: 'small' }}
-              size="medium"
-              textAlign="center"
-            >
-              <FormattedMessage {...messages.title} />
-            </Heading>
-            <Paragraph
-              alignSelf="center"
-              color="blue-active"
-              margin={{ left: 'large', right: 'large' }}
-              textAlign="center"
-            >
-              <FormattedMessage {...messages.infos} />
-            </Paragraph>
-            <InputDisplayNameOverlay inline={true} />
-            <StudentLiveDescription video={video} />
-          </AdvertisingBox>
-        </Box>
+            <FormattedMessage {...messages.title} />
+          </Heading>
+          <Paragraph
+            alignSelf="center"
+            color="blue-active"
+            margin={{ left: 'large', right: 'large' }}
+            textAlign="center"
+          >
+            <FormattedMessage {...messages.infos} />
+          </Paragraph>
+          <InputDisplayName />
+          <StudentLiveDescription video={video} />
+        </AdvertisingBox>
       </Box>
-    </SetDisplayNameProvider>
+    </Box>
   );
 };
