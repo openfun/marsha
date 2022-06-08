@@ -508,7 +508,6 @@ class Thumbnail(AbstractImage):
 
         db_table = "video_thumbnail"
         verbose_name = _("thumbnail")
-        ordering = ["-created_on", "id"]
         # The relation with the video is a foreign key
         # but we want the behavior of a OneToOneField. Unfortunately,
         # this field doesn't work with django-safedelete so we have to manage
