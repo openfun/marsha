@@ -15,7 +15,9 @@ interface StoreComponents<TStore> {
   useStore: () => StoreContextType<TStore>;
 }
 
-export function createStore<TStore>(): StoreComponents<TStore> {
+export function createStore<TStore>(
+  storeName: string,
+): StoreComponents<TStore> {
   const StoreContext = React.createContext<
     StoreContextType<TStore> | undefined
   >(undefined);
@@ -23,7 +25,7 @@ export function createStore<TStore>(): StoreComponents<TStore> {
   const useStore: () => StoreContextType<TStore> = () => {
     const globalStore = React.useContext(StoreContext);
     if (!globalStore) {
-      throw new Error('Missing wrapping Provider for Store');
+      throw new Error(`Missing wrapping Provider for Store ${storeName}`);
     }
     return globalStore;
   };
