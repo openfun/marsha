@@ -13,7 +13,9 @@ const mockedUseSetDisplayName = useSetDisplayName as jest.MockedFunction<
 >;
 
 jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
+  getDecodedJwt: () => ({
+    user: {},
+  }),
 }));
 
 describe('<DisplayNameForm />', () => {
