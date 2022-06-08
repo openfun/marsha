@@ -101,6 +101,7 @@ describe('<StudentLiveWaitingRoom />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+    userEvent.clear(inputTextbox);
     userEvent.type(inputTextbox, 'John_Doe');
     act(() => {
       userEvent.click(validateButton);

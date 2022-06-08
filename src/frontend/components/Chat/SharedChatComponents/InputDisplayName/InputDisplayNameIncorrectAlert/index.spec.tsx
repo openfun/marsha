@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+
 import { InputDisplayNameIncorrectAlert } from '.';
 
 describe('<InputDisplayNameIncorrectAlert />', () => {

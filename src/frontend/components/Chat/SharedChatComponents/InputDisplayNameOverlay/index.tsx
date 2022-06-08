@@ -1,26 +1,10 @@
-import { Box, Text, Tip } from 'grommet';
-import React, { useState } from 'react';
+import { Box } from 'grommet';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
+import { InputDisplayName } from 'components/Chat/SharedChatComponents/InputDisplayName';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
-import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
-import { getDecodedJwt } from 'data/appData';
-import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
-import { useLiveSession } from 'data/stores/useLiveSession';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
-import {
-  ANONYMOUS_ID_PREFIX,
-  NICKNAME_MIN_LENGTH,
-  NICKNAME_MAX_LENGTH,
-} from 'default/chat';
-import { LiveSession } from 'types/tracks';
-import { isAnonymous } from 'utils/chat/chat';
-import { checkLtiToken } from 'utils/checkLtiToken';
-import { getAnonymousId } from 'utils/localstorage';
-import { Maybe, Nullable } from 'utils/types';
-import { converse } from 'utils/window';
-import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert';
 
 const messages = defineMessages({
   closeButtonTitle: {
@@ -83,199 +67,38 @@ const messages = defineMessages({
   },
 });
 
-interface InputDisplayNameOverlayProps {
-  inline?: boolean;
-}
-
-export const InputDisplayNameOverlay = ({
-  inline,
-}: InputDisplayNameOverlayProps) => {
+export const InputDisplayNameOverlay = () => {
   const intl = useIntl();
-  const [_, setDiplayName] = useSetDisplayName();
-  const [alertsState, setAlertsState] = useState<string[]>([]);
-  const [isWaiting, setIsWaiting] = useState(false);
-  const { liveSession, setLiveSession } = useLiveSession((state) => ({
-    liveSession: state.liveSession,
-    setLiveSession: state.setLiveSession,
-  }));
-  const processDisplayName = async (displayName: string) => {
-    displayName = displayName.trim();
-    setAlertsState([]);
-    setIsWaiting(true);
+  const [_, setDisplayName] = useSetDisplayName();
 
-    const callbackSuccess = (updatedLiveSession: LiveSession) => {
-      return () => {
-        setLiveSession(updatedLiveSession);
-        setIsWaiting(false);
-        setDiplayName(false);
-      };
-    };
-
-    const callbackXmppError = (stanza: Nullable<HTMLElement>) => {
-      const xmppAlerts = [];
-      if (stanza) {
-        const errorItem = stanza.getElementsByTagName('error')[0];
-        if (errorItem && errorItem.getAttribute('code') === '409') {
-          xmppAlerts.push(
-            intl.formatMessage(messages.inputNicknameAlreadyExists),
-          );
-        } else {
-          xmppAlerts.push(intl.formatMessage(messages.inputXmppError));
-        }
-      } else {
-        xmppAlerts.push(intl.formatMessage(messages.inputXmppTimeout));
-      }
-
-      setAlertsState(xmppAlerts);
-      setIsWaiting(false);
-    };
-
-    const manageSetDisplayNameError = (error: string | number) => {
-      const errors = [];
-      if (error === 409) {
-        errors.push(intl.formatMessage(messages.inputNicknameAlreadyExists));
-      } else {
-        errors.push(intl.formatMessage(messages.inputXmppError));
-      }
-      setAlertsState(errors);
-      setIsWaiting(false);
-    };
-
-    const alerts: string[] = [];
-    if (isAnonymous(displayName)) {
-      alerts.push(
-        intl.formatMessage(
-          messages.inputAnonymousKeywordForbiddenAlertMessage,
-          { forbiddenPrefix: ANONYMOUS_ID_PREFIX },
-        ),
-      );
-    }
-    if (displayName.length < NICKNAME_MIN_LENGTH) {
-      alerts.push(
-        intl.formatMessage(messages.inputTooShortAlertMessage, {
-          minLength: NICKNAME_MIN_LENGTH,
-        }),
-      );
-    }
-    if (displayName.length > NICKNAME_MAX_LENGTH) {
-      alerts.push(
-        intl.formatMessage(messages.inputTooLongAlertMessage, {
-          maxLength: NICKNAME_MAX_LENGTH,
-        }),
-      );
-    }
-    if (alerts.length === 0) {
-      let anonymousId: Maybe<string>;
-      if (!checkLtiToken(getDecodedJwt())) {
-        anonymousId = getAnonymousId();
-      }
-      const response = await setLiveSessionDisplayName(
-        displayName,
-        anonymousId,
-      );
-      if (response.error) {
-        manageSetDisplayNameError(response.error);
-        return false;
-      }
-      converse.claimNewNicknameInChatRoom(
-        displayName,
-        callbackSuccess(response.success!),
-        callbackXmppError,
-      );
-      return true;
-    } else {
-      setAlertsState(alerts);
-      setIsWaiting(false);
-      return false;
-    }
-  };
-
-  const handleExitCrossClick = () => {
-    setDiplayName(false);
+  const hideDisplayName = () => {
+    setDisplayName(false);
   };
 
   return (
     <Box height="100%">
-      {!inline && (
-        <Box
-          direction="row-reverse"
-          margin={{
-            right: '5px',
-            top: '5px',
-          }}
-        >
-          <Box
-            onClick={handleExitCrossClick}
-            title={intl.formatMessage(messages.closeButtonTitle)}
-          >
-            <ExitCrossSVG
-              containerStyle={{
-                height: '20px',
-                width: '20px',
-              }}
-              iconColor="blue-focus"
-            />
-          </Box>
-        </Box>
-      )}
       <Box
+        direction="row-reverse"
         margin={{
-          bottom: 'medium',
-          horizontal: 'medium',
-          top: 'small',
+          right: '5px',
+          top: '5px',
         }}
-        pad="3px"
       >
-        <Box background="bg-marsha" gap="8px" pad="12px" round="6px">
-          <Box direction="row">
-            <Text
-              margin={{
-                right: '5px',
-              }}
-              size="0.875rem"
-            >
-              {intl.formatMessage(messages.inputDisplayNameLabel)}
-            </Text>
-            <Box>
-              <Tip
-                content={
-                  <Box background="white" pad="2px" round="6px" width="150px">
-                    <Text size="0.625rem">
-                      {intl.formatMessage(messages.inputDisplayNameInformative)}
-                    </Text>
-                  </Box>
-                }
-                plain
-              >
-                <Box>
-                  <QuestionMarkSVG
-                    containerStyle={{
-                      height: '15px',
-                      width: '15px',
-                    }}
-                    iconColor="blue-focus"
-                  />
-                </Box>
-              </Tip>
-            </Box>
-          </Box>
-          <InputBar
-            defaultValue={
-              liveSession?.username || getDecodedJwt().user?.username || ''
-            }
-            handleUserInput={processDisplayName}
-            isChatInput={false}
-            isWaiting={isWaiting}
-            placeholderText={intl.formatMessage(
-              messages.inputDisplayNamePlaceholder,
-            )}
+        <Box
+          onClick={hideDisplayName}
+          title={intl.formatMessage(messages.closeButtonTitle)}
+        >
+          <ExitCrossSVG
+            containerStyle={{
+              height: '20px',
+              width: '20px',
+            }}
+            iconColor="blue-focus"
           />
         </Box>
-        <Box>
-          {alertsState.map((msg, index) => (
-            <InputDisplayNameIncorrectAlert alertMsg={msg} key={index} />
-          ))}
-        </Box>
+      </Box>
+      <Box height="100%">
+        <InputDisplayName onSuccess={hideDisplayName} />
       </Box>
     </Box>
   );
