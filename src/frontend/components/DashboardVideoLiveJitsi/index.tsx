@@ -4,9 +4,10 @@ import { useHistory } from 'react-router-dom';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { getDecodedJwt } from 'data/appData';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
-import { Video, liveState } from 'types/tracks';
+import { JoinMode, liveState, Video } from 'types/tracks';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
@@ -143,6 +144,10 @@ const DashboardVideoLiveJitsi = ({
       ...video.live_info.jitsi!.config_overwrite,
     };
 
+    if (video.join_mode === JoinMode.FORCED && !isInstructor) {
+      configOverwrite.prejoinPageEnabled = false;
+    }
+
     const _jitsi = new window.JitsiMeetExternalAPI(
       video.live_info.jitsi!.domain!,
       {
@@ -156,7 +161,9 @@ const DashboardVideoLiveJitsi = ({
         parentNode: jitsiNode.current!,
         roomName: video.live_info.jitsi!.room_name,
         userInfo: {
-          displayName: getDecodedJwt().user?.username,
+          displayName:
+            useLiveSession.getState().liveSession?.display_name ||
+            getDecodedJwt().user?.username,
         },
       },
     );

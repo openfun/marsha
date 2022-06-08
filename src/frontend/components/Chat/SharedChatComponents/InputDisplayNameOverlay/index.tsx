@@ -20,7 +20,7 @@ import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { Maybe, Nullable } from 'utils/types';
 import { converse } from 'utils/window';
-import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert/index';
+import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert';
 
 const messages = defineMessages({
   closeButtonTitle: {
@@ -260,7 +260,9 @@ export const InputDisplayNameOverlay = ({
             </Box>
           </Box>
           <InputBar
-            defaultValue={liveSession?.username || ''}
+            defaultValue={
+              liveSession?.username || getDecodedJwt().user?.username || ''
+            }
             handleUserInput={processDisplayName}
             isChatInput={false}
             isWaiting={isWaiting}

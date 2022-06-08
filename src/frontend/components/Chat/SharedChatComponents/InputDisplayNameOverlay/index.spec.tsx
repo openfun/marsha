@@ -14,7 +14,8 @@ import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
-import { InputDisplayNameOverlay } from './index';
+
+import { InputDisplayNameOverlay } from '.';
 
 const mockSetDisplayName = jest.fn();
 jest.mock('data/stores/useSetDisplayName', () => ({
@@ -33,8 +34,9 @@ jest.mock('data/sideEffects/setLiveSessionDisplayName', () => ({
 jest.mock('utils/checkLtiToken', () => ({
   checkLtiToken: jest.fn(),
 }));
+let mockDecodedJwtToken = {};
 jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
+  getDecodedJwt: () => mockDecodedJwtToken,
 }));
 
 const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
@@ -331,12 +333,31 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('displays the component and use liveragistration username as default value', () => {
+    mockDecodedJwtToken = {
+      user: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      },
+    };
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
     render(wrapInIntlProvider(<InputDisplayNameOverlay />));
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
+  });
+
+  it('displays the component and use jwt display_name as default value', () => {
+    mockDecodedJwtToken = {
+      user: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      },
+    };
+
+    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+
+    expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
   });
 
   it('displays the component and compares it with previous render. [screenshot]', async () => {
