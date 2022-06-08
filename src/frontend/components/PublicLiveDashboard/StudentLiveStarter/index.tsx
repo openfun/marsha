@@ -6,6 +6,7 @@ import { Redirect } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FullScreenError } from 'components/ErrorComponents';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
+import { StudentLiveWaitingRoom } from 'components/StudentLiveWaitingRoom';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
@@ -15,6 +16,7 @@ import { modelName } from 'types/models';
 import { JoinMode, Live, liveState } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { converse } from 'utils/window';
+import { useLiveSession } from 'data/stores/useLiveSession';
 
 interface StudentLiveStarterProps {
   live: Live;
@@ -26,6 +28,7 @@ export const StudentLiveStarter = ({
   playerType,
 }: StudentLiveStarterProps) => {
   const intl = useIntl();
+  const session = useLiveSession();
   const liveScheduleStartDate = useMemo(() => {
     if (!live.starting_at) {
       return undefined;
@@ -104,7 +107,8 @@ export const StudentLiveStarter = ({
     if (
       live.join_mode === JoinMode.FORCED &&
       !hasParticipantAsked &&
-      !isParticipantOnstage
+      !isParticipantOnstage &&
+      session.liveSession?.display_name
     ) {
       waitAskParticipantToJoinLoaded();
     }
@@ -117,13 +121,19 @@ export const StudentLiveStarter = ({
         window.clearTimeout(waitAskParticipantToJoinTimeout);
       }
     };
-  }, [hasParticipantAsked, isParticipantOnstage, live, setAsked]);
+  }, [
+    hasParticipantAsked,
+    isParticipantOnstage,
+    live,
+    setAsked,
+    session.liveSession?.display_name,
+  ]);
 
   useEffect(() => {
     if (
       live.join_mode === JoinMode.FORCED &&
-      isParticipantOnstage &&
-      !isStarted
+      ((isParticipantOnstage && !isStarted) ||
+        live.live_state === liveState.RUNNING)
     ) {
       setIsLiveStarted(true);
     }
@@ -165,6 +175,11 @@ export const StudentLiveStarter = ({
     return <FullScreenError code={'liveStopped'} />;
   } else if (!isStarted) {
     return <StudentLiveAdvertising video={live} />;
+  } else if (
+    !session.liveSession?.display_name &&
+    live.join_mode === JoinMode.FORCED
+  ) {
+    return <StudentLiveWaitingRoom video={live} />;
   }
   return <StudentLiveWrapper video={live} playerType={playerType} />;
 };
