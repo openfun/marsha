@@ -35,11 +35,16 @@ class JWTMiddlewareTest(TestCase):
         )
 
         application = JWTMiddleware(AsyncWebsocketConsumer())
-        comminucator = WebsocketCommunicator(application, f"/?jwt={token}")
+        communicator = WebsocketCommunicator(application, f"/?jwt={token}")
 
-        connected, _ = await comminucator.connect()
-        self.assertFalse(connected)
-        await comminucator.disconnect()
+        connected, _ = await communicator.connect()
+        self.assertTrue(connected)
+
+        response = await communicator.receive_output()
+
+        self.assertEqual(response["type"], "websocket.close")
+        self.assertEqual(response["code"], 4003)
+        await communicator.disconnect()
 
     async def test_valid_token(self):
         """With a valid token the connection is accepted."""

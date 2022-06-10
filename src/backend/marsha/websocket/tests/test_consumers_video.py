@@ -203,7 +203,12 @@ class VideoConsumerTest(TransactionTestCase):
 
         connected, _ = await communicator.connect()
 
-        self.assertFalse(connected)
+        self.assertTrue(connected)
+
+        response = await communicator.receive_output()
+
+        self.assertEqual(response["type"], "websocket.close")
+        self.assertEqual(response["code"], 4003)
 
         await communicator.disconnect()
 
@@ -222,7 +227,12 @@ class VideoConsumerTest(TransactionTestCase):
 
         connected, _ = await communicator.connect()
 
-        self.assertFalse(connected)
+        self.assertTrue(connected)
+
+        response = await communicator.receive_output()
+
+        self.assertEqual(response["type"], "websocket.close")
+        self.assertEqual(response["code"], 4003)
 
         await communicator.disconnect()
 

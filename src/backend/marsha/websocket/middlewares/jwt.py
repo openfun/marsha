@@ -2,12 +2,27 @@
 import logging
 from urllib.parse import parse_qs
 
-from channels.security.websocket import WebsocketDenier
+from channels.generic.websocket import AsyncWebsocketConsumer
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 
 
 logger = logging.getLogger(__name__)
+
+
+class WebsocketDenier(AsyncWebsocketConsumer):
+    """
+    Simple application which denies all requests to it.
+    """
+
+    async def connect(self):
+        """
+        During handshake it is not possible to close the websocket with a specific
+        code. To do that we must accept first the connection and then close it with the code we
+        want
+        """
+        await self.accept()
+        await self.close(code=4003)
 
 
 class JWTMiddleware:
@@ -39,12 +54,10 @@ class JWTMiddleware:
         query_string = parse_qs(scope["query_string"])
 
         if b"jwt" not in query_string:
-            logger.info("jwt query string is missing")
             raise ValueError("jwt query string is missing")
 
         raw_token = query_string[b"jwt"]
         if len(raw_token) != 1:
-            logger.info("More than one token present in the query string")
             raise ValueError("jwt query string is missing")
 
         try:
