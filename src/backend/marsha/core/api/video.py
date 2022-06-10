@@ -10,6 +10,7 @@ from django.db.models import F, Func, Q, Value
 from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
+from django.utils.module_loading import import_string
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
@@ -49,6 +50,9 @@ from ..utils.medialive_utils import (
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room
 from .base import ObjectPkMixin
+
+
+# pylint: disable=too-many-public-methods
 
 
 class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
@@ -1012,3 +1016,34 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         serializer = self.get_serializer(video)
         return Response(serializer.data)
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="stats",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject
+            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+        ],
+    )
+    # pylint: disable=unused-argument
+    def stats(self, request, pk=None):
+        """
+        Compute the stats for a given video.
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the video
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the computed stats.
+        """
+        video = self.get_object()
+        stat_backend = import_string(settings.STAT_BACKEND)
+        data = stat_backend(video, **settings.STAT_BACKEND_SETTINGS)
+
+        return Response(data=data, content_type="application/json")
