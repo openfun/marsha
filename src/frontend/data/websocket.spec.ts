@@ -257,6 +257,7 @@ describe('initVideoWebsocket', () => {
       reason: 'connection lost',
       wasClean: false,
     });
+    await server.closed;
 
     const newServer = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
     await newServer.connected;
@@ -270,7 +271,73 @@ describe('initVideoWebsocket', () => {
 
     expect(fetchMock.called(`/api/videos/${video.id}/`)).toEqual(true);
 
-    server.close();
+    newServer.close();
+    WS.clean();
+  });
+
+  it('stops reconnecting when websocket close code is 4003.', async () => {
+    let initVideoWebsocket: any;
+    jest.isolateModules(() => {
+      initVideoWebsocket = require('./websocket').initVideoWebsocket;
+    });
+    const video = videoMockFactory();
+    fetchMock.mock(
+      `/api/videos/${video.id}/`,
+      JSON.stringify({
+        ...video,
+        title: 'updated title',
+      }),
+    );
+    useVideo.getState().addResource(video);
+    const server = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
+
+    mockGetDecodedJwt.mockReturnValue(ltiToken);
+
+    global.window = Object.create(window);
+    Object.defineProperty(window, 'location', {
+      value: {
+        href: 'https://localhost:4321/',
+        host: 'localhost:4321',
+        protocol: 'https:',
+      },
+      writable: true,
+    });
+
+    initVideoWebsocket!(video);
+    await server.connected;
+
+    expect(mockGetOrInitAnonymousId).not.toHaveBeenCalled();
+
+    const updatedVideo = {
+      ...video,
+      title: 'updated title with https',
+    };
+
+    server.send(
+      JSON.stringify({
+        type: modelName.VIDEOS,
+        resource: updatedVideo,
+      }),
+    );
+
+    await waitFor(() => {
+      expect(useVideo.getState().getVideo(video)).toEqual(updatedVideo);
+    });
+
+    expect(fetchMock.called(`/api/videos/${video.id}/`)).toEqual(false);
+
+    server.close({
+      code: 4003,
+      reason: '',
+      wasClean: false,
+    });
+    await server.closed;
+
+    const newServer = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
+
+    expect(fetchMock.called(`/api/videos/${video.id}/`)).toEqual(false);
+
+    newServer.close();
     WS.clean();
   });
 });

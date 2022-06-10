@@ -32,7 +32,12 @@ export const initVideoWebsocket = (video: Video) => {
   }
 
   videoWebsocket = new RobustWebSocket(url, null, {
-    shouldReconnect: (_, ws) => {
+    shouldReconnect: (event, ws) => {
+      // code 4003 is used by marsha backend to close the connection
+      // when the JWT token is not valid or does not match the current video.
+      if (event.code === 4003) {
+        return;
+      }
       // On the first 10 attempts we try to reconnect immediatly.
       // Then the delay between each attempts is 500ms
       if (ws.attempts < 10) {
