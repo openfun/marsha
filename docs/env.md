@@ -421,6 +421,54 @@ https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels
 - Required: No
 - Default: 4
 
+### Grafana settings
+
+Graphana is a web-based analytics tool for monitoring and visualizing metrics.
+Marsha can connect to a Grafana instance to display metrics.
+A backend Grafana instance must be configured in order to use this feature.
+All following settings are required to connect to a Grafana instance.
+
+#### DJANGO_STAT_BACKEND
+
+  Django module to use for the statistics backend.
+
+- Type: string
+- Required: No
+- Default: `marsha.core.stats.grafana_xapi_fun_backend`
+- Choices: `marsha.core.stats.grafana_xapi_fun_backend` or `marsha.core.stats.dummy_backend`
+
+#### GRAFANA_XAPI_FUN_API_ENDPOINT
+
+  The Grafana API endpoint.
+
+- Type: string
+- Required: Yes for grafana_xapi_fun_backend
+- Default: None
+
+#### GRAFANA_XAPI_FUN_API_KEY
+
+  The Grafana API key.
+
+- Type: string
+- Required: Yes for grafana_xapi_fun_backend
+- Default: None
+
+#### GRAFANA_XAPI_FUN_API_DATASOURCE_ID
+
+  The Grafana data source ID.
+
+- Type: string
+- Required: Yes for grafana_xapi_fun_backend
+- Default: None
+
+#### GRAFANA_XAPI_FUN_API_DATASTREAM
+
+  The Grafana data stream.
+
+- Type: s`tring
+- Required: Yes for grafana_xapi_fun_backend
+- Default:` None
+
 ### Crowdin API access related settings
 
 #### CROWDIN_API_KEY
