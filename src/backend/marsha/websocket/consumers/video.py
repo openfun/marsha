@@ -17,12 +17,18 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     is_connected = False
 
     async def connect(self):
-        """Manage connection to this consumer."""
+        """
+        Manage connection to this consumer.
+        During handshake it is not possible to close the websocket with a specific
+        code. To do that we must accept first the connection and then close it with the code we
+        want
+        """
         try:
             await self._validate_token()
             await self._check_video_exists()
         except ConnectionRefusedError:
-            return await self.close()
+            await self.accept()
+            return await self.close(code=4003)
 
         try:
             if not self._is_admin():
@@ -31,7 +37,8 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
                     live_session=live_session
                 )
         except ConnectionRefusedError:
-            return await self.close()
+            await self.accept()
+            return await self.close(code=4003)
 
         self.room_group_name = self._get_room_name()
         # Join room group
