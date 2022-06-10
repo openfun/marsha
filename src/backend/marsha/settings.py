@@ -450,6 +450,25 @@ class Base(Configuration):
     )
     REMINDERS_SECRET = values.Value()
 
+    # Settings related to statistics in potsie project
+    STAT_BACKEND = values.Value("marsha.core.stats.grafana_xapi_fun_backend")
+    STAT_BACKEND_SETTINGS = values.DictValue(
+        {
+            "api_key": values.Value(
+                environ_name="GRAFANA_XAPI_FUN_API_KEY", environ_prefix=None
+            ),
+            "api_endpoint": values.Value(
+                environ_name="GRAFANA_XAPI_FUN_API_ENDPOINT", environ_prefix=None
+            ),
+            "api_datasource_id": values.Value(
+                environ_name="GRAFANA_XAPI_FUN_API_DATASOURCE_ID", environ_prefix=None
+            ),
+            "api_datastream": values.Value(
+                environ_name="GRAFANA_XAPI_FUN_API_DATASTREAM", environ_prefix=None
+            ),
+        }
+    )
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
@@ -570,6 +589,7 @@ class Development(Base):
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
+    STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
 
     # Mail
     EMAIL_HOST = values.Value("mailcatcher")
