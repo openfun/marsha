@@ -9,7 +9,13 @@ import {
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { APIList } from 'types/api';
 import { Document } from 'types/file';
-import { Playlist, Thumbnail, TimedText, Video } from 'types/tracks';
+import {
+  Playlist,
+  Thumbnail,
+  TimedText,
+  Video,
+  VideoStats,
+} from 'types/tracks';
 import { Organization } from 'types/Organization';
 
 import { actionOne } from './actionOne';
@@ -325,6 +331,14 @@ export const useStopLiveRecording = (id: string, onError: () => void) => {
       },
     },
   );
+};
+
+export const useStatsVideo = (
+  videoId: string,
+  queryConfig?: UseQueryOptions<VideoStats, 'videos', VideoStats>,
+) => {
+  const key = ['videos', videoId, 'stats'];
+  return useQuery<VideoStats, 'videos'>(key, fetchOne, queryConfig);
 };
 
 type UseCreateDocumentData = {

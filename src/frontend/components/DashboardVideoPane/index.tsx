@@ -8,6 +8,7 @@ import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternal
 import { DashboardPaneButtons } from 'components/DashboardPaneButtons';
 import { DashboardThumbnail } from 'components/DashboardThumbnail';
 import { DashboardVideoPaneDownloadOption } from 'components/DashboardVideoPaneDownloadOption';
+import { DashboardVideoPaneStats } from 'components/DashboardVideoPaneStats';
 import { DashboardVideoPaneTranscriptOption } from 'components/DashboardVideoPaneTranscriptOption';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
@@ -215,6 +216,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
             <Box flex margin={'small'}>
               <CommonStatusLine video={video} />
               {intl.formatMessage(messages[READY])}
+              <DashboardVideoPaneStats video={video} />
               <DashboardVideoPaneDownloadOption video={video} />
               <DashboardVideoPaneTranscriptOption video={video} />
             </Box>
