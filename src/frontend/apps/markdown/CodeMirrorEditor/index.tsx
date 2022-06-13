@@ -1,9 +1,9 @@
-import { basicSetup } from '@codemirror/basic-setup';
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
 import { EditorState } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
+import { basicSetup } from 'codemirror';
 import React, { useEffect } from 'react';
 
 type EditorProps = {
