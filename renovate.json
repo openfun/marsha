@@ -10,7 +10,6 @@
         "npm"
       ],
       "matchPackageNames": [
-        "@codemirror/view",
         "@converse/headless",
         "@testing-library/react",
         "@testing-library/user-event",
