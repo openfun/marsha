@@ -9,9 +9,9 @@ import {
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { APIList } from 'types/api';
 import { Document } from 'types/file';
-import { Organization } from 'types/Organization';
 import {
   LiveModeType,
+  LiveAttendance,
   Playlist,
   SharedLiveMedia,
   Thumbnail,
@@ -21,6 +21,7 @@ import {
 } from 'types/tracks';
 import { Nullable } from 'utils/types';
 
+import { Organization } from 'types/Organization';
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { deleteOne } from './deleteOne';
@@ -163,6 +164,22 @@ export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
         }
       },
     },
+  );
+};
+
+export type LiveAttendancesResponse = APIList<LiveAttendance>;
+export const useLiveAttendances = (
+  queryConfig?: UseQueryOptions<
+    LiveAttendancesResponse,
+    'livesessions/list_attendances',
+    LiveAttendancesResponse
+  >,
+) => {
+  const key = ['livesessions/list_attendances'];
+  return useQuery<LiveAttendancesResponse, 'livesessions/list_attendances'>(
+    key,
+    fetchList,
+    queryConfig,
   );
 };
 
