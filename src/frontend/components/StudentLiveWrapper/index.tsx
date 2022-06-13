@@ -4,8 +4,12 @@ import { Redirect } from 'react-router-dom';
 
 import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { AudioControl } from 'components/JitsiControls/AudioControl';
+import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
+import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
+import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
@@ -15,10 +19,12 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { PUSH_ATTENDANCE_DELAY } from 'default/sideEffects';
+import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { Video } from 'types/tracks';
-import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
+import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -50,6 +56,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     (state) => state.accepted,
   );
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
+  const [pipState] = usePictureInPicture();
 
   useEffect(() => {
     if (isParticipantOnstage) {
@@ -114,15 +121,38 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         />
       }
       mainElement={
-        isParticipantOnstage && jitsiLive ? (
-          <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
-        ) : (
-          <VideoPlayer
-            playerType={playerType}
-            timedTextTracks={[]}
-            video={video}
-          />
-        )
+        <PictureInPictureLayer
+          mainElement={
+            isParticipantOnstage && jitsiLive ? (
+              <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
+            ) : (
+              <VideoPlayer
+                playerType={playerType}
+                timedTextTracks={[]}
+                video={video}
+              />
+            )
+          }
+          secondElement={
+            video.active_shared_live_media &&
+            (video.active_shared_live_media.urls ? (
+              <SharedMediaExplorer
+                initialPage={video.active_shared_live_media_page!}
+                pages={video.active_shared_live_media.urls.pages}
+              >
+                <UpdateCurrentSharedLiveMediaPage video={video} />
+              </SharedMediaExplorer>
+            ) : (
+              <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
+            ))
+          }
+          reversed={pipState.reversed}
+          pictureActions={
+            pipState.reversed && isParticipantOnstage && jitsiLive
+              ? [<AudioControl />, <CameraControl />]
+              : undefined
+          }
+        />
       }
       sideElement={<LiveVideoPanel video={video} />}
     />
