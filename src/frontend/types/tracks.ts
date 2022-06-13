@@ -143,16 +143,35 @@ export enum JoinMode {
   DENIED = 'denied',
   FORCED = 'forced',
 }
+export interface LiveAttendanceInfo {
+  connectedInBetween?: boolean;
+  fullScreen?: boolean;
+  lastConnected?: number;
+  muted?: boolean;
+  onStage?: boolean;
+  player_timer?: number;
+  playing?: boolean;
+  timestamp?: number;
+  volume?: number;
+}
+
+export interface LiveAttendanceInfos {
+  [x: number]: LiveAttendanceInfo;
+}
+export interface LiveAttendance extends Resource {
+  display_name: Nullable<string>;
+  is_registered: boolean;
+  live_attendance: Nullable<LiveAttendanceInfos>;
+ }
 
 export interface LiveSession extends Resource {
   anonymous_id: Nullable<string>;
   consumer_site: Nullable<string>;
   display_name: Nullable<string>;
   email: Nullable<string>;
-  id: string;
   is_registered: boolean;
   language: string;
-  live_attendance: Nullable<object>;
+  live_attendance: Nullable<LiveAttendanceInfos>;
   lti_id: Nullable<string>;
   lti_user_id: Nullable<string>;
   should_send_reminders: boolean;

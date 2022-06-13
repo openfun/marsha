@@ -8,6 +8,7 @@ import {
   JoinMode,
   Live,
   LiveModeType,
+  LiveAttendance,
   LiveSession,
   liveState,
   Playlist,
@@ -185,6 +186,37 @@ export const documentMockFactory = (
     url: `https://example.com/document/${id}`,
     playlist: playlistMockFactory(),
     ...document,
+  };
+};
+
+export const liveAttendanceFactory = (
+  liveAttendance: Partial<LiveAttendance> = {},
+): LiveAttendance => {
+  const id = liveAttendance.id || faker.datatype.uuid();
+
+  return {
+    display_name: null,
+    id,
+    is_registered: faker.datatype.boolean(),
+    live_attendance: {
+      [Date.now()]: {
+        fullScreen: true,
+        muted: false,
+        player_timer: 0.12,
+        playing: false,
+        timestamp: Date.now(),
+        volume: 0.16,
+      },
+      [Date.now() + 100]: {
+        fullScreen: false,
+        muted: true,
+        player_timer: 0.12,
+        playing: true,
+        timestamp: Date.now() + 100,
+        volume: 0.16,
+      },
+    },
+    ...liveAttendance,
   };
 };
 
