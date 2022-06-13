@@ -26,9 +26,9 @@ jest.mock('data/appData', () => ({
   },
 }));
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('components/DashboardVideoLivePairing', () => ({
-  DashboardVideoLivePairing: (props: { video: Video }) => (
-    <span title={`Pairing button for ${props.video.id}`} />
+jest.mock('components/DashboardVideoPaneStats', () => ({
+  DashboardVideoPaneStats: (props: { video: Video }) => (
+    <p>{`Stats for ${props.video.id}`}</p>
   ),
 }));
 
@@ -188,6 +188,7 @@ describe('<DashboardVideoPane />', () => {
     ).toEqual(null);
     screen.getByText((content) => content.startsWith('Ready'));
     screen.getByText('Your video is ready to play.');
+    screen.getByText(`Stats for ${video.id}`);
   });
 
   it('redirects to error when the video is in the error state and not `is_ready_to_show`', () => {

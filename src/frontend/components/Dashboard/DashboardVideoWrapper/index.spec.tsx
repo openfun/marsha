@@ -11,6 +11,7 @@ import {
   liveState,
   timedTextMode,
   uploadState,
+  Video,
 } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -40,6 +41,11 @@ jest.mock('data/appData', () => ({
       can_update: true,
     },
   }),
+}));
+jest.mock('components/DashboardVideoPaneStats', () => ({
+  DashboardVideoPaneStats: (props: { video: Video }) => (
+    <p>{`Stats for ${props.video.id}`}</p>
+  ),
 }));
 
 const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
@@ -190,5 +196,6 @@ describe('<DashboardVideoWrapper />', () => {
     screen.getByRole('link', { name: 'Playlist' });
 
     screen.getByText('Your video is ready to play.');
+    screen.getByText(`Stats for ${video.id}`);
   });
 });

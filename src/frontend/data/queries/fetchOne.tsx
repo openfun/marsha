@@ -5,8 +5,9 @@ import { appData } from '../appData';
  * `react-query` fetcher for individual items from the Marsha API.
  */
 export const fetchOne: QueryFunction<any> = async ({ queryKey }) => {
-  const [name, id] = queryKey;
-  const response = await fetch(`/api/${name}/${id}/`, {
+  const [name, id, action] = queryKey;
+  const endpoint = action ? `${action}/` : '';
+  const response = await fetch(`/api/${name}/${id}/${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
       ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
@@ -14,7 +15,7 @@ export const fetchOne: QueryFunction<any> = async ({ queryKey }) => {
   });
 
   if (!response.ok) {
-    throw new Error(`Failed to get /${name}/${id}/.`);
+    throw new Error(`Failed to get /${name}/${id}/${endpoint}.`);
   }
 
   return await response.json();
