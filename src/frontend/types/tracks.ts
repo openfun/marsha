@@ -186,6 +186,10 @@ export interface Video extends Resource {
   recording_time?: number;
 }
 
+export interface VideoStats {
+  nb_views: number;
+}
+
 export interface Live extends Omit<Video, 'live_state'> {
   live_state: Exclude<liveState, liveState.ENDED>;
 }
