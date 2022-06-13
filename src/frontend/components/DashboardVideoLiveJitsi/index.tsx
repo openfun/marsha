@@ -166,34 +166,6 @@ const DashboardVideoLiveJitsi = ({
       }
     };
     jitsi.addListener('recordingStatusChanged', recordingStatusChanged);
-
-    if (!isInstructor) {
-      jitsi.addListener('readyToClose', () => {
-        jitsi.dispose();
-        setJitsiApi(undefined);
-
-        converse.participantLeaves();
-        resetParticipantWorkflow();
-        setRedirectPath(PLAYER_ROUTE(modelName.VIDEOS));
-      });
-    } else {
-      jitsi.addListener('participantRoleChanged', (event) => {
-        setIsModerator(event.role === 'moderator');
-      });
-
-      jitsi.addListener('videoConferenceJoined', () => {
-        setCanShowStartButton(true);
-      });
-
-      jitsi.addListener('readyToClose', () => {
-        jitsi.dispose();
-        setJitsiApi(undefined);
-
-        setCanStartLive(false);
-        setCanShowStartButton(false);
-      });
-    }
-
     return () => {
       if (!jitsi) {
         return;
@@ -202,6 +174,64 @@ const DashboardVideoLiveJitsi = ({
       jitsi.removeListener('recordingStatusChanged', recordingStatusChanged);
     };
   }, [jitsi, startRecording]);
+
+  useEffect(() => {
+    if (!jitsi || isInstructor) {
+      return;
+    }
+
+    const listener = () => {
+      jitsi.dispose();
+      setJitsiApi(undefined);
+
+      converse.participantLeaves();
+      resetParticipantWorkflow();
+      setRedirectPath(PLAYER_ROUTE(modelName.VIDEOS));
+    };
+    jitsi.addListener('readyToClose', listener);
+    return () => {
+      if (!jitsi) {
+        return;
+      }
+
+      jitsi.removeListener('readyToClose', listener);
+    };
+  }, [jitsi, isInstructor]);
+
+  useEffect(() => {
+    if (!jitsi || !isInstructor) {
+      return;
+    }
+
+    const participantRoleChanged = (event: any) => {
+      setIsModerator(event.role === 'moderator');
+    };
+    jitsi.addListener('participantRoleChanged', participantRoleChanged);
+
+    const videoConferenceJoined = () => {
+      setCanShowStartButton(true);
+    };
+    jitsi.addListener('videoConferenceJoined', videoConferenceJoined);
+
+    const readyToClose = () => {
+      jitsi.dispose();
+      setJitsiApi(undefined);
+
+      setCanStartLive(false);
+      setCanShowStartButton(false);
+    };
+    jitsi.addListener('readyToClose', readyToClose);
+
+    return () => {
+      if (!jitsi) {
+        return;
+      }
+
+      jitsi.removeListener('participantRoleChanged', participantRoleChanged);
+      jitsi.removeListener('videoConferenceJoined', videoConferenceJoined);
+      jitsi.removeListener('readyToClose', readyToClose);
+    };
+  }, [jitsi, isInstructor]);
 
   useEffect(() => {
     setCanStartLive(isModerator);
