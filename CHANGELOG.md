@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a widget for the instructor to upload thumbnail
 - Add video stats from configurable grafana backend
 - Add shared media support for the teacher
+- Manage live media sharing with picture-in-picture on student side
 
 ### Fixed
 
