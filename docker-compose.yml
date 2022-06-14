@@ -67,7 +67,11 @@ services:
 
   ngrok:
     image: wernight/ngrok
-    command: ngrok http app:8000
+    environment: 
+      - NGROK_PORT=8000
+      - NGROK_LOOK_DOMAIN=app
+    env_file:
+      - env.d/ngrok
     ports:
       - 4040:4040
 
