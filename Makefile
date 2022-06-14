@@ -52,6 +52,7 @@ default: h
 bootstrap: ## Prepare Docker images for the project
 bootstrap: \
 	env.d/development \
+	env.d/ngrok \
 	env.d/lambda \
 	build \
 	build-lambda-dev \
@@ -429,6 +430,9 @@ build-mails-html-to-plain-text: ## Convert html files to text
 
 env.d/development:
 	cp env.d/development.dist env.d/development
+	
+env.d/ngrok:
+	cp env.d/ngrok.dist env.d/ngrok
 
 env.d/lambda:
 	cp env.d/lambda.dist env.d/lambda
