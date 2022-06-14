@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ChatAvatar } from 'components/Chat/SharedChatComponents/ChatAvatar';
+import { ChatAvatar } from 'components/Chat/ChatAvatar';
 import { chatFonts } from 'utils/theme/theme';
 
 interface ChatMessageMetadatasProps {

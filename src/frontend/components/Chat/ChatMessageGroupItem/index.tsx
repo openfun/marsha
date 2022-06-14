@@ -1,8 +1,8 @@
 import { Box } from 'grommet';
 import React, { useMemo } from 'react';
 
-import { ChatMessage } from 'components/Chat/SharedChatComponents/ChatMessage';
-import { ChatMessageMetadatas } from 'components/Chat/SharedChatComponents/ChatMessageMetadatas';
+import { ChatMessage } from 'components/Chat/ChatMessage';
+import { ChatMessageMetadatas } from 'components/Chat/ChatMessageMetadatas';
 import { ChatMessageGroupType } from 'data/stores/useChatItemsStore';
 
 interface ChatMessageGroupItemProps {

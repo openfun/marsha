@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect, useRef } from 'react';
 
-import { ChatMessageGroupItem } from 'components/Chat/SharedChatComponents/ChatMessageGroupItem';
+import { ChatMessageGroupItem } from 'components/Chat/ChatMessageGroupItem';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 
 export const ChatConversationDisplayer = () => {
