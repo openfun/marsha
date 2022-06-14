@@ -5,7 +5,6 @@ import {
   useChatItemState,
 } from 'data/stores/useChatItemsStore';
 import { MessageType, XMPP } from 'types/XMPP';
-import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
 
 enum StanzaType {
@@ -61,13 +60,6 @@ const addChatPlugin = (xmpp: XMPP) =>
                     break;
                   case StanzaMessageType.SUBJECT:
                     break;
-                  case StanzaMessageType.UNRECOGNIZED:
-                  default:
-                    report(
-                      new Error(
-                        `Unable to recognize the following received message : \n ${stanza.outerHTML}`,
-                      ),
-                    );
                 }
 
                 break;
