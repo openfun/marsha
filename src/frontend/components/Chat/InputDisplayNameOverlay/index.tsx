@@ -2,7 +2,7 @@ import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { InputDisplayName } from 'components/Chat/SharedChatComponents/InputDisplayName';
+import { InputDisplayName } from 'components/Chat/InputDisplayName';
 import { ExitCrossSVG } from 'components/SVGIcons/ExitCrossSVG';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 

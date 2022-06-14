@@ -2,9 +2,9 @@ import { Box, Spinner } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ChatConversationDisplayer } from 'components/Chat/SharedChatComponents/ChatConversationDisplayer';
-import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
-import { JoinChatButton } from 'components/Chat/SharedChatComponents/JoinChatButton';
+import { ChatConversationDisplayer } from 'components/Chat/ChatConversationDisplayer';
+import { InputBar } from 'components/Chat/InputBar';
+import { JoinChatButton } from 'components/Chat/JoinChatButton';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { converse } from 'utils/window';
 import { useLiveSession } from 'data/stores/useLiveSession';

@@ -2,7 +2,7 @@ import { Box, Text, Tip } from 'grommet';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { InputBar } from 'components/Chat/SharedChatComponents/InputBar';
+import { InputBar } from 'components/Chat/InputBar';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
 import { getDecodedJwt } from 'data/appData';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';

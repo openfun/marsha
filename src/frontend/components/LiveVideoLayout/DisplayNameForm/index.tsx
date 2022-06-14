@@ -1,7 +1,7 @@
 import { Layer } from 'grommet';
 import React from 'react';
 
-import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/InputDisplayNameOverlay';
+import { InputDisplayNameOverlay } from 'components/Chat/InputDisplayNameOverlay';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 
 interface DisplayNameFormProps {
