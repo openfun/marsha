@@ -192,8 +192,12 @@ class Base(Configuration):
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
         "PAGE_SIZE": 50,
         "DEFAULT_THROTTLE_RATES": {
-            "anon": "3/minute",
-            "live_session": "3/minute",
+            "anon": values.Value(
+                "3/minute", environ_name="REST_FRAMEWORK_ANON_THROTTLE_RATE"
+            ),
+            "live_session": values.Value(
+                "3/minute", environ_name="REST_FRAMEWORK_LIVE_SESSION_THROTTLE_RATE"
+            ),
         },
     }
 
