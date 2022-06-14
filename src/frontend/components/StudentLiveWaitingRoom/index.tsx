@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { StudentLiveDescription } from 'components/StudentLiveAdvertising/StudentLiveDescription';
-import { InputDisplayName } from 'components/Chat/SharedChatComponents/InputDisplayName';
+import { InputDisplayName } from 'components/Chat/InputDisplayName';
 import { appData } from 'data/appData';
 import { Video } from 'types/tracks';
 
