@@ -83,6 +83,7 @@ export const Routes = () => (
               playlist={appData.playlist}
               documents={appData.documents}
               videos={appData.videos}
+              webinars={appData.webinars}
               new_document_url={appData.new_document_url}
               new_video_url={appData.new_video_url}
               lti_select_form_action_url={appData.lti_select_form_action_url!}

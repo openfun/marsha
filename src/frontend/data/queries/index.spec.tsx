@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
-import { useDeleteThumbnail } from './index';
+import { LiveModeType } from 'types/tracks';
 import {
   documentMockFactory,
   organizationMockFactory,
@@ -13,10 +13,12 @@ import {
   timedTextMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
+
 import {
   useCreateDocument,
   useCreateVideo,
   useDeleteSharedLiveMedia,
+  useDeleteThumbnail,
   useOrganization,
   usePairingVideo,
   usePlaylist,
@@ -498,6 +500,51 @@ describe('queries', () => {
       });
       expect(result.current.data).toEqual(video);
       expect(result.current.status).toEqual('success');
+    });
+
+    it('creates the resource with live_type and custom success callback', async () => {
+      const video = videoMockFactory();
+      fetchMock.post('/api/videos/', video);
+      const successCallback = jest.fn();
+
+      const { result, waitFor } = renderHook(
+        () =>
+          useCreateVideo({
+            onSuccess: async (createdVideo, variables) => {
+              await successCallback(createdVideo, variables);
+            },
+          }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        playlist: video.playlist.id,
+        title: video.title!,
+        live_type: LiveModeType.JITSI,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          playlist: video.playlist.id,
+          title: video.title,
+          live_type: LiveModeType.JITSI,
+        }),
+      });
+      expect(result.current.data).toEqual(video);
+      expect(result.current.status).toEqual('success');
+      expect(successCallback).toHaveBeenCalledWith(video, {
+        playlist: video.playlist.id,
+        title: video.title!,
+        live_type: LiveModeType.JITSI,
+      });
     });
 
     it('fails to create the resource', async () => {

@@ -6,7 +6,10 @@ import { Organization } from 'types/Organization';
 import { Participant } from 'types/Participant';
 import {
   JoinMode,
+  Live,
+  LiveModeType,
   LiveSession,
+  liveState,
   Playlist,
   PlaylistLite,
   SharedLiveMedia,
@@ -152,6 +155,15 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     xmpp: null,
     shared_live_medias: [],
     ...video,
+  };
+};
+
+export const liveMockFactory = (live: Partial<Live> = {}): Live => {
+  return {
+    ...videoMockFactory(live),
+    live_state: liveState.IDLE,
+    live_type: LiveModeType.JITSI,
+    ...live,
   };
 };
 
