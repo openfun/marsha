@@ -1,22 +1,26 @@
-import React, { ReactNode, useMemo } from 'react';
 import { Box, Button, List, Paragraph } from 'grommet';
 import { AddCircle } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
+import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { ViewersListHeader } from 'components/ViewersList/components/ViewersListHeader';
+import { ViewersListItem } from 'components/ViewersList/components/ViewersListItem';
+import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
+import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
 import {
   useParticipantsStore,
   ParticipantType,
 } from 'data/stores/useParticipantsStore';
 import { JoinMode, Video } from 'types/tracks';
-import { ViewersListHeader } from 'components/ViewersList/components/ViewersListHeader';
-import { ViewersListItem } from 'components/ViewersList/components/ViewersListItem';
-import { converse } from 'utils/window';
-import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
-import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
+import { isAnonymous } from 'utils/chat/chat';
 import { colors } from 'utils/theme/theme';
+import { converse } from 'utils/window';
 
-import { sortParticipantNotOnStage } from './utils';
+import {
+  generateSimpleViewersMessage,
+  sortParticipantNotOnStage,
+} from './utils';
 
 const messages = defineMessages({
   demands: {
@@ -54,12 +58,6 @@ const messages = defineMessages({
       'Message displayed in the users list for viewers when nobody is on stage',
     id: 'components.ViewersList.nobodyOnStage',
   },
-  noViewers: {
-    defaultMessage: 'No viewers are currently connected to your stream.',
-    description:
-      'Message displayed in the users list when no viewers are connected',
-    id: 'components.ViewersList.noViewers',
-  },
 });
 
 interface SectionProps {
@@ -67,22 +65,28 @@ interface SectionProps {
   items: ParticipantType[];
   noItemsTitle?: string;
   title: string;
+  forceNoItemsTitle?: boolean;
 }
 
-const Section = ({ children, items, noItemsTitle, title }: SectionProps) => {
-  if (items.length === 0 && !noItemsTitle) {
+const Section = ({
+  children,
+  items,
+  noItemsTitle,
+  title,
+  forceNoItemsTitle,
+}: SectionProps) => {
+  if (items.length === 0 && !noItemsTitle && !forceNoItemsTitle) {
     //  no content to render
     return null;
   }
 
   return (
     <Box margin={{ top: 'medium' }}>
-      {(items.length !== 0 || noItemsTitle) && (
-        <ViewersListHeader
-          margin={{ left: 'medium', bottom: 'xsmall' }}
-          text={title}
-        />
-      )}
+      <ViewersListHeader
+        margin={{ left: 'medium', bottom: 'xsmall' }}
+        text={title}
+      />
+
       {items.length !== 0 && (
         <List border={false} data={items} pad={{ top: '8px' }}>
           {(item: ParticipantType, index: number) => (
@@ -96,7 +100,8 @@ const Section = ({ children, items, noItemsTitle, title }: SectionProps) => {
           )}
         </List>
       )}
-      {items.length === 0 && noItemsTitle && (
+
+      {(items.length === 0 || forceNoItemsTitle) && (
         <Paragraph
           color={normalizeColor('blue-chat', colors)}
           margin={{ horizontal: 'medium', top: 'small', bottom: 'none' }}
@@ -115,6 +120,7 @@ interface ViewersListProps {
 }
 
 export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
+  const intl = useIntl();
   const participants = useParticipantsStore((state) => state.participants);
   const participantsOnStage = useMemo(
     () =>
@@ -129,17 +135,15 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
   );
   const participantsNotOnStageAndNotAsking = useMemo(
     () =>
-      participants
-        .filter(
-          (participant) =>
-            !participantsOnStage.includes(participant) &&
-            (isInstructor
-              ? !video.participants_asking_to_join.some(
-                  (p) => p.name === participant.name,
-                )
-              : true),
-        )
-        .sort(sortParticipantNotOnStage),
+      participants.filter(
+        (participant) =>
+          !participantsOnStage.includes(participant) &&
+          (isInstructor
+            ? !video.participants_asking_to_join.some(
+                (p) => p.name === participant.name,
+              )
+            : true),
+      ),
     [
       isInstructor,
       participants,
@@ -147,6 +151,18 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
       video.participants_asking_to_join,
     ],
   );
+  const simpleViewersWithName = useMemo(
+    () =>
+      participantsNotOnStageAndNotAsking
+        .filter((participant) => !isAnonymous(participant.name))
+        .sort(sortParticipantNotOnStage),
+    [participantsNotOnStageAndNotAsking],
+  );
+  const anonymousViewersCount = useMemo(() => {
+    return (
+      participantsNotOnStageAndNotAsking.length - simpleViewersWithName.length
+    );
+  }, [participantsNotOnStageAndNotAsking, simpleViewersWithName]);
   const participantsAskingToJoin = useMemo(
     () =>
       video.participants_asking_to_join
@@ -161,7 +177,12 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
         })),
     [video.participants_asking_to_join],
   );
-  const intl = useIntl();
+
+  const viewersMessage = generateSimpleViewersMessage(
+    intl,
+    simpleViewersWithName.length,
+    anonymousViewersCount,
+  );
 
   return (
     <Box
@@ -192,7 +213,6 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
           )}
         </Section>
       )}
-
       <Section
         items={participantsOnStage}
         noItemsTitle={intl.formatMessage(messages.nobodyOnStage)}
@@ -211,11 +231,16 @@ export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
       </Section>
 
       {video.join_mode !== JoinMode.FORCED && (
-        <Section
-          items={participantsNotOnStageAndNotAsking}
-          noItemsTitle={intl.formatMessage(messages.noViewers)}
-          title={intl.formatMessage(messages.otherViewers)}
-        />
+        <Box>
+          <Box flex>
+            <Section
+              items={simpleViewersWithName}
+              noItemsTitle={viewersMessage}
+              title={intl.formatMessage(messages.otherViewers)}
+              forceNoItemsTitle={anonymousViewersCount > 0}
+            />
+          </Box>
+        </Box>
       )}
     </Box>
   );
