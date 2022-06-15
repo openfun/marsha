@@ -1,3 +1,5 @@
+import { defineMessages, IntlShape } from 'react-intl';
+
 import { ParticipantType } from 'data/stores/useParticipantsStore';
 import { isAnonymous } from 'utils/chat/chat';
 
@@ -20,5 +22,48 @@ export const sortParticipantNotOnStage = (
   } else {
     //  both are anonymous, do not sort
     return 0;
+  }
+};
+
+const messages = defineMessages({
+  noViewers: {
+    defaultMessage: 'No viewers are currently connected to your stream.',
+    description:
+      'Message displayed in the users list when no viewers are connected',
+    id: 'components.ViewersList.utils.noViewers',
+  },
+  anonymousViewersOnly: {
+    defaultMessage:
+      '{nb} anonymous {nb, plural, one {viewer} other {viewers}}.',
+    description:
+      'Message displayed in the users list when teacher has only anonymous viewers connected.',
+    id: 'components.ViewersList.utils.anonymousViewersOnly',
+  },
+  anonymousAndNamedViewers: {
+    defaultMessage:
+      'And {nb} anonymous {nb, plural, one {viewer} other {viewers}}.',
+    description:
+      'Message displayed in the users list when teacher has anonymous viewers connected and students with a display name.',
+    id: 'components.ViewersList.utils.anonymousAndNamedViewers',
+  },
+});
+
+export const generateSimpleViewersMessage = (
+  intl: IntlShape,
+  namedViewers: number,
+  anonymousViewers: number,
+) => {
+  if (namedViewers === 0 && anonymousViewers === 0) {
+    return intl.formatMessage(messages.noViewers);
+  } else if (namedViewers === 0 && anonymousViewers > 0) {
+    return intl.formatMessage(messages.anonymousViewersOnly, {
+      nb: anonymousViewers,
+    });
+  } else if (anonymousViewers > 0) {
+    return intl.formatMessage(messages.anonymousAndNamedViewers, {
+      nb: anonymousViewers,
+    });
+  } else {
+    return undefined;
   }
 };

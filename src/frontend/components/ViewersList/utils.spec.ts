@@ -1,7 +1,11 @@
 import { ParticipantType } from 'data/stores/useParticipantsStore';
+import { createIntl, IntlShape } from 'react-intl';
 import { generateAnonymousNickname } from 'utils/chat/chat';
 
-import { sortParticipantNotOnStage } from './utils';
+import {
+  generateSimpleViewersMessage,
+  sortParticipantNotOnStage,
+} from './utils';
 
 describe('sortParticipantNotOnStage', () => {
   it('sorts participants', () => {
@@ -35,5 +39,57 @@ describe('sortParticipantNotOnStage', () => {
     );
 
     expect(sorted).toEqual([registered2, registered1, anonymous1, anonymous2]);
+  });
+});
+
+describe('generateSimpleViewersMessage', () => {
+  it('returns nobody message when nobody is connected', () => {
+    const intl: IntlShape = createIntl({
+      locale: 'en',
+    });
+
+    expect(generateSimpleViewersMessage(intl, 0, 0)).toEqual(
+      'No viewers are currently connected to your stream.',
+    );
+  });
+
+  it('returns anonymous single count', () => {
+    const intl: IntlShape = createIntl({
+      locale: 'en',
+    });
+
+    expect(generateSimpleViewersMessage(intl, 0, 1)).toEqual(
+      '1 anonymous viewer.',
+    );
+  });
+
+  it('returns anonymous multiple count', () => {
+    const intl: IntlShape = createIntl({
+      locale: 'en',
+    });
+
+    expect(generateSimpleViewersMessage(intl, 0, 4)).toEqual(
+      '4 anonymous viewers.',
+    );
+  });
+
+  it('returns anonymous count with named connected', () => {
+    const intl: IntlShape = createIntl({
+      locale: 'en',
+    });
+
+    expect(generateSimpleViewersMessage(intl, 2, 1)).toEqual(
+      'And 1 anonymous viewer.',
+    );
+  });
+
+  it('returns anonymous count with named connected', () => {
+    const intl: IntlShape = createIntl({
+      locale: 'en',
+    });
+
+    expect(generateSimpleViewersMessage(intl, 2, 4)).toEqual(
+      'And 4 anonymous viewers.',
+    );
   });
 });
