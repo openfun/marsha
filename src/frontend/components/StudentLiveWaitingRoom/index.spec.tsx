@@ -12,7 +12,7 @@ import { StudentLiveWaitingRoom } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
-    modelName: 'meetings',
+    modelName: 'videos',
     resource: {
       id: '1',
     },
