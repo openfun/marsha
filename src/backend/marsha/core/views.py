@@ -13,6 +13,7 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError as DjangoValidationError,
 )
+from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
@@ -32,7 +33,7 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 from waffle import mixins, switch_is_active
 
-from .defaults import BBB, LIVE_RAW, MARKDOWN, SENTRY
+from .defaults import BBB, ENDED, LIVE_RAW, MARKDOWN, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -786,8 +787,16 @@ class LTISelectView(TemplateResponseMixin, View):
             context={"request": self.request},
         ).data
 
+        all_videos = get_selectable_resources(Video, lti)
+
         videos = VideoSelectLTISerializer(
-            get_selectable_resources(Video, lti),
+            all_videos.filter(Q(live_type__isnull=True) | Q(live_state=ENDED)),
+            many=True,
+            context={"request": self.request},
+        ).data
+
+        webinars = VideoSelectLTISerializer(
+            all_videos.filter(live_type__isnull=False).exclude(live_state=ENDED),
             many=True,
             context={"request": self.request},
         ).data
@@ -823,6 +832,7 @@ class LTISelectView(TemplateResponseMixin, View):
                 "new_video_url": new_video_url,
                 "documents": documents,
                 "videos": videos,
+                "webinars": webinars,
                 "playlist": PlaylistLiteSerializer(playlist).data,
             }
         )

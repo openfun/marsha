@@ -242,6 +242,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         permission_classes=[
             permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
             | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+            | permissions.HasPlaylistToken
         ],
     )
     # pylint: disable=unused-argument
