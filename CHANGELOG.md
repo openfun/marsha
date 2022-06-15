@@ -16,6 +16,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - stopped_at is deleted and started_at is reinitialized when the
 live is restarted
+- Display number of anonymous instead of their pseudos
+
 
 ## [4.0.0-beta.6] - 2022-06-20
 

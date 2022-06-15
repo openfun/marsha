@@ -12,6 +12,7 @@ import {
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { ViewersList } from '.';
+import { generateAnonymousNickname } from 'utils/chat/chat';
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -226,6 +227,35 @@ describe('<ViewersList /> when user is an instructor', () => {
       screen.queryByText('No viewers are currently connected to your stream.'),
     ).not.toBeInTheDocument();
   });
+
+  it('does not display anonymous users in the list but inform with a message', () => {
+    const video = videoMockFactory();
+    const anonymousName = generateAnonymousNickname();
+    useParticipantsStore.setState({
+      participants: [
+        {
+          id: 'id-anonymous',
+          isInstructor: false,
+          isOnStage: false,
+          name: anonymousName,
+        },
+        {
+          id: 'id-named',
+          isInstructor: false,
+          isOnStage: false,
+          name: 'my name',
+        },
+      ],
+    });
+
+    render(
+      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
+    );
+
+    screen.getByText('my name');
+    expect(screen.queryByText(anonymousName)).not.toBeInTheDocument();
+    screen.getByText('And 1 anonymous viewer.');
+  });
 });
 
 describe('<ViewersList /> when user is a student', () => {
@@ -290,5 +320,26 @@ describe('<ViewersList /> when user is a student', () => {
       wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
     );
     screen.getByText('Student 2');
+  });
+
+  it('displays number of anonymous when there is some', () => {
+    const video = videoMockFactory();
+
+    useParticipantsStore.setState({
+      participants: [
+        { ...participant1, isInstructor: false, name: 'anonymous-XXX' },
+        { ...participant2, name: 'anonymous-YYY' },
+        { ...participant3, name: 'anonymous-ZZZ' },
+      ],
+    });
+
+    render(
+      wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
+    );
+    expect(screen.queryByText('Other participants')).toBeInTheDocument();
+    expect(
+      screen.queryByText('No viewers are currently connected to your stream.'),
+    ).not.toBeInTheDocument();
+    screen.getByText('3 anonymous viewers.');
   });
 });
