@@ -6,137 +6,142 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { SchedulingFields } from 'components/SchedulingFields';
 import { Maybe } from 'utils/types';
 
-import { DashboardMeetingLayout } from 'apps/bbb/DashboardMeetingLayout';
+import { DashboardClassroomLayout } from 'apps/bbb/DashboardClassroomLayout';
 import {
-  useCreateMeetingAction,
-  useUpdateMeeting,
+  useCreateClassroomAction,
+  useUpdateClassroom,
 } from 'apps/bbb/data/queries';
-import { Meeting } from 'apps/bbb/types/models';
+import { Classroom } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
-  createMeetingFail: {
-    defaultMessage: 'Meeting not created!',
-    description: 'Message when meeting creation failed.',
-    id: 'component.DashboardMeetingForm.createMeetingFail',
+  createClassroomFail: {
+    defaultMessage: 'Classroom not created!',
+    description: 'Message when classroom creation failed.',
+    id: 'component.DashboardClassroomForm.createClassroomFail',
   },
   titleLabel: {
     defaultMessage: 'Title',
-    description: 'Label for title in meeting creation form.',
-    id: 'component.DashboardMeetingForm.titleLabel',
+    description: 'Label for title in classroom creation form.',
+    id: 'component.DashboardClassroomForm.titleLabel',
   },
   descriptionLabel: {
     defaultMessage: 'Description',
-    description: 'Label for description in meeting creation form.',
-    id: 'component.DashboardMeetingForm.descriptionLabel',
+    description: 'Label for description in classroom creation form.',
+    id: 'component.DashboardClassroomForm.descriptionLabel',
   },
   welcomeTextLabel: {
     defaultMessage: 'Welcome text',
-    description: 'Label for welcome text in meeting creation form.',
-    id: 'component.DashboardMeetingForm.welcomeTextLabel',
+    description: 'Label for welcome text in classroom creation form.',
+    id: 'component.DashboardClassroomForm.welcomeTextLabel',
   },
-  startMeetingLabel: {
-    defaultMessage: 'Launch the meeting now in BBB',
-    description: 'Label for the button starting the meeting creation in BBB.',
-    id: 'component.DashboardMeetingForm.startMeetingLabel',
+  startClassroomLabel: {
+    defaultMessage: 'Launch the classroom now in BBB',
+    description: 'Label for the button starting the classroom creation in BBB.',
+    id: 'component.DashboardClassroomForm.startClassroomLabel',
   },
-  scheduleMeetingLabel: {
-    defaultMessage: 'Update meeting scheduling',
-    description: 'Label for confirm button in meeting scheduling form.',
-    id: 'component.DashboardMeetingForm.scheduleMeetingLabel',
+  scheduleClassroomLabel: {
+    defaultMessage: 'Update classroom scheduling',
+    description: 'Label for confirm button in classroom scheduling form.',
+    id: 'component.DashboardClassroomForm.scheduleClassroomLabel',
   },
-  updateMeetingSuccess: {
-    defaultMessage: 'Meeting updated.',
-    description: 'Message when meeting update is successful.',
-    id: 'component.DashboardMeetingForm.updateMeetingSuccess',
+  updateClassroomSuccess: {
+    defaultMessage: 'Classroom updated.',
+    description: 'Message when classroom update is successful.',
+    id: 'component.DashboardClassroomForm.updateClassroomSuccess',
   },
-  updateMeetingFail: {
-    defaultMessage: 'Meeting not updated!',
-    description: 'Message when meeting update failed.',
-    id: 'component.DashboardMeetingForm.updateMeetingFail',
+  updateClassroomFail: {
+    defaultMessage: 'Classroom not updated!',
+    description: 'Message when classroom update failed.',
+    id: 'component.DashboardClassroomForm.updateClassroomFail',
   },
   requiredTitle: {
-    defaultMessage: 'Title is required to launch the meeting.',
-    description: 'Message when meeting title is missing.',
-    id: 'component.DashboardMeetingForm.requiredTitle',
+    defaultMessage: 'Title is required to launch the classroom.',
+    description: 'Message when classroom title is missing.',
+    id: 'component.DashboardClassroomForm.requiredTitle',
   },
 });
 
-interface DashboardMeetingFormProps {
-  meeting: Meeting;
+interface DashboardClassroomFormProps {
+  classroom: Classroom;
 }
 
-const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
+const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
   const intl = useIntl();
-  const createMeetingMutation = useCreateMeetingAction(meeting.id, {
+  const createClassroomMutation = useCreateClassroomAction(classroom.id, {
     onSuccess: (data) => {
       toast.success(data.message);
     },
     onError: () => {
-      toast.error(intl.formatMessage(messages.createMeetingFail));
+      toast.error(intl.formatMessage(messages.createClassroomFail));
     },
   });
-  const updateMeetingMutation = useUpdateMeeting(meeting.id, {
+  const updateClassroomMutation = useUpdateClassroom(classroom.id, {
     onSuccess: () => {
-      toast.success(intl.formatMessage(messages.updateMeetingSuccess));
+      toast.success(intl.formatMessage(messages.updateClassroomSuccess));
     },
     onError: () => {
-      toast.error(intl.formatMessage(messages.updateMeetingFail));
-      setUpdatedMeetingState(meeting);
+      toast.error(intl.formatMessage(messages.updateClassroomFail));
+      setUpdatedClassroomState(classroom);
     },
   });
-  const [updatedMeetingState, setUpdatedMeetingState] = useState<
-    Partial<Meeting>
+  const [updatedClassroomState, setUpdatedClassroomState] = useState<
+    Partial<Classroom>
   >({});
 
   const timeoutId = useRef<Maybe<number>>();
 
   const debounce = (
-    fn: (updatedMeeting: Partial<Meeting>) => void,
+    fn: (updatedClassroom: Partial<Classroom>) => void,
     ms = 500,
   ) => {
-    return (updatedMeeting: Partial<Meeting>) => {
+    return (updatedClassroom: Partial<Classroom>) => {
       window.clearTimeout(timeoutId.current);
-      timeoutId.current = window.setTimeout(() => fn(updatedMeeting), ms);
+      timeoutId.current = window.setTimeout(() => fn(updatedClassroom), ms);
     };
   };
 
-  const debouncedUpdateMeeting = React.useRef(
-    debounce(async (updatedMeeting: Partial<Meeting>) => {
-      if (JSON.stringify(updatedMeeting) !== '{}') {
-        updateMeetingMutation.mutate(updatedMeeting);
+  const debouncedUpdateClassroom = React.useRef(
+    debounce(async (updatedClassroom: Partial<Classroom>) => {
+      if (JSON.stringify(updatedClassroom) !== '{}') {
+        updateClassroomMutation.mutate(updatedClassroom);
       }
     }),
   ).current;
 
-  const handleChange = async (updatedMeetingAttribute: Partial<Meeting>) => {
-    const updatedMeeting = {
-      ...updatedMeetingState,
-      ...updatedMeetingAttribute,
+  const handleChange = async (
+    updatedClassroomAttribute: Partial<Classroom>,
+  ) => {
+    const updatedClassroom = {
+      ...updatedClassroomState,
+      ...updatedClassroomAttribute,
     };
-    setUpdatedMeetingState(updatedMeeting);
+    setUpdatedClassroomState(updatedClassroom);
     window.clearTimeout(timeoutId.current);
-    debouncedUpdateMeeting(updatedMeeting);
+    debouncedUpdateClassroom(updatedClassroom);
   };
 
   const handleBlur = () => {
-    if (JSON.stringify(updatedMeetingState) !== '{}') {
+    if (JSON.stringify(updatedClassroomState) !== '{}') {
       window.clearTimeout(timeoutId.current);
-      updateMeetingMutation.mutate(updatedMeetingState);
+      updateClassroomMutation.mutate(updatedClassroomState);
     }
   };
 
   useEffect(() => {
-    setUpdatedMeetingState({});
-  }, [meeting]);
+    setUpdatedClassroomState({});
+  }, [classroom]);
 
-  const titleError = !{ ...meeting, ...updatedMeetingState }.title && (
+  const titleError = !{ ...classroom, ...updatedClassroomState }.title && (
     <Text size="small" color="status-error">
       <FormattedMessage {...messages.requiredTitle} />
     </Text>
   );
 
   const left = (
-    <Form value={{ ...meeting, ...updatedMeetingState }} onBlur={handleBlur}>
+    <Form
+      value={{ ...classroom, ...updatedClassroomState }}
+      onBlur={handleBlur}
+    >
       <FormField
         label={intl.formatMessage(messages.titleLabel)}
         htmlFor="title"
@@ -148,7 +153,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
         <TextInput
           name="title"
           id="title"
-          value={{ ...meeting, ...updatedMeetingState }.title || ''}
+          value={{ ...classroom, ...updatedClassroomState }.title || ''}
           onChange={(e) => {
             handleChange({ title: e.target.value });
           }}
@@ -162,7 +167,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
         <TextArea
           name="description"
           id="description"
-          value={{ ...meeting, ...updatedMeetingState }.description || ''}
+          value={{ ...classroom, ...updatedClassroomState }.description || ''}
           onChange={(e) => {
             handleChange({ description: e.target.value });
           }}
@@ -176,7 +181,7 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
         <TextArea
           name="welcome_text"
           id="welcome_text"
-          value={{ ...meeting, ...updatedMeetingState }.welcome_text || ''}
+          value={{ ...classroom, ...updatedClassroomState }.welcome_text || ''}
           onChange={(e) => {
             handleChange({ welcome_text: e.target.value });
           }}
@@ -184,9 +189,10 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
       </FormField>
       <SchedulingFields
         margin="none"
-        startingAt={updatedMeetingState.starting_at || meeting.starting_at}
+        startingAt={updatedClassroomState.starting_at || classroom.starting_at}
         estimatedDuration={
-          updatedMeetingState.estimated_duration || meeting.estimated_duration
+          updatedClassroomState.estimated_duration ||
+          classroom.estimated_duration
         }
         onStartingAtChange={(startingAt) => {
           return handleChange({
@@ -204,18 +210,18 @@ const DashboardMeetingForm = ({ meeting }: DashboardMeetingFormProps) => {
   const right = (
     <Button
       type="submit"
-      label={intl.formatMessage(messages.startMeetingLabel)}
-      disabled={!meeting.title}
+      label={intl.formatMessage(messages.startClassroomLabel)}
+      disabled={!classroom.title}
       primary
       size="large"
       fill="horizontal"
       onClick={() => {
-        createMeetingMutation.mutate(meeting);
+        createClassroomMutation.mutate(classroom);
       }}
     />
   );
 
-  return <DashboardMeetingLayout left={left} right={right} />;
+  return <DashboardClassroomLayout left={left} right={right} />;
 };
 
-export default DashboardMeetingForm;
+export default DashboardClassroomForm;

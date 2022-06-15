@@ -9,7 +9,7 @@ import { appData } from 'data/appData';
 import { playlistMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
 
 jest.mock('settings', () => ({
   APPS: ['bbb'],
@@ -32,16 +32,16 @@ window.HTMLFormElement.prototype.submit = jest.fn();
 
 const currentPlaylist = playlistMockFactory();
 
-const meeting = meetingMockFactory({
-  title: 'meeting 1',
+const classroom = classroomMockFactory({
+  title: 'classroom 1',
   playlist: currentPlaylist,
 });
-const selectMeetingResponse = {
-  new_url: 'https://example.com/lti/meetings/',
-  meetings: [meeting],
+const selectClassroomResponse = {
+  new_url: 'https://example.com/lti/classrooms/',
+  classrooms: [classroom],
 };
 
-fetchMock.get('/api/meetings/lti-select/', selectMeetingResponse);
+fetchMock.get('/api/classrooms/lti-select/', selectClassroomResponse);
 
 describe('<SelectContent />', () => {
   afterEach(jest.resetAllMocks);
@@ -65,11 +65,11 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByTitle(`Select ${meeting.title}`));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -81,10 +81,10 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: meeting.lti_url,
+            url: classroom.lti_url,
             frame: [],
-            title: meeting.title,
-            text: meeting.description,
+            title: classroom.title,
+            text: classroom.description,
           },
         ],
       }),
@@ -112,11 +112,11 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByTitle(`Select ${meeting.title}`));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -128,7 +128,7 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: meeting.lti_url,
+            url: classroom.lti_url,
             frame: [],
             title: 'Activity title',
             text: 'Activity description',
@@ -159,11 +159,11 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByTitle(`Select ${meeting.title}`));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -175,10 +175,10 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: meeting.lti_url,
+            url: classroom.lti_url,
             frame: [],
-            title: meeting.title,
-            text: meeting.description,
+            title: classroom.title,
+            text: classroom.description,
           },
         ],
       }),
@@ -188,11 +188,11 @@ describe('<SelectContent />', () => {
   it('adds new content', async () => {
     const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
-    const newMeeting = meetingMockFactory({
+    const newClassroom = classroomMockFactory({
       title: null,
       description: null,
     });
-    fetchMock.post('/api/meetings/', newMeeting);
+    fetchMock.post('/api/classrooms/', newClassroom);
 
     const { container } = render(
       wrapInIntlProvider(
@@ -211,15 +211,15 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByText('Add a meeting'));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByText('Add a classroom'));
 
     await waitFor(() => {
       expect(
-        fetchMock.called('/api/meetings/', {
+        fetchMock.called('/api/classrooms/', {
           body: {
             playlist: playlist.id,
           },
@@ -237,7 +237,7 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: `https://example.com/lti/meetings/${newMeeting.id}`,
+            url: `https://example.com/lti/classrooms/${newClassroom.id}`,
             frame: [],
           },
         ],
@@ -249,11 +249,11 @@ describe('<SelectContent />', () => {
   it('adds new content with activity title and description', async () => {
     const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
-    const newMeeting = meetingMockFactory({
+    const newClassroom = classroomMockFactory({
       title: null,
       description: null,
     });
-    fetchMock.post('/api/meetings/', newMeeting, {
+    fetchMock.post('/api/classrooms/', newClassroom, {
       overwriteRoutes: true,
     });
 
@@ -276,15 +276,15 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByText('Add a meeting'));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByText('Add a classroom'));
 
     await waitFor(() => {
       expect(
-        fetchMock.called('/api/meetings/', {
+        fetchMock.called('/api/classrooms/', {
           body: {
             playlist: playlist.id,
             title: 'Activity title',
@@ -304,7 +304,7 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: `https://example.com/lti/meetings/${newMeeting.id}`,
+            url: `https://example.com/lti/classrooms/${newClassroom.id}`,
             frame: [],
             title: 'Activity title',
             text: 'Activity description',
@@ -318,11 +318,11 @@ describe('<SelectContent />', () => {
   it('adds new content with empty activity title and description', async () => {
     const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
-    const newMeeting = meetingMockFactory({
+    const newClassroom = classroomMockFactory({
       title: null,
       description: null,
     });
-    fetchMock.post('/api/meetings/', newMeeting, {
+    fetchMock.post('/api/classrooms/', newClassroom, {
       overwriteRoutes: true,
     });
 
@@ -345,15 +345,15 @@ describe('<SelectContent />', () => {
       ),
     );
 
-    const meetingTab = await screen.findByRole('tab', {
-      name: 'Meetings',
+    const classroomTab = await screen.findByRole('tab', {
+      name: 'Classrooms',
     });
-    userEvent.click(meetingTab);
-    userEvent.click(screen.getByText('Add a meeting'));
+    userEvent.click(classroomTab);
+    userEvent.click(screen.getByText('Add a classroom'));
 
     await waitFor(() => {
       expect(
-        fetchMock.called('/api/meetings/', {
+        fetchMock.called('/api/classrooms/', {
           body: {
             playlist: playlist.id,
             title: '',
@@ -373,7 +373,7 @@ describe('<SelectContent />', () => {
         '@graph': [
           {
             '@type': 'ContentItem',
-            url: `https://example.com/lti/meetings/${newMeeting.id}`,
+            url: `https://example.com/lti/classrooms/${newClassroom.id}`,
             frame: [],
           },
         ],

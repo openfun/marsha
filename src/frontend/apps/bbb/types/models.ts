@@ -1,7 +1,7 @@
 import { Playlist, Resource } from 'types/tracks';
 import { Nullable } from 'utils/types';
 
-export interface Meeting extends Resource {
+export interface Classroom extends Resource {
   playlist: Playlist;
   title: Nullable<string>;
   description: Nullable<string>;
@@ -10,16 +10,16 @@ export interface Meeting extends Resource {
   ended: boolean;
   url: string;
   welcome_text: string;
-  infos?: MeetingInfos;
+  infos?: ClassroomInfos;
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;
 }
 
-export interface MeetingInfos {
+export interface ClassroomInfos {
   returncode: string;
-  meetingName: string;
-  meetingID: string;
-  internalMeetingID: string;
+  classroomName: string;
+  classroomID: string;
+  internalClassroomID: string;
   createTime: string;
   createDate: string;
   voiceBridge: string;
@@ -56,38 +56,38 @@ export interface Attendee {
 }
 
 export enum modelName {
-  MEETINGS = 'meetings',
+  CLASSROOMS = 'classrooms',
 }
 
-export interface CreateMeetingActionRequest {
+export interface CreateClassroomActionRequest {
   welcome_text: string;
 }
 
-export interface CreateMeetingActionResponse {
+export interface CreateClassroomActionResponse {
   createDate: string;
   createTime: string;
   dialNumber: string;
   duration: string;
   hasBeenForciblyEnded: string;
   hasUserJoined: string;
-  internalMeetingID: string;
-  meetingID: string;
+  internalClassroomID: string;
+  classroomID: string;
   message: string;
   messageKey: string;
   moderatorPW: string;
-  parentMeetingID: string;
+  parentClassroomID: string;
   returncode: string;
   voiceBridge: string;
 }
 
-export interface JoinMeetingActionRequest {
+export interface JoinClassroomActionRequest {
   fullname: string;
 }
 
-export interface JoinMeetingActionResponse {
+export interface JoinClassroomActionResponse {
   auth_token: string;
   guestStatus: string;
-  meeting_id: string;
+  classroom_id: string;
   message: string;
   messageKey: string;
   returncode: string;
@@ -96,11 +96,11 @@ export interface JoinMeetingActionResponse {
   user_id: string;
 }
 
-export interface EndMeetingActionRequest {
+export interface EndClassroomActionRequest {
   welcome_text: string;
 }
 
-export interface EndMeetingActionResponse {
+export interface EndClassroomActionResponse {
   message: string;
   messageKey: string;
   returncode: string;

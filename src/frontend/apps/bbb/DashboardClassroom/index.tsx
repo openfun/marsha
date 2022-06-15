@@ -10,39 +10,39 @@ import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useJoinMeetingAction, useMeeting } from 'apps/bbb/data/queries';
+import { useJoinClassroomAction, useClassroom } from 'apps/bbb/data/queries';
 import { Attendee } from 'apps/bbb/types/models';
-import { DashboardMeetingError } from 'apps/bbb/DashboardMeetingError';
+import { DashboardClassroomError } from 'apps/bbb/DashboardClassroomError';
 
-const DashboardMeetingStudent = lazy(
-  () => import('apps/bbb/DashboardMeetingStudent'),
+const DashboardClassroomStudent = lazy(
+  () => import('apps/bbb/DashboardClassroomStudent'),
 );
-const DashboardMeetingInstructor = lazy(
-  () => import('apps/bbb/DashboardMeetingInstructor'),
+const DashboardClassroomInstructor = lazy(
+  () => import('apps/bbb/DashboardClassroomInstructor'),
 );
-const DashboardMeetingAskUsername = lazy(
-  () => import('apps/bbb/DashboardMeetingAskUsername'),
+const DashboardClassroomAskUsername = lazy(
+  () => import('apps/bbb/DashboardClassroomAskUsername'),
 );
-const DashboardMeetingJoin = lazy(
-  () => import('apps/bbb/DashboardMeetingJoin'),
+const DashboardClassroomJoin = lazy(
+  () => import('apps/bbb/DashboardClassroomJoin'),
 );
 
 const messages = defineMessages({
-  loadingMeeting: {
-    defaultMessage: 'Loading meeting...',
+  loadingClassroom: {
+    defaultMessage: 'Loading classroom...',
     description:
-      'Accessible message for the spinner while loading the meeting in dashboard view.',
-    id: 'component.DashboardMeeting.loadingMeeting',
+      'Accessible message for the spinner while loading the classroom in dashboard view.',
+    id: 'component.DashboardClassroom.loadingClassroom',
   },
-  startMeetingSuccess: {
-    defaultMessage: 'Meeting started.',
-    description: 'Message when meeting start is successful.',
-    id: 'component.DashboardMeeting.startMeetingSuccess',
+  startClassroomSuccess: {
+    defaultMessage: 'Classroom started.',
+    description: 'Message when classroom start is successful.',
+    id: 'component.DashboardClassroom.startClassroomSuccess',
   },
-  startMeetingFail: {
-    defaultMessage: 'Meeting not started!',
-    description: 'Message when meeting start failed.',
-    id: 'component.DashboardMeeting.startMeetingFail',
+  startClassroomFail: {
+    defaultMessage: 'Classroom not started!',
+    description: 'Message when classroom start failed.',
+    id: 'component.DashboardClassroom.startClassroomFail',
   },
 });
 
@@ -112,26 +112,26 @@ const bbbTheme: ThemeType = deepMerge(theme, {
   },
 });
 
-const DashboardMeeting = () => {
+const DashboardClassroom = () => {
   const intl = useIntl();
   let canUpdate: boolean;
   try {
     canUpdate = getDecodedJwt().permissions.can_update;
   } catch (e) {
-    return <DashboardMeetingError />;
+    return <DashboardClassroomError />;
   }
 
-  const meetingRefetchInterval = useRef(5000);
-  const [meetingUrl, setMeetingUrl] = useState('');
+  const classroomRefetchInterval = useRef(5000);
+  const [classroomUrl, setClassroomUrl] = useState('');
   const [askUsername, setAskUsername] = useState(false);
-  const [meetingJoined, setMeetingJoined] = useState(false);
+  const [classroomJoined, setClassroomJoined] = useState(false);
   const [userFullname, setUserFullname] = useState(
     getDecodedJwt().user?.user_fullname || '',
   );
 
-  const { data: meeting, status: useMeetingStatus } = useMeeting(
-    bbbAppData.meeting!.id,
-    { refetchInterval: meetingRefetchInterval.current },
+  const { data: classroom, status: useClassroomStatus } = useClassroom(
+    bbbAppData.classroom!.id,
+    { refetchInterval: classroomRefetchInterval.current },
   );
 
   const consumerSiteUserId = `${getDecodedJwt().consumer_site}_${
@@ -140,8 +140,8 @@ const DashboardMeeting = () => {
 
   useEffect(() => {
     let attendeeFound: Maybe<Attendee>;
-    if (meeting?.infos?.attendees) {
-      attendeeFound = meeting.infos.attendees?.find((attendee) => {
+    if (classroom?.infos?.attendees) {
+      attendeeFound = classroom.infos.attendees?.find((attendee) => {
         return (
           consumerSiteUserId === attendee.userID &&
           (attendee.hasVideo === 'true' ||
@@ -153,29 +153,32 @@ const DashboardMeeting = () => {
 
     if (attendeeFound) {
       setUserFullname(attendeeFound.fullName);
-      setMeetingJoined(true);
+      setClassroomJoined(true);
     } else {
-      setMeetingJoined(false);
-      setMeetingUrl('');
+      setClassroomJoined(false);
+      setClassroomUrl('');
     }
-  }, [meeting]);
+  }, [classroom]);
 
-  const joinMeetingMutation = useJoinMeetingAction(bbbAppData.meeting!.id, {
-    onSuccess: (data) => {
-      const openedWindow = window.open(data.url, '_blank');
-      if (!openedWindow) {
-        setMeetingUrl(data.url);
-      }
+  const joinClassroomMutation = useJoinClassroomAction(
+    bbbAppData.classroom!.id,
+    {
+      onSuccess: (data) => {
+        const openedWindow = window.open(data.url, '_blank');
+        if (!openedWindow) {
+          setClassroomUrl(data.url);
+        }
 
-      // stop meeting polling for students
-      if (!canUpdate) {
-        meetingRefetchInterval.current = 0;
-      }
+        // stop classroom polling for students
+        if (!canUpdate) {
+          classroomRefetchInterval.current = 0;
+        }
+      },
+      onError: () => {
+        toast.error(intl.formatMessage(messages.startClassroomFail));
+      },
     },
-    onError: () => {
-      toast.error(intl.formatMessage(messages.startMeetingFail));
-    },
-  });
+  );
 
   const openAskUserNameAction = () => {
     setAskUsername(true);
@@ -183,87 +186,87 @@ const DashboardMeeting = () => {
   const closeAskUserNameAction = () => {
     setAskUsername(false);
   };
-  const joinMeetingAction = () => {
+  const joinClassroomAction = () => {
     if (userFullname) {
       closeAskUserNameAction();
-      joinMeetingMutation.mutate({ fullname: userFullname });
+      joinClassroomMutation.mutate({ fullname: userFullname });
     } else {
       openAskUserNameAction();
     }
   };
 
-  const meetingEnded = () => {
-    setMeetingUrl('');
+  const classroomEnded = () => {
+    setClassroomUrl('');
     closeAskUserNameAction();
   };
 
   let content: JSX.Element;
-  switch (useMeetingStatus) {
+  switch (useClassroomStatus) {
     case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">
-          <FormattedMessage {...messages.loadingMeeting} />
+          <FormattedMessage {...messages.loadingClassroom} />
         </Spinner>
       );
       break;
 
     case 'error':
-      content = <DashboardMeetingError />;
+      content = <DashboardClassroomError />;
       break;
 
     case 'success':
       if (askUsername) {
-        // When joining a meeting and user fullname is missing
+        // When joining a classroom and user fullname is missing
         if (canUpdate) {
-          // Instructors can cancel joining a meeting
+          // Instructors can cancel joining a classroom
           content = (
-            <DashboardMeetingAskUsername
+            <DashboardClassroomAskUsername
               userFullname={userFullname}
               setUserFullname={setUserFullname}
-              onJoin={joinMeetingAction}
+              onJoin={joinClassroomAction}
               onCancel={closeAskUserNameAction}
             />
           );
         } else {
-          // Students can not cancel joining a meeting
+          // Students can not cancel joining a classroom
           content = (
-            <DashboardMeetingAskUsername
+            <DashboardClassroomAskUsername
               userFullname={userFullname}
               setUserFullname={setUserFullname}
-              onJoin={joinMeetingAction}
+              onJoin={joinClassroomAction}
             />
           );
         }
       } else if (!canUpdate) {
         // Student dashboard
         content = (
-          <DashboardMeetingStudent
-            meeting={meeting!}
-            joinedAs={meetingJoined && userFullname}
-            joinMeetingAction={joinMeetingAction}
-            meetingEnded={meetingEnded}
+          <DashboardClassroomStudent
+            classroom={classroom!}
+            joinedAs={classroomJoined && userFullname}
+            joinClassroomAction={joinClassroomAction}
+            classroomEnded={classroomEnded}
           />
         );
       } else {
         // Instructor dashboard
         content = (
-          <DashboardMeetingInstructor
-            meeting={meeting!}
-            joinedAs={meetingJoined && userFullname}
-            joinMeetingAction={joinMeetingAction}
-            meetingEnded={meetingEnded}
+          <DashboardClassroomInstructor
+            classroom={classroom!}
+            joinedAs={classroomJoined && userFullname}
+            joinClassroomAction={joinClassroomAction}
+            classroomEnded={classroomEnded}
           />
         );
       }
 
-      if (!meetingJoined && meetingUrl && meeting?.started) {
-        // When user is not in the meeting,
-        // meeting url is appended to current dashboard
+      if (!classroomJoined && classroomUrl && classroom?.started) {
+        // When user is not in the classroom,
+        // classroom url is appended to current dashboard
         content = (
           <React.Fragment>
             {content}
-            <DashboardMeetingJoin href={meetingUrl} />
+            <DashboardClassroomJoin href={classroomUrl} />
           </React.Fragment>
         );
       }
@@ -279,4 +282,4 @@ const DashboardMeeting = () => {
   );
 };
 
-export default DashboardMeeting;
+export default DashboardClassroom;

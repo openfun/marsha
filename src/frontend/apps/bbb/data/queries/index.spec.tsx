@@ -3,15 +3,15 @@ import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
 
 import {
-  useMeeting,
-  useMeetings,
-  useCreateMeeting,
-  useUpdateMeeting,
-  useCreateMeetingAction,
-  useJoinMeetingAction,
+  useClassroom,
+  useClassrooms,
+  useCreateClassroom,
+  useUpdateClassroom,
+  useCreateClassroomAction,
+  useJoinClassroomAction,
 } from '.';
 
 setLogger({
@@ -54,13 +54,13 @@ describe('queries', () => {
     jest.resetAllMocks();
   });
 
-  describe('useMeetings', () => {
+  describe('useClassrooms', () => {
     it('requests the resource list', async () => {
-      const meetings = Array(4).fill(meetingMockFactory());
-      fetchMock.mock('/api/meetings/?organization=1&limit=999', meetings);
+      const classrooms = Array(4).fill(classroomMockFactory());
+      fetchMock.mock('/api/classrooms/?organization=1&limit=999', classrooms);
 
       const { result, waitFor } = renderHook(
-        () => useMeetings({ organization: '1' }),
+        () => useClassrooms({ organization: '1' }),
         {
           wrapper: Wrapper,
         },
@@ -68,7 +68,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/meetings/?organization=1&limit=999',
+        '/api/classrooms/?organization=1&limit=999',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -76,22 +76,22 @@ describe('queries', () => {
           'Content-Type': 'application/json',
         },
       });
-      expect(result.current.data).toEqual(meetings);
+      expect(result.current.data).toEqual(classrooms);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/meetings/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/classrooms/?organization=1&limit=999', 404);
 
       const { result, waitFor } = renderHook(
-        () => useMeetings({ organization: '1' }),
+        () => useClassrooms({ organization: '1' }),
         { wrapper: Wrapper },
       );
 
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/meetings/?organization=1&limit=999',
+        '/api/classrooms/?organization=1&limit=999',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -104,38 +104,42 @@ describe('queries', () => {
     });
   });
 
-  describe('useMeeting', () => {
+  describe('useClassroom', () => {
     it('requests the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.mock(`/api/meetings/${meeting.id}/`, meeting);
+      const classroom = classroomMockFactory();
+      fetchMock.mock(`/api/classrooms/${classroom.id}/`, classroom);
 
-      const { result, waitFor } = renderHook(() => useMeeting(meeting.id), {
+      const { result, waitFor } = renderHook(() => useClassroom(classroom.id), {
         wrapper: Wrapper,
       });
       await waitFor(() => result.current.isSuccess);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/${meeting.id}/`);
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
       });
-      expect(result.current.data).toEqual(meeting);
+      expect(result.current.data).toEqual(classroom);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.mock(`/api/meetings/${meeting.id}/`, 404);
+      const classroom = classroomMockFactory();
+      fetchMock.mock(`/api/classrooms/${classroom.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => useMeeting(meeting.id), {
+      const { result, waitFor } = renderHook(() => useClassroom(classroom.id), {
         wrapper: Wrapper,
       });
 
       await waitFor(() => result.current.isError);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/${meeting.id}/`);
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -147,21 +151,21 @@ describe('queries', () => {
     });
   });
 
-  describe('useCreateMeeting', () => {
+  describe('useCreateClassroom', () => {
     it('creates the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.post('/api/meetings/', meeting);
+      const classroom = classroomMockFactory();
+      fetchMock.post('/api/classrooms/', classroom);
 
-      const { result, waitFor } = renderHook(() => useCreateMeeting(), {
+      const { result, waitFor } = renderHook(() => useCreateClassroom(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
-        playlist: meeting.playlist.id,
-        title: meeting.title!,
+        playlist: classroom.playlist.id,
+        title: classroom.title!,
       });
       await waitFor(() => result.current.isSuccess);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/`);
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -169,29 +173,29 @@ describe('queries', () => {
         },
         method: 'POST',
         body: JSON.stringify({
-          playlist: meeting.playlist.id,
-          title: meeting.title,
+          playlist: classroom.playlist.id,
+          title: classroom.title,
         }),
       });
-      expect(result.current.data).toEqual(meeting);
+      expect(result.current.data).toEqual(classroom);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to create the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.post('/api/meetings/', 400);
+      const classroom = classroomMockFactory();
+      fetchMock.post('/api/classrooms/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateMeeting(), {
+      const { result, waitFor } = renderHook(() => useCreateClassroom(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
-        playlist: meeting.playlist.id,
-        title: meeting.title!,
+        playlist: classroom.playlist.id,
+        title: classroom.title!,
       });
 
       await waitFor(() => result.current.isError);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/`);
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -199,8 +203,8 @@ describe('queries', () => {
         },
         method: 'POST',
         body: JSON.stringify({
-          playlist: meeting.playlist.id,
-          title: meeting.title,
+          playlist: classroom.playlist.id,
+          title: classroom.title,
         }),
       });
       expect(result.current.data).toEqual(undefined);
@@ -208,13 +212,13 @@ describe('queries', () => {
     });
   });
 
-  describe('useUpdateMeeting', () => {
+  describe('useUpdateClassroom', () => {
     it('updates the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/`, meeting);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/`, classroom);
 
       const { result, waitFor } = renderHook(
-        () => useUpdateMeeting(meeting.id),
+        () => useUpdateClassroom(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -224,7 +228,9 @@ describe('queries', () => {
       });
       await waitFor(() => result.current.isSuccess);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/${meeting.id}/`);
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -235,16 +241,16 @@ describe('queries', () => {
           title: 'updated title',
         }),
       });
-      expect(result.current.data).toEqual(meeting);
+      expect(result.current.data).toEqual(classroom);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/`, 400);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/`, 400);
 
       const { result, waitFor } = renderHook(
-        () => useUpdateMeeting(meeting.id),
+        () => useUpdateClassroom(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -254,7 +260,9 @@ describe('queries', () => {
       });
       await waitFor(() => result.current.isError);
 
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/meetings/${meeting.id}/`);
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
           Authorization: 'Bearer some token',
@@ -270,13 +278,13 @@ describe('queries', () => {
     });
   });
 
-  describe('useCreateMeetingAction', () => {
+  describe('useCreateClassroomAction', () => {
     it('updates the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/create/`, meeting);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/create/`, classroom);
 
       const { result, waitFor } = renderHook(
-        () => useCreateMeetingAction(meeting.id),
+        () => useCreateClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -287,7 +295,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/create/`,
+        `/api/classrooms/${classroom.id}/create/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -299,16 +307,16 @@ describe('queries', () => {
           welcome_text: 'Welcome text',
         }),
       });
-      expect(result.current.data).toEqual(meeting);
+      expect(result.current.data).toEqual(classroom);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/create/`, 400);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/create/`, 400);
 
       const { result, waitFor } = renderHook(
-        () => useCreateMeetingAction(meeting.id),
+        () => useCreateClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -319,7 +327,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/create/`,
+        `/api/classrooms/${classroom.id}/create/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -336,13 +344,13 @@ describe('queries', () => {
     });
   });
 
-  describe('useJoinMeetingAction', () => {
+  describe('useJoinClassroomAction', () => {
     it('updates the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/join/`, meeting);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/join/`, classroom);
 
       const { result, waitFor } = renderHook(
-        () => useJoinMeetingAction(meeting.id),
+        () => useJoinClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -353,7 +361,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/join/`,
+        `/api/classrooms/${classroom.id}/join/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -365,16 +373,16 @@ describe('queries', () => {
           fullname: 'John Doe',
         }),
       });
-      expect(result.current.data).toEqual(meeting);
+      expect(result.current.data).toEqual(classroom);
       expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
-      const meeting = meetingMockFactory();
-      fetchMock.patch(`/api/meetings/${meeting.id}/join/`, 400);
+      const classroom = classroomMockFactory();
+      fetchMock.patch(`/api/classrooms/${classroom.id}/join/`, 400);
 
       const { result, waitFor } = renderHook(
-        () => useJoinMeetingAction(meeting.id),
+        () => useJoinClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
         },
@@ -385,7 +393,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/meetings/${meeting.id}/join/`,
+        `/api/classrooms/${classroom.id}/join/`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

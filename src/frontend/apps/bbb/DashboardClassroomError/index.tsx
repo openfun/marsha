@@ -4,31 +4,31 @@ import React from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import {
-  DashboardMeetingLayout,
-  DashboardMeetingMessage,
-} from 'apps/bbb/DashboardMeetingLayout';
+  DashboardClassroomLayout,
+  DashboardClassroomMessage,
+} from 'apps/bbb/DashboardClassroomLayout';
 
 const errorMessages = {
   notFound: defineMessages({
     text: {
-      defaultMessage: `This meeting does not exist or has not been published yet.
+      defaultMessage: `This classroom does not exist or has not been published yet.
       If you are an instructor, please make sure you are properly authenticated.`,
       description: 'Helpful text for the 404 Not Found error page',
-      id: 'components.DashboardMeetingError.notFound.text',
+      id: 'components.DashboardClassroomError.notFound.text',
     },
     title: {
-      defaultMessage: 'The meeting you are looking for could not be found',
+      defaultMessage: 'The classroom you are looking for could not be found',
       description: 'Title for the 404 Not Found error page',
-      id: 'components.DashboardMeetingError.notFound.title',
+      id: 'components.DashboardClassroomError.notFound.title',
     },
   }),
 };
 
-export const DashboardMeetingError = () => {
+export const DashboardClassroomError = () => {
   const intl = useIntl();
   const left = (
     <Box>
-      <DashboardMeetingMessage
+      <DashboardClassroomMessage
         message={intl.formatMessage(errorMessages.notFound.title)}
       />
       <Text
@@ -40,5 +40,5 @@ export const DashboardMeetingError = () => {
       </Text>
     </Box>
   );
-  return <DashboardMeetingLayout left={left} />;
+  return <DashboardClassroomLayout left={left} />;
 };

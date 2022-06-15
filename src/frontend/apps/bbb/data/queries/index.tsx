@@ -14,117 +14,130 @@ import { fetchOne } from 'data/queries/fetchOne';
 import { updateOne } from 'data/queries/updateOne';
 
 import {
-  EndMeetingActionRequest,
-  EndMeetingActionResponse,
-  JoinMeetingActionRequest,
-  JoinMeetingActionResponse,
-  Meeting,
-  CreateMeetingActionRequest,
-  CreateMeetingActionResponse,
+  EndClassroomActionRequest,
+  EndClassroomActionResponse,
+  JoinClassroomActionRequest,
+  JoinClassroomActionResponse,
+  Classroom,
+  CreateClassroomActionRequest,
+  CreateClassroomActionResponse,
 } from 'apps/bbb/types/models';
 
-type MeetingsResponse = APIList<Meeting>;
-type UseMeetingsParams = {} | { organization: string };
-export const useMeetings = (
-  params: UseMeetingsParams,
-  queryConfig?: UseQueryOptions<MeetingsResponse, 'meetings', MeetingsResponse>,
-) => {
-  const key = ['meetings', params];
-  return useQuery<MeetingsResponse, 'meetings'>(key, fetchList, queryConfig);
-};
-
-interface MeetingsSelectResponse {
-  new_url: string;
-  meetings: Meeting[];
-}
-export const useSelectMeeting = (
+type ClassroomsResponse = APIList<Classroom>;
+type UseClassroomsParams = {} | { organization: string };
+export const useClassrooms = (
+  params: UseClassroomsParams,
   queryConfig?: UseQueryOptions<
-    MeetingsSelectResponse,
-    'meetings',
-    MeetingsSelectResponse
+    ClassroomsResponse,
+    'classrooms',
+    ClassroomsResponse
   >,
 ) => {
-  const key = ['meetings', 'lti-select'];
-  return useQuery<MeetingsSelectResponse, 'meetings'>(
+  const key = ['classrooms', params];
+  return useQuery<ClassroomsResponse, 'classrooms'>(
+    key,
+    fetchList,
+    queryConfig,
+  );
+};
+
+interface ClassroomsSelectResponse {
+  new_url: string;
+  classrooms: Classroom[];
+}
+export const useSelectClassroom = (
+  queryConfig?: UseQueryOptions<
+    ClassroomsSelectResponse,
+    'classrooms',
+    ClassroomsSelectResponse
+  >,
+) => {
+  const key = ['classrooms', 'lti-select'];
+  return useQuery<ClassroomsSelectResponse, 'classrooms'>(
     key,
     fetchOne,
     queryConfig,
   );
 };
 
-export const useMeeting = (
-  meetingId: string,
-  queryConfig?: UseQueryOptions<Meeting, 'meetings', Meeting>,
+export const useClassroom = (
+  classroomId: string,
+  queryConfig?: UseQueryOptions<Classroom, 'classrooms', Classroom>,
 ) => {
-  const key = ['meetings', meetingId];
-  return useQuery<Meeting, 'meetings'>(key, fetchOne, queryConfig);
+  const key = ['classrooms', classroomId];
+  return useQuery<Classroom, 'classrooms'>(key, fetchOne, queryConfig);
 };
 
-type UseCreateMeetingData = {
+type UseCreateClassroomData = {
   playlist: string;
   title: string;
   description?: string;
   lti_id?: string;
 };
-type UseCreateMeetingError =
+type UseCreateClassroomError =
   | { code: 'exception' }
   | {
       code: 'invalid';
-      errors: { [key in keyof UseCreateMeetingData]?: string[] }[];
+      errors: { [key in keyof UseCreateClassroomData]?: string[] }[];
     };
-type UseCreateMeetingOptions = UseMutationOptions<
-  Meeting,
-  UseCreateMeetingError,
-  UseCreateMeetingData
+type UseCreateClassroomOptions = UseMutationOptions<
+  Classroom,
+  UseCreateClassroomError,
+  UseCreateClassroomData
 >;
-export const useCreateMeeting = (options?: UseCreateMeetingOptions) => {
+export const useCreateClassroom = (options?: UseCreateClassroomOptions) => {
   const queryClient = useQueryClient();
-  return useMutation<Meeting, UseCreateMeetingError, UseCreateMeetingData>(
-    (newMeeting) => createOne({ name: 'meetings', object: newMeeting }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('meetings');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
+  return useMutation<
+    Classroom,
+    UseCreateClassroomError,
+    UseCreateClassroomData
+  >((newClassroom) => createOne({ name: 'classrooms', object: newClassroom }), {
+    ...options,
+    onSuccess: (data, variables, context) => {
+      queryClient.invalidateQueries('classrooms');
+      if (options?.onSuccess) {
+        options.onSuccess(data, variables, context);
+      }
     },
-  );
+  });
 };
 
-type UseUpdateMeetingData = Partial<
-  Omit<Meeting, 'portable_to'> & { portable_to: string[] }
+type UseUpdateClassroomData = Partial<
+  Omit<Classroom, 'portable_to'> & { portable_to: string[] }
 >;
-type UseUpdateMeetingError =
+type UseUpdateClassroomError =
   | { code: 'exception' }
   | {
       code: 'invalid';
-      errors: { [key in keyof UseUpdateMeetingData]?: string[] }[];
+      errors: { [key in keyof UseUpdateClassroomData]?: string[] }[];
     };
-type UseUpdateMeetingOptions = UseMutationOptions<
-  Meeting,
-  UseUpdateMeetingError,
-  UseUpdateMeetingData
+type UseUpdateClassroomOptions = UseMutationOptions<
+  Classroom,
+  UseUpdateClassroomError,
+  UseUpdateClassroomData
 >;
-export const useUpdateMeeting = (
+export const useUpdateClassroom = (
   id: string,
-  options?: UseUpdateMeetingOptions,
+  options?: UseUpdateClassroomOptions,
 ) => {
   const queryClient = useQueryClient();
-  return useMutation<Meeting, UseUpdateMeetingError, UseUpdateMeetingData>(
-    (updatedMeeting) =>
-      updateOne({ name: 'meetings', id, object: updatedMeeting }),
+  return useMutation<
+    Classroom,
+    UseUpdateClassroomError,
+    UseUpdateClassroomData
+  >(
+    (updatedClassroom) =>
+      updateOne({ name: 'classrooms', id, object: updatedClassroom }),
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('meetings');
+        queryClient.invalidateQueries('classrooms');
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('meetings');
+        queryClient.invalidateQueries('classrooms');
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -133,41 +146,41 @@ export const useUpdateMeeting = (
   );
 };
 
-type MutationMeetingData<MeetingRequest> = Partial<MeetingRequest>;
-type MutationMeetingError<MeetingRequest> =
+type MutationClassroomData<ClassroomRequest> = Partial<ClassroomRequest>;
+type MutationClassroomError<ClassroomRequest> =
   | { code: 'exception' }
   | {
       code: 'invalid';
       errors: {
-        [key in keyof MutationMeetingData<MeetingRequest>]?: string[];
+        [key in keyof MutationClassroomData<ClassroomRequest>]?: string[];
       }[];
     };
-type MutationMeetingOptions<MeetingResponse, MeetingRequest> =
+type MutationClassroomOptions<ClassroomResponse, ClassroomRequest> =
   UseMutationOptions<
-    MeetingResponse,
-    MutationMeetingError<MeetingRequest>,
-    MutationMeetingData<MeetingRequest>
+    ClassroomResponse,
+    MutationClassroomError<ClassroomRequest>,
+    MutationClassroomData<ClassroomRequest>
   >;
-enum MutationMeetingAction {
+enum MutationClassroomAction {
   CREATE = 'create',
   END = 'end',
   JOIN = 'join',
 }
-const meetingActionMutation =
-  <MeetingResponse, MeetingRequest>(action: MutationMeetingAction) =>
+const classroomActionMutation =
+  <ClassroomResponse, ClassroomRequest>(action: MutationClassroomAction) =>
   (
     id: string,
-    options?: MutationMeetingOptions<MeetingResponse, MeetingRequest>,
+    options?: MutationClassroomOptions<ClassroomResponse, ClassroomRequest>,
   ) => {
     const queryClient = useQueryClient();
     return useMutation<
-      MeetingResponse,
-      MutationMeetingError<MeetingRequest>,
-      MutationMeetingData<MeetingRequest>
+      ClassroomResponse,
+      MutationClassroomError<ClassroomRequest>,
+      MutationClassroomData<ClassroomRequest>
     >(
       (object) =>
         actionOne({
-          name: 'meetings',
+          name: 'classrooms',
           id,
           action,
           object,
@@ -175,13 +188,13 @@ const meetingActionMutation =
       {
         ...options,
         onSuccess: (data, variables, context) => {
-          queryClient.invalidateQueries('meetings');
+          queryClient.invalidateQueries('classrooms');
           if (options?.onSuccess) {
             options.onSuccess(data, variables, context);
           }
         },
         onError: (error, variables, context) => {
-          queryClient.invalidateQueries('meetings');
+          queryClient.invalidateQueries('classrooms');
           if (options?.onError) {
             options.onError(error, variables, context);
           }
@@ -190,15 +203,15 @@ const meetingActionMutation =
     );
   };
 
-export const useCreateMeetingAction = meetingActionMutation<
-  CreateMeetingActionResponse,
-  CreateMeetingActionRequest
->(MutationMeetingAction.CREATE);
-export const useJoinMeetingAction = meetingActionMutation<
-  JoinMeetingActionResponse,
-  JoinMeetingActionRequest
->(MutationMeetingAction.JOIN);
-export const useEndMeetingAction = meetingActionMutation<
-  EndMeetingActionResponse,
-  EndMeetingActionRequest
->(MutationMeetingAction.END);
+export const useCreateClassroomAction = classroomActionMutation<
+  CreateClassroomActionResponse,
+  CreateClassroomActionRequest
+>(MutationClassroomAction.CREATE);
+export const useJoinClassroomAction = classroomActionMutation<
+  JoinClassroomActionResponse,
+  JoinClassroomActionRequest
+>(MutationClassroomAction.JOIN);
+export const useEndClassroomAction = classroomActionMutation<
+  EndClassroomActionResponse,
+  EndClassroomActionRequest
+>(MutationClassroomAction.END);

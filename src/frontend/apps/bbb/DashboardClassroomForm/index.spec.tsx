@@ -10,14 +10,14 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Deferred } from 'utils/tests/Deferred';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardMeetingForm from './index';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import DashboardClassroomForm from './index';
 
 let matchMedia: MatchMediaMock;
 
 jest.mock('data/appData', () => ({
   appData: {
-    modelName: 'meetings',
+    modelName: 'classrooms',
     resource: {
       id: '1',
     },
@@ -33,7 +33,7 @@ Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
-describe('<DashboardMeetingForm />', () => {
+describe('<DashboardClassroomForm />', () => {
   beforeAll(() => {
     matchMedia = new MatchMediaMock();
   });
@@ -50,52 +50,52 @@ describe('<DashboardMeetingForm />', () => {
     jest.useRealTimers();
   });
 
-  it('creates a meeting with current values', async () => {
-    const meeting = meetingMockFactory({ id: '1', started: false });
+  it('creates a classroom with current values', async () => {
+    const classroom = classroomMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, findByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <Toaster />
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
     getByText('Title');
     getByText('Welcome text');
 
-    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
+    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting created.' }),
+      deferredPatch.resolve({ message: 'Classroom created.' }),
     );
-    await findByText('Meeting created.');
+    await findByText('Classroom created.');
 
     expect(fetchMock.calls()).toHaveLength(1);
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/create/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/create/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
-      body: JSON.stringify(meeting),
+      body: JSON.stringify(classroom),
     });
   });
 
-  it('creates a meeting with updated values', async () => {
-    const meeting = meetingMockFactory({ id: '1', started: false });
+  it('creates a classroom with updated values', async () => {
+    const classroom = classroomMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
@@ -109,13 +109,13 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.type(inputTitle, 'updated title');
     fireEvent.blur(inputTitle);
 
-    // simulate updated meeting
+    // simulate updated classroom
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{
-              ...meeting,
+          <DashboardClassroomForm
+            classroom={{
+              ...classroom,
               title: 'updated title',
             }}
           />
@@ -128,24 +128,24 @@ describe('<DashboardMeetingForm />', () => {
     });
     userEvent.type(inputWelcomeText, 'updated welcome text', {
       initialSelectionStart: 0,
-      initialSelectionEnd: meeting.welcome_text.length,
+      initialSelectionEnd: classroom.welcome_text.length,
     });
 
-    // wait for debounce to update the meeting
-    fetchMock.patch('/api/meetings/1/', {
-      ...meeting,
+    // wait for debounce to update the classroom
+    fetchMock.patch('/api/classrooms/1/', {
+      ...classroom,
       title: 'updated title',
       welcomeText: 'updated welcome text',
     });
     jest.runAllTimers();
 
-    // simulate updated meeting
+    // simulate updated classroom
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{
-              ...meeting,
+          <DashboardClassroomForm
+            classroom={{
+              ...classroom,
               title: 'updated title',
               welcome_text: 'updated welcome text',
             }}
@@ -154,14 +154,14 @@ describe('<DashboardMeetingForm />', () => {
       ),
     );
 
-    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
+    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting created.' }),
+      deferredPatch.resolve({ message: 'Classroom created.' }),
     );
 
     expect(fetchMock.calls()).toHaveLength(3);
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -172,7 +172,7 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -183,33 +183,33 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/create/');
+    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/create/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
       method: 'PATCH',
       body: JSON.stringify({
-        ...meeting,
+        ...classroom,
         title: 'updated title',
         welcome_text: 'updated welcome text',
       }),
     });
   });
 
-  it('schedules a meeting', async () => {
+  it('schedules a classroom', async () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const classroom = classroomMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
@@ -223,12 +223,12 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.type(inputTitle, 'updated title');
     fireEvent.blur(inputTitle);
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{ ...meeting, title: 'updated title' }}
+          <DashboardClassroomForm
+            classroom={{ ...classroom, title: 'updated title' }}
           />
         </QueryClientProvider>,
       ),
@@ -239,18 +239,18 @@ describe('<DashboardMeetingForm />', () => {
     });
     userEvent.type(inputWelcomeText, 'updated welcome text', {
       initialSelectionStart: 0,
-      initialSelectionEnd: meeting.welcome_text.length,
+      initialSelectionEnd: classroom.welcome_text.length,
     });
     fireEvent.blur(inputWelcomeText);
 
     jest.runAllTimers();
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
     expect(fetchMock.calls()).toHaveLength(2);
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -261,7 +261,7 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -272,13 +272,13 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{
-              ...meeting,
+          <DashboardClassroomForm
+            classroom={{
+              ...classroom,
               title: 'updated title',
               welcome_text: 'updated welcome text',
             }}
@@ -291,7 +291,7 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.type(inputStartingAtDate, startingAt.toFormat('yyyy/MM/dd'));
     fireEvent.blur(inputStartingAtDate);
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
     // using userEvent.type with following input doesn't work
@@ -301,13 +301,13 @@ describe('<DashboardMeetingForm />', () => {
     });
     fireEvent.blur(inputStartingAtTime);
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{
-              ...meeting,
+          <DashboardClassroomForm
+            classroom={{
+              ...classroom,
               title: 'updated title',
               starting_at: startingAt.toISO(),
             }}
@@ -320,13 +320,13 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.type(inputEstimatedDuration, estimatedDuration.toFormat('h:mm'));
     fireEvent.blur(inputEstimatedDuration);
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{
-              ...meeting,
+          <DashboardClassroomForm
+            classroom={{
+              ...classroom,
               title: 'updated title',
               starting_at: startingAt.toISO(),
               estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
@@ -337,12 +337,12 @@ describe('<DashboardMeetingForm />', () => {
     );
 
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
     expect(fetchMock.calls()).toHaveLength(4);
 
-    expect(fetchMock.calls()[2]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[2]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[2]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -353,7 +353,7 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[3]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[3]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[3]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -365,10 +365,10 @@ describe('<DashboardMeetingForm />', () => {
     });
   });
 
-  it('updates a meeting scheduled', async () => {
+  it('updates a classroom scheduled', async () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       starting_at: startingAt.toISO(),
@@ -377,12 +377,12 @@ describe('<DashboardMeetingForm />', () => {
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
@@ -398,15 +398,15 @@ describe('<DashboardMeetingForm />', () => {
     // Blur event should trigger update
     fireEvent.blur(inputTitle);
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm
-            meeting={{ ...meeting, title: 'updated title' }}
+          <DashboardClassroomForm
+            classroom={{ ...classroom, title: 'updated title' }}
           />
         </QueryClientProvider>,
       ),
@@ -417,17 +417,17 @@ describe('<DashboardMeetingForm />', () => {
     });
     userEvent.type(inputWelcomeText, 'updated welcome text', {
       initialSelectionStart: 0,
-      initialSelectionEnd: meeting.welcome_text?.length,
+      initialSelectionEnd: classroom.welcome_text?.length,
     });
 
     jest.runAllTimers();
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
     expect(fetchMock.calls()).toHaveLength(2);
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -438,7 +438,7 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -450,10 +450,10 @@ describe('<DashboardMeetingForm />', () => {
     });
   });
 
-  it('clears a meeting scheduled', async () => {
+  it('clears a classroom scheduled', async () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       starting_at: startingAt.toISO(),
@@ -462,12 +462,12 @@ describe('<DashboardMeetingForm />', () => {
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
@@ -478,11 +478,13 @@ describe('<DashboardMeetingForm />', () => {
     userEvent.clear(inputStartingAtDate);
     fireEvent.blur(inputStartingAtDate);
 
-    // simulate meeting update
+    // simulate classroom update
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingForm meeting={{ ...meeting, starting_at: null }} />
+          <DashboardClassroomForm
+            classroom={{ ...classroom, starting_at: null }}
+          />
         </QueryClientProvider>,
       ),
     );
@@ -492,12 +494,12 @@ describe('<DashboardMeetingForm />', () => {
 
     jest.runAllTimers();
     await act(async () =>
-      deferredPatch.resolve({ message: 'Meeting scheduled.' }),
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
     );
 
     expect(fetchMock.calls()).toHaveLength(2);
 
-    expect(fetchMock.calls()[0][0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -508,7 +510,7 @@ describe('<DashboardMeetingForm />', () => {
       }),
     });
 
-    expect(fetchMock.calls()[1][0]).toEqual('/api/meetings/1/');
+    expect(fetchMock.calls()[1][0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -520,25 +522,25 @@ describe('<DashboardMeetingForm />', () => {
     });
   });
 
-  it('shows an error when meeting title is missing', async () => {
-    const meeting = meetingMockFactory({ title: null, id: '1' });
+  it('shows an error when classroom title is missing', async () => {
+    const classroom = classroomMockFactory({ title: null, id: '1' });
     const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/create/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, queryByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <Toaster />
-          <DashboardMeetingForm meeting={meeting} />
+          <DashboardClassroomForm classroom={classroom} />
         </QueryClientProvider>,
       ),
     );
 
     // title empty, error message should be shown
-    getByText('Title is required to launch the meeting.');
-    const launchButton = getByText('Launch the meeting now in BBB');
+    getByText('Title is required to launch the classroom.');
+    const launchButton = getByText('Launch the classroom now in BBB');
     expect(launchButton).toBeDisabled();
 
     // title filled, error message should be hidden
@@ -546,7 +548,9 @@ describe('<DashboardMeetingForm />', () => {
       name: /title/i,
     });
     userEvent.type(inputTitle, 'updated title');
-    const titleError = queryByText('Title is required to launch the meeting.');
+    const titleError = queryByText(
+      'Title is required to launch the classroom.',
+    );
     expect(titleError).not.toBeInTheDocument();
   });
 });
