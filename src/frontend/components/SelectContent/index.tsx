@@ -23,14 +23,15 @@ import {
 } from 'react-intl';
 import styled from 'styled-components';
 
-import { Document } from 'types/file';
-import { appNames } from 'types/AppData';
-import { Playlist, Video, videoSize } from 'types/tracks';
-import { Nullable } from 'utils/types';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 import { Loader } from 'components/Loader';
 import { appConfigs } from 'data/appConfigs';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
+import { initiateLive } from 'data/sideEffects/initiateLive';
+import { appNames } from 'types/AppData';
+import { Document } from 'types/file';
+import { Live, LiveModeType, Playlist, Video, videoSize } from 'types/tracks';
+import { Nullable } from 'utils/types';
+import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -47,6 +48,11 @@ const messages = defineMessages({
     defaultMessage: 'Add a document',
     description: `Text displayed on a button to add a new document.`,
     id: 'components.SelectContent.addDocument',
+  },
+  addWebinar: {
+    defaultMessage: 'Add a webinar',
+    description: `Text displayed on a button to add a new webinar.`,
+    id: 'components.SelectContent.addWebinar',
   },
   cancel: {
     defaultMessage: 'Cancel',
@@ -281,6 +287,7 @@ interface SelectContentProps {
   playlist?: Playlist;
   documents?: Document[];
   videos?: Video[];
+  webinars?: Live[];
   new_document_url?: string;
   new_video_url?: string;
   lti_select_form_action_url: string;
@@ -293,6 +300,7 @@ export const SelectContent = ({
   playlist,
   documents,
   videos,
+  webinars,
   new_document_url,
   new_video_url,
   lti_select_form_action_url,
@@ -301,8 +309,12 @@ export const SelectContent = ({
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
   const useCreateVideoMutation = useCreateVideo({
-    onSuccess: (video) =>
-      selectContent(new_video_url + video.id, video.title, video.description),
+    onSuccess: async (video, variables) => {
+      if (variables.live_type) {
+        await initiateLive(video, variables.live_type);
+      }
+      selectContent(new_video_url + video.id, video.title, video.description);
+    },
   });
   const useCreateDocumentMutation = useCreateDocument({
     onSuccess: (document) =>
@@ -421,6 +433,23 @@ export const SelectContent = ({
       </form>
 
       <Tabs>
+        <Tab title="Webinars">
+          <SelectContentSection
+            addMessage={messages.addWebinar}
+            addAndSelectContent={async () => {
+              useCreateVideoMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+                live_type: LiveModeType.JITSI,
+              });
+            }}
+            newLtiUrl={new_video_url!}
+            items={webinars!}
+            selectContent={selectContent}
+          />
+        </Tab>
+
         <Tab title="Videos">
           <SelectContentSection
             addMessage={messages.addVideo}

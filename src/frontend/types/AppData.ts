@@ -1,7 +1,7 @@
 import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { modelName } from './models';
-import { Playlist, Video } from './tracks';
+import { Live, Playlist, Video } from './tracks';
 
 export enum appState {
   ERROR = 'error',
@@ -29,6 +29,7 @@ export interface AppData {
   state: appState;
   video?: Nullable<Video>;
   videos?: Video[];
+  webinars?: Live[];
   document?: Nullable<Document>;
   documents?: Document[];
   resource?: any;

@@ -836,4 +836,5 @@ def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
 
     # ensure video is available in new_playlist
     lti_select_iframe = page.frame("lti_select")
+    lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
     lti_select_iframe.text_content(f'[title="Select {video.title}"]')

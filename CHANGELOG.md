@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add video stats from configurable grafana backend
 - Add shared media support for the teacher
 - Manage live media sharing with picture-in-picture on student side
+- Add a webinar tab to the LTI select view
 
 ### Fixed
 

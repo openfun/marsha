@@ -4493,6 +4493,78 @@ class VideoAPITest(TestCase):
             },
         )
 
+    def test_api_video_instructor_initiate_live_with_playlist_token(self):
+        """
+        Initiate a live with playlist token.
+
+        Used in the context of a lti select request (deep linking).
+        """
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+        )
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = "None"
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token.payload["playlist_id"] = str(video.playlist.id)
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video"
+        ) as mock_dispatch_video:
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-live/",
+                {"type": "raw"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video.assert_called_with(video, to_admin=True)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "allow_recording": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "id": str(video.id),
+                "title": video.title,
+                "active_stamp": None,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "show_download": True,
+                "starting_at": None,
+                "upload_state": "pending",
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "urls": None,
+                "should_use_subtitle_as_transcript": False,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "foo bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001",
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": "idle",
+                "live_info": {},
+                "xmpp": None,
+                "live_type": "raw",
+            },
+        )
+
     def test_api_video_instructor_initiate_jitsi_live(self):
         """An instructor should be able to initiate a jitsi live."""
         video = factories.VideoFactory(

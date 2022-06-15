@@ -12,13 +12,14 @@ from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from ..defaults import ENDED, IDLE, JITSI
 from ..factories import DocumentFactory, PlaylistFactory, VideoFactory
 from ..models import Playlist
 from .utils import generate_passport_and_signed_lti_parameters
 
 
 # We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument,too-many-lines
+# pylint: disable=unused-argument,too-many-lines,too-many-locals
 
 
 class SelectLTIViewTestCase(TestCase):
@@ -65,10 +66,23 @@ class SelectLTIViewTestCase(TestCase):
             playlist=playlist,
             uploaded_on=timezone.now(),
             resolutions=resolutions,
+            position=1,
         )
         document = DocumentFactory(
             playlist=playlist,
             uploaded_on=timezone.now(),
+        )
+        webinar = VideoFactory(
+            playlist=playlist,
+            live_state=IDLE,
+            live_type=JITSI,
+            position=2,
+        )
+        vod_webinar = VideoFactory(
+            playlist=playlist,
+            live_state=ENDED,
+            live_type=JITSI,
+            position=3,
         )
 
         response = self.client.post(
@@ -90,9 +104,22 @@ class SelectLTIViewTestCase(TestCase):
             f"http://testserver/lti/videos/{video.id}",
         )
         self.assertEqual(
+            context.get("videos")[1].get("lti_url"),
+            f"http://testserver/lti/videos/{vod_webinar.id}",
+        )
+        self.assertEqual(len(context.get("videos")), 2)
+
+        self.assertEqual(
             context.get("documents")[0].get("lti_url"),
             f"http://testserver/lti/documents/{document.id}",
         )
+        self.assertEqual(len(context.get("documents")), 1)
+
+        self.assertEqual(
+            context.get("webinars")[0].get("lti_url"),
+            f"http://testserver/lti/videos/{webinar.id}",
+        )
+        self.assertEqual(len(context.get("webinars")), 1)
 
         self.assertEqual(
             context.get("new_document_url"), "http://testserver/lti/documents/"

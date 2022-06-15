@@ -7,15 +7,17 @@ import { Toaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { appData } from 'data/appData';
+import { initiateLive } from 'data/sideEffects/initiateLive';
 import {
   documentMockFactory,
+  liveMockFactory,
   playlistMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { uploadState } from 'types/tracks';
+import { LiveModeType, liveState, uploadState } from 'types/tracks';
 
-import { SelectContent, SelectContentTabProps } from './index';
+import { SelectContent, SelectContentTabProps } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -29,6 +31,13 @@ jest.mock('data/appData', () => ({
 jest.mock('components/Loader', () => ({
   Loader: () => <span>Loader</span>,
 }));
+
+jest.mock('data/sideEffects/initiateLive', () => ({
+  initiateLive: jest.fn(),
+}));
+const mockedInitiateLive = initiateLive as jest.MockedFunction<
+  typeof initiateLive
+>;
 
 const mockCustomSelectContentTab = ({
   selectContent,
@@ -143,6 +152,24 @@ describe('<SelectContent />', () => {
                   is_ready_to_show: true,
                 }),
               ]}
+              webinars={[
+                liveMockFactory({
+                  id: '3',
+                  title: 'Webinar 1',
+                  upload_state: uploadState.PROCESSING,
+                  is_ready_to_show: false,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                }),
+                liveMockFactory({
+                  id: '4',
+                  title: 'Webinar 2',
+                  upload_state: uploadState.READY,
+                  is_ready_to_show: true,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                }),
+              ]}
               new_document_url={appData.new_document_url}
               new_video_url={appData.new_video_url}
               lti_select_form_action_url={appData.lti_select_form_action_url!}
@@ -154,6 +181,38 @@ describe('<SelectContent />', () => {
     );
 
     screen.getByText('Playlist Playlist 1 (1)');
+
+    // Webinars tab
+    const webinar1 = screen.getByTitle('Select Webinar 1');
+    expect(webinar1.getElementsByTagName('img')[0]).toHaveAttribute(
+      'src',
+      'https://example.com/default_thumbnail/144',
+    );
+
+    expect(screen.queryByText('Webinar 1')).toBeNull();
+    expect(screen.queryByText('Not uploaded')).toBeNull();
+    expect(screen.queryByText('Not ready to show')).toBeNull();
+    userEvent.hover(webinar1);
+    screen.getByText('Webinar 1');
+    screen.getByLabelText('Not uploaded');
+    screen.getByLabelText('Not ready to show');
+    userEvent.unhover(webinar1);
+
+    expect(screen.queryByText('Webinar 2')).toBeNull();
+    expect(screen.queryByText('Uploaded')).toBeNull();
+    expect(screen.queryByText('Ready to show')).toBeNull();
+    const webinar2 = screen.getByTitle('Select Webinar 2');
+    userEvent.hover(webinar2);
+    screen.getByText('Webinar 2');
+    screen.getByLabelText('Uploaded');
+    screen.getByLabelText('Ready to show');
+    userEvent.unhover(webinar2);
+
+    // Videos Tab
+    const videoTab = screen.getByRole('tab', {
+      name: /videos/i,
+    });
+    userEvent.click(videoTab);
 
     const video1 = screen.getByTitle('Select Video 1');
     expect(video1.getElementsByTagName('img')[0]).toHaveAttribute(
@@ -177,14 +236,11 @@ describe('<SelectContent />', () => {
     screen.getByText('Video 2');
     screen.getByLabelText('Uploaded');
     screen.getByLabelText('Ready to show');
-
-    screen.getByRole('tab', {
-      name: /videos/i,
-    });
-
     expect(screen.queryByText('Document 1')).toBeNull();
     expect(screen.queryByText('Not uploaded')).toBeNull();
     expect(screen.queryByText('Not ready to show')).toBeNull();
+
+    // Documents Tab
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
@@ -229,7 +285,7 @@ describe('<SelectContent />', () => {
         </QueryClientProvider>,
       ),
     );
-
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     screen.getByTitle('Select Video 1');
     expect(
       screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
@@ -272,6 +328,7 @@ describe('<SelectContent />', () => {
       ),
     );
 
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     screen.getByTitle('Select Video 1');
     expect(
       screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
@@ -314,6 +371,7 @@ describe('<SelectContent />', () => {
       ),
     );
 
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     screen.getByTitle('Select Video 1');
     expect(
       screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
@@ -345,6 +403,7 @@ describe('<SelectContent />', () => {
       ),
     );
 
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     userEvent.hover(screen.getByTitle('Select Video 1'));
     screen.getByText('Video 1');
     screen.getByLabelText('Not uploaded');
@@ -554,6 +613,68 @@ describe('<SelectContent />', () => {
     });
   });
 
+  it('adds new webinar', async () => {
+    const playlist = playlistMockFactory();
+    const video = videoMockFactory({
+      title: null,
+      description: null,
+    });
+    fetchMock.post('/api/videos/', video);
+
+    const { container } = render(
+      wrapInIntlProvider(
+        <QueryClientProvider client={queryClient}>
+          <SelectContent
+            playlist={playlist}
+            documents={appData.documents}
+            videos={appData.videos}
+            new_document_url={appData.new_document_url}
+            new_video_url={appData.new_video_url}
+            lti_select_form_action_url={appData.lti_select_form_action_url!}
+            lti_select_form_data={appData.lti_select_form_data!}
+          />
+        </QueryClientProvider>,
+      ),
+    );
+    act(() => {
+      userEvent.click(screen.getByText('Add a webinar'));
+    });
+
+    await waitFor(() => {
+      expect(
+        fetchMock.called('/api/videos/', {
+          body: {
+            playlist: playlist.id,
+            live_type: LiveModeType.JITSI,
+          },
+          method: 'POST',
+        }),
+      ).toBe(true);
+
+      expect(mockedInitiateLive).toHaveBeenCalledWith(
+        video,
+        LiveModeType.JITSI,
+      );
+
+      expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+    });
+
+    const form = container.querySelector('form');
+    expect(form).toHaveFormValues({
+      content_items: JSON.stringify({
+        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
+        '@graph': [
+          {
+            '@type': 'ContentItem',
+            url: `https://example.com/lti/videos/${video.id}`,
+            frame: [],
+          },
+        ],
+      }),
+    });
+    expect(form).toHaveAttribute('action', '/lti/select/');
+  });
+
   it('adds new content', async () => {
     const playlist = playlistMockFactory();
     const video = videoMockFactory({
@@ -577,6 +698,7 @@ describe('<SelectContent />', () => {
         </QueryClientProvider>,
       ),
     );
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });
@@ -638,6 +760,7 @@ describe('<SelectContent />', () => {
         </QueryClientProvider>,
       ),
     );
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });
@@ -703,6 +826,7 @@ describe('<SelectContent />', () => {
         </QueryClientProvider>,
       ),
     );
+    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });

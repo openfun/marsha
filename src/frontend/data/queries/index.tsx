@@ -11,6 +11,7 @@ import { APIList } from 'types/api';
 import { Document } from 'types/file';
 import { Organization } from 'types/Organization';
 import {
+  LiveModeType,
   Playlist,
   SharedLiveMedia,
   Thumbnail,
@@ -18,6 +19,8 @@ import {
   Video,
   VideoStats,
 } from 'types/tracks';
+import { Nullable } from 'utils/types';
+
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { deleteOne } from './deleteOne';
@@ -176,6 +179,7 @@ type UseCreateVideoData = {
   title: string;
   description?: string;
   lti_id?: string;
+  live_type?: Nullable<LiveModeType>;
 };
 type UseCreateVideoError =
   | { code: 'exception' }
