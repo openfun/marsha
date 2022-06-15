@@ -6,37 +6,37 @@ import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButton
 
 const messages = defineMessages({
   label: {
-    defaultMessage: 'Please enter your name to join the meeting',
-    description: 'Label for asking username to join the meeting.',
-    id: 'component.DashboardMeetingAskUsername.label',
+    defaultMessage: 'Please enter your name to join the classroom',
+    description: 'Label for asking username to join the classroom.',
+    id: 'component.DashboardClassroomAskUsername.label',
   },
   cancel: {
     defaultMessage: 'Cancel',
     description:
-      'Button label for discarding ask username form in meeting dashboard view.',
-    id: 'component.DashboardMeetingAskUsername.cancel',
+      'Button label for discarding ask username form in classroom dashboard view.',
+    id: 'component.DashboardClassroomAskUsername.cancel',
   },
   join: {
     defaultMessage: 'Join',
     description:
-      'Button label for setting username and joining the meeting in meeting dashboard view.',
-    id: 'component.DashboardMeetingAskUsername.join',
+      'Button label for setting username and joining the classroom in classroom dashboard view.',
+    id: 'component.DashboardClassroomAskUsername.join',
   },
 });
 
-interface DashboardMeetingAskUsernameProps {
+interface DashboardClassroomAskUsernameProps {
   userFullname: string;
   setUserFullname: (userFullname: string) => void;
   onJoin: () => void;
   onCancel?: () => void;
 }
 
-const DashboardMeetingAskUsername = ({
+const DashboardClassroomAskUsername = ({
   userFullname,
   setUserFullname,
   onJoin,
   onCancel,
-}: DashboardMeetingAskUsernameProps) => {
+}: DashboardClassroomAskUsernameProps) => {
   const intl = useIntl();
 
   return (
@@ -66,4 +66,4 @@ const DashboardMeetingAskUsername = ({
   );
 };
 
-export default DashboardMeetingAskUsername;
+export default DashboardClassroomAskUsername;

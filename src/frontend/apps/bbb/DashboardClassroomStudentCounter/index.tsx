@@ -2,16 +2,16 @@ import { Box, Grid, Text } from 'grommet';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useEffect } from 'react';
 
-import { Meeting } from 'apps/bbb/types/models';
+import { Classroom } from 'apps/bbb/types/models';
 
-interface DashboardMeetingStudentCounterProps {
-  meeting: Meeting;
+interface DashboardClassroomStudentCounterProps {
+  classroom: Classroom;
 }
 
-export const DashboardMeetingStudentCounter = ({
-  meeting,
-}: DashboardMeetingStudentCounterProps) => {
-  const startingAt = DateTime.fromISO(meeting.starting_at || '').setZone(
+export const DashboardClassroomStudentCounter = ({
+  classroom,
+}: DashboardClassroomStudentCounterProps) => {
+  const startingAt = DateTime.fromISO(classroom.starting_at || '').setZone(
     DateTime.local().zoneName,
     { keepLocalTime: true },
   );
@@ -34,13 +34,13 @@ export const DashboardMeetingStudentCounter = ({
 
   useEffect(() => {
     let timeout: number | undefined;
-    if (!timeout && meeting.starting_at && counter) {
+    if (!timeout && classroom.starting_at && counter) {
       timeout = window.setTimeout(updateCounter, 1000);
     }
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [meeting, counter]);
+  }, [classroom, counter]);
 
   if (counter) {
     return (

@@ -1,9 +1,11 @@
 import * as faker from 'faker';
 
 import { playlistMockFactory } from 'utils/tests/factories';
-import { Meeting, MeetingInfos } from 'apps/bbb/types/models';
+import { Classroom, ClassroomInfos } from 'apps/bbb/types/models';
 
-export const meetingMockFactory = (meeting: Partial<Meeting> = {}): Meeting => {
+export const classroomMockFactory = (
+  classroom: Partial<Classroom> = {},
+): Classroom => {
   return {
     id: faker.datatype.uuid(),
     playlist: playlistMockFactory(),
@@ -14,21 +16,21 @@ export const meetingMockFactory = (meeting: Partial<Meeting> = {}): Meeting => {
     ended: faker.datatype.boolean(),
     url: faker.internet.url(),
     welcome_text: faker.lorem.text(),
-    infos: meetingInfosMockFactory(),
+    infos: classroomInfosMockFactory(),
     starting_at: null,
     estimated_duration: null,
-    ...meeting,
+    ...classroom,
   };
 };
 
-export const meetingInfosMockFactory = (
-  meetingInfos: Partial<MeetingInfos> = {},
-): MeetingInfos => {
+export const classroomInfosMockFactory = (
+  classroomInfos: Partial<ClassroomInfos> = {},
+): ClassroomInfos => {
   return {
     returncode: 'SUCCESS',
-    meetingName: faker.lorem.word(),
-    meetingID: faker.lorem.word(),
-    internalMeetingID: faker.datatype.string(),
+    classroomName: faker.lorem.word(),
+    classroomID: faker.lorem.word(),
+    internalClassroomID: faker.datatype.string(),
     createTime: faker.date.recent().toString(),
     createDate: faker.date.recent().toString(),
     voiceBridge: faker.datatype.number(5).toString(),
@@ -51,6 +53,6 @@ export const meetingInfosMockFactory = (
     attendees: null,
     metadata: faker.datatype.string(),
     isBreakout: 'false',
-    ...meetingInfos,
+    ...classroomInfos,
   };
 };

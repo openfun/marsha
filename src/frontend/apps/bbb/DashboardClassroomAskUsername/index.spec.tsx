@@ -3,12 +3,12 @@ import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import DashboardMeetingAskUsername from '.';
+import DashboardClassroomAskUsername from '.';
 
 const onJoin = jest.fn();
 const onCancel = jest.fn();
 
-describe('<DashboardMeetingAskUsername />', () => {
+describe('<DashboardClassroomAskUsername />', () => {
   beforeEach(() => {
     /*
       make sure to remove all body children, grommet layer gets rendered twice, known issue
@@ -24,7 +24,7 @@ describe('<DashboardMeetingAskUsername />', () => {
 
     const { getByText } = render(
       wrapInIntlProvider(
-        <DashboardMeetingAskUsername
+        <DashboardClassroomAskUsername
           userFullname={userFullname}
           setUserFullname={mockSetUserFullname}
           onJoin={onJoin}
@@ -33,7 +33,7 @@ describe('<DashboardMeetingAskUsername />', () => {
       ),
     );
 
-    getByText('Please enter your name to join the meeting');
+    getByText('Please enter your name to join the classroom');
     const inputUsername = screen.getByDisplayValue('Initial value');
     expect(inputUsername).toHaveValue(userFullname);
 
@@ -54,7 +54,7 @@ describe('<DashboardMeetingAskUsername />', () => {
     const mockSetUserFullname = jest.fn();
     render(
       wrapInIntlProvider(
-        <DashboardMeetingAskUsername
+        <DashboardClassroomAskUsername
           userFullname={userFullname}
           setUserFullname={mockSetUserFullname}
           onJoin={onJoin}

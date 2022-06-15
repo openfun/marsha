@@ -8,14 +8,14 @@ import { Toaster } from 'react-hot-toast';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Deferred } from 'utils/tests/Deferred';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardMeetingInstructor from '.';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import DashboardClassroomInstructor from '.';
 
 let matchMedia: MatchMediaMock;
 
 jest.mock('data/appData', () => ({
   appData: {
-    modelName: 'meetings',
+    modelName: 'classrooms',
     resource: {
       id: '1',
     },
@@ -29,18 +29,20 @@ jest.mock('data/appData', () => ({
 
 jest.mock('apps/bbb/data/bbbAppData', () => ({
   bbbAppData: {
-    modelName: 'meetings',
-    meeting: {
+    modelName: 'classrooms',
+    classroom: {
       id: '1',
     },
   },
 }));
 
-jest.mock('apps/bbb/DashboardMeetingForm', () => () => <p>meeting form</p>);
+jest.mock('apps/bbb/DashboardClassroomForm', () => () => <p>classroom form</p>);
 
-jest.mock('apps/bbb/DashboardMeetingInfos', () => () => <p>meeting infos</p>);
+jest.mock('apps/bbb/DashboardClassroomInfos', () => () => (
+  <p>classroom infos</p>
+));
 
-describe('<DashboardMeetingInstructor />', () => {
+describe('<DashboardClassroomInstructor />', () => {
   beforeAll(() => {
     matchMedia = new MatchMediaMock();
   });
@@ -50,77 +52,79 @@ describe('<DashboardMeetingInstructor />', () => {
     fetchMock.restore();
   });
 
-  it('Displays message and triggers callbacks depending on meeting state', async () => {
-    const meeting = meetingMockFactory({ id: '1', started: false });
-    const joinMeetingAction = jest.fn();
-    const meetingEnded = jest.fn();
+  it('Displays message and triggers callbacks depending on classroom state', async () => {
+    const classroom = classroomMockFactory({ id: '1', started: false });
+    const joinClassroomAction = jest.fn();
+    const classroomEnded = jest.fn();
 
     const queryClient = new QueryClient();
 
     const { findByText, getByText, rerender } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeetingInstructor
-            meeting={meeting}
+          <DashboardClassroomInstructor
+            classroom={classroom}
             joinedAs={false}
-            joinMeetingAction={joinMeetingAction}
-            meetingEnded={meetingEnded}
+            joinClassroomAction={joinClassroomAction}
+            classroomEnded={classroomEnded}
           />
         </QueryClientProvider>,
       ),
     );
 
-    await findByText('meeting form');
-    expect(joinMeetingAction).toHaveBeenCalledTimes(0);
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    await findByText('classroom form');
+    expect(joinClassroomAction).toHaveBeenCalledTimes(0);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    // meeting starts
+    // classroom starts
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <Toaster />
-          <DashboardMeetingInstructor
-            meeting={{ ...meeting, started: true }}
+          <DashboardClassroomInstructor
+            classroom={{ ...classroom, started: true }}
             joinedAs={false}
-            joinMeetingAction={joinMeetingAction}
-            meetingEnded={meetingEnded}
+            joinClassroomAction={joinClassroomAction}
+            classroomEnded={classroomEnded}
           />
         </QueryClientProvider>,
       ),
     );
-    await findByText('meeting infos');
-    expect(joinMeetingAction).toHaveBeenCalledTimes(0);
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    await findByText('classroom infos');
+    expect(joinClassroomAction).toHaveBeenCalledTimes(0);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    fireEvent.click(screen.getByText('Join meeting'));
-    expect(joinMeetingAction).toHaveBeenCalledTimes(1);
+    fireEvent.click(screen.getByText('Join classroom'));
+    expect(joinClassroomAction).toHaveBeenCalledTimes(1);
 
     // user joined
     rerender(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
           <Toaster />
-          <DashboardMeetingInstructor
-            meeting={{ ...meeting, started: true }}
+          <DashboardClassroomInstructor
+            classroom={{ ...classroom, started: true }}
             joinedAs="John Doe"
-            joinMeetingAction={joinMeetingAction}
-            meetingEnded={meetingEnded}
+            joinClassroomAction={joinClassroomAction}
+            classroomEnded={classroomEnded}
           />
         </QueryClientProvider>,
       ),
     );
-    getByText('You have joined the meeting as John Doe.');
-    const cancelButton = screen.queryByText('Join meeting');
+    getByText('You have joined the classroom as John Doe.');
+    const cancelButton = screen.queryByText('Join classroom');
     expect(cancelButton).toBeNull();
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/end/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/end/', deferredPatch.promise);
 
-    fireEvent.click(screen.getByText('End meeting'));
-    await act(async () => deferredPatch.resolve({ message: 'meeting ended' }));
-    await findByText('Ending meeting…');
+    fireEvent.click(screen.getByText('End classroom'));
+    await act(async () =>
+      deferredPatch.resolve({ message: 'classroom ended' }),
+    );
+    await findByText('Ending classroom…');
 
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/meetings/1/end/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/end/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -128,6 +132,6 @@ describe('<DashboardMeetingInstructor />', () => {
       method: 'PATCH',
       body: JSON.stringify({}),
     });
-    expect(meetingEnded).toHaveBeenCalledTimes(1);
+    expect(classroomEnded).toHaveBeenCalledTimes(1);
   });
 });

@@ -4,13 +4,13 @@ import React, { useContext } from 'react';
 import { appData } from 'data/appData';
 import { Nullable } from 'utils/types';
 
-interface DashboardMeetingMessageProps {
+interface DashboardClassroomMessageProps {
   message: string;
 }
 
-export const DashboardMeetingMessage = ({
+export const DashboardClassroomMessage = ({
   message,
-}: DashboardMeetingMessageProps) => (
+}: DashboardClassroomMessageProps) => (
   <Box
     margin={{ top: 'xlarge', horizontal: 'small' }}
     pad={{ vertical: 'small', horizontal: 'small' }}
@@ -23,15 +23,15 @@ export const DashboardMeetingMessage = ({
   </Box>
 );
 
-interface DashboardMeetingLayoutProps {
+interface DashboardClassroomLayoutProps {
   left: JSX.Element;
   right?: Nullable<JSX.Element>;
 }
 
-export const DashboardMeetingLayout = ({
+export const DashboardClassroomLayout = ({
   left,
   right,
-}: DashboardMeetingLayoutProps) => {
+}: DashboardClassroomLayoutProps) => {
   const size = useContext(ResponsiveContext);
   let columns = ['1/2', '1/2'];
   if (size === 'medium') {

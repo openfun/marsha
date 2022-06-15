@@ -3,21 +3,21 @@ import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import { meetingInfosMockFactory } from 'apps/bbb/utils/tests/factories';
+import { classroomInfosMockFactory } from 'apps/bbb/utils/tests/factories';
 
-import DashboardMeetingInfos from '.';
+import DashboardClassroomInfos from '.';
 
-describe('<DashboardMeetingInfos />', () => {
-  it('displays the content for meeting infos', () => {
-    const meetingInfos = meetingInfosMockFactory();
+describe('<DashboardClassroomInfos />', () => {
+  it('displays the content for classroom infos', () => {
+    const classroomInfos = classroomInfosMockFactory();
     const { getByText } = render(
-      wrapInIntlProvider(<DashboardMeetingInfos infos={meetingInfos} />),
+      wrapInIntlProvider(<DashboardClassroomInfos infos={classroomInfos} />),
     );
     getByText('Moderators');
     getByText('Participants');
     getByText('Listeners');
-    getByText(meetingInfos.moderatorCount);
-    getByText(meetingInfos.voiceParticipantCount);
-    getByText(meetingInfos.listenerCount);
+    getByText(classroomInfos.moderatorCount);
+    getByText(classroomInfos.voiceParticipantCount);
+    getByText(classroomInfos.listenerCount);
   });
 });

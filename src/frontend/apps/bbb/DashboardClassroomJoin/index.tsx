@@ -4,17 +4,20 @@ import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   joinLinkLabel: {
-    defaultMessage: 'Please click here to access meeting.',
-    description: 'Label for link used to join a meeting.',
-    id: 'component.DashboardMeetingJoin.joinLinkLabel',
+    defaultMessage: 'Please click here to access classroom.',
+    description: 'Label for link used to join a classroom.',
+    id: 'component.DashboardClassroomJoin.joinLinkLabel',
   },
 });
 
-interface DashboardMeetingJoinProps {
+interface DashboardClassroomJoinProps {
   href: string;
   onClick?: () => void;
 }
-const DashboardMeetingJoin = ({ href, onClick }: DashboardMeetingJoinProps) => {
+const DashboardClassroomJoin = ({
+  href,
+  onClick,
+}: DashboardClassroomJoinProps) => {
   const intl = useIntl();
   return (
     <Box
@@ -38,4 +41,4 @@ const DashboardMeetingJoin = ({ href, onClick }: DashboardMeetingJoinProps) => {
   );
 };
 
-export default DashboardMeetingJoin;
+export default DashboardClassroomJoin;

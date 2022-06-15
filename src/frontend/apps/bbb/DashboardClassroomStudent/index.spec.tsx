@@ -4,8 +4,8 @@ import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardMeetingStudent from '.';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import DashboardClassroomStudent from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -21,7 +21,7 @@ Settings.defaultLocale = 'en';
 // Settings.defaultZone = 'utc';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
-describe('<DashboardMeetingStudent />', () => {
+describe('<DashboardClassroomStudent />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
@@ -33,52 +33,52 @@ describe('<DashboardMeetingStudent />', () => {
   afterAll(() => {
     jest.useRealTimers();
   });
-  it('Displays message and triggers callbacks depending on meeting state', async () => {
-    const meeting = meetingMockFactory({
+  it('Displays message and triggers callbacks depending on classroom state', async () => {
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       ended: false,
     });
-    const joinMeetingAction = jest.fn();
-    const meetingEnded = jest.fn();
+    const joinClassroomAction = jest.fn();
+    const classroomEnded = jest.fn();
 
     const { getByText, rerender } = render(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={meeting}
+        <DashboardClassroomStudent
+          classroom={classroom}
           joinedAs={false}
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
 
-    getByText('Meeting not started yet.');
-    expect(joinMeetingAction).toHaveBeenCalledTimes(0);
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    getByText('Classroom not started yet.');
+    expect(joinClassroomAction).toHaveBeenCalledTimes(0);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    // meeting scheduled
+    // classroom scheduled
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const exstimatedDuration = Duration.fromObject({ hours: 3 });
     const endingDateTime = startingAt.plus(exstimatedDuration);
     rerender(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={{
-            ...meeting,
+        <DashboardClassroomStudent
+          classroom={{
+            ...classroom,
             started: false,
             ended: false,
             starting_at: startingAt.toISO(),
             estimated_duration: exstimatedDuration.toFormat('hh:mm:ss'),
           }}
           joinedAs={false}
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
-    getByText(meeting.title!);
-    getByText(meeting.description!);
+    getByText(classroom.title!);
+    getByText(classroom.description!);
     const displayedStartingDate = startingAt.toLocaleString(DateTime.DATE_HUGE);
     const displayedStartingTime = startingAt.toLocaleString(
       DateTime.TIME_24_SIMPLE,
@@ -89,69 +89,69 @@ describe('<DashboardMeetingStudent />', () => {
     getByText(
       `${displayedStartingDate} - ${displayedStartingTime} > ${displayedEndingTime}`,
     );
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    // meeting scheduled without estimated duration
+    // classroom scheduled without estimated duration
     rerender(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={{
-            ...meeting,
+        <DashboardClassroomStudent
+          classroom={{
+            ...classroom,
             started: false,
             ended: false,
             starting_at: startingAt.toISO(),
           }}
           joinedAs={false}
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
     getByText(`${displayedStartingDate} - ${displayedStartingTime}`);
 
-    // meeting starts
+    // classroom starts
     rerender(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={{ ...meeting, started: true, ended: false }}
+        <DashboardClassroomStudent
+          classroom={{ ...classroom, started: true, ended: false }}
           joinedAs={false}
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
-    fireEvent.click(screen.getByText('Click here to access meeting'));
-    expect(joinMeetingAction).toHaveBeenCalledTimes(1);
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    fireEvent.click(screen.getByText('Click here to access classroom'));
+    expect(joinClassroomAction).toHaveBeenCalledTimes(1);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    // meeting joined
+    // classroom joined
     rerender(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={{ ...meeting, started: true, ended: false }}
+        <DashboardClassroomStudent
+          classroom={{ ...classroom, started: true, ended: false }}
           joinedAs="John Doe"
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
-    getByText('You have joined the meeting as John Doe.');
-    expect(joinMeetingAction).toHaveBeenCalledTimes(1);
-    expect(meetingEnded).toHaveBeenCalledTimes(0);
+    getByText('You have joined the classroom as John Doe.');
+    expect(joinClassroomAction).toHaveBeenCalledTimes(1);
+    expect(classroomEnded).toHaveBeenCalledTimes(0);
 
-    // meeting ends
+    // classroom ends
     rerender(
       wrapInIntlProvider(
-        <DashboardMeetingStudent
-          meeting={{ ...meeting, started: false, ended: true }}
+        <DashboardClassroomStudent
+          classroom={{ ...classroom, started: false, ended: true }}
           joinedAs={false}
-          joinMeetingAction={joinMeetingAction}
-          meetingEnded={meetingEnded}
+          joinClassroomAction={joinClassroomAction}
+          classroomEnded={classroomEnded}
         />,
       ),
     );
-    getByText('Meeting ended.');
-    expect(joinMeetingAction).toHaveBeenCalledTimes(1);
-    expect(meetingEnded).toHaveBeenCalledTimes(1);
+    getByText('Classroom ended.');
+    expect(joinClassroomAction).toHaveBeenCalledTimes(1);
+    expect(classroomEnded).toHaveBeenCalledTimes(1);
   });
 });

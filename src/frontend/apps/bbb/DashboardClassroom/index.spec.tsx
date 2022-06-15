@@ -11,12 +11,12 @@ import {
   ltiStudentTokenMockFactory,
 } from 'utils/tests/factories';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardMeeting from '.';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import DashboardClassroom from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
-    modelName: 'meetings',
+    modelName: 'classrooms',
     resource: {
       id: '1',
     },
@@ -35,15 +35,15 @@ const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
 
 jest.mock('apps/bbb/data/bbbAppData', () => ({
   bbbAppData: {
-    modelName: 'meetings',
-    meeting: {
+    modelName: 'classrooms',
+    classroom: {
       id: '1',
     },
     jwt: 'token',
   },
 }));
 
-describe('<DashboardMeeting />', () => {
+describe('<DashboardClassroom />', () => {
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
@@ -51,152 +51,152 @@ describe('<DashboardMeeting />', () => {
 
   it('shows student dashboard', async () => {
     mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       ended: false,
     });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const { getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    getByText('Loading meeting...');
-    await act(async () => meetingDeferred.resolve(meeting));
-    getByText('Meeting not started yet.');
+    getByText('Loading classroom...');
+    await act(async () => classroomDeferred.resolve(classroom));
+    getByText('Classroom not started yet.');
   });
 
   it('shows instructor dashboard', async () => {
     mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       ended: false,
     });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const { findByText, getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    getByText('Loading meeting...');
-    await act(async () => meetingDeferred.resolve(meeting));
-    await findByText('Launch the meeting now in BBB');
+    getByText('Loading classroom...');
+    await act(async () => classroomDeferred.resolve(classroom));
+    await findByText('Launch the classroom now in BBB');
   });
 
-  it('asks for fullname when joining a meeting, cancellable for instructor', async () => {
+  it('asks for fullname when joining a classroom, cancellable for instructor', async () => {
     const token = ltiInstructorTokenMockFactory(
       {},
       { user_fullname: undefined },
     );
     mockGetDecodedJwt.mockReturnValue(token);
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const classroom = classroomMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const { findByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    await act(async () => meetingDeferred.resolve(meeting));
+    await act(async () => classroomDeferred.resolve(classroom));
 
-    const createdMeeting = {
-      ...meeting,
+    const createdClassroom = {
+      ...classroom,
       started: true,
     };
-    fetchMock.patch('/api/meetings/1/create/', createdMeeting);
+    fetchMock.patch('/api/classrooms/1/create/', createdClassroom);
 
-    fetchMock.get('/api/meetings/1/', createdMeeting, {
+    fetchMock.get('/api/classrooms/1/', createdClassroom, {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
-    fireEvent.click(await findByText('Join meeting'));
+    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
+    fireEvent.click(await findByText('Join classroom'));
 
-    await findByText('Please enter your name to join the meeting');
+    await findByText('Please enter your name to join the classroom');
     await findByText('Cancel');
   });
 
-  it('asks for fullname when joining a meeting, not cancellable for student', async () => {
+  it('asks for fullname when joining a classroom, not cancellable for student', async () => {
     const token = ltiStudentTokenMockFactory({}, { user_fullname: undefined });
     mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => window);
 
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: true,
       ended: false,
     });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const { findByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('Click here to access meeting'));
-    await findByText('Please enter your name to join the meeting');
+    await act(async () => classroomDeferred.resolve(classroom));
+    fireEvent.click(screen.getByText('Click here to access classroom'));
+    await findByText('Please enter your name to join the classroom');
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 
     const inputUsername = screen.getByRole('textbox');
     fireEvent.change(inputUsername, { target: { value: 'Joe' } });
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
     fireEvent.click(screen.getByText('Join'));
     await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
     );
     expect(window.open).toHaveBeenCalledTimes(1);
   });
 
-  it('uses appdata fullname when joining a meeting', async () => {
+  it('uses appdata fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory();
     mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => window);
 
-    const meeting = meetingMockFactory({ id: '1', started: true });
+    const classroom = classroomMockFactory({ id: '1', started: true });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
     render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    await act(async () => meetingDeferred.resolve(meeting));
-    fireEvent.click(screen.getByText('Join meeting'));
+    await act(async () => classroomDeferred.resolve(classroom));
+    fireEvent.click(screen.getByText('Join classroom'));
     await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
     );
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/meetings/1/join/');
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -208,59 +208,59 @@ describe('<DashboardMeeting />', () => {
     });
     expect(window.open).toHaveBeenCalledTimes(1);
     expect(window.open).toHaveBeenCalledWith(
-      'server.bbb/meeting/url',
+      'server.bbb/classroom/url',
       '_blank',
     );
     const urlMessage = screen.queryByText(
-      'please click bbb url to join meeting',
+      'please click bbb url to join classroom',
     );
     expect(urlMessage).not.toBeInTheDocument();
 
     // multiple joining must be avoided
-    fireEvent.click(screen.getByText('Join meeting'));
+    fireEvent.click(screen.getByText('Join classroom'));
     expect(window.open).toHaveBeenCalledTimes(1);
   });
 
-  it('displays user fullname when joining a meeting', async () => {
+  it('displays user fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory();
     mockGetDecodedJwt.mockReturnValue(token);
     window.open = jest.fn(() => null);
 
-    const meeting = meetingMockFactory({ id: '1', started: false });
+    const classroom = classroomMockFactory({ id: '1', started: false });
     const queryClient = new QueryClient();
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    fetchMock.patch('/api/meetings/1/create/', {
-      ...meeting,
+    fetchMock.patch('/api/classrooms/1/create/', {
+      ...classroom,
       started: true,
     });
 
     const deferredPatch = new Deferred();
-    fetchMock.patch('/api/meetings/1/join/', deferredPatch.promise);
+    fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
     const { getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    await act(async () => meetingDeferred.resolve(meeting));
+    await act(async () => classroomDeferred.resolve(classroom));
     await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/meeting/url' }),
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
     );
 
-    const updatedMeetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', updatedMeetingDeferred.promise, {
+    const updatedClassroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', updatedClassroomDeferred.promise, {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Launch the meeting now in BBB'));
+    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
-    const updatedMeeting = {
-      ...meeting,
+    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
+    const updatedClassroom = {
+      ...classroom,
       started: true,
       infos: {
         attendees: [
@@ -274,25 +274,25 @@ describe('<DashboardMeeting />', () => {
         ],
       },
     };
-    await act(async () => updatedMeetingDeferred.resolve(updatedMeeting));
+    await act(async () => updatedClassroomDeferred.resolve(updatedClassroom));
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/meetings/1/');
-    getByText(`You have joined the meeting as ${token.user?.user_fullname}.`);
+    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
+    getByText(`You have joined the classroom as ${token.user?.user_fullname}.`);
   });
 
   it('display error when no jwt exists', async () => {
     mockGetDecodedJwt.mockImplementation(() => {
       throw new Error('No jwt');
     });
-    const { getByText } = render(wrapInIntlProvider(<DashboardMeeting />));
+    const { getByText } = render(wrapInIntlProvider(<DashboardClassroom />));
 
-    getByText('The meeting you are looking for could not be found');
+    getByText('The classroom you are looking for could not be found');
     getByText(
-      'This meeting does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
+      'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
     );
   });
 
-  it('shows an error message when it fails to get the meeting', async () => {
+  it('shows an error message when it fails to get the classroom', async () => {
     mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -301,23 +301,23 @@ describe('<DashboardMeeting />', () => {
         },
       },
     });
-    const meetingDeferred = new Deferred();
-    fetchMock.get('/api/meetings/1/', meetingDeferred.promise);
+    const classroomDeferred = new Deferred();
+    fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
     const { getByText } = render(
       wrapInIntlProvider(
         <QueryClientProvider client={queryClient}>
-          <DashboardMeeting />
+          <DashboardClassroom />
         </QueryClientProvider>,
       ),
     );
-    getByText('Loading meeting...');
-    await act(async () => meetingDeferred.resolve(500));
-    getByText('The meeting you are looking for could not be found');
+    getByText('Loading classroom...');
+    await act(async () => classroomDeferred.resolve(500));
+    getByText('The classroom you are looking for could not be found');
     getByText(
-      'This meeting does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
+      'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
     );
   });
 });

@@ -8,7 +8,7 @@ import { flags } from 'types/AppData';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 
-const DashboardMeeting = lazy(() => import('./DashboardMeeting'));
+const DashboardClassroom = lazy(() => import('./DashboardClassroom'));
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -22,7 +22,7 @@ export const Routes = () => {
       <Wrappers>
         <Suspense fallback={<Loader />}>
           <Switch>
-            <Route exact path="/" render={() => <DashboardMeeting />} />
+            <Route exact path="/" render={() => <DashboardClassroom />} />
           </Switch>
         </Suspense>
       </Wrappers>
