@@ -12,7 +12,7 @@ import { StudentLiveRegistration } from '.';
 let mockJwt: DecodedJwt;
 jest.mock('data/appData', () => ({
   appData: {
-    modelName: 'meetings',
+    modelName: 'videos',
     resource: {
       id: '1',
     },
