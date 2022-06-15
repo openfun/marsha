@@ -1,7 +1,7 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { DashboardMeetingLayout } from './index';
+import { DashboardClassroomLayout } from './index';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -17,10 +17,10 @@ jest.mock('data/appData', () => ({
 const left = <p>Left content</p>;
 const right = <p>Right content</p>;
 
-describe('DashboardMeetingLayout', () => {
+describe('DashboardClassroomLayout', () => {
   it('renders correctly without right content', () => {
     const { getByText, queryByText } = render(
-      <DashboardMeetingLayout left={left} />,
+      <DashboardClassroomLayout left={left} />,
     );
 
     getByText('Left content');
@@ -29,7 +29,7 @@ describe('DashboardMeetingLayout', () => {
   });
   it('renders correctly with right content', () => {
     const { getByText } = render(
-      <DashboardMeetingLayout left={left} right={right} />,
+      <DashboardClassroomLayout left={left} right={right} />,
     );
 
     getByText('Left content');

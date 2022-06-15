@@ -2,35 +2,35 @@ import { Box, Grid, Text } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { MeetingInfos } from 'apps/bbb/types/models';
+import { ClassroomInfos } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
   moderators: {
     defaultMessage: 'Moderators',
-    description: 'Role name for moderators in dashboard meeting info view.',
-    id: 'component.DashboardMeetingInfos.moderators',
+    description: 'Role name for moderators in dashboard classroom info view.',
+    id: 'component.DashboardClassroomInfos.moderators',
   },
   participants: {
     defaultMessage: 'Participants',
-    description: 'Role name for participants in dashboard meeting info view.',
-    id: 'component.DashboardMeetingInfos.participants',
+    description: 'Role name for participants in dashboard classroom info view.',
+    id: 'component.DashboardClassroomInfos.participants',
   },
   listeners: {
     defaultMessage: 'Listeners',
-    description: 'Role name for listeners in dashboard meeting info view.',
-    id: 'component.DashboardMeetingInfos.listeners',
+    description: 'Role name for listeners in dashboard classroom info view.',
+    id: 'component.DashboardClassroomInfos.listeners',
   },
 });
 
-interface DashboardMeetingInfosItemProps {
+interface DashboardClassroomInfosItemProps {
   value: string;
   unit: 'moderators' | 'participants' | 'listeners';
 }
 
-const DashboardMeetingInfosItem = ({
+const DashboardClassroomInfosItem = ({
   value,
   unit,
-}: DashboardMeetingInfosItemProps) => {
+}: DashboardClassroomInfosItemProps) => {
   return (
     <Box>
       <Text size="large" weight="bold" color="blue-active" textAlign="center">
@@ -43,11 +43,11 @@ const DashboardMeetingInfosItem = ({
   );
 };
 
-interface DashboardMeetingInfosProps {
-  infos?: MeetingInfos;
+interface DashboardClassroomInfosProps {
+  infos?: ClassroomInfos;
 }
 
-const DashboardMeetingInfos = ({ infos }: DashboardMeetingInfosProps) => {
+const DashboardClassroomInfos = ({ infos }: DashboardClassroomInfosProps) => {
   return (
     <Box
       margin={{ top: 'large' }}
@@ -60,15 +60,15 @@ const DashboardMeetingInfos = ({ infos }: DashboardMeetingInfosProps) => {
       }}
     >
       <Grid columns={{ count: 3, size: 'auto' }}>
-        <DashboardMeetingInfosItem
+        <DashboardClassroomInfosItem
           unit={'moderators'}
           value={infos?.moderatorCount || '0'}
         />
-        <DashboardMeetingInfosItem
+        <DashboardClassroomInfosItem
           unit={'participants'}
           value={infos?.voiceParticipantCount || '0'}
         />
-        <DashboardMeetingInfosItem
+        <DashboardClassroomInfosItem
           unit={'listeners'}
           value={infos?.listenerCount || '0'}
         />
@@ -77,4 +77,4 @@ const DashboardMeetingInfos = ({ infos }: DashboardMeetingInfosProps) => {
   );
 };
 
-export default DashboardMeetingInfos;
+export default DashboardClassroomInfos;

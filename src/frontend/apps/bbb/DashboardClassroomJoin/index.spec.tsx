@@ -2,20 +2,20 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import DashboardMeetingJoin from '.';
+import DashboardClassroomJoin from '.';
 
 const onClick = jest.fn();
 
-describe('<DashboardMeetingJoin />', () => {
+describe('<DashboardClassroomJoin />', () => {
   it('displays a clickable link', () => {
     render(
       wrapInIntlProvider(
-        <DashboardMeetingJoin href="https://example.com" onClick={onClick} />,
+        <DashboardClassroomJoin href="https://example.com" onClick={onClick} />,
       ),
     );
 
     const link = screen.getByRole('link', {
-      name: /please click here to access meeting./i,
+      name: /please click here to access classroom./i,
     });
     expect(link.getAttribute('href')).toEqual('https://example.com');
     expect(link.getAttribute('target')).toEqual('_blank');

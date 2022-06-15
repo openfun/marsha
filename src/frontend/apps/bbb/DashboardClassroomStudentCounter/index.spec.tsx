@@ -4,8 +4,8 @@ import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import { meetingMockFactory } from 'apps/bbb/utils/tests/factories';
-import { DashboardMeetingStudentCounter } from '.';
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import { DashboardClassroomStudentCounter } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -20,7 +20,7 @@ jest.mock('data/appData', () => ({
 Settings.defaultLocale = 'en';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
-describe('<DashboardMeetingStudentCounter />', () => {
+describe('<DashboardClassroomStudentCounter />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
@@ -33,11 +33,11 @@ describe('<DashboardMeetingStudentCounter />', () => {
     jest.useRealTimers();
   });
 
-  it('Displays a countdown when the meeting is scheduled', async () => {
+  it('Displays a countdown when the classroom is scheduled', async () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const exstimatedDuration = Duration.fromObject({ hours: 3 });
 
-    const meeting = meetingMockFactory({
+    const classroom = classroomMockFactory({
       id: '1',
       started: false,
       ended: false,
@@ -46,7 +46,9 @@ describe('<DashboardMeetingStudentCounter />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(<DashboardMeetingStudentCounter meeting={meeting} />),
+      wrapInIntlProvider(
+        <DashboardClassroomStudentCounter classroom={classroom} />,
+      ),
     );
 
     const expectCountdown = (

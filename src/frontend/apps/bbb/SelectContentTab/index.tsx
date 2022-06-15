@@ -13,34 +13,34 @@ import { ErrorMessage } from 'components/ErrorComponents';
 import { SelectContentTabProps } from 'components/SelectContent';
 import { Nullable } from 'utils/types';
 
-import { useCreateMeeting, useSelectMeeting } from 'apps/bbb/data/queries';
-import { Meeting } from 'apps/bbb/types/models';
+import { useCreateClassroom, useSelectClassroom } from 'apps/bbb/data/queries';
+import { Classroom } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
-  loadingMeetings: {
-    defaultMessage: 'Loading meetings...',
+  loadingClassrooms: {
+    defaultMessage: 'Loading classrooms...',
     description:
-      'Accessible message for the spinner while loading the meetings in lti select view.',
-    id: 'apps.bbb.SelectContent.loadingMeetings',
+      'Accessible message for the spinner while loading the classrooms in lti select view.',
+    id: 'apps.bbb.SelectContent.loadingClassrooms',
   },
-  addMeeting: {
-    defaultMessage: 'Add a meeting',
-    description: `Text displayed on a button to add a new meeting.`,
-    id: 'apps.bbb.SelectContent.addMeeting',
+  addClassroom: {
+    defaultMessage: 'Add a classroom',
+    description: `Text displayed on a button to add a new classroom.`,
+    id: 'apps.bbb.SelectContent.addClassroom',
   },
   select: {
     defaultMessage: 'Select {title}',
-    description: 'Accessible message for selecting a meeting.',
+    description: 'Accessible message for selecting a classroom.',
     id: 'apps.bbb.SelectContent.select',
   },
   started: {
     defaultMessage: 'Started',
-    description: `Text helper displayed if a meeting is started.`,
+    description: `Text helper displayed if a classroom is started.`,
     id: 'apps.bbb.SelectContent.started',
   },
   notStarted: {
     defaultMessage: 'Not started',
-    description: `Text helper displayed if a meeting is not started.`,
+    description: `Text helper displayed if a classroom is not started.`,
     id: 'apps.bbb.SelectContent.notStarted',
   },
 });
@@ -96,7 +96,7 @@ const ContentCard = ({
   content,
   onClick,
 }: {
-  content: Meeting;
+  content: Classroom;
   onClick: () => void;
 }) => {
   const intl = useIntl();
@@ -135,7 +135,7 @@ interface SelectContentSectionProps {
   addMessage: MessageDescriptor;
   addAndSelectContent: () => void;
   newLtiUrl: string;
-  items: Nullable<Meeting[]>;
+  items: Nullable<Classroom[]>;
   selectContent: (
     url: string,
     title: Nullable<string>,
@@ -164,7 +164,7 @@ export const SelectContentSection = ({
           </Text>
         </Card>
 
-        {items?.map((item: Meeting) => (
+        {items?.map((item: Classroom) => (
           <ContentCard
             content={item!}
             key={item.id}
@@ -183,25 +183,25 @@ const SelectContentTab = ({
   selectContent,
   lti_select_form_data,
 }: SelectContentTabProps) => {
-  const { data: selectMeeting, status: useSelectMeetingStatus } =
-    useSelectMeeting({});
+  const { data: selectClassroom, status: useSelectClassroomStatus } =
+    useSelectClassroom({});
 
-  const useCreateMeetingMutation = useCreateMeeting({
-    onSuccess: (meeting) =>
+  const useCreateClassroomMutation = useCreateClassroom({
+    onSuccess: (classroom) =>
       selectContent(
-        selectMeeting!.new_url! + meeting.id,
-        meeting.title,
-        meeting.description,
+        selectClassroom!.new_url! + classroom.id,
+        classroom.title,
+        classroom.description,
       ),
   });
 
   let content: JSX.Element;
-  switch (useSelectMeetingStatus) {
+  switch (useSelectClassroomStatus) {
     case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">
-          <FormattedMessage {...messages.loadingMeetings} />
+          <FormattedMessage {...messages.loadingClassrooms} />
         </Spinner>
       );
       break;
@@ -213,23 +213,23 @@ const SelectContentTab = ({
     case 'success':
       content = (
         <SelectContentSection
-          addMessage={messages.addMeeting}
+          addMessage={messages.addClassroom}
           addAndSelectContent={() => {
-            useCreateMeetingMutation.mutate({
+            useCreateClassroomMutation.mutate({
               playlist: playlist!.id,
               title: lti_select_form_data?.activity_title,
               description: lti_select_form_data?.activity_description,
             });
           }}
-          newLtiUrl={selectMeeting!.new_url!}
-          items={selectMeeting!.meetings!}
+          newLtiUrl={selectClassroom!.new_url!}
+          items={selectClassroom!.classrooms!}
           selectContent={selectContent}
         />
       );
       break;
   }
 
-  return <Tab title="Meetings">{content}</Tab>;
+  return <Tab title="Classrooms">{content}</Tab>;
 };
 
 export default SelectContentTab;

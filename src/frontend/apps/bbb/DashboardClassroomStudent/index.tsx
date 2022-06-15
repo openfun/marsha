@@ -6,58 +6,58 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Nullable } from 'utils/types';
 
 import {
-  DashboardMeetingLayout,
-  DashboardMeetingMessage,
-} from 'apps/bbb/DashboardMeetingLayout';
-import { DashboardMeetingStudentCounter } from 'apps/bbb/DashboardMeetingStudentCounter';
-import { Meeting } from 'apps/bbb/types/models';
+  DashboardClassroomLayout,
+  DashboardClassroomMessage,
+} from 'apps/bbb/DashboardClassroomLayout';
+import { DashboardClassroomStudentCounter } from 'apps/bbb/DashboardClassroomStudentCounter';
+import { Classroom } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
   joinedAs: {
-    defaultMessage: 'You have joined the meeting as {joinedAs}.',
-    description: 'Message when user has joined the meeting.',
-    id: 'component.DashboardMeetingStudent.joinedAs',
+    defaultMessage: 'You have joined the classroom as {joinedAs}.',
+    description: 'Message when user has joined the classroom.',
+    id: 'component.DashboardClassroomStudent.joinedAs',
   },
-  joinMeetingLabel: {
-    defaultMessage: 'Click here to access meeting',
-    description: 'Label for joining meeting in instructor dashboard.',
-    id: 'component.DashboardMeetingStudent.joinMeetingLabel',
+  joinClassroomLabel: {
+    defaultMessage: 'Click here to access classroom',
+    description: 'Label for joining classroom in instructor dashboard.',
+    id: 'component.DashboardClassroomStudent.joinClassroomLabel',
   },
-  meetingEnded: {
-    defaultMessage: 'Meeting ended.',
-    description: 'Message when meeting has ended.',
-    id: 'component.DashboardMeetingStudent.meetingEnded',
+  classroomEnded: {
+    defaultMessage: 'Classroom ended.',
+    description: 'Message when classroom has ended.',
+    id: 'component.DashboardClassroomStudent.classroomEnded',
   },
-  meetingNotStarted: {
-    defaultMessage: 'Meeting not started yet.',
-    description: 'Message when meeting is not started.',
-    id: 'component.DashboardMeetingStudent.meetingNotStarted',
+  classroomNotStarted: {
+    defaultMessage: 'Classroom not started yet.',
+    description: 'Message when classroom is not started.',
+    id: 'component.DashboardClassroomStudent.classroomNotStarted',
   },
-  meetingStarted: {
-    defaultMessage: 'Meeting is started.',
-    description: 'Message when meeting is started.',
-    id: 'component.DashboardMeetingStudent.meetingStarted',
+  classroomStarted: {
+    defaultMessage: 'Classroom is started.',
+    description: 'Message when classroom is started.',
+    id: 'component.DashboardClassroomStudent.classroomStarted',
   },
 });
 
-interface DashboardMeetingStudentProps {
-  meeting: Meeting;
+interface DashboardClassroomStudentProps {
+  classroom: Classroom;
   joinedAs: string | false;
-  joinMeetingAction: () => void;
-  meetingEnded: () => void;
+  joinClassroomAction: () => void;
+  classroomEnded: () => void;
 }
 
-const DashboardMeetingStudent = ({
-  meeting,
+const DashboardClassroomStudent = ({
+  classroom,
   joinedAs,
-  joinMeetingAction,
-  meetingEnded,
-}: DashboardMeetingStudentProps) => {
+  joinClassroomAction,
+  classroomEnded,
+}: DashboardClassroomStudentProps) => {
   const intl = useIntl();
 
   Settings.defaultLocale = intl.locale;
 
-  const startingAt = DateTime.fromISO(meeting.starting_at || '');
+  const startingAt = DateTime.fromISO(classroom.starting_at || '');
   const displayedStartingAt = startingAt.toLocaleString(DateTime.DATE_HUGE);
   const displayedStartingTime = startingAt.toLocaleString(
     DateTime.TIME_24_SIMPLE,
@@ -65,8 +65,10 @@ const DashboardMeetingStudent = ({
 
   let displayedEventTime = `${displayedStartingAt} - ${displayedStartingTime}`;
 
-  if (meeting.estimated_duration) {
-    const estimatedDuration = Duration.fromISOTime(meeting.estimated_duration);
+  if (classroom.estimated_duration) {
+    const estimatedDuration = Duration.fromISOTime(
+      classroom.estimated_duration,
+    );
     const displayedEndingAt = startingAt
       .plus(estimatedDuration)
       .toLocaleString(DateTime.TIME_24_SIMPLE);
@@ -74,45 +76,45 @@ const DashboardMeetingStudent = ({
   }
 
   useEffect(() => {
-    if (meeting.ended) {
-      meetingEnded();
+    if (classroom.ended) {
+      classroomEnded();
     }
-  }, [meeting]);
+  }, [classroom]);
 
   let left: JSX.Element;
   let right: Nullable<JSX.Element> = null;
   if (joinedAs) {
-    // meeting started and joined
+    // classroom started and joined
     left = (
-      <DashboardMeetingMessage
+      <DashboardClassroomMessage
         message={intl.formatMessage(messages.joinedAs, { joinedAs })}
       />
     );
-  } else if (meeting.started) {
-    // meeting started
+  } else if (classroom.started) {
+    // classroom started
     left = (
-      <DashboardMeetingMessage
-        message={intl.formatMessage(messages.meetingStarted)}
+      <DashboardClassroomMessage
+        message={intl.formatMessage(messages.classroomStarted)}
       />
     );
     right = (
       <Button
-        label={intl.formatMessage(messages.joinMeetingLabel)}
-        onClick={joinMeetingAction}
+        label={intl.formatMessage(messages.joinClassroomLabel)}
+        onClick={joinClassroomAction}
         primary
         size="large"
         fill="horizontal"
       />
     );
-  } else if (meeting.ended) {
-    // meeting ended
+  } else if (classroom.ended) {
+    // classroom ended
     left = (
-      <DashboardMeetingMessage
-        message={intl.formatMessage(messages.meetingEnded)}
+      <DashboardClassroomMessage
+        message={intl.formatMessage(messages.classroomEnded)}
       />
     );
-  } else if (meeting.starting_at) {
-    // meeting scheduled
+  } else if (classroom.starting_at) {
+    // classroom scheduled
     left = (
       <React.Fragment>
         <Text
@@ -122,10 +124,10 @@ const DashboardMeetingStudent = ({
           textAlign="center"
           margin={{ top: 'large' }}
         >
-          {meeting.title}
+          {classroom.title}
         </Text>
         <Text color="blue-active" textAlign="center">
-          {meeting.description}
+          {classroom.description}
         </Text>
         <Box
           margin={{ top: 'large', horizontal: 'small' }}
@@ -141,19 +143,19 @@ const DashboardMeetingStudent = ({
             {displayedEventTime}
           </Text>
         </Box>
-        <DashboardMeetingStudentCounter meeting={meeting} />
+        <DashboardClassroomStudentCounter classroom={classroom} />
       </React.Fragment>
     );
   } else {
-    // meeting exists but not started
+    // classroom exists but not started
     left = (
-      <DashboardMeetingMessage
-        message={intl.formatMessage(messages.meetingNotStarted)}
+      <DashboardClassroomMessage
+        message={intl.formatMessage(messages.classroomNotStarted)}
       />
     );
   }
 
-  return <DashboardMeetingLayout left={left} right={right} />;
+  return <DashboardClassroomLayout left={left} right={right} />;
 };
 
-export default DashboardMeetingStudent;
+export default DashboardClassroomStudent;

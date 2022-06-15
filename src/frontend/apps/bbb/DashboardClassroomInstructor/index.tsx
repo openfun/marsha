@@ -6,83 +6,83 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Loader } from 'components/Loader';
 import { Nullable } from 'utils/types';
 
-import { Meeting } from 'apps/bbb/types/models';
+import { Classroom } from 'apps/bbb/types/models';
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useEndMeetingAction } from 'apps/bbb/data/queries';
+import { useEndClassroomAction } from 'apps/bbb/data/queries';
 import {
-  DashboardMeetingLayout,
-  DashboardMeetingMessage,
-} from 'apps/bbb/DashboardMeetingLayout';
+  DashboardClassroomLayout,
+  DashboardClassroomMessage,
+} from 'apps/bbb/DashboardClassroomLayout';
 
-const DashboardMeetingForm = lazy(
-  () => import('apps/bbb/DashboardMeetingForm'),
+const DashboardClassroomForm = lazy(
+  () => import('apps/bbb/DashboardClassroomForm'),
 );
-const DashboardMeetingInfos = lazy(
-  () => import('apps/bbb/DashboardMeetingInfos'),
+const DashboardClassroomInfos = lazy(
+  () => import('apps/bbb/DashboardClassroomInfos'),
 );
 
 const messages = defineMessages({
   joinedAs: {
-    defaultMessage: 'You have joined the meeting as {joinedAs}.',
-    description: 'Message when user has joined the meeting.',
-    id: 'component.DashboardMeetingInstructor.joinedAs',
+    defaultMessage: 'You have joined the classroom as {joinedAs}.',
+    description: 'Message when user has joined the classroom.',
+    id: 'component.DashboardClassroomInstructor.joinedAs',
   },
-  joinMeetingLabel: {
-    defaultMessage: 'Join meeting',
-    description: 'Label for joining meeting in instructor dashboard.',
-    id: 'component.DashboardMeetingInstructor.joinMeetingLabel',
+  joinClassroomLabel: {
+    defaultMessage: 'Join classroom',
+    description: 'Label for joining classroom in instructor dashboard.',
+    id: 'component.DashboardClassroomInstructor.joinClassroomLabel',
   },
-  endingMeetingPending: {
-    defaultMessage: 'Ending meeting…',
-    description: 'Message when ending meeting is pending.',
-    id: 'component.DashboardMeetingInstructor.endingMeetingPending',
+  endingClassroomPending: {
+    defaultMessage: 'Ending classroom…',
+    description: 'Message when ending classroom is pending.',
+    id: 'component.DashboardClassroomInstructor.endingClassroomPending',
   },
-  endMeetingLabel: {
-    defaultMessage: 'End meeting',
-    description: 'Label for ending meeting in instructor dashboard.',
-    id: 'component.DashboardMeetingInstructor.endMeetingLabel',
+  endClassroomLabel: {
+    defaultMessage: 'End classroom',
+    description: 'Label for ending classroom in instructor dashboard.',
+    id: 'component.DashboardClassroomInstructor.endClassroomLabel',
   },
-  createMeetingFail: {
-    defaultMessage: 'Meeting not created!',
-    description: 'Message when meeting creation failed.',
-    id: 'component.DashboardMeetingInstructor.createMeetingFail',
+  createClassroomFail: {
+    defaultMessage: 'Classroom not created!',
+    description: 'Message when classroom creation failed.',
+    id: 'component.DashboardClassroomInstructor.createClassroomFail',
   },
 });
 
-interface DashboardMeetingInstructorProps {
-  meeting: Meeting;
+interface DashboardClassroomInstructorProps {
+  classroom: Classroom;
   joinedAs: string | false;
-  joinMeetingAction: () => void;
-  meetingEnded: () => void;
+  joinClassroomAction: () => void;
+  classroomEnded: () => void;
 }
 
-const DashboardMeetingInstructor = ({
-  meeting,
+const DashboardClassroomInstructor = ({
+  classroom,
   joinedAs,
-  joinMeetingAction,
-  meetingEnded,
-}: DashboardMeetingInstructorProps) => {
+  joinClassroomAction,
+  classroomEnded,
+}: DashboardClassroomInstructorProps) => {
   const intl = useIntl();
   const size = useContext(ResponsiveContext);
 
-  const endMeetingMutation = useEndMeetingAction(bbbAppData.meeting!.id, {
+  const endClassroomMutation = useEndClassroomAction(bbbAppData.classroom!.id, {
     onSuccess: () => {
-      toast.success(intl.formatMessage(messages.endingMeetingPending));
-      meetingEnded();
+      toast.success(intl.formatMessage(messages.endingClassroomPending));
+      classroomEnded();
     },
     onError: () => {
-      toast.error(intl.formatMessage(messages.createMeetingFail));
+      toast.error(intl.formatMessage(messages.createClassroomFail));
     },
   });
 
-  const endMeetingAction = () => {
-    endMeetingMutation.mutate({});
+  const endClassroomAction = () => {
+    endClassroomMutation.mutate({});
   };
 
-  if (!meeting.started) {
+  if (!classroom.started) {
     return (
       <Suspense fallback={<Loader />}>
-        <DashboardMeetingForm meeting={meeting} />
+        <DashboardClassroomForm classroom={classroom} />
       </Suspense>
     );
   }
@@ -93,25 +93,25 @@ const DashboardMeetingInstructor = ({
   if (joinedAs) {
     left = (
       <React.Fragment>
-        <DashboardMeetingMessage
+        <DashboardClassroomMessage
           message={intl.formatMessage(messages.joinedAs, { joinedAs })}
         />
-        <DashboardMeetingInfos infos={meeting.infos} />
+        <DashboardClassroomInfos infos={classroom.infos} />
       </React.Fragment>
     );
     right = (
       <Button
-        label={intl.formatMessage(messages.endMeetingLabel)}
+        label={intl.formatMessage(messages.endClassroomLabel)}
         primary
         size="large"
         fill="horizontal"
-        onClick={endMeetingAction}
+        onClick={endClassroomAction}
       />
     );
   } else {
     left = (
       <Box margin={{ top: 'large' }}>
-        <DashboardMeetingInfos infos={meeting.infos} />
+        <DashboardClassroomInfos infos={classroom.infos} />
       </Box>
     );
     right = (
@@ -121,17 +121,17 @@ const DashboardMeetingInstructor = ({
         fill="horizontal"
       >
         <Button
-          label={intl.formatMessage(messages.endMeetingLabel)}
+          label={intl.formatMessage(messages.endClassroomLabel)}
           size="large"
           fill="horizontal"
-          onClick={endMeetingAction}
+          onClick={endClassroomAction}
         />
         <Button
-          label={intl.formatMessage(messages.joinMeetingLabel)}
+          label={intl.formatMessage(messages.joinClassroomLabel)}
           primary
           size="large"
           fill="horizontal"
-          onClick={joinMeetingAction}
+          onClick={joinClassroomAction}
         />
       </Grid>
     );
@@ -139,9 +139,9 @@ const DashboardMeetingInstructor = ({
 
   return (
     <Suspense fallback={<Loader />}>
-      <DashboardMeetingLayout left={left} right={right} />
+      <DashboardClassroomLayout left={left} right={right} />
     </Suspense>
   );
 };
 
-export default DashboardMeetingInstructor;
+export default DashboardClassroomInstructor;
