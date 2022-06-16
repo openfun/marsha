@@ -11,7 +11,7 @@ from django.views.generic.base import TemplateView
 
 from faker import Faker
 
-from ..bbb.models import Meeting
+from ..bbb.models import Classroom
 from ..core.models import Document, Playlist, Video
 from ..core.models.account import ConsumerSite, LTIPassport
 from ..markdown.models import MarkdownDocument
@@ -94,7 +94,7 @@ class DevelopmentLTIView(TemplateView):
             "last_objects": {
                 "videos": Video.objects.order_by("-updated_on")[:5],
                 "documents": Document.objects.order_by("-updated_on")[:5],
-                "meetings": Meeting.objects.order_by("-updated_on")[:5],
+                "classrooms": Classroom.objects.order_by("-updated_on")[:5],
                 "markdown_documents": MarkdownDocument.objects.order_by("-updated_on")[
                     :5
                 ],

@@ -4,16 +4,20 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .api import MeetingViewSet
-from .views import MeetingLTIView
+from .api import ClassroomViewSet
+from .views import ClassroomLTIView
 
 
 app_name = "bbb"
 
 router = DefaultRouter()
-router.register("meetings", MeetingViewSet, basename="meetings")
+router.register("classrooms", ClassroomViewSet, basename="classrooms")
 
 urlpatterns = [
-    path("lti/meetings/<uuid:uuid>", MeetingLTIView.as_view(), name="meeting_lti_view"),
+    path(
+        "lti/classrooms/<uuid:uuid>",
+        ClassroomLTIView.as_view(),
+        name="classroom_lti_view",
+    ),
     path("api/", include(router.urls)),
 ]

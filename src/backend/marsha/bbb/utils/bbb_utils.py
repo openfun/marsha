@@ -8,7 +8,7 @@ from django.conf import settings
 import requests
 import xmltodict
 
-from marsha.bbb.models import Meeting
+from marsha.bbb.models import Classroom
 
 
 logger = logging.getLogger(__name__)
@@ -22,11 +22,11 @@ class ApiMeetingException(Exception):
         super().__init__(api_response.get("message"))
 
 
-def _password(meeting: Meeting, moderator=False):
+def _password(classroom: Classroom, moderator=False):
     """Return password for moderator or attendee."""
     if moderator:
-        return meeting.moderator_password
-    return meeting.attendee_password
+        return classroom.moderator_password
+    return classroom.attendee_password
 
 
 def sign_parameters(action, parameters):
@@ -72,59 +72,59 @@ def request_api(action, parameters, prepare=False):
     raise ApiMeetingException(api_response)
 
 
-def create(meeting: Meeting):
+def create(classroom: Classroom):
     """Call BBB API to create a meeting."""
     parameters = {
-        "meetingID": str(meeting.meeting_id),
-        "name": meeting.title,
-        "attendeePW": meeting.attendee_password,
-        "moderatorPW": meeting.moderator_password,
-        "welcome": meeting.welcome_text,
+        "meetingID": str(classroom.meeting_id),
+        "name": classroom.title,
+        "attendeePW": classroom.attendee_password,
+        "moderatorPW": classroom.moderator_password,
+        "welcome": classroom.welcome_text,
     }
 
     api_response = request_api("create", parameters)
     if not api_response.get("message"):
         api_response["message"] = "Meeting created."
-    meeting.started = True
-    meeting.moderator_password = api_response["moderatorPW"]
-    meeting.attendee_password = api_response["attendeePW"]
-    meeting.save()
+    classroom.started = True
+    classroom.moderator_password = api_response["moderatorPW"]
+    classroom.attendee_password = api_response["attendeePW"]
+    classroom.save()
     return api_response
 
 
-def join(meeting: Meeting, consumer_site_user_id, fullname, moderator=False):
+def join(classroom: Classroom, consumer_site_user_id, fullname, moderator=False):
     """Call BBB API to join a meeting."""
     parameters = {
         "fullName": fullname,
-        "meetingID": str(meeting.meeting_id),
-        "password": _password(meeting, moderator),
+        "meetingID": str(classroom.meeting_id),
+        "password": _password(classroom, moderator),
         "userID": consumer_site_user_id,
         "redirect": "true",
     }
     return request_api("join", parameters, prepare=True)
 
 
-def end(meeting: Meeting, moderator=False):
+def end(classroom: Classroom, moderator=False):
     """Call BBB API to end a meeting."""
     parameters = {
-        "meetingID": str(meeting.meeting_id),
-        "password": _password(meeting, moderator),
+        "meetingID": str(classroom.meeting_id),
+        "password": _password(classroom, moderator),
     }
     api_response = request_api("end", parameters)
-    meeting.started = False
-    meeting.ended = True
-    meeting.save()
+    classroom.started = False
+    classroom.ended = True
+    classroom.save()
     return api_response
 
 
-def get_meeting_infos(meeting: Meeting):
-    """Call BBB API to retrieve meeting informations."""
+def get_meeting_infos(classroom: Classroom):
+    """Call BBB API to retrieve meeting information."""
     parameters = {
-        "meetingID": meeting.meeting_id,
+        "meetingID": classroom.meeting_id,
     }
     try:
         api_response = request_api("getMeetingInfo", parameters)
-        meeting.started = api_response["returncode"] == "SUCCESS"
+        classroom.started = api_response["returncode"] == "SUCCESS"
 
         # simplify attendees list:
         # - removes attendee level
@@ -136,9 +136,9 @@ def get_meeting_infos(meeting: Meeting):
             else:
                 api_response["attendees"] = [attendees]
 
-        meeting.save()
+        classroom.save()
         return api_response
     except ApiMeetingException as exception:
-        meeting.started = False
-        meeting.save()
+        classroom.started = False
+        classroom.save()
         raise exception

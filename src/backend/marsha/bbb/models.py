@@ -157,3 +157,7 @@ class Meeting(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
+
+
+Classroom = Meeting
+Classroom.RESOURCE_NAME = "classrooms"

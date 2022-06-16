@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 
 import responses
 
-from marsha.bbb.factories import MeetingFactory
+from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     create,
@@ -17,8 +17,8 @@ from marsha.bbb.utils.bbb_utils import (
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
-class MeetingServiceTestCase(TestCase):
-    """Test our intentions about the Meeting service."""
+class ClassroomServiceTestCase(TestCase):
+    """Test our intentions about the Classroom service."""
 
     maxDiff = None
 
@@ -42,10 +42,10 @@ class MeetingServiceTestCase(TestCase):
         )
 
     @responses.activate
-    def test_bbb_create_new_meeting(self):
-        """Create a meeting in current meeting related server."""
-        meeting = MeetingFactory(
-            title="Meeting 001",
+    def test_bbb_create_new_classroom(self):
+        """Create a classroom in current classroom related server."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
             attendee_password="9#R1kuUl3R",
             moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
@@ -58,10 +58,10 @@ class MeetingServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "08a4c09eb240bcbcfe7a79a3ce864c7070aabd2a",
+                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
-                        "name": "Meeting 001",
+                        "name": "Classroom 001",
                         "welcome": "Welcome!",
                     }
                 )
@@ -69,11 +69,11 @@ class MeetingServiceTestCase(TestCase):
             body=f"""
             <response>
                 <returncode>SUCCESS</returncode>
-                <meetingID>{meeting.id}</meetingID>
+                <meetingID>{classroom.id}</meetingID>
                 <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
                 <parentMeetingID>bbb-none</parentMeetingID>
-                <attendeePW>{meeting.attendee_password}</attendeePW>
-                <moderatorPW>{meeting.moderator_password}</moderatorPW>
+                <attendeePW>{classroom.attendee_password}</attendeePW>
+                <moderatorPW>{classroom.moderator_password}</moderatorPW>
                 <createTime>1628693645640</createTime>
                 <voiceBridge>83267</voiceBridge>
                 <dialNumber>613-555-1234</dialNumber>
@@ -88,11 +88,11 @@ class MeetingServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(meeting)
+        api_response = create(classroom)
 
         self.assertDictEqual(
             {
-                "attendeePW": meeting.attendee_password,
+                "attendeePW": classroom.attendee_password,
                 "createDate": "Wed Aug 11 14:54:05 UTC 2021",
                 "createTime": "1628693645640",
                 "dialNumber": "613-555-1234",
@@ -100,25 +100,25 @@ class MeetingServiceTestCase(TestCase):
                 "hasBeenForciblyEnded": "false",
                 "hasUserJoined": "false",
                 "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
-                "meetingID": str(meeting.id),
+                "meetingID": str(classroom.id),
                 "message": "Meeting created.",
                 "messageKey": None,
-                "moderatorPW": meeting.moderator_password,
+                "moderatorPW": classroom.moderator_password,
                 "parentMeetingID": "bbb-none",
                 "returncode": "SUCCESS",
                 "voiceBridge": "83267",
             },
             api_response,
         )
-        self.assertEqual(meeting.started, True)
-        self.assertEqual(meeting.ended, False)
+        self.assertEqual(classroom.started, True)
+        self.assertEqual(classroom.ended, False)
 
     @responses.activate
-    def test_bbb_create_new_meeting_no_passwords(self):
-        """When starting a meeting, if no passwords exists,
-        BBB generates them, and they are stored in meeting instance."""
-        meeting = MeetingFactory(
-            title="Meeting 001",
+    def test_bbb_create_new_classroom_no_passwords(self):
+        """When starting a classroom, if no passwords exists,
+        BBB generates them, and they are stored in classroom instance."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
             attendee_password=None,
             moderator_password=None,
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
@@ -129,9 +129,9 @@ class MeetingServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "dea8e4672ccf67bcd16625e4902c1d5d004b18bc",
+                        "checksum": "3d56249a0307871b230c46a64118456262c4f613",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "name": "Meeting 001",
+                        "name": "Classroom 001",
                         "welcome": "Welcome!",
                     }
                 )
@@ -139,7 +139,7 @@ class MeetingServiceTestCase(TestCase):
             body=f"""
             <response>
                 <returncode>SUCCESS</returncode>
-                <meetingID>{meeting.id}</meetingID>
+                <meetingID>{classroom.id}</meetingID>
                 <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
                 <parentMeetingID>bbb-none</parentMeetingID>
                 <attendeePW>attendee_password</attendeePW>
@@ -158,7 +158,7 @@ class MeetingServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(meeting)
+        api_response = create(classroom)
 
         self.assertDictEqual(
             {
@@ -170,7 +170,7 @@ class MeetingServiceTestCase(TestCase):
                 "hasBeenForciblyEnded": "false",
                 "hasUserJoined": "false",
                 "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
-                "meetingID": str(meeting.id),
+                "meetingID": str(classroom.id),
                 "message": "Meeting created.",
                 "messageKey": None,
                 "moderatorPW": "moderator_password",
@@ -180,15 +180,15 @@ class MeetingServiceTestCase(TestCase):
             },
             api_response,
         )
-        self.assertEqual(meeting.started, True)
-        self.assertEqual(meeting.attendee_password, "attendee_password")
-        self.assertEqual(meeting.moderator_password, "moderator_password")
+        self.assertEqual(classroom.started, True)
+        self.assertEqual(classroom.attendee_password, "attendee_password")
+        self.assertEqual(classroom.moderator_password, "moderator_password")
 
     @responses.activate
-    def test_bbb_create_existing_meeting(self):
-        """Create a meeting in current meeting related server."""
-        meeting = MeetingFactory(
-            title="Meeting 001",
+    def test_bbb_create_existing_classroom(self):
+        """Create a meeting in current classroom related server."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
             attendee_password="9#R1kuUl3R",
             moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
@@ -201,10 +201,10 @@ class MeetingServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "08a4c09eb240bcbcfe7a79a3ce864c7070aabd2a",
+                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
-                        "name": "Meeting 001",
+                        "name": "Classroom 001",
                         "welcome": "Welcome!",
                     }
                 )
@@ -220,19 +220,19 @@ class MeetingServiceTestCase(TestCase):
         )
 
         with self.assertRaises(ApiMeetingException) as exception:
-            create(meeting)
+            create(classroom)
         self.assertEqual(
             str(exception.exception), "A meeting already exists with that meeting ID."
         )
-        meeting.refresh_from_db()
-        self.assertEqual(meeting.started, False)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, False)
 
     @responses.activate
     def test_bbb_end_moderator(self):
-        """End a meeting in current meeting related server."""
-        meeting = MeetingFactory(
+        """End a meeting in current classroom related server."""
+        classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
-            title="Meeting 1",
+            title="Classroom 1",
             attendee_password="9#R1kuUl3R",
             moderator_password="0$C7Aaz0o",
         )
@@ -245,7 +245,7 @@ class MeetingServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "meetingID": "21e6634f-ab6f-4c77-a665-4229c61b479a",
-                        "password": meeting.moderator_password,
+                        "password": classroom.moderator_password,
                         "checksum": "3e7b6970d927f542261f18d6c2c10b5d94bcb55c",
                     }
                 )
@@ -264,7 +264,7 @@ class MeetingServiceTestCase(TestCase):
             "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
             body="""<response>
                 <returncode>SUCCESS</returncode>
-                <meetingName>Super bbb meeting</meetingName>
+                <meetingName>Super bbb classroom</meetingName>
                 <meetingID>b3fc0805-c9fb-4e62-b12d-d4472986406b</meetingID>
             </response>
             """,
@@ -283,7 +283,7 @@ class MeetingServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = end(meeting, moderator=True)
+        api_response = end(classroom, moderator=True)
         self.assertDictEqual(
             {
                 "message": "A request to end the meeting was sent.",
@@ -292,15 +292,15 @@ class MeetingServiceTestCase(TestCase):
             },
             api_response,
         )
-        self.assertEqual(meeting.started, False)
-        self.assertEqual(meeting.ended, True)
+        self.assertEqual(classroom.started, False)
+        self.assertEqual(classroom.ended, True)
 
     @responses.activate
     def test_bbb_end_attendee(self):
-        """End a meeting in current meeting related server."""
-        meeting = MeetingFactory(
+        """End a meeting in current classroom related server."""
+        classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
-            title="Meeting 1",
+            title="Classroom 1",
             attendee_password="9#R1kuUl3R",
             moderator_password="0$C7Aaz0o",
         )
@@ -312,7 +312,7 @@ class MeetingServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "meetingID": "21e6634f-ab6f-4c77-a665-4229c61b479a",
-                        "password": meeting.attendee_password,
+                        "password": classroom.attendee_password,
                         "checksum": "471ac2a7f199c26fe9e58bf42145ea0d7ea7a3ec",
                     }
                 )
@@ -327,7 +327,7 @@ class MeetingServiceTestCase(TestCase):
         )
 
         with self.assertRaises(ApiMeetingException) as context:
-            end(meeting, moderator=False)
+            end(classroom, moderator=False)
         self.assertEqual(
             str(context.exception),
             "You must supply the moderator password for this call.",
@@ -335,12 +335,12 @@ class MeetingServiceTestCase(TestCase):
 
     def test_join(self):
         """Return a meeting join url."""
-        meeting = MeetingFactory()
-        api_response = join(meeting, consumer_site_user_id="a_1", fullname="John Doe")
+        classroom = ClassroomFactory()
+        api_response = join(classroom, consumer_site_user_id="a_1", fullname="John Doe")
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
-            f"fullName=John+Doe&meetingID={meeting.meeting_id}&"
-            f"password={meeting.attendee_password}&userID=a_1&redirect=true",
+            f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
+            f"password={classroom.attendee_password}&userID=a_1&redirect=true",
             api_response.get("url"),
         )
 
@@ -348,7 +348,7 @@ class MeetingServiceTestCase(TestCase):
     def test_infos_started(self):
         """Return meeting infos.
         If meeting is found, model instance start is set to True."""
-        meeting = MeetingFactory(
+        classroom = ClassroomFactory(
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=False
         )
 
@@ -418,7 +418,7 @@ class MeetingServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = get_meeting_infos(meeting)
+        api_response = get_meeting_infos(classroom)
         self.assertDictEqual(
             {
                 "attendeePW": "trac",
@@ -471,14 +471,14 @@ class MeetingServiceTestCase(TestCase):
             },
             api_response,
         )
-        meeting.refresh_from_db()
-        self.assertEqual(meeting.started, True)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, True)
 
     @responses.activate
     def test_infos_one_attendee(self):
         """Return meeting infos.
         If meeting is found, model instance start is set to True."""
-        meeting = MeetingFactory(
+        classroom = ClassroomFactory(
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=False
         )
 
@@ -538,7 +538,7 @@ class MeetingServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = get_meeting_infos(meeting)
+        api_response = get_meeting_infos(classroom)
         self.assertDictEqual(
             {
                 "attendeePW": "trac",
@@ -581,14 +581,14 @@ class MeetingServiceTestCase(TestCase):
             },
             api_response,
         )
-        meeting.refresh_from_db()
-        self.assertEqual(meeting.started, True)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, True)
 
     @responses.activate
     def test_infos_not_found(self):
         """When a meeting is not found on BBB server an exception is raised,
         and model instance start is set to False."""
-        meeting = MeetingFactory(
+        classroom = ClassroomFactory(
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=True
         )
 
@@ -614,6 +614,6 @@ class MeetingServiceTestCase(TestCase):
         )
 
         with self.assertRaises(ApiMeetingException):
-            get_meeting_infos(meeting)
-        meeting.refresh_from_db()
-        self.assertEqual(meeting.started, False)
+            get_meeting_infos(classroom)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, False)

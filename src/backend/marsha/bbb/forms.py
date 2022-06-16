@@ -4,11 +4,11 @@ from django.forms import ModelForm
 from . import models
 
 
-class MeetingForm(ModelForm):
-    """Form to create or update meetings."""
+class ClassroomForm(ModelForm):
+    """Form to create or update classrooms."""
 
     class Meta:
-        """Meta for MeetingForm."""
+        """Meta for ClassroomForm."""
 
-        model = models.Meeting
+        model = models.Classroom
         fields = ["description", "lti_id", "playlist", "title"]

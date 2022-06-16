@@ -5,14 +5,14 @@ from django.utils.translation import gettext_lazy as _
 
 from marsha.core.admin import link_field
 
-from .models import Meeting
+from .models import Classroom
 
 
-@admin.register(Meeting)
-class MeetingAdmin(admin.ModelAdmin):
-    """Admin class for the Meeting model."""
+@admin.register(Classroom)
+class ClassroomAdmin(admin.ModelAdmin):
+    """Admin class for the Classroom model."""
 
-    verbose_name = _("Meeting")
+    verbose_name = _("Classroom")
     list_display = (
         "id",
         "started",

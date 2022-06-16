@@ -10,14 +10,14 @@ from marsha.bbb.utils.bbb_utils import ApiMeetingException, get_meeting_infos
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
-from .models import Meeting
+from .models import Classroom
 
 
-class MeetingSerializer(serializers.ModelSerializer):
-    """A serializer to display a Meeting resource."""
+class ClassroomSerializer(serializers.ModelSerializer):
+    """A serializer to display a Classroom resource."""
 
     class Meta:  # noqa
-        model = Meeting
+        model = Classroom
         fields = (
             "id",
             "lti_id",
@@ -48,7 +48,7 @@ class MeetingSerializer(serializers.ModelSerializer):
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
         try:
-            return get_meeting_infos(meeting=obj)
+            return get_meeting_infos(classroom=obj)
         except ApiMeetingException:
             return None
 
@@ -76,11 +76,11 @@ class MeetingSerializer(serializers.ModelSerializer):
         return value
 
 
-class MeetingSelectLTISerializer(MeetingSerializer):
-    """A serializer to display a Meeting resource for LTI select content request."""
+class ClassroomSelectLTISerializer(ClassroomSerializer):
+    """A serializer to display a Classroom resource for LTI select content request."""
 
     class Meta:  # noqa
-        model = Meeting
+        model = Classroom
         fields = (
             "id",
             "lti_id",
@@ -94,7 +94,7 @@ class MeetingSelectLTISerializer(MeetingSerializer):
     lti_url = serializers.SerializerMethodField()
 
     def get_lti_url(self, obj):
-        """LTI Url of the Meeting.
+        """LTI Url of the Classroom.
 
         Parameters
         ----------
@@ -109,5 +109,5 @@ class MeetingSelectLTISerializer(MeetingSerializer):
         """
         return build_absolute_uri_behind_proxy(
             self.context["request"],
-            reverse("bbb:meeting_lti_view", args=[obj.id]),
+            reverse("bbb:classroom_lti_view", args=[obj.id]),
         )
