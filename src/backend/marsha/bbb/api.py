@@ -11,11 +11,11 @@ from marsha.core.api import ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
-from .forms import MeetingForm
-from .models import Meeting
+from .forms import ClassroomForm
+from .models import Classroom
 
 
-class MeetingViewSet(
+class ClassroomViewSet(
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -23,10 +23,10 @@ class MeetingViewSet(
     mixins.ListModelMixin,
     viewsets.GenericViewSet,
 ):
-    """Viewset for the API of the Meeting object."""
+    """Viewset for the API of the Classroom object."""
 
-    queryset = Meeting.objects.all()
-    serializer_class = serializers.MeetingSerializer
+    queryset = Classroom.objects.all()
+    serializer_class = serializers.ClassroomSerializer
 
     permission_classes = [
         core_permissions.IsTokenResourceRouteObject
@@ -52,14 +52,14 @@ class MeetingViewSet(
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
-        """Create one meeting based on the request payload."""
+        """Create one classroom based on the request payload."""
         try:
-            form = MeetingForm(request.data)
-            meeting = form.save()
+            form = ClassroomForm(request.data)
+            classroom = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)
 
-        serializer = self.get_serializer(meeting)
+        serializer = self.get_serializer(classroom)
 
         return Response(serializer.data, status=201)
 
@@ -72,8 +72,8 @@ class MeetingViewSet(
     def lti_select(self, request):
         """Get selectable content for LTI.
 
-        Calling the endpoint returns a base URL for building a new meeting
-        LTI URL and a list of available meetings.
+        Calling the endpoint returns a base URL for building a new classroom
+        LTI URL and a list of available classrooms.
 
         Parameters
         ----------
@@ -86,10 +86,10 @@ class MeetingViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(self.request, "/lti/meetings/")
+        new_url = build_absolute_uri_behind_proxy(self.request, "/lti/classrooms/")
 
-        meetings = serializers.MeetingSelectLTISerializer(
-            Meeting.objects.filter(
+        classrooms = serializers.ClassroomSelectLTISerializer(
+            Classroom.objects.filter(
                 playlist__id=request.user.token.payload.get("playlist_id")
             ),
             many=True,
@@ -99,7 +99,7 @@ class MeetingViewSet(
         return Response(
             {
                 "new_url": new_url,
-                "meetings": meetings,
+                "classrooms": classrooms,
             }
         )
 
@@ -116,18 +116,18 @@ class MeetingViewSet(
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the meeting
+            The primary key of the classroom
 
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse with the serialized meeting.
+            HttpResponse with the serialized classroom.
         """
-        # Updating meeting with sent title and welcome text
+        # Updating classroom with sent title and welcome text
         self.update(request, *args, **kwargs)
 
         try:
-            response = create(meeting=self.get_object())
+            response = create(classroom=self.get_object())
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}
@@ -141,19 +141,19 @@ class MeetingViewSet(
         permission_classes=[IsAuthenticated],
     )
     def service_join(self, request, *args, **kwargs):
-        """Join a Big Blue Button meeting.
+        """Join a Big Blue Button classroom.
 
         Parameters
         ----------
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the meeting
+            The primary key of the classroom
 
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse with the serialized meeting.
+            HttpResponse with the serialized classroom.
         """
         if not request.data.get("fullname"):
             return Response({"message": "missing fullname parameter"}, status=400)
@@ -165,7 +165,7 @@ class MeetingViewSet(
                 f"{request.user.token.payload.get('user', {}).get('id')}"
             )
             response = join(
-                meeting=self.get_object(),
+                classroom=self.get_object(),
                 consumer_site_user_id=consumer_site_user_id,
                 fullname=request.data.get("fullname"),
                 moderator=moderator,
@@ -182,24 +182,24 @@ class MeetingViewSet(
         url_path="end",
     )
     def service_end(self, request, *args, **kwargs):
-        """End a Big Blue Button meeting.
+        """End a Big Blue Button classroom.
 
         Parameters
         ----------
         request : Type[django.http.request.HttpRequest]
             The request on the API endpoint
         pk: string
-            The primary key of the meeting
+            The primary key of the classroom
 
         Returns
         -------
         Type[rest_framework.response.Response]
-            HttpResponse with the serialized meeting.
+            HttpResponse with the serialized classroom.
         """
         try:
             roles = request.user.token.payload.get("roles")
             moderator = "administrator" in roles or "instructor" in roles
-            response = end(meeting=self.get_object(), moderator=moderator)
+            response = end(classroom=self.get_object(), moderator=moderator)
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}

@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Rename meetings to classrooms (no database change yet)
+
 ## [4.0.0-beta.7] - 2022-06-27
 
 ### Added
