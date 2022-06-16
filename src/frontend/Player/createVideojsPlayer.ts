@@ -145,7 +145,7 @@ export const createVideojsPlayer = (
       [Date.now()]: {
         fullScreen: player.isFullscreen(),
         muted: player.muted(),
-        player_timer: player.currentTime(),
+        playerTimer: player.currentTime(),
         playing: !player.paused(),
         timestamp: Date.now(),
         volume: player.volume(),

@@ -447,7 +447,7 @@ describe('createVideoJsPlayer', () => {
         1651732370000: {
           fullScreen: false,
           muted: false,
-          player_timer: 0,
+          playerTimer: 0,
           playing: false,
           timestamp: 1651732370000,
           volume: 1,
