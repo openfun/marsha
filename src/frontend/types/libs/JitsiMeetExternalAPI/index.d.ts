@@ -1,4 +1,4 @@
-import { Nullable } from '../../../utils/types';
+import { Nullable } from 'utils/types';
 
 export as namespace JitsiMeetExternalAPI;
 export = JitsiMeetExternalAPI;
@@ -48,7 +48,7 @@ declare namespace JitsiMeetExternalAPI {
     rtmpStreamKey: string;
   };
   type ConfigOption = {
-    toolbarButtons: string[];
+    toolbarButtons?: string[];
   };
   export type ConfigOverwriteOptions = {
     constraints?: {
