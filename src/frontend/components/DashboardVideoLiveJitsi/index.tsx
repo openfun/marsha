@@ -12,7 +12,6 @@ import { PLAYER_ROUTE } from 'components/routes';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
 import { LiveJitsi, liveState } from 'types/tracks';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
@@ -84,17 +83,33 @@ const DashboardVideoLiveJitsi = ({
   );
 
   //  initialize jitsi api
-  useAsyncEffect(async () => {
-    if (jitsi || !jitsiNode.current) {
-      return;
-    }
+  useEffect(() => {
+    let canceled = false;
+    const init = async () => {
+      if (!jitsiNode.current || jitsi) {
+        return;
+      }
 
-    const _jitsi = await initializeJitsi(
-      liveJitsi,
-      isInstructor,
-      jitsiNode.current,
-    );
-    setJitsiApi(_jitsi);
+      const _jitsi = await initializeJitsi(
+        liveJitsi,
+        isInstructor,
+        jitsiNode.current,
+      );
+      if (canceled) {
+        return;
+      }
+      setJitsiApi(_jitsi);
+    };
+
+    init();
+    return () => {
+      canceled = true;
+
+      if (jitsi) {
+        jitsi.dispose();
+        setJitsiApi(undefined);
+      }
+    };
   }, [jitsi, isInstructor]);
 
   //  handle jitsi recording according to live state
