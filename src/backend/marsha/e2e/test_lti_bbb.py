@@ -11,13 +11,13 @@ import pytest
 from pytest_django.live_server_helper import LiveServer
 import responses
 
-from marsha.bbb.factories import MeetingFactory
-from marsha.bbb.models import Meeting
+from marsha.bbb.factories import ClassroomFactory
+from marsha.bbb.models import Classroom
 from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
 
 
-def _preview_meeting(page: Page, live_server: LiveServer):
+def _preview_classroom(page: Page, live_server: LiveServer):
     """Fill form to open resource in a new page."""
     # uncomment to log requests
     # page.on(
@@ -31,16 +31,16 @@ def _preview_meeting(page: Page, live_server: LiveServer):
 
     page.set_viewport_size({"width": 1200, "height": 1200})
 
-    meeting_id = uuid.uuid4()
+    classroom_id = uuid.uuid4()
     context_id = "sent_lti_context_id"
     passport_attributes = {}
 
     lti_consumer_parameters = {
-        "uuid": str(meeting_id),
+        "uuid": str(classroom_id),
         "resource_link_id": "example.com-df7",
         "context_id": context_id,
         "roles": random.choice(["instructor", "administrator"]),
-        "resource": "meetings",
+        "resource": "classrooms",
         "user_id": "56255f3807599c377bf0e5bf072359fd",
         "lis_person_contact_email_primary": "contact@openfun.fr",
         "custom_component_display_name": "LTI Consumer",
@@ -55,7 +55,7 @@ def _preview_meeting(page: Page, live_server: LiveServer):
         "launch_presentation_locale": "en",
     }
     lti_parameters, _passport = generate_passport_and_signed_lti_parameters(
-        url=f"{live_server.url}/lti/meetings/{meeting_id}",
+        url=f"{live_server.url}/lti/classrooms/{classroom_id}",
         lti_parameters=lti_consumer_parameters,
         passport_attributes=passport_attributes,
     )
@@ -86,26 +86,7 @@ def _preview_meeting(page: Page, live_server: LiveServer):
 
     page.click('#lti_resource_page input[type="submit"]')
 
-    return page, meeting_id
-
-
-# @pytest.fixture
-# def mock_meeting_bbb_server(mocker, live_server):
-#     """Pytest fixture to easily mock bbb server."""
-#     mock_aws_s3_meeting = mocker.patch.object(
-#         marsha.bbb.serializers.MeetingSerializer, "get_lti_url", autospec=True
-#     )
-#     mock_aws_s3_meeting.return_value = (
-#         f"{live_server.url}/media/e2e/big_buck_bunny_480p.jpg"
-#     )
-#
-#     with override_settings(
-#         DEBUG=True,
-#         FRONT_UPLOAD_POLL_INTERVAL="1",
-#         STORAGE_BACKEND="marsha.core.storage.dummy",
-#         X_FRAME_OPTIONS="",
-#     ):
-#         yield mock_aws_s3_meeting
+    return page, classroom_id
 
 
 @responses.activate
@@ -152,7 +133,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         lti_id=lti_parameters.get("context_id"),
         consumer_site=passport.consumer_site,
     )
-    meeting = MeetingFactory(
+    classroom = ClassroomFactory(
         playlist=playlist,
     )
 
@@ -167,16 +148,16 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
 
     lti_select_iframe = page.frame("lti_select")
 
-    # Select a meeting
-    lti_select_iframe.click('button[role="tab"]:has-text("Meetings")')
-    meeting_content_items = (
+    # Select a classroom
+    lti_select_iframe.click('button[role="tab"]:has-text("Classrooms")')
+    classroom_content_items = (
         json.dumps(
             {
                 "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
                 "@graph": [
                     {
                         "@type": "ContentItem",
-                        "url": f"{live_server.url}/lti/meetings/{meeting.id}",
+                        "url": f"{live_server.url}/lti/classrooms/{classroom.id}",
                         "frame": [],
                         "title": lti_consumer_parameters.get("title"),
                         "text": lti_consumer_parameters.get("text"),
@@ -187,41 +168,41 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         .replace(", ", ",")
         .replace(": ", ":")
     )
-    assert meeting_content_items not in lti_select_iframe.content()
+    assert classroom_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {meeting.title}"]')
+        lti_select_iframe.click(f'[title="Select {classroom.title}"]')
     lti_select_iframe.wait_for_selector("dd")
-    assert meeting_content_items in lti_select_iframe.content()
+    assert classroom_content_items in lti_select_iframe.content()
 
-    # Select a new meeting
+    # Select a new classroom
     page.click('#lti_select input[type="submit"]')
 
-    lti_select_iframe.click('button[role="tab"]:has-text("Meetings")')
+    lti_select_iframe.click('button[role="tab"]:has-text("Classrooms")')
     sent_title_and_text = (
         f'"title":"{lti_consumer_parameters.get("title")}",'
         f'"text":"{lti_consumer_parameters.get("text")}"'
     )
     assert sent_title_and_text not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click("text=Add a meeting")
+        lti_select_iframe.click("text=Add a classroom")
     lti_select_iframe.wait_for_selector("dd")
 
     # assert sent_title_and_text in lti_select_iframe.content()
-    # assert Meeting.objects.count() == 1
+    # assert Classroom.objects.count() == 1
 
-    # added meeting is created
-    assert Meeting.objects.count() == 2
-    added_meeting = Meeting.objects.exclude(id=meeting.id).first()
-    assert added_meeting.title == lti_consumer_parameters.get("title")
-    assert added_meeting.description == lti_consumer_parameters.get("text")
-    meeting_content_items = (
+    # added classroom is created
+    assert Classroom.objects.count() == 2
+    added_classroom = Classroom.objects.exclude(id=classroom.id).first()
+    assert added_classroom.title == lti_consumer_parameters.get("title")
+    assert added_classroom.description == lti_consumer_parameters.get("text")
+    classroom_content_items = (
         json.dumps(
             {
                 "@context": "http://purl.imsglobal.org/ctx/lti/v1/ContentItem",
                 "@graph": [
                     {
                         "@type": "ContentItem",
-                        "url": f"{live_server}/lti/meetings/{added_meeting.id}",
+                        "url": f"{live_server}/lti/classrooms/{added_classroom.id}",
                         "frame": [],
                         "title": lti_consumer_parameters.get("title"),
                         "text": lti_consumer_parameters.get("text"),
@@ -232,7 +213,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         .replace(", ", ",")
         .replace(": ", ":")
     )
-    assert meeting_content_items in lti_select_iframe.content()
+    assert classroom_content_items in lti_select_iframe.content()
 
 
 @pytest.mark.django_db()
@@ -243,7 +224,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     X_FRAME_OPTIONS="",
 )
 def test_lti_select_bbb_disabled(page: Page, live_server: LiveServer, settings):
-    """When BBB flag is disabled, meetings are not selectable."""
+    """When BBB flag is disabled, classrooms are not selectable."""
     settings.BBB_ENABLED = False
     lti_consumer_parameters = {
         "roles": random.choice(["instructor", "administrator"]),
@@ -269,7 +250,7 @@ def test_lti_select_bbb_disabled(page: Page, live_server: LiveServer, settings):
     lti_select_iframe = page.frame("lti_select")
 
     lti_select_iframe.wait_for_selector(
-        "button[role='tab']:has-text('Meetings')", state="hidden"
+        "button[role='tab']:has-text('Classrooms')", state="hidden"
     )
 
 
@@ -284,7 +265,7 @@ def test_lti_select_bbb_disabled(page: Page, live_server: LiveServer, settings):
     BBB_API_SECRET="SuperSecret",
 )
 def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
-    """Test LTI BBB meeting create."""
+    """Test LTI BBB classroom create."""
     settings.BBB_ENABLED = True
 
     # Backend requests mocking
@@ -346,17 +327,17 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
         "https://10.7.7.1/bigbluebutton/api/join*",
         lambda route: route.fulfill(
             status=200,
-            body="BBB meeting joined!",
+            body="BBB classroom joined!",
         ),
     )
 
-    page, _ = _preview_meeting(page, live_server)
+    page, _ = _preview_classroom(page, live_server)
 
-    page.fill("text=Title", "Meeting title")
-    page.click("text=Launch the meeting now in BBB")
-    with page.expect_event("popup") as bbb_meeting_page_info:
-        page.click("text=Join meeting")
-    bbb_meeting_page = bbb_meeting_page_info.value
-    bbb_meeting_page.wait_for_load_state()
+    page.fill("text=Title", "Classroom title")
+    page.click("text=Launch the classroom now in BBB")
+    with page.expect_event("popup") as bbb_classroom_page_info:
+        page.click("text=Join classroom")
+    bbb_classroom_page = bbb_classroom_page_info.value
+    bbb_classroom_page.wait_for_load_state()
 
-    assert "BBB meeting joined!" in bbb_meeting_page.content()
+    assert "BBB classroom joined!" in bbb_classroom_page.content()

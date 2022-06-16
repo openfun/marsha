@@ -3,18 +3,18 @@ from django.templatetags.static import static
 
 from marsha.core.views import BaseLTIView
 
-from .models import Meeting
-from .serializers import MeetingSerializer
+from .models import Classroom
+from .serializers import ClassroomSerializer
 
 
-class MeetingLTIView(BaseLTIView):
+class ClassroomLTIView(BaseLTIView):
     """Video view."""
 
-    model = Meeting
-    serializer_class = MeetingSerializer
+    model = Classroom
+    serializer_class = ClassroomSerializer
 
     def _get_base_app_data(self):
-        """Adds app data only for BBB meeting."""
+        """Adds app data only for BBB classroom."""
         app_data = super()._get_base_app_data()
         app_data["static"]["img"].update(
             {
