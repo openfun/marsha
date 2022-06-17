@@ -89,7 +89,7 @@ reset: \
 .PHONY: reset
 
 logs: ## display app logs (follow mode)
-	@$(COMPOSE) logs -f app
+	@$(COMPOSE) logs --tail="100" -f app
 .PHONY: logs
 
 run: ## start the development server using Docker
