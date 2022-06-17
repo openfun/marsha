@@ -38,13 +38,10 @@ interface DashboardVideoLiveProps {
 }
 
 export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
-  const { isPanelVisible, configPanel, currentItem } = useLivePanelState(
-    (state) => ({
-      isPanelVisible: state.isPanelVisible,
-      configPanel: state.setAvailableItems,
-      currentItem: state.currentItem,
-    }),
-  );
+  const { configPanel, currentItem } = useLivePanelState((state) => ({
+    configPanel: state.setAvailableItems,
+    currentItem: state.currentItem,
+  }));
   const [canStartLive, setCanStartLive] = useState(
     video.live_type === LiveModeType.RAW,
   );
@@ -143,7 +140,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
             </Fragment>
           }
           displayActionsElement
-          isPanelOpen={isPanelVisible}
           isXmppReady={!!video.xmpp}
           liveTitleElement={
             <TeacherLiveInfoBar

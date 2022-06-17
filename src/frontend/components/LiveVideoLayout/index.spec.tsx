@@ -18,13 +18,16 @@ jest.mock('data/appData', () => ({
 
 describe('<LiveVideoLayout />', () => {
   it('renders components with panel [screenshot]', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+    });
+
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
-          isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
           sideElement={PanelCompo}
@@ -49,7 +52,6 @@ describe('<LiveVideoLayout />', () => {
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
-          isPanelOpen={false}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
           sideElement={PanelCompo}
@@ -73,7 +75,6 @@ describe('<LiveVideoLayout />', () => {
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
-          isPanelOpen={undefined}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
           sideElement={PanelCompo}
@@ -97,7 +98,6 @@ describe('<LiveVideoLayout />', () => {
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
-          isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
           sideElement={undefined}
@@ -114,13 +114,16 @@ describe('<LiveVideoLayout />', () => {
   });
 
   it('does not render the actionElement when displayActionsElement is set to false', () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+    });
+
     render(
       <ResponsiveContext.Provider value="large">
         <LiveVideoLayout
           actionsElement={ActionsElement}
           displayActionsElement={false}
           isXmppReady={true}
-          isPanelOpen={true}
           liveTitleElement={LiveTitleElement}
           mainElement={MainCompo}
           sideElement={PanelCompo}
@@ -143,7 +146,6 @@ describe('<LiveVideoLayout />', () => {
         actionsElement={ActionsElement}
         displayActionsElement={false}
         isXmppReady={true}
-        isPanelOpen={false}
         liveTitleElement={LiveTitleElement}
         mainElement={MainCompo}
         sideElement={PanelCompo}
