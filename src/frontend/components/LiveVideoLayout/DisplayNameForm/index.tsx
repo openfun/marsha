@@ -5,10 +5,11 @@ import { InputDisplayNameOverlay } from 'components/Chat/SharedChatComponents/In
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 
 interface DisplayNameFormProps {
+  fullPage?: boolean;
   target?: any;
 }
 
-export const DisplayNameForm = ({ target }: DisplayNameFormProps) => {
+export const DisplayNameForm = ({ fullPage, target }: DisplayNameFormProps) => {
   const [isDisplayNameVisible] = useSetDisplayName();
 
   if (isDisplayNameVisible) {
@@ -16,8 +17,8 @@ export const DisplayNameForm = ({ target }: DisplayNameFormProps) => {
       <Layer
         animate
         animation="fadeIn"
-        full={target === undefined}
-        target={target}
+        full={fullPage}
+        target={!fullPage && target}
       >
         <InputDisplayNameOverlay />
       </Layer>

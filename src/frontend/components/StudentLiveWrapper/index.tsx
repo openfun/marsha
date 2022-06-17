@@ -45,13 +45,13 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   playerType,
 }) => {
   const intl = useIntl();
-  const { isPanelVisible, configPanel, currentItem, setPanelVisibility } =
-    useLivePanelState((state) => ({
-      isPanelVisible: state.isPanelVisible,
+  const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
+    (state) => ({
       configPanel: state.setAvailableItems,
       currentItem: state.currentItem,
       setPanelVisibility: state.setPanelVisibility,
-    }));
+    }),
+  );
   const isParticipantOnstage = useParticipantWorkflow(
     (state) => state.accepted,
   );
@@ -112,7 +112,6 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     <LiveVideoLayout
       actionsElement={<StudentLiveControlBar video={video} />}
       displayActionsElement={!!video.xmpp}
-      isPanelOpen={isPanelVisible}
       isXmppReady={!!video.xmpp}
       liveTitleElement={
         <StudentLiveInfoBar
