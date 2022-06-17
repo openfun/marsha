@@ -1,13 +1,19 @@
+import { render, screen } from '@testing-library/react';
+import { DateTime } from 'luxon';
 import React from 'react';
-import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
-import { screen } from '@testing-library/react';
 
 import { ChatMessageType } from 'data/stores/useChatItemsStore/index';
-import { ChatMessage } from './index';
-import { DateTime } from 'luxon';
+import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { ChatMessage } from '.';
 
 const exampleMessage: ChatMessageType = {
   content: 'This is an example message',
+  sentAt: DateTime.fromISO('2020-01-01T12:12:12'),
+};
+
+const exampleMessageWithUrls: ChatMessageType = {
+  content: 'This message contains an url, example-url.com .',
   sentAt: DateTime.fromISO('2020-01-01T12:12:12'),
 };
 
@@ -16,5 +22,18 @@ describe('<ChatMessage />', () => {
     await renderImageSnapshot(<ChatMessage message={exampleMessage} />);
     screen.getByText('This is an example message');
     screen.getByTitle('sent at 12:12:12');
+  });
+
+  it('renders the message with a clickable url', () => {
+    render(
+      wrapInIntlProvider(<ChatMessage message={exampleMessageWithUrls} />),
+    );
+    screen.getByTitle('sent at 12:12:12');
+    screen.getByText('This message contains an url, .');
+    const link = screen.getByRole('link');
+    expect(link).toHaveAttribute('href', 'http://example-url.com');
+    expect(link).toHaveAttribute('target', '_blank');
+    expect(link).toHaveAttribute('rel', 'noopener noreferrer');
+    screen.getByText('example-url.com');
   });
 });
