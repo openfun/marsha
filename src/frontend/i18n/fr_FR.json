@@ -1,4 +1,28 @@
 {
+  "JitsiControls.AudioControl.disableTitle": {
+    "description": "Title for jitsi mute/unmute button when audio is off",
+    "message": "Remettre le son"
+  },
+  "JitsiControls.AudioControl.enableTitle": {
+    "description": "Title for jitsi mute/unmute button when audio is on",
+    "message": "Couper le son"
+  },
+  "JitsiControls.CameraControl.disableTitle": {
+    "description": "Title for jitsi show/hide camera button when camera is off",
+    "message": "Afficher la caméra"
+  },
+  "JitsiControls.CameraControl.enableTitle": {
+    "description": "Title for jitsi show/hide camera button when camera is on",
+    "message": "Masquer la caméra"
+  },
+  "PictureInPictureLayer.PictureInPictureSwitchAction.documentActive": {
+    "description": "Title for picture in picture switch button when document is the main element",
+    "message": "Afficher le lecteur"
+  },
+  "PictureInPictureLayer.PictureInPictureSwitchAction.playerActive": {
+    "description": "Title for picture in picture switch button when player is the main element",
+    "message": "Afficher le document"
+  },
   "apps.bbb.SelectContent.addMeeting": {
     "description": "Text displayed on a button to add a new meeting.",
     "message": "Ajouter une classe virtuelle"
@@ -50,6 +74,18 @@
   "apps.markdown.SelectContent.tabTitleMarkdown": {
     "description": "Tab label to display markdown documents list.",
     "message": "Markdown"
+  },
+  "component.AllowedDownloadButton.buttonLabel": {
+    "description": "The label of the button for stopping to allow students to download the media.",
+    "message": "Cliquer sur ce bouton pour ne plus permettre le téléchargement du document par les étudiants."
+  },
+  "component.AllowedDownloadButton.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.AllowedDownloadButton.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
   },
   "component.ChatAvatar.avatarTitle": {
     "description": "A title describing the avatar icon purpose.",
@@ -207,6 +243,26 @@
     "description": "Message displayed when video update is successful.",
     "message": "Vidéo mise à jour."
   },
+  "component.DashboardVideoLiveWidgetSharedLiveMedia.confirmationModalText": {
+    "description": "Title of the modal displayed when an instructor wants to delete a shared media",
+    "message": "Êtes-vous certain de vouloir supprimer le fichier {sharedLiveMediaName} ?"
+  },
+  "component.DashboardVideoLiveWidgetSharedLiveMedia.confirmationModalTitle": {
+    "description": "Title of the modal displayed when an instructor wants to delete a shared media",
+    "message": "Suppression du document partagé"
+  },
+  "component.DashboardVideoLiveWidgetSharedLiveMedia.noUploadedDocuments": {
+    "description": "A message informing the user he hasn't any document imported yet.",
+    "message": "Vous n'avez aucun document partagé téléversé."
+  },
+  "component.DashboardVideoLiveWidgetSharedLiveMedia.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.DashboardVideoLiveWidgetSharedLiveMedia.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
+  },
   "component.DashboardVideoLiveWidgetToolsAndApplications.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
     "message": "La mise à jour de la vidéo a échoué !"
@@ -231,6 +287,14 @@
     "description": "Failed to update download permission on your video.",
     "message": "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
   },
+  "component.DashboardVideoPaneStats.loadingStats": {
+    "description": "Accessible message for the spinner while loading the video stats in dashboard view.",
+    "message": "Chargement des statistiques..."
+  },
+  "component.DashboardVideoPaneStats.viewsNumber": {
+    "description": "Label for the video views number in dashboard view.",
+    "message": "Nombre de vues: {nb_views}"
+  },
   "component.DashboardVideoPaneTranscriptOption.updateVideoFail": {
     "description": "Failed to update download permission on your video.",
     "message": "Impossible de mettre à jour la vidéo. Merci de réessayer plus tard."
@@ -239,6 +303,18 @@
     "description": "",
     "message": "Utiliser les sous-titres comme transcription"
   },
+  "component.DisallowedDownloadButton.buttonLabel": {
+    "description": "The label of the button for allowing the students to download the media.",
+    "message": "Cliquer sur ce bouton pour permettre le téléchargement du document par les étudiants."
+  },
+  "component.DisallowedDownloadButton.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.DisallowedDownloadButton.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
+  },
   "component.HideLiveFeedback.label": {
     "description": "Label for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
     "message": "Retour du direct"
@@ -246,6 +322,10 @@
   "component.HideLiveFeedback.title": {
     "description": "Title for the button in actions during a live in raw mode for a teacher to hide his live feedback.",
     "message": "Cacher le retour du direct"
+  },
+  "component.ImageViewer.altMessage": {
+    "description": "Alt message for a shared document page",
+    "message": "Page du document partagé {url}"
   },
   "component.LiveVideoPanel.LiveVideoTabPanel.application": {
     "description": "Application tab title in live panel",
@@ -359,6 +439,10 @@
     "description": "Message when playlist update is successful.",
     "message": "Liste de lecture mise à jour."
   },
+  "component.RetryButton.buttonLabel": {
+    "description": "The label of the retry button.",
+    "message": "Cliquez sur ce bouton pour réessayer de téléverser le document partagé."
+  },
   "component.SchedulingFields.estimatedDurationTextLabel": {
     "description": "Label of the input field to add/update the estimated duration of the scheduled event",
     "message": "Durée estimée"
@@ -391,6 +475,10 @@
     "description": "Title for the current playlist.",
     "message": "Liste de lecture {title} ({id})"
   },
+  "component.SharedLiveMediaItem.retryUploadFailedLabel": {
+    "description": "Label of the button allowing to retry upload when it has failed.",
+    "message": "Réessayer"
+  },
   "component.ShowLiveFeedback.label": {
     "description": "Label for the button in actions during a live in raw mode for a teacher to show his live feedback.",
     "message": "Retour du direct"
@@ -398,6 +486,30 @@
   "component.ShowLiveFeedback.title": {
     "description": "Title for the button in actions during a live in raw mode for a teacher to show his live feedback.",
     "message": "Afficher le retour du direct"
+  },
+  "component.StartSharingButton.publishSharedLiveMediaBtn": {
+    "description": "Label of the button allowing instructor to share a media with its students.",
+    "message": "Partager"
+  },
+  "component.StartSharingButton.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.StartSharingButton.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
+  },
+  "component.StopSharingButton.unpublishSharedLiveMediaBtn": {
+    "description": "Label of the button allowing instructor to stop sharing a media with its students.",
+    "message": "Arrêter le partage"
+  },
+  "component.StopSharingButton.updateSharedLiveMediaFail": {
+    "description": "Message displayed when shared media update has failed.",
+    "message": "La mise à jour du document partagé a échoué !"
+  },
+  "component.StopSharingButton.updateSharedLiveMediaSucces": {
+    "description": "Message displayed when a shared media is successfully updated.",
+    "message": "Document partagé mis à jour."
   },
   "component.StudentLiveAdvertising.StudentLiveDescription.noTitle": {
     "description": "Title to advertise a live which has no title set yet.",
@@ -414,6 +526,14 @@
   "component.TeacherLiveTypeSwitch.message": {
     "description": "Message displayed when an error occured when trying to switch live mode",
     "message": "Une erreur est survenue, veuillez réessayer."
+  },
+  "component.ThumbnailRemoveButton.confirmationModalText": {
+    "description": "Title of the modal displayed when an instructor wants to delete the live video thumbnail.",
+    "message": "Êtes-vous sûr de vouloir supprimer la vignette actuelle ? La miniature par défaut sera affichée à la place."
+  },
+  "component.TitleDisplayer.noFilenameUploadFailed": {
+    "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
+    "message": "Téléversement échoué"
   },
   "components.Dashboard.DashboardPaneButtons.documents.btnPlay": {
     "description": "Dashboard button to display the existing document, if there is one.",
@@ -502,6 +622,22 @@
   "components.DashboardTimedTextPane.transcripts": {
     "description": "Title for the transcripts management in the dashboard.",
     "message": "Transcriptions"
+  },
+  "components.DashboardVideoLive.TeacherPIPControls.NextPageButtonProps.title": {
+    "description": "Sharing document next page button title text",
+    "message": "Page suivante"
+  },
+  "components.DashboardVideoLive.TeacherPIPControls.PreviousPageButton.title": {
+    "description": "Sharing document previous page button title text",
+    "message": "Page précédente"
+  },
+  "components.DashboardVideoLiveConfirmationModal.cancelButtonLabel": {
+    "description": "Label of the cancelling button",
+    "message": "Annuler"
+  },
+  "components.DashboardVideoLiveConfirmationModal.confirmButtonLabel": {
+    "description": "Label of the confirming button",
+    "message": "Valider"
   },
   "components.DashboardVideoLiveControlPane.widgets.DashboardVideoLiveWidgetLiePairing.info": {
     "description": "Helper explaining what contains the external sources widget and how to use the appairing button",
@@ -595,6 +731,10 @@
     "description": "The label associated to the denied join mode.",
     "message": "Non autorisé"
   },
+  "components.DashboardVideoLiveWidgetJoinMode.forcedLabel": {
+    "description": "The label associated to the forced join mode.",
+    "message": "Tout le monde rejoindra la discussion"
+  },
   "components.DashboardVideoLiveWidgetJoinMode.info": {
     "description": "Info of the widget used for setting join modes.",
     "message": "Ce widget vous permet de sélectionner le mode permettant à l'étudiant de rejoindre la discussion."
@@ -627,9 +767,33 @@
     "description": "Title of the widget used for setting live title and activate recording.",
     "message": "Description"
   },
+  "components.DashboardVideoLiveWidgetSharedLiveMedia.info": {
+    "description": "Info of the widget used for managing and sharing supports.",
+    "message": "Ce widget permet la gestion des documents partagés. Vous pouvez téléverser des documents que vous souhaitez partager avec les étudiants, avec la possibilité de choisir quel document est partagé et lequel ne l'est pas"
+  },
+  "components.DashboardVideoLiveWidgetSharedLiveMedia.title": {
+    "description": "Title of the widget used for managing and sharing supports.",
+    "message": "Documents partagés"
+  },
+  "components.DashboardVideoLiveWidgetSharedLiveMedia.uploadButtonLabel": {
+    "description": "A message indicating the role of the upload button.",
+    "message": "Téléverser un document partagé"
+  },
   "components.DashboardVideoLiveWidgetTemplate.helpButtonTitle": {
     "description": "title for widget help button",
     "message": "aide"
+  },
+  "components.DashboardVideoLiveWidgetThumbnail.info": {
+    "description": "Helper explaining how to use the widget.",
+    "message": "Ce widget vous permet de changer la vignette par défaut illustrant votre webinaire. L'image téléversée devrait respecter un ratio de 16:9."
+  },
+  "components.DashboardVideoLiveWidgetThumbnail.title": {
+    "description": "Title used in the thumbnail widget.",
+    "message": "Vignette"
+  },
+  "components.DashboardVideoLiveWidgetThumbnail.uploadThumbnailButtonLabel": {
+    "description": "Label of the upload image button.",
+    "message": "Téléverser une image"
   },
   "components.DashboardVideoLiveWidgetToolsAndApplications.chatActiveLabel": {
     "description": "The label associated to the toggle button reponsible of live chat activation / deactivation.",
@@ -727,6 +891,10 @@
     "description": "Subtitle for the video part of the dashboard (right now the only part until we add timed text tracks).",
     "message": "Statut de la vidéo"
   },
+  "components.DeleteUploadButton.buttonLabel": {
+    "description": "The label of the button to delete a media.",
+    "message": "Cliquez sur ce bouton pour supprimer le document partagé."
+  },
   "components.DownloadVideo.1080": {
     "description": "High quality video",
     "message": "1080p: FullHD (haute qualité)"
@@ -802,6 +970,38 @@
   "components.InputDiplayNameOverlay.closeButtonTitle": {
     "description": "A title describing the close button action",
     "message": "Cliquez sur ce bouton pour fermer la boîte de dialogue."
+  },
+  "components.InputDisplayName.inputAnonymousKeywordForbiddenAlertMessage": {
+    "description": "An alert message explaining why the entered display name is invalid.",
+    "message": "Le mot clé \"{forbiddenPrefix}\" n'est pas autorisé."
+  },
+  "components.InputDisplayName.inputDisplayNameInformative": {
+    "description": "An informative text about the display name which is asked to enter.",
+    "message": "Le nom d'affichage est le pseudonyme avec lequel vous serez authentifié sur ce wébinaire. Vous ne pourrez pas le modifier. Les autres participants vous verront avec ce nom. L'instructeur pourra toutefois voir votre véritable identité si vous vous êtes déjà identifié."
+  },
+  "components.InputDisplayName.inputDisplayNameLabel": {
+    "description": "An label describing the input below.",
+    "message": "Nom d'affichage"
+  },
+  "components.InputDisplayName.inputNicknameAlreadyExists": {
+    "description": "An alert message saying that the user can't select the entered nickname because someone is already using it in the chat.",
+    "message": "Ce nom est déjà utilisé. Merci d'en choisir un autre."
+  },
+  "components.InputDisplayName.inputTooLongAlertMessage": {
+    "description": "An alert message explaining why the entered display name is invalid.",
+    "message": "Longueur maximale de {maxLength} caractères."
+  },
+  "components.InputDisplayName.inputTooShortAlertMessage": {
+    "description": "An alert message explaining why the entered display name is invalid.",
+    "message": "Longueur minimale de {minLength} caractères."
+  },
+  "components.InputDisplayName.inputXmppError": {
+    "description": "An alert message saying that the user cannot be connected.",
+    "message": "Impossible de vous connecter au chat. Veuillez réessayer."
+  },
+  "components.InputDisplayName.inputXmppTimeout": {
+    "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
+    "message": "Le serveur a pris trop de temps pour répondre. Veuillez réessayer."
   },
   "components.InputDisplayNameOverlay.inputAnonymousKeywordForbiddenAlertMessage": {
     "description": "An alert message explaining why the entered display name is invalid.",
@@ -1003,6 +1203,10 @@
     "description": "Text displayed on a button to add a new video.",
     "message": "Ajouter une vidéo"
   },
+  "components.SelectContent.addWebinar": {
+    "description": "Text displayed on a button to add a new webinar.",
+    "message": "Ajouter un webinaire"
+  },
   "components.SelectContent.cancel": {
     "description": "Text displayed on a button to cancel content selection.",
     "message": "Annuler"
@@ -1151,6 +1355,14 @@
     "description": "Message display when the live is starting to tell the user to wait in the current page, it will be refresh automaticaly",
     "message": "Vous pouvez attendre ici, la page sera actualisée dès le début de l'événement."
   },
+  "components.StudentLiveWaitingRoom.infos": {
+    "description": "Text title to inform that the user will join the discussion after filling his name.",
+    "message": "Vous rejoindrez la discussion après avoir entré votre nom."
+  },
+  "components.StudentLiveWaitingRoom.title": {
+    "description": "Text title to inform that the event has started",
+    "message": "Le webinaire a débuté"
+  },
   "components.StudentLiveWrapper.defaultLiveTitle": {
     "description": "Default live title for students (if the live has no title set)",
     "message": "Sans titre"
@@ -1218,6 +1430,38 @@
   "components.TeacherLiveInfobar.noTitle": {
     "description": "Title placeholder when no title is defined for this live",
     "message": "Sans titre"
+  },
+  "components.ThumbnailDisplayer.thumbnailAlt": {
+    "description": "Accessibility text for the live video thumbnail in the Dashboard.",
+    "message": "Vignette du webinaire"
+  },
+  "components.ThumbnailManager.thumbnailError": {
+    "description": "A text displayed when there is no uploaded thumbnail.",
+    "message": "Une erreur s'est produite lors du téléversement de votre miniature. Veuillez réessayer."
+  },
+  "components.ThumbnailManager.thumbnailProcessed": {
+    "description": "A text displayed when the thumbnail is being processed.",
+    "message": "L'image est en cours de traitement."
+  },
+  "components.ThumbnailManager.thumbnailUploaded": {
+    "description": "A text displayed when the thumbnail is being uploaded.",
+    "message": "L'image est téléversée."
+  },
+  "components.ThumbnailRemoveButton.confirmationModalTitle": {
+    "description": "Title of the modal displayed when an instructor wants to delete the live video thumbnail.",
+    "message": "Supprimer la vignette"
+  },
+  "components.ThumbnailRemoveButton.deleteButtonLabel": {
+    "description": "The label of the delete thumbnail button",
+    "message": "Supprimer la vignette"
+  },
+  "components.ThumbnailRemoveButton.deleteThumbnailFailMessage": {
+    "description": "Message displayed when a thumbnail failed to be deleted.",
+    "message": "Échec de la suppression de la vignette !"
+  },
+  "components.ThumbnailRemoveButton.deleteThumbnailSuccessMessage": {
+    "description": "Message displayed when a thumbnail is successfully deleted.",
+    "message": "Vignette supprimée avec succès."
   },
   "components.TimedTextCreationForm.addTrackBtn": {
     "description": "Text for the button in the dashboard to go upload a new timed text file.",
