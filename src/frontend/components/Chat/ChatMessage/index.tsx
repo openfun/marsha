@@ -1,4 +1,6 @@
-import { Box, Text } from 'grommet';
+import { Anchor, Box, Text } from 'grommet';
+import * as linkify from 'linkifyjs';
+
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -26,12 +28,13 @@ interface ChatMessageProps {
 
 export const ChatMessage = ({ message }: ChatMessageProps) => {
   const intl = useIntl();
+  const messageTokens = linkify.tokenize(message.content);
   const memo = useMemo(
     () => (
       <Box
         background="bg-marsha"
         pad="5px"
-        round="6px"
+        round="xsmall"
         title={intl.formatMessage(messages.sentAt, {
           sentAt: message.sentAt.toFormat('HH:mm:ss'),
         })}
@@ -41,7 +44,24 @@ export const ChatMessage = ({ message }: ChatMessageProps) => {
           size={chatFonts.secondary.fontSize}
           wordBreak="break-word"
         >
-          {message.content}
+          {messageTokens.length > 0
+            ? messageTokens.map((token, index) => {
+                if (token.t === 'text') {
+                  return token.toString();
+                } else {
+                  return (
+                    <Anchor
+                      href={token.toHref()}
+                      key={index}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {token.toString()}
+                    </Anchor>
+                  );
+                }
+              })
+            : message.content}
         </MessageContentTextStyled>
       </Box>
     ),
