@@ -4,6 +4,7 @@ Base model for the core app of the Marsha project.
 In this base model, we activate generic behaviours that apply to all our models and enforce
 checks and validation that go further than what Django is doing.
 """
+from itertools import chain
 import uuid
 
 from django.core import checks
@@ -219,3 +220,16 @@ class BaseModel(SafeDeleteModel):
         errors.extend(cls._check_through_models())
 
         return errors
+
+    def __repr__(self, dict_repr=False):
+        return str(self.to_dict())
+
+    def to_dict(self):
+        """Return a dictionary representation of the model."""
+        opts = self._meta
+        data = {}
+        for field in chain(opts.concrete_fields, opts.private_fields):
+            data[field.name] = field.value_from_object(self)
+        for field in opts.many_to_many:
+            data[field.name] = [related.id for related in field.value_from_object(self)]
+        return data
