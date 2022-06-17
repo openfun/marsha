@@ -56,6 +56,8 @@ const ltiToken = {
   },
 };
 
+jest.setTimeout(10000);
+
 describe('initVideoWebsocket', () => {
   afterEach(() => fetchMock.restore());
   beforeEach(() => {
