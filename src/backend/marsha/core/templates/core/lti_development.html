@@ -19,6 +19,24 @@
         text-align: center;
         width: 100%;
       }
+      .resource-list {
+        text-align: left;
+        width: 30%;
+      }
+      .resource-list h3{
+        margin: 0.5rem 0 0;
+      }
+      .resource-list p {
+        margin: 0 0 0 0.5rem;
+      }
+      .resource-detail pre {
+        display: none;
+        visibility: hidden;
+      }
+      .resource-detail pre.show {
+        display: block;
+        visibility: visible;
+      }
       .columns {
         display: flex;
       }
@@ -53,6 +71,11 @@
       [data-autofill] {
         cursor: pointer;
       }
+      pre {
+        text-align: left;
+        font-family: monospace;
+      }
+
     </style>
   </head>
   <body>
@@ -130,24 +153,34 @@
       <section>
         <h2>Form autofill</h2>
         <div class="columns">
-          {% for resource_name, value in last_objects.items %}
-            {% if value %}
-              <div>
-                <h3>Last 5 {{ resource_name }}</h3>
-                {% for resource in value %}
-                  <span data-autofill
+          <div class="resource-list">
+            {% for resource_name, resources in last_objects.items %}
+              {% if resources %}
+                <h3>{{ resource_name }}</h3>
+                {% for resource in resources %}
+                  <p data-autofill
                         data-model="{{ resource.RESOURCE_NAME }}"
                         data-id="{{ resource.id }}"
                         data-resource_link_id="{{ resource.title }}"
+                        data-context_id="{{ resource.playlist.lti_id }}"
                         title="{{ resource.title }}"
                   >
                   {{ resource.updated_on }}
-                </span>
-                  <br>
+                </p>
                 {% endfor %}
-              </div>
-            {% endif %}
-          {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          <section class="resource-detail">
+            {% for resource_name, resources in last_objects.items %}
+              {% if resources %}
+                {% for resource in resources %}
+                  <pre id="{{ resource.id }}">{{ resource.to_dict | pprint }}</pre>
+                {% endfor %}
+              {% endif %}
+            {% endfor %}
+          </section>
         </div>
       </section>
     {% endif %}
@@ -348,9 +381,17 @@
         document.querySelectorAll('input[name="resource_link_id"]').forEach((input) => {
           input.value = resource.dataset.resource_link_id
         });
+        document.querySelectorAll('input[name="context_id"]').forEach((input) => {
+          input.value = resource.dataset.context_id
+        });
         document.querySelectorAll('select[name="resource"]').forEach((select) => {
           select.value = resource.dataset.model
         });
+        document.querySelectorAll('.resource-detail pre').forEach((detail) => {
+          detail.className = '';
+        });
+        console.log(resource.dataset.id);
+        document.getElementById(resource.dataset.id).className = 'show';
       };
     });
     document.querySelector('#launch_lti_resource_page').onclick = () => {
