@@ -12,7 +12,7 @@ jest.mock('utils/window', () => ({
   },
 }));
 
-describe('utils/chat/chat', () => {
+describe('utils/chat/chat/generateAnonymousNickname', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -33,13 +33,13 @@ describe('utils/chat/chat', () => {
   });
 });
 
-describe('utils/chat/isAnonymous', () => {
+describe('utils/chat/chat/isAnonymous', () => {
   it('returns true if name is anonymous', () => {
     expect(isAnonymous(generateAnonymousNickname())).toBe(true);
     expect(isAnonymous(generateAnonymousNickname().toUpperCase())).toBe(true);
   });
 
-  it('return false for names that are not anonymous', () => {
+  it('returns false for names that are not anonymous', () => {
     expect(isAnonymous('some name')).toBe(false);
     expect(isAnonymous(`efzef-${ANONYMOUS_ID_PREFIX}-faef`)).toBe(false);
   });
