@@ -17,6 +17,7 @@ from safedelete import HARD_DELETE_NOCASCADE
 from ..defaults import (
     APPROVAL,
     DELETED,
+    ENDED,
     HARVESTED,
     IDLE,
     JOIN_MODE_CHOICES,
@@ -232,6 +233,11 @@ class Video(BaseFile):
         return (
             self.uploaded_on is not None and self.upload_state != DELETED
         ) or self.live_state is not None
+
+    @property
+    def is_live(self):
+        """Whether the video is a live one."""
+        return self.live_state is not None and self.live_state != ENDED
 
     @staticmethod
     def get_ready_clause():
