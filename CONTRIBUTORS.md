@@ -20,5 +20,6 @@
 - [Quentin Bey](https://github.com/qbey) <quentin.bey@polyconseil.fr>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
+- [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
 - [Pyup Bot](https://pyup.io) <github-bot@pyup.io>
 - [Dependabot](https://github.com/dependabot/dependabot-core) <49699333+dependabot[bot]@users.noreply.github.com>
