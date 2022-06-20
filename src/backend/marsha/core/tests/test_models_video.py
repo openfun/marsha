@@ -9,6 +9,7 @@ from django.utils import timezone
 
 from ..defaults import (
     DELETED,
+    ENDED,
     HARVESTED,
     IDLE,
     LIVE_CHOICES,
@@ -88,6 +89,20 @@ class VideoModelsTestCase(TestCase):
             video = VideoFactory(live_state=live_choice[0], live_type=RAW)
 
             self.assertEqual(video.is_ready_to_show, True)
+
+    def test_models_video_is_live(self):
+        """All combination where a video is a live one."""
+        for live_choice in LIVE_CHOICES:
+            video = VideoFactory(live_state=live_choice[0], live_type=RAW)
+
+            self.assertEqual(video.is_live, live_choice[0] not in [ENDED])
+
+        # a video without live_state can't be a live_state
+        video = VideoFactory(
+            live_state=None,
+        )
+
+        self.assertFalse(video.is_live)
 
     def test_models_video_is_scheduled_none(self):
         """Checks that with a starting_at set to None video is not in the scheduled mode."""
