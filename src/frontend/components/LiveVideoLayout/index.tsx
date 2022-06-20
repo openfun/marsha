@@ -4,6 +4,7 @@ import { normalizeColor } from 'grommet/utils';
 import styled from 'styled-components';
 
 import { OpenClosePanelSVG } from 'components/SVGIcons/OpenClosePanelSVG';
+import { StyledNoSelectElement } from 'components/Styled/NoSelectBox';
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { SetDisplayNameProvider } from 'data/stores/useSetDisplayName';
@@ -16,22 +17,6 @@ import { DisplayNameForm } from './DisplayNameForm';
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
   box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
-`;
-
-interface StyledNoSelectElementProps {
-  isSelectDisable?: boolean;
-}
-const disableSelect = (props: StyledNoSelectElementProps) =>
-  props.isSelectDisable ? 'none' : 'auto';
-const StyledNoSelectElement = styled(Box)`
-  pointer-events: ${disableSelect};
-
-  -webkit-touch-callout: ${disableSelect};
-  -webkit-user-select: ${disableSelect};
-  -khtml-user-select: ${disableSelect};
-  -moz-user-select: ${disableSelect};
-  -ms-user-select: ${disableSelect};
-  user-select: ${disableSelect};
 `;
 
 interface LiveStudentLayoutProps {
