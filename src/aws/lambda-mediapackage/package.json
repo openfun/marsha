@@ -15,14 +15,14 @@
     "test": "jest"
   },
   "devDependencies": {
-    "@types/jest": "28.1.1",
+    "@types/jest": "28.1.2",
     "@types/request-promise-native": "1.0.18",
     "fetch-mock-jest": "1.5.1",
     "jest": "28.1.1",
-    "prettier": "2.6.2"
+    "prettier": "2.7.1"
   },
   "dependencies": {
-    "aws-sdk": "2.1152.0",
+    "aws-sdk": "2.1157.0",
     "m3u8-parser": "4.7.1",
     "node-fetch": "2.6.7",
     "update-state": "file:../utils/update-state"
