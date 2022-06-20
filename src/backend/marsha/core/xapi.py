@@ -137,7 +137,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
         activity_type = "https://w3id.org/xapi/video/activity-type/video"
 
         # When the video is a live we change the activity to webinar
-        if video.live_state is not None:
+        if video.is_live:
             activity_type = "http://id.tincanapi.com/activitytype/webinar"
 
         if re.match(r"^http(s?):\/\/.*", homepage) is None:
