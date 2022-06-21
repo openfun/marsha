@@ -1,5 +1,8 @@
 """Marsha accounts URLs configuration."""
+from django.conf import settings
 from django.urls import include, path
+
+from social_edu_federation.django.views import EduFedMetadataView
 
 from .views import (
     LoginView,
@@ -9,6 +12,7 @@ from .views import (
     PasswordResetDoneView,
     PasswordResetView,
 )
+from .views.social_edu_federation_saml_auth import MarshaEduFederationIdpChoiceView
 
 
 app_name = "account"
@@ -35,4 +39,18 @@ urlpatterns = [
     ),
     # Django social auth
     path("", include("social_django.urls", namespace="social")),
+    # SAML
+    path(
+        "saml/metadata/",
+        EduFedMetadataView.as_view(backend_name="saml_fer"),
+        name="saml_fer_metadata",
+    ),
+    path(
+        "saml/renater_fer_idp_choice/",
+        MarshaEduFederationIdpChoiceView.as_view(backend_name="saml_fer"),
+        name="saml_fer_idp_choice",
+    ),
 ]
+
+if settings.SOCIAL_AUTH_SAML_FER_IDP_FAKER:
+    urlpatterns += [path("", include("social_edu_federation.django.testing.urls"))]

@@ -17,6 +17,8 @@ from corsheaders.defaults import default_headers
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
+from marsha.account.social_pipeline import MARSHA_DEFAULT_AUTH_PIPELINE
+
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
@@ -163,6 +165,11 @@ class Base(Configuration):
     ]
 
     AUTH_USER_MODEL = "core.User"
+
+    AUTHENTICATION_BACKENDS = [
+        "social_edu_federation.backends.saml_fer.FERSAMLAuth",
+        "django.contrib.auth.backends.ModelBackend",
+    ]
 
     ASGI_APPLICATION = "marsha.asgi.application"
 
@@ -481,6 +488,98 @@ class Base(Configuration):
     # Python social auth
     SOCIAL_AUTH_JSONFIELD_ENABLED = True
     SOCIAL_AUTH_URL_NAMESPACE = "account:social"
+    SOCIAL_AUTH_SAML_FER_IDP_FAKER = False
+
+    SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG = {
+        "authnRequestsSigned": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_AUTH_REQUEST_SIGNED",
+        ),
+        "signMetadata": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_SIGN_METADATA",
+        ),
+        "wantMessagesSigned": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_WANT_MESSAGES_SIGNED",
+        ),
+        "wantAssertionsSigned": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_WANT_ASSERTIONS_SIGNED",
+        ),
+        "wantAssertionsEncrypted": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_WANT_ASSERTIONS_ENCRYPTED",
+        ),
+        "rejectDeprecatedAlgorithm": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_REJECT_DEPRECATED_ALGORITHM",
+        ),
+    }
+
+    # SOCIAL_AUTH_SAML_FER_SP_ENTITY_ID should be a URL that includes a domain name you own
+    SOCIAL_AUTH_SAML_FER_SP_ENTITY_ID = values.Value()
+    # SOCIAL_AUTH_SAML_FER_SP_PUBLIC_CERT X.509 certificate for the key pair that
+    # your app will use
+    SOCIAL_AUTH_SAML_FER_SP_PUBLIC_CERT = values.Value()
+    # SOCIAL_AUTH_SAML_FER_SP_PRIVATE_KEY The private key to be used by your app
+    SOCIAL_AUTH_SAML_FER_SP_PRIVATE_KEY = values.Value()
+
+    # Next certificate management, keep empty when next certificate is still not known
+    SOCIAL_AUTH_SAML_FER_SP_NEXT_PUBLIC_CERT = values.Value()
+    SOCIAL_AUTH_SAML_FER_SP_EXTRA = (
+        {
+            "x509certNew": SOCIAL_AUTH_SAML_FER_SP_NEXT_PUBLIC_CERT,
+        }
+        if SOCIAL_AUTH_SAML_FER_SP_NEXT_PUBLIC_CERT
+        else {}
+    )
+
+    SOCIAL_AUTH_SAML_FER_ORG_INFO = {  # specify values for English at a minimum
+        "en-US": {
+            "name": values.Value(
+                "marsha",
+                environ_name="SOCIAL_AUTH_SAML_FER_ORG_INFO_NAME",
+            ),
+            "displayname": values.Value(
+                "Marsha",
+                environ_name="SOCIAL_AUTH_SAML_FER_ORG_INFO_DISPLAY_NAME",
+            ),
+            "url": values.Value(
+                environ_name="SOCIAL_AUTH_SAML_FER_ORG_INFO_URL",
+            ),
+        }
+    }
+    # SOCIAL_AUTH_SAML_FER_TECHNICAL_CONTACT technical contact responsible for your app
+    SOCIAL_AUTH_SAML_FER_TECHNICAL_CONTACT = {
+        "givenName": values.Value(
+            "Marsha dev team",
+            environ_name="SOCIAL_AUTH_SAML_FER_TECHNICAL_CONTACT_NAME",
+        ),
+        "emailAddress": values.Value(
+            environ_name="SOCIAL_AUTH_SAML_FER_TECHNICAL_CONTACT_EMAIL",
+        ),
+    }
+    # SOCIAL_AUTH_SAML_FER_SUPPORT_CONTACT support contact for your app
+    SOCIAL_AUTH_SAML_FER_SUPPORT_CONTACT = {
+        "givenName": values.Value(
+            "Marsha dev team",
+            environ_name="SOCIAL_AUTH_SAML_FER_SUPPORT_CONTACT_NAME",
+        ),
+        "emailAddress": values.Value(
+            environ_name="SOCIAL_AUTH_SAML_FER_SUPPORT_CONTACT_EMAIL",
+        ),
+    }
+    # SOCIAL_AUTH_SAML_FER_ENABLED_IDPS is not required since the
+    # SAML FER backend is overridden to allow dynamic IdPs.
+    # see social_edu_federation.backends.saml_fer.FERSAMLAuth.get_idp(idp_name)
+
+    # Custom parameter to define the Renater Federation Metadata
+    SOCIAL_AUTH_SAML_FER_FEDERATION_SAML_METADATA_URL = values.Value(
+        "https://metadata.federation.renater.fr/renater/main/main-idps-renater-metadata.xml"
+    )
+
+    SOCIAL_AUTH_SAML_FER_PIPELINE = MARSHA_DEFAULT_AUTH_PIPELINE
 
     # pylint: disable=invalid-name
     @property
@@ -642,6 +741,26 @@ class Development(Base):
             },
         }
     )
+
+    @classmethod
+    def setup(cls):
+        # Add settings from the Renater FER SAML testing suite
+        # pylint: disable=import-outside-toplevel
+        from social_edu_federation.testing.settings import saml_fer_settings
+
+        # pylint: enable=import-outside-toplevel
+
+        for setting_name, setting_value in saml_fer_settings.items():
+            setattr(cls, setting_name, values.Value(setting_value))
+
+        cls.SOCIAL_AUTH_SAML_FER_IDP_FAKER = values.Value(True)
+        cls.SOCIAL_AUTH_SAML_FER_FEDERATION_SAML_METADATA_URL = values.Value(
+            # Metadata is fetched from inside the docker, hence the 8000 port
+            "http://localhost:8000/account/saml/idp/metadata/"
+        )
+
+        # Call setup afterward
+        super().setup()
 
 
 class Test(Base):
