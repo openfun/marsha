@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Allow instructor to share a video and use breakout rooms
+- Add resizing feature to the picture in picture mode
 
 ### Changed
 

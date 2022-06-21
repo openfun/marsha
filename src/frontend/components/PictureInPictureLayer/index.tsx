@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { StyledNoSelectElement } from 'components/Styled/NoSelectBox';
 import React, {
   CSSProperties,
   ReactNode,
@@ -8,6 +8,7 @@ import React, {
 } from 'react';
 
 import { Nullable } from 'utils/types';
+import { useResizeBox } from 'utils/useResizeBox';
 
 import { PictureInPictureElement } from './PictureInPictureElement';
 import { PictureInPictureSwitchAction } from './PictureInPictureSwitchAction';
@@ -58,16 +59,24 @@ export const PictureInPictureLayer = ({
   const containerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
   const [firstElementRef, secondElementRef, reversed, startDragging] =
     usePIPDragger(containerBoxRef.current, updatePicturePosition, isReversed);
+  const {
+    width: pictureWidth,
+    isResizing,
+    startResizing,
+  } = useResizeBox(
+    200,
+    150,
+    (containerBoxRef.current?.offsetWidth ?? 0) * 0.35,
+  );
 
   let pictureStyle: CSSProperties = {
     position: 'absolute',
     overflow: 'hidden',
     left: `${picturePosition.x}px`,
     top: `${picturePosition.y}px`,
-    width: '20%',
     borderRadius: '6px',
     zIndex: 1,
-    minWidth: '140px',
+    width: `${pictureWidth}px`,
   };
   if (shouldAnimate) {
     pictureStyle = {
@@ -78,7 +87,11 @@ export const PictureInPictureLayer = ({
 
   const pipSwitch: ReactNode = <PictureInPictureSwitchAction />;
   return (
-    <Box ref={containerBoxRef} style={{ position: 'relative' }}>
+    <StyledNoSelectElement
+      isSelectDisable={isResizing}
+      ref={containerBoxRef}
+      style={{ position: 'relative' }}
+    >
       <PictureInPictureElement
         id="picture-in-picture-master"
         containerRef={firstElementRef}
@@ -87,6 +100,7 @@ export const PictureInPictureLayer = ({
           reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
         }
         startDragging={reversed ? startDragging : undefined}
+        startResizing={startResizing}
         style={reversed ? pictureStyle : containerStyle}
       >
         {mainElement}
@@ -101,11 +115,12 @@ export const PictureInPictureLayer = ({
             !reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
           }
           startDragging={!reversed ? startDragging : undefined}
+          startResizing={startResizing}
           style={!reversed ? pictureStyle : containerStyle}
         >
           {secondElement}
         </PictureInPictureElement>
       )}
-    </Box>
+    </StyledNoSelectElement>
   );
 };
