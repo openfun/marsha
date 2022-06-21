@@ -40,6 +40,7 @@ export const studentToolbarButtons = [
 
 export const instructorToolbarButtons = [
   ...studentToolbarButtons,
+  'participants-pane',
   'sharedvideo',
 ];
 
