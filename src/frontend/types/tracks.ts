@@ -210,7 +210,6 @@ export interface Video extends Resource {
   live_info: {
     medialive?: VideoMedialiveInfos;
     jitsi?: VideoJitsiConnectionInfos;
-    paused_at?: string;
   };
   live_type: Nullable<LiveModeType>;
   xmpp: Nullable<XMPP>;
@@ -232,7 +231,6 @@ export interface LiveJitsi extends Omit<Live, 'live_type' | 'live_info'> {
   live_info: {
     medialive?: VideoMedialiveInfos;
     jitsi: JitsiConnectionInfos;
-    paused_at?: string;
   };
 }
 

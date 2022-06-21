@@ -402,7 +402,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         stop_live_channel(video.get_medialive_channel().get("id"))
 
         video.live_state = defaults.STOPPING
-        video.live_info.update({"paused_at": to_timestamp(timezone.now())})
         if video.is_recording:
             stop_recording(video)
         video.save()
@@ -598,7 +597,6 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         if serializer.validated_data["state"] == defaults.RUNNING:
             video.live_state = defaults.RUNNING
-            live_info.pop("paused_at", None)
             if live_info.get("started_at") is None:
                 live_info.update({"started_at": stamp})
 
