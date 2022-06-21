@@ -583,6 +583,7 @@ describe('DashboardVideoLiveJitsi/utils', () => {
       'mute-everyone',
       'mute-video-everyone',
       'security',
+      'participants-pane',
       'sharedvideo',
     ];
 
