@@ -15,7 +15,7 @@ const loadScript = (scriptUrl: string) =>
 // has moved from interfaceConfigOverwrite to configOverwrite and depending the jitsi version used
 // we don't know which one to use. Settings both does not raise an error, there is no check on
 // extra settings.
-export const toolbarButtons = [
+export const studentToolbarButtons = [
   'microphone',
   'camera',
   'closedcaptions',
@@ -38,6 +38,11 @@ export const toolbarButtons = [
   'security',
 ];
 
+export const instructorToolbarButtons = [
+  ...studentToolbarButtons,
+  'sharedvideo',
+];
+
 export const initializeJitsi = async (
   live: LiveJitsi,
   isInstructor: boolean,
@@ -46,6 +51,10 @@ export const initializeJitsi = async (
   if (!window.JitsiMeetExternalAPI) {
     await loadScript(live.live_info.jitsi.external_api_url);
   }
+
+  const toolbarButtons = isInstructor
+    ? instructorToolbarButtons
+    : studentToolbarButtons;
 
   const configOverwrite: JitsiMeetExternalAPI.ConfigOverwriteOptions = {
     constraints: {
