@@ -47,6 +47,7 @@ live is restarted
 - Add an instructor widget to modify join the discussion mode
 - Prevent join API calls in join mode denied
 - Add a forced join mode which automatically joins students to the discussion
+- Add user login through Renater "Éducation-Recherche" federation (SAML v2)
 
 ### Changed
 

@@ -1,5 +1,5 @@
 {% extends 'account/base.html' %}
-{% load i18n %}
+{% load i18n waffle_tags %}
 
 {% block content %}
 {{ block.super }}
@@ -36,5 +36,13 @@
       <button class="btn-primary" type="submit" value="{% translate 'Log in' %}">{% translate 'Log in' %}</button>
     </div>
   </form>
+  {% switch RENATER_FER_SAML %}
+  <div class="separator">{% translate 'or' %}</div>
+  <form action="{% url 'account:saml_fer_idp_choice' %}" method="get" id="renater-login-form">
+    <div class="submit-row">
+      <button class="btn-secondary" type="submit" value="{% translate 'Log in with Renater' %}">{% translate 'Log in with Renater' %}</button>
+    </div>
+  </form>
+  {% endswitch %}
 </div>
 {% endblock %}
