@@ -67,7 +67,7 @@ export const LiveVideoLayout = ({
         >
           <Box flex={isLargeLayout ? undefined : 'grow'}>
             <Box direction="row" style={{ position: 'relative' }}>
-              <Box flex="grow" style={{ position: 'relative' }}>
+              <Box flex style={{ position: 'relative' }}>
                 <Box flex="grow">
                   <StyledNoSelectElement
                     margin={{ top: 'auto', bottom: 'auto' }}
