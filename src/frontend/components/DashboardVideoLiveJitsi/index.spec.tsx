@@ -130,7 +130,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     );
     expect(events.recordingStatusChanged).toBeDefined();
     expect(events.participantRoleChanged).toBeDefined();
-    expect(events.videoConferenceLeft).toBeDefined();
+    expect(events.readyToClose).toBeDefined();
     expect(events.videoConferenceJoined).toBeDefined();
 
     // state switch to running, recording must start
@@ -559,7 +559,7 @@ describe('<DashboardVideoLiveJitsi />', () => {
     expect(mockCanShowStartButton).not.toHaveBeenCalled();
 
     // simulates user leave the conference
-    act(() => dispatch('videoConferenceLeft', {}));
+    act(() => dispatch('readyToClose', {}));
 
     await waitFor(() =>
       expect(mockCanStartLive).toHaveBeenLastCalledWith(false),
@@ -732,11 +732,11 @@ describe('<DashboardVideoLiveJitsi />', () => {
     await waitFor(() => expect(initializeJitsi).toHaveBeenCalled());
 
     await waitFor(() => {
-      expect(events.videoConferenceLeft).toBeDefined();
+      expect(events.readyToClose).toBeDefined();
     });
 
     // simulates user leave the conference
-    act(() => dispatch('videoConferenceLeft', {}));
+    act(() => dispatch('readyToClose', {}));
 
     await waitFor(() => expect(mockDispose).toHaveBeenCalled());
     expect(mockWindow.converse.participantLeaves).toHaveBeenCalled();
