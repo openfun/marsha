@@ -4,7 +4,7 @@ import { Redirect } from 'react-router-dom';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { DashboardVideoLiveControlPane } from 'components/DashboardVideoLiveControlPane';
-import { toolbarButtons } from 'components/DashboardVideoLiveJitsi/utils';
+import { instructorToolbarButtons as toolbarButtons } from 'components/DashboardVideoLiveJitsi/utils';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
