@@ -5582,7 +5582,6 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "paused_at": "1637020800",
                 },
                 "live_type": RAW,
                 "xmpp": None,
@@ -5980,7 +5979,6 @@ class VideoAPITest(TestCase):
                             ],
                         }
                     },
-                    "paused_at": "1637021400",
                 },
                 "live_type": RAW,
                 "xmpp": None,
@@ -6393,7 +6391,6 @@ class VideoAPITest(TestCase):
                         },
                     },
                 },
-                "paused_at": "1637020800",
             },
             live_type=RAW,
             starting_at=starting_at,
