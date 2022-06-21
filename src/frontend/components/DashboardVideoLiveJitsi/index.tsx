@@ -168,7 +168,7 @@ const DashboardVideoLiveJitsi = ({
     jitsi.addListener('recordingStatusChanged', recordingStatusChanged);
 
     if (!isInstructor) {
-      jitsi.addListener('videoConferenceLeft', () => {
+      jitsi.addListener('readyToClose', () => {
         jitsi.dispose();
         setJitsiApi(undefined);
 
@@ -185,7 +185,7 @@ const DashboardVideoLiveJitsi = ({
         setCanShowStartButton(true);
       });
 
-      jitsi.addListener('videoConferenceLeft', () => {
+      jitsi.addListener('readyToClose', () => {
         jitsi.dispose();
         setJitsiApi(undefined);
 

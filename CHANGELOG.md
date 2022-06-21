@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add shared media support for the teacher
 - Manage live media sharing with picture-in-picture on student side
 - Add a webinar tab to the LTI select view
+- Allow instructor to share a video and use breakout rooms
 
 ### Fixed
 
