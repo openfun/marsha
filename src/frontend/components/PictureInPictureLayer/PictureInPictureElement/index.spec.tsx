@@ -38,6 +38,8 @@ describe('<PictureInPictureElement />', () => {
       userEvent.click(screen.getByRole('button', { name: 'my button label' })),
     ).toThrow();
     expect(onButtonClick).not.toHaveBeenCalled();
+
+    screen.getByTestId('corner-resizer');
   });
 
   it('does not render actions when not in picture mode', () => {
@@ -66,5 +68,7 @@ describe('<PictureInPictureElement />', () => {
     );
 
     screen.getByRole('button', { name: 'some action' });
+
+    screen.getByTestId('corner-resizer');
   });
 });
