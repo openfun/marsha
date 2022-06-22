@@ -23,6 +23,7 @@ docs
 *.rst
 
 # Development/test cache & configurations
+**/.cookiecutter
 .cache
 .circleci
 .idea

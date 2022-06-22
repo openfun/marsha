@@ -296,7 +296,7 @@ jobs:
           command: ~/.local/bin/isort --check-only marsha
       - run:
           name: Lint code with black
-          command: ~/.local/bin/black --check marsha
+          command: ~/.local/bin/black --check marsha --exclude='.cookiecutter'
       - run:
           name: Lint code with flake8
           command: ~/.local/bin/flake8 marsha
