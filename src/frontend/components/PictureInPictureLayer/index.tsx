@@ -1,4 +1,3 @@
-import { StyledNoSelectElement } from 'components/Styled/NoSelectBox';
 import React, {
   CSSProperties,
   ReactNode,
@@ -7,6 +6,12 @@ import React, {
   useState,
 } from 'react';
 
+import { StyledNoSelectElement } from 'components/Styled/NoSelectBox';
+import {
+  DEFAULT_PICTURE_WIDTH_RATIO,
+  MAX_PICTURE_WIDTH_RATIO,
+  MIN_PICTURE_WIDTH_RATIO,
+} from 'default/pictureInPicture';
 import { Nullable } from 'utils/types';
 import { useResizeBox } from 'utils/useResizeBox';
 
@@ -64,9 +69,10 @@ export const PictureInPictureLayer = ({
     isResizing,
     startResizing,
   } = useResizeBox(
-    200,
-    150,
-    (containerBoxRef.current?.offsetWidth ?? 0) * 0.35,
+    DEFAULT_PICTURE_WIDTH_RATIO,
+    MIN_PICTURE_WIDTH_RATIO,
+    MAX_PICTURE_WIDTH_RATIO,
+    containerBoxRef,
   );
 
   let pictureStyle: CSSProperties = {

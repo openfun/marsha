@@ -1,22 +1,31 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+
+import { Nullable } from './types';
 
 export const useResizeBox = (
-  initialWidth: number,
-  minWidth: number,
-  maxWidth: number,
+  initialWidthRatio: number,
+  minWidthRatio: number,
+  maxWidthRatio: number,
+  container: React.MutableRefObject<Nullable<HTMLDivElement>>,
 ) => {
-  const [width, setWidth] = useState(initialWidth);
+  const [width, setWidth] = useState(0);
   const [isResizing, setIsResizing] = useState(false);
 
   const initialDragPointX = useRef<number>();
-  const bounds = useRef<{ min: number; max: number }>({
-    min: minWidth,
-    max: maxWidth,
-  });
+  const bounds = useRef<Nullable<{ min: number; max: number }>>(null);
+  const isWidthInit = useRef(false);
 
   const computeWitdth = useCallback(
-    (targetWidth: number) =>
-      Math.max(Math.min(bounds.current.max, targetWidth), bounds.current.min),
+    (targetWidth: number) => {
+      if (!bounds.current) {
+        return null;
+      }
+
+      return Math.max(
+        Math.min(bounds.current.max, targetWidth),
+        bounds.current.min,
+      );
+    },
     [setWidth, bounds],
   );
 
@@ -28,8 +37,10 @@ export const useResizeBox = (
 
       const initialX = initialDragPointX.current;
 
-      setWidth((currentWidth) =>
-        computeWitdth(currentWidth - (initialX - event.clientX)),
+      setWidth(
+        (currentWidth) =>
+          computeWitdth(currentWidth - (initialX - event.clientX)) ||
+          currentWidth,
       );
       initialDragPointX.current = event.clientX;
     },
@@ -66,9 +77,42 @@ export const useResizeBox = (
   }, [isResizing]);
 
   useEffect(() => {
-    bounds.current = { min: minWidth, max: maxWidth };
-    setWidth((currentValue) => computeWitdth(currentValue));
-  }, [minWidth, maxWidth, computeWitdth]);
+    if (!container.current) {
+      return;
+    }
+
+    const computeBounds = () => {
+      if (!container.current || container.current.offsetWidth === 0) {
+        return;
+      }
+
+      const containerWidth = container.current.offsetWidth;
+      bounds.current = {
+        min: containerWidth * minWidthRatio,
+        max: containerWidth * maxWidthRatio,
+      };
+
+      if (isWidthInit.current) {
+        setWidth((currentValue) => computeWitdth(currentValue) || currentValue);
+      } else {
+        setWidth(
+          (currentValue) =>
+            computeWitdth(containerWidth * initialWidthRatio) || currentValue,
+        );
+        isWidthInit.current = true;
+      }
+    };
+
+    const observer = new ResizeObserver(computeBounds);
+
+    const containerElement = container.current;
+    observer.observe(containerElement);
+
+    computeBounds();
+    return () => {
+      observer.unobserve(containerElement);
+    };
+  }, [container, minWidthRatio, maxWidthRatio]);
 
   return {
     width,
