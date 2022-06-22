@@ -1,0 +1,12 @@
+{
+  "app_name": null,
+  "app_verbose_name": null,
+  "model": null,
+  "flag": "{{ cookiecutter.app_name|upper }}",
+  "setting_name": "{{ cookiecutter.flag }}_ENABLED",
+  "model_lower": "{{ cookiecutter.model|lower }}",
+  "model_plural_lower": "{{ cookiecutter.model_lower }}s",
+  "model_url_part": "{{ cookiecutter.model_plural_lower|slugify }}",
+  "model_short_description": "{{ cookiecutter.model_lower }}",
+  "_extensions": ["cookiecutter.extensions.SlugifyExtension"]
+}
