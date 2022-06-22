@@ -8,6 +8,11 @@ import { StyledNoSelectElement } from 'components/Styled/NoSelectBox';
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { SetDisplayNameProvider } from 'data/stores/useSetDisplayName';
+import {
+  DEFAULT_PANEL_WIDTH_RATIO,
+  MAX_PANEL_WIDTH_RATIO,
+  MIN_PANEL_WIDTH_RATIO,
+} from 'default/livePanel';
 import { theme } from 'utils/theme/theme';
 import { Nullable } from 'utils/types';
 import { useResizer } from 'utils/useResizer';
@@ -46,8 +51,10 @@ export const LiveVideoLayout = ({
     setPanelVisibility: state.setPanelVisibility,
   }));
   const { width, isResizing, ResizableContainer } = useResizer(
-    200,
+    DEFAULT_PANEL_WIDTH_RATIO,
     containerRef,
+    MIN_PANEL_WIDTH_RATIO,
+    MAX_PANEL_WIDTH_RATIO,
   );
 
   return (
