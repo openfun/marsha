@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- stopped_at is deleted and started_at is reinitialized when the
+live is restarted
+
 ## [4.0.0-beta.6] - 2022-06-20
 
 ### Added
