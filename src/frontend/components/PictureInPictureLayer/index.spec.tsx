@@ -7,7 +7,13 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { PictureInPictureLayer } from '.';
 
+window.scrollTo = jest.fn();
+
 describe('<PictureInPictureLayer />', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   it('renders the main element only', () => {
     const MainContent = (
       <Box>
@@ -99,7 +105,7 @@ describe('<PictureInPictureLayer />', () => {
     userEvent.click(screen.getByRole('button', { name: 'picture button' }));
   });
 
-  it('renders the picture with switch action when no actions are provided', () => {
+  it('renders the picture with switch action when no actions are provided', async () => {
     const MainContent = (
       <Box>
         <Paragraph>main content</Paragraph>
@@ -122,10 +128,11 @@ describe('<PictureInPictureLayer />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Show document' });
+    userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await screen.findByRole('button', { name: 'Show document' });
   });
 
-  it('renders the picture with switch action added to other actions', () => {
+  it('renders the picture with switch action added to other actions', async () => {
     const MainContent = (
       <Box>
         <Paragraph>main content</Paragraph>
@@ -136,7 +143,7 @@ describe('<PictureInPictureLayer />', () => {
         <Paragraph>my picture</Paragraph>
       </Box>
     );
-    const Action = <Box>some action</Box>;
+    const Action = <Button>some action</Button>;
 
     render(
       wrapInIntlProvider(
@@ -150,7 +157,8 @@ describe('<PictureInPictureLayer />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Show document' });
-    screen.getByText('some action');
+    userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await screen.findByRole('button', { name: 'Show document' });
+    screen.getByRole('button', { name: 'some action' });
   });
 });
