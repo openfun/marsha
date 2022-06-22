@@ -1,0 +1,3 @@
+export const DEFAULT_PICTURE_WIDTH_RATIO = 0.2;
+export const MIN_PICTURE_WIDTH_RATIO = 0.1;
+export const MAX_PICTURE_WIDTH_RATIO = 0.35;
