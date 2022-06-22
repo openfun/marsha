@@ -20,6 +20,9 @@ live is restarted
 - Display number of anonymous instead of their pseudos
 - Rename markdown route in markdown-documents
 
+### Fixed
+
+- Missing migration to migrate video upload_state and live_state data
 
 ## [4.0.0-beta.6] - 2022-06-20
 
