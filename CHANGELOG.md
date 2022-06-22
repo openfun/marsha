@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Allow instructor to share a video and use breakout rooms
+
 ### Changed
 
 - stopped_at is deleted and started_at is reinitialized when the
@@ -22,7 +26,6 @@ live is restarted
 - Add shared media support for the teacher
 - Manage live media sharing with picture-in-picture on student side
 - Add a webinar tab to the LTI select view
-- Allow instructor to share a video and use breakout rooms
 
 ### Fixed
 
