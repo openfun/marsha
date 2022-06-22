@@ -1,1 +1,1 @@
-exclude_dirs: ["*/tests/*", "*/e2e/*"]
+exclude_dirs: [".cookiecutter", "*/tests/*", "*/e2e/*"]

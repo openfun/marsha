@@ -162,7 +162,7 @@ lint: \
 
 lint-black:  ## Run the black tool and update files that need to
 	@echo "$(BOLD)Running black$(RESET)"
-	@$(COMPOSE_RUN_APP) black marsha/
+	@$(COMPOSE_RUN_APP) black marsha/ --exclude='.cookiecutter'
 .PHONY: lint-black
 
 lint-flake8:  ## Run the flake8 tool
