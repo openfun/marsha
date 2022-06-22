@@ -25,6 +25,7 @@ import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
 
 import { StudentLiveWrapper } from '.';
+import { Deferred } from 'utils/tests/Deferred';
 
 const mockVideo = videoMockFactory();
 jest.mock('data/appData', () => ({
@@ -520,11 +521,17 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 });
 
 describe('<StudentLiveWrapper /> as a streamer', () => {
+  const deferredAudio = new Deferred();
+  const deferredVideo = new Deferred();
+
   const mockExecuteCommand = jest.fn();
   const mockJitsi = jest.fn().mockImplementation(() => ({
     executeCommand: mockExecuteCommand,
     addListener: jest.fn(),
     removeListener: jest.fn(),
+    isAudioMuted: jest.fn().mockReturnValue(deferredAudio.promise),
+    isVideoMuted: jest.fn().mockReturnValue(deferredVideo.promise),
+    dispose: jest.fn(),
   }));
 
   beforeEach(() => {

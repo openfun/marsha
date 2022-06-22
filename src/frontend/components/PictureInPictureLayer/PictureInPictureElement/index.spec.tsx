@@ -47,7 +47,7 @@ describe('<PictureInPictureElement />', () => {
     const Action = () => <Button label="my action" />;
 
     render(
-      <PictureInPictureElement pictureActions={[<Action />]}>
+      <PictureInPictureElement pictureLayer={<Action />}>
         <Compo />
       </PictureInPictureElement>,
     );
@@ -62,7 +62,7 @@ describe('<PictureInPictureElement />', () => {
     const Action = () => <Button label="some action" />;
 
     render(
-      <PictureInPictureElement isPicture pictureActions={[<Action />]}>
+      <PictureInPictureElement isPicture pictureLayer={<Action />}>
         <Compo />
       </PictureInPictureElement>,
     );
