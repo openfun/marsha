@@ -10,12 +10,8 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 
-import {
-  MIN_PANEL_WIDTH_RATIO,
-  MAX_PANEL_WIDTH_RATIO,
-} from 'default/livePanel';
-import { Nullable } from 'utils/types';
 import { theme } from 'utils/theme/theme';
+import { Nullable } from 'utils/types';
 
 const HALF_SLIDER_WIDTH_PX = 14;
 
@@ -31,24 +27,23 @@ const StyledResizeSeparator = styled(Box)`
 `;
 
 export const useResizer = (
-  initialWidth: number,
+  initialWidthRatio: number,
   container: React.MutableRefObject<Nullable<HTMLDivElement>>,
+  minRatio: number,
+  maxRatio: number,
 ) => {
-  const [panelWidthPx, setPanelWidthPx] = useState(initialWidth);
+  const [panelWidthPx, setPanelWidthPx] = useState(0);
   const [isResizing, setIsResizing] = useState(false);
 
-  const minWidthValue = useRef<Nullable<number>>(null);
-  const maxWidthValue = useRef<Nullable<number>>(null);
+  const bounds = useRef<Nullable<{ min: number; max: number }>>(null);
+  const isWidthInit = useRef(false);
 
   const computeWidth = useCallback((value: number) => {
-    if (!minWidthValue.current || !maxWidthValue.current) {
+    if (!bounds.current) {
       return;
     }
 
-    return Math.min(
-      maxWidthValue.current,
-      Math.max(minWidthValue.current, value),
-    );
+    return Math.min(bounds.current.max, Math.max(bounds.current.min, value));
   }, []);
 
   const ResizableElementContainer = useCallback(
@@ -120,19 +115,28 @@ export const useResizer = (
 
   useEffect(() => {
     const computeBounds = () => {
-      if (!container.current) {
+      if (!container.current || container.current.offsetWidth === 0) {
         return;
       }
       const containerElement = container.current;
 
-      minWidthValue.current =
-        containerElement.offsetWidth * MIN_PANEL_WIDTH_RATIO;
-      maxWidthValue.current =
-        containerElement.offsetWidth * MAX_PANEL_WIDTH_RATIO;
+      bounds.current = {
+        min: containerElement.offsetWidth * minRatio,
+        max: containerElement.offsetWidth * maxRatio,
+      };
 
-      setPanelWidthPx(
-        (currentWidth) => computeWidth(currentWidth) || currentWidth,
-      );
+      if (!isWidthInit.current) {
+        setPanelWidthPx(
+          (currentWidth) =>
+            computeWidth(containerElement.offsetWidth * initialWidthRatio) ||
+            currentWidth,
+        );
+        isWidthInit.current = true;
+      } else {
+        setPanelWidthPx(
+          (currentWidth) => computeWidth(currentWidth) || currentWidth,
+        );
+      }
     };
 
     if (!container.current) {
@@ -147,7 +151,7 @@ export const useResizer = (
     return () => {
       observer.unobserve(observedElement);
     };
-  }, [container]);
+  }, [container, initialWidthRatio, minRatio, maxRatio]);
 
   useEffect(() => {
     if (isResizing) {
