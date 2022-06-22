@@ -6448,6 +6448,90 @@ class VideoAPITest(TestCase):
         )
 
     @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_video_update_live_state_running_started_at_with_stopped_at(self):
+        """Confirm started_at is updated and key stopped_at is deleted when the live
+        is newly started."""
+        video = factories.VideoFactory(
+            id="a1a21411-bf2f-4926-b97f-3c48a124d528",
+            upload_state=PENDING,
+            live_state=IDLE,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "started_at": to_timestamp(timezone.now() - timedelta(minutes=10)),
+                "stopped_at": to_timestamp(timezone.now() + timedelta(minutes=10)),
+            },
+            live_type=RAW,
+        )
+        data = {
+            "logGroupName": "/aws/lambda/dev-test-marsha-medialive",
+            "requestId": "7954d4d1-9dd3-47f4-9542-e7fd5f937fe6",
+            "state": "running",
+        }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
+        new_start = timezone.now() + timedelta(minutes=20)
+        with mock.patch.object(timezone, "now", return_value=new_start), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.patch(
+                f"/api/videos/{video.id}/update-live-state/",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        video.refresh_from_db()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(video.live_state, RUNNING)
+        # started_at has been updated and key stopped_at has been deleted
+        self.assertEqual(
+            video.live_info,
+            {
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                    "request_ids": ["7954d4d1-9dd3-47f4-9542-e7fd5f937fe6"],
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+                "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
+                "started_at": to_timestamp(new_start),
+            },
+        )
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
     def test_api_video_update_live_state_stopped(self):
         """Receiving stopped event should stop the video."""
         # test works with or without a starting_at date

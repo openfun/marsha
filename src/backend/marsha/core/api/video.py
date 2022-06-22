@@ -597,8 +597,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
 
         if serializer.validated_data["state"] == defaults.RUNNING:
             video.live_state = defaults.RUNNING
-            if live_info.get("started_at") is None:
-                live_info.update({"started_at": stamp})
+            live_info.update({"started_at": stamp})
+            live_info.pop("stopped_at", None)
 
         if serializer.validated_data["state"] == defaults.STOPPED:
             video.live_state = defaults.STOPPED
