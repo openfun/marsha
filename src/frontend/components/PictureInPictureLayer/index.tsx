@@ -19,6 +19,7 @@ import { PictureInPictureElement } from './PictureInPictureElement';
 import { PictureInPictureSwitchAction } from './PictureInPictureSwitchAction';
 import { usePIPDragger } from './usePIPDragger';
 import { defaultmarginSize, Point } from './usePIPDragger/utils';
+import { PictureActionLayer } from './PictureActionLayer';
 
 const pictureAnimationStyle: CSSProperties = {
   transitionProperty: 'left, top',
@@ -102,10 +103,13 @@ export const PictureInPictureLayer = ({
         id="picture-in-picture-master"
         containerRef={firstElementRef}
         isPicture={reversed}
-        pictureActions={
-          reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
+        pictureLayer={
+          <PictureActionLayer
+            actions={[pipSwitch].concat(pictureActions ?? [])}
+            pictureWidth={pictureWidth}
+            startDragging={startDragging}
+          />
         }
-        startDragging={reversed ? startDragging : undefined}
         startResizing={startResizing}
         style={reversed ? pictureStyle : containerStyle}
       >
@@ -117,10 +121,13 @@ export const PictureInPictureLayer = ({
           id="picture-in-picture-slave"
           containerRef={secondElementRef}
           isPicture={!reversed}
-          pictureActions={
-            !reversed ? [pipSwitch].concat(pictureActions ?? []) : undefined
+          pictureLayer={
+            <PictureActionLayer
+              actions={[pipSwitch].concat(pictureActions ?? [])}
+              pictureWidth={pictureWidth}
+              startDragging={startDragging}
+            />
           }
-          startDragging={!reversed ? startDragging : undefined}
           startResizing={startResizing}
           style={!reversed ? pictureStyle : containerStyle}
         >
