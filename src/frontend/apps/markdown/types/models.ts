@@ -1,7 +1,7 @@
 import { Playlist, Resource } from 'types/tracks';
 
 export enum modelName {
-  MARKDOWN_DOCUMENTS = 'markdown_documents',
+  MARKDOWN_DOCUMENTS = 'markdown-documents',
 }
 
 export interface MarkdownDocumentRenderingOptions {

@@ -22,7 +22,7 @@ logger = logging.getLogger(__name__)
 class MarkdownDocument(TranslatableModelMixin, BaseModel):
     """Model representing a markdown document."""
 
-    RESOURCE_NAME = "markdown_documents"
+    RESOURCE_NAME = "markdown-documents"
 
     # Common LTI resource fields
     lti_id = models.CharField(
