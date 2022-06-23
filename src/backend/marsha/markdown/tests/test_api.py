@@ -471,7 +471,7 @@ class MarkdownAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(
             {
-                "new_url": "http://testserver/lti/markdown_documents/",
+                "new_url": "http://testserver/lti/markdown-documents/",
                 "markdown_documents": [],
             },
             response.json(),
@@ -498,14 +498,14 @@ class MarkdownAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(
             {
-                "new_url": "http://testserver/lti/markdown_documents/",
+                "new_url": "http://testserver/lti/markdown-documents/",
                 "markdown_documents": [
                     {
                         "id": str(markdown_document.id),
                         "is_draft": markdown_document.is_draft,
                         "lti_id": str(markdown_document.lti_id),
                         "lti_url": (
-                            f"http://testserver/lti/markdown_documents/{str(markdown_document.id)}"
+                            f"http://testserver/lti/markdown-documents/{str(markdown_document.id)}"
                         ),
                         "rendering_options": {},
                         "translations": [

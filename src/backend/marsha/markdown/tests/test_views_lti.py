@@ -47,7 +47,7 @@ class MarkdownLTIViewTestCase(TestCase):
         mock_get_consumer_site.return_value = passport.consumer_site
 
         response = self.client.post(
-            f"/lti/markdown_documents/{markdown_document.id}", data
+            f"/lti/markdown-documents/{markdown_document.id}", data
         )
 
         self.assertEqual(response.status_code, 200)
@@ -62,7 +62,7 @@ class MarkdownLTIViewTestCase(TestCase):
         jwt_token = AccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
-        self.assertEqual(context.get("modelName"), "markdown_documents")
+        self.assertEqual(context.get("modelName"), "markdown-documents")
         self.assertEqual(
             jwt_token.payload["user"],
             {
@@ -98,7 +98,7 @@ class MarkdownLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(f"/lti/markdown_documents/{uuid.uuid4()}", data)
+        response = self.client.post(f"/lti/markdown-documents/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -111,7 +111,7 @@ class MarkdownLTIViewTestCase(TestCase):
         self.assertIsNotNone(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
-        self.assertEqual(context.get("modelName"), "markdown_documents")
+        self.assertEqual(context.get("modelName"), "markdown-documents")
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
@@ -141,7 +141,7 @@ class MarkdownLTIViewTestCase(TestCase):
         mock_get_consumer_site.return_value = passport.consumer_site
 
         response = self.client.post(
-            f"/lti/markdown_documents/{markdown_document.pk}", data
+            f"/lti/markdown-documents/{markdown_document.pk}", data
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
@@ -194,7 +194,7 @@ class MarkdownLTIViewTestCase(TestCase):
             },
             context.get("resource"),
         )
-        self.assertEqual(context.get("modelName"), "markdown_documents")
+        self.assertEqual(context.get("modelName"), "markdown-documents")
         self.assertEqual(context.get("appName"), "markdown")
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
