@@ -83,7 +83,7 @@ class MarkdownDocumentViewSet(
 
         """
         new_url = build_absolute_uri_behind_proxy(
-            self.request, "/lti/markdown_documents/"
+            self.request, "/lti/markdown-documents/"
         )
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(

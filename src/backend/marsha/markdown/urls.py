@@ -17,7 +17,7 @@ router.register(
 
 urlpatterns = [
     path(
-        "lti/markdown_documents/<uuid:uuid>",
+        "lti/markdown-documents/<uuid:uuid>",
         MarkdownDocumentView.as_view(),
         name="markdown_document_lti_view",
     ),

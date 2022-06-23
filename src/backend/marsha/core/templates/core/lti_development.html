@@ -229,7 +229,7 @@
             <option value="videos" selected>video</option>
             <option value="documents">document</option>
             <option value="meetings">meeting</option>
-            <option value="markdown_documents">Markdown document</option>
+            <option value="markdown-documents">Markdown document</option>
           </select>
         </div>
         <div class="input-group">
@@ -331,7 +331,7 @@
             <option value="videos" selected>video</option>
             <option value="documents">document</option>
             <option value="meetings">meeting</option>
-            <option value="markdown_documents">Markdown document</option>
+            <option value="markdown-documents">Markdown document</option>
           </select>
         </div>
         <div class="input-group">
@@ -390,7 +390,6 @@
         document.querySelectorAll('.resource-detail pre').forEach((detail) => {
           detail.className = '';
         });
-        console.log(resource.dataset.id);
         document.getElementById(resource.dataset.id).className = 'show';
       };
     });
