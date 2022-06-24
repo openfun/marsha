@@ -445,7 +445,7 @@ describe('createVideoJsPlayer', () => {
     jest.runOnlyPendingTimers();
     expect(mockPushAttendance).toHaveBeenCalledWith(
       {
-        1651732370000: {
+        1651732370: {
           fullScreen: false,
           muted: false,
           player_timer: 0,
