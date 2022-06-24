@@ -21,6 +21,7 @@ module.exports = {
     url: 'https://localhost',
   },
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
+  testPathIgnorePatterns: ['/apps/.cookiecutter/'],
   transformIgnorePatterns: [
     '/node_modules/(?!(' +
       '@mdx-js/mdx2|' +
