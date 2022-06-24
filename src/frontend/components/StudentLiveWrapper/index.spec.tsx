@@ -968,7 +968,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     jest.runOnlyPendingTimers();
     expect(mockPushAttendance).toHaveBeenCalledWith(
       {
-        1651732370000: {
+        1651732370: {
           onStage: true,
         },
       },
