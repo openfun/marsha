@@ -1,14 +1,28 @@
+import { cleanup, screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { cleanup, screen } from '@testing-library/react';
 
-import { LivePanelItem } from 'data/stores/useLivePanelState';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from 'data/stores/useLivePanelState';
+import {
+  participantMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LiveVideoTabPanel } from '.';
+
+jest.mock('data/appData', () => ({
+  getDecodedJwt: () => ({
+    permissions: { can_update: true },
+  }),
+}));
 
 describe('<LiveVideoTabPanel /> titles', () => {
   it('renders for item in LivePanelItem', () => {
@@ -26,9 +40,12 @@ describe('<LiveVideoTabPanel /> titles', () => {
       const item = itemStr as LivePanelItem;
 
       render(
-        <Tabs>
-          <LiveVideoTabPanel item={item} selected={false} />
-        </Tabs>,
+        wrapInVideo(
+          <Tabs>
+            <LiveVideoTabPanel item={item} selected={false} />
+          </Tabs>,
+          videoMockFactory(),
+        ),
       );
 
       screen.getByRole('tab', { name: tabTitles[item] });
@@ -37,9 +54,12 @@ describe('<LiveVideoTabPanel /> titles', () => {
       cleanup();
 
       render(
-        <Tabs>
-          <LiveVideoTabPanel item={item} selected={true} />
-        </Tabs>,
+        wrapInVideo(
+          <Tabs>
+            <LiveVideoTabPanel item={item} selected={true} />
+          </Tabs>,
+          videoMockFactory(),
+        ),
       );
 
       screen.getByRole('tab', { name: tabTitles[item] });
@@ -53,9 +73,15 @@ describe('<LiveVideoTabPanel /> titles', () => {
 describe('<LiveVideoTabPanel /> styles', () => {
   it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
     render(
-      <Tabs>
-        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />
-      </Tabs>,
+      wrapInVideo(
+        <Tabs>
+          <LiveVideoTabPanel
+            item={LivePanelItem.APPLICATION}
+            selected={false}
+          />
+        </Tabs>,
+        videoMockFactory(),
+      ),
     );
 
     const button = screen.getByRole('tab', { name: 'application' });
@@ -65,9 +91,8 @@ describe('<LiveVideoTabPanel /> styles', () => {
     expect(button).toHaveStyle('box-shadow: inset 0 -1px #81ade6;');
 
     const text = screen.getByText('application');
-
     expect(text).toHaveStyle('color: rgb(129, 173, 230);');
-    expect(text).toHaveStyle('font-size: 10px;');
+    expect(text).toHaveStyle('font-size: 0.75rem;');
     expect(text).toHaveStyle('font-weight: bold;');
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
     expect(text).toHaveStyle('text-align: center;');
@@ -78,9 +103,12 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
   it('renders with selected style [screenshot]', async () => {
     render(
-      <Tabs>
-        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />
-      </Tabs>,
+      wrapInVideo(
+        <Tabs>
+          <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />
+        </Tabs>,
+        videoMockFactory(),
+      ),
     );
 
     const button = screen.getByRole('tab', { name: 'application' });
@@ -92,7 +120,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
     const text = screen.getByText('application');
 
     expect(text).toHaveStyle('color: rgb(5, 95, 210)');
-    expect(text).toHaveStyle('font-size: 10px;');
+    expect(text).toHaveStyle('font-size: 0.75rem;');
     expect(text).toHaveStyle('font-weight: bold;');
     expect(text).toHaveStyle('letter-spacing: -0.23px;');
     expect(text).toHaveStyle('text-align: center;');
@@ -105,10 +133,13 @@ describe('<LiveVideoTabPanel /> styles', () => {
     const tree = renderer
       .create(
         wrapInIntlProvider(
-          <LiveVideoTabPanel
-            item={LivePanelItem.APPLICATION}
-            selected={false}
-          />,
+          wrapInVideo(
+            <LiveVideoTabPanel
+              item={LivePanelItem.APPLICATION}
+              selected={false}
+            />,
+            videoMockFactory(),
+          ),
         ),
       )
       .toJSON();
@@ -119,5 +150,33 @@ describe('<LiveVideoTabPanel /> styles', () => {
     expect(tree).toHaveStyleRule('color', '#031963', {
       modifier: ':hover div span',
     });
+  });
+
+  it('checks the ringing bell and number of on-stage requests are displayed when  is on', () => {
+    useLivePanelState.setState({
+      currentItem: LivePanelItem.CHAT,
+    });
+    const { container } = render(
+      wrapInVideo(
+        <Tabs>
+          <LiveVideoTabPanel
+            item={LivePanelItem.VIEWERS_LIST}
+            selected={false}
+          />
+        </Tabs>,
+        videoMockFactory({
+          participants_asking_to_join: [
+            participantMockFactory(),
+            participantMockFactory(),
+            participantMockFactory(),
+            participantMockFactory(),
+            participantMockFactory(),
+            participantMockFactory(),
+          ],
+        }),
+      ),
+    );
+    expect(container.querySelector('svg')).not.toBeNull();
+    screen.getByText(6);
   });
 });
