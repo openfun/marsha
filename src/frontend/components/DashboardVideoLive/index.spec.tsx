@@ -373,13 +373,7 @@ describe('components/DashboardVideoLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    // Force panel to display, because on instructor view it's hidden by default
-    act(() => useLivePanelState.setState({ isPanelVisible: true }));
-
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
 
     screen.getByText('No viewers are currently connected to your stream.');
 
@@ -527,5 +521,88 @@ describe('components/DashboardVideoLive', () => {
     );
 
     await screen.findByTestId('picture-in-picture-slave');
+  });
+
+  it('displays a notification when join mode is not forced and a student wants to go on stage, and then clicks on it.', async () => {
+    const participants = [participantMockFactory(), participantMockFactory()];
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    const { rerender } = render(
+      wrapInVideo(
+        <LiveModaleConfigurationProvider value={null}>
+          <PictureInPictureProvider value={{ reversed: false }}>
+            <JitsiApiProvider value={undefined}>
+              <Suspense fallback="loading...">
+                <DashboardVideoLive />
+              </Suspense>
+            </JitsiApiProvider>
+          </PictureInPictureProvider>
+        </LiveModaleConfigurationProvider>,
+        {
+          ...video,
+          join_mode: JoinMode.APPROVAL,
+          live_state: liveState.RUNNING,
+          participants_asking_to_join: [participants[0]],
+          xmpp: {
+            bosh_url: null,
+            converse_persistent_store: PersistentStore.LOCALSTORAGE,
+            conference_url: 'conference-url',
+            jid: 'jid',
+            prebind_url: 'prebind_url',
+            websocket_url: null,
+          },
+        },
+      ),
+    );
+
+    await screen.findByRole('button', {
+      name: 'Join the chat',
+    });
+    expect(screen.queryByText('Demands')).toBe(null);
+
+    rerender(
+      wrapInVideo(
+        <LiveModaleConfigurationProvider value={null}>
+          <PictureInPictureProvider value={{ reversed: false }}>
+            <JitsiApiProvider value={undefined}>
+              <Suspense fallback="loading...">
+                <DashboardVideoLive />
+              </Suspense>
+            </JitsiApiProvider>
+          </PictureInPictureProvider>
+        </LiveModaleConfigurationProvider>,
+        {
+          ...video,
+          join_mode: JoinMode.APPROVAL,
+          live_state: liveState.RUNNING,
+          participants_asking_to_join: participants,
+          xmpp: {
+            bosh_url: null,
+            converse_persistent_store: PersistentStore.LOCALSTORAGE,
+            conference_url: 'conference-url',
+            jid: 'jid',
+            prebind_url: 'prebind_url',
+            websocket_url: null,
+          },
+        },
+      ),
+    );
+
+    screen.getByText(
+      `${participants[1].name} and ${participants[0].name} want to go on stage.`,
+    );
+
+    const btnManageRequest = screen.getByRole('button', {
+      name: 'Manage requests',
+    });
+    userEvent.click(btnManageRequest);
+
+    expect(
+      await screen.queryByRole('button', {
+        name: 'Join the chat',
+      }),
+    ).toBe(null);
   });
 });
