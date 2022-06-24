@@ -22,6 +22,8 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 ### Changed
 
 - Rename meetings to classrooms (no database change yet)
+- Remove chat & viewers buttons from control bar and add a notification for
+managing on-stage request
 
 ### Fixed
 

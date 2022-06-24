@@ -1,5 +1,6 @@
 import { Box, Stack } from 'grommet';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { Redirect } from 'react-router-dom';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
@@ -32,14 +33,23 @@ import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { liveState, LiveModeType, JoinMode } from 'types/tracks';
 import { converse } from 'utils/window';
 
+import {
+  OnStageRequestToast,
+  ON_STAGE_REQUEST_TOAST_ID,
+} from './OnStageRequestToast';
 import { TeacherPIPControls } from './TeacherPIPControls';
 
 export const DashboardVideoLive = () => {
   const video = useCurrentVideo();
-  const { configPanel, currentItem } = useLivePanelState((state) => ({
-    configPanel: state.setAvailableItems,
-    currentItem: state.currentItem,
-  }));
+  const [showPanelTrigger, setShowPanelTrigger] = useState(true);
+
+  const { isPanelVisible, configPanel, currentItem, setPanelVisibility } =
+    useLivePanelState((state) => ({
+      isPanelVisible: state.isPanelVisible,
+      configPanel: state.setAvailableItems,
+      currentItem: state.currentItem,
+      setPanelVisibility: state.setPanelVisibility,
+    }));
   const [canStartLive, setCanStartLive] = useState(
     video.live_type === LiveModeType.RAW,
   );
@@ -69,6 +79,14 @@ export const DashboardVideoLive = () => {
       configPanel([]);
     }
   }, [video, configPanel]);
+
+  // On mount and live started, open the livePanel by default
+  useEffect(() => {
+    if (video.xmpp && currentItem && showPanelTrigger) {
+      setPanelVisibility(true);
+      setShowPanelTrigger(false);
+    }
+  }, [video.xmpp, currentItem, showPanelTrigger]);
 
   useEffect(() => {
     if (video.join_mode !== JoinMode.FORCED) {
@@ -101,6 +119,52 @@ export const DashboardVideoLive = () => {
   //  XMPP is ready to be used and therefore we can show chat and viewers buttons
   const isLiveStarted =
     video.live_state !== undefined && video.live_state !== liveState.IDLE;
+
+  const lastArrayOfParticipantsAskingToJoin = useRef(
+    video.participants_asking_to_join,
+  );
+
+  useEffect(() => {
+    if (isPanelVisible && currentItem === LivePanelItem.VIEWERS_LIST) {
+      toast.remove(ON_STAGE_REQUEST_TOAST_ID);
+    }
+
+    if (
+      lastArrayOfParticipantsAskingToJoin.current ===
+      video.participants_asking_to_join
+    ) {
+      return;
+    }
+
+    lastArrayOfParticipantsAskingToJoin.current =
+      video.participants_asking_to_join;
+
+    const shouldDisplayToast =
+      isLiveStarted &&
+      video.participants_asking_to_join.length !== 0 &&
+      video.join_mode !== JoinMode.FORCED &&
+      !(isPanelVisible && currentItem === LivePanelItem.VIEWERS_LIST);
+
+    if (shouldDisplayToast) {
+      toast.custom(
+        <OnStageRequestToast
+          participantsList={video.participants_asking_to_join}
+        />,
+        {
+          id: ON_STAGE_REQUEST_TOAST_ID,
+          duration: Infinity,
+        },
+      );
+    }
+  }, [
+    video.participants_asking_to_join,
+    isLiveStarted,
+    video.join_mode,
+    lastArrayOfParticipantsAskingToJoin.current,
+    isPanelVisible,
+    currentItem,
+    toast,
+  ]);
 
   return (
     <ConverseInitializer>

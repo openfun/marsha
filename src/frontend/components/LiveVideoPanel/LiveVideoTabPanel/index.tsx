@@ -1,10 +1,14 @@
+import { Box, Stack, Tab, Text } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
-import { Tab, Text } from 'grommet';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
+import { RingingBellSVG } from 'components/SVGIcons/RingingBellSVG';
+import { getDecodedJwt } from 'data/appData';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { LivePanelItem } from 'data/stores/useLivePanelState';
-import { colors as themeColors } from 'utils/theme/theme';
+import { colors as themeColors, theme } from 'utils/theme/theme';
 
 interface StyledTabProps {
   selected?: boolean;
@@ -57,7 +61,7 @@ const StyledTab = styled(Tab)`
 
 const StyledText = styled(Text)`
   font-family: 'Roboto-Bold';
-  font-size: 10px;
+  font-size: 0.75rem;
   font-weight: bold;
   letter-spacing: -0.23px;
   text-align: center;
@@ -91,12 +95,55 @@ export const LiveVideoTabPanel = ({
   item,
   selected,
 }: LiveVideoTabPanelProps) => {
+  const video = useCurrentVideo();
+  const canUpdate = getDecodedJwt().permissions.can_update;
+
+  const displayRingingBell =
+    item === LivePanelItem.VIEWERS_LIST &&
+    !selected &&
+    canUpdate &&
+    !!video.participants_asking_to_join.length;
+
   return (
     <StyledTab
       title={
-        <StyledText>
-          <FormattedMessage {...messages[item]} />
-        </StyledText>
+        <Box margin="auto">
+          <Stack anchor="bottom-right">
+            <Box pad={{ horizontal: '20px', vertical: '7px' }}>
+              <StyledText>
+                <FormattedMessage {...messages[item]} />
+              </StyledText>
+            </Box>
+
+            {displayRingingBell && (
+              <Box
+                background="white"
+                border={{ color: 'blue-active' }}
+                round="8px"
+                pad={{ vertical: '1px', horizontal: '3px' }}
+                direction="row"
+                gap="xxsmall"
+              >
+                <Text
+                  color="blue-active"
+                  size="0.650rem"
+                  style={{
+                    color: normalizeColor('blue-active', theme),
+                    fontFamily: 'Roboto-Medium',
+                  }}
+                >
+                  {video.participants_asking_to_join.length}
+                </Text>
+                <RingingBellSVG
+                  iconColor="blue-active"
+                  height="15px"
+                  width="12px"
+                  containerStyle={{ float: 'right', margin: 'auto' }}
+                />
+              </Box>
+            )}
+          </Stack>
+        </Box>
       }
       plain
       selected={selected}
