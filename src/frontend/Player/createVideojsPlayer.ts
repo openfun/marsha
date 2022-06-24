@@ -141,7 +141,7 @@ export const createVideojsPlayer = (
 
   const trackAttendance = () => {
     const attendance = {
-      [Date.now()]: {
+      [Math.round(Date.now() / 1000)]: {
         fullScreen: player.isFullscreen(),
         muted: player.muted(),
         player_timer: player.currentTime(),

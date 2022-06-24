@@ -62,7 +62,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     if (isParticipantOnstage) {
       const interval = window.setInterval(() => {
         const attendance = {
-          [Date.now()]: {
+          [Math.round(Date.now() / 1000)]: {
             onStage: true,
           },
         };
