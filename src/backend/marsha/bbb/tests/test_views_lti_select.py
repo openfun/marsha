@@ -45,10 +45,7 @@ class SelectLTIViewTestCase(TestCase):
         )
         context = json.loads(unescape(match.group(1)))
 
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": True, "live_raw": False, "markdown": True, "sentry": False},
-        )
+        self.assertTrue(context.get("flags").get("BBB"))
 
     @override_settings(BBB_ENABLED=False)
     def test_views_lti_select_bbb_disabled(self):
@@ -77,7 +74,4 @@ class SelectLTIViewTestCase(TestCase):
         )
         context = json.loads(unescape(match.group(1)))
 
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": True, "sentry": False},
-        )
+        self.assertFalse(context.get("flags").get("BBB"))

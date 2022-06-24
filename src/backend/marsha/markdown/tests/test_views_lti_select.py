@@ -41,10 +41,7 @@ class SelectLTIViewTestCase(TestCase):
         )
         context = json.loads(unescape(match.group(1)))
 
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": True, "sentry": False},
-        )
+        self.assertTrue(context.get("flags").get("markdown"))
 
     @override_settings(MARKDOWN_ENABLED=False)
     def test_views_lti_select_markdown_disabled(self):
@@ -73,7 +70,4 @@ class SelectLTIViewTestCase(TestCase):
         )
         context = json.loads(unescape(match.group(1)))
 
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": False, "sentry": False},
-        )
+        self.assertFalse(context.get("flags").get("markdown"))
