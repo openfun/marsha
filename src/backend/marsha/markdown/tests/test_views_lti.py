@@ -72,10 +72,7 @@ class MarkdownLTIViewTestCase(TestCase):
                 "id": "56255f3807599c377bf0e5bf072359fd",
             },
         )
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": True, "sentry": False},
-        )
+        self.assertTrue(context.get("flags").get("markdown"))
 
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
