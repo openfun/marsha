@@ -2,3 +2,4 @@ frontend/i18n/*.json
 node_modules
 frontend/translations/*.json
 frontend/public-path.js
+frontend/apps/.cookiecutter

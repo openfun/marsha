@@ -1,0 +1,13 @@
+{
+  "app_name": null,
+  "app_name_capitalized": "{{ cookiecutter.app_name|capitalize }}",
+  "model": null,
+  "model_name": "{{ cookiecutter.model|lower }}",
+  "model_lower": "{{ cookiecutter.model|lower }}",
+  "model_plural": "{{ cookiecutter.model }}s",
+  "model_plural_lower": "{{ cookiecutter.model_plural|lower }}",
+  "model_plural_capitalized": "{{ cookiecutter.model_plural|capitalize }}",
+  "model_url_part": "{{ cookiecutter.model_plural_lower|slugify }}",
+  "flag": "{{ cookiecutter.app_name|upper }}",
+  "_extensions": ["cookiecutter.extensions.SlugifyExtension"]
+}
