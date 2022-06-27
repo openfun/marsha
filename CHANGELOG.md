@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.7] - 2022-06-27
+
 ### Added
 
 - Allow instructor to share a video and use breakout rooms
@@ -1177,7 +1179,8 @@ the video to the ViewersList in the right panel
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.6...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.7...master
+[4.0.0-beta.7]: https://github.com/openfun/marsha/compare/v4.0.0-beta.6...v4.0.0-beta.7
 [4.0.0-beta.6]: https://github.com/openfun/marsha/compare/v4.0.0-beta.5...v4.0.0-beta.6
 [4.0.0-beta.5]: https://github.com/openfun/marsha/compare/v4.0.0-beta.4...v4.0.0-beta.5
 [4.0.0-beta.4]: https://github.com/openfun/marsha/compare/v4.0.0-beta.3...v4.0.0-beta.4
