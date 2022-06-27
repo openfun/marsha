@@ -1171,18 +1171,6 @@
     "description": "Title for the list of videos in the playlist view.",
     "message": "Videos"
   },
-  "components.PublicPausedLive.message": {
-    "description": "Message for the public when live is paused",
-    "message": "The webinar is paused. When resumed, the video will start again."
-  },
-  "components.PublicPausedLive.pausedSince": {
-    "description": "Information about the time since which the webinar is paused.",
-    "message": "The webinar is paused since"
-  },
-  "components.PublicPausedLive.title": {
-    "description": "Title for the public paused live component",
-    "message": "Webinar is paused"
-  },
   "components.PublishVOD.buttonLabel": {
     "description": "Button label to publish a live VOD.",
     "message": "Convert into VOD"
@@ -1711,10 +1699,6 @@
     "description": "The text displayed in the button in charge of making students on stage exiting the stage, in the viewers list.",
     "message": "Terminate"
   },
-  "components.ViewersList.noViewers": {
-    "description": "Message displayed in the users list when no viewers are connected",
-    "message": "No viewers are currently connected to your stream."
-  },
   "components.ViewersList.nobodyOnStage": {
     "description": "Message displayed in the users list for viewers when nobody is on stage",
     "message": "Oops, nobody is on stage. Wait for your teacher to ask joining the stage."
@@ -1726,6 +1710,18 @@
   "components.ViewersList.otherViewers": {
     "description": "Connected participants are displayed under this label.",
     "message": "Other participants"
+  },
+  "components.ViewersList.utils.anonymousAndNamedViewers": {
+    "description": "Message displayed in the users list when teacher has anonymous viewers connected and students with a display name.",
+    "message": "And {nb} anonymous {nb, plural, one {viewer} other {viewers}}."
+  },
+  "components.ViewersList.utils.anonymousViewersOnly": {
+    "description": "Message displayed in the users list when teacher has only anonymous viewers connected.",
+    "message": "{nb} anonymous {nb, plural, one {viewer} other {viewers}}."
+  },
+  "components.ViewersList.utils.noViewers": {
+    "description": "Message displayed in the users list when no viewers are connected",
+    "message": "No viewers are currently connected to your stream."
   },
   "components.dashboardThumbnail.replaceThumbnailButton": {
     "description": "",
@@ -1746,8 +1742,5 @@
   "message.key": {
     "description": "",
     "message": "Our title"
-  },
-  "zgxKi7": {
-    "message": "{pausedDays} {pausedDays, plural, one {day} other {days}}"
   }
 }
