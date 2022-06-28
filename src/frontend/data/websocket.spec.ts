@@ -56,10 +56,11 @@ const ltiToken = {
   },
 };
 
-jest.setTimeout(10000);
-
 describe('initVideoWebsocket', () => {
-  afterEach(() => fetchMock.restore());
+  afterEach(() => {
+    fetchMock.restore();
+    WS.clean();
+  });
   beforeEach(() => {
     jest.resetAllMocks();
   });
@@ -107,7 +108,6 @@ describe('initVideoWebsocket', () => {
     });
 
     server.close();
-    WS.clean();
   });
 
   it('connects to the websocket using an anonymous id', async () => {
@@ -154,7 +154,6 @@ describe('initVideoWebsocket', () => {
     });
 
     server.close();
-    WS.clean();
   });
 
   it('connects to the websocket using https protocol', async () => {
@@ -200,7 +199,6 @@ describe('initVideoWebsocket', () => {
     });
 
     server.close();
-    WS.clean();
   });
 
   it('reconnects to the server after a disconnection and fetch the video data.', async () => {
@@ -259,7 +257,7 @@ describe('initVideoWebsocket', () => {
       reason: 'connection lost',
       wasClean: false,
     });
-    await server.closed;
+    WS.clean();
 
     const newServer = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
     await newServer.connected;
@@ -274,7 +272,6 @@ describe('initVideoWebsocket', () => {
     expect(fetchMock.called(`/api/videos/${video.id}/`)).toEqual(true);
 
     newServer.close();
-    WS.clean();
   });
 
   it('stops reconnecting when websocket close code is 4003.', async () => {
@@ -333,13 +330,12 @@ describe('initVideoWebsocket', () => {
       reason: '',
       wasClean: false,
     });
-    await server.closed;
+    WS.clean();
 
     const newServer = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
 
     expect(fetchMock.called(`/api/videos/${video.id}/`)).toEqual(false);
 
     newServer.close();
-    WS.clean();
   });
 });
