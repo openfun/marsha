@@ -268,3 +268,196 @@ available targets with explanations by running:
 ```bash
 make help
 ```
+
+## Apps scaffolding
+
+We provide scripts to scaffold a new app.
+
+### Backend app scaffolding
+
+```bash
+bin/generate_backend_lti_app
+```
+
+You will be prompted to enter some variables used in the app:
+
+- `app_name`: the name of the app.
+- `app_verbose_name`: the description of the app.
+- `model`: (must be capitalized) the first model to create in the app.
+- `flag`: the flag used in marsha to enable the app.
+- `setting_name`: the flag used in the settings to enable the app. 
+- `model_lower`: used for instance variable name. 
+- `model_plural_lower`: used for instance list variable name.
+- `model_url_part`: used for url part.
+- `model_short_description`: the description of the model.
+
+After that, activation helpers will be displayed.
+
+ie:
+```
+app_name: assignments
+app_verbose_name: Resource to request assignments files to students
+model: Submission
+flag [ASSIGNMENTS]: 
+setting_name [ASSIGNMENTS_ENABLED]: 
+model_lower [submission]: 
+model_plural_lower [submissions]: 
+model_url_part [submissions]: 
+model_short_description [submission]: File submitted by a student
+
+Don't forget to configure Marsha settings to activate assignments app:
+
+src/backend/marsha/settings.py
+    INSTALLED_APPS = [
+        […]
++       "marsha.assignments.apps.AssignmentsConfig",
+    ]
+
++    # assignments application
++    ASSIGNMENTS_ENABLED = values.BooleanValue(False)
+
+
+src/backend/marsha/urls.py
++    if settings.ASSIGNMENTS_ENABLED:
++        urlpatterns += [path("", include("marsha.assignments.urls"))]
+
+
+src/backend/marsha/core/defaults.py
+     # FLAGS
+     […]
++    ASSIGNMENTS = "assignments"
+
+
+src/backend/marsha/core/views.py
+    from .defaults import ASSIGNMENTS
+
+  In all convenient flags configurations:
+     "flags": {
+         […]
++        ASSIGNMENTS: settings.ASSIGNMENTS_ENABLED,
+     },
+
+   In last_objects configuration:
+     "last_objects": {
+         […]
+         "submissions": Submission.objects.order_by("-updated_on")[:5],
+     },
+
+src/backend/marsha/core/templates/core/lti_development.html
+     <select name="resource">
+       […]
+       <option value="submissions">File submitted by a student</option>
+     </select>
+
+env.d/test, env.d/development.dist, env.d/development
++   # assignments application
++   DJANGO_ASSIGNMENTS_ENABLED=True
+
+To generate the initial migration once the model is ready:
+docker-compose exec app python manage.py makemigrations assignments
+```
+
+The generated app will be available in the `src/backend/marsha` directory. 
+
+```
+src/backend/marsha/assignments/
+├── admin.py
+├── api.py
+├── apps.py
+├── factories.py
+├── forms.py
+├── __init__.py
+├── models.py
+├── serializers.py
+├── tests
+│   ├── __init__.py
+│   ├── test_api.py
+│   ├── test_views_lti.py
+│   └── test_views_lti_select.py
+├── urls.py
+└── views.py
+```
+
+### Frontend app scaffolding
+
+```bash
+bin/generate_frontend_lti_app
+```
+
+You will be prompted to enter some variables used in the app:
+
+- `app_name`: the name of the app.
+- `app_name_capitalized`: used for app data naming.
+- `model`: (must be capitalized) used for variables naming.
+- `model_name`: (must be snake cased) the model name from the backend.
+- `model_lower`: (must be camel cased) used for variables naming. 
+- `model_plural`: used for variables naming. 
+- `model_plural_lower`: used for variables naming.
+- `model_plural_capitalized`: used for variables naming.
+- `model_url_part`: used for url part.
+- `flag`: the flag used in marsha to enable the app.
+
+After that, activation helpers will be displayed.
+
+ie:
+```
+app_name: assignments
+app_name_capitalized [Assignments]: 
+model: Submission
+model_name [submission]: 
+model_lower [submission]: 
+model_plural [Submissions]: 
+model_plural_lower [submissions]: 
+model_plural_capitalized [Submissions]: 
+model_url_part [submissions]: 
+flag [ASSIGNMENTS]: 
+
+Don't forget to configure assignments in core:
+
+src/frontend/types/AppData.ts
+    export enum appNames {
+      […]
++     ASSIGNMENTS = 'assignments',
+      […]
+    }
+
+    export enum flags {
+      […]
++     ASSIGNMENTS = 'assignments',
+      […]
+    }
+
+src/frontend/data/appConfigs.ts
+    export const appConfigs: { [key in appNames]?: { flag?: flags } } = {
+      […]
++     [appNames.ASSIGNMENTS]: { flag: flags.ASSIGNMENTS },
+      […]
+    };
+
+```
+
+The generated app will be available in the `src/frontend/apps` directory. 
+
+```
+src/frontend/apps/assignments/
+├── DashboardSubmission
+│   ├── index.spec.tsx
+│   └── index.tsx
+├── data
+│   ├── assignmentsAppData.ts
+│   └── queries
+│       ├── index.spec.tsx
+│       └── index.tsx
+├── Routes.tsx
+├── SelectContentTab
+│   ├── index.spec.tsx
+│   └── index.tsx
+├── types
+│   ├── AssignmentsAppData.ts
+│   └── models.ts
+└── utils
+    ├── parseDataElements
+    │   └── parseDataElements.ts
+    └── tests
+        └── factories.ts
+```
