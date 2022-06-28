@@ -12,6 +12,7 @@ import { Document } from 'types/file';
 import {
   LiveModeType,
   LiveAttendance,
+  LiveSession,
   Playlist,
   SharedLiveMedia,
   Thumbnail,
@@ -557,5 +558,23 @@ export const useStopSharingMedia = (
         }
       },
     },
+  );
+};
+
+type LiveSessionsResponse = APIList<LiveSession>;
+type UseLiveSessionsParams = { anonymous_id?: string };
+export const useLiveSessionsQuery = (
+  params: UseLiveSessionsParams,
+  queryConfig?: UseQueryOptions<
+    LiveSessionsResponse,
+    'livesessions',
+    LiveSessionsResponse
+  >,
+) => {
+  const key = ['livesessions', params];
+  return useQuery<LiveSessionsResponse, 'livesessions'>(
+    key,
+    fetchList,
+    queryConfig,
   );
 };
