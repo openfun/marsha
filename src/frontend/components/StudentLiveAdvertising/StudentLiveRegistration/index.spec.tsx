@@ -1,9 +1,12 @@
+import userEvent from '@testing-library/user-event';
 import { fireEvent, screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
-import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { DecodedJwt } from 'types/jwt';
+import { getAnonymousId } from 'utils/localstorage';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -12,6 +15,7 @@ import { StudentLiveRegistration } from '.';
 let mockJwt: DecodedJwt;
 jest.mock('data/appData', () => ({
   appData: {
+    jwt: 'some token',
     modelName: 'videos',
     resource: {
       id: '1',
@@ -20,24 +24,24 @@ jest.mock('data/appData', () => ({
   getDecodedJwt: () => mockJwt,
 }));
 
-jest.mock('data/sideEffects/getLiveSessions', () => ({
-  getLiveSessions: jest.fn(),
-}));
-const mockGetLiveSessions = getLiveSessions as jest.MockedFunction<
-  typeof getLiveSessions
->;
-
 jest.mock('data/sideEffects/createLiveSession', () => ({
   createLiveSession: jest.fn(),
 }));
 const mockCreateLiveSession = createLiveSession as jest.MockedFunction<
   typeof createLiveSession
 >;
+jest.mock('utils/localstorage', () => ({
+  getAnonymousId: jest.fn(),
+}));
+const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
+  typeof getAnonymousId
+>;
 
 describe('<StudentLiveRegistration />', () => {
   beforeEach(() => {
     mockJwt = {
       consumer_site: 'a.site.fr',
+      context_id: 'course-v1:ufr+mathematics+0001',
       locale: 'en',
       maintenance: false,
       permissions: {
@@ -51,17 +55,18 @@ describe('<StudentLiveRegistration />', () => {
         id: 'user_id',
         username: 'username',
         user_fullname: 'hisName',
-        email: 'test@openfun.fr',
+        email: null,
       },
     };
   });
 
   afterEach(() => {
+    fetchMock.reset();
     jest.clearAllMocks();
   });
 
   it('renders the form and the message on submit', async () => {
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -79,7 +84,8 @@ describe('<StudentLiveRegistration />', () => {
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('textbox', { name: 'Email address' });
+    const emailField = screen.getByRole('textbox', { name: 'Email address' });
+    userEvent.type(emailField, 'test@fun-mooc.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -90,25 +96,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and an error when validation fail', async () => {
-    mockJwt = {
-      consumer_site: 'a.site.fr',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: 'not_an_email',
-      },
-    };
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -117,7 +105,8 @@ describe('<StudentLiveRegistration />', () => {
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('textbox', { name: 'Email address' });
+    const emailField = screen.getByRole('textbox', { name: 'Email address' });
+    userEvent.type(emailField, 'not_an_email');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -129,7 +118,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when mail is already registered', async () => {
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -142,7 +131,8 @@ describe('<StudentLiveRegistration />', () => {
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('textbox', { name: 'Email address' });
+    const emailField = screen.getByRole('textbox', { name: 'Email address' });
+    userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -155,7 +145,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an error occured with the email on backend', async () => {
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -166,6 +156,8 @@ describe('<StudentLiveRegistration />', () => {
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
+    const emailField = screen.getByRole('textbox', { name: 'Email address' });
+    userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -178,7 +170,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an unknown error occured with the email on backend', async () => {
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -189,7 +181,8 @@ describe('<StudentLiveRegistration />', () => {
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
     });
-    screen.getByRole('textbox', { name: 'Email address' });
+    const emailField = screen.getByRole('textbox', { name: 'Email address' });
+    userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -209,7 +202,7 @@ describe('<StudentLiveRegistration />', () => {
       should_send_reminders: true,
       video: 'video_id',
     });
-    mockGetLiveSessions.mockResolvedValue({
+    fetchMock.get('/api/livesessions/?limit=999', {
       count: 1,
       results: [liveSession],
     });
@@ -225,11 +218,43 @@ describe('<StudentLiveRegistration />', () => {
     expect(container.childNodes.length).toEqual(1);
   });
 
-  it('does not render if we fail to initialize current subscription for lti user', async () => {
-    mockGetLiveSessions.mockRejectedValue(undefined);
+  it('renders the form using an anonymousId', async () => {
+    mockJwt = {
+      consumer_site: 'a.site.fr',
+      context_id: 'course-v1:ufr+mathematics+0001',
+      locale: 'en',
+      maintenance: false,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'ressource_id',
+      roles: [],
+      session_id: 'session_id',
+      user: undefined,
+    };
+    const liveSession = liveSessionFactory({
+      id: 'id',
+      is_registered: false,
+      email: 'email',
+      should_send_reminders: true,
+      video: 'video_id',
+    });
+    const anonymousId = uuidv4();
+    mockGetAnonymousId.mockReturnValue(anonymousId);
+    fetchMock.get(`/api/livesessions/?anonymous_id=${anonymousId}&limit=999`, {
+      count: 1,
+      results: [liveSession],
+    });
 
-    const { elementContainer: container } = render(<StudentLiveRegistration />);
+    const { container } = render(<StudentLiveRegistration />);
 
-    expect(container!.childNodes.length).toEqual(0);
+    await screen.findByRole('heading', {
+      name: 'I want to subscribe to this webinar',
+    });
+    screen.getByRole('textbox', { name: 'Email address' });
+    screen.getByText('By registering, you accept to receive an email.');
+
+    expect(container.childNodes.length).toEqual(1);
   });
 });

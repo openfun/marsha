@@ -1,18 +1,18 @@
 import { Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React, { Fragment, useEffect, useMemo, useState } from 'react';
+import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { getDecodedJwt } from 'data/appData';
-import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 
 import { RegistrationForm } from './RegistrationForm';
-import { LiveSession } from 'types/tracks';
+import { useLiveSessionsQuery } from 'data/queries';
+import { useLiveSession } from 'data/stores/useLiveSession';
 
 const messages = defineMessages({
   formTitle: {
@@ -41,40 +41,32 @@ export const StudentLiveRegistration = () => {
     return decodedJWT.user?.email ?? undefined;
   }, [decodedJWT]);
 
-  const [isLoading, setIsLoading] = useState(true);
-  const [liveSession, setLiveSession] = useState<Maybe<LiveSession>>();
+  const anonymousId = useMemo(() => {
+    let anonId: Maybe<string>;
+    if (!checkLtiToken(decodedJWT)) {
+      anonId = getAnonymousId();
+    }
 
-  useEffect(() => {
-    let canceled = false;
-    const checkRegistered = async () => {
-      let anonymousId: Maybe<string>;
-      if (!checkLtiToken(decodedJWT)) {
-        anonymousId = getAnonymousId();
-      }
-
-      let existingLiveSessions;
-      try {
-        existingLiveSessions = await getLiveSessions(anonymousId);
-      } catch (err) {
-        return;
-      }
-
-      if (canceled) {
-        return;
-      }
-      setIsLoading(false);
-      if (existingLiveSessions.count > 0) {
-        setLiveSession(existingLiveSessions.results[0]);
-      }
-    };
-
-    checkRegistered();
-    return () => {
-      canceled = true;
-    };
+    return anonId;
   }, [decodedJWT]);
 
-  if (isLoading) {
+  const { liveSession, setLiveSession } = useLiveSession();
+  const { isError, isLoading } = useLiveSessionsQuery(
+    { anonymous_id: anonymousId },
+    {
+      onSuccess: (data) => {
+        if (data.count > 0) {
+          setLiveSession(data.results[0]);
+        }
+      },
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+    },
+  );
+
+  if (isLoading || isError) {
     return <Fragment />;
   }
 

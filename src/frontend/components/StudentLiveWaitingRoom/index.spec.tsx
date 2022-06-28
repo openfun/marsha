@@ -63,6 +63,9 @@ const mockSetLiveSessionDisplayName =
   >;
 
 describe('<StudentLiveWaitingRoom />', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
   it('renders the waiting room', () => {
     const video = videoMockFactory({
       title: 'live title',
