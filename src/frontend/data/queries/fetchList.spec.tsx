@@ -40,7 +40,7 @@ describe('queries/fetchList', () => {
     const response = await fetchList({
       meta: undefined,
       pageParam: undefined,
-      queryKey: ['model-name', { key: 'value' }],
+      queryKey: ['model-name', { key: 'value', foo: undefined }],
     });
 
     expect(fetchMock.lastCall()![0]).toEqual(
