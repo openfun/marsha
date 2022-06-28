@@ -3,24 +3,30 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import React from 'react';
+import { QueryClient } from 'react-query';
+import { v4 as uuidv4 } from 'uuid';
 
 import { getDecodedJwt } from 'data/appData';
-import { Live, liveState } from 'types/tracks';
+import { APIList } from 'types/api';
+import { Live, LiveSession, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import { initWebinarContext } from 'utils/initWebinarContext';
 import { Deferred } from 'utils/tests/Deferred';
-import { videoMockFactory } from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
 
 jest.mock('data/appData', () => ({
   appData: {
+    jwt: 'some token',
     static: {
       img: {
         liveBackground: 'some_url',
+        liveErrorBackground: 'error_img_background.jpg',
       },
     },
   },
@@ -30,11 +36,11 @@ const mockedGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
   typeof getDecodedJwt
 >;
 
-jest.mock('utils/initWebinarContext', () => ({
-  initWebinarContext: jest.fn(),
+jest.mock('utils/getOrInitAnonymousId', () => ({
+  getOrInitAnonymousId: jest.fn(),
 }));
-const mockedInitWebinarContext = initWebinarContext as jest.MockedFunction<
-  typeof initWebinarContext
+const mockGetInitOrAnonymousId = getOrInitAnonymousId as jest.MockedFunction<
+  typeof getOrInitAnonymousId
 >;
 
 jest.mock('components/ConverseInitializer', () => ({
@@ -63,6 +69,7 @@ describe('PublicLiveDashboard', () => {
   });
   afterEach(() => {
     jest.clearAllMocks();
+    fetchMock.reset();
   });
 
   it('inits websocket context', async () => {
@@ -78,18 +85,195 @@ describe('PublicLiveDashboard', () => {
       const video = videoMockFactory();
       const live: Live = { ...video, live_state: state };
 
-      const deferred = new Deferred<void>();
-      mockedInitWebinarContext.mockReturnValue(deferred.promise);
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />);
+      mockGetInitOrAnonymousId.mockReturnValue(undefined);
+
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
 
       const loader = screen.getByRole('status');
 
-      deferred.resolve();
+      deferred.resolve({
+        count: 1,
+        next: '',
+        previous: '',
+        results: [liveSessionFactory()],
+      });
       await waitForElementToBeRemoved(loader);
 
-      expect(mockedInitWebinarContext).toHaveBeenCalledWith(live, 'en');
+      expect(fetchMock.called('/api/livesessions/?limit=999')).toEqual(true);
 
+      fetchMock.reset();
+      cleanup();
+    }
+  });
+
+  it('inits websocket context with an anonymous id', async () => {
+    const values = Object.values(liveState);
+
+    for (const state of values) {
+      if (state === liveState.ENDED) {
+        //  running live state ignores liveState.ENDED
+        //  but typescript fail to detect type with a filter
+        return;
+      }
+      const anonymousId = uuidv4();
+
+      const video = videoMockFactory();
+      const live: Live = { ...video, live_state: state };
+
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get(
+        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        deferred.promise,
+      );
+
+      mockGetInitOrAnonymousId.mockReturnValue(anonymousId);
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
+
+      const loader = screen.getByRole('status');
+
+      deferred.resolve({
+        count: 1,
+        next: '',
+        previous: '',
+        results: [liveSessionFactory()],
+      });
+      await waitForElementToBeRemoved(loader);
+
+      expect(
+        fetchMock.called(
+          `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        ),
+      ).toEqual(true);
+
+      fetchMock.reset();
+      cleanup();
+    }
+  });
+
+  it('pushes an attendance when livesession does not exists during webinar init.', async () => {
+    const values = Object.values(liveState);
+
+    for (const state of values) {
+      if (state === liveState.ENDED) {
+        //  running live state ignores liveState.ENDED
+        //  but typescript fail to detect type with a filter
+        return;
+      }
+
+      const video = videoMockFactory();
+      const live: Live = { ...video, live_state: state };
+
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
+      fetchMock.post(
+        '/api/livesessions/push_attendance/',
+        liveSessionFactory(),
+      );
+
+      mockGetInitOrAnonymousId.mockReturnValue(undefined);
+
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
+
+      const loader = screen.getByRole('status');
+
+      deferred.resolve({
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      });
+      await waitForElementToBeRemoved(loader);
+
+      expect(fetchMock.called('/api/livesessions/?limit=999')).toEqual(true);
+      expect(fetchMock.called('/api/livesessions/push_attendance/')).toEqual(
+        true,
+      );
+
+      fetchMock.reset();
+      cleanup();
+    }
+  });
+
+  it('pushes an attendance when livesession does not exists during webinar init with an anonymous id.', async () => {
+    const values = Object.values(liveState);
+
+    for (const state of values) {
+      if (state === liveState.ENDED) {
+        //  running live state ignores liveState.ENDED
+        //  but typescript fail to detect type with a filter
+        return;
+      }
+
+      const video = videoMockFactory();
+      const live: Live = { ...video, live_state: state };
+
+      const anonymousId = uuidv4();
+
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get(
+        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        deferred.promise,
+      );
+
+      fetchMock.post(
+        `/api/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
+        liveSessionFactory(),
+      );
+
+      mockGetInitOrAnonymousId.mockReturnValue(anonymousId);
+
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
+
+      const loader = screen.getByRole('status');
+
+      deferred.resolve({
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      });
+      await waitForElementToBeRemoved(loader);
+
+      expect(
+        fetchMock.called(
+          `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        ),
+      ).toEqual(true);
+      expect(
+        fetchMock.called(
+          `/api/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
+        ),
+      ).toEqual(true);
+
+      fetchMock.reset();
       cleanup();
     }
   });
@@ -107,10 +291,29 @@ describe('PublicLiveDashboard', () => {
         live_state: state,
       };
 
-      render(<PublicLiveDashboard live={live} playerType="someplayer" />);
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
+      mockGetInitOrAnonymousId.mockReturnValue(undefined);
+
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
+
+      deferred.resolve({
+        count: 1,
+        next: '',
+        previous: '',
+        results: [liveSessionFactory()],
+      });
 
       await screen.findByText(/Live is starting/);
 
+      fetchMock.reset();
       cleanup();
     }
   });
@@ -136,8 +339,25 @@ describe('PublicLiveDashboard', () => {
           jid: 'xmpp-server.com',
         },
       };
+      const deferred = new Deferred<APIList<LiveSession>>();
+      fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
-      render(<PublicLiveDashboard live={live} playerType="someplayer" />);
+      mockGetInitOrAnonymousId.mockReturnValue(undefined);
+
+      const queryClient = new QueryClient();
+
+      render(<PublicLiveDashboard live={live} playerType={'someplayer'} />, {
+        queryOptions: {
+          client: queryClient,
+        },
+      });
+
+      deferred.resolve({
+        count: 1,
+        next: '',
+        previous: '',
+        results: [liveSessionFactory()],
+      });
 
       await screen.findByText('live starter');
       expect(mockedStudentLiveStarter).toHaveBeenCalledWith(
@@ -148,7 +368,39 @@ describe('PublicLiveDashboard', () => {
         {},
       );
 
+      fetchMock.reset();
       cleanup();
     }
+  });
+
+  it('displays the error message when fetching livesession fails', async () => {
+    const video = videoMockFactory();
+    const live: Live = { ...video, live_state: liveState.IDLE };
+
+    const deferred = new Deferred();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
+    mockGetInitOrAnonymousId.mockReturnValue(undefined);
+    const queryClient = new QueryClient({
+      defaultOptions: {
+        queries: {
+          retry: false,
+        },
+      },
+    });
+
+    render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    const loader = screen.getByRole('status');
+
+    deferred.resolve(400);
+    await waitForElementToBeRemoved(loader);
+
+    expect(fetchMock.called('/api/livesessions/?limit=999')).toEqual(true);
+    screen.getByText('Impossible to configure the webinar');
   });
 });

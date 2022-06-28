@@ -1,10 +1,16 @@
 import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
+import fetchMock from 'fetch-mock';
 import { DateTime } from 'luxon';
 import React from 'react';
 
 import { liveState } from 'types/tracks';
-import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { Deferred } from 'utils/tests/Deferred';
+import {
+  liveSessionFactory,
+  thumbnailMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { StudentLiveAdvertising } from '.';
@@ -90,7 +96,17 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
+    const deferred = new Deferred();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
     render(<StudentLiveAdvertising video={video} />);
+
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory({ is_registered: false })],
+    });
 
     await screen.findByRole('button', { name: 'Register' });
 

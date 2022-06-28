@@ -13,11 +13,21 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
-import { liveState, timedTextMode, uploadState } from 'types/tracks';
+import { APIList } from 'types/api';
+import {
+  LiveSession,
+  liveState,
+  timedTextMode,
+  uploadState,
+} from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import { initWebinarContext } from 'utils/initWebinarContext';
 import { getAnonymousId } from 'utils/localstorage';
-import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
+import { Deferred } from 'utils/tests/Deferred';
+import {
+  liveSessionFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import PublicVideoDashboard from '.';
@@ -30,9 +40,6 @@ jest.mock('data/sideEffects/getResource', () => ({
 }));
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
-}));
-jest.mock('utils/initWebinarContext', () => ({
-  initWebinarContext: jest.fn(),
 }));
 jest.mock('utils/localstorage', () => ({
   getAnonymousId: jest.fn(),
@@ -64,9 +71,6 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
 
 const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
->;
-const mockInitWebinarContext = initWebinarContext as jest.MockedFunction<
-  typeof initWebinarContext
 >;
 
 let mockCanUpdate: boolean;
@@ -216,8 +220,6 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    expect(mockInitWebinarContext).not.toHaveBeenCalled();
-
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
     expect(
@@ -281,8 +283,6 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    expect(mockInitWebinarContext).not.toHaveBeenCalled();
-
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
     expect(
@@ -331,10 +331,18 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
     const { elementContainer: container } = render(
       <PublicVideoDashboard video={video} playerType="videojs" />,
     );
-
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory()],
+    });
     await waitFor(() =>
       // The player is created
       expect(mockCreatePlayer).toHaveBeenCalledWith(
@@ -346,10 +354,6 @@ describe('PublicVideoDashboard', () => {
         expect.any(Function),
       ),
     );
-
-    await waitFor(() => {
-      expect(mockInitWebinarContext).toHaveBeenCalled();
-    });
 
     const videoElement = container!.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
@@ -388,14 +392,19 @@ describe('PublicVideoDashboard', () => {
         jid: 'xmpp-server.com',
       },
     });
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
     render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
-    await waitFor(() => {
-      expect(mockInitWebinarContext).toHaveBeenCalled();
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory()],
     });
 
-    screen.getByText('This live has ended');
+    await screen.findByText('This live has ended');
     screen.getByText(
       'This live has now ended. If the host decides to publish the recording, the video will be available here in a while.',
     );
@@ -425,14 +434,19 @@ describe('PublicVideoDashboard', () => {
     useLiveStateStarted.setState({
       isStarted: false,
     });
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
     render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
-    await waitFor(() => {
-      expect(mockInitWebinarContext).toHaveBeenCalled();
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory()],
     });
 
-    screen.getByRole('heading', {
+    await screen.findByRole('heading', {
       name: 'Live is starting',
     });
   });
@@ -499,11 +513,18 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+
     render(<PublicVideoDashboard video={video} playerType="videojs" />);
-    await waitFor(() => {
-      expect(mockInitWebinarContext).toHaveBeenCalled();
+
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory()],
     });
-    screen.getByRole('heading', { name: 'Live is starting' });
+    await screen.findByRole('heading', { name: 'Live is starting' });
   });
 
   it('displays the WaitingLiveVideo component when live_state is IDLE and video is not scheduled', async () => {
@@ -515,10 +536,17 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
-    render(<PublicVideoDashboard video={video} playerType="videojs" />);
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory()],
+    });
     await screen.findByRole('heading', { name: 'Live is starting' });
-    expect(mockInitWebinarContext).toHaveBeenCalled();
   });
 
   it('displays the SubscribeScheduledVideo component when live_state is IDLE and video is scheduled', async () => {
@@ -526,10 +554,6 @@ describe('PublicVideoDashboard', () => {
     startingAt.setFullYear(startingAt.getFullYear() + 10);
     const anonymousId = uuidv4();
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    fetchMock.mock(`/api/livesessions/?anonymous_id=${anonymousId}`, {
-      count: 0,
-      results: [],
-    });
 
     const video = videoMockFactory({
       live_state: liveState.IDLE,
@@ -540,11 +564,22 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
+    const deferred = new Deferred<APIList<LiveSession>>();
+    fetchMock.get(
+      `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+      deferred.promise,
+    );
+
     render(<PublicVideoDashboard video={video} playerType="videojs" />);
+    deferred.resolve({
+      count: 1,
+      next: '',
+      previous: '',
+      results: [liveSessionFactory({ is_registered: false })],
+    });
     await screen.findByRole('button', { name: /register/i });
     screen.getByRole('heading', {
       name: /Live will start in 2 days at 11:00 AM/i,
     });
-    expect(mockInitWebinarContext).toHaveBeenCalled();
   });
 });

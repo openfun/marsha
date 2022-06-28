@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
@@ -6,10 +6,13 @@ import { Loader } from 'components/Loader';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { initVideoWebsocket } from 'data/websocket';
 import { Live } from 'types/tracks';
-import { initWebinarContext } from 'utils/initWebinarContext';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 import { StudentLiveStarter } from './StudentLiveStarter';
+import { useLiveSessionsQuery } from 'data/queries';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { useLiveSession } from 'data/stores/useLiveSession';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useQueryClient } from 'react-query';
 
 interface PublicLiveDashboardProps {
   live: Live;
@@ -22,14 +25,30 @@ export const PublicLiveDashboard = ({
 }: PublicLiveDashboardProps) => {
   const intl = useIntl();
   const [isReadyLive, setIsReadyLive] = useState(false);
-
-  useAsyncEffect(async () => {
-    if (!isReadyLive) {
-      await initWebinarContext(live, intl.locale);
-      initVideoWebsocket(live);
-      setIsReadyLive(true);
-    }
-  }, [isReadyLive, live]);
+  const anonymousId = useMemo(() => getOrInitAnonymousId(), []);
+  const queryClient = useQueryClient();
+  const setLiveSession = useLiveSession((state) => state.setLiveSession);
+  useLiveSessionsQuery(
+    { anonymous_id: anonymousId },
+    {
+      onSuccess: async (data) => {
+        if (data.count > 0) {
+          setLiveSession(data.results[0]);
+        } else {
+          setLiveSession(await pushAttendance({}, intl.locale, anonymousId));
+          queryClient.invalidateQueries('livesessions', {
+            refetchActive: false,
+          });
+        }
+        initVideoWebsocket(live);
+        setIsReadyLive(true);
+      },
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+      refetchOnWindowFocus: false,
+      staleTime: 1000,
+    },
+  );
 
   if (!isReadyLive) {
     //  live context is not ready yet,
