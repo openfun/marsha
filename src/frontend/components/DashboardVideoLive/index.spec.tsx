@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
@@ -74,6 +74,10 @@ jest.mock('utils/window', () => ({
     acceptParticipantToJoin: jest.fn(),
   },
 }));
+const mockAcceptParticipantToJoin =
+  converse.acceptParticipantToJoin as jest.MockedFunction<
+    typeof converse.acceptParticipantToJoin
+  >;
 
 let queryClient: QueryClient;
 
@@ -210,7 +214,7 @@ describe('components/DashboardVideoLive', () => {
     await screen.findByText('Only a jitsi moderator can administrate the live');
   });
 
-  it('shows the stop button when the status is RUNNING', () => {
+  it('shows the stop button when the status is RUNNING', async () => {
     render(
       <LiveModaleConfigurationProvider value={null}>
         <PictureInPictureProvider value={{ reversed: false }}>
@@ -226,7 +230,7 @@ describe('components/DashboardVideoLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    screen.getByRole('button', { name: /end live/i });
+    await screen.findByRole('button', { name: /end live/i });
     screen.getByTestId('start-recording');
   });
 
@@ -324,7 +328,7 @@ describe('components/DashboardVideoLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Show chat' }));
+    userEvent.click(await screen.findByRole('button', { name: 'Show chat' }));
 
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',
@@ -381,7 +385,7 @@ describe('components/DashboardVideoLive', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 
-  it('accepts participants asking to join if join mode is forced', () => {
+  it('accepts participants asking to join if join mode is forced', async () => {
     render(
       <LiveModaleConfigurationProvider value={null}>
         <PictureInPictureProvider value={{ reversed: false }}>
@@ -405,8 +409,9 @@ describe('components/DashboardVideoLive', () => {
       </LiveModaleConfigurationProvider>,
       { queryOptions: { client: queryClient } },
     );
-
-    expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
+    await waitFor(() =>
+      expect(mockAcceptParticipantToJoin).toHaveBeenCalledTimes(3),
+    );
   });
 
   it('does not accept participants asking to join if join mode is approval', () => {
@@ -434,10 +439,10 @@ describe('components/DashboardVideoLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    expect(converse.acceptParticipantToJoin).not.toHaveBeenCalled();
+    expect(mockAcceptParticipantToJoin).not.toHaveBeenCalled();
   });
 
-  it('accepts participants asking to join if join mode is forced', () => {
+  it('accepts participants asking to join if join mode is forced', async () => {
     render(
       <LiveModaleConfigurationProvider value={null}>
         <PictureInPictureProvider value={{ reversed: false }}>
@@ -462,7 +467,9 @@ describe('components/DashboardVideoLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
+    await waitFor(() =>
+      expect(mockAcceptParticipantToJoin).toHaveBeenCalledTimes(3),
+    );
   });
 
   it('starts picture in picture mode when a file is shared', async () => {
