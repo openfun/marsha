@@ -1,18 +1,60 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React, { Fragment, useEffect } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import { useFetchButton } from './useFetchButton';
 
-const matchMedia = new MatchMediaMock();
+let matchMedia: MatchMediaMock;
+
+interface TestErrorHelperProps {
+  errorCallback?: string | ((error: unknown) => string);
+}
+const TestErrorHelper = ({ errorCallback }: TestErrorHelperProps) => {
+  const [state, setState, Button] = useFetchButton(errorCallback);
+
+  useEffect(() => {
+    if (state.type !== 'loading') {
+      return;
+    }
+
+    setState({ type: 'error', error: 'some error' });
+  }, [state]);
+
+  return (
+    <Fragment>
+      {state.type === 'idle' && <p>button is idling</p>}
+      <Button label="my label" />
+    </Fragment>
+  );
+};
+
+let getToastHook: () => any = () => {};
+
+const ToastHack = () => {
+  const toasts = useToaster();
+  getToastHook = () => toasts;
+  return null;
+};
 
 describe('useFetchButton', () => {
+  beforeEach(() => {
+    matchMedia = new MatchMediaMock();
+  });
   afterEach(() => {
     matchMedia.clear();
+
+    const toasts = getToastHook();
+    if (toasts && toasts.hasOwnProperty('toasts')) {
+      toasts.toasts.forEach((item: Toast) => {
+        act(() => {
+          toast.remove(item.id);
+        });
+      });
+    }
   });
 
   it('renders the button', () => {
@@ -49,29 +91,21 @@ describe('useFetchButton', () => {
   });
 
   it('toasts default error message and resets the state', async () => {
-    const TestHelper = () => {
-      const [state, setState, Button] = useFetchButton();
-
-      useEffect(() => {
-        setState({ type: 'error', error: 'some error' });
-      }, []);
-
-      return (
-        <Fragment>
-          {state.type === 'idle' && <p>button is idling</p>}
-          <Button label="my label" />
-        </Fragment>
-      );
-    };
-
     render(
       wrapInIntlProvider(
         <Fragment>
-          <TestHelper />
+          <TestErrorHelper />
           <Toaster />
+          <ToastHack />
         </Fragment>,
       ),
     );
+
+    const idleText = screen.getByText('button is idling');
+
+    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+
+    expect(idleText).not.toBeInTheDocument();
 
     //  toast error
     await screen.findByText('An error occurred, please try again later.');
@@ -80,31 +114,21 @@ describe('useFetchButton', () => {
   });
 
   it('toasts custom error message and resets the state', async () => {
-    const TestHelper = () => {
-      const [state, setState, Button] = useFetchButton(
-        'an other error message',
-      );
-
-      useEffect(() => {
-        setState({ type: 'error', error: 'some error' });
-      }, []);
-
-      return (
-        <Fragment>
-          {state.type === 'idle' && <p>button is idling</p>}
-          <Button label="my label" />
-        </Fragment>
-      );
-    };
-
     render(
       wrapInIntlProvider(
         <Fragment>
-          <TestHelper />
+          <TestErrorHelper errorCallback="an other error message" />
           <Toaster />
+          <ToastHack />
         </Fragment>,
       ),
     );
+
+    const idleText = screen.getByText('button is idling');
+
+    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+
+    expect(idleText).not.toBeInTheDocument();
 
     //  toast error
     await screen.findByText('an other error message');
@@ -113,41 +137,27 @@ describe('useFetchButton', () => {
   });
 
   it('toasts computed error message and resets the state', async () => {
-    const TestHelper = ({
-      errorCallback,
-    }: {
-      errorCallback: (error: unknown) => string;
-    }) => {
-      const [state, setState, Button] = useFetchButton(errorCallback);
-
-      useEffect(() => {
-        setState({ type: 'error', error: 'some error' });
-      }, []);
-
-      return (
-        <Fragment>
-          {state.type === 'idle' && <p>button is idling</p>}
-          <Button label="my label" />
-        </Fragment>
-      );
-    };
     const callback = jest.fn().mockImplementation(() => 'some computed error');
 
     render(
       wrapInIntlProvider(
         <Fragment>
-          <TestHelper errorCallback={callback} />
+          <TestErrorHelper errorCallback={callback} />
           <Toaster />
+          <ToastHack />
         </Fragment>,
       ),
     );
 
+    const idleText = screen.getByText('button is idling');
+
+    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+
+    expect(idleText).not.toBeInTheDocument();
+
     //  toast error
     await screen.findByText('some computed error');
-    expect(callback).toHaveBeenCalledWith('some error');
     //  reset the state
-    await waitFor(() => {
-      expect(screen.getByText('button is idling')).toBeInTheDocument();
-    });
+    await screen.findByText('button is idling');
   });
 });
