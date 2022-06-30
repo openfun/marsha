@@ -1,10 +1,10 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
-
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import render from 'utils/tests/render';
+
 import DashboardClassroomStudent from '.';
 
 jest.mock('data/appData', () => ({
@@ -43,14 +43,12 @@ describe('<DashboardClassroomStudent />', () => {
     const classroomEnded = jest.fn();
 
     const { getByText, rerender } = render(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={classroom}
-          joinedAs={false}
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
 
     getByText('Classroom not started yet.');
@@ -62,20 +60,18 @@ describe('<DashboardClassroomStudent />', () => {
     const exstimatedDuration = Duration.fromObject({ hours: 3 });
     const endingDateTime = startingAt.plus(exstimatedDuration);
     rerender(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={{
-            ...classroom,
-            started: false,
-            ended: false,
-            starting_at: startingAt.toISO(),
-            estimated_duration: exstimatedDuration.toFormat('hh:mm:ss'),
-          }}
-          joinedAs={false}
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={{
+          ...classroom,
+          started: false,
+          ended: false,
+          starting_at: startingAt.toISO(),
+          estimated_duration: exstimatedDuration.toFormat('hh:mm:ss'),
+        }}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     getByText(classroom.title!);
     getByText(classroom.description!);
@@ -93,32 +89,28 @@ describe('<DashboardClassroomStudent />', () => {
 
     // classroom scheduled without estimated duration
     rerender(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={{
-            ...classroom,
-            started: false,
-            ended: false,
-            starting_at: startingAt.toISO(),
-          }}
-          joinedAs={false}
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={{
+          ...classroom,
+          started: false,
+          ended: false,
+          starting_at: startingAt.toISO(),
+        }}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     getByText(`${displayedStartingDate} - ${displayedStartingTime}`);
 
     // classroom starts
     rerender(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={{ ...classroom, started: true, ended: false }}
-          joinedAs={false}
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={{ ...classroom, started: true, ended: false }}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     fireEvent.click(screen.getByText('Click here to access classroom'));
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);
@@ -126,14 +118,12 @@ describe('<DashboardClassroomStudent />', () => {
 
     // classroom joined
     rerender(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={{ ...classroom, started: true, ended: false }}
-          joinedAs="John Doe"
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={{ ...classroom, started: true, ended: false }}
+        joinedAs="John Doe"
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     getByText('You have joined the classroom as John Doe.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);
@@ -141,14 +131,12 @@ describe('<DashboardClassroomStudent />', () => {
 
     // classroom ends
     rerender(
-      wrapInIntlProvider(
-        <DashboardClassroomStudent
-          classroom={{ ...classroom, started: false, ended: true }}
-          joinedAs={false}
-          joinClassroomAction={joinClassroomAction}
-          classroomEnded={classroomEnded}
-        />,
-      ),
+      <DashboardClassroomStudent
+        classroom={{ ...classroom, started: false, ended: true }}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     getByText('Classroom ended.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);

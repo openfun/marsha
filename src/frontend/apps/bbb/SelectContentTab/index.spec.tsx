@@ -1,15 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
 import { SelectContent } from 'components/SelectContent';
 import { appData } from 'data/appData';
 import { playlistMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-
-import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import render from 'utils/tests/render';
 
 jest.mock('settings', () => ({
   APPS: ['bbb'],
@@ -47,22 +45,16 @@ describe('<SelectContent />', () => {
   afterEach(jest.resetAllMocks);
 
   it('selects content', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {
@@ -92,24 +84,18 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with activity title and description', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: 'Activity title',
-                activity_description: 'Activity description',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {
@@ -139,24 +125,18 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with empty activity title and description', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: '',
-                activity_description: '',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: '',
+            activity_description: '',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {
@@ -186,7 +166,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content', async () => {
-    const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
     const newClassroom = classroomMockFactory({
       title: null,
@@ -195,20 +174,16 @@ describe('<SelectContent />', () => {
     fetchMock.post('/api/classrooms/', newClassroom);
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={playlist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={playlist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {
@@ -247,7 +222,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content with activity title and description', async () => {
-    const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
     const newClassroom = classroomMockFactory({
       title: null,
@@ -258,22 +232,18 @@ describe('<SelectContent />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={playlist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: 'Activity title',
-                activity_description: 'Activity description',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={playlist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {
@@ -316,7 +286,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content with empty activity title and description', async () => {
-    const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
     const newClassroom = classroomMockFactory({
       title: null,
@@ -327,22 +296,18 @@ describe('<SelectContent />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={playlist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: '',
-                activity_description: '',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={playlist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: '',
+            activity_description: '',
+          }}
+        />
+      </Suspense>,
     );
 
     const classroomTab = await screen.findByRole('tab', {

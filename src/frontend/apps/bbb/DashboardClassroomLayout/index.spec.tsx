@@ -1,5 +1,6 @@
-import { render } from '@testing-library/react';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { DashboardClassroomLayout } from './index';
 
@@ -27,6 +28,7 @@ describe('DashboardClassroomLayout', () => {
     const rightContent = queryByText('Right content');
     expect(rightContent).not.toBeInTheDocument();
   });
+
   it('renders correctly with right content', () => {
     const { getByText } = render(
       <DashboardClassroomLayout left={left} right={right} />,
