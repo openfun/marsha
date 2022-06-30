@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import ScreenDispositionSelector, { ScreenDisposition } from '.';
 
@@ -12,12 +12,10 @@ describe('<ScreenDispositionSelector />', () => {
 
     // split -> editor only
     const { rerender } = render(
-      wrapInIntlProvider(
-        <ScreenDispositionSelector
-          screenDisposition={ScreenDisposition.splitScreen}
-          setScreenDisposition={setScreenDisposition}
-        />,
-      ),
+      <ScreenDispositionSelector
+        screenDisposition={ScreenDisposition.splitScreen}
+        setScreenDisposition={setScreenDisposition}
+      />,
     );
 
     userEvent.click(screen.getByTestId('disposition-editor-only'));
@@ -29,12 +27,10 @@ describe('<ScreenDispositionSelector />', () => {
 
     // split -> editor only
     rerender(
-      wrapInIntlProvider(
-        <ScreenDispositionSelector
-          screenDisposition={ScreenDisposition.editorOnly}
-          setScreenDisposition={setScreenDisposition}
-        />,
-      ),
+      <ScreenDispositionSelector
+        screenDisposition={ScreenDisposition.editorOnly}
+        setScreenDisposition={setScreenDisposition}
+      />,
     );
 
     userEvent.click(screen.getByTestId('disposition-split-screen'));
@@ -46,12 +42,10 @@ describe('<ScreenDispositionSelector />', () => {
 
     // split -> renderer only
     rerender(
-      wrapInIntlProvider(
-        <ScreenDispositionSelector
-          screenDisposition={ScreenDisposition.splitScreen}
-          setScreenDisposition={setScreenDisposition}
-        />,
-      ),
+      <ScreenDispositionSelector
+        screenDisposition={ScreenDisposition.splitScreen}
+        setScreenDisposition={setScreenDisposition}
+      />,
     );
 
     userEvent.click(screen.getByTestId('disposition-rendering-only'));
@@ -63,12 +57,10 @@ describe('<ScreenDispositionSelector />', () => {
 
     // Renderer only -> split
     rerender(
-      wrapInIntlProvider(
-        <ScreenDispositionSelector
-          screenDisposition={ScreenDisposition.renderingOnly}
-          setScreenDisposition={setScreenDisposition}
-        />,
-      ),
+      <ScreenDispositionSelector
+        screenDisposition={ScreenDisposition.renderingOnly}
+        setScreenDisposition={setScreenDisposition}
+      />,
     );
 
     userEvent.click(screen.getByTestId('disposition-split-screen'));

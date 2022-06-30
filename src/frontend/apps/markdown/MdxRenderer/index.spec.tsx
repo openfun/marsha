@@ -1,11 +1,11 @@
 import * as fs from 'fs';
 import path from 'path';
 
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import MdxRenderer from '.';
 
@@ -54,14 +54,12 @@ describe('<MdxRenderer />', () => {
     const markdownText = '';
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={{}}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={{}}
+      />,
     );
 
     const loader = screen.getByRole('status');
@@ -69,7 +67,9 @@ describe('<MdxRenderer />', () => {
     // Wait for rendered content
     await waitFor(() => expect(loader).not.toBeInTheDocument());
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders simple markdown', async () => {
@@ -81,14 +81,12 @@ describe('<MdxRenderer />', () => {
     const markdownText = fs.readFileSync(file, { encoding: 'utf8' });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -98,7 +96,9 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders very simple markdown with brace', async () => {
@@ -108,14 +108,12 @@ describe('<MdxRenderer />', () => {
     const renderingOptions = { useMdx: false };
 
     render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -140,14 +138,12 @@ describe('<MdxRenderer />', () => {
     const renderingOptions = { useMathjax: false };
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -160,7 +156,9 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders markdown with math to Mathjax', async () => {
@@ -177,14 +175,12 @@ describe('<MdxRenderer />', () => {
     const renderingOptions = { useMathjax: true };
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -197,7 +193,9 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders markdown with MDX', async () => {
@@ -221,14 +219,12 @@ describe('<MdxRenderer />', () => {
     const renderingOptions = { useMdx: true };
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -241,7 +237,9 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders markdown with Mermaid content', async () => {
@@ -253,14 +251,12 @@ describe('<MdxRenderer />', () => {
     const markdownText = fs.readFileSync(file, { encoding: 'utf8' });
 
     render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -291,14 +287,12 @@ describe('<MdxRenderer />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={renderingOptions}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+      />,
     );
 
     // Wait for rendered content
@@ -325,7 +319,9 @@ describe('<MdxRenderer />', () => {
       }),
     });
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 
   it('renders markdown without XSS', async () => {
@@ -340,14 +336,12 @@ describe('<MdxRenderer />', () => {
     const markdownText = fs.readFileSync(file, { encoding: 'utf8' });
 
     const { container, rerender } = render(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={{ useMdx: false }}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={{ useMdx: false }}
+      />,
     );
 
     // Wait for rendered content
@@ -360,18 +354,18 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
 
     // Now renders with MDX
     rerender(
-      wrapInIntlProvider(
-        <MdxRenderer
-          markdownText={markdownText}
-          markdownDocumentId={markdownDocumentId}
-          onRenderedContentChange={onRenderedContentChange}
-          renderingOptions={{ useMdx: true }}
-        />,
-      ),
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={{ useMdx: true }}
+      />,
     );
 
     // Wait for rendered content
@@ -384,6 +378,8 @@ describe('<MdxRenderer />', () => {
       ).toBeInTheDocument(),
     );
 
-    expect(container.firstChild).toMatchSnapshot();
+    expect(
+      container.getElementsByClassName('markdown-body')[0],
+    ).toMatchSnapshot();
   });
 });

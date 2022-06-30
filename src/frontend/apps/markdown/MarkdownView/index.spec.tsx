@@ -1,8 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { OrganizationAccessRole } from 'types/User';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import MarkdownView from '.';
 
@@ -38,7 +38,7 @@ describe('<MarkdownView />', () => {
     mockRole = OrganizationAccessRole.INSTRUCTOR;
     mockEnableJwt = true;
 
-    render(wrapInIntlProvider(<MarkdownView />));
+    render(<MarkdownView />);
 
     await screen.findByText('MarkdownEditor');
     expect(screen.queryByText('MarkdownViewer')).not.toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('<MarkdownView />', () => {
     mockRole = OrganizationAccessRole.INSTRUCTOR;
     mockEnableJwt = true;
 
-    render(wrapInIntlProvider(<MarkdownView />));
+    render(<MarkdownView />);
 
     await screen.findByText('MarkdownViewer');
     expect(screen.queryByText('MarkdownEditor')).not.toBeInTheDocument();
@@ -60,7 +60,7 @@ describe('<MarkdownView />', () => {
     mockRole = OrganizationAccessRole.STUDENT;
     mockEnableJwt = true;
 
-    render(wrapInIntlProvider(<MarkdownView />));
+    render(<MarkdownView />);
 
     await screen.findByText('MarkdownViewer');
     expect(screen.queryByText('MarkdownEditor')).not.toBeInTheDocument();
@@ -71,7 +71,7 @@ describe('<MarkdownView />', () => {
     mockRole = OrganizationAccessRole.STUDENT;
     mockEnableJwt = false;
 
-    render(wrapInIntlProvider(<MarkdownView />));
+    render(<MarkdownView />);
 
     await screen.findByText('Resource not found');
     await screen.findByText(
