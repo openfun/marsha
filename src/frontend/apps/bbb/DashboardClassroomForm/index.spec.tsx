@@ -1,19 +1,14 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
-import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from 'react-query';
-
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { Deferred } from 'utils/tests/Deferred';
 
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardClassroomForm from './index';
+import { Deferred } from 'utils/tests/Deferred';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import DashboardClassroomForm from './index';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -34,15 +29,11 @@ Settings.defaultZone = 'Europe/Paris';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
 describe('<DashboardClassroomForm />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
   });
   afterEach(() => {
-    matchMedia.clear();
     jest.resetAllMocks();
     fetchMock.restore();
   });
@@ -52,18 +43,12 @@ describe('<DashboardClassroomForm />', () => {
 
   it('creates a classroom with current values', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, findByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
     getByText('Title');
     getByText('Welcome text');
@@ -87,17 +72,12 @@ describe('<DashboardClassroomForm />', () => {
 
   it('creates a classroom with updated values', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
     getByText('Title');
     getByText('Welcome text');
@@ -111,16 +91,12 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate updated classroom
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{
-              ...classroom,
-              title: 'updated title',
-            }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{
+          ...classroom,
+          title: 'updated title',
+        }}
+      />,
     );
 
     const inputWelcomeText = screen.getByRole('textbox', {
@@ -141,17 +117,13 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate updated classroom
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{
-              ...classroom,
-              title: 'updated title',
-              welcome_text: 'updated welcome text',
-            }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{
+          ...classroom,
+          title: 'updated title',
+          welcome_text: 'updated welcome text',
+        }}
+      />,
     );
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
@@ -201,17 +173,12 @@ describe('<DashboardClassroomForm />', () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({ id: '1', started: false });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
     getByText('Title');
     getByText('Welcome text');
@@ -225,13 +192,9 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{ ...classroom, title: 'updated title' }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{ ...classroom, title: 'updated title' }}
+      />,
     );
 
     const inputWelcomeText = screen.getByRole('textbox', {
@@ -274,17 +237,13 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{
-              ...classroom,
-              title: 'updated title',
-              welcome_text: 'updated welcome text',
-            }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{
+          ...classroom,
+          title: 'updated title',
+          welcome_text: 'updated welcome text',
+        }}
+      />,
     );
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
@@ -303,17 +262,13 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{
-              ...classroom,
-              title: 'updated title',
-              starting_at: startingAt.toISO(),
-            }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{
+          ...classroom,
+          title: 'updated title',
+          starting_at: startingAt.toISO(),
+        }}
+      />,
     );
 
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
@@ -322,18 +277,14 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{
-              ...classroom,
-              title: 'updated title',
-              starting_at: startingAt.toISO(),
-              estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
-            }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{
+          ...classroom,
+          title: 'updated title',
+          starting_at: startingAt.toISO(),
+          estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
+        }}
+      />,
     );
 
     await act(async () =>
@@ -374,17 +325,12 @@ describe('<DashboardClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
     getByText('Title');
     getByText('Welcome text');
@@ -397,19 +343,13 @@ describe('<DashboardClassroomForm />', () => {
 
     // Blur event should trigger update
     fireEvent.blur(inputTitle);
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
+    act(() => deferredPatch.resolve({ message: 'Classroom scheduled.' }));
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{ ...classroom, title: 'updated title' }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{ ...classroom, title: 'updated title' }}
+      />,
     );
 
     const inputWelcomeText = screen.getByRole('textbox', {
@@ -421,11 +361,12 @@ describe('<DashboardClassroomForm />', () => {
     });
 
     jest.runAllTimers();
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
 
-    expect(fetchMock.calls()).toHaveLength(2);
+    act(() => {
+      deferredPatch.resolve({ message: 'Classroom scheduled.' });
+    });
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
@@ -459,17 +400,12 @@ describe('<DashboardClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
     const { getByText, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
     getByText('Title');
     getByText('Welcome text');
@@ -480,13 +416,9 @@ describe('<DashboardClassroomForm />', () => {
 
     // simulate classroom update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomForm
-            classroom={{ ...classroom, starting_at: null }}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm
+        classroom={{ ...classroom, starting_at: null }}
+      />,
     );
 
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
@@ -524,18 +456,12 @@ describe('<DashboardClassroomForm />', () => {
 
   it('shows an error when classroom title is missing', async () => {
     const classroom = classroomMockFactory({ title: null, id: '1' });
-    const queryClient = new QueryClient();
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
     const { getByText, queryByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <DashboardClassroomForm classroom={classroom} />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomForm classroom={classroom} />,
     );
 
     // title empty, error message should be shown

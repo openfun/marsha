@@ -1,10 +1,9 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient } from 'react-query';
 
 import { getDecodedJwt } from 'data/appData';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { Deferred } from 'utils/tests/Deferred';
 import {
   ltiInstructorTokenMockFactory,
@@ -13,6 +12,7 @@ import {
 
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
 import DashboardClassroom from '.';
+import render from 'utils/tests/render';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -56,17 +56,10 @@ describe('<DashboardClassroom />', () => {
       started: false,
       ended: false,
     });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { getByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { getByText } = render(<DashboardClassroom />);
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(classroom));
     getByText('Classroom not started yet.');
@@ -79,17 +72,10 @@ describe('<DashboardClassroom />', () => {
       started: false,
       ended: false,
     });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText, getByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { findByText, getByText } = render(<DashboardClassroom />);
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(classroom));
     await findByText('Launch the classroom now in BBB');
@@ -102,17 +88,10 @@ describe('<DashboardClassroom />', () => {
     );
     mockGetDecodedJwt.mockReturnValue(token);
     const classroom = classroomMockFactory({ id: '1', started: false });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { findByText } = render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
 
     const createdClassroom = {
@@ -142,17 +121,10 @@ describe('<DashboardClassroom />', () => {
       started: true,
       ended: false,
     });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { findByText } = render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
     fireEvent.click(screen.getByText('Click here to access classroom'));
     await findByText('Please enter your name to join the classroom');
@@ -176,20 +148,13 @@ describe('<DashboardClassroom />', () => {
     window.open = jest.fn(() => window);
 
     const classroom = classroomMockFactory({ id: '1', started: true });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
     fireEvent.click(screen.getByText('Join classroom'));
     await act(async () =>
@@ -227,7 +192,6 @@ describe('<DashboardClassroom />', () => {
     window.open = jest.fn(() => null);
 
     const classroom = classroomMockFactory({ id: '1', started: false });
-    const queryClient = new QueryClient();
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
@@ -239,13 +203,7 @@ describe('<DashboardClassroom />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    const { getByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { getByText } = render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
     await act(async () =>
       deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
@@ -284,7 +242,7 @@ describe('<DashboardClassroom />', () => {
     mockGetDecodedJwt.mockImplementation(() => {
       throw new Error('No jwt');
     });
-    const { getByText } = render(wrapInIntlProvider(<DashboardClassroom />));
+    const { getByText } = render(<DashboardClassroom />);
 
     getByText('The classroom you are looking for could not be found');
     getByText(
@@ -306,13 +264,9 @@ describe('<DashboardClassroom />', () => {
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    const { getByText } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroom />
-        </QueryClientProvider>,
-      ),
-    );
+    const { getByText } = render(<DashboardClassroom />, {
+      queryOptions: { client: queryClient },
+    });
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(500));
     getByText('The classroom you are looking for could not be found');

@@ -1,7 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import DashboardClassroomJoin from '.';
 
 const onClick = jest.fn();
@@ -9,9 +10,7 @@ const onClick = jest.fn();
 describe('<DashboardClassroomJoin />', () => {
   it('displays a clickable link', () => {
     render(
-      wrapInIntlProvider(
-        <DashboardClassroomJoin href="https://example.com" onClick={onClick} />,
-      ),
+      <DashboardClassroomJoin href="https://example.com" onClick={onClick} />,
     );
 
     const link = screen.getByRole('link', {
