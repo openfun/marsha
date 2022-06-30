@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow to disable chrome sandboxing in puppeteer.
   To disable it set DISABLE_PUPPETEER_SANDBOX=1
 - Add endpoint to list attendances for a video
+- Add a custom render method for our tests, it is based on 
+react-testing-library and wrap the test component in most of 
+the common application contexts (grommet, intl, react-router, 
+react-query, react-hot-toast, breadcrumb, styled-components)
 
 ### Changed
 
