@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -6,7 +6,7 @@ import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
 } from 'apps/markdown/utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import MarkdownViewer from '.';
 
@@ -32,7 +32,6 @@ describe('<MarkdownViewer />', () => {
   });
 
   it('shows viewer', async () => {
-    window.scrollTo = jest.fn(); // required to test drop button, see grommet
     const markdownDocument = markdownDocumentMockFactory({
       id: '1',
       translations: [
@@ -50,7 +49,7 @@ describe('<MarkdownViewer />', () => {
     });
     MarkdownAppDataMock.MarkdownAppData.markdownDocument = markdownDocument;
 
-    render(wrapInIntlProvider(<MarkdownViewer />));
+    render(<MarkdownViewer />);
 
     expect(screen.queryByText('Some english title')).not.toBeInTheDocument();
     await screen.findByText('English document content.');
@@ -66,7 +65,6 @@ describe('<MarkdownViewer />', () => {
   });
 
   it('shows translation missing', async () => {
-    window.scrollTo = jest.fn(); // required to test drop button, see grommet
     const markdownDocument = markdownDocumentMockFactory({
       id: '1',
       translations: [
@@ -81,7 +79,7 @@ describe('<MarkdownViewer />', () => {
     });
     MarkdownAppDataMock.MarkdownAppData.markdownDocument = markdownDocument;
 
-    render(wrapInIntlProvider(<MarkdownViewer />));
+    render(<MarkdownViewer />);
 
     await screen.findByText('Translation not found');
 

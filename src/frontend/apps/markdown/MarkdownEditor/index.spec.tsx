@@ -1,12 +1,10 @@
 import { within } from '@testing-library/dom';
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Deferred } from 'utils/tests/Deferred';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 
 import {
   markdownDocumentMockFactory,
@@ -14,6 +12,7 @@ import {
 } from 'apps/markdown/utils/tests/factories';
 
 import MarkdownEditor from '.';
+import render from 'utils/tests/render';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -40,8 +39,6 @@ jest.mock('apps/markdown/data/MarkdownAppData', () => ({
 jest.mock('apps/markdown/MdxRenderer/constants', () => ({
   debouncingTime: 0, // override the debouncing time to make tests twice faster
 }));
-
-window.scrollTo = jest.fn(); // required to test, see grommet
 
 describe('<MarkdownEditor />', () => {
   // Fix the jsdom for CodeMirror, see https://github.com/jsdom/jsdom/issues/3002
@@ -72,19 +69,12 @@ describe('<MarkdownEditor />', () => {
       is_draft: true,
       translations: [markdownTranslationMockFactory({ language_code: 'en' })],
     });
-    const queryClient = new QueryClient();
     const documentDeferred = new Deferred();
     fetchMock.get('/api/markdown-documents/1/', documentDeferred.promise);
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    const { container } = render(<MarkdownEditor />);
 
-    await act(async () => documentDeferred.resolve(markdownDocument));
+    act(() => documentDeferred.resolve(markdownDocument));
 
     await screen.findByDisplayValue(markdownDocument.translations[0].title);
     await waitFor(() =>
@@ -152,16 +142,9 @@ describe('<MarkdownEditor />', () => {
       is_draft: true,
       translations: [],
     });
-    const queryClient = new QueryClient();
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<MarkdownEditor />);
 
     // Wait for rendered content: all loaders gone
     await waitFor(() =>
@@ -181,7 +164,6 @@ describe('<MarkdownEditor />', () => {
   });
 
   it('changes language', async () => {
-    window.scrollTo = jest.fn(); // required to test, see grommet
     const markdownDocument = markdownDocumentMockFactory({
       id: '1',
       is_draft: true,
@@ -190,16 +172,9 @@ describe('<MarkdownEditor />', () => {
         markdownTranslationMockFactory({ language_code: 'fr' }),
       ],
     });
-    const queryClient = new QueryClient();
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    const { container } = render(<MarkdownEditor />);
 
     // Wait for rendered content
     await waitFor(() =>
@@ -258,16 +233,9 @@ describe('<MarkdownEditor />', () => {
       is_draft: true,
       translations: [markdownTranslationMockFactory({ language_code: 'en' })],
     });
-    const queryClient = new QueryClient();
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<MarkdownEditor />);
 
     // Wait for rendered content
     await waitFor(() =>
@@ -323,16 +291,9 @@ describe('<MarkdownEditor />', () => {
         }),
       ],
     });
-    const queryClient = new QueryClient();
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    const { container, rerender } = render(<MarkdownEditor />);
 
     // Wait for rendered content
     await waitFor(() =>
@@ -349,9 +310,9 @@ describe('<MarkdownEditor />', () => {
     // Enable MDX rendering
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
-    act(() => {
-      userEvent.click(screen.getByRole('checkbox', { name: 'MDX disabled' }));
-    });
+    userEvent.click(screen.getByRole('checkbox', { name: 'MDX disabled' }));
+
+    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
 
     await waitFor(() =>
       expect(
@@ -364,8 +325,6 @@ describe('<MarkdownEditor />', () => {
     within(screen.getByTestId('renderer_container')).getByTestId(
       'mdx-rendered-block',
     );
-
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
 
@@ -416,13 +375,7 @@ describe('<MarkdownEditor />', () => {
       }),
     });
 
-    rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    rerender(<MarkdownEditor />);
 
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
@@ -442,16 +395,9 @@ describe('<MarkdownEditor />', () => {
         }),
       ],
     });
-    const queryClient = new QueryClient();
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    const { container, rerender } = render(<MarkdownEditor />);
 
     // Wait for rendered content & assert the math are displayed using KaTeX
     await waitFor(() =>
@@ -461,11 +407,9 @@ describe('<MarkdownEditor />', () => {
     // Enable Mathjax rendering
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
-    act(() => {
-      userEvent.click(
-        screen.getByRole('checkbox', { name: 'Mathjax disabled' }),
-      );
-    });
+    userEvent.click(screen.getByRole('checkbox', { name: 'Mathjax disabled' }));
+
+    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
 
     await waitFor(() =>
       expect(
@@ -473,8 +417,6 @@ describe('<MarkdownEditor />', () => {
           .parentNode,
       ).toHaveAttribute('classname', 'MathJax'),
     );
-
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
 
     const saveButton = await screen.findByRole('button', { name: 'Save' });
 
@@ -525,13 +467,7 @@ describe('<MarkdownEditor />', () => {
       }),
     });
 
-    rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MarkdownEditor />
-        </QueryClientProvider>,
-      ),
-    );
+    rerender(<MarkdownEditor />);
 
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 

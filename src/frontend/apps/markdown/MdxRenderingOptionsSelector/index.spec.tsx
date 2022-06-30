@@ -1,23 +1,20 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+
+import render from 'utils/tests/render';
 
 import MdxRenderingOptionsSelector from '.';
 
 describe('<MdxRenderingOptionsSelector />', () => {
   it('send options change', async () => {
-    window.scrollTo = jest.fn(); // required to test, see grommet
-
     const setRenderingOptions = jest.fn();
 
     const { rerender } = render(
-      wrapInIntlProvider(
-        <MdxRenderingOptionsSelector
-          renderingOptions={{ useMdx: false }}
-          setRenderingOptions={setRenderingOptions}
-        />,
-      ),
+      <MdxRenderingOptionsSelector
+        renderingOptions={{ useMdx: false }}
+        setRenderingOptions={setRenderingOptions}
+      />,
     );
 
     const dropButton = screen.getByRole('button', { name: 'Settings' });
@@ -39,12 +36,10 @@ describe('<MdxRenderingOptionsSelector />', () => {
     expect(setRenderingOptions).toHaveBeenCalledWith({ useMdx: true });
 
     rerender(
-      wrapInIntlProvider(
-        <MdxRenderingOptionsSelector
-          renderingOptions={{ useMdx: true }}
-          setRenderingOptions={setRenderingOptions}
-        />,
-      ),
+      <MdxRenderingOptionsSelector
+        renderingOptions={{ useMdx: true }}
+        setRenderingOptions={setRenderingOptions}
+      />,
     );
 
     screen.getByText('MDX enabled');
@@ -59,12 +54,10 @@ describe('<MdxRenderingOptionsSelector />', () => {
     });
 
     rerender(
-      wrapInIntlProvider(
-        <MdxRenderingOptionsSelector
-          renderingOptions={{ useMdx: true, useMathjax: true }}
-          setRenderingOptions={setRenderingOptions}
-        />,
-      ),
+      <MdxRenderingOptionsSelector
+        renderingOptions={{ useMdx: true, useMathjax: true }}
+        setRenderingOptions={setRenderingOptions}
+      />,
     );
 
     screen.getByText('MDX enabled');
@@ -79,12 +72,10 @@ describe('<MdxRenderingOptionsSelector />', () => {
     });
 
     rerender(
-      wrapInIntlProvider(
-        <MdxRenderingOptionsSelector
-          renderingOptions={{ useMdx: false, useMathjax: true }}
-          setRenderingOptions={setRenderingOptions}
-        />,
-      ),
+      <MdxRenderingOptionsSelector
+        renderingOptions={{ useMdx: false, useMathjax: true }}
+        setRenderingOptions={setRenderingOptions}
+      />,
     );
 
     screen.getByText('Mathjax enabled');
