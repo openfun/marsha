@@ -1,12 +1,16 @@
 import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
+import { Maybe } from 'utils/types';
 
 export const wrapInRouter = (
   Component: JSX.Element,
   routes?: { path: string; render: ({ match }: any) => JSX.Element }[],
   componentPath: string = '/',
+  history: Maybe<string[]> = undefined,
+  header: React.ReactNode = undefined,
 ) => (
-  <MemoryRouter initialEntries={[componentPath]} initialIndex={0}>
+  <MemoryRouter initialEntries={history || [componentPath]} initialIndex={0}>
+    {header}
     <Switch>
       {routes &&
         routes.map((routeProps) => (
