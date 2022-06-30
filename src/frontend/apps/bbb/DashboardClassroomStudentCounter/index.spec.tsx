@@ -1,10 +1,10 @@
-import { act, render } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
-
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { DashboardClassroomStudentCounter } from '.';
 
 jest.mock('data/appData', () => ({
@@ -46,9 +46,7 @@ describe('<DashboardClassroomStudentCounter />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <DashboardClassroomStudentCounter classroom={classroom} />,
-      ),
+      <DashboardClassroomStudentCounter classroom={classroom} />,
     );
 
     const expectCountdown = (

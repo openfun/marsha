@@ -1,17 +1,12 @@
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { Toaster } from 'react-hot-toast';
-
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { Deferred } from 'utils/tests/Deferred';
 
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardClassroomInstructor from '.';
+import { Deferred } from 'utils/tests/Deferred';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import DashboardClassroomInstructor from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -43,11 +38,7 @@ jest.mock('apps/bbb/DashboardClassroomInfos', () => () => (
 ));
 
 describe('<DashboardClassroomInstructor />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   afterEach(() => {
-    matchMedia.clear();
     jest.resetAllMocks();
     fetchMock.restore();
   });
@@ -57,19 +48,13 @@ describe('<DashboardClassroomInstructor />', () => {
     const joinClassroomAction = jest.fn();
     const classroomEnded = jest.fn();
 
-    const queryClient = new QueryClient();
-
     const { findByText, getByText, rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardClassroomInstructor
-            classroom={classroom}
-            joinedAs={false}
-            joinClassroomAction={joinClassroomAction}
-            classroomEnded={classroomEnded}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomInstructor
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
 
     await findByText('classroom form');
@@ -78,17 +63,12 @@ describe('<DashboardClassroomInstructor />', () => {
 
     // classroom starts
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <DashboardClassroomInstructor
-            classroom={{ ...classroom, started: true }}
-            joinedAs={false}
-            joinClassroomAction={joinClassroomAction}
-            classroomEnded={classroomEnded}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomInstructor
+        classroom={{ ...classroom, started: true }}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     await findByText('classroom infos');
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
@@ -99,17 +79,12 @@ describe('<DashboardClassroomInstructor />', () => {
 
     // user joined
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <DashboardClassroomInstructor
-            classroom={{ ...classroom, started: true }}
-            joinedAs="John Doe"
-            joinClassroomAction={joinClassroomAction}
-            classroomEnded={classroomEnded}
-          />
-        </QueryClientProvider>,
-      ),
+      <DashboardClassroomInstructor
+        classroom={{ ...classroom, started: true }}
+        joinedAs="John Doe"
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
     );
     getByText('You have joined the classroom as John Doe.');
     const cancelButton = screen.queryByText('Join classroom');
