@@ -1,13 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import MarkdownNotFoundView from '.';
 
 describe('<MarkdownNotFoundView />', () => {
   it('displays properly', async () => {
-    render(wrapInIntlProvider(<MarkdownNotFoundView />));
+    render(<MarkdownNotFoundView />);
 
     screen.getByText('Resource not found');
     screen.getByText(

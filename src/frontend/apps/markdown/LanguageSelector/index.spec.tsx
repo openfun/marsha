@@ -1,25 +1,21 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import LanguageSelector from '.';
 
 describe('<LanguageSelector />', () => {
   it('displays languages', async () => {
-    window.scrollTo = jest.fn(); // required to test, see grommet
-
     const onLanguageChange = jest.fn();
 
     const { rerender } = render(
-      wrapInIntlProvider(
-        <LanguageSelector
-          currentLanguage={'en'}
-          onLanguageChange={onLanguageChange}
-          disabled={false}
-        />,
-      ),
+      <LanguageSelector
+        currentLanguage={'en'}
+        onLanguageChange={onLanguageChange}
+        disabled={false}
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'English' }));
@@ -32,13 +28,11 @@ describe('<LanguageSelector />', () => {
     expect(onLanguageChange).toHaveBeenCalledWith('fr');
 
     rerender(
-      wrapInIntlProvider(
-        <LanguageSelector
-          currentLanguage={'fr'}
-          onLanguageChange={onLanguageChange}
-          disabled={false}
-        />,
-      ),
+      <LanguageSelector
+        currentLanguage={'fr'}
+        onLanguageChange={onLanguageChange}
+        disabled={false}
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'French' }));
@@ -49,19 +43,15 @@ describe('<LanguageSelector />', () => {
   });
 
   it('displays available languages', async () => {
-    window.scrollTo = jest.fn(); // required to test, see grommet
-
     const onLanguageChange = jest.fn();
 
     render(
-      wrapInIntlProvider(
-        <LanguageSelector
-          currentLanguage={'en'}
-          onLanguageChange={onLanguageChange}
-          disabled={false}
-          availableLanguages={['en']}
-        />,
-      ),
+      <LanguageSelector
+        currentLanguage={'en'}
+        onLanguageChange={onLanguageChange}
+        disabled={false}
+        availableLanguages={['en']}
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'English' }));
@@ -70,19 +60,15 @@ describe('<LanguageSelector />', () => {
   });
 
   it('displays available languages if current language is not', async () => {
-    window.scrollTo = jest.fn(); // required to test, see grommet
-
     const onLanguageChange = jest.fn();
 
     render(
-      wrapInIntlProvider(
-        <LanguageSelector
-          currentLanguage={'en'}
-          onLanguageChange={onLanguageChange}
-          disabled={false}
-          availableLanguages={['fr']}
-        />,
-      ),
+      <LanguageSelector
+        currentLanguage={'en'}
+        onLanguageChange={onLanguageChange}
+        disabled={false}
+        availableLanguages={['fr']}
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'English' }));

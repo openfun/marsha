@@ -1,8 +1,7 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import {
   markdownDocumentMockFactory,
@@ -11,7 +10,7 @@ import {
 import { SelectContent } from 'components/SelectContent';
 import { appData } from 'data/appData';
 import { playlistMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 jest.mock('settings', () => ({
   APPS: ['markdown'],
@@ -60,22 +59,16 @@ describe('<SelectContent />', () => {
   afterEach(jest.resetAllMocks);
 
   it('selects content', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -104,24 +97,18 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with activity title and description', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: 'Activity title',
-                activity_description: 'Activity description',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -151,24 +138,18 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with empty activity title and description', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: '',
-                activity_description: '',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: '',
+            activity_description: '',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -197,22 +178,16 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with missing translation', async () => {
-    const queryClient = new QueryClient();
-
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -241,7 +216,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content', async () => {
-    const queryClient = new QueryClient();
     const newDocumentTranslation = markdownTranslationMockFactory({
       title: undefined,
       language_code: window.navigator.language.substring(0, 2),
@@ -253,20 +227,16 @@ describe('<SelectContent />', () => {
     fetchMock.post('/api/markdown-documents/', newMarkdownDocument);
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={currentPlaylist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={currentPlaylist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -305,7 +275,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content with activity title and description', async () => {
-    const queryClient = new QueryClient();
     const newDocumentTranslation = markdownTranslationMockFactory({
       title: undefined,
       language_code: window.navigator.language.substring(0, 2),
@@ -319,22 +288,18 @@ describe('<SelectContent />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={currentPlaylist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: 'Activity title',
-                activity_description: 'Activity description',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={currentPlaylist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: 'Activity title',
+            activity_description: 'Activity description',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
@@ -376,7 +341,6 @@ describe('<SelectContent />', () => {
   });
 
   it('adds new content with empty activity title and description', async () => {
-    const queryClient = new QueryClient();
     const newDocumentTranslation = markdownTranslationMockFactory({
       title: undefined,
       language_code: window.navigator.language.substring(0, 2),
@@ -390,22 +354,18 @@ describe('<SelectContent />', () => {
     });
 
     const { container } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Suspense fallback={<div>Loading...</div>}>
-            <SelectContent
-              playlist={currentPlaylist}
-              lti_select_form_action_url={appData.lti_select_form_action_url!}
-              lti_select_form_data={{
-                lti_response_url: 'https://example.com/lti',
-                lti_message_type: 'ContentItemSelection',
-                activity_title: '',
-                activity_description: '',
-              }}
-            />
-          </Suspense>
-        </QueryClientProvider>,
-      ),
+      <Suspense fallback={<div>Loading...</div>}>
+        <SelectContent
+          playlist={currentPlaylist}
+          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+            activity_title: '',
+            activity_description: '',
+          }}
+        />
+      </Suspense>,
     );
 
     const markdownTab = await screen.findByRole('tab', {
