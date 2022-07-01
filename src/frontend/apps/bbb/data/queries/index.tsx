@@ -9,7 +9,7 @@ import {
 import { APIList } from 'types/api';
 import { actionOne } from 'data/queries/actionOne';
 import { createOne } from 'data/queries/createOne';
-import { fetchList } from 'data/queries/fetchList';
+import { fetchList, FetchListQueryKey } from 'data/queries/fetchList';
 import { fetchOne } from 'data/queries/fetchOne';
 import { updateOne } from 'data/queries/updateOne';
 
@@ -22,23 +22,26 @@ import {
   CreateClassroomActionRequest,
   CreateClassroomActionResponse,
 } from 'apps/bbb/types/models';
+import { Maybe } from 'utils/types';
 
 type ClassroomsResponse = APIList<Classroom>;
-type UseClassroomsParams = {} | { organization: string };
+type UseClassroomsParams = { organization: Maybe<string> };
 export const useClassrooms = (
   params: UseClassroomsParams,
   queryConfig?: UseQueryOptions<
     ClassroomsResponse,
     'classrooms',
-    ClassroomsResponse
+    ClassroomsResponse,
+    FetchListQueryKey
   >,
 ) => {
-  const key = ['classrooms', params];
-  return useQuery<ClassroomsResponse, 'classrooms'>(
-    key,
-    fetchList,
-    queryConfig,
-  );
+  const key: FetchListQueryKey = ['classrooms', params];
+  return useQuery<
+    ClassroomsResponse,
+    'classrooms',
+    ClassroomsResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
 
 interface ClassroomsSelectResponse {
