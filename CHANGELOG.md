@@ -1,3 +1,4 @@
+
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -42,6 +43,7 @@ in the VOD dashboard
 VOD & Live creation processus
 - Use the new dashboard VOD instead of the old one
 - Add image upload for Markdown documents
+- Add a file depository app
 
 ### Changed
 

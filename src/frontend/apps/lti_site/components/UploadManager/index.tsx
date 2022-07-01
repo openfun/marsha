@@ -12,6 +12,7 @@ import { AWSPresignedPost } from 'types/AWSPresignedPost';
 import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
+import { modelName as depositModelName } from 'apps/deposit/types/models';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',
@@ -91,6 +92,7 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
             modelName.THUMBNAILS,
             modelName.SHAREDLIVEMEDIAS,
             markdownModelName.MARKDOWN_IMAGES,
+            depositModelName.DepositedFiles,
           ].includes(objectType)
         ) {
           formArguments.push(['Content-Type', file.type]);
