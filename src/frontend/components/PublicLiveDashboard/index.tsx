@@ -1,18 +1,19 @@
-import React, { useMemo, useState } from 'react';
+import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
+import { useQueryClient } from 'react-query';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { Loader } from 'components/Loader';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
+import { StudentLiveError } from 'components/StudentLiveError';
+import { useLiveSessionsQuery } from 'data/queries';
+import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { initVideoWebsocket } from 'data/websocket';
 import { Live } from 'types/tracks';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { StudentLiveStarter } from './StudentLiveStarter';
-import { useLiveSessionsQuery } from 'data/queries';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { useLiveSession } from 'data/stores/useLiveSession';
-import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useQueryClient } from 'react-query';
 
 interface PublicLiveDashboardProps {
   live: Live;
@@ -24,11 +25,10 @@ export const PublicLiveDashboard = ({
   playerType,
 }: PublicLiveDashboardProps) => {
   const intl = useIntl();
-  const [isReadyLive, setIsReadyLive] = useState(false);
   const anonymousId = useMemo(() => getOrInitAnonymousId(), []);
   const queryClient = useQueryClient();
   const setLiveSession = useLiveSession((state) => state.setLiveSession);
-  useLiveSessionsQuery(
+  const { isError, isLoading } = useLiveSessionsQuery(
     { anonymous_id: anonymousId },
     {
       onSuccess: async (data) => {
@@ -41,7 +41,6 @@ export const PublicLiveDashboard = ({
           });
         }
         initVideoWebsocket(live);
-        setIsReadyLive(true);
       },
       refetchInterval: false,
       refetchIntervalInBackground: false,
@@ -50,11 +49,16 @@ export const PublicLiveDashboard = ({
     },
   );
 
-  if (!isReadyLive) {
+  if (isLoading) {
     //  live context is not ready yet,
     //  wait for websocket and session to be initialized
     return <Loader />;
   }
+
+  if (isError) {
+    return <StudentLiveError />;
+  }
+
   if (live.xmpp) {
     return (
       <ConverseInitializer video={live}>
