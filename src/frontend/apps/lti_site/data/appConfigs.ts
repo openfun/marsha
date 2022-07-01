@@ -13,5 +13,6 @@ import { appNames, flags } from 'types/AppData';
  */
 export const appConfigs: { [key in appNames]?: { flag?: flags } } = {
   [appNames.BBB]: { flag: flags.BBB },
+  [appNames.DEPOSIT]: { flag: flags.DEPOSIT },
   [appNames.MARKDOWN]: { flag: flags.MARKDOWN },
 };

@@ -12,6 +12,11 @@ import {
   modelName as markdownModelName,
 } from 'apps/markdown/types/models';
 
+import {
+  DepositedFile,
+  modelName as depositModelName,
+} from 'apps/deposit/types/models';
+
 export type StoreState<R extends Resource> = {
   addResource: (Resource: R) => void;
   addMultipleResources: (Resources: R[]) => void;
@@ -33,5 +38,8 @@ export type StoreState<R extends Resource> = {
   };
   [markdownModelName.MARKDOWN_IMAGES]?: {
     [id: string]: MarkdownImage;
+  };
+  [depositModelName.DepositedFiles]?: {
+    [id: string]: DepositedFile;
   };
 };
