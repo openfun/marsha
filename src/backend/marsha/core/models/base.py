@@ -109,7 +109,7 @@ class BaseModel(SafeDeleteModel):
 
     @classmethod
     def _check_table_name(cls):
-        """Check that the table name is correctly defined.
+        """Check that the table name is defined.
 
         Returns
         -------
@@ -121,7 +121,7 @@ class BaseModel(SafeDeleteModel):
         model_full_name: str = f"{cls._meta.app_label}.{cls._meta.object_name}"
 
         try:
-            db_table = cls._meta.original_attrs["db_table"]
+            cls._meta.original_attrs["db_table"]
         except KeyError:
             errors.append(
                 checks.Error(
@@ -134,28 +134,6 @@ class BaseModel(SafeDeleteModel):
                     id="marsha.models.E007",
                 )
             )
-        else:
-            app_prefix = cls._meta.app_label
-            module_prefix = cls.__module__.split(".", maxsplit=1)[0]
-            for prefix in [
-                app_prefix,
-                module_prefix,
-                app_prefix + "_",
-                module_prefix + "_",
-            ]:
-                if db_table.startswith(prefix):
-                    errors.append(
-                        checks.Error(
-                            f"The model 'db_table' attribute of the model '{model_full_name}' "
-                            f"must not be prefixed with the name of the app ('{app_prefix}') or "
-                            f"the project ('{module_prefix}').",
-                            hint=f"Change to 'db_table = \"{cls._meta.model_name}\"' in the 'Meta'"
-                            f" class of the model '{model_full_name}'",
-                            obj=cls,
-                            id="marsha.models.E008",
-                        )
-                    )
-                    break
 
         return errors
 
