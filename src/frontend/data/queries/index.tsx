@@ -20,13 +20,13 @@ import {
   Video,
   VideoStats,
 } from 'types/tracks';
-import { Nullable } from 'utils/types';
+import { Maybe, Nullable } from 'utils/types';
 
 import { Organization } from 'types/Organization';
 import { actionOne } from './actionOne';
 import { createOne } from './createOne';
 import { deleteOne } from './deleteOne';
-import { fetchList } from './fetchList';
+import { fetchList, FetchListQueryKey } from './fetchList';
 import { fetchOne } from './fetchOne';
 import { updateOne } from './updateOne';
 
@@ -87,17 +87,23 @@ export const useUpdatePlaylist = (
 };
 
 type PlaylistsResponse = APIList<Playlist>;
-type UsePlaylistsParams = { organization: string };
+type UsePlaylistsParams = { organization: Maybe<string> };
 export const usePlaylists = (
   params: UsePlaylistsParams,
   queryConfig?: UseQueryOptions<
     PlaylistsResponse,
     'playlists',
-    PlaylistsResponse
+    PlaylistsResponse,
+    FetchListQueryKey
   >,
 ) => {
-  const key = ['playlists', params];
-  return useQuery<PlaylistsResponse, 'playlists'>(key, fetchList, queryConfig);
+  const key: FetchListQueryKey = ['playlists', params];
+  return useQuery<
+    PlaylistsResponse,
+    'playlists',
+    PlaylistsResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
 
 export const useThumbnail = (
@@ -115,15 +121,17 @@ export const useTimedTextTracks = (
   queryConfig?: UseQueryOptions<
     TimedTextTracksResponse,
     'timedtexttracks',
-    TimedTextTracksResponse
+    TimedTextTracksResponse,
+    FetchListQueryKey
   >,
 ) => {
-  const key = ['timedtexttracks', params];
-  return useQuery<TimedTextTracksResponse, 'timedtexttracks'>(
-    key,
-    fetchList,
-    queryConfig,
-  );
+  const key: FetchListQueryKey = ['timedtexttracks', params];
+  return useQuery<
+    TimedTextTracksResponse,
+    'timedtexttracks',
+    TimedTextTracksResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
 
 type UseDeleteThumbnailData = string;
@@ -261,13 +269,22 @@ export const useUpdateVideo = (id: string, options?: UseUpdateVideoOptions) => {
 };
 
 type VideosResponse = APIList<Video>;
-type UseVideosParams = {} | { organization: string };
+type UseVideosParams = Maybe<{ organization?: string; playlist?: string }>;
 export const useVideos = (
   params: UseVideosParams,
-  queryConfig?: UseQueryOptions<VideosResponse, 'videos', VideosResponse>,
+  queryConfig?: UseQueryOptions<
+    VideosResponse,
+    'videos',
+    VideosResponse,
+    FetchListQueryKey
+  >,
 ) => {
-  const key = ['videos', params];
-  return useQuery<VideosResponse, 'videos'>(key, fetchList, queryConfig);
+  const key: FetchListQueryKey = ['videos', params];
+  return useQuery<VideosResponse, 'videos', VideosResponse, FetchListQueryKey>(
+    key,
+    fetchList,
+    queryConfig,
+  );
 };
 
 type usePairingVideoError = { code: 'exception' };
@@ -568,13 +585,15 @@ export const useLiveSessionsQuery = (
   queryConfig?: UseQueryOptions<
     LiveSessionsResponse,
     'livesessions',
-    LiveSessionsResponse
+    LiveSessionsResponse,
+    FetchListQueryKey
   >,
 ) => {
-  const key = ['livesessions', params];
-  return useQuery<LiveSessionsResponse, 'livesessions'>(
-    key,
-    fetchList,
-    queryConfig,
-  );
+  const key: FetchListQueryKey = ['livesessions', params];
+  return useQuery<
+    LiveSessionsResponse,
+    'livesessions',
+    LiveSessionsResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
