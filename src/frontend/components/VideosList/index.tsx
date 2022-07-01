@@ -114,9 +114,7 @@ export const VideosList: React.FC<VideosListProps> = ({
   params,
 }) => {
   const history = useHistory();
-  const { data: videosList, status: videosListStatus } = useVideos(
-    params || {},
-  );
+  const { data: videosList, status: videosListStatus } = useVideos(params);
 
   switch (videosListStatus) {
     case 'idle':

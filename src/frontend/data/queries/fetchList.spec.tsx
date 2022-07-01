@@ -20,7 +20,7 @@ describe('queries/fetchList', () => {
     const response = await fetchList({
       meta: undefined,
       pageParam: undefined,
-      queryKey: ['model-name'],
+      queryKey: ['model-name', undefined],
     });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/?limit=999');
