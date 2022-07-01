@@ -11,6 +11,7 @@ export enum appState {
 
 export enum flags {
   BBB = 'BBB',
+  DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
   SENTRY = 'sentry',
   LIVE_RAW = 'live_raw',
@@ -22,6 +23,7 @@ export enum flags {
  */
 export enum appNames {
   BBB = 'bbb',
+  DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
 }
 

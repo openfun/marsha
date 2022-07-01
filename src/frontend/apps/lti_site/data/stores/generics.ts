@@ -1,5 +1,6 @@
 import { modelName, uploadableModelName } from 'types/models';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
+import { modelName as depositModelName } from 'apps/deposit/types/models';
 import { UploadableObject } from 'types/tracks';
 
 const getStore = async (objectType: uploadableModelName) => {
@@ -22,6 +23,9 @@ const getStore = async (objectType: uploadableModelName) => {
     case markdownModelName.MARKDOWN_IMAGES:
       const { useMarkdownImage } = await import('./useMarkdownImage');
       return useMarkdownImage;
+    case depositModelName.DepositedFiles:
+      const { useDepositedFile } = await import('./useDepositedFile');
+      return useDepositedFile;
   }
 };
 

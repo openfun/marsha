@@ -20,6 +20,7 @@ import { Maybe } from 'utils/types';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
+import { modelName as depositModelName } from 'apps/deposit/types/models';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -55,6 +56,11 @@ const titleMessages = defineMessages({
     defaultMessage: 'Upload a new Markdown image',
     description: 'Title for the Markdown image upload form',
     id: 'components.UploadForm.title-markdown-image',
+  },
+  [depositModelName.DepositedFiles]: {
+    defaultMessage: 'Upload a new file',
+    description: 'Title for the deposited file upload form',
+    id: 'components.UploadForm.title-depositedfile',
   },
 });
 
