@@ -159,7 +159,7 @@
                 <h3>{{ resource_name }}</h3>
                 {% for resource in resources %}
                   <p data-autofill
-                        data-model="{{ resource.RESOURCE_NAME }}"
+                        data-model="{{ resource_name }}"
                         data-id="{{ resource.id }}"
                         data-resource_link_id="{{ resource.title }}"
                         data-context_id="{{ resource.playlist.lti_id }}"
@@ -230,6 +230,7 @@
             <option value="documents">document</option>
             <option value="classrooms">classroom</option>
             <option value="markdown-documents">Markdown document</option>
+            <option value="filedepositories">File depository</option>
           </select>
         </div>
         <div class="input-group">
@@ -332,6 +333,7 @@
             <option value="documents">document</option>
             <option value="classrooms">classroom</option>
             <option value="markdown-documents">Markdown document</option>
+            <option value="filedepositories">File depository</option>
           </select>
         </div>
         <div class="input-group">
