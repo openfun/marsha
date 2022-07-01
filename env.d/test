@@ -27,6 +27,9 @@ DJANGO_UPDATE_STATE_SHARED_SECRETS=dummy,secret
 DJANGO_BBB_ENABLED=False
 DJANGO_BBB_API_SECRET=ThisIsAnExampleKeyForDevPurposeOnly
 
+# deposit application
+DJANGO_DEPOSIT_ENABLED=True
+
 # Markdown application
 DJANGO_MARKDOWN_ENABLED=True
 

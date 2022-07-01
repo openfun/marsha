@@ -112,6 +112,9 @@ urlpatterns = [
 if settings.BBB_ENABLED:
     urlpatterns += [path("", include("marsha.bbb.urls"))]
 
+if settings.DEPOSIT_ENABLED:
+    urlpatterns += [path("", include("marsha.deposit.urls"))]
+
 if settings.MARKDOWN_ENABLED:
     urlpatterns += [path("", include("marsha.markdown.urls"))]
 

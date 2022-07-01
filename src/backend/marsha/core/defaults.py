@@ -72,6 +72,7 @@ JOIN_MODE_CHOICES = (
 # FLAGS
 SENTRY = "sentry"
 BBB = "BBB"
+DEPOSIT = "deposit"
 LIVE_RAW = "live_raw"
 MARKDOWN = "markdown"
 RENATER_FER_SAML = "renater_fer_saml"

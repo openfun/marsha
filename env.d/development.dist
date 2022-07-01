@@ -33,6 +33,9 @@ DJANGO_BBB_ENABLED=False
 DJANGO_BBB_API_ENDPOINT=https://example.com/bbb/api
 DJANGO_BBB_API_SECRET=BbbSecret
 
+# deposit application
+DJANGO_DEPOSIT_ENABLED=True
+
 # Markdown application
 DJANGO_MARKDOWN_ENABLED=True
 
