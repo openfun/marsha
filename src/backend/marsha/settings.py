@@ -125,6 +125,7 @@ class Base(Configuration):
         "marsha.core.apps.MarshaAdminConfig",
         "marsha.core.apps.CoreConfig",
         "marsha.bbb.apps.BbbConfig",
+        "marsha.deposit.apps.DepositConfig",
         "marsha.markdown.apps.MarkdownConfig",
         "marsha.websocket.apps.WebsocketConfig",
     ]
@@ -322,6 +323,9 @@ class Base(Configuration):
     BBB_API_SECRET = values.Value(None)
     BBB_API_TIMEOUT = values.PositiveIntegerValue(10)
 
+    # deposit application
+    DEPOSIT_ENABLED = values.BooleanValue(False)
+
     # Markdown application
     MARKDOWN_ENABLED = values.BooleanValue(False)
     ALLOWED_MARKDOWN_IMAGES_MIME_TYPES = [
@@ -363,6 +367,7 @@ class Base(Configuration):
     THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
     SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE = values.Value(300 * (2**20))  # 300MB
     MARKDOWN_IMAGE_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
+    DEPOSITED_FILE_SOURCE_MAX_SIZE = values.Value(2**30)  # 1GB
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 

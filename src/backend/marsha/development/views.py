@@ -14,6 +14,7 @@ from faker import Faker
 from ..bbb.models import Classroom
 from ..core.models import Document, Playlist, Video
 from ..core.models.account import ConsumerSite, LTIPassport
+from ..deposit.models import FileDepository
 from ..markdown.models import MarkdownDocument
 
 
@@ -98,6 +99,7 @@ class DevelopmentLTIView(TemplateView):
                 "markdown_documents": MarkdownDocument.objects.order_by("-updated_on")[
                     :5
                 ],
+                "filedepositories": FileDepository.objects.order_by("-updated_on")[:5],
             },
         }
 
