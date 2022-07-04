@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -10,7 +10,7 @@ import {
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { LiveModeType, liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { TeacherLiveControlBar } from '.';
 
@@ -39,11 +39,9 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <LiveFeedbackProvider value={false}>
-          <TeacherLiveControlBar video={mockedVideo} />
-        </LiveFeedbackProvider>,
-      ),
+      <LiveFeedbackProvider value={false}>
+        <TeacherLiveControlBar video={mockedVideo} />
+      </LiveFeedbackProvider>,
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -68,11 +66,9 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <LiveFeedbackProvider value={false}>
-          <TeacherLiveControlBar video={mockedVideo} />
-        </LiveFeedbackProvider>,
-      ),
+      <LiveFeedbackProvider value={false}>
+        <TeacherLiveControlBar video={mockedVideo} />
+      </LiveFeedbackProvider>,
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -97,11 +93,9 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <LiveFeedbackProvider value={false}>
-          <TeacherLiveControlBar video={mockedVideo} />
-        </LiveFeedbackProvider>,
-      ),
+      <LiveFeedbackProvider value={false}>
+        <TeacherLiveControlBar video={mockedVideo} />
+      </LiveFeedbackProvider>,
     );
 
     screen.getByRole('button', { name: 'Show chat' });

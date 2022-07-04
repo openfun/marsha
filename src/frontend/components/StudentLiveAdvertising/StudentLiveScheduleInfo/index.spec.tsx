@@ -1,8 +1,8 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { StudentLiveScheduleInfo } from '.';
 
@@ -26,13 +26,11 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 27, 13, 59, 59));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={false}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={false}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {
@@ -46,13 +44,11 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 2, 27, 13, 59, 59));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={true}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={true}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {
@@ -64,17 +60,15 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 27, 15, 0, 0));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={false}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={false}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {
-      name: /Live will start in 0 1 : 0 0 : 0 0/,
+      name: 'Live will start in 0 1 : 0 0 : 0 0',
     });
     screen.getByText(
       startDate.setLocale('en').toLocaleString(DateTime.DATE_MED_WITH_WEEKDAY),
@@ -98,13 +92,11 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 28, 13, 0, 0));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={false}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={false}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {
@@ -123,13 +115,11 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 28, 15, 0, 0));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={false}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={false}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {
@@ -148,13 +138,11 @@ describe('<StudentLiveScheduleInfo />', () => {
     const startDate = DateTime.fromJSDate(new Date(2022, 1, 29, 15, 0, 0));
 
     render(
-      wrapInIntlProvider(
-        <StudentLiveScheduleInfo
-          isTimeOver={false}
-          setTimeIsOver={mockSetTimeIsOver}
-          startDate={startDate}
-        />,
-      ),
+      <StudentLiveScheduleInfo
+        isTimeOver={false}
+        setTimeIsOver={mockSetTimeIsOver}
+        startDate={startDate}
+      />,
     );
 
     screen.getByRole('heading', {

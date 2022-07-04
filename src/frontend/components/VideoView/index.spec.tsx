@@ -1,8 +1,7 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router';
+import { QueryClient } from 'react-query';
 
 import {
   UploadManagerContext,
@@ -13,7 +12,8 @@ import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { VideoView } from '.';
 
 jest.mock('Player/createPlayer', () => ({
@@ -46,24 +46,19 @@ describe('<VideoView />', () => {
         },
       },
     });
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoView />, {
+      queryOptions: { client: queryClient },
+      routerOptions: { componentPath: `/:videoId`, history: [`/${video.id}`] },
+    });
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    await act(async () => getVideoDeferred.resolve(500));
+    act(() => getVideoDeferred.resolve(500));
 
-    screen.getByRole('heading', { name: 'There was an unexpected error' });
+    await screen.findByRole('heading', {
+      name: 'There was an unexpected error',
+    });
     screen.getByText(
       'We could not access the appropriate resources. You can try reloading the page or come back again at a later time.',
     );
@@ -98,18 +93,9 @@ describe('<VideoView />', () => {
       { method: 'OPTIONS' },
     );
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoView />, {
+      routerOptions: { componentPath: `/:videoId`, history: [`/${video.id}`] },
+    });
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
@@ -119,7 +105,7 @@ describe('<VideoView />', () => {
     screen.getByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
-    await act(async () =>
+    act(() =>
       getTimedTextTracksDeferred.resolve({
         count: 0,
         next: null,
@@ -128,13 +114,15 @@ describe('<VideoView />', () => {
       }),
     );
 
-    expect(mockCreatePlayer).toHaveBeenCalledWith(
-      'videojs',
-      expect.any(Element),
-      expect.anything(),
-      video,
-      'en',
-      expect.any(Function),
+    await waitFor(() =>
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
+      ),
     );
   });
 
@@ -145,40 +133,37 @@ describe('<VideoView />', () => {
     const getVideoDeferred = new Deferred();
     fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
 
-    const queryClient = new QueryClient();
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <UploadManagerContext.Provider
-                value={{
-                  setUploadState: jest.fn(),
-                  uploadManagerState: {
-                    [video.id]: {
-                      file,
-                      objectId: video.id,
-                      objectType: modelName.VIDEOS,
-                      progress: 60,
-                      status: UploadManagerStatus.UPLOADING,
-                    },
-                  },
-                }}
-              >
-                <VideoView />
-              </UploadManagerContext.Provider>
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: jest.fn(),
+          uploadManagerState: {
+            [video.id]: {
+              file,
+              objectId: video.id,
+              objectType: modelName.VIDEOS,
+              progress: 60,
+              status: UploadManagerStatus.UPLOADING,
+            },
+          },
+        }}
+      >
+        <VideoView />
+      </UploadManagerContext.Provider>,
+      {
+        routerOptions: {
+          componentPath: `/:videoId`,
+          history: [`/${video.id}`],
+        },
+      },
     );
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    await act(async () => getVideoDeferred.resolve(video));
+    act(() => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title! });
+    await screen.findByRole('heading', { name: video.title! });
     screen.getByText(
       'The video is currently being uploaded. You will be able to see it or replace it here after it is processed.',
     );
@@ -190,25 +175,16 @@ describe('<VideoView />', () => {
     const getVideoDeferred = new Deferred();
     fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoView />, {
+      routerOptions: { componentPath: `/:videoId`, history: [`/${video.id}`] },
+    });
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    await act(async () => getVideoDeferred.resolve(video));
+    act(() => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title! });
+    await screen.findByRole('heading', { name: video.title! });
     screen.getByText(
       'The video is currently being processed. You will be able to see it or replace it here after it is finished.',
     );
@@ -235,17 +211,10 @@ describe('<VideoView />', () => {
         },
       },
     });
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoView />, {
+      queryOptions: { client: queryClient },
+      routerOptions: { componentPath: `/:videoId`, history: [`/${video.id}`] },
+    });
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
@@ -255,9 +224,11 @@ describe('<VideoView />', () => {
     screen.getByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
-    await act(async () => getTimedTextTracksDeferred.resolve(500));
+    act(() => getTimedTextTracksDeferred.resolve(500));
 
-    screen.getByRole('heading', { name: 'There was an unexpected error' });
+    await screen.findByRole('heading', {
+      name: 'There was an unexpected error',
+    });
     screen.getByText(
       'We could not access the appropriate resources. You can try reloading the page or come back again at a later time.',
     );
@@ -269,25 +240,16 @@ describe('<VideoView />', () => {
     const getVideoDeferred = new Deferred();
     fetchMock.get(`/api/videos/${video.id}/`, getVideoDeferred.promise);
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${video.id}`]}>
-            <Route path="/:videoId">
-              <VideoView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoView />, {
+      routerOptions: { componentPath: `/:videoId`, history: [`/${video.id}`] },
+    });
 
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    await act(async () => getVideoDeferred.resolve(video));
+    act(() => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title! });
+    await screen.findByRole('heading', { name: video.title! });
     screen.getByText(
       'There is currently no video file for this Video. You can add one by dropping or picking a file below.',
     );

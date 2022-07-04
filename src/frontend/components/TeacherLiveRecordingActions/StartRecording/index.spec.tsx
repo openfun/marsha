@@ -1,14 +1,12 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, setLogger } from 'react-query';
 
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { StartRecording } from '.';
 
@@ -26,12 +24,7 @@ setLogger({
 
 let queryClient: QueryClient;
 
-let matchMedia: MatchMediaMock;
-
 describe('<StartRecording />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   beforeEach(() => {
     queryClient = new QueryClient({
       defaultOptions: {
@@ -43,7 +36,6 @@ describe('<StartRecording />', () => {
   });
 
   afterEach(() => {
-    matchMedia.clear();
     fetchMock.restore();
     jest.resetAllMocks();
   });
@@ -56,14 +48,9 @@ describe('<StartRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/start-recording/`, video);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <StartRecording video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<StartRecording video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
@@ -77,14 +64,9 @@ describe('<StartRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/start-recording/`, 400);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <StartRecording video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<StartRecording video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),

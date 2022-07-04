@@ -165,7 +165,6 @@ const ContentCard = ({
   const contentTitle = { content_title: content.title };
 
   let thumbnail;
-  // if ('thumbnail' in content || ('urls' in content && content!.urls)) {
   if ('thumbnail' in content || 'urls' in content) {
     const thumbnailUrls =
       (content.thumbnail &&
@@ -335,7 +334,7 @@ export const SelectContent = ({
       return;
     }
 
-    appTabs.push(lazy(() => import(`../../apps/${appName}/SelectContentTab`)));
+    appTabs.push(lazy(() => import(`apps/${appName}/SelectContentTab`)));
   });
 
   useEffect(() => {

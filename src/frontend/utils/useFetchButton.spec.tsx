@@ -1,14 +1,9 @@
-import { act, render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React, { Fragment, useEffect } from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
-
+import render from './tests/render';
 import { useFetchButton } from './useFetchButton';
-
-let matchMedia: MatchMediaMock;
 
 interface TestErrorHelperProps {
   errorCallback?: string | ((error: unknown) => string);
@@ -32,31 +27,7 @@ const TestErrorHelper = ({ errorCallback }: TestErrorHelperProps) => {
   );
 };
 
-let getToastHook: () => any = () => {};
-
-const ToastHack = () => {
-  const toasts = useToaster();
-  getToastHook = () => toasts;
-  return null;
-};
-
 describe('useFetchButton', () => {
-  beforeEach(() => {
-    matchMedia = new MatchMediaMock();
-  });
-  afterEach(() => {
-    matchMedia.clear();
-
-    const toasts = getToastHook();
-    if (toasts && toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
-  });
-
   it('renders the button', () => {
     const TestHelper = () => {
       const [_state, _setState, Button] = useFetchButton();
@@ -64,7 +35,7 @@ describe('useFetchButton', () => {
       return <Button label="my label" />;
     };
 
-    render(wrapInIntlProvider(<TestHelper />));
+    render(<TestHelper />);
 
     screen.getByRole('button', { name: 'my label' });
   });
@@ -81,7 +52,7 @@ describe('useFetchButton', () => {
       );
     };
 
-    render(wrapInIntlProvider(<TestHelper />));
+    render(<TestHelper />);
 
     userEvent.click(screen.getByRole('button', { name: 'my label' }));
 
@@ -91,15 +62,7 @@ describe('useFetchButton', () => {
   });
 
   it('toasts default error message and resets the state', async () => {
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <TestErrorHelper />
-          <Toaster />
-          <ToastHack />
-        </Fragment>,
-      ),
-    );
+    render(<TestErrorHelper />);
 
     const idleText = screen.getByText('button is idling');
 
@@ -114,15 +77,7 @@ describe('useFetchButton', () => {
   });
 
   it('toasts custom error message and resets the state', async () => {
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <TestErrorHelper errorCallback="an other error message" />
-          <Toaster />
-          <ToastHack />
-        </Fragment>,
-      ),
-    );
+    render(<TestErrorHelper errorCallback="an other error message" />);
 
     const idleText = screen.getByText('button is idling');
 
@@ -139,15 +94,7 @@ describe('useFetchButton', () => {
   it('toasts computed error message and resets the state', async () => {
     const callback = jest.fn().mockImplementation(() => 'some computed error');
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <TestErrorHelper errorCallback={callback} />
-          <Toaster />
-          <ToastHack />
-        </Fragment>,
-      ),
-    );
+    render(<TestErrorHelper errorCallback={callback} />);
 
     const idleText = screen.getByText('button is idling');
 

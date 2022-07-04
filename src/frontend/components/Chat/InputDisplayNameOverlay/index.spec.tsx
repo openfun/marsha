@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -12,6 +12,7 @@ import {
 import { liveSessionFactory } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -59,7 +60,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -76,7 +77,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -93,7 +94,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -125,7 +126,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -167,7 +168,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -212,7 +213,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -257,7 +258,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -296,7 +297,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -320,7 +321,7 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('closes the window.', () => {
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     const closeButton = screen.getByTitle(
       'Click this button to close the overlay.',
@@ -342,7 +343,7 @@ describe('<InputDisplayNameOverlay />', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(<InputDisplayNameOverlay />);
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });

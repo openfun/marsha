@@ -1,10 +1,11 @@
 import React from 'react';
 import renderer from 'react-test-renderer';
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 
 import { LivePanelItem } from 'data/stores/useLivePanelState';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { LiveVideoTabPanel } from '.';
 
@@ -23,21 +24,19 @@ describe('<LiveVideoTabPanel /> titles', () => {
 
       const item = itemStr as LivePanelItem;
 
-      render(
-        wrapInIntlProvider(<LiveVideoTabPanel item={item} selected={false} />),
-      );
+      render(<LiveVideoTabPanel item={item} selected={false} />);
 
       screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
 
       cleanup();
 
-      render(
-        wrapInIntlProvider(<LiveVideoTabPanel item={item} selected={true} />),
-      );
+      render(<LiveVideoTabPanel item={item} selected={true} />);
 
       screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
+
+      cleanup();
     }
   });
 });
@@ -45,9 +44,7 @@ describe('<LiveVideoTabPanel /> titles', () => {
 describe('<LiveVideoTabPanel /> styles', () => {
   it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
     render(
-      wrapInIntlProvider(
-        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />,
-      ),
+      <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />,
     );
 
     const button = screen.getByRole('tab', { name: 'application' });
@@ -70,9 +67,7 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
   it('renders with selected style [screenshot]', async () => {
     render(
-      wrapInIntlProvider(
-        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />,
-      ),
+      <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />,
     );
 
     const button = screen.getByRole('tab', { name: 'application' });

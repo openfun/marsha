@@ -1,11 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { Loader } from 'components/Loader';
 import { modelName } from 'types/models';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
+import render from 'utils/tests/render';
 
 import PlaylistPage from './index';
 
@@ -49,18 +47,10 @@ describe('<PlaylistPage />', () => {
       },
     };
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback={<Loader />}>
-              <PlaylistPage />
-            </Suspense>
-          </QueryClientProvider>,
-        ),
-      ),
+      <Suspense fallback={<Loader />}>
+        <PlaylistPage />
+      </Suspense>,
     );
 
     await screen.findByText('Dashboard');
@@ -79,18 +69,10 @@ describe('<PlaylistPage />', () => {
       modelName: modelName.DOCUMENTS,
     };
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <QueryClientProvider client={queryClient}>
-            <Suspense fallback={<Loader />}>
-              <PlaylistPage />
-            </Suspense>
-          </QueryClientProvider>,
-        ),
-      ),
+      <Suspense fallback={<Loader />}>
+        <PlaylistPage />
+      </Suspense>,
     );
 
     await screen.findByText('Dashboard');

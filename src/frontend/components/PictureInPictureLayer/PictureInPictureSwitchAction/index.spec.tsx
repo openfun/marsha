@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+
+import render from 'utils/tests/render';
 
 import { PictureInPictureSwitchAction } from '.';
 
@@ -19,9 +20,7 @@ jest.mock('data/stores/usePictureInPicture', () => ({
 
 describe('<PictureInPictureSwitchAction />', () => {
   it('renders the button', () => {
-    const { rerender } = render(
-      wrapInIntlProvider(<PictureInPictureSwitchAction />),
-    );
+    const { rerender } = render(<PictureInPictureSwitchAction />);
 
     screen.getByRole('button', { name: 'Show document' });
 
@@ -31,7 +30,7 @@ describe('<PictureInPictureSwitchAction />', () => {
     expect(mockSetPipState).toHaveBeenCalled();
     expect(mockSetPipState).toHaveBeenCalledWith({ reversed: true });
 
-    rerender(wrapInIntlProvider(<PictureInPictureSwitchAction />));
+    rerender(<PictureInPictureSwitchAction />);
 
     userEvent.click(screen.getByRole('button', { name: 'Show player' }));
     expect(mockSetPipState).toHaveBeenCalledTimes(2);

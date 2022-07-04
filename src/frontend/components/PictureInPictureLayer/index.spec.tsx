@@ -1,13 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { Box, Button, Paragraph } from 'grommet';
 import React from 'react';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
+import render from 'utils/tests/render';
 
 import { PictureInPictureLayer } from '.';
-
-window.scrollTo = jest.fn();
 
 describe('<PictureInPictureLayer />', () => {
   afterEach(() => {
@@ -22,11 +21,9 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <PictureInPictureProvider value={{ reversed: false }}>
-          <PictureInPictureLayer mainElement={MainContent} />
-        </PictureInPictureProvider>,
-      ),
+      <PictureInPictureProvider value={{ reversed: false }}>
+        <PictureInPictureLayer mainElement={MainContent} />
+      </PictureInPictureProvider>,
     );
 
     screen.getByText('main content');
@@ -49,14 +46,12 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <PictureInPictureProvider value={{ reversed: false }}>
-          <PictureInPictureLayer
-            mainElement={MainContent}
-            secondElement={Picture}
-          />
-        </PictureInPictureProvider>,
-      ),
+      <PictureInPictureProvider value={{ reversed: false }}>
+        <PictureInPictureLayer
+          mainElement={MainContent}
+          secondElement={Picture}
+        />
+      </PictureInPictureProvider>,
     );
 
     screen.getByText('main content');
@@ -85,15 +80,13 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <PictureInPictureProvider value={{ reversed: false }}>
-          <PictureInPictureLayer
-            mainElement={MainContent}
-            secondElement={Picture}
-            reversed
-          />
-        </PictureInPictureProvider>,
-      ),
+      <PictureInPictureProvider value={{ reversed: false }}>
+        <PictureInPictureLayer
+          mainElement={MainContent}
+          secondElement={Picture}
+          reversed
+        />
+      </PictureInPictureProvider>,
     );
 
     screen.getByText('main content');
@@ -118,14 +111,12 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <PictureInPictureProvider value={{ reversed: false }}>
-          <PictureInPictureLayer
-            mainElement={MainContent}
-            secondElement={Picture}
-          />
-        </PictureInPictureProvider>,
-      ),
+      <PictureInPictureProvider value={{ reversed: false }}>
+        <PictureInPictureLayer
+          mainElement={MainContent}
+          secondElement={Picture}
+        />
+      </PictureInPictureProvider>,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'More options' }));
@@ -146,15 +137,13 @@ describe('<PictureInPictureLayer />', () => {
     const Action = <Button>some action</Button>;
 
     render(
-      wrapInIntlProvider(
-        <PictureInPictureProvider value={{ reversed: false }}>
-          <PictureInPictureLayer
-            mainElement={MainContent}
-            secondElement={Picture}
-            pictureActions={[Action]}
-          />
-        </PictureInPictureProvider>,
-      ),
+      <PictureInPictureProvider value={{ reversed: false }}>
+        <PictureInPictureLayer
+          mainElement={MainContent}
+          secondElement={Picture}
+          pictureActions={[Action]}
+        />
+      </PictureInPictureProvider>,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'More options' }));

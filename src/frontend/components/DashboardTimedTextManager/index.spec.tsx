@@ -1,16 +1,16 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { defineMessages } from 'react-intl';
 
+import { TimedText, timedTextMode, uploadState } from 'types/tracks';
+import render from 'utils/tests/render';
+
 import { DashboardTimedTextManager } from '.';
-import { TimedText, timedTextMode, uploadState } from '../../types/tracks';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'foo',
   },
@@ -59,15 +59,11 @@ describe('<DashboardTimedTextManager />', () => {
     ];
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardTimedTextManager
-            message={message.key}
-            mode={timedTextMode.TRANSCRIPT}
-            tracks={tracks}
-          />,
-        ),
-      ),
+      <DashboardTimedTextManager
+        message={message.key}
+        mode={timedTextMode.TRANSCRIPT}
+        tracks={tracks}
+      />,
     );
 
     screen.getByText('Our title');

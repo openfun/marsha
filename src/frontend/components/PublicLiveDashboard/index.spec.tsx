@@ -1,6 +1,5 @@
 import {
   cleanup,
-  render,
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react';
@@ -12,7 +11,7 @@ import { PersistentStore } from 'types/XMPP';
 import { initWebinarContext } from 'utils/initWebinarContext';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
@@ -82,11 +81,7 @@ describe('PublicLiveDashboard', () => {
       const deferred = new Deferred<void>();
       mockedInitWebinarContext.mockReturnValue(deferred.promise);
 
-      render(
-        wrapInIntlProvider(
-          <PublicLiveDashboard live={live} playerType={'videojs'} />,
-        ),
-      );
+      render(<PublicLiveDashboard live={live} playerType={'videojs'} />);
 
       const loader = screen.getByRole('status');
 
@@ -112,11 +107,7 @@ describe('PublicLiveDashboard', () => {
         live_state: state,
       };
 
-      render(
-        wrapInIntlProvider(
-          <PublicLiveDashboard live={live} playerType="someplayer" />,
-        ),
-      );
+      render(<PublicLiveDashboard live={live} playerType="someplayer" />);
 
       await screen.findByText(/Live is starting/);
 
@@ -146,11 +137,7 @@ describe('PublicLiveDashboard', () => {
         },
       };
 
-      render(
-        wrapInIntlProvider(
-          <PublicLiveDashboard live={live} playerType="someplayer" />,
-        ),
-      );
+      render(<PublicLiveDashboard live={live} playerType="someplayer" />);
 
       await screen.findByText('live starter');
       expect(mockedStudentLiveStarter).toHaveBeenCalledWith(

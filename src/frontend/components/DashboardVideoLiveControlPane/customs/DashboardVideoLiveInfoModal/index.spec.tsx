@@ -1,7 +1,9 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { DashboardVideoLiveInfoModal } from '.';
 
@@ -12,12 +14,6 @@ const genericContent =
 
 describe('<DashboardVideoLiveInfoModal />', () => {
   beforeEach(() => {
-    /*
-          make sure to remove all body children, grommet layer gets rendered twice, known issue
-          https://github.com/grommet/grommet/issues/5200
-        */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
     jest.resetAllMocks();
   });
 

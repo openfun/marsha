@@ -1,8 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import {
   UploadingObject,
@@ -14,9 +13,10 @@ import {
   videoMockFactory,
   sharedLiveMediaMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
+import render from 'utils/tests/render';
+
 import { SharedLiveMediaItem } from '.';
 
 jest.mock('data/appData', () => ({
@@ -55,31 +55,26 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {
-              [mockedSharedLiveMedia.id]: mockedUploadingObject,
-            },
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-                uploadingObject={mockedUploadingObject}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [mockedSharedLiveMedia.id]: mockedUploadingObject,
+          },
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+            uploadingObject={mockedUploadingObject}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -115,31 +110,26 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {
-              [mockedSharedLiveMedia.id]: mockedUploadingObject,
-            },
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-                uploadingObject={mockedUploadingObject}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {
+            [mockedSharedLiveMedia.id]: mockedUploadingObject,
+          },
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+            uploadingObject={mockedUploadingObject}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -168,28 +158,23 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -214,28 +199,23 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -262,28 +242,23 @@ describe('<SharedLiveMediaItem />', () => {
       active_shared_live_media: mockedSharedLiveMedia,
       active_shared_live_media_page: 1,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={true}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={true}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -307,28 +282,23 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {
@@ -360,28 +330,23 @@ describe('<SharedLiveMediaItem />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <DeleteUploadModalProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <SharedLiveMediaItem
-                video={mockedVideo}
-                isShared={null}
-                onRetryFailedUpload={mockedOnRetryFailedUpload}
-                sharedLiveMedia={mockedSharedLiveMedia}
-              />
-            </QueryClientProvider>
-          </DeleteUploadModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <DeleteUploadModalProvider value={null}>
+          <SharedLiveMediaItem
+            video={mockedVideo}
+            isShared={null}
+            onRetryFailedUpload={mockedOnRetryFailedUpload}
+            sharedLiveMedia={mockedSharedLiveMedia}
+          />
+        </DeleteUploadModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('button', {

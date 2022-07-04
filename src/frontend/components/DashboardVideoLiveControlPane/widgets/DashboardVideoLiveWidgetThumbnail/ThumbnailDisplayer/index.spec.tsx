@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { thumbnailMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { ThumbnailDisplayer } from '.';
 
 jest.mock('data/appData', () => ({
@@ -12,11 +13,7 @@ jest.mock('data/appData', () => ({
 describe('<ThumbnailDisplayer />', () => {
   it('renders ThumbnailDisplayer', () => {
     const mockedThumbnail = thumbnailMockFactory();
-    render(
-      wrapInIntlProvider(
-        <ThumbnailDisplayer urlsThumbnail={mockedThumbnail.urls} />,
-      ),
-    );
+    render(<ThumbnailDisplayer urlsThumbnail={mockedThumbnail.urls} />);
 
     const img = screen.getByRole('img', { name: 'Live video thumbnail' });
     expect(img.getAttribute('src')).toEqual(

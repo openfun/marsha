@@ -1,9 +1,10 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { StudentHideViewersButton } from '.';
 
 describe('<StudentHideViewersButton />', () => {
@@ -27,7 +28,7 @@ describe('<StudentHideViewersButton />', () => {
       setPanelVisibility: mockSetPanelVisibility,
     });
 
-    render(wrapInIntlProvider(<StudentHideViewersButton />));
+    render(<StudentHideViewersButton />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Hide viewers' }));
 

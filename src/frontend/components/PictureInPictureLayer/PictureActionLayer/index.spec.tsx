@@ -1,23 +1,19 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from 'grommet';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { PictureActionLayer } from '.';
-
-window.scrollTo = jest.fn();
 
 describe('<PictureActionLayer />', () => {
   it('renders all actions', () => {
     render(
-      wrapInIntlProvider(
-        <PictureActionLayer
-          actions={[<Button label="do some stuff" />]}
-          pictureWidth={500}
-        />,
-      ),
+      <PictureActionLayer
+        actions={[<Button label="do some stuff" />]}
+        pictureWidth={500}
+      />,
     );
 
     screen.getByRole('button', { name: 'do some stuff' });
@@ -25,12 +21,10 @@ describe('<PictureActionLayer />', () => {
 
   it('renders only more options action', () => {
     render(
-      wrapInIntlProvider(
-        <PictureActionLayer
-          actions={[<Button label="do some stuff" />]}
-          pictureWidth={5}
-        />,
-      ),
+      <PictureActionLayer
+        actions={[<Button label="do some stuff" />]}
+        pictureWidth={5}
+      />,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'More options' }));

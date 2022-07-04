@@ -1,15 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { TimedTextListItem } from '.';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { timedTextMockFactory } from 'utils/tests/factories';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
-jest.mock('../../data/appData', () => ({
+import { TimedTextListItem } from '.';
+
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'foo',
   },
@@ -42,24 +42,20 @@ describe('<TimedTextListItem />', () => {
 
   it('renders a track, showing its language and status', async () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <TimedTextListItem
-            track={{
-              active_stamp: 28271937429,
-              id: '42',
-              is_ready_to_show: true,
-              language: 'fr',
-              mode: timedTextMode.SUBTITLE,
-              title: 'foo',
-              upload_state: uploadState.READY,
-              source_url: 'https://example.com/timedtext/source/42',
-              url: 'https://example.com/timedtext/42.vtt',
-              video: '142',
-            }}
-          />,
-        ),
-      ),
+      <TimedTextListItem
+        track={{
+          active_stamp: 28271937429,
+          id: '42',
+          is_ready_to_show: true,
+          language: 'fr',
+          mode: timedTextMode.SUBTITLE,
+          title: 'foo',
+          upload_state: uploadState.READY,
+          source_url: 'https://example.com/timedtext/source/42',
+          url: 'https://example.com/timedtext/42.vtt',
+          video: '142',
+        }}
+      />,
     );
 
     await screen.findByText('French');
@@ -86,9 +82,8 @@ describe('<TimedTextListItem />', () => {
         video: '142',
       });
       useTimedTextTrack.getState().addResource(track);
-      const { getByText } = render(
-        wrapInIntlProvider(wrapInRouter(<TimedTextListItem track={track} />)),
-      );
+
+      const { getByText } = render(<TimedTextListItem track={track} />);
 
       expect(useTimedTextTrack.getState().getTimedTextTracks()).toEqual([
         track,

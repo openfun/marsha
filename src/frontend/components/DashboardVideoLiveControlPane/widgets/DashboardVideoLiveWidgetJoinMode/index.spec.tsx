@@ -1,20 +1,16 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { JoinMode } from 'types/tracks';
 import { DashboardVideoLiveWidgetJoinMode } from '.';
-
-let matchMedia: MatchMediaMock;
+import render from 'utils/tests/render';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -32,51 +28,21 @@ setLogger({
   error: () => {},
 });
 
-window.scrollTo = jest.fn();
-
 describe('<DashboardVideoLiveWidgetJoinMode />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   it('renders the widget', () => {
     const mockedVideo = videoMockFactory({
       join_mode: JoinMode.APPROVAL,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Join the discussion');
@@ -97,18 +63,10 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
       join_mode: JoinMode.DENIED,
     });
 
-    const queryClient = new QueryClient();
-
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const button = screen.getByRole('button', {
@@ -139,17 +97,11 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode
-              video={{ ...mockedVideo, join_mode: JoinMode.DENIED }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode
+          video={{ ...mockedVideo, join_mode: JoinMode.DENIED }}
+        />
+      </InfoWidgetModalProvider>,
     );
     expect(within(button).getByRole('textbox')).toHaveValue('Not allowed');
   });
@@ -164,18 +116,10 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
       join_mode: JoinMode.APPROVAL,
     });
 
-    const queryClient = new QueryClient();
-
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const button = screen.getByRole('button', {
@@ -208,17 +152,11 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode
-              video={{ ...mockedVideo, join_mode: JoinMode.APPROVAL }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode
+          video={{ ...mockedVideo, join_mode: JoinMode.APPROVAL }}
+        />
+      </InfoWidgetModalProvider>,
     );
     expect(within(button).getByRole('textbox')).toHaveValue(
       'Accept joining the discussion after approval',
@@ -235,18 +173,10 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
       join_mode: JoinMode.FORCED,
     });
 
-    const queryClient = new QueryClient();
-
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const button = screen.getByRole('button', {
@@ -277,17 +207,11 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode
-              video={{ ...mockedVideo, join_mode: JoinMode.FORCED }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode
+          video={{ ...mockedVideo, join_mode: JoinMode.FORCED }}
+        />
+      </InfoWidgetModalProvider>,
     );
     expect(within(button).getByRole('textbox')).toHaveValue(
       'Everybody will join the discussion',
@@ -301,18 +225,10 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const button = screen.getByRole('button', {

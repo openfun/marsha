@@ -1,20 +1,24 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { modelName } from '../../types/models';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import render from 'utils/tests/render';
+
 import { UploadField } from '.';
 
-jest.mock('../../data/appData', () => ({}));
+jest.mock('data/appData', () => ({}));
 
 describe('<UploadField />', () => {
   const objectType = modelName.VIDEOS;
   const objectId = uuidv4();
 
   it('renders a Dropzone with the relevant messages', () => {
-    render(wrapInIntlProvider(<UploadField {...{ objectId, objectType }} />));
+    render(<UploadField {...{ objectId, objectType }} />);
     screen.getByText('Select a file to upload');
   });
 
@@ -24,7 +28,7 @@ describe('<UploadField />', () => {
       <UploadManagerContext.Provider
         value={{ setUploadState, uploadManagerState: {} }}
       >
-        {wrapInIntlProvider(<UploadField {...{ objectId, objectType }} />)}
+        <UploadField {...{ objectId, objectType }} />
       </UploadManagerContext.Provider>,
     );
 

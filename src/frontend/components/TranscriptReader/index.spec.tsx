@@ -1,13 +1,15 @@
-import { act, render } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { VTTCue } from 'vtt.js';
 import 'vtt.js/lib/vttcue';
 
+import { useVideoProgress } from 'data/stores/useVideoProgress';
+import { Deferred } from 'utils/tests/Deferred';
+import render from 'utils/tests/render';
+import { timedTextMode, uploadState } from 'types/tracks';
+
 import { TranscriptReader } from '.';
-import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { Deferred } from '../../utils/tests/Deferred';
-import { timedTextMode, uploadState } from '../../types/tracks';
 
 jest.mock('vtt.js', () => ({
   WebVTT: {
@@ -35,7 +37,7 @@ jest.mock('vtt.js', () => ({
   },
 }));
 
-jest.mock('../TranscriptSentence', () => ({
+jest.mock('components/TranscriptSentence', () => ({
   TranscriptSentence: ({ active, cue }: { active: boolean; cue: VTTCue }) => (
     <span>
       {active ? 'Active: ' : ''}
@@ -72,24 +74,28 @@ describe('<TranscriptReader />', () => {
     const deferred = new Deferred();
     fetchMock.mock(transcript.url, deferred.promise);
 
-    const { getByText } = render(<TranscriptReader transcript={transcript} />);
+    render(
+      <Fragment>
+        <VideoPlayer />
+        <TranscriptReader transcript={transcript} />
+      </Fragment>,
+    );
     await act(async () => deferred.resolve('OK'));
 
-    expect(fetchMock.calls(transcript.url).length).toEqual(1),
-      // Both cues are inactive
-      getByText('-Bonjour. Bonjour à tous.');
-    getByText(
+    expect(fetchMock.calls(transcript.url).length).toEqual(1);
+    // Both cues are inactive
+    screen.getByText('-Bonjour. Bonjour à tous.');
+    screen.getByText(
       (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),
     );
 
-    render(<VideoPlayer />);
     act(() => setPlayerCurrentTime(2));
 
     // Cue 1 is active, cue 2 is inactive
-    getByText('Active: -Bonjour. Bonjour à tous.');
-    getByText(
+    screen.getByText('Active: -Bonjour. Bonjour à tous.');
+    screen.getByText(
       (content) =>
         content.startsWith('Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),
@@ -98,8 +104,8 @@ describe('<TranscriptReader />', () => {
     act(() => setPlayerCurrentTime(4));
 
     // Cue 1 is inactive, cue 2 is active
-    getByText('-Bonjour. Bonjour à tous.');
-    getByText(
+    screen.getByText('-Bonjour. Bonjour à tous.');
+    screen.getByText(
       (content) =>
         content.startsWith('Active: Bienvenue dans ce nouveau MOOC') &&
         content.includes('"Du manager au leader".'),

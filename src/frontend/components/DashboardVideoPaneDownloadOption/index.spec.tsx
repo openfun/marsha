@@ -1,15 +1,16 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 
-import { DashboardVideoPaneDownloadOption } from '.';
-import { uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
-jest.mock('../../data/appData', () => ({
+import { DashboardVideoPaneDownloadOption } from '.';
+
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -24,12 +25,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
 
   it('renders with checkbox not checked', () => {
     const { getByLabelText } = render(
-      wrapInIntlProvider(
-        <React.Fragment>
-          {' '}
-          <DashboardVideoPaneDownloadOption video={video} />
-        </React.Fragment>,
-      ),
+      <DashboardVideoPaneDownloadOption video={video} />,
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(
@@ -42,12 +38,7 @@ describe('<DashboardVideoPaneDownloadOption />', () => {
     const deferred = new Deferred();
     fetchMock.mock('/api/videos/442/', deferred.promise, { method: 'PUT' });
     const { getByLabelText } = render(
-      wrapInIntlProvider(
-        <React.Fragment>
-          {' '}
-          <DashboardVideoPaneDownloadOption video={video} />
-        </React.Fragment>,
-      ),
+      <DashboardVideoPaneDownloadOption video={video} />,
     );
 
     expect(getByLabelText('Allow video download')).toHaveProperty(

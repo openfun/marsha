@@ -1,20 +1,18 @@
 import { DateTime } from 'luxon';
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { ChatMessageMetadatas } from '.';
 
 describe('<ChatMessageMetadatas />', () => {
   it('renders the chatMessagesMetadatas and checks displayed information and sizes are correct.', () => {
     render(
-      wrapInIntlProvider(
-        <ChatMessageMetadatas
-          msgSender={'John Doe'}
-          msgDatetime={DateTime.fromISO('2020-01-01T12:12:12')}
-        />,
-      ),
+      <ChatMessageMetadatas
+        msgSender={'John Doe'}
+        msgDatetime={DateTime.fromISO('2020-01-01T12:12:12')}
+      />,
     );
     const chatAvatarDiv = screen.getByTitle("The user's avatar");
     const senderNameDiv = screen.getByTitle("The name of the message's sender");

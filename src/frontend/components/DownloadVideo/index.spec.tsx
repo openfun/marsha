@@ -1,14 +1,15 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { DownloadVideo } from '.';
-import { XAPI_ENDPOINT } from '../../settings';
-import { uploadState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { XAPI_ENDPOINT } from 'settings';
+import { uploadState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
-jest.mock('../../data/appData', () => ({
+import { DownloadVideo } from '.';
+
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'foo',
   },
@@ -30,6 +31,7 @@ jest.mock('video.js', () => ({
 
 describe('<DownloadVideo />', () => {
   afterEach(() => fetchMock.reset());
+
   it('renders all video links', () => {
     const video = videoMockFactory({
       description: 'Some description',
@@ -52,7 +54,7 @@ describe('<DownloadVideo />', () => {
       },
     });
 
-    render(wrapInIntlProvider(<DownloadVideo urls={video.urls!} />));
+    render(<DownloadVideo urls={video.urls!} />);
 
     screen.getByRole('link', { name: '1080p' });
     screen.getByRole('link', { name: '720p' });
@@ -80,12 +82,13 @@ describe('<DownloadVideo />', () => {
       },
     });
 
-    render(wrapInIntlProvider(<DownloadVideo urls={video.urls!} />));
+    render(<DownloadVideo urls={video.urls!} />);
 
     expect(screen.queryByText(/1080p/i)).toEqual(null);
     screen.getByRole('link', { name: '720p' });
     screen.getByRole('link', { name: '480p' });
   });
+
   it('returns nothing if there is no compatible resolutions', () => {
     const video = videoMockFactory({
       description: 'Some description',
@@ -107,11 +110,12 @@ describe('<DownloadVideo />', () => {
       },
     });
 
-    const { container } = render(
-      wrapInIntlProvider(<DownloadVideo urls={video.urls!} />),
+    const { elementContainer: container } = render(
+      <DownloadVideo urls={video.urls!} />,
     );
-    expect(container.firstChild).toBeNull();
+    expect(container!.firstChild).toBeNull();
   });
+
   it('sends the xapi downloaded statement when a link is clicked', async () => {
     fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204);
     const video = videoMockFactory({
@@ -135,7 +139,7 @@ describe('<DownloadVideo />', () => {
       },
     });
 
-    render(wrapInIntlProvider(<DownloadVideo urls={video.urls!} />));
+    render(<DownloadVideo urls={video.urls!} />);
 
     screen.getByRole('link', { name: '1080p' });
     screen.getByRole('link', { name: '720p' });

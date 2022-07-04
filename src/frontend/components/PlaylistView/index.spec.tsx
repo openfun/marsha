@@ -1,18 +1,15 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-import { Deferred } from '../../utils/tests/Deferred';
-import {
-  playlistMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { Deferred } from 'utils/tests/Deferred';
+import { playlistMockFactory, videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { PlaylistView } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -20,7 +17,6 @@ describe('<PlaylistView />', () => {
   afterEach(() => fetchMock.restore());
 
   it('shows the list of videos in the playlist and a form to add more', async () => {
-    const queryClient = new QueryClient();
     const playlist = playlistMockFactory();
 
     const playlistDeferred = new Deferred();
@@ -33,15 +29,10 @@ describe('<PlaylistView />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${playlist.id}`]}>
-            <Route path={`/:playlistId`}>
-              <PlaylistView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
+      <Route path={`/:playlistId`}>
+        <PlaylistView />
+      </Route>,
+      { routerOptions: { componentPath: `/${playlist.id}` } },
     );
 
     screen.getByRole('heading', { name: 'Playlist', level: 1 });

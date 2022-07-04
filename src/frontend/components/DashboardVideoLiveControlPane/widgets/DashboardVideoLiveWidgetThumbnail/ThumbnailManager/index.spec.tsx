@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import {
@@ -8,7 +8,8 @@ import {
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { thumbnailMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { ThumbnailManager } from '.';
 
 jest.mock('data/appData', () => ({
@@ -32,12 +33,10 @@ describe('<ThumbnailManager />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <ThumbnailManager
-          thumbnail={mockedThumbnail}
-          uploadManagerState={mockedUploadState}
-        />,
-      ),
+      <ThumbnailManager
+        thumbnail={mockedThumbnail}
+        uploadManagerState={mockedUploadState}
+      />,
     );
 
     screen.getByText(
@@ -61,12 +60,10 @@ describe('<ThumbnailManager />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <ThumbnailManager
-          thumbnail={mockedThumbnail}
-          uploadManagerState={mockedUploadState}
-        />,
-      ),
+      <ThumbnailManager
+        thumbnail={mockedThumbnail}
+        uploadManagerState={mockedUploadState}
+      />,
     );
 
     screen.getByText('Your image is being uploaded.');
@@ -88,12 +85,10 @@ describe('<ThumbnailManager />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <ThumbnailManager
-          thumbnail={mockedThumbnail}
-          uploadManagerState={mockedUploadState}
-        />,
-      ),
+      <ThumbnailManager
+        thumbnail={mockedThumbnail}
+        uploadManagerState={mockedUploadState}
+      />,
     );
 
     screen.getByText('Your image is being processed.');
@@ -114,12 +109,10 @@ describe('<ThumbnailManager />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <ThumbnailManager
-          thumbnail={mockedThumbnail}
-          uploadManagerState={mockedUploadState}
-        />,
-      ),
+      <ThumbnailManager
+        thumbnail={mockedThumbnail}
+        uploadManagerState={mockedUploadState}
+      />,
     );
 
     const img = screen.getByRole('img');
@@ -137,12 +130,7 @@ describe('<ThumbnailManager />', () => {
       upload_state: uploadState.PENDING,
     });
     render(
-      wrapInIntlProvider(
-        <ThumbnailManager
-          thumbnail={mockedThumbnail}
-          uploadManagerState={{}}
-        />,
-      ),
+      <ThumbnailManager thumbnail={mockedThumbnail} uploadManagerState={{}} />,
     );
 
     const img = screen.getByRole('img');

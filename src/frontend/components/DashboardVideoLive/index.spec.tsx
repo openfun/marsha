@@ -1,8 +1,8 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient } from 'react-query';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
@@ -25,8 +25,7 @@ import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
+import render from 'utils/tests/render';
 import { converse } from 'utils/window';
 
 import { DashboardVideoLive } from '.';
@@ -78,8 +77,6 @@ jest.mock('utils/window', () => ({
 
 let queryClient: QueryClient;
 
-window.HTMLElement.prototype.scrollTo = jest.fn();
-
 jest.setTimeout(10000);
 
 describe('components/DashboardVideoLive', () => {
@@ -130,23 +127,18 @@ describe('components/DashboardVideoLive', () => {
 
   it('shows the start and raw button when the status is IDLE', async () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{ ...video, live_state: liveState.IDLE }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.IDLE }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     await screen.findByRole('button', { name: /start streaming/i });
@@ -157,72 +149,62 @@ describe('components/DashboardVideoLive', () => {
 
   it('shows alert to join the room', async () => {
     const { rerender } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        live_state: liveState.IDLE,
-                        live_type: LiveModeType.JITSI,
-                        live_info: {
-                          jitsi: {
-                            external_api_url: 'some_external_api_url',
-                            domain: 'some_domain',
-                            config_overwrite: {},
-                            interface_config_overwrite: {},
-                            room_name: 'some_room_name',
-                          },
-                        },
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                  live_info: {
+                    jitsi: {
+                      external_api_url: 'some_external_api_url',
+                      domain: 'some_domain',
+                      config_overwrite: {},
+                      interface_config_overwrite: {},
+                      room_name: 'some_room_name',
+                    },
+                  },
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     await screen.findByText('Join the room before start streaming');
 
     mockCanShowStartButton = true;
     rerender(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        live_state: liveState.IDLE,
-                        live_type: LiveModeType.JITSI,
-                        live_info: {
-                          jitsi: {
-                            external_api_url: 'some_external_api_url',
-                            domain: 'some_domain',
-                            config_overwrite: {},
-                            interface_config_overwrite: {},
-                            room_name: 'some_room_name',
-                          },
-                        },
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.IDLE,
+                  live_type: LiveModeType.JITSI,
+                  live_info: {
+                    jitsi: {
+                      external_api_url: 'some_external_api_url',
+                      domain: 'some_domain',
+                      config_overwrite: {},
+                      interface_config_overwrite: {},
+                      room_name: 'some_room_name',
+                    },
+                  },
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     await screen.findByText('Only a jitsi moderator can administrate the live');
@@ -230,23 +212,18 @@ describe('components/DashboardVideoLive', () => {
 
   it('shows the stop button when the status is RUNNING', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{ ...video, live_state: liveState.RUNNING }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.RUNNING }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     screen.getByRole('button', { name: /end live/i });
@@ -255,23 +232,18 @@ describe('components/DashboardVideoLive', () => {
 
   it('shows confirmation modal when clicking the stop button', async () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{ ...video, live_state: liveState.RUNNING }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{ ...video, live_state: liveState.RUNNING }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     //  initial state
@@ -295,29 +267,24 @@ describe('components/DashboardVideoLive', () => {
   it('displays data when the video is scheduled and the status is IDLE', async () => {
     const dateScheduled = new Date(new Date().getTime() + 10 * 86400000);
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        description: 'Wonderful class!',
-                        live_state: liveState.IDLE,
-                        starting_at: dateScheduled.toISOString(),
-                        title: 'Maths',
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  description: 'Wonderful class!',
+                  live_state: liveState.IDLE,
+                  starting_at: dateScheduled.toISOString(),
+                  title: 'Maths',
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     await screen.findByRole('textbox', {
@@ -332,35 +299,29 @@ describe('components/DashboardVideoLive', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        live_state: liveState.RUNNING,
-                        xmpp: {
-                          bosh_url: null,
-                          converse_persistent_store:
-                            PersistentStore.LOCALSTORAGE,
-                          conference_url: 'conference-url',
-                          jid: 'jid',
-                          prebind_url: 'prebind_url',
-                          websocket_url: null,
-                        },
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_state: liveState.RUNNING,
+                  xmpp: {
+                    bosh_url: null,
+                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
+                    conference_url: 'conference-url',
+                    jid: 'jid',
+                    prebind_url: 'prebind_url',
+                    websocket_url: null,
+                  },
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Show chat' }));
@@ -375,36 +336,30 @@ describe('components/DashboardVideoLive', () => {
 
   it('configures live state without chat when chat is disabled', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        has_chat: false,
-                        live_state: liveState.STARTING,
-                        xmpp: {
-                          bosh_url: null,
-                          converse_persistent_store:
-                            PersistentStore.LOCALSTORAGE,
-                          conference_url: 'conference-url',
-                          jid: 'jid',
-                          prebind_url: 'prebind_url',
-                          websocket_url: null,
-                        },
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  has_chat: false,
+                  live_state: liveState.STARTING,
+                  xmpp: {
+                    bosh_url: null,
+                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
+                    conference_url: 'conference-url',
+                    jid: 'jid',
+                    prebind_url: 'prebind_url',
+                    websocket_url: null,
+                  },
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     // Force panel to display, because on instructor view it's hidden by default
@@ -428,32 +383,27 @@ describe('components/DashboardVideoLive', () => {
 
   it('accepts participants asking to join if join mode is forced', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        join_mode: JoinMode.FORCED,
-                        live_state: liveState.STARTING,
-                        participants_asking_to_join: [
-                          participantMockFactory(),
-                          participantMockFactory(),
-                          participantMockFactory(),
-                        ],
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.FORCED,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
@@ -461,32 +411,27 @@ describe('components/DashboardVideoLive', () => {
 
   it('does not accept participants asking to join if join mode is approval', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        join_mode: JoinMode.APPROVAL,
-                        live_state: liveState.STARTING,
-                        participants_asking_to_join: [
-                          participantMockFactory(),
-                          participantMockFactory(),
-                          participantMockFactory(),
-                        ],
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.APPROVAL,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     expect(converse.acceptParticipantToJoin).not.toHaveBeenCalled();
@@ -494,32 +439,27 @@ describe('components/DashboardVideoLive', () => {
 
   it('accepts participants asking to join if join mode is forced', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        join_mode: JoinMode.FORCED,
-                        live_state: liveState.STARTING,
-                        participants_asking_to_join: [
-                          participantMockFactory(),
-                          participantMockFactory(),
-                          participantMockFactory(),
-                        ],
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  join_mode: JoinMode.FORCED,
+                  live_state: liveState.STARTING,
+                  participants_asking_to_join: [
+                    participantMockFactory(),
+                    participantMockFactory(),
+                    participantMockFactory(),
+                  ],
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(3);
@@ -527,51 +467,45 @@ describe('components/DashboardVideoLive', () => {
 
   it('starts picture in picture mode when a file is shared', async () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <PictureInPictureProvider value={{ reversed: false }}>
-              <JitsiApiProvider value={undefined}>
-                <QueryClientProvider client={queryClient}>
-                  <Suspense fallback="loading...">
-                    <DashboardVideoLive
-                      video={{
-                        ...video,
-                        live_type: LiveModeType.JITSI,
-                        has_chat: false,
-                        live_state: liveState.STARTING,
-                        xmpp: {
-                          bosh_url: null,
-                          converse_persistent_store:
-                            PersistentStore.LOCALSTORAGE,
-                          conference_url: 'conference-url',
-                          jid: 'jid',
-                          prebind_url: 'prebind_url',
-                          websocket_url: null,
-                        },
-                        active_shared_live_media: {
-                          active_stamp: null,
-                          filename: 'file name',
-                          is_ready_to_show: true,
-                          show_download: false,
-                          title: 'title',
-                          upload_state: uploadState.READY,
-                          video: video.id,
-                          id: 'some id',
-                          nb_pages: 10,
-                          urls: {
-                            pages: {},
-                          },
-                        },
-                      }}
-                    />
-                  </Suspense>
-                </QueryClientProvider>
-              </JitsiApiProvider>
-            </PictureInPictureProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <PictureInPictureProvider value={{ reversed: false }}>
+          <JitsiApiProvider value={undefined}>
+            <Suspense fallback="loading...">
+              <DashboardVideoLive
+                video={{
+                  ...video,
+                  live_type: LiveModeType.JITSI,
+                  has_chat: false,
+                  live_state: liveState.STARTING,
+                  xmpp: {
+                    bosh_url: null,
+                    converse_persistent_store: PersistentStore.LOCALSTORAGE,
+                    conference_url: 'conference-url',
+                    jid: 'jid',
+                    prebind_url: 'prebind_url',
+                    websocket_url: null,
+                  },
+                  active_shared_live_media: {
+                    active_stamp: null,
+                    filename: 'file name',
+                    is_ready_to_show: true,
+                    show_download: false,
+                    title: 'title',
+                    upload_state: uploadState.READY,
+                    video: video.id,
+                    id: 'some id',
+                    nb_pages: 10,
+                    urls: {
+                      pages: {},
+                    },
+                  },
+                }}
+              />
+            </Suspense>
+          </JitsiApiProvider>
+        </PictureInPictureProvider>
+      </LiveModaleConfigurationProvider>,
+      { queryOptions: { client: queryClient } },
     );
 
     await screen.findByTestId('picture-in-picture-slave');

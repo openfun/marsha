@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
 import { ChatMessageType } from 'data/stores/useChatItemsStore/index';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { ChatMessage } from '.';
 
 const exampleMessage: ChatMessageType = {
@@ -25,9 +26,7 @@ describe('<ChatMessage />', () => {
   });
 
   it('renders the message with a clickable url', () => {
-    render(
-      wrapInIntlProvider(<ChatMessage message={exampleMessageWithUrls} />),
-    );
+    render(<ChatMessage message={exampleMessageWithUrls} />);
     screen.getByTitle('sent at 12:12:12');
     screen.getByText('This message contains an url, .');
     const link = screen.getByRole('link');

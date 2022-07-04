@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { LiveModeType, liveState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
 import DashboardVideoLiveRaw from '.';
 
@@ -16,7 +16,7 @@ describe('<DashboardVideoLiveRaw>', () => {
       live_state: liveState.IDLE,
     });
 
-    render(wrapInIntlProvider(<DashboardVideoLiveRaw video={video} />));
+    render(<DashboardVideoLiveRaw video={video} />);
 
     screen.getByText(
       'You are about to start a live using an external source provider.',
@@ -61,7 +61,7 @@ describe('<DashboardVideoLiveRaw>', () => {
       live_state: liveState.RUNNING,
     });
 
-    render(wrapInIntlProvider(<DashboardVideoLiveRaw video={video} />));
+    render(<DashboardVideoLiveRaw video={video} />);
 
     expect(
       screen.queryByText(

@@ -1,8 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { StudentLiveDescription } from '.';
 
 describe('<StudentLiveDescription />', () => {
@@ -12,7 +13,7 @@ describe('<StudentLiveDescription />', () => {
       description: 'live description',
     });
 
-    render(wrapInIntlProvider(<StudentLiveDescription video={video} />));
+    render(<StudentLiveDescription video={video} />);
 
     screen.getByRole('heading', { name: 'live title' });
     screen.getByText('live description');
@@ -24,7 +25,7 @@ describe('<StudentLiveDescription />', () => {
       description: 'live description',
     });
 
-    render(wrapInIntlProvider(<StudentLiveDescription video={video} />));
+    render(<StudentLiveDescription video={video} />);
 
     screen.getByRole('heading', { name: 'This live has no title yet.' });
     screen.getByText('live description');

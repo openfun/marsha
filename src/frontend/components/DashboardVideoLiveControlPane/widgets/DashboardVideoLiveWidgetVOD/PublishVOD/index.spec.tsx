@@ -1,18 +1,14 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
 import { Deferred } from 'utils/tests/Deferred';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { PublishVOD } from '.';
-
-let matchMedia: MatchMediaMock;
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -21,11 +17,7 @@ jest.mock('data/appData', () => ({
 }));
 
 describe('PublishVOD', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   afterEach(() => {
-    matchMedia.clear();
     fetchMock.restore();
   });
 
@@ -38,7 +30,7 @@ describe('PublishVOD', () => {
       },
     });
 
-    render(wrapInIntlProvider(<PublishVOD video={video} />));
+    render(<PublishVOD video={video} />);
 
     expect(
       screen.getByRole('link', { name: 'Download the video' }).closest('a'),
@@ -54,14 +46,7 @@ describe('PublishVOD', () => {
       },
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <PublishVOD video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<PublishVOD video={video} />);
 
     fetchMock.postOnce(`/api/videos/${video.id}/live-to-vod/`, 400);
 
@@ -82,14 +67,7 @@ describe('PublishVOD', () => {
       addResource: jest.fn(),
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <PublishVOD video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<PublishVOD video={video} />);
 
     const videoDeferred = new Deferred();
     fetchMock.postOnce(

@@ -1,4 +1,4 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import React from 'react';
 
 import { getDecodedJwt } from 'data/appData';
@@ -7,6 +7,7 @@ import { DecodedJwt } from 'types/jwt';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
 import { ConverseInitializer } from '.';
 

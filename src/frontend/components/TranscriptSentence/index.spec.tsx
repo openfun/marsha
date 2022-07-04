@@ -1,11 +1,13 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { VTTCue } from 'vtt.js';
+
+import render from 'utils/tests/render';
 
 import { TranscriptSentence } from '.';
 
 const mockSetTime = jest.fn();
-jest.mock('../../data/stores/useTranscriptTimeSelector', () => ({
+jest.mock('data/stores/useTranscriptTimeSelector', () => ({
   useTranscriptTimeSelector: jest.fn(() => mockSetTime),
 }));
 

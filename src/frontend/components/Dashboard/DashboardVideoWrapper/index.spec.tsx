@@ -1,8 +1,6 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Grommet } from 'grommet';
 import React, { Suspense } from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
@@ -15,8 +13,7 @@ import {
   Video,
 } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
+import render from 'utils/tests/render';
 
 import { DashboardVideoWrapper } from '.';
 
@@ -123,21 +120,12 @@ describe('<DashboardVideoWrapper />', () => {
       upload_state: uploadState.PENDING,
     });
 
-    const queryClient = new QueryClient();
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <LiveModaleConfigurationProvider value={null}>
-            <QueryClientProvider client={queryClient}>
-              <Grommet>
-                <Suspense fallback="loading...">
-                  <DashboardVideoWrapper video={video} />
-                </Suspense>
-              </Grommet>
-            </QueryClientProvider>
-          </LiveModaleConfigurationProvider>,
-        ),
-      ),
+      <LiveModaleConfigurationProvider value={null}>
+        <Suspense fallback="loading...">
+          <DashboardVideoWrapper video={video} />
+        </Suspense>
+      </LiveModaleConfigurationProvider>,
     );
 
     expect(spiedInitVideoWebsocket).toHaveBeenCalled();
@@ -148,9 +136,7 @@ describe('<DashboardVideoWrapper />', () => {
       live_state: null,
     });
 
-    render(
-      wrapInIntlProvider(wrapInRouter(<DashboardVideoWrapper video={video} />)),
-    );
+    render(<DashboardVideoWrapper video={video} />);
 
     await waitFor(() => expect(fetchMock.calls().length).toEqual(4));
 
@@ -191,9 +177,7 @@ describe('<DashboardVideoWrapper />', () => {
       upload_state: uploadState.READY,
     });
 
-    render(
-      wrapInIntlProvider(wrapInRouter(<DashboardVideoWrapper video={video} />)),
-    );
+    render(<DashboardVideoWrapper video={video} />);
 
     await screen.findByRole('link', { name: 'Dashboard' });
     screen.getByRole('link', { name: 'Playlist' });

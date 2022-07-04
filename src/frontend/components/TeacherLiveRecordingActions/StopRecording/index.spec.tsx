@@ -1,16 +1,14 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, setLogger } from 'react-query';
 
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { StopRecording } from '.';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('data/appData', () => ({
   appData: {},
@@ -26,12 +24,7 @@ setLogger({
 
 let queryClient: QueryClient;
 
-let matchMedia: MatchMediaMock;
-
 describe('<StopRecording />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   beforeEach(() => {
     queryClient = new QueryClient({
       defaultOptions: {
@@ -43,7 +36,6 @@ describe('<StopRecording />', () => {
   });
 
   afterEach(() => {
-    matchMedia.clear();
     fetchMock.restore();
     jest.resetAllMocks();
   });
@@ -56,14 +48,9 @@ describe('<StopRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, video);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <StopRecording video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<StopRecording video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
@@ -77,14 +64,9 @@ describe('<StopRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, 400);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <StopRecording video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<StopRecording video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
@@ -96,14 +78,9 @@ describe('<StopRecording />', () => {
   it('renders current recorded time', () => {
     const video = videoMockFactory({ recording_time: 3722 });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <StopRecording video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<StopRecording video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     screen.getByRole('button', { name: 'REC 0 1 : 0 2 : 0 2' });
   });
