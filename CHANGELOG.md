@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Allow to disable chrome sandboxing in puppeteer.
+  To disable it set DISABLE_PUPPETEER_SANDBOX=1
+
 ### Changed
 
 - Rename meetings to classrooms (no database change yet)
