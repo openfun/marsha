@@ -1,10 +1,10 @@
 import React from 'react';
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { converse } from 'utils/window';
+import render from 'utils/tests/render';
 
 import { StudentJoinDiscussionButton } from '.';
 
@@ -30,7 +30,7 @@ describe('<StudentJoinDiscussionButton />', () => {
   });
 
   it('renders the ask button', async () => {
-    render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
+    render(<StudentJoinDiscussionButton />);
 
     screen.getByRole('button', { name: 'Send request to join the discussion' });
   });
@@ -54,7 +54,7 @@ describe('<StudentJoinDiscussionButton />', () => {
       },
     });
 
-    render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
+    render(<StudentJoinDiscussionButton />);
 
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',
@@ -89,7 +89,7 @@ describe('<StudentJoinDiscussionButton />', () => {
       },
     });
 
-    render(wrapInIntlProvider(<StudentJoinDiscussionButton />));
+    render(<StudentJoinDiscussionButton />);
 
     const askButton = screen.getByRole('button', {
       name: 'Send request to join the discussion',

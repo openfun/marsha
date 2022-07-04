@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import {
   LivePanelItem,
@@ -9,7 +9,8 @@ import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { ViewersWrapper } from '.';
 
 describe('<ViewersWrapper />', () => {
@@ -20,13 +21,14 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper />));
+    render(<ViewersWrapper />);
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
       screen.queryByRole('button', { name: 'Hide viewers' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowViewersButton /> when panel is closed and viewers is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
@@ -34,13 +36,14 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.CHAT],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper />));
+    render(<ViewersWrapper />);
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
       screen.queryByRole('button', { name: 'Hide viewers' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowViewersButton /> when panel is opened but not selecting viewers', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
@@ -48,13 +51,14 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper />));
+    render(<ViewersWrapper />);
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
       screen.queryByRole('button', { name: 'Hide viewers' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowViewersButton /> when panel is opened and viewers is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
@@ -62,7 +66,7 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper />));
+    render(<ViewersWrapper />);
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),
@@ -81,7 +85,7 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper video={video} />));
+    render(<ViewersWrapper video={video} />);
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),
@@ -113,7 +117,7 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<ViewersWrapper video={video} />));
+    render(<ViewersWrapper video={video} />);
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),

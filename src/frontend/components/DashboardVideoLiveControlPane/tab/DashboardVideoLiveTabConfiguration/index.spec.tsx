@@ -1,11 +1,9 @@
 import { within } from '@testing-library/dom';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
-import { ResponsiveContext } from 'grommet';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { JoinMode } from 'types/tracks';
@@ -15,8 +13,10 @@ import {
   thumbnailMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveTabConfiguration } from '.';
+
 jest.mock('data/appData', () => ({
   appData: {},
 }));
@@ -31,6 +31,7 @@ describe('<DashboardVideoLiveTabConfiguration />', () => {
   afterAll(() => {
     jest.useRealTimers();
   });
+
   it('renders DashboardVideoLiveTabConfiguration', () => {
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
@@ -57,17 +58,7 @@ describe('<DashboardVideoLiveTabConfiguration />', () => {
     useThumbnail.getState().addResource(mockedThumbnail);
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
-    const queryClient = new QueryClient();
-
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <ResponsiveContext.Provider value="large">
-            <DashboardVideoLiveTabConfiguration video={mockVideo} />
-          </ResponsiveContext.Provider>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<DashboardVideoLiveTabConfiguration video={mockVideo} />);
 
     // DashboardVideoLiveWidgetToolsAndApplications
     screen.getByText('Tools and applications');

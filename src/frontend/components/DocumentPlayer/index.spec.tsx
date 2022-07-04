@@ -1,18 +1,20 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { XAPI_ENDPOINT } from 'settings';
+import { uploadState } from 'types/tracks';
+import { documentMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import DocumentPlayer from '.';
-import { XAPI_ENDPOINT } from '../../settings';
-import { uploadState } from '../../types/tracks';
-import { documentMockFactory } from '../../utils/tests/factories';
 
 const mockDocument = documentMockFactory({
   id: '42',
   title: 'foo.pdf',
   upload_state: uploadState.READY,
 });
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     document: mockDocument,
     jwt: 'foo',
@@ -28,10 +30,14 @@ describe('<DocumentPlayer />', () => {
       id: '42',
       title: 'foo.pdf',
     });
-    const { container } = render(<DocumentPlayer document={document} />);
+    const { elementContainer: container } = render(
+      <DocumentPlayer document={document} />,
+    );
 
     screen.getByRole('link', { name: 'foo.pdf' });
-    expect(container.getElementsByClassName('icon-file-text2')).toHaveLength(1);
+    expect(container!.getElementsByClassName('icon-file-text2')).toHaveLength(
+      1,
+    );
   });
 
   it('defaults to the document from props', () => {
@@ -39,10 +45,14 @@ describe('<DocumentPlayer />', () => {
       id: '43',
       title: 'bar.pdf',
     });
-    const { container } = render(<DocumentPlayer document={document} />);
+    const { elementContainer: container } = render(
+      <DocumentPlayer document={document} />,
+    );
 
     screen.getByRole('link', { name: 'bar.pdf' });
-    expect(container.getElementsByClassName('icon-file-text2')).toHaveLength(1);
+    expect(container!.getElementsByClassName('icon-file-text2')).toHaveLength(
+      1,
+    );
   });
 
   it('sends the xapi downloaded statement when clicking on the link', async () => {

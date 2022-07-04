@@ -1,9 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import renderer from 'react-test-renderer';
 
+import render from 'utils/tests/render';
 import { theme } from 'utils/theme/theme';
+
 import { ViewersListItemContainer } from '.';
 
 const GenericChild = () => <p>Some text</p>;

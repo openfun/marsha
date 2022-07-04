@@ -1,14 +1,18 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { modelName } from '../../types/models';
-import { liveState, UploadableObject, uploadState } from '../../types/tracks';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { liveState, UploadableObject, uploadState } from 'types/tracks';
+import render from 'utils/tests/render';
+
 import { ObjectStatusPicker } from '.';
 
-jest.mock('../../data/appData', () => ({}));
+jest.mock('data/appData', () => ({}));
 
 const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {
@@ -31,13 +35,11 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{ setUploadState: () => {}, uploadManagerState: {} }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{ setUploadState: () => {}, uploadManagerState: {} }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Missing ❌');
@@ -50,26 +52,24 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {
-                [object.id]: {
-                  file: new File(['(⌐□_□)'], 'course.mp4', {
-                    type: 'video/mp4',
-                  }),
-                  objectId: object.id,
-                  objectType: modelName.VIDEOS,
-                  progress: 60,
-                  status: UploadManagerStatus.UPLOADING,
-                },
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {
+              [object.id]: {
+                file: new File(['(⌐□_□)'], 'course.mp4', {
+                  type: 'video/mp4',
+                }),
+                objectId: object.id,
+                objectType: modelName.VIDEOS,
+                progress: 60,
+                status: UploadManagerStatus.UPLOADING,
               },
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+            },
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Uploading');
@@ -84,26 +84,24 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {
-                [object.id]: {
-                  file: new File(['(⌐□_□)'], 'course.mp4', {
-                    type: 'video/mp4',
-                  }),
-                  objectId: object.id,
-                  objectType: modelName.VIDEOS,
-                  progress: 100,
-                  status: UploadManagerStatus.SUCCESS,
-                },
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {
+              [object.id]: {
+                file: new File(['(⌐□_□)'], 'course.mp4', {
+                  type: 'video/mp4',
+                }),
+                objectId: object.id,
+                objectType: modelName.VIDEOS,
+                progress: 100,
+                status: UploadManagerStatus.SUCCESS,
               },
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+            },
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Processing');
@@ -118,16 +116,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Processing');
@@ -140,16 +136,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Ready ✔️');
@@ -162,16 +156,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Error ❌');
@@ -184,16 +176,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Deleted ❌');
@@ -209,16 +199,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Ready to start live');
@@ -232,16 +220,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('live Starting');
@@ -255,16 +241,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Live is running');
@@ -278,16 +262,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Live ended');
@@ -301,16 +283,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Live is stopping');
@@ -324,16 +304,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Waiting VOD publication');
@@ -347,16 +325,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Transforming live in VOD');
@@ -370,16 +346,14 @@ describe('<ObjectStatusPicker />', () => {
       } as UploadableObject;
 
       render(
-        wrapInIntlProvider(
-          <UploadManagerContext.Provider
-            value={{
-              setUploadState: () => {},
-              uploadManagerState: {},
-            }}
-          >
-            <ObjectStatusPicker object={object} />
-          </UploadManagerContext.Provider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
       );
 
       screen.getByText('Live has ended');

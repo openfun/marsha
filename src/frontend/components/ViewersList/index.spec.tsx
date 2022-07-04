@@ -1,18 +1,18 @@
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
 
 import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
 import { JoinMode } from 'types/tracks';
-import { converse } from 'utils/window';
+import { generateAnonymousNickname } from 'utils/chat/chat';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+import { converse } from 'utils/window';
 
 import { ViewersList } from '.';
-import { generateAnonymousNickname } from 'utils/chat/chat';
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -68,9 +68,7 @@ describe('<ViewersList /> when user is an instructor', () => {
   it('displays severals participants, not on stage and not asking, and then remove some of them', () => {
     const video = videoMockFactory();
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
     screen.getByText('On stage');
@@ -114,9 +112,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       ],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -135,9 +131,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -158,9 +152,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -185,9 +177,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants: [mockedParticipantOnStage1Full],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
     screen.getByText('On stage');
@@ -210,18 +200,14 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants: [mockedParticipantOnStage1Full],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
     expect(screen.queryByText('Terminate')).not.toBeInTheDocument();
   });
 
   it('does not display participants not in stage list when join mode is forced', () => {
     const video = videoMockFactory({ join_mode: JoinMode.FORCED });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     expect(
       screen.queryByText('No viewers are currently connected to your stream.'),
@@ -248,9 +234,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       ],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={true} video={video} />),
-    );
+    render(<ViewersList isInstructor={true} video={video} />);
 
     screen.getByText('my name');
     expect(screen.queryByText(anonymousName)).not.toBeInTheDocument();
@@ -262,7 +246,7 @@ describe('<ViewersList /> when user is a student', () => {
   it('adds and removes several users from the list.', () => {
     const video = videoMockFactory();
     const { rerender } = render(
-      wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
+      <ViewersList isInstructor={false} video={video} />,
     );
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
@@ -316,9 +300,7 @@ describe('<ViewersList /> when user is a student', () => {
         name: 'Student 2',
       }),
     );
-    rerender(
-      wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
-    );
+    rerender(<ViewersList isInstructor={false} video={video} />);
     screen.getByText('Student 2');
   });
 
@@ -333,9 +315,7 @@ describe('<ViewersList /> when user is a student', () => {
       ],
     });
 
-    render(
-      wrapInIntlProvider(<ViewersList isInstructor={false} video={video} />),
-    );
+    render(<ViewersList isInstructor={false} video={video} />);
     expect(screen.queryByText('Other participants')).toBeInTheDocument();
     expect(
       screen.queryByText('No viewers are currently connected to your stream.'),

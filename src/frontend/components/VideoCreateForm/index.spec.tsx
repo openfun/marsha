@@ -1,20 +1,20 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { modelName } from '../../types/models';
-import { Deferred } from '../../utils/tests/Deferred';
 import {
-  playlistMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { Deferred } from 'utils/tests/Deferred';
+import { playlistMockFactory, videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { VideoCreateForm } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -26,8 +26,6 @@ describe('<VideoCreateForm />', () => {
   });
 
   it('lets the user create a video with the title and playlist ID through 3 steps', async () => {
-    const queryClient = new QueryClient();
-
     const postStep1Deferred = new Deferred();
     fetchMock.post('/api/videos/', postStep1Deferred.promise);
 
@@ -35,15 +33,11 @@ describe('<VideoCreateForm />', () => {
     const video = videoMockFactory({ title: 'new video title', playlist });
 
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <UploadManagerContext.Provider
-            value={{ setUploadState: jest.fn(), uploadManagerState: {} }}
-          >
-            <VideoCreateForm />
-          </UploadManagerContext.Provider>
-        </QueryClientProvider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState: {} }}
+      >
+        <VideoCreateForm />
+      </UploadManagerContext.Provider>,
     );
 
     {
@@ -125,28 +119,24 @@ describe('<VideoCreateForm />', () => {
 
       // Rerender with a different value in upload manager to simulate an ongoing upload
       rerender(
-        wrapInIntlProvider(
-          <QueryClientProvider client={queryClient}>
-            <UploadManagerContext.Provider
-              value={{
-                setUploadState: jest.fn(),
-                uploadManagerState: {
-                  [video.id]: {
-                    file: new File(['(⌐□_□)'], 'course.mp4', {
-                      type: 'video/mp4',
-                    }),
-                    objectId: video.id,
-                    objectType: modelName.VIDEOS,
-                    progress: 10,
-                    status: UploadManagerStatus.UPLOADING,
-                  },
-                },
-              }}
-            >
-              <VideoCreateForm />
-            </UploadManagerContext.Provider>
-          </QueryClientProvider>,
-        ),
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: jest.fn(),
+            uploadManagerState: {
+              [video.id]: {
+                file: new File(['(⌐□_□)'], 'course.mp4', {
+                  type: 'video/mp4',
+                }),
+                objectId: video.id,
+                objectType: modelName.VIDEOS,
+                progress: 10,
+                status: UploadManagerStatus.UPLOADING,
+              },
+            },
+          }}
+        >
+          <VideoCreateForm />
+        </UploadManagerContext.Provider>,
       );
 
       // Step 3 is just the ongoing upload with some help text for users
@@ -173,21 +163,13 @@ describe('<VideoCreateForm />', () => {
   });
 
   it('does not ask for the playlist ID it it is provided to the form as a prop', async () => {
-    const queryClient = new QueryClient();
-
     const postStep1Deferred = new Deferred();
     fetchMock.post('/api/videos/', postStep1Deferred.promise);
 
     const playlist = playlistMockFactory();
     const video = videoMockFactory({ title: 'new video title', playlist });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideoCreateForm playlist={playlist.id} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoCreateForm playlist={playlist.id} />);
 
     const titleField = screen.getByRole('textbox', { name: 'Title' });
     expect(
@@ -228,20 +210,12 @@ describe('<VideoCreateForm />', () => {
   });
 
   it('shows errors on the title field as they are returned by the API', async () => {
-    const queryClient = new QueryClient();
-
     const postStep1Deferred = new Deferred();
     fetchMock.post('/api/videos/', postStep1Deferred.promise);
 
     const playlist = playlistMockFactory();
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideoCreateForm />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoCreateForm />);
 
     const titleField = screen.getByRole('textbox', { name: 'Title' });
     const playlistField = screen.getByRole('textbox', {
@@ -282,20 +256,12 @@ describe('<VideoCreateForm />', () => {
   });
 
   it('shows errors on the playlist ID field as they are returned by the API', async () => {
-    const queryClient = new QueryClient();
-
     const postStep1Deferred = new Deferred();
     fetchMock.post('/api/videos/', postStep1Deferred.promise);
 
     const playlist = playlistMockFactory();
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideoCreateForm />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideoCreateForm />);
 
     const titleField = screen.getByRole('textbox', { name: 'Title' });
     const playlistField = screen.getByRole('textbox', {

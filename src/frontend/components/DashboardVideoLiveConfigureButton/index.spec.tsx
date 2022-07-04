@@ -1,16 +1,16 @@
-import { fireEvent, render, waitFor, screen } from '@testing-library/react';
+import { fireEvent, waitFor, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { LiveModeType, liveState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { LiveModeType, liveState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveConfigureButton } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -20,14 +20,10 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
   it('displays the configure live button', () => {
     const video = videoMockFactory();
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoLiveConfigureButton
-            video={video}
-            type={LiveModeType.JITSI}
-          />,
-        ),
-      ),
+      <DashboardVideoLiveConfigureButton
+        video={video}
+        type={LiveModeType.JITSI}
+      />,
     );
 
     screen.getByRole('button', { name: 'Create a webinar' });
@@ -46,20 +42,20 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoLiveConfigureButton
-            video={video}
-            type={LiveModeType.JITSI}
-          />,
-          [
+      <DashboardVideoLiveConfigureButton
+        video={video}
+        type={LiveModeType.JITSI}
+      />,
+      {
+        routerOptions: {
+          routes: [
             {
               path: DASHBOARD_ROUTE(),
               render: () => <span>dashboard</span>,
             },
           ],
-        ),
-      ),
+        },
+      },
     );
 
     const button = screen.getByRole('button', {
@@ -85,20 +81,20 @@ describe('components/DashboardVideoLiveConfigureButton', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoLiveConfigureButton
-            video={video}
-            type={LiveModeType.JITSI}
-          />,
-          [
+      <DashboardVideoLiveConfigureButton
+        video={video}
+        type={LiveModeType.JITSI}
+      />,
+      {
+        routerOptions: {
+          routes: [
             {
               path: FULL_SCREEN_ERROR_ROUTE('liveInit'),
               render: () => <span>error</span>,
             },
           ],
-        ),
-      ),
+        },
+      },
     );
 
     const button = screen.getByRole('button', {

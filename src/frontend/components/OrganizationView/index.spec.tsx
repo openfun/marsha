@@ -1,19 +1,19 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter, Route } from 'react-router-dom';
+import { Route } from 'react-router-dom';
 
-import { Deferred } from '../../utils/tests/Deferred';
+import { Deferred } from 'utils/tests/Deferred';
 import {
   organizationMockFactory,
   playlistMockFactory,
   videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+} from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { OrganizationView } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -21,7 +21,6 @@ describe('<OrganizationView />', () => {
   afterEach(() => fetchMock.restore());
 
   it('shows the list of videos and playlists for the organization', async () => {
-    const queryClient = new QueryClient();
     const org = organizationMockFactory();
 
     const organizationDeferred = new Deferred();
@@ -43,15 +42,10 @@ describe('<OrganizationView />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter initialEntries={[`/${org.id}`]}>
-            <Route path={'/:organizationId'}>
-              <OrganizationView />
-            </Route>
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
+      <Route path={'/:organizationId'}>
+        <OrganizationView />
+      </Route>,
+      { routerOptions: { componentPath: `/${org.id}` } },
     );
 
     screen.getByRole('heading', { name: 'Organization', level: 1 });

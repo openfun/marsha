@@ -1,12 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
 
 import { Loader } from 'components/Loader';
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
 import { Video } from 'types/tracks';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
+import render from 'utils/tests/render';
 
 import Dashboard from './index';
 
@@ -56,13 +55,9 @@ describe('<Dashboard /> videos', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback={<Loader />}>
-            <Dashboard />
-          </Suspense>,
-        ),
-      ),
+      <Suspense fallback={<Loader />}>
+        <Dashboard />
+      </Suspense>,
     );
 
     await screen.findByText('Dashboard');
@@ -79,13 +74,9 @@ describe('<Dashboard /> videos', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Suspense fallback={<Loader />}>
-            <Dashboard />
-          </Suspense>,
-        ),
-      ),
+      <Suspense fallback={<Loader />}>
+        <Dashboard />
+      </Suspense>,
     );
 
     await screen.findByText('Dashboard');

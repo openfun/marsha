@@ -1,46 +1,57 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import React from 'react';
-import { Link, MemoryRouter, Route, Switch } from 'react-router-dom';
+import { fireEvent, screen } from '@testing-library/react';
+import React, { Fragment } from 'react';
+import { Link, Route, Switch } from 'react-router-dom';
 
-import { BreadCrumbs, BreadCrumbsProvider, Crumb } from '.';
+import render from 'utils/tests/render';
+
+import { BreadCrumbs, Crumb } from '.';
 
 describe('<BreadCrumbs />', () => {
-  it('picks up the Crumbs from the React tree and displays them in the breadcrumbs', () => {
+  it('picks up the Crumbs from the React tree and displays them in the breadcrumbs', async () => {
     render(
-      <MemoryRouter initialEntries={['/route-a']}>
-        <BreadCrumbsProvider>
-          <BreadCrumbs />
-          <Link to="/route-a">Link to route A</Link>
-          <Link to="/route-b">Link to route B</Link>
-          <Link to="/route-b/route-c">Link to route C</Link>
-          <Link to="/route-b/route-d">Link to route D</Link>
-          <Switch>
-            <Route path="/route-a">
-              <Crumb title="Parent route A crumb" />
-              <h1>Parent route A title</h1>
-            </Route>
+      <Fragment>
+        <Crumb title="Parent route A crumb" />
+        <h1>Parent route A title</h1>
+      </Fragment>,
+      {
+        routerOptions: {
+          header: (
+            <Fragment>
+              <BreadCrumbs />
+              <Link to="/route-a">Link to route A</Link>
+              <Link to="/route-b">Link to route B</Link>
+              <Link to="/route-b/route-c">Link to route C</Link>
+              <Link to="/route-b/route-d">Link to route D</Link>
+            </Fragment>
+          ),
+          componentPath: '/route-a',
+          routes: [
+            {
+              path: '/route-b/*',
+              render: () => (
+                <Fragment>
+                  <Crumb title="Parent route B crumb" />
+                  <Switch>
+                    <Route path="/route-b/route-c">
+                      <Crumb title="Child route C crumb" />
+                      <h1>Child route C title</h1>
+                    </Route>
 
-            <Route path="/route-b">
-              <Crumb title="Parent route B crumb" />
-              <Switch>
-                <Route path="/route-b/route-c">
-                  <Crumb title="Child route C crumb" />
-                  <h1>Child route C title</h1>
-                </Route>
+                    <Route path="/route-b/route-d">
+                      <Crumb title="Child route D crumb" />
+                      <h1>Child route D title</h1>
+                    </Route>
 
-                <Route path="/route-b/route-d">
-                  <Crumb title="Child route D crumb" />
-                  <h1>Child route D title</h1>
-                </Route>
-
-                <Route path="/route-b">
-                  <h1>Parent route B title</h1>
-                </Route>
-              </Switch>
-            </Route>
-          </Switch>
-        </BreadCrumbsProvider>
-      </MemoryRouter>,
+                    <Route path="/route-b">
+                      <h1>Parent route B title</h1>
+                    </Route>
+                  </Switch>
+                </Fragment>
+              ),
+            },
+          ],
+        },
+      },
     );
 
     // Route A is loaded and appears in crumbs, with no links as it is the current page
@@ -64,7 +75,7 @@ describe('<BreadCrumbs />', () => {
 
     // Move to route D, make sure crumbs for routes B and D are shown
     fireEvent.click(screen.getByRole('link', { name: 'Link to route D' }));
-    screen.getByRole('heading', { name: 'Child route D title' });
+    await screen.findByRole('heading', { name: 'Child route D title' });
     expect(
       screen.queryByRole('heading', { name: 'Parent route B title' }),
     ).toBeNull();

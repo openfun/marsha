@@ -1,22 +1,26 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
-import { modelName } from '../../types/models';
-import { liveState, uploadState, Video } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import DashboardVideo from './';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { liveState, uploadState, Video } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
+import DashboardVideo from '.';
 
 jest.mock('../DashboardVideoPane', () => ({
   DashboardVideoPane: (props: { video: Video }) => (
     <span title={props.video.id} />
   ),
 }));
-jest.mock('../DashboardTimedTextPane', () => ({
+jest.mock('components/DashboardTimedTextPane', () => ({
   DashboardTimedTextPane: () => <span>dashboard timed text pane</span>,
 }));
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     video: {
       id: 'dd44',
@@ -37,7 +41,7 @@ describe('<DashboardVideo />', () => {
       upload_state: uploadState.PROCESSING,
     });
 
-    render(wrapInIntlProvider(<DashboardVideo video={mockVideo} />));
+    render(<DashboardVideo video={mockVideo} />);
     screen.getByTitle('dd44');
     screen.getByText('dashboard timed text pane');
   });
@@ -50,7 +54,7 @@ describe('<DashboardVideo />', () => {
       live_state: null,
       upload_state: uploadState.PROCESSING,
     });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
+    render(<DashboardVideo video={videoProps} />);
     screen.getByTitle('dd43');
     screen.getByText('dashboard timed text pane');
   });
@@ -63,7 +67,7 @@ describe('<DashboardVideo />', () => {
       live_state: liveState.IDLE,
       upload_state: uploadState.PENDING,
     });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
+    render(<DashboardVideo video={videoProps} />);
 
     screen.getByTitle('dd43');
     expect(
@@ -76,7 +80,7 @@ describe('<DashboardVideo />', () => {
       id: 'dd43',
       upload_state: uploadState.DELETED,
     });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
+    render(<DashboardVideo video={videoProps} />);
 
     screen.getByTitle('dd43');
     expect(
@@ -89,7 +93,7 @@ describe('<DashboardVideo />', () => {
       id: 'dd43',
       upload_state: uploadState.PENDING,
     });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
+    render(<DashboardVideo video={videoProps} />);
 
     screen.getByTitle('dd43');
     expect(
@@ -101,7 +105,7 @@ describe('<DashboardVideo />', () => {
       id: 'dd43',
       upload_state: uploadState.PROCESSING,
     });
-    render(wrapInIntlProvider(<DashboardVideo video={videoProps} />));
+    render(<DashboardVideo video={videoProps} />);
 
     screen.getByTitle('dd43');
     screen.getByText('dashboard timed text pane');
@@ -127,7 +131,7 @@ describe('<DashboardVideo />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(<DashboardVideo video={videoProps} />)}
+        {<DashboardVideo video={videoProps} />}
       </UploadManagerContext.Provider>,
     );
 
@@ -155,7 +159,7 @@ describe('<DashboardVideo />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(<DashboardVideo video={videoProps} />)}
+        {<DashboardVideo video={videoProps} />}
       </UploadManagerContext.Provider>,
     );
 

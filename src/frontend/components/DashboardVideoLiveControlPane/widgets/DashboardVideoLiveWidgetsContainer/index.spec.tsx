@@ -1,8 +1,9 @@
-import { render } from '@testing-library/react';
 import React from 'react';
 import { ResponsiveContext } from 'grommet';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveWidgetsContainer } from '.';
 
 const GenericComponent1 = () => <p>Generic component 1</p>;
@@ -23,7 +24,7 @@ const genericComponentsList = [
 
 describe('<DashboardVideoLiveWidgetContainer />', () => {
   it('renders DashboardVideoLiveWidgetContainer empty', () => {
-    const { container } = render(
+    const { elementContainer: container } = render(
       <InfoWidgetModalProvider value={null}>
         <DashboardVideoLiveWidgetsContainer>
           {[]}
@@ -34,7 +35,7 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetContainer on a large screen', () => {
-    const { container } = render(
+    const { elementContainer: container } = render(
       <ResponsiveContext.Provider value="large">
         <InfoWidgetModalProvider value={null}>
           <DashboardVideoLiveWidgetsContainer>
@@ -44,7 +45,7 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
       </ResponsiveContext.Provider>,
     );
 
-    const parentContainer = container.firstChild;
+    const parentContainer = container!.firstChild;
     expect(parentContainer).not.toBeNull();
 
     // 3 columns and 2 divs used for gap between them
@@ -77,7 +78,7 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetContainer on a medium screen', () => {
-    const { container } = render(
+    const { elementContainer: container } = render(
       <ResponsiveContext.Provider value="medium">
         <InfoWidgetModalProvider value={null}>
           <DashboardVideoLiveWidgetsContainer>
@@ -87,8 +88,8 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
       </ResponsiveContext.Provider>,
     );
 
-    expect(container.firstChild).not.toBeNull();
-    const parentContainer = container.firstChild;
+    expect(container!.firstChild).not.toBeNull();
+    const parentContainer = container!.firstChild;
 
     // 2 columns and 1 div used for gap between them
     expect(parentContainer!.childNodes.length).toEqual(2 + 1);
@@ -118,7 +119,7 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
   });
 
   it('renders DashboardVideoLiveWidgetContainer on a small screen', () => {
-    const { container } = render(
+    const { elementContainer: container } = render(
       <ResponsiveContext.Provider value="small">
         <InfoWidgetModalProvider value={null}>
           <DashboardVideoLiveWidgetsContainer>
@@ -128,8 +129,8 @@ describe('<DashboardVideoLiveWidgetContainer />', () => {
       </ResponsiveContext.Provider>,
     );
 
-    expect(container.firstChild).not.toBeNull();
-    const parentContainer = container.firstChild;
+    expect(container!.firstChild).not.toBeNull();
+    const parentContainer = container!.firstChild;
 
     // 1 column and 0 div used for gap between
     expect(parentContainer!.childNodes.length).toEqual(1 + 0);

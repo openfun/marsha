@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { DashboardVideoLiveWidgetToggleInput } from './index';
 
@@ -8,6 +10,7 @@ const onChangeToggleMock = jest.fn();
 
 describe('<DashboardVideoLiveWidgetToggleInput />', () => {
   beforeEach(() => jest.resetAllMocks());
+
   it('renders the toggle input unchecked and performs a click on it', () => {
     render(
       <DashboardVideoLiveWidgetToggleInput

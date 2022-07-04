@@ -1,10 +1,11 @@
-import { render } from '@testing-library/react';
 import React from 'react';
 
-import { InstructorWrapper } from './';
-import { videoMockFactory } from '../../utils/tests/factories';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
-jest.mock('../InstructorView/index', () => {
+import { InstructorWrapper } from '.';
+
+jest.mock('components/InstructorView/index', () => {
   return {
     InstructorView: ({ children }: { children: React.ReactNode }) => (
       <div>
@@ -16,7 +17,7 @@ jest.mock('../InstructorView/index', () => {
 });
 
 let mockCanAccessDashboard: boolean;
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   getDecodedJwt: () => ({
     permissions: {
       can_access_dashboard: mockCanAccessDashboard,
@@ -26,6 +27,7 @@ jest.mock('../../data/appData', () => ({
 
 describe('<InstructorWrapper />', () => {
   const video = videoMockFactory();
+
   it('wraps its children in an instructor view if the current user is an instructor', () => {
     mockCanAccessDashboard = true;
     const { getByText, getByTitle } = render(

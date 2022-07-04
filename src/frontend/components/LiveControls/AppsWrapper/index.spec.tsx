@@ -1,11 +1,11 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { AppsWrapper } from '.';
 
@@ -17,13 +17,14 @@ describe('<AppsWrapper />', () => {
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
-    render(wrapInIntlProvider(<AppsWrapper />));
+    render(<AppsWrapper />);
 
     screen.getByRole('button', { name: 'Show apps' });
     expect(
       screen.queryByRole('button', { name: 'Hide apps' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowAppsButton /> when panel is closed and apps is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: false,
@@ -31,13 +32,14 @@ describe('<AppsWrapper />', () => {
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
-    render(wrapInIntlProvider(<AppsWrapper />));
+    render(<AppsWrapper />);
 
     screen.getByRole('button', { name: 'Show apps' });
     expect(
       screen.queryByRole('button', { name: 'Hide apps' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowAppsButton /> when panel is opened but not selecting apps', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
@@ -45,13 +47,14 @@ describe('<AppsWrapper />', () => {
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
-    render(wrapInIntlProvider(<AppsWrapper />));
+    render(<AppsWrapper />);
 
     screen.getByRole('button', { name: 'Show apps' });
     expect(
       screen.queryByRole('button', { name: 'Hide apps' }),
     ).not.toBeInTheDocument();
   });
+
   it('renders <StudentShowAppsButton /> when panel is opened and apps is selected', () => {
     useLivePanelState.setState({
       isPanelVisible: true,
@@ -59,7 +62,7 @@ describe('<AppsWrapper />', () => {
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.VIEWERS_LIST],
     });
 
-    render(wrapInIntlProvider(<AppsWrapper />));
+    render(<AppsWrapper />);
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),

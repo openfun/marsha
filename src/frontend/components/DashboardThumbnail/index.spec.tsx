@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import WS from 'jest-websocket-mock';
 import React from 'react';
@@ -13,12 +13,9 @@ import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardThumbnail } from '.';
+import render from 'utils/tests/render';
 
-jest.mock('react-router-dom', () => ({
-  Redirect: ({ to }: { to: string }) => `Redirect push to ${to}.`,
-}));
+import { DashboardThumbnail } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -88,7 +85,7 @@ describe('<DashboardThumbnail />', () => {
     });
 
     useThumbnail.getState().addResource(videoReady.thumbnail!);
-    render(wrapInIntlProvider(<DashboardThumbnail video={videoReady} />));
+    render(<DashboardThumbnail video={videoReady} />);
 
     // The progress indicator, processing message & error message are not shown
     expect(screen.queryByText('0%')).toEqual(null);
@@ -115,9 +112,7 @@ describe('<DashboardThumbnail />', () => {
       upload_state: uploadState.READY,
     });
 
-    render(
-      wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
-    );
+    render(<DashboardThumbnail video={videoWithoutThumbnail} />);
 
     // The progress indicator, processing message & error message are not shown
     expect(screen.queryByText('0%')).toEqual(null);
@@ -174,9 +169,7 @@ describe('<DashboardThumbnail />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(
-          <DashboardThumbnail video={videoWithLoadingThumbnail} />,
-        )}
+        <DashboardThumbnail video={videoWithLoadingThumbnail} />
       </UploadManagerContext.Provider>,
     );
 
@@ -219,11 +212,7 @@ describe('<DashboardThumbnail />', () => {
     useThumbnail
       .getState()
       .addResource(videoWithProcessingThumbnail.thumbnail!);
-    render(
-      wrapInIntlProvider(
-        <DashboardThumbnail video={videoWithProcessingThumbnail} />,
-      ),
-    );
+    render(<DashboardThumbnail video={videoWithProcessingThumbnail} />);
 
     // The thumbnail image, progress indicator & error message are not shown
     expect(screen.queryByAltText('Video thumbnail preview image.')).toEqual(
@@ -295,9 +284,7 @@ describe('<DashboardThumbnail />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(
-          <DashboardThumbnail video={videoWithLoadingThumbnail} />,
-        )}
+        <DashboardThumbnail video={videoWithLoadingThumbnail} />
       </UploadManagerContext.Provider>,
     );
 
@@ -339,11 +326,7 @@ describe('<DashboardThumbnail />', () => {
 
     useThumbnail.getState().addResource(videoWithErroredThumbnail.thumbnail!);
 
-    render(
-      wrapInIntlProvider(
-        <DashboardThumbnail video={videoWithErroredThumbnail} />,
-      ),
-    );
+    render(<DashboardThumbnail video={videoWithErroredThumbnail} />);
 
     // The thumbnail image, progress indicator & processing message are not shown
     expect(screen.queryByAltText('Video thumbnail preview image.')).toEqual(
@@ -389,9 +372,16 @@ describe('<DashboardThumbnail />', () => {
     expect(
       useThumbnail.getState().thumbnails[thumbnailCreated.id],
     ).not.toBeDefined();
-    render(
-      wrapInIntlProvider(<DashboardThumbnail video={videoWithoutThumbnail} />),
-    );
+    render(<DashboardThumbnail video={videoWithoutThumbnail} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: '/form/thumbnails/42',
+            render: () => <span>form thumbnails</span>,
+          },
+        ],
+      },
+    });
 
     expect(
       screen.getByAltText('Video thumbnail preview image.').getAttribute('src'),
@@ -409,6 +399,6 @@ describe('<DashboardThumbnail />', () => {
     expect(useThumbnail.getState().thumbnails[thumbnailCreated.id]).toEqual(
       thumbnailCreated,
     );
-    screen.getByText('Redirect push to /form/thumbnails/42.');
+    screen.getByText('form thumbnails');
   });
 });

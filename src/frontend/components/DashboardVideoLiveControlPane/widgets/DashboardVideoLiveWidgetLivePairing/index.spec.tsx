@@ -1,12 +1,12 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveWidgetLivePairing } from '.';
 
 jest.mock('data/appData', () => ({
@@ -20,16 +20,11 @@ describe('DashboardVideoLiveWidgetLivePairing', () => {
     const video = videoMockFactory({
       live_state: liveState.IDLE,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetLivePairing video={video} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetLivePairing video={video} />
+      </InfoWidgetModalProvider>,
     );
 
     expect(

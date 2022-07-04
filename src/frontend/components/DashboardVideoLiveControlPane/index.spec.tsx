@@ -1,11 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveControlPane } from '.';
 
 jest.mock('data/appData', () => ({
@@ -26,17 +26,12 @@ describe('<DashboardVideoLiveControlPane />', () => {
       live_state: liveState.RUNNING,
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <ResponsiveContext.Provider value="large">
-            <DashboardVideoLiveControlPane video={mockVideo} />
-          </ResponsiveContext.Provider>
-        </QueryClientProvider>,
-      ),
+      <ResponsiveContext.Provider value="large">
+        <DashboardVideoLiveControlPane video={mockVideo} />
+      </ResponsiveContext.Provider>,
     );
+
     screen.getByRole('tab', { name: 'configuration' });
     screen.getByRole('tab', { name: 'attendances' });
   });

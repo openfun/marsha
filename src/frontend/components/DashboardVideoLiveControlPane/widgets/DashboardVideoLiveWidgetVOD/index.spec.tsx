@@ -1,10 +1,11 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveWidgetVOD } from '.';
 import { shouldDisplayDefaultMessage } from './utils';
 
@@ -33,11 +34,9 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetVOD video={video} />
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVOD video={video} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('VOD');
@@ -54,11 +53,9 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetVOD video={video} />{' '}
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVOD video={video} />{' '}
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Harvesting in progress...');
@@ -90,11 +87,9 @@ describe('DashboardVideoLiveWidgetVOD', () => {
       });
 
       render(
-        wrapInIntlProvider(
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVOD video={video} />
-          </InfoWidgetModalProvider>,
-        ),
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVOD video={video} />
+        </InfoWidgetModalProvider>,
       );
 
       screen.getByText(
@@ -125,11 +120,9 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetVOD video={video} />
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVOD video={video} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByRole('button', { name: 'Generate file' });
@@ -159,11 +152,9 @@ describe('DashboardVideoLiveWidgetVOD', () => {
     mockedShouldDisplayDefaultMessage.mockReturnValue(false);
 
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetVOD video={video} />
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVOD video={video} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByRole('button', { name: 'Convert into VOD' });

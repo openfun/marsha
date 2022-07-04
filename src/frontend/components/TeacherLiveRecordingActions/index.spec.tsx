@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient } from 'react-query';
 import { liveState } from 'types/tracks';
 
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { TeacherLiveRecordingActions } from '.';
 
@@ -28,13 +28,9 @@ describe('<TeacherLiveRecordingActions />', () => {
   it('does not render actions when live is not running', () => {
     const video = videoMockFactory();
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<TeacherLiveRecordingActions isJitsiAdministrator video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
     expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
@@ -43,13 +39,9 @@ describe('<TeacherLiveRecordingActions />', () => {
   it('renders start recording when live is running and is_recording is undefined', () => {
     const video = videoMockFactory({ live_state: liveState.RUNNING });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<TeacherLiveRecordingActions isJitsiAdministrator video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     screen.getByTestId('start-recording');
     expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
@@ -61,13 +53,9 @@ describe('<TeacherLiveRecordingActions />', () => {
       is_recording: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<TeacherLiveRecordingActions isJitsiAdministrator video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     screen.getByTestId('start-recording');
     expect(screen.queryByTestId('stop-recording')).not.toBeInTheDocument();
@@ -79,13 +67,9 @@ describe('<TeacherLiveRecordingActions />', () => {
       is_recording: true,
     });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions isJitsiAdministrator video={video} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<TeacherLiveRecordingActions isJitsiAdministrator video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
     screen.getByTestId('stop-recording');
@@ -98,14 +82,13 @@ describe('<TeacherLiveRecordingActions />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions
-            isJitsiAdministrator={false}
-            video={video}
-          />
-        </QueryClientProvider>,
-      ),
+      <TeacherLiveRecordingActions
+        isJitsiAdministrator={false}
+        video={video}
+      />,
+      {
+        queryOptions: { client: queryClient },
+      },
     );
 
     expect(screen.queryByTestId('start-recording')).not.toBeInTheDocument();
@@ -118,16 +101,9 @@ describe('<TeacherLiveRecordingActions />', () => {
       allow_recording: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <TeacherLiveRecordingActions
-            isJitsiAdministrator={true}
-            video={video}
-          />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<TeacherLiveRecordingActions isJitsiAdministrator video={video} />, {
+      queryOptions: { client: queryClient },
+    });
 
     expect(
       screen.queryByRole('button', { name: 'Start recording' }),

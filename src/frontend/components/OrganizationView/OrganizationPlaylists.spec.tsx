@@ -1,18 +1,18 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { MemoryRouter } from 'react-router-dom';
+import { QueryClient } from 'react-query';
 
-import { Deferred } from '../../utils/tests/Deferred';
+import { Deferred } from 'utils/tests/Deferred';
 import {
   organizationMockFactory,
   playlistMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+} from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { OrganizationPlaylists } from './OrganizationPlaylists';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -22,7 +22,6 @@ describe('<OrganizationPlaylists />', () => {
   afterEach(() => fetchMock.restore());
 
   it('gets and shows the list of playlists for a given organization', async () => {
-    const queryClient = new QueryClient();
     const org = organizationMockFactory();
 
     const playlist1 = playlistMockFactory({ organization: org.id });
@@ -34,15 +33,7 @@ describe('<OrganizationPlaylists />', () => {
       deferred.promise,
     );
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <OrganizationPlaylists organizationId={org.id} />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<OrganizationPlaylists organizationId={org.id} />);
 
     screen.getByRole('status', { name: 'Loading playlists...' });
 
@@ -67,7 +58,6 @@ describe('<OrganizationPlaylists />', () => {
   });
 
   it('shows an explanatory message when the list of playlists is empty', async () => {
-    const queryClient = new QueryClient();
     const org = organizationMockFactory();
 
     const deferred = new Deferred();
@@ -76,15 +66,7 @@ describe('<OrganizationPlaylists />', () => {
       deferred.promise,
     );
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <OrganizationPlaylists organizationId={org.id} />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<OrganizationPlaylists organizationId={org.id} />);
 
     screen.getByRole('status', { name: 'Loading playlists...' });
 
@@ -118,15 +100,9 @@ describe('<OrganizationPlaylists />', () => {
       deferred.promise,
     );
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <MemoryRouter>
-            <OrganizationPlaylists organizationId={org.id} />
-          </MemoryRouter>
-        </QueryClientProvider>,
-      ),
-    );
+    render(<OrganizationPlaylists organizationId={org.id} />, {
+      queryOptions: { client: queryClient },
+    });
 
     screen.getByRole('status', { name: 'Loading playlists...' });
 

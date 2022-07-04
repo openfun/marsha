@@ -1,11 +1,11 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, jest.fn()],
@@ -33,13 +33,13 @@ jest.mock('data/appData', () => ({
 
 describe('<Chat />', () => {
   it('renders the Chat component', () => {
-    render(wrapInIntlProvider(<Chat />));
+    render(<Chat />);
 
     screen.getByRole('button', { name: 'Join the chat' });
   });
 
   it('renders the Chat component as standalone', () => {
-    render(wrapInIntlProvider(<Chat standalone />));
+    render(<Chat standalone />);
 
     screen.getByRole('button', { name: 'Join the chat' });
   });

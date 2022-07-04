@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -18,8 +18,7 @@ import { PersistentStore } from 'types/XMPP';
 import { initWebinarContext } from 'utils/initWebinarContext';
 import { getAnonymousId } from 'utils/localstorage';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
+import render from 'utils/tests/render';
 
 import PublicVideoDashboard from '.';
 
@@ -86,8 +85,6 @@ jest.mock('data/appData', () => ({
   }),
 }));
 
-window.HTMLElement.prototype.scrollTo = jest.fn();
-
 describe('PublicVideoDashboard', () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -144,10 +141,8 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
+    const { elementContainer: container } = render(
+      <PublicVideoDashboard video={video} playerType="videojs" />,
     );
 
     await waitFor(() =>
@@ -163,15 +158,15 @@ describe('PublicVideoDashboard', () => {
     );
 
     expect(
-      container.querySelector('source[src="https://example.com/144p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('source[src="https://example.com/1080p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
     ).not.toBeNull();
-    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      2,
-    );
-    const videoElement = container.querySelector('video')!;
+    expect(
+      container!.querySelectorAll('source[type="video/mp4"]'),
+    ).toHaveLength(2);
+    const videoElement = container!.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
     expect(videoElement.poster).toEqual(
       'https://example.com/thumbnail/1080p.jpg',
@@ -205,10 +200,8 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
+    const { elementContainer: container } = render(
+      <PublicVideoDashboard video={video} playerType="videojs" />,
     );
 
     await waitFor(() =>
@@ -228,15 +221,15 @@ describe('PublicVideoDashboard', () => {
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
     expect(
-      container.querySelector('source[src="https://example.com/144p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('source[src="https://example.com/1080p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
     ).not.toBeNull();
-    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      2,
-    );
-    const videoElement = container.querySelector('video')!;
+    expect(
+      container!.querySelectorAll('source[type="video/mp4"]'),
+    ).toHaveLength(2);
+    const videoElement = container!.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
     expect(videoElement.poster).toEqual(
       'https://example.com/thumbnail/1080p.jpg',
@@ -272,10 +265,8 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
+    const { elementContainer: container } = render(
+      <PublicVideoDashboard video={video} playerType="videojs" />,
     );
 
     await waitFor(() =>
@@ -295,21 +286,21 @@ describe('PublicVideoDashboard', () => {
     screen.getByText(/Download this video/i);
     screen.getByText('Show a transcript');
     expect(
-      container.querySelector('source[src="https://example.com/144p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
     ).not.toBeNull();
     expect(
-      container.querySelector('source[src="https://example.com/1080p.mp4"]'),
+      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
     ).not.toBeNull();
-    expect(container.querySelectorAll('source[type="video/mp4"]')).toHaveLength(
-      2,
-    );
-    const videoElement = container.querySelector('video')!;
+    expect(
+      container!.querySelectorAll('source[type="video/mp4"]'),
+    ).toHaveLength(2);
+    const videoElement = container!.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
     expect(videoElement.poster).toEqual(
       'https://example.com/thumbnail/1080p.jpg',
     );
 
-    expect(container.querySelector('option[value="ttt-1"]')).not.toBeNull();
+    expect(container!.querySelector('option[value="ttt-1"]')).not.toBeNull();
   });
 
   it('displays the video player, the tile, the chat and chat action', async () => {
@@ -340,10 +331,8 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { container } = render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
+    const { elementContainer: container } = render(
+      <PublicVideoDashboard video={video} playerType="videojs" />,
     );
 
     await waitFor(() =>
@@ -362,7 +351,7 @@ describe('PublicVideoDashboard', () => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
     });
 
-    const videoElement = container.querySelector('video')!;
+    const videoElement = container!.querySelector('video')!;
     expect(videoElement.tabIndex).toEqual(-1);
 
     screen.getByText('live title');
@@ -400,11 +389,7 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
     await waitFor(() => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
@@ -441,11 +426,7 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        <PublicVideoDashboard video={video} playerType="videojs" />,
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
     await waitFor(() => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
@@ -460,27 +441,24 @@ describe('PublicVideoDashboard', () => {
     const video = videoMockFactory({
       upload_state: uploadState.DELETED,
     });
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <PublicVideoDashboard video={video} playerType="videojs" />,
-          [
-            {
-              path: DASHBOARD_ROUTE(),
-              render: ({ match }) => (
-                <span>{`dashboard ${match.params.objectType}`}</span>
-              ),
-            },
-            {
-              path: FULL_SCREEN_ERROR_ROUTE(),
-              render: ({ match }) => (
-                <span>{`Error Component: ${match.params.code}`}</span>
-              ),
-            },
-          ],
-        ),
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(),
+            render: ({ match }) => (
+              <span>{`dashboard ${match.params.objectType}`}</span>
+            ),
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+        ],
+      },
+    });
 
     screen.getByText('Error Component: videoDeleted');
   });
@@ -490,10 +468,11 @@ describe('PublicVideoDashboard', () => {
       urls: null,
     });
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <PublicVideoDashboard video={video} playerType="videojs" />,
-          [
+      <PublicVideoDashboard video={video} playerType="videojs" />,
+
+      {
+        routerOptions: {
+          routes: [
             {
               path: DASHBOARD_ROUTE(),
               render: ({ match }) => (
@@ -505,8 +484,8 @@ describe('PublicVideoDashboard', () => {
               render: () => <span>{`Error Component`}</span>,
             },
           ],
-        ),
-      ),
+        },
+      },
     );
 
     screen.getByText('Error Component');
@@ -520,13 +499,7 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <PublicVideoDashboard video={video} playerType="videojs" />,
-        ),
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
     await waitFor(() => {
       expect(mockInitWebinarContext).toHaveBeenCalled();
     });
@@ -542,13 +515,7 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <PublicVideoDashboard video={video} playerType="videojs" />,
-        ),
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
     await screen.findByRole('heading', { name: 'Live is starting' });
     expect(mockInitWebinarContext).toHaveBeenCalled();
@@ -573,13 +540,7 @@ describe('PublicVideoDashboard', () => {
       isStarted: false,
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <PublicVideoDashboard video={video} playerType="videojs" />,
-        ),
-      ),
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
     await screen.findByRole('button', { name: /register/i });
     screen.getByRole('heading', {
       name: /Live will start in 2 days at 11:00 AM/i,

@@ -1,19 +1,21 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Grommet } from 'grommet';
 import React from 'react';
 
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { Playlist, uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { documentMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import DashboardDocument from '.';
-import { modelName } from '../../types/models';
-import { Playlist, uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { documentMockFactory } from '../../utils/tests/factories';
-import { wrapInRouter } from '../../utils/tests/router';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     document: null,
     jwt: 'cool_token_m8',
@@ -36,25 +38,14 @@ describe('<DashboardDocument />', () => {
 
     fetchMock.mock('/api/documents/44/', deferred.promise);
 
-    // wrap the component in a grommet provider to have a valid theme.
-    // Without it, the FormField component fail to render because it is a composed
-    // component using property in the theme.
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <DashboardDocument document={document} />
-          </Grommet>,
-        ),
-      ),
-    );
+    render(<DashboardDocument document={document} />);
     screen.getByText('Processing');
     expect(fetchMock.called()).not.toBeTruthy();
 
     // First backend call: the document is still processing
     jest.advanceTimersByTime(1000 * 10 + 200);
 
-    await act(async () =>
+    act(() =>
       deferred.resolve(
         JSON.stringify({
           ...document,
@@ -64,10 +55,12 @@ describe('<DashboardDocument />', () => {
       ),
     );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
-      expect(fetchMock.lastCall()![1]!.headers).toEqual({
-        Authorization: 'Bearer cool_token_m8',
-      });
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
+    );
+    expect(fetchMock.lastCall()![1]!.headers).toEqual({
+      Authorization: 'Bearer cool_token_m8',
+    });
     screen.getByText('Processing');
 
     // The document will be ready in further responses
@@ -77,7 +70,7 @@ describe('<DashboardDocument />', () => {
 
     // Second backend call
     jest.advanceTimersByTime(1000 * 30 + 200);
-    await act(async () =>
+    act(() =>
       deferred.resolve(
         JSON.stringify({
           ...document,
@@ -87,7 +80,9 @@ describe('<DashboardDocument />', () => {
       ),
     );
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/');
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
+    );
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
@@ -97,17 +92,13 @@ describe('<DashboardDocument />', () => {
 
   it('shows the upload button in pending state', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardDocument
-            document={documentMockFactory({
-              id: '45',
-              is_ready_to_show: true,
-              upload_state: uploadState.PENDING,
-            })}
-          />,
-        ),
-      ),
+      <DashboardDocument
+        document={documentMockFactory({
+          id: '45',
+          is_ready_to_show: true,
+          upload_state: uploadState.PENDING,
+        })}
+      />,
     );
 
     screen.getByText('Upload a document');
@@ -115,17 +106,13 @@ describe('<DashboardDocument />', () => {
 
   it('shows the replace button in error state', () => {
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardDocument
-            document={documentMockFactory({
-              id: '45',
-              upload_state: uploadState.ERROR,
-              is_ready_to_show: true,
-            })}
-          />,
-        ),
-      ),
+      <DashboardDocument
+        document={documentMockFactory({
+          id: '45',
+          upload_state: uploadState.ERROR,
+          is_ready_to_show: true,
+        })}
+      />,
     );
 
     screen.getByText((content) => content.startsWith('Error'));
@@ -137,25 +124,16 @@ describe('<DashboardDocument />', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     } as Playlist;
-    // wrap the component in a grommet provider to have a valid theme.
-    // Without it, the FormField component fail to render because it is a composed
-    // component using property in the theme.
     const { container } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <DashboardDocument
-              document={documentMockFactory({
-                id: '45',
-                is_ready_to_show: true,
-                upload_state: uploadState.READY,
-                title: 'foo',
-                playlist,
-              })}
-            />
-          </Grommet>,
-        ),
-      ),
+      <DashboardDocument
+        document={documentMockFactory({
+          id: '45',
+          is_ready_to_show: true,
+          upload_state: uploadState.READY,
+          title: 'foo',
+          playlist,
+        })}
+      />,
     );
 
     // document state
@@ -190,16 +168,12 @@ describe('<DashboardDocument />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <DashboardDocument
-              document={documentMockFactory({
-                id: '45',
-                upload_state: uploadState.PENDING,
-              })}
-            />,
-          ),
-        )}
+        <DashboardDocument
+          document={documentMockFactory({
+            id: '45',
+            upload_state: uploadState.PENDING,
+          })}
+        />
       </UploadManagerContext.Provider>,
     );
 

@@ -1,18 +1,15 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { report } from 'utils/errors/report';
 import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DisallowedDownloadButton } from '.';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import { DisallowedDownloadButton } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -31,30 +28,9 @@ setLogger({
 });
 
 describe('<DisallowedDownloadButton />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   it('clicks on the button and successfully updates the show_download property', async () => {
@@ -63,7 +39,6 @@ describe('<DisallowedDownloadButton />', () => {
       show_download: false,
       video: videoId,
     });
-    const queryClient = new QueryClient();
 
     fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, {
       ...mockedSharedLiveMedia,
@@ -71,15 +46,7 @@ describe('<DisallowedDownloadButton />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <DisallowedDownloadButton
-            sharedLiveMediaId={mockedSharedLiveMedia.id}
-          />
-        </QueryClientProvider>,
-      ),
+      <DisallowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
     );
 
     const disallowedDownloadButton = screen.getByRole('button', {
@@ -111,20 +78,11 @@ describe('<DisallowedDownloadButton />', () => {
       show_download: false,
       video: videoId,
     });
-    const queryClient = new QueryClient();
 
     fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <DisallowedDownloadButton
-            sharedLiveMediaId={mockedSharedLiveMedia.id}
-          />
-        </QueryClientProvider>,
-      ),
+      <DisallowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
     );
 
     const disallowedDownloadButton = screen.getByRole('button', {

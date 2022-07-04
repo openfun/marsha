@@ -1,9 +1,9 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { Deferred } from 'utils/tests/Deferred';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { AudioControl } from '.';
 
@@ -41,7 +41,7 @@ describe('<AudioControl />', () => {
     const deferred = new Deferred();
     mockIsAudioMuted.mockReturnValue(deferred.promise);
 
-    render(wrapInIntlProvider(<AudioControl />));
+    render(<AudioControl />);
 
     await waitFor(() => expect(events.audioMuteStatusChanged).toBeDefined());
 
@@ -57,7 +57,7 @@ describe('<AudioControl />', () => {
     const deferred = new Deferred();
     mockIsAudioMuted.mockReturnValue(deferred.promise);
 
-    render(wrapInIntlProvider(<AudioControl />));
+    render(<AudioControl />);
 
     await waitFor(() => expect(events.audioMuteStatusChanged).toBeDefined());
 
@@ -70,7 +70,7 @@ describe('<AudioControl />', () => {
     const deferred = new Deferred();
     mockIsAudioMuted.mockReturnValue(deferred.promise);
 
-    render(wrapInIntlProvider(<AudioControl />));
+    render(<AudioControl />);
 
     await waitFor(() => expect(events.audioMuteStatusChanged).toBeDefined());
 
@@ -83,7 +83,7 @@ describe('<AudioControl />', () => {
     const deferred = new Deferred();
     mockIsAudioMuted.mockReturnValue(deferred.promise);
 
-    render(wrapInIntlProvider(<AudioControl />));
+    render(<AudioControl />);
 
     await waitFor(() => expect(events.audioMuteStatusChanged).toBeDefined());
 
@@ -113,7 +113,7 @@ describe('<AudioControl />', () => {
     const deferred = new Deferred();
     mockIsAudioMuted.mockReturnValue(deferred.promise);
 
-    render(wrapInIntlProvider(<AudioControl />));
+    render(<AudioControl />);
 
     await waitFor(() => expect(events.audioMuteStatusChanged).toBeDefined());
 

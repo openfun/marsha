@@ -1,17 +1,17 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { TimedTextCreationForm } from '.';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { report } from '../../utils/errors/report';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import render from 'utils/tests/render';
 
-jest.mock('../../utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('../../data/appData', () => ({ appData: { jwt: 'some token' } }));
+import { TimedTextCreationForm } from '.';
+
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('data/appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('<TimedTextCreationForm />', () => {
   beforeEach(() => {
@@ -38,12 +38,10 @@ describe('<TimedTextCreationForm />', () => {
 
   it('renders and loads the language choices', async () => {
     render(
-      wrapInIntlProvider(
-        <TimedTextCreationForm
-          excludedLanguages={['en']}
-          mode={timedTextMode.SUBTITLE}
-        />,
-      ),
+      <TimedTextCreationForm
+        excludedLanguages={['en']}
+        mode={timedTextMode.SUBTITLE}
+      />,
     );
     await screen.findByText('Add a language');
 
@@ -70,13 +68,13 @@ describe('<TimedTextCreationForm />', () => {
     );
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <TimedTextCreationForm
-            excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
-          />,
-          [
+      <TimedTextCreationForm
+        excludedLanguages={['en']}
+        mode={timedTextMode.SUBTITLE}
+      />,
+      {
+        routerOptions: {
+          routes: [
             {
               path: UPLOAD_FORM_ROUTE(),
               render: ({ match }) => (
@@ -84,8 +82,8 @@ describe('<TimedTextCreationForm />', () => {
               ),
             },
           ],
-        ),
-      ),
+        },
+      },
     );
     await screen.findByText('Add a language');
 
@@ -118,13 +116,13 @@ describe('<TimedTextCreationForm />', () => {
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'POST' });
 
     render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <TimedTextCreationForm
-            excludedLanguages={['en']}
-            mode={timedTextMode.SUBTITLE}
-          />,
-          [
+      <TimedTextCreationForm
+        excludedLanguages={['en']}
+        mode={timedTextMode.SUBTITLE}
+      />,
+      {
+        routerOptions: {
+          routes: [
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
@@ -132,8 +130,8 @@ describe('<TimedTextCreationForm />', () => {
               ),
             },
           ],
-        ),
-      ),
+        },
+      },
     );
     await screen.findByText('Add a language');
 

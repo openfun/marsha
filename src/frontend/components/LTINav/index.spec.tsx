@@ -1,24 +1,23 @@
-import { fireEvent, render, screen } from '@testing-library/react';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import React from 'react';
-import { LTINav } from './index';
-import {
-  documentMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
-import { uploadState } from '../../types/tracks';
-import { Router } from 'react-router-dom';
-import { PLAYER_ROUTE } from '../routes';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { modelName } from '../../types/models';
-import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
+import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { wrapInRouter } from '../../utils/tests/router';
+import React from 'react';
+import { Router } from 'react-router-dom';
+
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
+import { PLAYER_ROUTE } from 'components/routes';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { wrapInIntlProvider } from 'utils/tests/intl';
+import { documentMockFactory, videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
+import { LTINav } from '.';
 
 let mockModelName: any;
 let mockCanUpdate: boolean;
 let mockMaintenance: boolean;
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     get modelName() {
       return mockModelName;
@@ -48,11 +47,9 @@ describe('<LTINav />', () => {
       mockMaintenance = false;
 
       render(
-        wrapInIntlProvider(
-          <Router history={history}>
-            <LTINav object={video} />
-          </Router>,
-        ),
+        <Router history={history}>
+          <LTINav object={video} />
+        </Router>,
       );
 
       fireEvent.click(screen.getByRole('link', { name: /dashboard/i }));
@@ -73,7 +70,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = false;
       mockMaintenance = false;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={video} />)));
+      render(<LTINav object={video} />);
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
@@ -88,7 +85,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = true;
       mockMaintenance = true;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={video} />)));
+      render(<LTINav object={video} />);
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
@@ -103,7 +100,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = true;
       mockMaintenance = false;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={video} />)));
+      render(<LTINav object={video} />);
 
       screen.getByRole('link', { name: /dashboard/i });
       expect(screen.queryByRole('link', { name: /preview/i })).toBeNull();
@@ -151,7 +148,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = false;
       mockMaintenance = false;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={document} />)));
+      render(<LTINav object={document} />);
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
@@ -166,7 +163,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = true;
       mockMaintenance = true;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={document} />)));
+      render(<LTINav object={document} />);
 
       expect(screen.queryByRole('link', { name: /dashboard/i })).toBeNull();
       screen.getByRole('link', { name: /preview/i });
@@ -181,7 +178,7 @@ describe('<LTINav />', () => {
       mockCanUpdate = true;
       mockMaintenance = false;
 
-      render(wrapInIntlProvider(wrapInRouter(<LTINav object={document} />)));
+      render(<LTINav object={document} />);
 
       screen.getByRole('link', { name: /dashboard/i });
       expect(screen.queryByRole('link', { name: /preview/i })).toBeNull();

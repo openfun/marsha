@@ -1,11 +1,11 @@
-import { Grommet } from 'grommet';
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { imageSnapshot, renderImageSnapshot } from 'utils/tests/imageSnapshot';
+import render from 'utils/tests/render';
 import { theme } from 'utils/theme/theme';
+
 import { InputBar } from '.';
 
 const mockHandleUserInputSuccess = jest.fn().mockReturnValue(1);
@@ -22,13 +22,11 @@ describe('<InputBar /> functionnal', () => {
 
   it("doesn't process the input value if the send button is clicked when input is empty", async () => {
     render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputSuccess}
-          isChatInput={true}
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
 
     const chatInputText = screen.getByRole('textbox');
@@ -42,13 +40,11 @@ describe('<InputBar /> functionnal', () => {
 
   it("doesn't process the input value if enter key is pressed when input is empty", async () => {
     render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputSuccess}
-          isChatInput={true}
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     const chatInputText = screen.getByRole('textbox');
     await act(async () => {
@@ -60,13 +56,11 @@ describe('<InputBar /> functionnal', () => {
 
   it('processes the input value if the send button is clicked when input is filled', async () => {
     render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputSuccess}
-          isChatInput={true}
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     const chatInputText = screen.getByRole('textbox');
     const chatSendButton = screen.getByRole('button');
@@ -80,13 +74,11 @@ describe('<InputBar /> functionnal', () => {
 
   it('processes the input value if enter key is pressed when input is filled', async () => {
     render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputSuccess}
-          isChatInput={true}
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     const chatInputText = screen.getByRole('textbox');
     userEvent.type(chatInputText, 'A simple message');
@@ -99,13 +91,11 @@ describe('<InputBar /> functionnal', () => {
 
   it("doesn't clean the input bar, if valid input is submitted, but handling function returns 0.", async () => {
     render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputFailure}
-          isChatInput={true}
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputFailure}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     const chatInputText = screen.getByRole('textbox');
     userEvent.type(chatInputText, 'A simple message');
@@ -118,14 +108,12 @@ describe('<InputBar /> functionnal', () => {
 
   it('displays input bar when it is waiting and checks that input bar and spinner button are disabled.', async () => {
     const { container } = render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputFailure}
-          isChatInput={true}
-          isWaiting
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputFailure}
+        isChatInput={true}
+        isWaiting
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     expect(container.querySelector('svg')).toBeNull();
     const chatInputText = screen.getByRole('textbox');
@@ -142,14 +130,12 @@ describe('<InputBar /> functionnal', () => {
 
   it('displays input bar when it is disabled and checks that input bar and validation button are disabled.', async () => {
     const { container } = render(
-      wrapInIntlProvider(
-        <InputBar
-          handleUserInput={mockHandleUserInputFailure}
-          isChatInput={true}
-          isDisabled
-          placeholderText={exampleTextPlaceholder}
-        />,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputFailure}
+        isChatInput={true}
+        isDisabled
+        placeholderText={exampleTextPlaceholder}
+      />,
     );
     expect(container.querySelector('svg')).toBeTruthy();
     const chatInputText = screen.getByRole('textbox');
@@ -183,15 +169,17 @@ describe('<InputBar /> UI', () => {
 
   it("displays the component in 'chatInput' format (with value typed) and compares it with previous renders. [screenshot]", async () => {
     render(
-      wrapInIntlProvider(
-        <Grommet theme={theme} style={{ height: '100%' }}>
-          <InputBar
-            handleUserInput={mockHandleUserInputSuccess}
-            isChatInput={true}
-            placeholderText={exampleTextPlaceholder}
-          />
-        </Grommet>,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={true}
+        placeholderText={exampleTextPlaceholder}
+      />,
+      {
+        grommetOptions: {
+          theme,
+          style: { height: '100%' },
+        },
+      },
     );
     const chatInputText = screen.getByRole('textbox');
     userEvent.type(chatInputText, 'A text input example');
@@ -211,15 +199,17 @@ describe('<InputBar /> UI', () => {
 
   it("displays the component in 'not-chatInput' format (with value typed) and compares it with previous renders. [screenshot]", async () => {
     render(
-      wrapInIntlProvider(
-        <Grommet theme={theme} style={{ height: '100%' }}>
-          <InputBar
-            handleUserInput={mockHandleUserInputSuccess}
-            isChatInput={false}
-            placeholderText={exampleTextPlaceholder}
-          />
-        </Grommet>,
-      ),
+      <InputBar
+        handleUserInput={mockHandleUserInputSuccess}
+        isChatInput={false}
+        placeholderText={exampleTextPlaceholder}
+      />,
+      {
+        grommetOptions: {
+          theme,
+          style: { height: '100%' },
+        },
+      },
     );
     const chatInputText = screen.getByRole('textbox');
     userEvent.type(chatInputText, 'A text input example');

@@ -1,13 +1,14 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInRouter } from 'utils/tests/router';
-import { modelName } from 'types/models';
-import { LiveModeType } from 'types/tracks';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
+import { modelName } from 'types/models';
+import { LiveModeType } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { RedirectVideo } from './RedirectVideo';
 
 let mockCanUpdate: boolean;
@@ -27,24 +28,26 @@ describe('RedirectVideo', () => {
       live_type: LiveModeType.JITSI,
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('dashboard');
   });
@@ -57,24 +60,26 @@ describe('RedirectVideo', () => {
       live_type: liveTypes[Math.floor(Math.random() * liveTypes.length)],
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('video player');
   });
@@ -85,24 +90,26 @@ describe('RedirectVideo', () => {
       is_ready_to_show: false,
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('dashboard');
   });
@@ -113,24 +120,26 @@ describe('RedirectVideo', () => {
       is_ready_to_show: false,
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('Error Component: notFound');
   });
@@ -144,24 +153,26 @@ describe('RedirectVideo', () => {
       starting_at: startingAtPast.toISOString(),
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('video player');
   });
@@ -175,24 +186,26 @@ describe('RedirectVideo', () => {
       starting_at: startingAt.toISOString(),
     });
 
-    render(
-      wrapInRouter(<RedirectVideo video={video} />, [
-        {
-          path: DASHBOARD_ROUTE(modelName.VIDEOS),
-          render: () => <span>dashboard</span>,
-        },
-        {
-          path: FULL_SCREEN_ERROR_ROUTE(),
-          render: ({ match }) => (
-            <span>{`Error Component: ${match.params.code}`}</span>
-          ),
-        },
-        {
-          path: PLAYER_ROUTE(modelName.VIDEOS),
-          render: () => <span>video player</span>,
-        },
-      ]),
-    );
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+        ],
+      },
+    });
 
     screen.getByText('video player');
   });

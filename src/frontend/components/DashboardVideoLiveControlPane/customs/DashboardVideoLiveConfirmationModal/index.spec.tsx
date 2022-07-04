@@ -1,8 +1,9 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveConfirmationModal } from '.';
 
 const mockModalOnCloseOrCancel = jest.fn();
@@ -13,25 +14,17 @@ const genericContent =
 
 describe('<DashboardVideoLiveConfirmationModal />', () => {
   beforeEach(() => {
-    /*
-    make sure to remove all body children, grommet layer gets rendered twice, known issue
-    https://github.com/grommet/grommet/issues/5200
-    */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
     jest.resetAllMocks();
   });
 
   it('renders the modal and closes it with esc key', () => {
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveConfirmationModal
-          text={genericContent}
-          title={genericTitle}
-          onModalCloseOrCancel={mockModalOnCloseOrCancel}
-          onModalConfirm={mockModalConfirm}
-        />,
-      ),
+      <DashboardVideoLiveConfirmationModal
+        text={genericContent}
+        title={genericTitle}
+        onModalCloseOrCancel={mockModalOnCloseOrCancel}
+        onModalConfirm={mockModalConfirm}
+      />,
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);
@@ -47,14 +40,12 @@ describe('<DashboardVideoLiveConfirmationModal />', () => {
 
   it('renders the modal and closes it with close button', () => {
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveConfirmationModal
-          text={genericContent}
-          title={genericTitle}
-          onModalCloseOrCancel={mockModalOnCloseOrCancel}
-          onModalConfirm={mockModalConfirm}
-        />,
-      ),
+      <DashboardVideoLiveConfirmationModal
+        text={genericContent}
+        title={genericTitle}
+        onModalCloseOrCancel={mockModalOnCloseOrCancel}
+        onModalConfirm={mockModalConfirm}
+      />,
     );
     screen.getByRole('button', { name: 'Confirm' });
     screen.getByRole('button', { name: 'Cancel' });
@@ -68,14 +59,12 @@ describe('<DashboardVideoLiveConfirmationModal />', () => {
 
   it('renders the modal and closes it with cancel button', () => {
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveConfirmationModal
-          text={genericContent}
-          title={genericTitle}
-          onModalCloseOrCancel={mockModalOnCloseOrCancel}
-          onModalConfirm={mockModalConfirm}
-        />,
-      ),
+      <DashboardVideoLiveConfirmationModal
+        text={genericContent}
+        title={genericTitle}
+        onModalCloseOrCancel={mockModalOnCloseOrCancel}
+        onModalConfirm={mockModalConfirm}
+      />,
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);
@@ -91,14 +80,12 @@ describe('<DashboardVideoLiveConfirmationModal />', () => {
 
   it('renders the modal and clicks on confirm button', () => {
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveConfirmationModal
-          text={genericContent}
-          title={genericTitle}
-          onModalCloseOrCancel={mockModalOnCloseOrCancel}
-          onModalConfirm={mockModalConfirm}
-        />,
-      ),
+      <DashboardVideoLiveConfirmationModal
+        text={genericContent}
+        title={genericTitle}
+        onModalCloseOrCancel={mockModalOnCloseOrCancel}
+        onModalConfirm={mockModalConfirm}
+      />,
     );
     screen.getByText(genericTitle);
     screen.getByText(genericContent);

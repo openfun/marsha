@@ -1,13 +1,11 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Grommet } from 'grommet';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 import { liveState } from 'types/tracks';
 
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { DashboardVideoLivePairing } from '.';
 
@@ -34,16 +32,7 @@ describe('<DashboardVideoLivePairing />', () => {
       pairingSecretDefered.promise,
     );
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <Grommet>
-          <QueryClientProvider client={queryClient}>
-            <DashboardVideoLivePairing video={video} />
-          </QueryClientProvider>
-        </Grommet>,
-      ),
-    );
+    render(<DashboardVideoLivePairing video={video} />);
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,
@@ -101,16 +90,7 @@ describe('<DashboardVideoLivePairing />', () => {
       live_state: liveState.STOPPED,
     });
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <Grommet>
-          <QueryClientProvider client={queryClient}>
-            <DashboardVideoLivePairing video={video} />
-          </QueryClientProvider>
-        </Grommet>,
-      ),
-    );
+    render(<DashboardVideoLivePairing video={video} />);
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,

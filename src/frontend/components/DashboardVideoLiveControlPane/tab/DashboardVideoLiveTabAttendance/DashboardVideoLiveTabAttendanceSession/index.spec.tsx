@@ -1,6 +1,8 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveTabAttendanceSession } from '.';
 
 describe('<DashboardVideoLiveTabAttendanceSession />', () => {
@@ -17,10 +19,9 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
         1654182163: {},
       },
     };
+
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Missed the live');
@@ -68,9 +69,7 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Partially present');
@@ -139,9 +138,7 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
       },
     };
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Very diligent');
@@ -181,9 +178,7 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Partially present');
@@ -214,9 +209,7 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Very diligent');
@@ -241,9 +234,7 @@ describe('<DashboardVideoLiveTabAttendanceSession />', () => {
       live_attendance: {},
     };
     render(
-      wrapInIntlProvider(
-        <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
-      ),
+      <DashboardVideoLiveTabAttendanceSession liveSession={liveSession} />,
     );
 
     screen.getByLabelText('Missed the live');

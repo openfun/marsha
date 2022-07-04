@@ -1,18 +1,15 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardVideoLiveWidgetVisibilityAndInteraction } from '.';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import { DashboardVideoLiveWidgetVisibilityAndInteraction } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -34,50 +31,20 @@ setLogger({
 document.execCommand = jest.fn();
 
 describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   it('renders the widget', () => {
     const mockedVideo = videoMockFactory({
       is_public: true,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Visibility and interaction parameters');
@@ -104,20 +71,10 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
       is_public: true,
     });
 
-    const queryClient = new QueryClient();
-
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {
@@ -153,17 +110,11 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={{ ...mockedVideo, is_public: true }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction
+          video={{ ...mockedVideo, is_public: true }}
+        />
+      </InfoWidgetModalProvider>,
     );
 
     const copyButtonReRendered = screen.getByRole('button', {
@@ -188,20 +139,10 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
       is_public: false,
     });
 
-    const queryClient = new QueryClient();
-
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {
@@ -233,17 +174,11 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={{ ...mockedVideo, is_public: false }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction
+          video={{ ...mockedVideo, is_public: false }}
+        />
+      </InfoWidgetModalProvider>,
     );
 
     expect(
@@ -263,20 +198,10 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetVisibilityAndInteraction
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {

@@ -1,21 +1,25 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import * as factories from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { UploadManagerContext, UploadManagerStatus } from '../UploadManager';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import * as factories from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { UploadableObjectStatusBadge } from '.';
 
-jest.mock('../../data/appData', () => ({}));
+jest.mock('data/appData', () => ({}));
 
 describe('<UploadableObjectStatusBadge />', () => {
   it('shows the status for an object that is READY', () => {
     const object = factories.videoMockFactory({
       upload_state: uploadState.READY,
     });
-    render(wrapInIntlProvider(<UploadableObjectStatusBadge object={object} />));
+    render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
     screen.getByText('Ready');
@@ -25,7 +29,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     const object = factories.videoMockFactory({
       upload_state: uploadState.PROCESSING,
     });
-    render(wrapInIntlProvider(<UploadableObjectStatusBadge object={object} />));
+    render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
     screen.getByText('Processing');
@@ -35,7 +39,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     const object = factories.videoMockFactory({
       upload_state: uploadState.ERROR,
     });
-    render(wrapInIntlProvider(<UploadableObjectStatusBadge object={object} />));
+    render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
     screen.getByText('Error');
@@ -45,7 +49,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     const object = factories.videoMockFactory({
       upload_state: uploadState.PENDING,
     });
-    render(wrapInIntlProvider(<UploadableObjectStatusBadge object={object} />));
+    render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
     screen.getByText('Pending');
@@ -67,13 +71,11 @@ describe('<UploadableObjectStatusBadge />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{ setUploadState: jest.fn(), uploadManagerState }}
-        >
-          <UploadableObjectStatusBadge object={object} />
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState }}
+      >
+        <UploadableObjectStatusBadge object={object} />
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('status');
@@ -96,13 +98,11 @@ describe('<UploadableObjectStatusBadge />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{ setUploadState: jest.fn(), uploadManagerState }}
-        >
-          <UploadableObjectStatusBadge object={object} />
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState }}
+      >
+        <UploadableObjectStatusBadge object={object} />
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('status');
@@ -125,13 +125,11 @@ describe('<UploadableObjectStatusBadge />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{ setUploadState: jest.fn(), uploadManagerState }}
-        >
-          <UploadableObjectStatusBadge object={object} />
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState }}
+      >
+        <UploadableObjectStatusBadge object={object} />
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('status');
@@ -154,13 +152,11 @@ describe('<UploadableObjectStatusBadge />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{ setUploadState: jest.fn(), uploadManagerState }}
-        >
-          <UploadableObjectStatusBadge object={object} />
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState }}
+      >
+        <UploadableObjectStatusBadge object={object} />
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('status');
@@ -183,13 +179,11 @@ describe('<UploadableObjectStatusBadge />', () => {
     };
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{ setUploadState: jest.fn(), uploadManagerState }}
-        >
-          <UploadableObjectStatusBadge object={object} />
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{ setUploadState: jest.fn(), uploadManagerState }}
+      >
+        <UploadableObjectStatusBadge object={object} />
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByRole('status');

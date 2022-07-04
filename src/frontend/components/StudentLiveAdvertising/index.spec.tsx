@@ -1,12 +1,12 @@
-import { cleanup, render, screen } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
 import { DateTime } from 'luxon';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { liveState } from 'types/tracks';
 import { thumbnailMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { StudentLiveAdvertising } from '.';
 
 jest.mock('data/appData', () => ({
@@ -73,14 +73,7 @@ describe('<StudentLiveAdvertising />', () => {
         description: 'live description',
       });
 
-      render(
-        wrapInIntlProvider(
-          <Fragment>
-            <Toaster />
-            <StudentLiveAdvertising video={video} />
-          </Fragment>,
-        ),
-      );
+      render(<StudentLiveAdvertising video={video} />);
 
       screen.getByRole('heading', { name: 'live title' });
       screen.getByText('live description');
@@ -97,14 +90,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveAdvertising video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<StudentLiveAdvertising video={video} />);
 
     await screen.findByRole('button', { name: 'Register' });
 
@@ -129,14 +115,7 @@ describe('<StudentLiveAdvertising />', () => {
         description: 'live description',
       });
 
-      render(
-        wrapInIntlProvider(
-          <Fragment>
-            <Toaster />
-            <StudentLiveAdvertising video={video} />
-          </Fragment>,
-        ),
-      );
+      render(<StudentLiveAdvertising video={video} />);
 
       expect(
         screen.queryByRole('button', { name: 'Register' }),
@@ -161,14 +140,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveAdvertising video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<StudentLiveAdvertising video={video} />);
 
     expect(
       screen.queryByRole('button', { name: 'Register' }),
@@ -190,14 +162,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveAdvertising video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<StudentLiveAdvertising video={video} />);
 
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
@@ -218,14 +183,7 @@ describe('<StudentLiveAdvertising />', () => {
       }),
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveAdvertising video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<StudentLiveAdvertising video={video} />);
 
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
@@ -244,14 +202,7 @@ describe('<StudentLiveAdvertising />', () => {
       }),
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <StudentLiveAdvertising video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<StudentLiveAdvertising video={video} />);
 
     const img = screen.getByRole('img', { name: 'Live video thumbnail' });
     expect(img.getAttribute('src')).toEqual(

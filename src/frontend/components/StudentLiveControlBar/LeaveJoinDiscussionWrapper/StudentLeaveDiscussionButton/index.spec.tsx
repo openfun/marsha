@@ -1,12 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
 import * as mockWindow from 'utils/window';
+import render from 'utils/tests/render';
 
 import { StudentLeaveDiscussionButton } from '.';
 
@@ -22,7 +21,7 @@ describe('<StudentLeaveDiscussionButton />', () => {
   });
 
   it('renders the leave button', () => {
-    render(wrapInIntlProvider(wrapInRouter(<StudentLeaveDiscussionButton />)));
+    render(<StudentLeaveDiscussionButton />);
 
     screen.getByRole('button', { name: 'Leave discussion' });
   });
@@ -33,18 +32,18 @@ describe('<StudentLeaveDiscussionButton />', () => {
       reset: mockRest,
     });
 
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<StudentLeaveDiscussionButton />, [
+    render(<StudentLeaveDiscussionButton />, {
+      routerOptions: {
+        routes: [
           {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => {
               return <span>{'video player'}</span>;
             },
           },
-        ]),
-      ),
-    );
+        ],
+      },
+    });
 
     const leaveButton = screen.getByRole('button', {
       name: 'Leave discussion',

@@ -1,11 +1,11 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveSessionFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -16,7 +16,6 @@ jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, mockSetDisplayName],
 }));
 
-window.HTMLElement.prototype.scrollTo = jest.fn();
 jest.mock('data/appData', () => ({
   getDecodedJwt: jest.fn(),
 }));
@@ -47,7 +46,7 @@ mockConverse.mockImplementation(
 
 describe('<ChatLayout />', () => {
   it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
-    render(wrapInIntlProvider(<ChatLayout />));
+    render(<ChatLayout />);
 
     // If no set, hasReceivedMessageHistory default value is false
     expect(useChatItemState.getState().hasReceivedMessageHistory).toEqual(
@@ -64,7 +63,7 @@ describe('<ChatLayout />', () => {
   });
 
   it('has received history message and has no display_name, the join button is not disabled anymore.', () => {
-    render(wrapInIntlProvider(<ChatLayout />));
+    render(<ChatLayout />);
 
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
@@ -81,7 +80,7 @@ describe('<ChatLayout />', () => {
     const liveSession = liveSessionFactory({ display_name: 'l33t' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(wrapInIntlProvider(<ChatLayout />));
+    render(<ChatLayout />);
 
     expect(
       screen.queryByRole('button', {
@@ -95,7 +94,7 @@ describe('<ChatLayout />', () => {
   it('configures to ask for display name on ask button click', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
 
-    render(wrapInIntlProvider(<ChatLayout />));
+    render(<ChatLayout />);
 
     userEvent.click(
       screen.getByRole('button', {
