@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, setLogger } from 'react-query';
+import { QueryClient } from 'react-query';
 
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -13,14 +13,6 @@ import { StartRecording } from '.';
 jest.mock('data/appData', () => ({
   appData: {},
 }));
-
-setLogger({
-  // tslint:disable-next-line:no-console
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 let queryClient: QueryClient;
 

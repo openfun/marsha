@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
@@ -13,14 +13,6 @@ import {
   useCreateClassroomAction,
   useJoinClassroomAction,
 } from '.';
-
-setLogger({
-  // tslint:disable-next-line:no-console
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 jest.mock('data/appData', () => ({
   appData: {

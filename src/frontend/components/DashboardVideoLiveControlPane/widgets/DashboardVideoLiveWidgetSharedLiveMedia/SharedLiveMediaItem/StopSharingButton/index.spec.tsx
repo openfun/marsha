@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { setLogger } from 'react-query';
 
 import { report } from 'utils/errors/report';
 import {
@@ -23,12 +22,6 @@ jest.mock('data/appData', () => ({
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
-
-setLogger({
-  log: () => {},
-  warn: () => {},
-  error: () => {},
-});
 
 describe('<StopSharingButton />', () => {
   afterEach(() => {

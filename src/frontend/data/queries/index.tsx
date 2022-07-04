@@ -181,15 +181,17 @@ export const useLiveAttendances = (
   queryConfig?: UseQueryOptions<
     LiveAttendancesResponse,
     'livesessions/list_attendances',
-    LiveAttendancesResponse
+    LiveAttendancesResponse,
+    FetchListQueryKey
   >,
 ) => {
-  const key = ['livesessions/list_attendances'];
-  return useQuery<LiveAttendancesResponse, 'livesessions/list_attendances'>(
-    key,
-    fetchList,
-    queryConfig,
-  );
+  const key: FetchListQueryKey = ['livesessions/list_attendances'];
+  return useQuery<
+    LiveAttendancesResponse,
+    'livesessions/list_attendances',
+    LiveAttendancesResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
 
 export const useVideo = (
