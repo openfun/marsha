@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
 import React from 'react';
@@ -6,9 +6,9 @@ import React from 'react';
 import { navigateSharingDoc } from 'data/sideEffects/navigateSharingDoc';
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
 import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
 import { PreviousPageButton } from '.';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 
 jest.mock('data/sideEffects/navigateSharingDoc', () => ({
   navigateSharingDoc: jest.fn(),
@@ -26,13 +26,9 @@ describe('<PreviousPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      wrapInIntlProvider(
-        <SharedMediaCurrentPageProvider
-          value={{ page: 2, imageUrl: 'some url' }}
-        >
-          <PreviousPageButton video={video} />
-        </SharedMediaCurrentPageProvider>,
-      ),
+      <SharedMediaCurrentPageProvider value={{ page: 2, imageUrl: 'some url' }}>
+        <PreviousPageButton video={video} />
+      </SharedMediaCurrentPageProvider>,
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Previous page' }));
@@ -43,13 +39,9 @@ describe('<PreviousPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      wrapInIntlProvider(
-        <SharedMediaCurrentPageProvider
-          value={{ page: 1, imageUrl: 'some url' }}
-        >
-          <PreviousPageButton video={video} />
-        </SharedMediaCurrentPageProvider>,
-      ),
+      <SharedMediaCurrentPageProvider value={{ page: 1, imageUrl: 'some url' }}>
+        <PreviousPageButton video={video} />
+      </SharedMediaCurrentPageProvider>,
     );
 
     expect(

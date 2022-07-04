@@ -1,9 +1,10 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { uploadState } from 'types/tracks';
+import render from 'utils/tests/render';
+
 import { TitleDisplayer } from '.';
 
 describe('<TitleDisplayer />', () => {
@@ -13,12 +14,10 @@ describe('<TitleDisplayer />', () => {
       title: null,
     });
     render(
-      wrapInIntlProvider(
-        <TitleDisplayer
-          sharedLiveMedia={mockedSharedLiveMedia}
-          uploadingTitle="uploading_title"
-        />,
-      ),
+      <TitleDisplayer
+        sharedLiveMedia={mockedSharedLiveMedia}
+        uploadingTitle="uploading_title"
+      />,
     );
 
     const downloadUploadLink = screen.getByRole('link', {
@@ -40,12 +39,10 @@ describe('<TitleDisplayer />', () => {
       upload_state: uploadState.READY,
     });
     render(
-      wrapInIntlProvider(
-        <TitleDisplayer
-          sharedLiveMedia={mockedSharedLiveMedia}
-          uploadingTitle="uploading_title"
-        />,
-      ),
+      <TitleDisplayer
+        sharedLiveMedia={mockedSharedLiveMedia}
+        uploadingTitle="uploading_title"
+      />,
     );
 
     const downloadUploadLink = screen.getByRole('link', {
@@ -69,17 +66,15 @@ describe('<TitleDisplayer />', () => {
       title: null,
       filename: null,
     });
-    const { container } = render(
-      wrapInIntlProvider(
-        <TitleDisplayer
-          sharedLiveMedia={mockedSharedLiveMedia}
-          uploadingTitle={undefined}
-        />,
-      ),
+    const { elementContainer: container } = render(
+      <TitleDisplayer
+        sharedLiveMedia={mockedSharedLiveMedia}
+        uploadingTitle={undefined}
+      />,
     );
 
     screen.getByText('Upload has failed');
-    const downloadUploadLink = container.getElementsByTagName('a')[0];
+    const downloadUploadLink = container!.getElementsByTagName('a')[0];
     expect(downloadUploadLink).not.toHaveAttribute('download');
     expect(downloadUploadLink).not.toHaveAttribute('href');
     expect(downloadUploadLink).toHaveStyle('cursor: auto');

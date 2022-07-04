@@ -1,11 +1,9 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React, { PropsWithChildren } from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import {
   UploadManagerContext,
@@ -21,7 +19,8 @@ import {
   sharedLiveMediaMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveWidgetSharedLiveMedia } from '.';
 
 jest.mock('components/UploadManager', () => ({
@@ -51,38 +50,14 @@ setLogger({
   error: () => {},
 });
 
-let matchMedia: MatchMediaMock;
-
 describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   it('renders the widget without any uploaded medias', () => {
     const mockedVideo = videoMockFactory();
-    const queryClient = new QueryClient();
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
@@ -90,24 +65,18 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     });
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
-              <QueryClientProvider client={queryClient}>
-                <Toaster />
-                <ToastHack />
-                <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-              </QueryClientProvider>
-            </DeleteUploadModalProvider>
-          </InfoWidgetModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <InfoWidgetModalProvider value={null}>
+          <DeleteUploadModalProvider value={null}>
+            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
+          </DeleteUploadModalProvider>
+        </InfoWidgetModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     screen.getByText('Supports sharing');
@@ -125,7 +94,6 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     const mockedVideo = videoMockFactory({
       id: videoId,
     });
-    const queryClient = new QueryClient();
 
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
@@ -137,24 +105,18 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.post('/api/sharedlivemedias/', mockedSharedLiveMedia);
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
-              <QueryClientProvider client={queryClient}>
-                <Toaster />
-                <ToastHack />
-                <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-              </QueryClientProvider>
-            </DeleteUploadModalProvider>
-          </InfoWidgetModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <InfoWidgetModalProvider value={null}>
+          <DeleteUploadModalProvider value={null}>
+            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
+          </DeleteUploadModalProvider>
+        </InfoWidgetModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     const uploadButton = screen.getByRole('button', {
@@ -194,7 +156,6 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
@@ -205,24 +166,18 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 204);
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
-              <QueryClientProvider client={queryClient}>
-                <Toaster />
-                <ToastHack />
-                <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-              </QueryClientProvider>
-            </DeleteUploadModalProvider>
-          </InfoWidgetModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <InfoWidgetModalProvider value={null}>
+          <DeleteUploadModalProvider value={null}>
+            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
+          </DeleteUploadModalProvider>
+        </InfoWidgetModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toEqual([
@@ -270,7 +225,6 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
@@ -281,24 +235,18 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
-              <QueryClientProvider client={queryClient}>
-                <Toaster />
-                <ToastHack />
-                <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-              </QueryClientProvider>
-            </DeleteUploadModalProvider>
-          </InfoWidgetModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <InfoWidgetModalProvider value={null}>
+          <DeleteUploadModalProvider value={null}>
+            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
+          </DeleteUploadModalProvider>
+        </InfoWidgetModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toEqual([
@@ -356,7 +304,6 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
       id: videoId,
       shared_live_medias: [mockedSharedLiveMedia],
     });
-    const queryClient = new QueryClient();
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
       addUpload: mockAddUpload,
@@ -366,24 +313,18 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
     render(
-      wrapInIntlProvider(
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
-              <QueryClientProvider client={queryClient}>
-                <Toaster />
-                <ToastHack />
-                <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-              </QueryClientProvider>
-            </DeleteUploadModalProvider>
-          </InfoWidgetModalProvider>
-        </UploadManagerContext.Provider>,
-      ),
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <InfoWidgetModalProvider value={null}>
+          <DeleteUploadModalProvider value={null}>
+            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
+          </DeleteUploadModalProvider>
+        </InfoWidgetModalProvider>
+      </UploadManagerContext.Provider>,
     );
 
     expect(

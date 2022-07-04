@@ -1,12 +1,13 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { createPlayer } from 'Player/createPlayer';
 import { timedTextMode, uploadState } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import VideoPlayer from './index';
+import render from 'utils/tests/render';
+
+import VideoPlayer from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
@@ -129,13 +130,11 @@ describe('VideoPlayer', () => {
     ];
 
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType={'videojs'}
-          timedTextTracks={timedTextTracks}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType={'videojs'}
+        timedTextTracks={timedTextTracks}
+      />,
     );
     await waitFor(() =>
       // The player is created and initialized with DashJS for adaptive bitrate

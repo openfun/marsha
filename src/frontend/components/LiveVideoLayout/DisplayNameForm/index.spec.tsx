@@ -1,7 +1,9 @@
-import { render, screen } from '@testing-library/react';
-import { useSetDisplayName } from 'data/stores/useSetDisplayName';
+import { screen } from '@testing-library/react';
 import React from 'react';
+
+import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { DisplayNameForm } from '.';
 
@@ -22,9 +24,9 @@ describe('<DisplayNameForm />', () => {
   it('does not render the layer', () => {
     mockedUseSetDisplayName.mockReturnValue([false, jest.fn()]);
 
-    const { container } = render(<DisplayNameForm />);
+    const { elementContainer: container } = render(<DisplayNameForm />);
 
-    expect(container.children.length).toEqual(0);
+    expect(container!.children.length).toEqual(0);
   });
 
   it('renders the layer', () => {

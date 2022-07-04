@@ -1,12 +1,13 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
+import DashboardVideoLiveRaw from 'components/DashboardVideoLiveRaw';
 import VideoPlayer from 'components/VideoPlayer';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
 import TeacherLiveRawWrapper from '.';
-import DashboardVideoLiveRaw from 'components/DashboardVideoLiveRaw';
 
 jest.mock('components/VideoPlayer', () =>
   jest.fn().mockImplementation((_: any) => <span>videojs player</span>),

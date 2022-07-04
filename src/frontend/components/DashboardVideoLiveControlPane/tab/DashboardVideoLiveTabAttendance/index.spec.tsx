@@ -1,11 +1,13 @@
-import { act, render, screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient } from 'react-query';
+
 import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveTabAttendance } from '.';
 
 jest.mock('data/appData', () => ({
@@ -34,123 +36,114 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       '/api/livesessions/list_attendances/?limit=999',
       deferred.promise,
     );
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendance video={mockedVideo} />,
-        </QueryClientProvider>,
-      ),
-    );
+    render(<DashboardVideoLiveTabAttendance video={mockedVideo} />);
 
     screen.getByText('Loading attendances...');
 
-    await act(async () =>
-      deferred.resolve({
-        count: 3,
-        next: null,
-        previous: null,
-        results: [
-          {
-            id: '34d73670-885c-4a84-b208-8246bfd05949',
-            display_name: 'qbrooks',
-            is_registered: false,
-            live_attendance: {
-              1654182083: {},
-              1654182099: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182099,
-                fullScreen: false,
-                player_timer: 175.964861,
-              },
-              1654182115: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182115,
-                fullScreen: false,
-                player_timer: 186.971211,
-              },
-              1654182131: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182131,
-                fullScreen: false,
-                player_timer: 207.525995,
-              },
-              1654182147: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182147,
-                fullScreen: false,
-                player_timer: 228.33815,
-              },
-              1654182163: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182163,
-                fullScreen: false,
-                player_timer: 233,
-              },
+    deferred.resolve({
+      count: 3,
+      next: null,
+      previous: null,
+      results: [
+        {
+          id: '34d73670-885c-4a84-b208-8246bfd05949',
+          display_name: 'qbrooks',
+          is_registered: false,
+          live_attendance: {
+            1654182083: {},
+            1654182099: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182099,
+              fullScreen: false,
+              player_timer: 175.964861,
+            },
+            1654182115: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182115,
+              fullScreen: false,
+              player_timer: 186.971211,
+            },
+            1654182131: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182131,
+              fullScreen: false,
+              player_timer: 207.525995,
+            },
+            1654182147: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182147,
+              fullScreen: false,
+              player_timer: 228.33815,
+            },
+            1654182163: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182163,
+              fullScreen: false,
+              player_timer: 233,
             },
           },
-          {
-            id: 'c4aed19d-8df6-48d9-8525-bd2ad60ae98a',
-            display_name: 'qparker',
-            is_registered: false,
-            live_attendance: {
-              1654182083: {},
-              1654182099: {},
-              1654182115: {},
-              1654182131: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182131,
-                fullScreen: false,
-                player_timer: 207.525995,
-              },
-              1654182147: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182147,
-                fullScreen: false,
-                player_timer: 228.33815,
-              },
-              1654182163: {
-                muted: false,
-                volume: 1,
-                playing: true,
-                timestamp: 1654182163,
-                fullScreen: false,
-                player_timer: 233,
-              },
+        },
+        {
+          id: 'c4aed19d-8df6-48d9-8525-bd2ad60ae98a',
+          display_name: 'qparker',
+          is_registered: false,
+          live_attendance: {
+            1654182083: {},
+            1654182099: {},
+            1654182115: {},
+            1654182131: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182131,
+              fullScreen: false,
+              player_timer: 207.525995,
+            },
+            1654182147: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182147,
+              fullScreen: false,
+              player_timer: 228.33815,
+            },
+            1654182163: {
+              muted: false,
+              volume: 1,
+              playing: true,
+              timestamp: 1654182163,
+              fullScreen: false,
+              player_timer: 233,
             },
           },
-          {
-            id: 'd4aed19d-8df6-48d9-8525-bd2ad60ae98a',
-            display_name: 'sam',
-            is_registered: false,
-            live_attendance: {
-              1654182083: {},
-              1654182099: {},
-              1654182115: {},
-              1654182131: {},
-              1654182147: {},
-              1654182163: {},
-            },
+        },
+        {
+          id: 'd4aed19d-8df6-48d9-8525-bd2ad60ae98a',
+          display_name: 'sam',
+          is_registered: false,
+          live_attendance: {
+            1654182083: {},
+            1654182099: {},
+            1654182115: {},
+            1654182131: {},
+            1654182147: {},
+            1654182163: {},
           },
-        ],
-      }),
-    );
+        },
+      ],
+    });
 
-    expect(fetchMock.calls()).toHaveLength(1);
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/livesessions/list_attendances/?limit=999`,
     );
@@ -169,32 +162,22 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
   });
 
   it('displays the default message when video has no live_state', async () => {
-    const queryClient = new QueryClient();
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendance
-            video={{ ...mockedVideo, live_state: null }}
-          />
-          ,
-        </QueryClientProvider>,
-      ),
+      <DashboardVideoLiveTabAttendance
+        video={{ ...mockedVideo, live_state: null }}
+      />,
     );
+
     screen.getByText('The live has no participant yet');
   });
 
   it('displays the default message when video has an IDLE live_state', async () => {
-    const queryClient = new QueryClient();
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendance
-            video={{ ...mockedVideo, live_state: liveState.IDLE }}
-          />
-          ,
-        </QueryClientProvider>,
-      ),
+      <DashboardVideoLiveTabAttendance
+        video={{ ...mockedVideo, live_state: liveState.IDLE }}
+      />,
     );
+
     screen.getByText('The live has no participant yet');
   });
 
@@ -204,19 +187,12 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       '/api/livesessions/list_attendances/?limit=999',
       deferred.promise,
     );
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendance video={{ ...mockedVideo }} />,
-        </QueryClientProvider>,
-      ),
-    );
 
-    await act(async () =>
-      deferred.resolve({ count: 0, next: null, previous: null, results: [] }),
-    );
-    screen.getByText('The live has no participant yet');
+    render(<DashboardVideoLiveTabAttendance video={{ ...mockedVideo }} />);
+
+    deferred.resolve({ count: 0, next: null, previous: null, results: [] });
+
+    await screen.findByText('The live has no participant yet');
   });
 
   it('shows an error message when it fails to get the list of attendances', async () => {
@@ -233,17 +209,15 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       deferred.promise,
     );
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendance video={mockedVideo} />,
-        </QueryClientProvider>,
-      ),
-    );
+    render(<DashboardVideoLiveTabAttendance video={mockedVideo} />, {
+      queryOptions: { client: queryClient },
+    });
 
-    await act(async () => deferred.resolve(500));
+    deferred.resolve(500);
 
-    screen.getByRole('heading', { name: 'There was an unexpected error' });
+    await screen.findByRole('heading', {
+      name: 'There was an unexpected error',
+    });
     screen.getByText(
       'We could not access the appropriate resources. You can try reloading the page or come back again at a later time.',
     );

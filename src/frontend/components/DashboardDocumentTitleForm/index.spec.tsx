@@ -1,13 +1,13 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Grommet } from 'grommet';
 import React from 'react';
 
-import { DashboardDocumentTitleForm } from '.';
 import { uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { documentMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
+import { DashboardDocumentTitleForm } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 jest.mock('data/appData', () => ({
@@ -22,17 +22,13 @@ describe('DashboardDocumentTitleForm', () => {
 
   it('shows the title form', () => {
     render(
-      wrapInIntlProvider(
-        <Grommet>
-          <DashboardDocumentTitleForm
-            document={documentMockFactory({
-              id: '46',
-              title: 'document title',
-              upload_state: uploadState.READY,
-            })}
-          />
-        </Grommet>,
-      ),
+      <DashboardDocumentTitleForm
+        document={documentMockFactory({
+          id: '46',
+          title: 'document title',
+          upload_state: uploadState.READY,
+        })}
+      />,
     );
 
     const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
@@ -50,13 +46,7 @@ describe('DashboardDocumentTitleForm', () => {
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
 
-    render(
-      wrapInIntlProvider(
-        <Grommet>
-          <DashboardDocumentTitleForm document={document} />
-        </Grommet>,
-      ),
-    );
+    render(<DashboardDocumentTitleForm document={document} />);
 
     const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
 
@@ -90,13 +80,7 @@ describe('DashboardDocumentTitleForm', () => {
 
     fetchMock.mock('/api/documents/46/', deferred.promise, { method: 'PUT' });
 
-    render(
-      wrapInIntlProvider(
-        <Grommet>
-          <DashboardDocumentTitleForm document={document} />
-        </Grommet>,
-      ),
-    );
+    render(<DashboardDocumentTitleForm document={document} />);
 
     const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
 
@@ -126,16 +110,12 @@ describe('DashboardDocumentTitleForm', () => {
     fetchMock.mock('/api/documents/47/', deferred.promise, { method: 'PUT' });
 
     const { container, getByText } = render(
-      wrapInIntlProvider(
-        <Grommet>
-          <DashboardDocumentTitleForm
-            document={documentMockFactory({
-              id: '47',
-              title: 'document title',
-            })}
-          />
-        </Grommet>,
-      ),
+      <DashboardDocumentTitleForm
+        document={documentMockFactory({
+          id: '47',
+          title: 'document title',
+        })}
+      />,
     );
 
     const inputTitle = container.querySelector('#title');

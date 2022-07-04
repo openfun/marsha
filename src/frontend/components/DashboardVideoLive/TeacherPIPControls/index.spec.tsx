@@ -1,9 +1,9 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 import { uploadState } from 'types/tracks';
 
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { TeacherPIPControls } from '.';
 
@@ -25,9 +25,7 @@ describe('<TeacherPIPControls />', () => {
   it('renders both buttons', () => {
     const video = videoMockFactory();
 
-    render(
-      wrapInIntlProvider(<TeacherPIPControls video={video} maxPage={4} />),
-    );
+    render(<TeacherPIPControls video={video} maxPage={4} />);
 
     screen.getByRole('button', { name: 'Next page' });
     screen.getByRole('button', { name: 'Previous page' });
@@ -54,9 +52,7 @@ describe('<TeacherPIPControls />', () => {
       },
     };
 
-    render(
-      wrapInIntlProvider(<TeacherPIPControls video={video} maxPage={4} />),
-    );
+    render(<TeacherPIPControls video={video} maxPage={4} />);
 
     expect(mockSetSharedCurrentPage).toHaveBeenCalledWith({
       page: 3,

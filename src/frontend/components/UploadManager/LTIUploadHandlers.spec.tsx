@@ -1,4 +1,4 @@
-import { render, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -7,8 +7,10 @@ import { updateResource } from 'data/sideEffects/updateResource';
 import { addResource, getResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
 import { Thumbnail, Video } from 'types/tracks';
-import { LTIUploadHandlers } from './LTIUploadHandlers';
+import render from 'utils/tests/render';
+
 import { UploadManagerContext, UploadManagerStatus } from '.';
+import { LTIUploadHandlers } from './LTIUploadHandlers';
 
 jest.mock('data/appData', () => ({}));
 jest.mock('data/sideEffects/updateResource', () => ({

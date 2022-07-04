@@ -1,12 +1,13 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { Transcripts } from '.';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { timedTextMode, uploadState } from 'types/tracks';
+import render from 'utils/tests/render';
 
-jest.mock('../../data/appData', () => ({
+import { Transcripts } from '.';
+
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'foo',
   },
@@ -75,7 +76,7 @@ describe('<Transcripts />', () => {
   afterEach(() => fetchMock.restore());
 
   it('displays a list of available transcripts', async () => {
-    render(wrapInIntlProvider(<Transcripts transcripts={transcripts} />));
+    render(<Transcripts transcripts={transcripts} />);
     await screen.findByText('Choose a language');
 
     expect(screen.getByText('French').tagName).toEqual('OPTION');
@@ -86,7 +87,7 @@ describe('<Transcripts />', () => {
   it('shows the transcript when the user selects a language', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
 
-    render(wrapInIntlProvider(<Transcripts transcripts={transcripts} />));
+    render(<Transcripts transcripts={transcripts} />);
 
     const select = screen.getByLabelText('Show a transcript');
     fireEvent.change(select, { target: { value: '1' } });

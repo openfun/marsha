@@ -1,9 +1,10 @@
-import { act, render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+
 import { Deferred } from 'utils/tests/Deferred';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveTabAttendanceWaiting } from '.';
 
 jest.mock('data/appData', () => ({
@@ -31,18 +32,11 @@ describe('<DashboardVideoLiveTabAttendanceWaiting />', () => {
       '/api/livesessions/list_attendances/?limit=999',
       deferred.promise,
     );
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <DashboardVideoLiveTabAttendanceWaiting />,
-        </QueryClientProvider>,
-      ),
-    );
 
-    await act(async () =>
-      deferred.resolve({ count: 0, next: null, previous: null, results: [] }),
-    );
-    screen.getByText('The live has no participant yet');
+    render(<DashboardVideoLiveTabAttendanceWaiting />);
+
+    deferred.resolve({ count: 0, next: null, previous: null, results: [] });
+
+    await screen.findByText('The live has no participant yet');
   });
 });

@@ -1,19 +1,17 @@
-import { fireEvent, render } from '@testing-library/react';
+import { fireEvent } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
 
-import { DashboardVideoPaneTranscriptOption } from '.';
-import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { Deferred } from '../../utils/tests/Deferred';
-import {
-  timedTextMockFactory,
-  videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
+import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 
-jest.mock('../../data/appData', () => ({
+import { DashboardVideoPaneTranscriptOption } from '.';
+import render from 'utils/tests/render';
+
+jest.mock('data/appData', () => ({
   appData: {},
 }));
 
@@ -28,10 +26,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
   });
 
   it('renders nothing if there is no timed text track', () => {
-    const { container } = render(
-      wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
+    const { elementContainer: container } = render(
+      <DashboardVideoPaneTranscriptOption video={video} />,
     );
-    expect(container.firstChild).toBeNull();
+    expect(container!.firstChild).toBeNull();
   });
 
   it('renders nothing if there is already at least a transcript', () => {
@@ -45,10 +43,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
       }),
     ]);
 
-    const { container } = render(
-      wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
+    const { elementContainer: container } = render(
+      <DashboardVideoPaneTranscriptOption video={video} />,
     );
-    expect(container.firstChild).toBeNull();
+    expect(container!.firstChild).toBeNull();
   });
 
   it('renders nothing if there is no subtitle', () => {
@@ -62,10 +60,10 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
       }),
     ]);
 
-    const { container } = render(
-      wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
+    const { elementContainer: container } = render(
+      <DashboardVideoPaneTranscriptOption video={video} />,
     );
-    expect(container.firstChild).toBeNull();
+    expect(container!.firstChild).toBeNull();
   });
 
   it('renders the form if there is at least one subtitle and no transcript', () => {
@@ -80,7 +78,7 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
     ]);
 
     const { getByLabelText } = render(
-      wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
+      <DashboardVideoPaneTranscriptOption video={video} />,
     );
     expect(getByLabelText('Use subtitles as transcripts')).toHaveProperty(
       'checked',
@@ -103,7 +101,7 @@ describe('<DashboardVideoPaneTranscriptOption />', () => {
     ]);
 
     const { getByLabelText } = render(
-      wrapInIntlProvider(<DashboardVideoPaneTranscriptOption video={video} />),
+      <DashboardVideoPaneTranscriptOption video={video} />,
     );
     expect(getByLabelText('Use subtitles as transcripts')).toHaveProperty(
       'checked',

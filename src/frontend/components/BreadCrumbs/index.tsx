@@ -81,17 +81,14 @@ export const Crumb: React.FC<CrumbProps> = ({ title }) => {
   const [_, setCrumbs] = useContext(BreadCrumbsContext);
 
   useEffect(() => {
-    setCrumbs((crumbs) => [
-      ...crumbs.filter((currentCrumb) => currentCrumb.key !== key),
-      { key, title, url },
-    ]);
+    setCrumbs((crumbs) => [...crumbs, { key, title, url }]);
 
     return () => {
       setCrumbs((crumbs) =>
         crumbs.filter((currentCrumb) => currentCrumb.key !== key),
       );
     };
-  }, [title]);
+  }, []);
 
   return null;
 };

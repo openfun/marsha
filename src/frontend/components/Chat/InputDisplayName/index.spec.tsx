@@ -1,4 +1,4 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
@@ -10,7 +10,7 @@ import {
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
 import { liveSessionFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -53,7 +53,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -70,7 +70,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -87,7 +87,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -119,7 +119,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -161,7 +161,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -206,7 +206,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -251,7 +251,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -290,7 +290,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -320,7 +320,7 @@ describe('<InputDisplayName />', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });
@@ -333,7 +333,7 @@ describe('<InputDisplayName />', () => {
       },
     };
 
-    render(wrapInIntlProvider(<InputDisplayName />));
+    render(<InputDisplayName />);
 
     expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
   });

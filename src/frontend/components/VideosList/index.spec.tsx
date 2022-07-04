@@ -1,14 +1,15 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient } from 'react-query';
 
-import { Deferred } from '../../utils/tests/Deferred';
-import * as factories from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
+import { Deferred } from 'utils/tests/Deferred';
+import * as factories from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { VideosList } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'cool_token_m8',
   },
@@ -18,18 +19,10 @@ beforeEach(() => fetchMock.restore());
 
 describe('<VideosList />', () => {
   it('loads the list of videos and shows it in a table', async () => {
-    const queryClient = new QueryClient();
-
     const deferred = new Deferred();
     fetchMock.get('/api/videos/?limit=999', deferred.promise);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideosList />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideosList />);
 
     screen.getByRole('status', { name: 'Loading videos...' });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/?limit=999');
@@ -63,18 +56,10 @@ describe('<VideosList />', () => {
   });
 
   it('shows an explanatory message when the list of playlists is empty', async () => {
-    const queryClient = new QueryClient();
-
     const deferred = new Deferred();
     fetchMock.get('/api/videos/?limit=999', deferred.promise);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideosList />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideosList />);
 
     screen.getByRole('status', { name: 'Loading videos...' });
 
@@ -105,13 +90,7 @@ describe('<VideosList />', () => {
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <VideosList />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<VideosList />, { queryOptions: { client: queryClient } });
 
     screen.getByRole('status', { name: 'Loading videos...' });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/?limit=999');

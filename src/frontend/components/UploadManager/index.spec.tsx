@@ -1,14 +1,16 @@
-import { act, render } from '@testing-library/react';
+import { act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import xhrMock, { MockResponse } from 'xhr-mock';
 
-import { modelName } from '../../types/models';
-import { Deferred } from '../../utils/tests/Deferred';
+import { modelName } from 'types/models';
+import { Deferred } from 'utils/tests/Deferred';
+import render from 'utils/tests/render';
+
 import { UploadManager, UploadManagerStatus, useUploadManager } from '.';
 
-jest.mock('../../data/appData.ts', () => ({
+jest.mock('data/appData.ts', () => ({
   appData: {},
 }));
 

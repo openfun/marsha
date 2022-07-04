@@ -1,25 +1,16 @@
-import {
-  act,
-  fireEvent,
-  render,
-  screen,
-  waitFor,
-} from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardVideoLiveWidgetSchedulingAndDescription } from '.';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import { DashboardVideoLiveWidgetSchedulingAndDescription } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -40,35 +31,13 @@ setLogger({
 const currentDate = DateTime.fromISO('2022-01-01T12:00');
 
 describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
   });
   afterEach(() => {
     fetchMock.restore();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
-  });
-  afterAll(() => {
     jest.resetAllMocks();
-    matchMedia.clear();
     jest.useRealTimers();
   });
 
@@ -85,20 +54,10 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
       }),
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Description');
@@ -131,20 +90,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
       ...mockedVideo,
       starting_at: startingAt,
     });
-    const queryClient = new QueryClient();
 
     const { rerender } = render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Your live is not scheduled');
@@ -177,17 +127,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={{ ...mockedVideo, starting_at: startingAt.toString() }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription
+          video={{ ...mockedVideo, starting_at: startingAt.toString() }}
+        />
+      </InfoWidgetModalProvider>,
     );
     expect(screen.queryByText('Your live is not scheduled')).toEqual(null);
     screen.getByText("Webinar's end");
@@ -226,21 +170,15 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
 
     // simulate video update
     rerender(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={{
-                ...mockedVideo,
-                starting_at: startingAt.toString(),
-                estimated_duration: estimatedDuration.toISOTime(),
-              }}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription
+          video={{
+            ...mockedVideo,
+            starting_at: startingAt.toString(),
+            estimated_duration: estimatedDuration.toISOTime(),
+          }}
+        />
+      </InfoWidgetModalProvider>,
     );
     expect(screen.queryByText('Your live is not scheduled')).toEqual(null);
     screen.getByText("Webinar's end");
@@ -256,20 +194,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     fetchMock.patch('/api/videos/video_id/', 500);
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     fireEvent.change(inputStartingAtDate, {
@@ -312,21 +241,11 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
       }),
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-        'fr',
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
+      { intlOptions: { locale: 'fr' } },
     );
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
@@ -351,20 +270,10 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
       description: 'A new description',
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textArea = screen.getByRole('textbox', {
@@ -402,20 +311,10 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
       description: '',
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textArea = screen.getByRole('textbox', {
@@ -448,20 +347,10 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
 
     fetchMock.patch('/api/videos/video_id/', 500);
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetSchedulingAndDescription
-              video={mockedVideo}
-            />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textArea = screen.getByRole('textbox', {

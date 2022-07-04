@@ -1,9 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { Icon } from '.';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     static: { svg: { icons: '' } },
   },

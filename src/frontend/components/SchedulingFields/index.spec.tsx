@@ -1,9 +1,8 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { SchedulingFields } from './index';
 
@@ -12,20 +11,16 @@ Settings.defaultZone = 'Europe/Paris';
 
 describe('<SchedulingFields />', () => {
   it('triggers callbacks when updating fields', () => {
-    const queryClient = new QueryClient();
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
+
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <SchedulingFields
-            startingAt={null}
-            estimatedDuration={null}
-            onStartingAtChange={onStartingAtChange}
-            onEstimatedDurationChange={onEstimatedDurationChange}
-          />
-        </QueryClientProvider>,
-      ),
+      <SchedulingFields
+        startingAt={null}
+        estimatedDuration={null}
+        onStartingAtChange={onStartingAtChange}
+        onEstimatedDurationChange={onEstimatedDurationChange}
+      />,
     );
 
     const startingAt = DateTime.local()
@@ -55,18 +50,15 @@ describe('<SchedulingFields />', () => {
   });
 
   it('formats starting date and time', () => {
-    const queryClient = new QueryClient();
     const startingAt = DateTime.local(2022, 1, 27, 14, 22, 15);
+
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <SchedulingFields
-            startingAt={startingAt.toISO()}
-            estimatedDuration={null}
-          />
-        </QueryClientProvider>,
-      ),
+      <SchedulingFields
+        startingAt={startingAt.toISO()}
+        estimatedDuration={null}
+      />,
     );
+
     screen.getByDisplayValue(startingAt.toFormat('yyyy/MM/dd'));
     screen.getByDisplayValue(
       startingAt.toLocaleString(DateTime.TIME_24_SIMPLE),
@@ -74,38 +66,31 @@ describe('<SchedulingFields />', () => {
   });
 
   it('formats estimated duration', () => {
-    const queryClient = new QueryClient();
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
+
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <SchedulingFields
-            startingAt={null}
-            estimatedDuration={estimatedDuration.toFormat('hh:mm:ss')}
-          />
-        </QueryClientProvider>,
-      ),
+      <SchedulingFields
+        startingAt={null}
+        estimatedDuration={estimatedDuration.toFormat('hh:mm:ss')}
+      />,
     );
+
     screen.getByDisplayValue(estimatedDuration.toFormat('h:mm'));
   });
 
   it('clears inputs', () => {
-    const queryClient = new QueryClient();
     const startingAt = DateTime.local(2022, 1, 27, 14, 22);
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
+
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <SchedulingFields
-            startingAt={startingAt.toISO()}
-            estimatedDuration={estimatedDuration.toFormat('hh:mm:ss')}
-            onStartingAtChange={onStartingAtChange}
-            onEstimatedDurationChange={onEstimatedDurationChange}
-          />
-        </QueryClientProvider>,
-      ),
+      <SchedulingFields
+        startingAt={startingAt.toISO()}
+        estimatedDuration={estimatedDuration.toFormat('hh:mm:ss')}
+        onStartingAtChange={onStartingAtChange}
+        onEstimatedDurationChange={onEstimatedDurationChange}
+      />,
     );
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
@@ -122,20 +107,16 @@ describe('<SchedulingFields />', () => {
   });
 
   it('shows error when setting a past start date', () => {
-    const queryClient = new QueryClient();
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
+
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <SchedulingFields
-            startingAt={null}
-            estimatedDuration={null}
-            onStartingAtChange={onStartingAtChange}
-            onEstimatedDurationChange={onEstimatedDurationChange}
-          />
-        </QueryClientProvider>,
-      ),
+      <SchedulingFields
+        startingAt={null}
+        estimatedDuration={null}
+        onStartingAtChange={onStartingAtChange}
+        onEstimatedDurationChange={onEstimatedDurationChange}
+      />,
     );
 
     const startingAtPast = DateTime.local().minus({ days: 1 });

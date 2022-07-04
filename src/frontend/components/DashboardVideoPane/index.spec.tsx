@@ -1,20 +1,19 @@
-import { cleanup, render, screen, act } from '@testing-library/react';
+import { cleanup, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { modelName } from 'types/models';
-import { uploadState, Video } from 'types/tracks';
-import { report } from 'utils/errors/report';
-import { Deferred } from 'utils/tests/Deferred';
-import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
+import { modelName } from 'types/models';
+import { uploadState, Video } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { Deferred } from 'utils/tests/Deferred';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { DashboardVideoPane } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
@@ -47,18 +46,18 @@ describe('<DashboardVideoPane />', () => {
     fetchMock.mock(`/api/videos/${video.id}/`, () => {
       throw new Error('Failed request');
     });
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<DashboardVideoPane video={video} />, [
+    render(<DashboardVideoPane video={video} />, {
+      routerOptions: {
+        routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE(),
             render: ({ match }) => (
               <span>{`Error Component: ${match.params.code}`}</span>
             ),
           },
-        ]),
-      ),
-    );
+        ],
+      },
+    });
 
     jest.advanceTimersByTime(1000 * 60 + 200);
     await screen.findByText('Error Component: notFound');
@@ -87,7 +86,7 @@ describe('<DashboardVideoPane />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(wrapInRouter(<DashboardVideoPane video={video} />))}
+        <DashboardVideoPane video={video} />
       </UploadManagerContext.Provider>,
     );
 
@@ -111,7 +110,7 @@ describe('<DashboardVideoPane />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(wrapInRouter(<DashboardVideoPane video={video} />))}
+        <DashboardVideoPane video={video} />
       </UploadManagerContext.Provider>,
     );
 
@@ -124,13 +123,7 @@ describe('<DashboardVideoPane />', () => {
       <UploadManagerContext.Provider
         value={{ setUploadState: jest.fn(), uploadManagerState: {} }}
       >
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <DashboardVideoPane
-              video={{ ...video, upload_state: PROCESSING }}
-            />,
-          ),
-        )}
+        <DashboardVideoPane video={{ ...video, upload_state: PROCESSING }} />,
       </UploadManagerContext.Provider>,
     );
 
@@ -172,13 +165,7 @@ describe('<DashboardVideoPane />', () => {
       Authorization: 'Bearer cool_token_m8',
     });
 
-    rerender(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoPane video={{ ...video, upload_state: READY }} />,
-        ),
-      ),
-    );
+    rerender(<DashboardVideoPane video={{ ...video, upload_state: READY }} />);
 
     expect(screen.queryByText('Processing')).toEqual(null);
     expect(
@@ -193,15 +180,15 @@ describe('<DashboardVideoPane />', () => {
 
   it('redirects to error when the video is in the error state and not `is_ready_to_show`', () => {
     const { getByText } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <DashboardVideoPane
-            video={videoMockFactory({
-              is_ready_to_show: false,
-              upload_state: ERROR,
-            })}
-          />,
-          [
+      <DashboardVideoPane
+        video={videoMockFactory({
+          is_ready_to_show: false,
+          upload_state: ERROR,
+        })}
+      />,
+      {
+        routerOptions: {
+          routes: [
             {
               path: FULL_SCREEN_ERROR_ROUTE(),
               render: ({ match }) => (
@@ -209,8 +196,8 @@ describe('<DashboardVideoPane />', () => {
               ),
             },
           ],
-        ),
-      ),
+        },
+      },
     );
 
     getByText('Error Component: upload');
@@ -218,14 +205,12 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the dashboard when the video is in the error state but `is_ready_to_show`', async () => {
     const { getByText } = render(
-      wrapInIntlProvider(
-        <DashboardVideoPane
-          video={videoMockFactory({
-            is_ready_to_show: true,
-            upload_state: ERROR,
-          })}
-        />,
-      ),
+      <DashboardVideoPane
+        video={videoMockFactory({
+          is_ready_to_show: true,
+          upload_state: ERROR,
+        })}
+      />,
     );
 
     getByText((content) => content.startsWith('Error'));
@@ -236,21 +221,13 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the buttons only when the video is pending or ready', async () => {
     for (const state of Object.values(uploadState)) {
-      const queryClient = new QueryClient();
-
       const { getByText, queryByText } = render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <QueryClientProvider client={queryClient}>
-              <DashboardVideoPane
-                video={videoMockFactory({
-                  is_ready_to_show: false,
-                  upload_state: state,
-                })}
-              />
-            </QueryClientProvider>,
-          ),
-        ),
+        <DashboardVideoPane
+          video={videoMockFactory({
+            is_ready_to_show: false,
+            upload_state: state,
+          })}
+        />,
       );
 
       switch (state) {
@@ -274,20 +251,13 @@ describe('<DashboardVideoPane />', () => {
 
   it('shows the thumbnail only when the video is ready', async () => {
     for (const state of Object.values(uploadState)) {
-      const queryClient = new QueryClient();
       const { getByAltText, queryByAltText } = render(
-        wrapInIntlProvider(
-          wrapInRouter(
-            <QueryClientProvider client={queryClient}>
-              <DashboardVideoPane
-                video={videoMockFactory({
-                  is_ready_to_show: false,
-                  upload_state: state,
-                })}
-              />
-            </QueryClientProvider>,
-          ),
-        ),
+        <DashboardVideoPane
+          video={videoMockFactory({
+            is_ready_to_show: false,
+            upload_state: state,
+          })}
+        />,
       );
       if (state === READY) {
         getByAltText('Video thumbnail preview image.');
@@ -319,7 +289,7 @@ describe('<DashboardVideoPane />', () => {
           },
         }}
       >
-        {wrapInIntlProvider(wrapInRouter(<DashboardVideoPane video={video} />))}
+        <DashboardVideoPane video={video} />
       </UploadManagerContext.Provider>,
     );
 
@@ -328,23 +298,16 @@ describe('<DashboardVideoPane />', () => {
 
   it('does not show the upload progress when the video is not uploading', () => {
     for (const state of Object.values(uploadState)) {
-      const queryClient = new QueryClient();
       render(
         <UploadManagerContext.Provider
           value={{ setUploadState: jest.fn(), uploadManagerState: {} }}
         >
-          {wrapInIntlProvider(
-            wrapInRouter(
-              <QueryClientProvider client={queryClient}>
-                <DashboardVideoPane
-                  video={videoMockFactory({
-                    is_ready_to_show: false,
-                    upload_state: state,
-                  })}
-                />
-              </QueryClientProvider>,
-            ),
-          )}
+          <DashboardVideoPane
+            video={videoMockFactory({
+              is_ready_to_show: false,
+              upload_state: state,
+            })}
+          />
         </UploadManagerContext.Provider>,
       );
       expect(screen.queryByText('0%')).toEqual(null);

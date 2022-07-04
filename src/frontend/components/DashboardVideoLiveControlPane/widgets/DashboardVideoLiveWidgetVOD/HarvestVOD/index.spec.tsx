@@ -1,18 +1,14 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { useVideo } from 'data/stores/useVideo';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { HarvestVOD } from '.';
-
-let matchMedia: MatchMediaMock;
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -21,25 +17,14 @@ jest.mock('data/appData', () => ({
 }));
 
 describe('HarvestVOD', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
   afterEach(() => {
-    matchMedia.clear();
     fetchMock.restore();
   });
 
   it('raises an error on harvest button clicks if request failed', async () => {
     const video = videoMockFactory();
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <HarvestVOD video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<HarvestVOD video={video} />);
 
     fetchMock.postOnce(`/api/videos/${video.id}/harvest-live/`, 400);
 
@@ -60,14 +45,7 @@ describe('HarvestVOD', () => {
       addResource: jest.fn(),
     });
 
-    render(
-      wrapInIntlProvider(
-        <Fragment>
-          <Toaster />
-          <HarvestVOD video={video} />
-        </Fragment>,
-      ),
-    );
+    render(<HarvestVOD video={video} />);
 
     const videoDeferred = new Deferred();
     fetchMock.postOnce(

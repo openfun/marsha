@@ -1,11 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import React from 'react';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { getLiveSessions } from 'data/sideEffects/getLiveSessions';
 import { DecodedJwt } from 'types/jwt';
 import { liveSessionFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { StudentLiveRegistration } from '.';
 
@@ -74,9 +74,7 @@ describe('<StudentLiveRegistration />', () => {
     });
     mockCreateLiveSession.mockResolvedValue(liveSession);
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -114,9 +112,7 @@ describe('<StudentLiveRegistration />', () => {
       count: 0,
       results: [],
     });
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -141,9 +137,7 @@ describe('<StudentLiveRegistration />', () => {
       email: ['blabla already registered'],
     });
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -167,9 +161,7 @@ describe('<StudentLiveRegistration />', () => {
     });
     mockCreateLiveSession.mockRejectedValue({ email: 'something bad' });
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -192,9 +184,7 @@ describe('<StudentLiveRegistration />', () => {
     });
     mockCreateLiveSession.mockRejectedValue({});
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -224,9 +214,7 @@ describe('<StudentLiveRegistration />', () => {
       results: [liveSession],
     });
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { container } = render(<StudentLiveRegistration />);
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -240,10 +228,8 @@ describe('<StudentLiveRegistration />', () => {
   it('does not render if we fail to initialize current subscription for lti user', async () => {
     mockGetLiveSessions.mockRejectedValue(undefined);
 
-    const { container } = render(
-      wrapInIntlProvider(<StudentLiveRegistration />),
-    );
+    const { elementContainer: container } = render(<StudentLiveRegistration />);
 
-    expect(container.childNodes.length).toEqual(0);
+    expect(container!.childNodes.length).toEqual(0);
   });
 });

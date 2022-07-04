@@ -1,10 +1,11 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { PropsWithChildren } from 'react';
 
 import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
 import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DeleteUploadButton } from '.';
 
 const mockSetDeleteUploadModal = jest.fn();
@@ -18,11 +19,9 @@ describe('<DeleteUploadButton />', () => {
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory();
 
     render(
-      wrapInIntlProvider(
-        <DeleteUploadModalProvider value={null}>
-          <DeleteUploadButton sharedLiveMedia={mockedSharedLiveMedia} />,
-        </DeleteUploadModalProvider>,
-      ),
+      <DeleteUploadModalProvider value={null}>
+        <DeleteUploadButton sharedLiveMedia={mockedSharedLiveMedia} />,
+      </DeleteUploadModalProvider>,
     );
 
     const deleteUploadButton = screen.getByRole('button', {

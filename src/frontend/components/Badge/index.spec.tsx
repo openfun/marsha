@@ -1,7 +1,8 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
+import render from 'utils/tests/render';
 
 import { Badge } from '.';
 

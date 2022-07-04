@@ -1,7 +1,6 @@
 import {
   getByText as getByTextInContainer,
   findByText,
-  render,
   screen,
 } from '@testing-library/react';
 import WS from 'jest-websocket-mock';
@@ -9,14 +8,14 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { timedTextMode, uploadState } from 'types/tracks';
-import { report } from 'utils/errors/report';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { wrapInRouter } from 'utils/tests/router';
-import { DashboardTimedTextPane } from '.';
-import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
+import { DashboardTimedTextPane } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -126,7 +125,7 @@ describe('<DashboardTimedTextPane />', () => {
     });
     await server.connected;
 
-    render(wrapInIntlProvider(wrapInRouter(<DashboardTimedTextPane />)));
+    render(<DashboardTimedTextPane />);
 
     const closedCaptions = await screen.findByText('Closed captions');
     getByTextInContainer(closedCaptions.parentElement!, 'French');
@@ -157,18 +156,18 @@ describe('<DashboardTimedTextPane />', () => {
       '/api/timedtexttracks/?limit=20&offset=0',
       Promise.reject(new Error('Failed!')),
     );
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(<DashboardTimedTextPane />, [
+    render(<DashboardTimedTextPane />, {
+      routerOptions: {
+        routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE(),
             render: ({ match }) => (
               <span>{`Error Component: ${match.params.code}`}</span>
             ),
           },
-        ]),
-      ),
-    );
+        ],
+      },
+    });
 
     await screen.findByText('Error Component: notFound');
     expect(report).toBeCalledWith(new Error('Failed!'));

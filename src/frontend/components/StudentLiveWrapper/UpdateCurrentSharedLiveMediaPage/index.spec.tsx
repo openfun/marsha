@@ -1,4 +1,3 @@
-import { render } from '@testing-library/react';
 import faker from 'faker';
 import React from 'react';
 
@@ -7,6 +6,8 @@ import {
   sharedLiveMediaMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
 import { UpdateCurrentSharedLiveMediaPage } from '.';
 
 const mockSharedCurrentPage = { page: 0, imageUrl: '' };

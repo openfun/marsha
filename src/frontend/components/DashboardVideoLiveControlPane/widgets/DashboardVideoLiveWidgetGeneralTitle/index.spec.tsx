@@ -1,18 +1,15 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DashboardVideoLiveWidgetGeneralTitle } from '.';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import { DashboardVideoLiveWidgetGeneralTitle } from '.';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -31,18 +28,6 @@ setLogger({
 });
 
 describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -50,15 +35,6 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   afterAll(() => {
@@ -71,18 +47,11 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
       allow_recording: false,
       title: null,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('General');
@@ -109,18 +78,11 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
       ...mockedVideo,
       allow_recording: true,
     });
-    const queryClient = new QueryClient();
 
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Activate live recording');
@@ -156,18 +118,10 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
       allow_recording: false,
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Activate live recording');
@@ -201,18 +155,10 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     screen.getByText('Activate live recording');
@@ -249,18 +195,10 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
       title: 'An example text',
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textInput = screen.getByRole('textbox', {
@@ -302,18 +240,10 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
       title: ['This field may not be blank.'],
     });
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textInput = screen.getByRole('textbox', {
@@ -338,18 +268,10 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
-    const queryClient = new QueryClient();
-
     render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <InfoWidgetModalProvider value={null}>
-            <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-          </InfoWidgetModalProvider>
-        </QueryClientProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
+      </InfoWidgetModalProvider>,
     );
 
     const textInput = screen.getByRole('textbox', {

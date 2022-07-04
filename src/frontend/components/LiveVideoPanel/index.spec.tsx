@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 
 import { getDecodedJwt } from 'data/appData';
 import {
@@ -7,14 +7,16 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
+import { DecodedJwt } from 'types/jwt';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { DecodedJwt } from 'types/jwt';
+import render from 'utils/tests/render';
+
 import { LiveVideoPanel } from '.';
+import { ResponsiveContext } from 'grommet';
 
 const mockAskingParticipant = participantMockFactory();
 const mockParticipant = participantMockFactory();
@@ -54,18 +56,18 @@ describe('<LiveVideoPanel />', () => {
       setPanelVisibility: mockSetPanelVisibility,
     });
 
-    const { container } = render(
-      wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />),
+    const { elementContainer: container } = render(
+      <LiveVideoPanel video={mockVideo} />,
     );
 
     expect(mockSetPanelVisibility).toBeCalled();
     expect(mockSetPanelVisibility).toBeCalledTimes(1);
     expect(mockSetPanelVisibility).toBeCalledWith(false);
 
-    expect(container.hasChildNodes()).toBe(false);
+    expect(container!.hasChildNodes()).toBe(false);
   });
 
-  it('renders the content with selection', () => {
+  it('renders the content with selection', async () => {
     mockGetDecodedJwt.mockReturnValue({
       permissions: {
         can_access_dashboard: false,
@@ -81,7 +83,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(<LiveVideoPanel video={mockVideo} />);
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -116,7 +118,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(<LiveVideoPanel video={mockVideo} />);
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -155,7 +157,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(<LiveVideoPanel video={mockVideo} />);
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -180,7 +182,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(wrapInIntlProvider(<LiveVideoPanel video={mockVideo} />));
+    render(<LiveVideoPanel video={mockVideo} />);
 
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
     expect(
@@ -229,6 +231,12 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    await renderImageSnapshot(<LiveVideoPanel video={mockVideo} />, 300, 300);
+    await renderImageSnapshot(
+      <ResponsiveContext.Provider value="small">
+        <LiveVideoPanel video={mockVideo} />
+      </ResponsiveContext.Provider>,
+      300,
+      300,
+    );
   });
 });

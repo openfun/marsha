@@ -1,9 +1,10 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { PropsWithChildren } from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { DashboardVideoLiveWidgetTemplate } from '.';
 
 const mockSetInfoWidgetModal = jest.fn();
@@ -23,17 +24,15 @@ const genericInfoText = 'An example info text';
 describe('<DashboardVideoLiveWidgetTemplate />', () => {
   it('renders DashboardVideoLiveWidgetTemplate opened, with an info text ', () => {
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetTemplate
-            initialOpenValue={true}
-            infoText={genericInfoText}
-            title={genericTitle}
-          >
-            <GenericComponent />
-          </DashboardVideoLiveWidgetTemplate>
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={true}
+          infoText={genericInfoText}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>
+      </InfoWidgetModalProvider>,
     );
     screen.getByText(genericTitle);
     screen.getByText('Generic component');
@@ -45,16 +44,14 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
 
   it('renders DashboardVideoLiveWidgetTemplate closed without info text and clicks on the title.', () => {
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetTemplate
-            initialOpenValue={false}
-            title={genericTitle}
-          >
-            <GenericComponent />
-          </DashboardVideoLiveWidgetTemplate>
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={false}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>
+      </InfoWidgetModalProvider>,
     );
     screen.getByText(genericTitle);
     const openButton = screen.getByRole('button', { name: genericTitle });
@@ -69,17 +66,15 @@ describe('<DashboardVideoLiveWidgetTemplate />', () => {
 
   it('renders DashboardVideoLiveWidgetTemplate closed with info text and clicks on info button', async () => {
     render(
-      wrapInIntlProvider(
-        <InfoWidgetModalProvider value={null}>
-          <DashboardVideoLiveWidgetTemplate
-            initialOpenValue={false}
-            infoText={genericInfoText}
-            title={genericTitle}
-          >
-            <GenericComponent />
-          </DashboardVideoLiveWidgetTemplate>
-        </InfoWidgetModalProvider>,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetTemplate
+          initialOpenValue={false}
+          infoText={genericInfoText}
+          title={genericTitle}
+        >
+          <GenericComponent />
+        </DashboardVideoLiveWidgetTemplate>
+      </InfoWidgetModalProvider>,
     );
     screen.getByText(genericTitle);
     screen.getByRole('button', { name: genericTitle });

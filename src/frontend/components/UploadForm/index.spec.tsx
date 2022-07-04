@@ -1,30 +1,30 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { uploadFile } from '../../data/sideEffects/uploadFile';
-import { getResource } from '../../data/stores/generics';
-import { modelName } from '../../types/models';
-import { timedTextMode, uploadState } from '../../types/tracks';
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { UploadManager } from '../UploadManager';
-import { UploadForm } from './index';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { UploadManager } from 'components/UploadManager';
+import { uploadFile } from 'data/sideEffects/uploadFile';
+import { getResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
+import { UploadForm } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     modelName: 'videos',
   },
 }));
-jest.mock('../../data/sideEffects/uploadFile', () => ({
+jest.mock('data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
-jest.mock('../../data/stores/generics', () => ({
+jest.mock('data/stores/generics', () => ({
   getResource: jest.fn(),
 }));
 
@@ -107,13 +107,7 @@ describe('UploadForm', () => {
 
   it('renders the form by default', async () => {
     mockGetResource.mockResolvedValue(object);
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-        ),
-      ),
-    );
+    render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />);
 
     await screen.findByText('Create a new video');
   });
@@ -139,18 +133,18 @@ describe('UploadForm', () => {
 
     const { container } = render(
       <UploadManager>
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-            [
-              {
-                path: DASHBOARD_ROUTE(),
-                render: () => <span>dashboard</span>,
-              },
-            ],
-          ),
-        )}
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
+      {
+        routerOptions: {
+          routes: [
+            {
+              path: DASHBOARD_ROUTE(),
+              render: () => <span>dashboard</span>,
+            },
+          ],
+        },
+      },
     );
 
     // First the form goes through a loading state as we get the object
@@ -180,18 +174,18 @@ describe('UploadForm', () => {
 
     const { container } = render(
       <UploadManager>
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-            [
-              {
-                path: FULL_SCREEN_ERROR_ROUTE('policy'),
-                render: () => <span>error policy</span>,
-              },
-            ],
-          ),
-        )}
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
+      {
+        routerOptions: {
+          routes: [
+            {
+              path: FULL_SCREEN_ERROR_ROUTE('policy'),
+              render: () => <span>error policy</span>,
+            },
+          ],
+        },
+      },
     );
     await screen.findByText('Create a new video');
 
@@ -224,18 +218,18 @@ describe('UploadForm', () => {
 
     const { container } = render(
       <UploadManager>
-        {wrapInIntlProvider(
-          wrapInRouter(
-            <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />,
-            [
-              {
-                path: FULL_SCREEN_ERROR_ROUTE('upload'),
-                render: () => <span>error upload</span>,
-              },
-            ],
-          ),
-        )}
+        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
+      {
+        routerOptions: {
+          routes: [
+            {
+              path: FULL_SCREEN_ERROR_ROUTE('upload'),
+              render: () => <span>error upload</span>,
+            },
+          ],
+        },
+      },
     );
     await screen.findByText('Create a new video');
 

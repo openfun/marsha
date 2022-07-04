@@ -1,15 +1,14 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import toast, { useToaster, Toast, Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { setLogger } from 'react-query';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { report } from 'utils/errors/report';
 import { thumbnailMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
+
 import { ThumbnailRemoveButton } from '.';
 
 jest.mock('data/appData', () => ({
@@ -24,55 +23,23 @@ setLogger({
   error: () => {},
 });
 
-let matchMedia: MatchMediaMock;
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<ThumbnailRemoveButton />', () => {
-  let getToastHook: () => any = () => {};
-
-  const ToastHack = () => {
-    const toasts = useToaster();
-    getToastHook = () => toasts;
-    return null;
-  };
-
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    matchMedia.clear();
-    const toasts = getToastHook();
-    if (toasts.hasOwnProperty('toasts')) {
-      toasts.toasts.forEach((item: Toast) => {
-        act(() => {
-          toast.remove(item.id);
-        });
-      });
-    }
   });
 
   it('clicks on the remove button and removal is successful', async () => {
-    const queryClient = new QueryClient();
     const mockedThumbnail = thumbnailMockFactory();
     useThumbnail.getState().addResource(mockedThumbnail);
 
     fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 204);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <ThumbnailRemoveButton thumbnail={mockedThumbnail} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<ThumbnailRemoveButton thumbnail={mockedThumbnail} />);
 
     const removeButton = screen.getByRole('button', {
       name: 'Delete thumbnail',
@@ -105,21 +72,12 @@ describe('<ThumbnailRemoveButton />', () => {
   });
 
   it('clicks on the remove button and removal fails', async () => {
-    const queryClient = new QueryClient();
     const mockedThumbnail = thumbnailMockFactory();
     useThumbnail.getState().addResource(mockedThumbnail);
 
     fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 500);
 
-    render(
-      wrapInIntlProvider(
-        <QueryClientProvider client={queryClient}>
-          <Toaster />
-          <ToastHack />
-          <ThumbnailRemoveButton thumbnail={mockedThumbnail} />
-        </QueryClientProvider>,
-      ),
-    );
+    render(<ThumbnailRemoveButton thumbnail={mockedThumbnail} />);
 
     const removeButton = screen.getByRole('button', {
       name: 'Delete thumbnail',

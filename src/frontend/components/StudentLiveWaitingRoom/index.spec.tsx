@@ -1,10 +1,10 @@
-import { act, render, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -69,7 +69,7 @@ describe('<StudentLiveWaitingRoom />', () => {
       description: 'live description',
     });
 
-    render(wrapInIntlProvider(<StudentLiveWaitingRoom video={video} />));
+    render(<StudentLiveWaitingRoom video={video} />);
 
     screen.getByText('Live has started');
     screen.getByText(
@@ -97,7 +97,7 @@ describe('<StudentLiveWaitingRoom />', () => {
       success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
 
-    render(wrapInIntlProvider(<StudentLiveWaitingRoom video={video} />));
+    render(<StudentLiveWaitingRoom video={video} />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');

@@ -1,16 +1,18 @@
-import { act, render, screen } from '@testing-library/react';
-import { Grommet } from 'grommet';
+import { act, screen } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import React from 'react';
 
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 import { theme } from 'utils/theme/theme';
+
 import { ChatConversationDisplayer } from '.';
 
-const mockScrollTo = jest.fn();
-window.HTMLElement.prototype.scrollTo = mockScrollTo;
+const mockScrollTo = window.HTMLElement.prototype
+  .scrollTo as jest.MockedFunction<
+  typeof window.HTMLElement.prototype.scrollTo
+>;
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
@@ -22,7 +24,7 @@ describe('<ChatConversationDisplayer />', () => {
   });
 
   it('displays correctly message history and new presences.', () => {
-    render(wrapInIntlProvider(<ChatConversationDisplayer />));
+    render(<ChatConversationDisplayer />);
 
     for (let i = 0; i < 5; i++) {
       act(() =>
@@ -42,7 +44,7 @@ describe('<ChatConversationDisplayer />', () => {
   });
 
   it('scrolls down to bottom, when scroll bar is previously set to bottom.', async () => {
-    render(wrapInIntlProvider(<ChatConversationDisplayer />));
+    render(<ChatConversationDisplayer />);
 
     expect(mockScrollTo).toHaveBeenCalledTimes(1);
 
@@ -59,13 +61,7 @@ describe('<ChatConversationDisplayer />', () => {
   });
 
   it('renders components with messages and presences and compares it with previous render. [screenshot]', async () => {
-    render(
-      wrapInIntlProvider(
-        <Grommet theme={theme}>
-          <ChatConversationDisplayer />
-        </Grommet>,
-      ),
-    );
+    render(<ChatConversationDisplayer />, { grommetOptions: { theme } });
 
     for (let i = 0; i < 5; i++) {
       act(() =>

@@ -1,5 +1,7 @@
-import { render, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { Loader, Spinner } from '.';
 

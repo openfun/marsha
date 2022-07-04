@@ -1,6 +1,8 @@
-import { act, render, screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
+
+import render from 'utils/tests/render';
 
 import { ViewersListTextButton } from '.';
 

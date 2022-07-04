@@ -1,9 +1,9 @@
 import React from 'react';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { renderIconSnapshot } from 'utils/tests/imageSnapshot';
-import { wrapInIntlProvider } from 'utils/tests/intl';
+import render from 'utils/tests/render';
 
 import { StudentHideChatButton } from '.';
 
@@ -28,7 +28,7 @@ describe('<StudentHideChatButton />', () => {
       setPanelVisibility: mockSetPAnelVisibility,
     });
 
-    render(wrapInIntlProvider(<StudentHideChatButton />));
+    render(<StudentHideChatButton />);
 
     fireEvent.click(screen.getByRole('button', { name: 'Hide chat' }));
 

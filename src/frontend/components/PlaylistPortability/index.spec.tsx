@@ -1,24 +1,18 @@
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Grommet } from 'grommet';
-import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
-import { Toaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { PlaylistPortability } from '.';
 import {
   playlistLiteMockFactory,
   playlistMockFactory,
   videoMockFactory,
-} from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { Deferred } from '../../utils/tests/Deferred';
-import { wrapInRouter } from '../../utils/tests/router';
+} from 'utils/tests/factories';
+import { Deferred } from 'utils/tests/Deferred';
 
-let matchMedia: MatchMediaMock;
+import { PlaylistPortability } from '.';
+import render from 'utils/tests/render';
 
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     jwt: 'some token',
   },
@@ -31,12 +25,7 @@ jest.mock('../../data/appData', () => ({
 }));
 
 describe('<PlaylistPortability />', () => {
-  beforeAll(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
-    matchMedia.clear();
     fetchMock.restore();
   });
 
@@ -65,19 +54,7 @@ describe('<PlaylistPortability />', () => {
       currentPlaylistDeferred.promise,
     );
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <Toaster />
-            <QueryClientProvider client={queryClient}>
-              <PlaylistPortability object={video} />
-            </QueryClientProvider>
-          </Grommet>,
-        ),
-      ),
-    );
+    render(<PlaylistPortability object={video} />);
 
     screen.getByText('Loading playlist...');
 
@@ -167,18 +144,7 @@ describe('<PlaylistPortability />', () => {
       currentPlaylistDeferred.promise,
     );
 
-    const queryClient = new QueryClient();
-    render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <Grommet>
-            <QueryClientProvider client={queryClient}>
-              <PlaylistPortability object={video} />
-            </QueryClientProvider>
-          </Grommet>,
-        ),
-      ),
-    );
+    render(<PlaylistPortability object={video} />);
     await act(async () => currentPlaylistDeferred.resolve(currentPlaylist));
 
     currentPlaylist.portable_to!.map((playlist) => {

@@ -1,15 +1,14 @@
-import { render } from '@testing-library/react';
 import React from 'react';
 
-import { videoMockFactory } from '../../utils/tests/factories';
-import { wrapInIntlProvider } from '../../utils/tests/intl';
-import { wrapInRouter } from '../../utils/tests/router';
-import { InstructorView } from './';
+import { videoMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
+
+import { InstructorView } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
 let mockDecodedJwt: any;
-jest.mock('../../data/appData', () => ({
+jest.mock('data/appData', () => ({
   appData: {
     modelName: 'videos',
   },
@@ -28,13 +27,9 @@ describe('<InstructorView />', () => {
     };
 
     const { getByText } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <InstructorView resource={video}>
-            <div className="some-child" />
-          </InstructorView>,
-        ),
-      ),
+      <InstructorView resource={video}>
+        <div className="some-child" />
+      </InstructorView>,
     );
 
     getByText('Instructor Preview 👆');
@@ -50,13 +45,9 @@ describe('<InstructorView />', () => {
     };
 
     const { getByText, queryByText } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <InstructorView resource={video}>
-            <div className="some-child" />
-          </InstructorView>,
-        ),
-      ),
+      <InstructorView resource={video}>
+        <div className="some-child" />
+      </InstructorView>,
     );
 
     getByText(
@@ -74,13 +65,9 @@ describe('<InstructorView />', () => {
     };
 
     const { getByText, queryByText } = render(
-      wrapInIntlProvider(
-        wrapInRouter(
-          <InstructorView resource={video}>
-            <div className="some-child" />
-          </InstructorView>,
-        ),
-      ),
+      <InstructorView resource={video}>
+        <div className="some-child" />
+      </InstructorView>,
     );
 
     getByText(

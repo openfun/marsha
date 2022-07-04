@@ -1,20 +1,14 @@
-import {
-  render,
-  screen,
-  waitForElementToBeRemoved,
-} from '@testing-library/react';
+import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import MatchMediaMock from 'jest-matchmedia-mock';
-import React, { Fragment } from 'react';
-import { Toaster } from 'react-hot-toast';
+import React from 'react';
 
 import { stopLive } from 'data/sideEffects/stopLive';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
+import render from 'utils/tests/render';
 
 import { StopLiveButton } from '.';
 
@@ -28,22 +22,9 @@ jest.mock('data/sideEffects/stopLive', () => ({
 }));
 const mockedStopLive = stopLive as jest.MockedFunction<typeof stopLive>;
 
-let matchMedia: MatchMediaMock;
-
 describe('<StopLiveButton />', () => {
-  beforeEach(() => {
-    matchMedia = new MatchMediaMock();
-  });
   afterEach(() => {
     jest.clearAllMocks();
-    matchMedia.clear();
-
-    /*
-      make sure to remove all body children, grommet layer gets rendered twice, known issue
-      https://github.com/grommet/grommet/issues/5200
-    */
-    document.body.innerHTML = '';
-    document.body.appendChild(document.createElement('div'));
   });
 
   it('renders a loader while fetching and updates the video', async () => {
@@ -51,11 +32,7 @@ describe('<StopLiveButton />', () => {
     const stopDeferred = new Deferred<Video>();
     mockedStopLive.mockReturnValue(stopDeferred.promise);
 
-    render(
-      wrapInIntlProvider(
-        wrapInLiveModaleProvider(<StopLiveButton video={video} />),
-      ),
-    );
+    render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
     expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
     userEvent.click(screen.getByRole('button', { name: 'End live' }));
@@ -77,16 +54,7 @@ describe('<StopLiveButton />', () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
     mockedStopLive.mockRejectedValue(null);
 
-    render(
-      wrapInIntlProvider(
-        wrapInLiveModaleProvider(
-          <Fragment>
-            <Toaster />
-            <StopLiveButton video={video} />
-          </Fragment>,
-        ),
-      ),
-    );
+    render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
     userEvent.click(screen.getByRole('button', { name: 'End live' }));
     userEvent.click(screen.getByRole('button', { name: 'Stop the live' }));
@@ -97,11 +65,7 @@ describe('<StopLiveButton />', () => {
   it('updates the state to open a confirmation modal', async () => {
     const video = videoMockFactory();
 
-    render(
-      wrapInIntlProvider(
-        wrapInLiveModaleProvider(<StopLiveButton video={video} />),
-      ),
-    );
+    render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
     expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
     userEvent.click(screen.getByRole('button', { name: 'End live' }));

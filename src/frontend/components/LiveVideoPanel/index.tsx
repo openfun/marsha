@@ -1,5 +1,5 @@
-import React, { useEffect, useContext } from 'react';
-import { Tabs, Box, Grommet, ResponsiveContext, ThemeType } from 'grommet';
+import React, { useEffect, useContext, Fragment } from 'react';
+import { Tabs, Box, ResponsiveContext, ThemeType, ThemeContext } from 'grommet';
 import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
@@ -11,14 +11,8 @@ import {
 } from 'data/stores/useLivePanelState';
 import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
-import { theme } from 'utils/theme/theme';
-import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
-const StyledGrommet = styled(Grommet)`
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-`;
+import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
 const ContentContainer = styled.div`
   position: absolute;
@@ -39,7 +33,6 @@ interface LiveVideoPanelProps {
 export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   const size = useContext(ResponsiveContext);
   const extendedTheme: ThemeType = {
-    ...theme,
     tabs: {
       header: {
         extend: `white-space: nowrap; \
@@ -70,7 +63,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
     return <React.Fragment />;
   }
 
-  let header;
+  let header = <Fragment />;
   if (availableItems.length > 1) {
     header = (
       <Tabs
@@ -105,11 +98,11 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
   }
 
   return (
-    <StyledGrommet background="white" theme={extendedTheme}>
-      {header}
+    <Box background="white" flex direction="column">
+      <ThemeContext.Extend value={extendedTheme}>{header}</ThemeContext.Extend>
       <RelativeBox flex="grow">
         <ContentContainer>{content}</ContentContainer>
       </RelativeBox>
-    </StyledGrommet>
+    </Box>
   );
 };

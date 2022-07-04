@@ -1,25 +1,17 @@
-import { render, screen } from '@testing-library/react';
-import MatchMediaMock from 'jest-matchmedia-mock';
+import { screen } from '@testing-library/react';
 import React from 'react';
-import { Toaster } from 'react-hot-toast';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { wrapInIntlProvider } from 'utils/tests/intl';
-import { LeaveJoinDiscussionWrapper } from '.';
+import render from 'utils/tests/render';
 
-let matchMedia: MatchMediaMock;
+import { LeaveJoinDiscussionWrapper } from '.';
 
 jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, jest.fn()],
 }));
 
 describe('<LeaveJoinDiscussionWrapper />', () => {
-  beforeEach(() => {
-    matchMedia = new MatchMediaMock();
-  });
-
   afterEach(() => {
-    matchMedia.clear();
     jest.resetAllMocks();
   });
 
@@ -28,7 +20,7 @@ describe('<LeaveJoinDiscussionWrapper />', () => {
       accepted: false,
     });
 
-    render(wrapInIntlProvider(<LeaveJoinDiscussionWrapper />));
+    render(<LeaveJoinDiscussionWrapper />);
 
     screen.getByRole('button', {
       name: 'Send request to join the discussion',
@@ -43,7 +35,7 @@ describe('<LeaveJoinDiscussionWrapper />', () => {
       asked: true,
     });
 
-    render(wrapInIntlProvider(<LeaveJoinDiscussionWrapper />));
+    render(<LeaveJoinDiscussionWrapper />);
 
     expect(
       screen.queryByRole('button', {
@@ -62,7 +54,7 @@ describe('<LeaveJoinDiscussionWrapper />', () => {
       accepted: true,
     });
 
-    render(wrapInIntlProvider(<LeaveJoinDiscussionWrapper />));
+    render(<LeaveJoinDiscussionWrapper />);
 
     expect(
       screen.queryByRole('button', {
@@ -77,14 +69,7 @@ describe('<LeaveJoinDiscussionWrapper />', () => {
       rejected: true,
     });
 
-    render(
-      wrapInIntlProvider(
-        <React.Fragment>
-          <Toaster />
-          <LeaveJoinDiscussionWrapper />
-        </React.Fragment>,
-      ),
-    );
+    render(<LeaveJoinDiscussionWrapper />);
 
     screen.getByText(
       'Your request to join the discussion has not been accepted.',
