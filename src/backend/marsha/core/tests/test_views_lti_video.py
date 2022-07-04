@@ -106,7 +106,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("static"),
             {
-                "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
@@ -252,7 +255,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("static"),
             {
-                "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
@@ -422,7 +428,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("static"),
             {
-                "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
@@ -583,7 +592,10 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(
             context.get("static"),
             {
-                "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
@@ -1549,7 +1561,10 @@ class VideoLTIViewTestCase(TestCase):
                 "sentry_dsn": "https://sentry.dsn",
                 "state": "error",
                 "static": {
-                    "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                    "img": {
+                        "liveBackground": "/static/img/liveBackground.jpg",
+                        "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    },
                     "svg": {"icons": "/static/svg/icons.svg"},
                 },
             },

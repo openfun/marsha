@@ -54,6 +54,7 @@ export interface AppData {
       bbbBackground?: string;
       bbbLogo?: string;
       liveBackground: string;
+      liveErrorBackground: string;
     };
   };
   player?: string;

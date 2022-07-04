@@ -96,6 +96,7 @@ def _get_base_app_data():
             },
             "img": {
                 "liveBackground": static("img/liveBackground.jpg"),
+                "liveErrorBackground": static("img/liveErrorBackground.jpg"),
             },
         },
     }
