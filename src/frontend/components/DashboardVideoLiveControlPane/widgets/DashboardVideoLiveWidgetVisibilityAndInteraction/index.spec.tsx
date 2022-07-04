@@ -2,7 +2,6 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
@@ -20,12 +19,6 @@ jest.mock('data/appData', () => ({
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
-
-setLogger({
-  log: () => {},
-  warn: () => {},
-  error: () => {},
-});
 
 // Even if its depreciated, it's what is used under-the-hood in the clipboard.js librairy
 document.execCommand = jest.fn();

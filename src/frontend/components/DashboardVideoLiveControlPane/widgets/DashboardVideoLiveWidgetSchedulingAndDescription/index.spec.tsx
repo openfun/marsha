@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
-import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
@@ -21,12 +20,6 @@ jest.mock('data/appData', () => ({
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
-
-setLogger({
-  log: () => {},
-  warn: () => {},
-  error: () => {},
-});
 
 const currentDate = DateTime.fromISO('2022-01-01T12:00');
 
