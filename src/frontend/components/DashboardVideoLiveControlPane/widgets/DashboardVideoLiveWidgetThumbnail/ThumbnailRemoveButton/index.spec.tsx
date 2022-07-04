@@ -2,7 +2,6 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { setLogger } from 'react-query';
 
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { report } from 'utils/errors/report';
@@ -16,12 +15,6 @@ jest.mock('data/appData', () => ({
     jwt: 'json web token',
   },
 }));
-
-setLogger({
-  log: () => {},
-  warn: () => {},
-  error: () => {},
-});
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),

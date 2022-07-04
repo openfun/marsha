@@ -3,7 +3,6 @@ import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { setLogger } from 'react-query';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
@@ -21,12 +20,6 @@ jest.mock('data/appData', () => ({
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
-
-setLogger({
-  log: () => {},
-  warn: () => {},
-  error: () => {},
-});
 
 describe('<DashboardVideoLiveWidgetJoinMode />', () => {
   afterEach(() => {

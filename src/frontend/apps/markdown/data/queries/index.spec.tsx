@@ -1,7 +1,7 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
 
@@ -12,14 +12,6 @@ import {
   useSaveTranslations,
   useUpdateMarkdownDocument,
 } from './index';
-
-setLogger({
-  // tslint:disable-next-line:no-console
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
 
 jest.mock('data/appData', () => ({
   appData: {

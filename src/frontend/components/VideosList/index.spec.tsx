@@ -88,8 +88,6 @@ describe('<VideosList />', () => {
     const deferred = new Deferred();
     fetchMock.get('/api/videos/?limit=999', deferred.promise);
 
-    jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
-
     render(<VideosList />, { queryOptions: { client: queryClient } });
 
     screen.getByRole('status', { name: 'Loading videos...' });
@@ -104,9 +102,5 @@ describe('<VideosList />', () => {
     await act(async () => deferred.resolve(500));
 
     screen.getByText('There was an unexpected error');
-    // tslint:disable:no-console
-    expect(console.error).toHaveBeenCalledWith(
-      new Error('Failed to get list of videos.'),
-    );
   });
 });
