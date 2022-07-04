@@ -55,7 +55,10 @@ class SiteViewTestCase(TestCase):
         self.assertEqual(
             context.get("static"),
             {
-                "img": {"liveBackground": "/static/img/liveBackground.jpg"},
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
         )

@@ -104,6 +104,7 @@ class ClassroomLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -166,6 +167,7 @@ class ClassroomLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -282,6 +284,7 @@ class ClassroomLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -423,6 +426,7 @@ class MeetingLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -485,6 +489,7 @@ class MeetingLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -601,6 +606,7 @@ class MeetingLTIViewTestCase(TestCase):
             {
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
