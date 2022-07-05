@@ -1,3 +1,4 @@
+import { Tabs } from 'grommet';
 import React from 'react';
 import renderer from 'react-test-renderer';
 import { cleanup, screen } from '@testing-library/react';
@@ -24,14 +25,22 @@ describe('<LiveVideoTabPanel /> titles', () => {
 
       const item = itemStr as LivePanelItem;
 
-      render(<LiveVideoTabPanel item={item} selected={false} />);
+      render(
+        <Tabs>
+          <LiveVideoTabPanel item={item} selected={false} />
+        </Tabs>,
+      );
 
       screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
 
       cleanup();
 
-      render(<LiveVideoTabPanel item={item} selected={true} />);
+      render(
+        <Tabs>
+          <LiveVideoTabPanel item={item} selected={true} />
+        </Tabs>,
+      );
 
       screen.getByRole('tab', { name: tabTitles[item] });
       screen.getByText(tabTitles[item]);
@@ -44,7 +53,9 @@ describe('<LiveVideoTabPanel /> titles', () => {
 describe('<LiveVideoTabPanel /> styles', () => {
   it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
     render(
-      <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />,
+      <Tabs>
+        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={false} />
+      </Tabs>,
     );
 
     const button = screen.getByRole('tab', { name: 'application' });
@@ -67,7 +78,9 @@ describe('<LiveVideoTabPanel /> styles', () => {
 
   it('renders with selected style [screenshot]', async () => {
     render(
-      <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />,
+      <Tabs>
+        <LiveVideoTabPanel item={LivePanelItem.APPLICATION} selected={true} />
+      </Tabs>,
     );
 
     const button = screen.getByRole('tab', { name: 'application' });
