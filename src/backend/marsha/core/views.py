@@ -95,7 +95,7 @@ def _get_base_app_data():
                 "icons": static("svg/icons.svg"),
             },
             "img": {
-                "liveBackground": static("img/liveBackground.png"),
+                "liveBackground": static("img/liveBackground.jpg"),
             },
         },
     }
