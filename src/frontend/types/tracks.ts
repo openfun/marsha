@@ -162,7 +162,7 @@ export interface LiveAttendance extends Resource {
   display_name: Nullable<string>;
   is_registered: boolean;
   live_attendance: Nullable<LiveAttendanceInfos>;
- }
+}
 
 export interface LiveSession extends Resource {
   anonymous_id: Nullable<string>;
