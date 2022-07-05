@@ -103,7 +103,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -165,7 +165,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -281,7 +281,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -422,7 +422,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -484,7 +484,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
@@ -600,7 +600,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
-                    "liveBackground": "/static/img/liveBackground.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
