@@ -211,13 +211,20 @@ export const theme: ThemeType = {
     },
   },
   tab: {
-    color: 'text',
+    active: {
+      color: 'blue-focus',
+    },
+    color: 'blue-active',
     border: {
-      side: 'bottom',
-      color: 'background-back',
+      active: { color: 'blue-focus' },
+      color: 'blue-active',
       hover: {
-        color: 'control',
+        color: 'blue-focus',
       },
+      side: 'bottom',
+    },
+    hover: {
+      color: 'blue-focus',
     },
     pad: 'small',
     margin: {
