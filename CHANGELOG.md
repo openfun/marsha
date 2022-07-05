@@ -22,6 +22,11 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 
 - Rename meetings to classrooms (no database change yet)
 
+### Fixed
+
+- Missing migration to migrate key format of live_attendance 
+field of liveSession
+
 ## [4.0.0-beta.7] - 2022-06-27
 
 ### Added
