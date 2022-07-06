@@ -28,7 +28,7 @@ describe('<TeacherLiveControlBar />', () => {
     jest.useRealTimers();
   });
 
-  it('renders chat and viewers buttons when live is not running', () => {
+  it('renders chat and viewers buttons when live is not running and in mobile view', () => {
     fetchMock.get('some_url', 500);
     useLivePanelState.setState({
       availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
@@ -46,6 +46,7 @@ describe('<TeacherLiveControlBar />', () => {
         </LiveFeedbackProvider>,
         mockedVideo,
       ),
+      { grommetOptions: { responsiveSize: 'small' } },
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -57,7 +58,7 @@ describe('<TeacherLiveControlBar />', () => {
     expect(spyedPollForLive).not.toHaveBeenCalled();
   });
 
-  it('renders chat and viewers buttons when live is jitsi mode and running', () => {
+  it('renders chat and viewers buttons when live is jitsi mode and running and in mobile view', () => {
     fetchMock.get('some_url', 500);
     useLivePanelState.setState({
       availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
@@ -76,6 +77,7 @@ describe('<TeacherLiveControlBar />', () => {
         </LiveFeedbackProvider>,
         mockedVideo,
       ),
+      { grommetOptions: { responsiveSize: 'small' } },
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -108,8 +110,6 @@ describe('<TeacherLiveControlBar />', () => {
       ),
     );
 
-    screen.getByRole('button', { name: 'Show chat' });
-    screen.getByRole('button', { name: 'Show viewers' });
     expect(
       screen.queryByRole('button', { name: 'Show live feedback' }),
     ).not.toBeInTheDocument();
