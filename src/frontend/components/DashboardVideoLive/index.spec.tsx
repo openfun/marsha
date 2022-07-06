@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
@@ -335,8 +335,6 @@ describe('components/DashboardVideoLive', () => {
       ),
       { queryOptions: { client: queryClient } },
     );
-
-    userEvent.click(await screen.findByRole('button', { name: 'Show chat' }));
 
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',

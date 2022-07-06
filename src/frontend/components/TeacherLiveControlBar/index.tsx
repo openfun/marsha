@@ -1,5 +1,5 @@
-import { Box } from 'grommet';
-import React, { useEffect } from 'react';
+import { Box, ResponsiveContext } from 'grommet';
+import React, { useContext, useEffect } from 'react';
 
 import { ChatWrapper } from 'components/LiveControls/ChatWrapper';
 import { ViewersWrapper } from 'components/LiveControls/ViewersWrapper';
@@ -23,6 +23,7 @@ export const TeacherLiveControlBar = () => {
   const { availableItems } = useLivePanelState((state) => ({
     availableItems: state.availableItems,
   }));
+  const isMobileView = useContext(ResponsiveContext) === 'small';
 
   useEffect(() => {
     let canceled = false;
@@ -53,13 +54,13 @@ export const TeacherLiveControlBar = () => {
 
   return (
     <Box direction="row" height="100%">
-      {availableItems.includes(LivePanelItem.CHAT) && (
+      {isMobileView && availableItems.includes(LivePanelItem.CHAT) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <ChatWrapper />
         </Box>
       )}
 
-      {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
+      {isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <ViewersWrapper />
         </Box>
