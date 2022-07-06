@@ -42,12 +42,16 @@ describe('<StudentLiveControlBar />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders apps wrapper button', () => {
+  it('renders apps wrapper button in mobile view', () => {
     useLivePanelState.setState({
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo), {
+      grommetOptions: {
+        responsiveSize: 'small',
+      },
+    });
 
     screen.getByRole('button', { name: 'Show apps' });
     expect(
@@ -60,12 +64,16 @@ describe('<StudentLiveControlBar />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders viewers wrapper button', () => {
+  it('renders viewers wrapper button in mobile view', () => {
     useLivePanelState.setState({
       availableItems: [LivePanelItem.VIEWERS_LIST],
     });
 
-    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo), {
+      grommetOptions: {
+        responsiveSize: 'small',
+      },
+    });
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
@@ -78,12 +86,16 @@ describe('<StudentLiveControlBar />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders chat wrapper button', () => {
+  it('renders chat wrapper button in mobile view', () => {
     useLivePanelState.setState({
       availableItems: [LivePanelItem.CHAT],
     });
 
-    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo), {
+      grommetOptions: {
+        responsiveSize: 'small',
+      },
+    });
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -252,5 +264,44 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       screen.queryByRole('button', { name: 'Show chat' }),
     ).not.toBeInTheDocument();
     screen.getByRole('button', { name: 'Send request to join the discussion' });
+  });
+
+  it('renders only leave/join discussion button when in large view', () => {
+    useLivePanelState.setState({
+      availableItems: [
+        LivePanelItem.CHAT,
+        LivePanelItem.APPLICATION,
+        LivePanelItem.VIEWERS_LIST,
+      ],
+    });
+
+    const mockRunningJitsiWithXMPP = videoMockFactory({
+      live_type: LiveModeType.JITSI,
+      live_state: liveState.RUNNING,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(wrapInVideo(<StudentLiveControlBar />, mockRunningJitsiWithXMPP));
+
+    expect(
+      screen.queryByRole('button', { name: 'Show apps' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Show chat' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Show viewers' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', {
+      name: 'Send request to join the discussion',
+    });
   });
 });

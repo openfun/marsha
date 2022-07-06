@@ -360,8 +360,6 @@ describe('PublicVideoDashboard', () => {
 
     screen.getByText('live title');
 
-    screen.getByRole('button', { name: 'Hide chat' });
-    screen.getByRole('button', { name: 'Show viewers' });
     screen.getByText('Join the chat');
   });
 

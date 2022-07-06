@@ -177,7 +177,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
-    screen.getByRole('button', { name: 'Show chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -241,7 +240,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     screen.getByText('Join the chat');
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
-    screen.getByRole('button', { name: 'Hide chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -368,9 +366,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
     expect(useLivePanelState.getState().currentItem).toEqual(undefined);
@@ -604,7 +599,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     screen.getByText('live title');
-    screen.getByRole('button', { name: 'Show chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -659,7 +653,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     screen.getByText('Join the chat');
     screen.getByText('live title');
-    screen.getByRole('button', { name: 'Hide chat' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -768,9 +761,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
     expect(useLivePanelState.getState().currentItem).toEqual(
@@ -817,9 +807,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     screen.getByText('live title');
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.VIEWERS_LIST,
@@ -1060,5 +1047,50 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       'src',
       `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/1`,
     );
+  });
+
+  it('configures live state with chat and viewers button when in mobile view', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: true,
+      currentItem: LivePanelItem.CHAT,
+      availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
+    });
+    const video = videoMockFactory({
+      title: null,
+      live_info: {
+        jitsi: {
+          room_name: 'room',
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
+      { grommetOptions: { responsiveSize: 'small' } },
+    );
+
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
+    screen.getByRole('button', { name: 'Show viewers' });
+    screen.getByRole('button', { name: 'Hide chat' });
   });
 });

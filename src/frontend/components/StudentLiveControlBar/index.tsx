@@ -15,7 +15,7 @@ import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
 
 export const StudentLiveControlBar = () => {
   const live = useCurrentLive();
-  const size = useContext(ResponsiveContext);
+  const isMobileView = useContext(ResponsiveContext) === 'small';
   const { availableItems } = useLivePanelState((state) => ({
     availableItems: state.availableItems,
   }));
@@ -31,21 +31,21 @@ export const StudentLiveControlBar = () => {
     <Box
       direction="row-reverse"
       height="100%"
-      justify={size === 'small' ? 'evenly' : undefined}
+      justify={isMobileView ? 'evenly' : undefined}
     >
-      {availableItems.includes(LivePanelItem.APPLICATION) && (
+      {isMobileView && availableItems.includes(LivePanelItem.APPLICATION) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <AppsWrapper />
         </Box>
       )}
 
-      {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
+      {isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <ViewersWrapper />
         </Box>
       )}
 
-      {availableItems.includes(LivePanelItem.CHAT) && (
+      {isMobileView && availableItems.includes(LivePanelItem.CHAT) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <ChatWrapper />
         </Box>
