@@ -19,6 +19,8 @@ import { UploadForm } from 'components/UploadForm';
 import { UploadManager } from 'components/UploadManager';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { SelectContent } from 'components/SelectContent/';
+import { InstructorDashboardVOD } from 'components/InstructorDashboardVOD';
+import { LTINav } from 'components/LTINav';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));
@@ -45,6 +47,16 @@ export const Routes = () => (
   <Wrappers>
     <Suspense fallback={<Loader />}>
       <Switch>
+        <Route
+          exact
+          path={'/test_route'}
+          render={() => (
+            <React.Fragment>
+              <LTINav object={appData.video!} />
+              <InstructorDashboardVOD />
+            </React.Fragment>
+          )}
+        />
         <Route exact path={DASHBOARD_ROUTE()} component={Dashboard} />
         <Route
           exact

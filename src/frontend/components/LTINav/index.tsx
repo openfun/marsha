@@ -91,6 +91,7 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
             <FormattedMessage {...messages.linkPlaylist} />
           </NavItem>
         )}
+        {canAccessDashboard && <NavItem to={'/test_route'}>TESTS</NavItem>}
       </Nav>
     </Box>
   );
