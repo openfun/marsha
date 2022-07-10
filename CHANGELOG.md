@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 react-testing-library and wrap the test component in most of 
 the common application contexts (grommet, intl, react-router, 
 react-query, react-hot-toast, breadcrumb, styled-components)
+- Add a link to generate an ics file on the scheduled page
 
 ### Changed
 
