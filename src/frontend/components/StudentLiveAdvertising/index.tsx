@@ -1,5 +1,6 @@
-import { Box, ResponsiveContext, Stack } from 'grommet';
-import { DateTime } from 'luxon';
+import { Box, Paragraph, ResponsiveContext, Stack, Text } from 'grommet';
+import { Schedule } from 'grommet-icons';
+import { DateTime, Duration } from 'luxon';
 import React, {
   CSSProperties,
   useContext,
@@ -7,7 +8,8 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { useIntl } from 'react-intl';
+import ICalendarLink from 'react-icalendar-link';
+import { useIntl, defineMessages } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail/ThumbnailDisplayer';
 import { appData } from 'data/appData';
@@ -16,11 +18,41 @@ import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';
 import { StudentLiveRegistration } from './StudentLiveRegistration';
 import { StudentLiveScheduleInfo } from './StudentLiveScheduleInfo';
+import styled from 'styled-components';
+
+const StyledText = styled(Text)`
+  font-family: 'Roboto-Regular';
+  padding-left: 10px;
+  vertical-align: bottom;
+`;
 
 interface StudentLiveAdvertisingProps {
   video: Video;
 }
-
+const messages = defineMessages({
+  a11AddCalendar: {
+    defaultMessage: 'Click to add the event to your calendar',
+    description: 'Title on icon to click to add the event to my calendar',
+    id: 'component.StudentLiveAdvertising.StudentLiveDescription.a11AddCalendar',
+  },
+  addCalendar: {
+    defaultMessage: 'Add to my calendar',
+    description: 'Title of the link to add this event to my calendar',
+    id: 'component.StudentLiveAdvertising.StudentLiveDescription.addCalendar',
+  },
+  defaultTitle: {
+    defaultMessage: "Don't miss the live!",
+    description:
+      'Title to advertise a live in a ics file which has no title set yet.',
+    id: 'component.StudentLiveAdvertising.StudentLiveAdvertising.defaultTitle',
+  },
+  defaultDescription: {
+    defaultMessage: 'Come and join us!',
+    description:
+      'Description to advertise a live in a ics file which has no description set yet.',
+    id: 'component.StudentLiveAdvertising.StudentLiveAdvertising.defaultDescription',
+  },
+});
 export const StudentLiveAdvertising = ({
   video,
 }: StudentLiveAdvertisingProps) => {
@@ -30,7 +62,6 @@ export const StudentLiveAdvertising = ({
     if (!video.starting_at) {
       return undefined;
     }
-
     return DateTime.fromISO(video.starting_at).setLocale(intl.locale);
   }, [video, intl]);
   const [isWaitingOver, setIsWaitingOver] = useState(
@@ -41,6 +72,28 @@ export const StudentLiveAdvertising = ({
         video.live_state === liveState.IDLE &&
         liveScheduleStartDate < DateTime.now()),
   );
+
+  const scheduledEvent = useMemo(() => {
+    if (liveScheduleStartDate && video.starting_at) {
+      const url = video.is_public
+        ? `${window.location.origin}/videos/${video.id}`
+        : '';
+      const startDate = DateTime.fromISO(video.starting_at);
+      const duration = video.estimated_duration
+        ? Duration.fromISOTime(video.estimated_duration)
+        : { hours: 1 };
+      const endDate = startDate.plus(duration);
+      return {
+        description:
+          video.description || intl.formatMessage(messages.defaultDescription),
+        endTime: endDate.toISO(),
+        startTime: startDate.toISO(),
+        title: video.title || intl.formatMessage(messages.defaultTitle),
+        url,
+      };
+    }
+    return undefined;
+  }, [video, liveScheduleStartDate, intl]);
 
   useEffect(() => {
     if (
@@ -83,6 +136,19 @@ export const StudentLiveAdvertising = ({
             startDate={liveScheduleStartDate}
           />
           <StudentLiveDescription video={video} />
+          {scheduledEvent && (
+            <Paragraph alignSelf="center" textAlign="justify">
+              <ICalendarLink event={scheduledEvent}>
+                <Schedule
+                  a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
+                  color="blue-active"
+                />
+                <StyledText color="blue-active">
+                  {intl.formatMessage(messages.addCalendar)}
+                </StyledText>
+              </ICalendarLink>
+            </Paragraph>
+          )}
         </AdvertisingBox>
 
         {liveScheduleStartDate && !isWaitingOver && <StudentLiveRegistration />}
