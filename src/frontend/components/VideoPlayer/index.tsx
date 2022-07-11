@@ -1,5 +1,6 @@
-import { Stack } from 'grommet';
+import { Box } from 'grommet';
 import React, { useRef, useEffect } from 'react';
+import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
@@ -10,7 +11,6 @@ import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
 import { TimedText, timedTextMode, Video, videoSize } from 'types/tracks';
 import { Nullable } from 'utils/types';
-import { useIntl } from 'react-intl';
 
 const trackTextKind: { [key in timedTextMode]?: string } = {
   [timedTextMode.CLOSED_CAPTIONING]: 'captions',
@@ -105,14 +105,15 @@ const VideoPlayer = ({
   resolutions.sort((a, b) => b - a);
 
   return (
-    <Stack interactiveChild="last">
-      {/* tabIndex is set to -1 to not take focus on this element when a user is navigating using
-       their keyboard. */}
+    <Box>
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
         poster={thumbnailUrls[resolutions[0]]}
+        /* tabIndex is set to -1 to not take focus on this element when a user is navigating using
+       their keyboard. */
         tabIndex={-1}
+        playsInline
       >
         {resolutions.map((size) => (
           <source
@@ -140,7 +141,7 @@ const VideoPlayer = ({
             />
           ))}
       </video>
-    </Stack>
+    </Box>
   );
 };
 
