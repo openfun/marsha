@@ -97,10 +97,12 @@ export const createVideojsPlayer = (
     sources,
   };
 
-  const player = videojs(videoNode, options, () => {
-    if (onReady) {
-      onReady(player);
+  const player = videojs(videoNode, options, function () {
+    if (isLive) {
+      this.play();
     }
+
+    onReady?.(this);
   });
 
   if (isMSESupported()) {
