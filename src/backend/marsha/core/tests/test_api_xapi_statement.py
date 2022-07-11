@@ -111,8 +111,8 @@ class XAPIStatementApiTest(TestCase):
 
         self.assertEqual(response.status_code, 404)
 
-    @mock.patch("marsha.core.api.XAPI")
-    def test_xapi_statement_with_request_error_to_lrs(self, xapi_mock):
+    @mock.patch("marsha.core.api.XAPI.send")
+    def test_xapi_statement_with_request_error_to_lrs(self, xapi_send_mock):
         """Sending a request to the LRS fails. The response should reflect this failure."""
         video = VideoFactory(
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
@@ -141,8 +141,7 @@ class XAPIStatementApiTest(TestCase):
         mock_response.status_code.return_value = 400
 
         exception = requests.exceptions.HTTPError(response=mock_response)
-        xapi_instance = xapi_mock.return_value
-        xapi_instance.send.side_effect = exception
+        xapi_send_mock.side_effect = exception
 
         response = self.client.post(
             "/xapi/video/",
