@@ -3,7 +3,8 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
-import { liveState, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { liveState } from 'types/tracks';
 
 import { HarvestVOD } from './HarvestVOD';
 import { PublishVOD } from './PublishVOD';
@@ -46,13 +47,8 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetVODProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetVOD = ({
-  video,
-}: DashboardVideoLiveWidgetVODProps) => {
+export const DashboardVideoLiveWidgetVOD = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
 
   const displayMessageLayer = shouldDisplayDefaultMessage(video);
@@ -86,9 +82,9 @@ export const DashboardVideoLiveWidgetVOD = ({
       </Box>
     );
   } else if (video.live_state !== liveState.HARVESTED) {
-    content = <HarvestVOD video={video} />;
+    content = <HarvestVOD />;
   } else {
-    content = <PublishVOD video={video} />;
+    content = <PublishVOD />;
   }
 
   return (

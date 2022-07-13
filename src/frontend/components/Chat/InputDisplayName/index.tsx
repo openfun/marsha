@@ -1,5 +1,5 @@
 import { Box, Text, Tip } from 'grommet';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { InputBar } from 'components/Chat/InputBar';
@@ -94,6 +94,14 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     liveSession: state.liveSession,
     setLiveSession: state.setLiveSession,
   }));
+  const isMounted = useRef(true);
+
+  useEffect(() => {
+    return () => {
+      isMounted.current = false;
+    };
+  }, []);
+
   const processDisplayName = async (displayName: string) => {
     displayName = displayName.trim();
     setAlertsState([]);
@@ -101,6 +109,10 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
 
     const callbackSuccess = (updatedLiveSession: LiveSession) => {
       return () => {
+        if (!isMounted.current) {
+          return;
+        }
+
         setLiveSession(updatedLiveSession);
         setIsWaiting(false);
         if (onSuccess) {
@@ -110,6 +122,10 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     };
 
     const callbackXmppError = (stanza: Nullable<HTMLElement>) => {
+      if (!isMounted.current) {
+        return;
+      }
+
       const xmppAlerts = [];
       if (stanza) {
         const errorItem = stanza.getElementsByTagName('error')[0];
@@ -129,6 +145,10 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     };
 
     const manageSetDisplayNameError = (error: string | number) => {
+      if (!isMounted.current) {
+        return;
+      }
+
       const errors = [];
       if (error === 409) {
         errors.push(intl.formatMessage(messages.inputNicknameAlreadyExists));
@@ -174,13 +194,16 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
       if (response.error) {
         manageSetDisplayNameError(response.error);
         return false;
+      } else if (response.success) {
+        converse.claimNewNicknameInChatRoom(
+          displayName,
+          callbackSuccess(response.success),
+          callbackXmppError,
+        );
+        return true;
+      } else {
+        return false;
       }
-      converse.claimNewNicknameInChatRoom(
-        displayName,
-        callbackSuccess(response.success!),
-        callbackXmppError,
-      );
-      return true;
     } else {
       setAlertsState(alerts);
       setIsWaiting(false);

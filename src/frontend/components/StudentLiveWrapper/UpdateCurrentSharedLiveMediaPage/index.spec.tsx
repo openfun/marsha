@@ -2,11 +2,13 @@ import faker from 'faker';
 import React from 'react';
 
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
+import { liveState } from 'types/tracks';
 import {
   sharedLiveMediaMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { UpdateCurrentSharedLiveMediaPage } from '.';
 
@@ -33,17 +35,21 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
       active_shared_live_media: sharedLiveMedia,
       active_shared_live_media_page: 1,
       shared_live_medias: [sharedLiveMedia],
+      live_state: liveState.IDLE,
     });
 
     const { rerender } = render(
-      <SharedMediaCurrentPageProvider
-        value={{
-          page: 2,
-          imageUrl: `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/2`,
-        }}
-      >
-        <UpdateCurrentSharedLiveMediaPage video={video} />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{
+            page: 2,
+            imageUrl: `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/2`,
+          }}
+        >
+          <UpdateCurrentSharedLiveMediaPage />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
     );
 
     expect(mockUseSharedMediaCurrentPage).toHaveBeenCalledWith({
@@ -53,16 +59,17 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
 
     // it simulates an update of the video object
     rerender(
-      <SharedMediaCurrentPageProvider
-        value={{
-          page: 2,
-          imageUrl: `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/2`,
-        }}
-      >
-        <UpdateCurrentSharedLiveMediaPage
-          video={{ ...video, active_shared_live_media_page: 3 }}
-        />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{
+            page: 2,
+            imageUrl: `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/2`,
+          }}
+        >
+          <UpdateCurrentSharedLiveMediaPage />
+        </SharedMediaCurrentPageProvider>,
+        { ...video, active_shared_live_media_page: 3 },
+      ),
     );
 
     expect(mockUseSharedMediaCurrentPage).toHaveBeenCalledWith({

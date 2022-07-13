@@ -5,8 +5,9 @@ import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
 import { DownloadSVG } from 'components/SVGIcons/DownloadSVG';
-import { Video, videoSize } from 'types/tracks';
+import { videoSize } from 'types/tracks';
 import { publishLiveToVod } from 'data/sideEffects/publishLiveToVod';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
@@ -38,11 +39,8 @@ function getMax(obj: object): Maybe<videoSize> {
   ) as videoSize;
 }
 
-interface PublishVODProps {
-  video: Video;
-}
-
-export const PublishVOD = ({ video }: PublishVODProps) => {
+export const PublishVOD = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [state, setState, FetchButton] = useFetchButton();
   const { updateVideo } = useVideo((storeState) => ({

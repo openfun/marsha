@@ -3,7 +3,8 @@ import { Box, BoxProps, Paragraph, Spinner } from 'grommet';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { liveState, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { liveState } from 'types/tracks';
 
 import { StartLiveButton } from './StartLiveButton';
 import { StopLiveButton } from './StopLiveButton';
@@ -50,15 +51,14 @@ const messages = defineMessage({
 interface TeacherLiveLifecycleControlsProps extends BoxProps {
   canStartStreaming: boolean;
   hasRightToStart: boolean;
-  video: Video;
 }
 
 export const TeacherLiveLifecycleControls = ({
   canStartStreaming,
   hasRightToStart,
-  video,
   ...props
 }: TeacherLiveLifecycleControlsProps) => {
+  const video = useCurrentVideo();
   const intl = useIntl();
 
   if (!video.live_state) {

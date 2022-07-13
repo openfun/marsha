@@ -9,7 +9,7 @@ import { DashboardVideoLiveWidgetToggleInput } from 'components/DashboardVideoLi
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { CopySVG } from 'components/SVGIcons/CopySVG';
 import { useUpdateVideo } from 'data/queries';
-import { Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({
@@ -56,13 +56,8 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetVisibilityAndInteractionProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetVisibilityAndInteraction = ({
-  video,
-}: DashboardVideoLiveWidgetVisibilityAndInteractionProps) => {
+export const DashboardVideoLiveWidgetVisibilityAndInteraction = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [visibilityChecked, setVisibilityChecked] = useState(video.is_public);
 

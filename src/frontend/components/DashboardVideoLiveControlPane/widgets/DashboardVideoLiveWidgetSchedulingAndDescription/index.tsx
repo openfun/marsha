@@ -11,6 +11,7 @@ import { DashboardVideoLiveWidgetTextAreaInput } from 'components/DashboardVideo
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { SchedulingFields } from 'components/SchedulingFields';
 import { useUpdateVideo } from 'data/queries';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { theme } from 'utils/theme/theme';
@@ -117,13 +118,8 @@ const StyledText = styled(Text)`
   font-family: 'Roboto-Regular';
 `;
 
-interface DashboardVideoLiveWidgetSchedulingAndDescriptionProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetSchedulingAndDescription = ({
-  video,
-}: DashboardVideoLiveWidgetSchedulingAndDescriptionProps) => {
+export const DashboardVideoLiveWidgetSchedulingAndDescription = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [description, setDescription] = useState(video.description);
 

@@ -15,6 +15,7 @@ import { PersistentStore } from 'types/XMPP';
 import { Deferred } from 'utils/tests/Deferred';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { PublicLiveDashboard } from '.';
@@ -92,11 +93,14 @@ describe('PublicLiveDashboard', () => {
 
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       const loader = screen.getByRole('status');
 
@@ -138,11 +142,14 @@ describe('PublicLiveDashboard', () => {
       mockGetInitOrAnonymousId.mockReturnValue(anonymousId);
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       const loader = screen.getByRole('status');
 
@@ -190,11 +197,14 @@ describe('PublicLiveDashboard', () => {
 
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       const loader = screen.getByRole('status');
 
@@ -246,11 +256,14 @@ describe('PublicLiveDashboard', () => {
 
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       const loader = screen.getByRole('status');
 
@@ -298,11 +311,14 @@ describe('PublicLiveDashboard', () => {
 
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       deferred.resolve({
         count: 1,
@@ -346,11 +362,14 @@ describe('PublicLiveDashboard', () => {
 
       const queryClient = new QueryClient();
 
-      render(<PublicLiveDashboard live={live} playerType={'someplayer'} />, {
-        queryOptions: {
-          client: queryClient,
+      render(
+        wrapInVideo(<PublicLiveDashboard playerType={'someplayer'} />, live),
+        {
+          queryOptions: {
+            client: queryClient,
+          },
         },
-      });
+      );
 
       deferred.resolve({
         count: 1,
@@ -362,7 +381,6 @@ describe('PublicLiveDashboard', () => {
       await screen.findByText('live starter');
       expect(mockedStudentLiveStarter).toHaveBeenCalledWith(
         {
-          live,
           playerType: 'someplayer',
         },
         {},
@@ -389,7 +407,7 @@ describe('PublicLiveDashboard', () => {
       },
     });
 
-    render(<PublicLiveDashboard live={live} playerType={'videojs'} />, {
+    render(wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live), {
       queryOptions: {
         client: queryClient,
       },

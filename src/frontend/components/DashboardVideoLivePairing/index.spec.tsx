@@ -6,6 +6,7 @@ import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLivePairing } from '.';
 
@@ -32,7 +33,7 @@ describe('<DashboardVideoLivePairing />', () => {
       pairingSecretDefered.promise,
     );
 
-    render(<DashboardVideoLivePairing video={video} />);
+    render(wrapInVideo(<DashboardVideoLivePairing />, video));
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,
@@ -90,7 +91,7 @@ describe('<DashboardVideoLivePairing />', () => {
       live_state: liveState.STOPPED,
     });
 
-    render(<DashboardVideoLivePairing video={video} />);
+    render(wrapInVideo(<DashboardVideoLivePairing />, video));
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,

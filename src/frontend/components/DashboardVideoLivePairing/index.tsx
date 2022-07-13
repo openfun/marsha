@@ -4,7 +4,8 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { DashboardButton } from 'components/DashboardPaneButtons/DashboardButtons';
 import { usePairingVideo } from 'data/queries';
-import { liveState, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { liveState } from 'types/tracks';
 
 const messages = defineMessages({
   pairingSecretLabel: {
@@ -27,18 +28,13 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLivePairingProps {
-  video: Video;
-}
-
-export const DashboardVideoLivePairing = ({
-  video,
-}: DashboardVideoLivePairingProps) => {
+export const DashboardVideoLivePairing = () => {
   // secret expiration
   const expiration = 0;
   // reset 3 seconds after expiration
   const reset = -3;
 
+  const video = useCurrentVideo();
   const [buttonColor, setButtonColor] = useState('brand');
   const [secret, setSecret] = useState('');
   const [expiresIn, setExpiresIn] = useState(0);

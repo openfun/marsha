@@ -8,22 +8,21 @@ import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveError } from 'components/StudentLiveError';
 import { useLiveSessionsQuery } from 'data/queries';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { initVideoWebsocket } from 'data/websocket';
-import { Live } from 'types/tracks';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { StudentLiveStarter } from './StudentLiveStarter';
 
 interface PublicLiveDashboardProps {
-  live: Live;
   playerType: string;
 }
 
 export const PublicLiveDashboard = ({
-  live,
   playerType,
 }: PublicLiveDashboardProps) => {
+  const live = useCurrentLive();
   const intl = useIntl();
   const anonymousId = useMemo(() => getOrInitAnonymousId(), []);
   const queryClient = useQueryClient();
@@ -61,11 +60,11 @@ export const PublicLiveDashboard = ({
 
   if (live.xmpp) {
     return (
-      <ConverseInitializer video={live}>
-        <StudentLiveStarter live={live} playerType={playerType} />
+      <ConverseInitializer>
+        <StudentLiveStarter playerType={playerType} />
       </ConverseInitializer>
     );
   } else {
-    return <StudentLiveAdvertising video={live} />;
+    return <StudentLiveAdvertising />;
   }
 };

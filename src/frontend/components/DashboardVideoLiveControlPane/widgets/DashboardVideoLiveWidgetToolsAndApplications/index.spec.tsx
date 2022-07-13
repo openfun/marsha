@@ -7,6 +7,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetToolsAndApplications } from '.';
 
@@ -32,9 +33,12 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Tools and applications');
@@ -57,9 +61,12 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate chat');
@@ -96,9 +103,12 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate chat');
@@ -133,9 +143,12 @@ describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetToolsAndApplications video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate chat');

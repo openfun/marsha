@@ -6,8 +6,9 @@ import { DashboardVideoLiveTabAttendanceWaiting } from './DashboardVideoLiveTabA
 
 import { ErrorMessage } from 'components/ErrorComponents';
 import { useLiveAttendances } from 'data/queries';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { POLL_FOR_ATTENDANCES } from 'default/sideEffects';
-import { liveState, Video } from 'types/tracks';
+import { liveState } from 'types/tracks';
 
 const messages = defineMessages({
   loading: {
@@ -18,13 +19,9 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveTabAttendanceProps {
-  video: Video;
-}
+export const DashboardVideoLiveTabAttendance = () => {
+  const video = useCurrentVideo();
 
-export const DashboardVideoLiveTabAttendance = ({
-  video,
-}: DashboardVideoLiveTabAttendanceProps) => {
   if (!video.live_state || video.live_state === liveState.IDLE) {
     return <DashboardVideoLiveTabAttendanceWaiting />;
   }

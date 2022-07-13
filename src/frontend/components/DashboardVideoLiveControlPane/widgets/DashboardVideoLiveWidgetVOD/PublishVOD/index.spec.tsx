@@ -7,6 +7,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
 import { Deferred } from 'utils/tests/Deferred';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PublishVOD } from '.';
 
@@ -30,7 +31,7 @@ describe('PublishVOD', () => {
       },
     });
 
-    render(<PublishVOD video={video} />);
+    render(wrapInVideo(<PublishVOD />, video));
 
     expect(
       screen.getByRole('link', { name: 'Download the video' }).closest('a'),
@@ -46,7 +47,7 @@ describe('PublishVOD', () => {
       },
     });
 
-    render(<PublishVOD video={video} />);
+    render(wrapInVideo(<PublishVOD />, video));
 
     fetchMock.postOnce(`/api/videos/${video.id}/live-to-vod/`, 400);
 
@@ -67,7 +68,7 @@ describe('PublishVOD', () => {
       addResource: jest.fn(),
     });
 
-    render(<PublishVOD video={video} />);
+    render(wrapInVideo(<PublishVOD />, video));
 
     const videoDeferred = new Deferred();
     fetchMock.postOnce(

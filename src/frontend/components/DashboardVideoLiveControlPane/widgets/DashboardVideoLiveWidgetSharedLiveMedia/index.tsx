@@ -8,12 +8,13 @@ import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveC
 import { useUploadManager } from 'components/UploadManager';
 import { useDeleteSharedLiveMedia } from 'data/queries';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia/index';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useDeleteUploadModal } from 'data/stores/useDeleteUploadModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia/index';
 import { modelName } from 'types/models';
-import { Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { Nullable } from 'utils/types';
+
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 
 const messages = defineMessages({
@@ -65,15 +66,11 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetSupportsSharingProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetSharedLiveMedia = ({
-  video,
-}: DashboardVideoLiveWidgetSupportsSharingProps) => {
-  const retryUploadIdRef = useRef<Nullable<string>>(null);
+export const DashboardVideoLiveWidgetSharedLiveMedia = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
+  const retryUploadIdRef = useRef<Nullable<string>>(null);
+  const hiddenFileInput = React.useRef<Nullable<HTMLInputElement>>(null);
   const [deleteUploadModalSharedLiveMedia, setDeleteUploadModal] =
     useDeleteUploadModal();
   const { addUpload, uploadManagerState } = useUploadManager();
@@ -83,7 +80,6 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
   const deleteSharedLiveMediaResource = useSharedLiveMedia(
     (state) => state.removeResource,
   );
-  const hiddenFileInput = React.useRef<Nullable<HTMLInputElement>>(null);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let sharedLiveMediaId;
@@ -199,7 +195,6 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
                       (uploadingObject) =>
                         uploadingObject.objectId === sharedLiveMedia.id,
                     )}
-                    video={video}
                   />
                 );
               })

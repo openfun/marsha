@@ -9,10 +9,11 @@ import { JoinMode, LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveControlBar } from '.';
 
-const mockEmptyVideo = videoMockFactory();
+const mockEmptyVideo = videoMockFactory({ live_state: liveState.IDLE });
 
 jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, jest.fn()],
@@ -26,7 +27,7 @@ describe('<StudentLiveControlBar />', () => {
   it('renders no button', () => {
     useLivePanelState.setState({});
 
-    render(<StudentLiveControlBar video={mockEmptyVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -46,7 +47,7 @@ describe('<StudentLiveControlBar />', () => {
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(<StudentLiveControlBar video={mockEmptyVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
 
     screen.getByRole('button', { name: 'Show apps' });
     expect(
@@ -64,7 +65,7 @@ describe('<StudentLiveControlBar />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST],
     });
 
-    render(<StudentLiveControlBar video={mockEmptyVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
@@ -82,7 +83,7 @@ describe('<StudentLiveControlBar />', () => {
       availableItems: [LivePanelItem.CHAT],
     });
 
-    render(<StudentLiveControlBar video={mockEmptyVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockEmptyVideo));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -105,7 +106,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       live_state: liveState.RUNNING,
     });
 
-    render(<StudentLiveControlBar video={mockVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockVideo));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -137,39 +138,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       },
     });
 
-    render(<StudentLiveControlBar video={mockVideo} />);
-
-    expect(
-      screen.queryByRole('button', { name: 'Show apps' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('button', {
-        name: 'Send request to join the discussion',
-      }),
-    ).not.toBeInTheDocument();
-  });
-
-  it('does not render wrapper if live_state is missing', () => {
-    useLivePanelState.setState({});
-
-    const mockVideo = videoMockFactory({
-      live_type: LiveModeType.JITSI,
-      live_state: null,
-      xmpp: {
-        bosh_url: 'https://xmpp-server.com/http-bind',
-        converse_persistent_store: PersistentStore.LOCALSTORAGE,
-        websocket_url: null,
-        conference_url:
-          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
-        prebind_url: 'https://xmpp-server.com/http-pre-bind',
-        jid: 'xmpp-server.com',
-      },
-    });
-
-    render(<StudentLiveControlBar video={mockVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockVideo));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -186,7 +155,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
 
   it('does not render wrapper if live_state is not liveState.RUNNING', () => {
     const values = Object.values(liveState).filter(
-      (state) => state !== liveState.RUNNING,
+      (state) => ![liveState.RUNNING, liveState.ENDED].includes(state),
     );
 
     values.forEach((myLiveState) => {
@@ -206,7 +175,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
         },
       });
 
-      render(<StudentLiveControlBar video={mockVideo} />);
+      render(wrapInVideo(<StudentLiveControlBar />, mockVideo));
 
       expect(
         screen.queryByRole('button', { name: 'Show apps' }),
@@ -242,7 +211,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       },
     });
 
-    render(<StudentLiveControlBar video={mockVideo} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockVideo));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
@@ -274,7 +243,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       },
     });
 
-    render(<StudentLiveControlBar video={mockRunningJitsiWithXMPP} />);
+    render(wrapInVideo(<StudentLiveControlBar />, mockRunningJitsiWithXMPP));
 
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),

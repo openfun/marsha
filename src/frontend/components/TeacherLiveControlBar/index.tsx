@@ -4,22 +4,18 @@ import React, { useEffect } from 'react';
 import { ChatWrapper } from 'components/LiveControls/ChatWrapper';
 import { ViewersWrapper } from 'components/LiveControls/ViewersWrapper';
 import { pollForLive } from 'data/sideEffects/pollForLive';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
-import { LiveModeType, liveState, Video } from 'types/tracks';
+import { LiveModeType, liveState } from 'types/tracks';
 
 import { LiveFeedbackWrapper } from './LiveFeedbackWrapper';
 
-interface TeacherLiveControlBarProps {
-  video: Video;
-}
-
-export const TeacherLiveControlBar = ({
-  video,
-}: TeacherLiveControlBarProps) => {
+export const TeacherLiveControlBar = () => {
+  const video = useCurrentVideo();
   const { isStarted, setIsStarted } = useLiveStateStarted((state) => ({
     isStarted: state.isStarted,
     setIsStarted: state.setIsStarted,
@@ -65,7 +61,7 @@ export const TeacherLiveControlBar = ({
 
       {availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
-          <ViewersWrapper video={video} />
+          <ViewersWrapper />
         </Box>
       )}
 

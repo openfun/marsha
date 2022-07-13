@@ -1,21 +1,18 @@
 import { Box } from 'grommet';
 import React, { useEffect, useState } from 'react';
 
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useSharedMediaCurrentPage } from 'data/stores/useSharedMediaCurrentPage';
-import { Video } from 'types/tracks';
 
 import { NextPageButton } from './NextPageButton';
 import { PreviousPageButton } from './PreviousPageButton';
 
 interface TeacherPIPControlsProps {
-  video: Video;
   maxPage: number;
 }
 
-export const TeacherPIPControls = ({
-  video,
-  maxPage,
-}: TeacherPIPControlsProps) => {
+export const TeacherPIPControls = ({ maxPage }: TeacherPIPControlsProps) => {
+  const video = useCurrentVideo();
   const [isVisible, setIsVisible] = useState(0);
   const [_, setSharedMediaCurrentPage] = useSharedMediaCurrentPage();
 
@@ -62,8 +59,8 @@ export const TeacherPIPControls = ({
     >
       <Box margin={{ top: 'auto' }} background="#00000019" pad="small">
         <Box direction="row" margin={{ left: 'auto' }}>
-          <PreviousPageButton video={video} />
-          <NextPageButton video={video} maxPage={maxPage} />
+          <PreviousPageButton />
+          <NextPageButton maxPage={maxPage} />
         </Box>
       </Box>
     </Box>

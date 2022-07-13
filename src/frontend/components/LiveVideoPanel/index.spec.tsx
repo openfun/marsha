@@ -1,5 +1,6 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import { ResponsiveContext } from 'grommet';
+import React from 'react';
 
 import { getDecodedJwt } from 'data/appData';
 import {
@@ -14,9 +15,9 @@ import {
 } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LiveVideoPanel } from '.';
-import { ResponsiveContext } from 'grommet';
 
 const mockAskingParticipant = participantMockFactory();
 const mockParticipant = participantMockFactory();
@@ -57,7 +58,7 @@ describe('<LiveVideoPanel />', () => {
     });
 
     const { elementContainer: container } = render(
-      <LiveVideoPanel video={mockVideo} />,
+      wrapInVideo(<LiveVideoPanel />, mockVideo),
     );
 
     expect(mockSetPanelVisibility).toBeCalled();
@@ -83,7 +84,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(<LiveVideoPanel video={mockVideo} />);
+    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -118,7 +119,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(<LiveVideoPanel video={mockVideo} />);
+    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -157,7 +158,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(<LiveVideoPanel video={mockVideo} />);
+    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -182,7 +183,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(<LiveVideoPanel video={mockVideo} />);
+    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
 
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
     expect(
@@ -212,7 +213,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    await renderImageSnapshot(<LiveVideoPanel video={mockVideo} />);
+    await renderImageSnapshot(wrapInVideo(<LiveVideoPanel />, mockVideo));
   });
 
   it('renders with appropriate style on small screen [screenshot]', async () => {
@@ -232,9 +233,12 @@ describe('<LiveVideoPanel />', () => {
     });
 
     await renderImageSnapshot(
-      <ResponsiveContext.Provider value="small">
-        <LiveVideoPanel video={mockVideo} />
-      </ResponsiveContext.Provider>,
+      wrapInVideo(
+        <ResponsiveContext.Provider value="small">
+          <LiveVideoPanel />
+        </ResponsiveContext.Provider>,
+        mockVideo,
+      ),
       300,
       300,
     );

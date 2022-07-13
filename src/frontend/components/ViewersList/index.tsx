@@ -8,11 +8,12 @@ import { ViewersListHeader } from 'components/ViewersList/components/ViewersList
 import { ViewersListItem } from 'components/ViewersList/components/ViewersListItem';
 import { ViewersListItemContainer } from 'components/ViewersList/components/ViewersListItemContainer';
 import { ViewersListTextButton } from 'components/ViewersList/components/ViewersListTextButton';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   useParticipantsStore,
   ParticipantType,
 } from 'data/stores/useParticipantsStore';
-import { JoinMode, Video } from 'types/tracks';
+import { JoinMode } from 'types/tracks';
 import { isAnonymous } from 'utils/chat/chat';
 import { colors } from 'utils/theme/theme';
 import { converse } from 'utils/window';
@@ -116,10 +117,10 @@ const Section = ({
 
 interface ViewersListProps {
   isInstructor: boolean;
-  video: Video;
 }
 
-export const ViewersList = ({ isInstructor, video }: ViewersListProps) => {
+export const ViewersList = ({ isInstructor }: ViewersListProps) => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const participants = useParticipantsStore((state) => state.participants);
   const participantsOnStage = useMemo(

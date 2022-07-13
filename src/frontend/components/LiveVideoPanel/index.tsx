@@ -9,7 +9,6 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { Video } from 'types/tracks';
 import { ShouldNotHappen } from 'utils/errors/exception';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
@@ -26,12 +25,16 @@ const RelativeBox = styled(Box)`
   position: relative;
 `;
 
-interface LiveVideoPanelProps {
-  video: Video;
-}
-
-export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
+export const LiveVideoPanel = () => {
   const size = useContext(ResponsiveContext);
+  const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
+    (state) => ({
+      currentItem: state.currentItem,
+      availableItems: state.availableItems,
+      setPanelVisibility: state.setPanelVisibility,
+    }),
+  );
+
   const extendedTheme: ThemeType = {
     tabs: {
       header: {
@@ -43,13 +46,6 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       gap: 'none',
     },
   };
-  const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
-    (state) => ({
-      currentItem: state.currentItem,
-      availableItems: state.availableItems,
-      setPanelVisibility: state.setPanelVisibility,
-    }),
-  );
   const canUpdate = getDecodedJwt().permissions.can_update;
 
   //  close panel if there is nothing to display
@@ -91,7 +87,7 @@ export const LiveVideoPanel = ({ video }: LiveVideoPanelProps) => {
       content = <p>application content</p>;
       break;
     case LivePanelItem.VIEWERS_LIST:
-      content = <ViewersList isInstructor={canUpdate} video={video} />;
+      content = <ViewersList isInstructor={canUpdate} />;
       break;
     default:
       throw new ShouldNotHappen(currentItem);

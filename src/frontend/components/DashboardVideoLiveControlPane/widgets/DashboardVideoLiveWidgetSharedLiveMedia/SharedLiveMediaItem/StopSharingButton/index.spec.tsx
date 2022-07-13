@@ -10,6 +10,7 @@ import {
   sharedLiveMediaMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StopSharingButton } from '.';
 
@@ -41,7 +42,7 @@ describe('<StopSharingButton />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/end-sharing/`, mockedVideo);
 
-    render(<StopSharingButton video={mockedVideo} />);
+    render(wrapInVideo(<StopSharingButton />, mockedVideo));
 
     const endSharingButton = screen.getByRole('button', {
       name: 'Stop sharing',
@@ -75,7 +76,7 @@ describe('<StopSharingButton />', () => {
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/end-sharing/`, 500);
 
-    render(<StopSharingButton video={mockedVideo} />);
+    render(wrapInVideo(<StopSharingButton />, mockedVideo));
 
     const endSharingButton = screen.getByRole('button', {
       name: 'Stop sharing',

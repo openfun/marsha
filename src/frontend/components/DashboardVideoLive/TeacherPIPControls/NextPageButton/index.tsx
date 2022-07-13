@@ -5,8 +5,8 @@ import styled from 'styled-components';
 
 import { DownArrowSVG } from 'components/SVGIcons/DownArrowSVG';
 import { navigateSharingDoc } from 'data/sideEffects/navigateSharingDoc';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useSharedMediaCurrentPage } from 'data/stores/useSharedMediaCurrentPage';
-import { Video } from 'types/tracks';
 
 const messages = defineMessages({
   title: {
@@ -23,11 +23,11 @@ const StyledButton = styled(Button)`
   margin-left: 20px;
 `;
 interface NextPageButtonProps {
-  video: Video;
   maxPage: number;
 }
 
-export const NextPageButton = ({ video, maxPage }: NextPageButtonProps) => {
+export const NextPageButton = ({ maxPage }: NextPageButtonProps) => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [currentPage] = useSharedMediaCurrentPage();
 

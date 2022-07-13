@@ -4,6 +4,7 @@ import React, { Suspense } from 'react';
 import { LiveModeType, liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TeacherLiveContent } from '.';
 
@@ -19,13 +20,15 @@ describe('<TeacherLiveContent />', () => {
     const video = videoMockFactory({ live_type: LiveModeType.RAW });
 
     render(
-      <Suspense fallback={'loading'}>
-        <TeacherLiveContent
-          setCanShowStartButton={jest.fn()}
-          setCanStartLive={jest.fn()}
-          video={video}
-        />
-      </Suspense>,
+      wrapInVideo(
+        <Suspense fallback={'loading'}>
+          <TeacherLiveContent
+            setCanShowStartButton={jest.fn()}
+            setCanStartLive={jest.fn()}
+          />
+        </Suspense>,
+        video,
+      ),
     );
 
     await screen.findByText('live raw wrapper');
@@ -49,13 +52,15 @@ describe('<TeacherLiveContent />', () => {
     });
 
     render(
-      <Suspense fallback={'loading'}>
-        <TeacherLiveContent
-          setCanShowStartButton={jest.fn()}
-          setCanStartLive={jest.fn()}
-          video={video}
-        />
-      </Suspense>,
+      wrapInVideo(
+        <Suspense fallback={'loading'}>
+          <TeacherLiveContent
+            setCanShowStartButton={jest.fn()}
+            setCanStartLive={jest.fn()}
+          />
+        </Suspense>,
+        video,
+      ),
     );
 
     await screen.findByText('video live jitsi');

@@ -6,11 +6,10 @@ import toast from 'react-hot-toast';
 import { useIntl } from 'react-intl';
 
 import { RecordSVG } from 'components/SVGIcons/RecordSVG';
+import { formatSecToTimeStamp } from 'components/TeacherLiveRecordingActions/utils';
 import { useStartLiveRecording } from 'data/queries';
-import { Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
-
-import { formatSecToTimeStamp } from '../utils';
 
 const messages = defineMessage({
   title: {
@@ -26,11 +25,8 @@ const messages = defineMessage({
   },
 });
 
-interface StartRecordingProps {
-  video: Video;
-}
-
-export const StartRecording = ({ video }: StartRecordingProps) => {
+export const StartRecording = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const { isLoading, mutate } = useStartLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));

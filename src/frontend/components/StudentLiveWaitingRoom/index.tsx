@@ -6,7 +6,6 @@ import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox
 import { StudentLiveDescription } from 'components/StudentLiveAdvertising/StudentLiveDescription';
 import { InputDisplayName } from 'components/Chat/InputDisplayName';
 import { appData } from 'data/appData';
-import { Video } from 'types/tracks';
 
 const messages = defineMessages({
   title: {
@@ -22,13 +21,7 @@ const messages = defineMessages({
   },
 });
 
-interface StudentLiveWaitingRoomProps {
-  video: Video;
-}
-
-export const StudentLiveWaitingRoom = ({
-  video,
-}: StudentLiveWaitingRoomProps) => {
+export const StudentLiveWaitingRoom = () => {
   const size = useContext(ResponsiveContext);
   let containerStyle: CSSProperties;
   if (size === 'small') {
@@ -74,7 +67,7 @@ export const StudentLiveWaitingRoom = ({
             <FormattedMessage {...messages.infos} />
           </Paragraph>
           <InputDisplayName />
-          <StudentLiveDescription video={video} />
+          <StudentLiveDescription />
         </AdvertisingBox>
       </Box>
     </Box>

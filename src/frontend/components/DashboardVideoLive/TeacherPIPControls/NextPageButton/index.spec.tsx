@@ -6,6 +6,7 @@ import { navigateSharingDoc } from 'data/sideEffects/navigateSharingDoc';
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { NextPageButton } from '.';
 
@@ -25,9 +26,14 @@ describe('<NextPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      <SharedMediaCurrentPageProvider value={{ page: 2, imageUrl: 'some url' }}>
-        <NextPageButton video={video} maxPage={4} />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{ page: 2, imageUrl: 'some url' }}
+        >
+          <NextPageButton maxPage={4} />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Next page' }));
@@ -38,9 +44,14 @@ describe('<NextPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      <SharedMediaCurrentPageProvider value={{ page: 2, imageUrl: 'some url' }}>
-        <NextPageButton video={video} maxPage={2} />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{ page: 2, imageUrl: 'some url' }}
+        >
+          <NextPageButton maxPage={2} />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
     );
 
     expect(screen.getByRole('button', { name: 'Next page' })).toBeDisabled();
