@@ -13,12 +13,13 @@ import { useIntl, defineMessages } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail/ThumbnailDisplayer';
 import { appData } from 'data/appData';
-import { liveState, Video } from 'types/tracks';
+import { liveState } from 'types/tracks';
 import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';
 import { StudentLiveRegistration } from './StudentLiveRegistration';
 import { StudentLiveScheduleInfo } from './StudentLiveScheduleInfo';
 import styled from 'styled-components';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 
 const StyledText = styled(Text)`
   font-family: 'Roboto-Regular';
@@ -26,9 +27,6 @@ const StyledText = styled(Text)`
   vertical-align: bottom;
 `;
 
-interface StudentLiveAdvertisingProps {
-  video: Video;
-}
 const messages = defineMessages({
   a11AddCalendar: {
     defaultMessage: 'Click to add the event to your calendar',
@@ -53,60 +51,60 @@ const messages = defineMessages({
     id: 'component.StudentLiveAdvertising.StudentLiveAdvertising.defaultDescription',
   },
 });
-export const StudentLiveAdvertising = ({
-  video,
-}: StudentLiveAdvertisingProps) => {
+
+export const StudentLiveAdvertising = () => {
+  const live = useCurrentLive();
   const size = useContext(ResponsiveContext);
   const intl = useIntl();
   const liveScheduleStartDate = useMemo(() => {
-    if (!video.starting_at) {
+    if (!live.starting_at) {
       return undefined;
     }
-    return DateTime.fromISO(video.starting_at).setLocale(intl.locale);
-  }, [video, intl]);
+    return DateTime.fromISO(live.starting_at).setLocale(intl.locale);
+  }, [live, intl]);
   const [isWaitingOver, setIsWaitingOver] = useState(
-    (video.live_state &&
-      [liveState.STARTING, liveState.RUNNING].includes(video.live_state)) ||
+    (live.live_state &&
+      [liveState.STARTING, liveState.RUNNING].includes(live.live_state)) ||
       //  scheduled live never started with an expirted schedule start date
       (!!liveScheduleStartDate &&
-        video.live_state === liveState.IDLE &&
+        live.live_state === liveState.IDLE &&
         liveScheduleStartDate < DateTime.now()),
   );
 
   const scheduledEvent = useMemo(() => {
-    if (liveScheduleStartDate && video.starting_at) {
-      const url = video.is_public
-        ? `${window.location.origin}/videos/${video.id}`
+    if (liveScheduleStartDate && live.starting_at) {
+      const url = live.is_public
+        ? `${window.location.origin}/videos/${live.id}`
         : '';
-      const startDate = DateTime.fromISO(video.starting_at);
-      const duration = video.estimated_duration
-        ? Duration.fromISOTime(video.estimated_duration)
+      const startDate = DateTime.fromISO(live.starting_at);
+      const duration = live.estimated_duration
+        ? Duration.fromISOTime(live.estimated_duration)
         : { hours: 1 };
       const endDate = startDate.plus(duration);
       return {
         description:
-          video.description || intl.formatMessage(messages.defaultDescription),
+          live.description || intl.formatMessage(messages.defaultDescription),
         endTime: endDate.toISO(),
         startTime: startDate.toISO(),
-        title: video.title || intl.formatMessage(messages.defaultTitle),
+        title: live.title || intl.formatMessage(messages.defaultTitle),
         url,
       };
     }
     return undefined;
-  }, [video, liveScheduleStartDate, intl]);
+  }, [live, liveScheduleStartDate, intl]);
 
   useEffect(() => {
     if (
-      video.live_state &&
-      [liveState.STARTING, liveState.RUNNING].includes(video.live_state)
+      live.live_state &&
+      [liveState.STARTING, liveState.RUNNING].includes(live.live_state)
     ) {
       setIsWaitingOver(true);
     }
-  }, [video]);
+  }, [live]);
 
   const urlsToDisplay =
-    video.thumbnail && video.thumbnail.urls
-      ? video.thumbnail.urls
+    live.thumbnail && live.thumbnail.urls
+      ? live.thumbnail.urls
       : { 1080: appData.static.img.liveBackground };
 
   let containerStyle: CSSProperties;
@@ -135,7 +133,7 @@ export const StudentLiveAdvertising = ({
             setTimeIsOver={() => setIsWaitingOver(true)}
             startDate={liveScheduleStartDate}
           />
-          <StudentLiveDescription video={video} />
+          <StudentLiveDescription />
           {scheduledEvent && (
             <Paragraph alignSelf="center" textAlign="justify">
               <ICalendarLink event={scheduledEvent}>

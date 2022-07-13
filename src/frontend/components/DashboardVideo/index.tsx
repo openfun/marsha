@@ -6,15 +6,11 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { useVideo } from 'data/stores/useVideo';
-import { uploadState, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { uploadState } from 'types/tracks';
 
-interface DashboardVideoProps {
-  video: Video;
-}
-
-const DashboardVideo = (props: DashboardVideoProps) => {
-  const video = useVideo((state) => state.getVideo(props.video));
+export const DashboardVideo = () => {
+  const video = useCurrentVideo();
   const { uploadManagerState } = useUploadManager();
 
   const displayTimedTextPane =
@@ -30,5 +26,3 @@ const DashboardVideo = (props: DashboardVideoProps) => {
     </React.Fragment>
   );
 };
-
-export default DashboardVideo;

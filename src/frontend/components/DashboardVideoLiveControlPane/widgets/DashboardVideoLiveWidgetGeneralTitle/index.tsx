@@ -7,6 +7,7 @@ import { DashboardVideoLiveWidgetTextInput } from 'components/DashboardVideoLive
 import { DashboardVideoLiveWidgetToggleInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetToggleInput';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { debounce } from 'utils/widgets/widgets';
@@ -55,13 +56,8 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetGeneralTitleProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetGeneralTitle = ({
-  video,
-}: DashboardVideoLiveWidgetGeneralTitleProps) => {
+export const DashboardVideoLiveWidgetGeneralTitle = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [title, setTitle] = useState(video.title);
   const [checked, setChecked] = useState(video.allow_recording);

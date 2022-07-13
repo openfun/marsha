@@ -11,6 +11,7 @@ import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { LiveModeType, liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TeacherLiveControlBar } from '.';
 
@@ -39,9 +40,12 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      <LiveFeedbackProvider value={false}>
-        <TeacherLiveControlBar video={mockedVideo} />
-      </LiveFeedbackProvider>,
+      wrapInVideo(
+        <LiveFeedbackProvider value={false}>
+          <TeacherLiveControlBar />
+        </LiveFeedbackProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -66,9 +70,12 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      <LiveFeedbackProvider value={false}>
-        <TeacherLiveControlBar video={mockedVideo} />
-      </LiveFeedbackProvider>,
+      wrapInVideo(
+        <LiveFeedbackProvider value={false}>
+          <TeacherLiveControlBar />
+        </LiveFeedbackProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByRole('button', { name: 'Show chat' });
@@ -93,9 +100,12 @@ describe('<TeacherLiveControlBar />', () => {
     });
 
     render(
-      <LiveFeedbackProvider value={false}>
-        <TeacherLiveControlBar video={mockedVideo} />
-      </LiveFeedbackProvider>,
+      wrapInVideo(
+        <LiveFeedbackProvider value={false}>
+          <TeacherLiveControlBar />
+        </LiveFeedbackProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByRole('button', { name: 'Show chat' });

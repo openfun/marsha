@@ -2,7 +2,8 @@ import React, { Dispatch, lazy, SetStateAction } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { LiveModeType, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { LiveModeType } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { ShouldNotHappen } from 'utils/errors/exception';
 
@@ -14,7 +15,6 @@ const DashboardVideoLiveJitsi = lazy(
 );
 
 interface TeacherLiveContentProps {
-  video: Video;
   setCanShowStartButton: Dispatch<SetStateAction<boolean>>;
   setCanStartLive: Dispatch<SetStateAction<boolean>>;
 }
@@ -22,8 +22,8 @@ interface TeacherLiveContentProps {
 export const TeacherLiveContent = ({
   setCanShowStartButton,
   setCanStartLive,
-  video,
 }: TeacherLiveContentProps) => {
+  const video = useCurrentVideo();
   const jitsiLive = convertVideoToJitsiLive(video);
 
   switch (video.live_type) {

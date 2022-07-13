@@ -19,6 +19,7 @@ import {
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetSharedLiveMedia } from '.';
 
@@ -58,18 +59,21 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     });
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <InfoWidgetModalProvider value={null}>
-          <DeleteUploadModalProvider value={null}>
-            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-          </DeleteUploadModalProvider>
-        </InfoWidgetModalProvider>
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <InfoWidgetModalProvider value={null}>
+            <DeleteUploadModalProvider value={null}>
+              <DashboardVideoLiveWidgetSharedLiveMedia />
+            </DeleteUploadModalProvider>
+          </InfoWidgetModalProvider>
+        </UploadManagerContext.Provider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Supports sharing');
@@ -98,18 +102,21 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.post('/api/sharedlivemedias/', mockedSharedLiveMedia);
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <InfoWidgetModalProvider value={null}>
-          <DeleteUploadModalProvider value={null}>
-            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-          </DeleteUploadModalProvider>
-        </InfoWidgetModalProvider>
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <InfoWidgetModalProvider value={null}>
+            <DeleteUploadModalProvider value={null}>
+              <DashboardVideoLiveWidgetSharedLiveMedia />
+            </DeleteUploadModalProvider>
+          </InfoWidgetModalProvider>
+        </UploadManagerContext.Provider>,
+        mockedVideo,
+      ),
     );
 
     const uploadButton = screen.getByRole('button', {
@@ -159,18 +166,21 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 204);
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <InfoWidgetModalProvider value={null}>
-          <DeleteUploadModalProvider value={null}>
-            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-          </DeleteUploadModalProvider>
-        </InfoWidgetModalProvider>
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <InfoWidgetModalProvider value={null}>
+            <DeleteUploadModalProvider value={null}>
+              <DashboardVideoLiveWidgetSharedLiveMedia />
+            </DeleteUploadModalProvider>
+          </InfoWidgetModalProvider>
+        </UploadManagerContext.Provider>,
+        mockedVideo,
+      ),
     );
 
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toEqual([
@@ -228,18 +238,21 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <InfoWidgetModalProvider value={null}>
-          <DeleteUploadModalProvider value={null}>
-            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-          </DeleteUploadModalProvider>
-        </InfoWidgetModalProvider>
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <InfoWidgetModalProvider value={null}>
+            <DeleteUploadModalProvider value={null}>
+              <DashboardVideoLiveWidgetSharedLiveMedia />
+            </DeleteUploadModalProvider>
+          </InfoWidgetModalProvider>
+        </UploadManagerContext.Provider>,
+        mockedVideo,
+      ),
     );
 
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toEqual([
@@ -306,18 +319,21 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <InfoWidgetModalProvider value={null}>
-          <DeleteUploadModalProvider value={null}>
-            <DashboardVideoLiveWidgetSharedLiveMedia video={mockedVideo} />
-          </DeleteUploadModalProvider>
-        </InfoWidgetModalProvider>
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <InfoWidgetModalProvider value={null}>
+            <DeleteUploadModalProvider value={null}>
+              <DashboardVideoLiveWidgetSharedLiveMedia />
+            </DeleteUploadModalProvider>
+          </InfoWidgetModalProvider>
+        </UploadManagerContext.Provider>,
+        mockedVideo,
+      ),
     );
 
     expect(

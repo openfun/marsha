@@ -6,6 +6,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetLivePairing } from '.';
 
@@ -22,9 +23,12 @@ describe('DashboardVideoLiveWidgetLivePairing', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetLivePairing video={video} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetLivePairing />
+        </InfoWidgetModalProvider>,
+        video,
+      ),
     );
 
     expect(

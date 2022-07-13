@@ -1,18 +1,16 @@
 import React from 'react';
 
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { Video } from 'types/tracks';
+
 import { StudentHideViewersButton } from './StudentHideViewersButton';
 import { StudentShowViewersButton } from './StudentShowViewersButton';
 
-interface ViewersWrapperProps {
-  video?: Video;
-}
-
-export const ViewersWrapper = ({ video }: ViewersWrapperProps) => {
+export const ViewersWrapper = () => {
+  const video = useCurrentVideo();
   const { currentItem, isPanelVisible } = useLivePanelState((state) => ({
     currentItem: state.currentItem,
     isPanelVisible: state.isPanelVisible,

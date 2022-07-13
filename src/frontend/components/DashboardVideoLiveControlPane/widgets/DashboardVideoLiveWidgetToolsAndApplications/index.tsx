@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { DashboardVideoLiveWidgetToggleInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetToggleInput';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
-import { Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({
@@ -40,13 +40,8 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetToolsAndApplicationsProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetToolsAndApplications = ({
-  video,
-}: DashboardVideoLiveWidgetToolsAndApplicationsProps) => {
+export const DashboardVideoLiveWidgetToolsAndApplications = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [isChatActive, setChatActive] = useState(video.has_chat);
 

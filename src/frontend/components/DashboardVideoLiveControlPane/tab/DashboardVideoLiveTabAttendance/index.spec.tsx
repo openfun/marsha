@@ -7,6 +7,7 @@ import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveTabAttendance } from '.';
 
@@ -36,7 +37,7 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       '/api/livesessions/list_attendances/?limit=999',
       deferred.promise,
     );
-    render(<DashboardVideoLiveTabAttendance video={mockedVideo} />);
+    render(wrapInVideo(<DashboardVideoLiveTabAttendance />, mockedVideo));
 
     screen.getByText('Loading attendances...');
 
@@ -163,9 +164,10 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
 
   it('displays the default message when video has no live_state', async () => {
     render(
-      <DashboardVideoLiveTabAttendance
-        video={{ ...mockedVideo, live_state: null }}
-      />,
+      wrapInVideo(<DashboardVideoLiveTabAttendance />, {
+        ...mockedVideo,
+        live_state: null,
+      }),
     );
 
     screen.getByText('The live has no participant yet');
@@ -173,9 +175,10 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
 
   it('displays the default message when video has an IDLE live_state', async () => {
     render(
-      <DashboardVideoLiveTabAttendance
-        video={{ ...mockedVideo, live_state: liveState.IDLE }}
-      />,
+      wrapInVideo(<DashboardVideoLiveTabAttendance />, {
+        ...mockedVideo,
+        live_state: liveState.IDLE,
+      }),
     );
 
     screen.getByText('The live has no participant yet');
@@ -188,7 +191,7 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       deferred.promise,
     );
 
-    render(<DashboardVideoLiveTabAttendance video={{ ...mockedVideo }} />);
+    render(wrapInVideo(<DashboardVideoLiveTabAttendance />, mockedVideo));
 
     deferred.resolve({ count: 0, next: null, previous: null, results: [] });
 
@@ -209,7 +212,7 @@ describe('<DashboardVideoLiveTabAttendance />', () => {
       deferred.promise,
     );
 
-    render(<DashboardVideoLiveTabAttendance video={mockedVideo} />, {
+    render(wrapInVideo(<DashboardVideoLiveTabAttendance />, mockedVideo), {
       queryOptions: { client: queryClient },
     });
 

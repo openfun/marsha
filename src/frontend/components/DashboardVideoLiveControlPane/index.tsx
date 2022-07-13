@@ -2,7 +2,6 @@ import { Box, Tabs, Tab, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Video } from 'types/tracks';
 import { theme } from 'utils/theme/theme';
 import { DashboardVideoLiveTabAttendance } from './tab/DashboardVideoLiveTabAttendance';
 import { DashboardVideoLiveTabConfiguration } from './tab/DashboardVideoLiveTabConfiguration';
@@ -21,12 +20,8 @@ const messages = defineMessages({
     id: 'components.DashboardVideoLiveControlPane.titleAttendance',
   },
 });
-interface DashboardVideoLiveControlPaneProps {
-  video: Video;
-}
-export const DashboardVideoLiveControlPane = ({
-  video,
-}: DashboardVideoLiveControlPaneProps) => {
+
+export const DashboardVideoLiveControlPane = () => {
   const intl = useIntl();
   const extendedTheme = {
     tabs: {
@@ -60,10 +55,10 @@ export const DashboardVideoLiveControlPane = ({
       <ThemeContext.Extend value={extendedTheme}>
         <Tabs>
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>
-            <DashboardVideoLiveTabConfiguration video={video} />
+            <DashboardVideoLiveTabConfiguration />
           </Tab>
           <Tab title={intl.formatMessage(messages.titleAttendance)}>
-            <DashboardVideoLiveTabAttendance video={video} />
+            <DashboardVideoLiveTabAttendance />
           </Tab>
         </Tabs>
       </ThemeContext.Extend>

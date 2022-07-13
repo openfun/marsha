@@ -1,9 +1,9 @@
 import { Heading, Paragraph, Box } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { normalizeColor } from 'grommet/utils';
-import { Video } from 'types/tracks';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
@@ -14,36 +14,31 @@ const messages = defineMessages({
   },
 });
 
-interface StudentLiveDescriptionProps {
-  video: Video;
-}
-
-export const StudentLiveDescription = ({
-  video,
-}: StudentLiveDescriptionProps) => {
+export const StudentLiveDescription = () => {
   const intl = useIntl();
+  const live = useCurrentLive();
 
   return (
     <Box margin={{ top: 'small' }}>
       <Heading
-        a11yTitle={video.title || undefined}
+        a11yTitle={live.title || undefined}
         alignSelf="center"
         color={normalizeColor('blue-active', theme)}
         level={2}
         textAlign="center"
         size="small"
-        style={{ fontStyle: video.title ? undefined : 'italic' }}
+        style={{ fontStyle: live.title ? undefined : 'italic' }}
       >
-        {video.title || intl.formatMessage(messages.noTitle)}
+        {live.title || intl.formatMessage(messages.noTitle)}
       </Heading>
-      {video.description && (
+      {live.description && (
         <Paragraph
           alignSelf="center"
           color={normalizeColor('blue-active', theme)}
           margin={{ left: 'large', right: 'large' }}
           textAlign="center"
         >
-          {video.description}
+          {live.description}
         </Paragraph>
       )}
     </Box>

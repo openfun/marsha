@@ -8,6 +8,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetSchedulingAndDescription } from '.';
 
@@ -48,9 +49,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Description');
@@ -85,9 +89,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Your live is not scheduled');
@@ -120,11 +127,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription
-          video={{ ...mockedVideo, starting_at: startingAt.toString() }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, starting_at: startingAt.toString() },
+      ),
     );
     expect(screen.queryByText('Your live is not scheduled')).toEqual(null);
     screen.getByText("Webinar's end");
@@ -163,15 +171,16 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription
-          video={{
-            ...mockedVideo,
-            starting_at: startingAt.toString(),
-            estimated_duration: estimatedDuration.toISOTime(),
-          }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        {
+          ...mockedVideo,
+          starting_at: startingAt.toString(),
+          estimated_duration: estimatedDuration.toISOTime(),
+        },
+      ),
     );
     expect(screen.queryByText('Your live is not scheduled')).toEqual(null);
     screen.getByText("Webinar's end");
@@ -189,9 +198,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     fetchMock.patch('/api/videos/video_id/', 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     fireEvent.change(inputStartingAtDate, {
@@ -235,9 +247,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
       { intlOptions: { locale: 'fr' } },
     );
 
@@ -264,9 +279,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textArea = screen.getByRole('textbox', {
@@ -305,9 +323,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textArea = screen.getByRole('textbox', {
@@ -341,9 +362,12 @@ describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
     fetchMock.patch('/api/videos/video_id/', 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textArea = screen.getByRole('textbox', {

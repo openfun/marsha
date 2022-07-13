@@ -3,8 +3,8 @@ import React, { Fragment, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { harvestLive } from 'data/sideEffects/harvestLive';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
 import { useFetchButton } from 'utils/useFetchButton';
 
 const messages = defineMessages({
@@ -22,11 +22,8 @@ const messages = defineMessages({
   },
 });
 
-interface HarvestVODProps {
-  video: Video;
-}
-
-export const HarvestVOD = ({ video }: HarvestVODProps) => {
+export const HarvestVOD = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [state, setState, FetchButton] = useFetchButton();
   const { updateVideo } = useVideo((storeState) => ({

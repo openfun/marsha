@@ -1,24 +1,24 @@
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
-import { appData } from 'data/appData';
-import { modelName } from 'types/models';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FullScreenError } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { ErrorComponentsProps } from 'components/ErrorComponents';
 import { InstructorWrapper } from 'components/InstructorWrapper';
 import { Loader } from 'components/Loader';
-import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
-import { PLAYER_ROUTE } from 'components/routes';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
-import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
-import { UploadForm } from 'components/UploadForm';
-import { UploadManager } from 'components/UploadManager';
+import { PLAYER_ROUTE } from 'components/routes';
+import { SelectContent } from 'components/SelectContent';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-import { SelectContent } from 'components/SelectContent/';
+import { UploadForm } from 'components/UploadForm';
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { UploadManager } from 'components/UploadManager';
+import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
+import { appData } from 'data/appData';
+import { modelName } from 'types/models';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));

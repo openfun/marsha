@@ -12,6 +12,7 @@ import {
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveAdvertising } from '.';
 
@@ -96,7 +97,10 @@ describe('<StudentLiveAdvertising />', () => {
 
   it('renders live information when live is not starting and not running and starting_at is null', () => {
     const states = Object.values(liveState).filter(
-      (state) => ![liveState.STARTING, liveState.RUNNING].includes(state),
+      (state) =>
+        ![liveState.STARTING, liveState.RUNNING, liveState.ENDED].includes(
+          state,
+        ),
     );
 
     states.forEach((state) => {
@@ -107,7 +111,7 @@ describe('<StudentLiveAdvertising />', () => {
         description: 'live description',
       });
 
-      render(<StudentLiveAdvertising video={video} />);
+      render(wrapInVideo(<StudentLiveAdvertising />, video));
 
       screen.getByRole('heading', { name: 'live title' });
       screen.getByText('live description');
@@ -127,7 +131,7 @@ describe('<StudentLiveAdvertising />', () => {
     const deferred = new Deferred();
     fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     deferred.resolve({
       count: 1,
@@ -160,7 +164,7 @@ describe('<StudentLiveAdvertising />', () => {
         description: 'live description',
       });
 
-      render(<StudentLiveAdvertising video={video} />);
+      render(wrapInVideo(<StudentLiveAdvertising />, video));
 
       expect(
         screen.queryByRole('button', { name: 'Register' }),
@@ -184,7 +188,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     expect(
       screen.queryByRole('button', { name: 'Register' }),
@@ -207,7 +211,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
@@ -228,7 +232,7 @@ describe('<StudentLiveAdvertising />', () => {
       }),
     });
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
@@ -248,7 +252,7 @@ describe('<StudentLiveAdvertising />', () => {
       }),
     });
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     const img = screen.getByRole('img', { name: 'Live video thumbnail' });
     expect(img.getAttribute('src')).toEqual(
@@ -267,7 +271,7 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'live description',
     });
 
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     expect(
       screen.queryByRole('button', { name: 'Register' }),
@@ -293,7 +297,7 @@ describe('<StudentLiveAdvertising />', () => {
       is_public: false,
       title: '',
     });
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
     screen.getByText('Add to my calendar');
 
     // default title
@@ -321,7 +325,7 @@ describe('<StudentLiveAdvertising />', () => {
       is_public: true,
       title: 'this is the title',
     });
-    render(<StudentLiveAdvertising video={video} />);
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     screen.getByText('Add to my calendar');
 

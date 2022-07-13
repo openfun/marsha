@@ -20,6 +20,7 @@ import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
 import { appData } from 'data/appData';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import {
@@ -28,16 +29,13 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
-import { Video, liveState, LiveModeType, JoinMode } from 'types/tracks';
+import { liveState, LiveModeType, JoinMode } from 'types/tracks';
 import { converse } from 'utils/window';
 
 import { TeacherPIPControls } from './TeacherPIPControls';
 
-interface DashboardVideoLiveProps {
-  video: Video;
-}
-
-export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
+export const DashboardVideoLive = () => {
+  const video = useCurrentVideo();
   const { configPanel, currentItem } = useLivePanelState((state) => ({
     configPanel: state.setAvailableItems,
     currentItem: state.currentItem,
@@ -105,22 +103,20 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
     video.live_state !== undefined && video.live_state !== liveState.IDLE;
 
   return (
-    <ConverseInitializer video={video}>
+    <ConverseInitializer>
       <LiveFeedbackProvider value={false}>
         <LiveVideoLayout
           actionsElement={
             <Fragment>
-              {isLiveStarted && <TeacherLiveControlBar video={video} />}
+              {isLiveStarted && <TeacherLiveControlBar />}
               <Box flex={isLiveStarted} direction="row">
                 <TeacherLiveRecordingActions
                   isJitsiAdministrator={canStartLive}
-                  video={video}
                 />
                 <TeacherLiveLifecycleControls
                   canStartStreaming={canShowStartButton}
                   flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
                   hasRightToStart={canStartLive}
-                  video={video}
                 />
               </Box>
             </Fragment>
@@ -133,10 +129,10 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                   video.live_state,
                 ) && (
                   <Box direction={'row'} justify={'center'} margin={'small'}>
-                    <TeacherLiveTypeSwitch video={video} />
+                    <TeacherLiveTypeSwitch />
                   </Box>
                 )}
-              <DashboardVideoLiveControlPane video={video} />
+              <DashboardVideoLiveControlPane />
             </Fragment>
           }
           displayActionsElement
@@ -155,7 +151,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                   <TeacherLiveContent
                     setCanShowStartButton={setCanShowStartButton}
                     setCanStartLive={setCanStartLive}
-                    video={video}
                   />
                 }
                 secondElement={
@@ -168,7 +163,6 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
                         {video.active_shared_live_media.nb_pages &&
                           video.active_shared_live_media.nb_pages > 1 && (
                             <TeacherPIPControls
-                              video={video}
                               maxPage={video.active_shared_live_media.nb_pages}
                             />
                           )}
@@ -188,7 +182,7 @@ export const DashboardVideoLive = ({ video }: DashboardVideoLiveProps) => {
               {modaleConfiguration && <LiveModale {...modaleConfiguration} />}
             </Stack>
           }
-          sideElement={<LiveVideoPanel video={video} />}
+          sideElement={<LiveVideoPanel />}
         />
       </LiveFeedbackProvider>
     </ConverseInitializer>

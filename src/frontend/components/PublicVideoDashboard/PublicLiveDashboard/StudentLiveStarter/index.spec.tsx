@@ -14,6 +14,7 @@ import { JoinMode, Live, liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -110,7 +111,7 @@ describe('StudentLiveStarter', () => {
     mockedPollForLive.mockReturnValue(deferred.promise);
 
     const { rerender } = render(
-      <StudentLiveStarter live={live} playerType={'videojs'} />,
+      wrapInVideo(<StudentLiveStarter playerType={'videojs'} />, live),
     );
 
     await waitFor(() => expect(mockedPollForLive).toBeCalled());
@@ -136,7 +137,7 @@ describe('StudentLiveStarter', () => {
       const updatedLive: Live = { ...live, live_state: state };
 
       rerender(
-        <StudentLiveStarter live={updatedLive} playerType={'videojs'} />,
+        wrapInVideo(<StudentLiveStarter playerType={'videojs'} />, updatedLive),
       );
 
       await waitFor(() =>
@@ -164,16 +165,19 @@ describe('StudentLiveStarter', () => {
       const video = videoMockFactory();
       const live: Live = { ...video, live_state: state };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />, {
-        routerOptions: {
-          routes: [
-            {
-              path: DASHBOARD_ROUTE(modelName.VIDEOS),
-              render: () => <div>teacher dasboard</div>,
-            },
-          ],
+      render(
+        wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live),
+        {
+          routerOptions: {
+            routes: [
+              {
+                path: DASHBOARD_ROUTE(modelName.VIDEOS),
+                render: () => <div>teacher dasboard</div>,
+              },
+            ],
+          },
         },
-      });
+      );
 
       await screen.findByText('teacher dasboard');
 
@@ -198,7 +202,7 @@ describe('StudentLiveStarter', () => {
       const video = videoMockFactory();
       const live: Live = { ...video, live_state: state };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />);
+      render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
       await screen.findByText(/This live has ended/);
 
@@ -230,7 +234,7 @@ describe('StudentLiveStarter', () => {
         starting_at: new Date(2022, 1, 20, 10, 0, 0).toISOString(),
       };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />);
+      render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
       await screen.findByText(/This live has ended/);
 
@@ -253,7 +257,7 @@ describe('StudentLiveStarter', () => {
         live_state: state,
       };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />);
+      render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
       await screen.findByText(/Live is starting/);
 
@@ -287,7 +291,7 @@ describe('StudentLiveStarter', () => {
         starting_at: new Date(2022, 1, 20, 15, 0, 0).toISOString(),
       };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />);
+      render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
       await screen.findByText(/Live will start in/);
 
@@ -308,7 +312,7 @@ describe('StudentLiveStarter', () => {
       starting_at: new Date(2022, 1, 20, 15, 0, 0).toISOString(),
     };
 
-    render(<StudentLiveStarter live={live} playerType="someplayer" />);
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     await screen.findByText(/Live is starting/);
 
@@ -324,7 +328,7 @@ describe('StudentLiveStarter', () => {
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
-    render(<StudentLiveStarter live={live} playerType="someplayer" />);
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     await screen.findByText(/Live is starting/);
 
@@ -333,7 +337,6 @@ describe('StudentLiveStarter', () => {
     await screen.findByText('live wrapper');
     expect(mockedStudentLiveWrapper).toHaveBeenCalledWith(
       {
-        video: live,
         playerType: 'someplayer',
       },
       {},
@@ -353,7 +356,7 @@ describe('StudentLiveStarter', () => {
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
-    render(<StudentLiveStarter live={live} playerType="someplayer" />);
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     await screen.findByText(/Live is starting/);
 
@@ -362,7 +365,6 @@ describe('StudentLiveStarter', () => {
     await screen.findByText('live wrapper');
     expect(mockedStudentLiveWrapper).toHaveBeenCalledWith(
       {
-        video: live,
         playerType: 'someplayer',
       },
       {},
@@ -384,7 +386,7 @@ describe('StudentLiveStarter', () => {
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
-    render(<StudentLiveStarter live={live} playerType="someplayer" />);
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     await screen.findByText(/Live is starting/);
 
@@ -393,7 +395,6 @@ describe('StudentLiveStarter', () => {
     await screen.findByText('live wrapper');
     expect(mockedStudentLiveWrapper).toHaveBeenCalledWith(
       {
-        video: live,
         playerType: 'someplayer',
       },
       {},
@@ -416,7 +417,7 @@ describe('StudentLiveStarter', () => {
         join_mode: JoinMode.FORCED,
       };
 
-      render(<StudentLiveStarter live={live} playerType="someplayer" />);
+      render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
       await screen.findByText(/Live is starting/);
       expect(useParticipantWorkflow.getState().accepted).toBe(false);
@@ -450,7 +451,7 @@ describe('StudentLiveStarter', () => {
       success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
 
-    render(<StudentLiveStarter live={live} playerType="someplayer" />);
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     // waiting room
     await screen.findByText(/Live has started/);
@@ -479,7 +480,6 @@ describe('StudentLiveStarter', () => {
     await screen.findByText('live wrapper');
     expect(mockedStudentLiveWrapper).toHaveBeenCalledWith(
       {
-        video: live,
         playerType: 'someplayer',
       },
       {},

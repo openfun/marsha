@@ -1,5 +1,5 @@
 import { Box, Button, Spinner, Text, TextInput } from 'grommet';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { SendButtonSVG } from 'components/SVGIcons/SendButtonSVG';
@@ -33,18 +33,39 @@ export const InputBar = ({
   placeholderText,
 }: InputBarProps) => {
   const [inputText, setInputText] = useState(defaultValue);
+  const [isButtonClicked, setIsButtonClicked] = useState(false);
 
-  const handleOnClick = async () => {
-    if (inputText && inputText.length !== 0) {
-      if (await handleUserInput(inputText)) {
+  useEffect(() => {
+    if (!isButtonClicked) {
+      return;
+    }
+
+    let canceled = false;
+    const handle = async () => {
+      if (!inputText || inputText.length === 0) {
+        return;
+      }
+
+      const shouldReset = await handleUserInput(inputText);
+      if (canceled) {
+        return;
+      }
+
+      if (shouldReset) {
         setInputText('');
       }
-    }
-  };
+      setIsButtonClicked(false);
+    };
+
+    handle();
+    return () => {
+      canceled = true;
+    };
+  }, [isButtonClicked]);
 
   const handleKeypress = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.code === 'Enter') {
-      handleOnClick();
+      setIsButtonClicked(true);
     }
   };
 
@@ -123,7 +144,7 @@ export const InputBar = ({
             )}
           </Box>
         }
-        onClick={handleOnClick}
+        onClick={() => setIsButtonClicked(true)}
         plain
       />
     </Box>

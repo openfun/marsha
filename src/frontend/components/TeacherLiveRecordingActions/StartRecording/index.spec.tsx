@@ -7,6 +7,7 @@ import { QueryClient } from 'react-query';
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StartRecording } from '.';
 
@@ -40,7 +41,7 @@ describe('<StartRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/start-recording/`, video);
 
-    render(<StartRecording video={video} />, {
+    render(wrapInVideo(<StartRecording />, video), {
       queryOptions: { client: queryClient },
     });
 
@@ -56,7 +57,7 @@ describe('<StartRecording />', () => {
     const video = videoMockFactory();
     fetchMock.patch(`/api/videos/${video.id}/start-recording/`, 400);
 
-    render(<StartRecording video={video} />, {
+    render(wrapInVideo(<StartRecording />, video), {
       queryOptions: { client: queryClient },
     });
 

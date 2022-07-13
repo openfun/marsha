@@ -7,6 +7,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { HarvestVOD } from '.';
 
@@ -24,7 +25,7 @@ describe('HarvestVOD', () => {
   it('raises an error on harvest button clicks if request failed', async () => {
     const video = videoMockFactory();
 
-    render(<HarvestVOD video={video} />);
+    render(wrapInVideo(<HarvestVOD />, video));
 
     fetchMock.postOnce(`/api/videos/${video.id}/harvest-live/`, 400);
 
@@ -45,7 +46,7 @@ describe('HarvestVOD', () => {
       addResource: jest.fn(),
     });
 
-    render(<HarvestVOD video={video} />);
+    render(wrapInVideo(<HarvestVOD />, video));
 
     const videoDeferred = new Deferred();
     fetchMock.postOnce(

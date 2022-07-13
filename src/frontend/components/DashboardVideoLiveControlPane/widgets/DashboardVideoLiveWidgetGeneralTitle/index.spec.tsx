@@ -7,6 +7,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetGeneralTitle } from '.';
 
@@ -42,9 +43,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('General');
@@ -73,9 +77,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate live recording');
@@ -112,9 +119,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate live recording');
@@ -149,9 +159,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Activate live recording');
@@ -189,9 +202,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textInput = screen.getByRole('textbox', {
@@ -234,9 +250,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textInput = screen.getByRole('textbox', {
@@ -262,9 +281,12 @@ describe('<DashboardVideoLiveWidgetGeneralTitle />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetGeneralTitle video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetGeneralTitle />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const textInput = screen.getByRole('textbox', {

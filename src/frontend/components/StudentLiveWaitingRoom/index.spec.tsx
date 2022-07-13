@@ -3,8 +3,10 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
+import { liveState } from 'types/tracks';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
@@ -70,9 +72,10 @@ describe('<StudentLiveWaitingRoom />', () => {
     const video = videoMockFactory({
       title: 'live title',
       description: 'live description',
+      live_state: liveState.IDLE,
     });
 
-    render(<StudentLiveWaitingRoom video={video} />);
+    render(wrapInVideo(<StudentLiveWaitingRoom />, video));
 
     screen.getByText('Live has started');
     screen.getByText(
@@ -95,12 +98,13 @@ describe('<StudentLiveWaitingRoom />', () => {
     const video = videoMockFactory({
       title: 'live title',
       description: 'live description',
+      live_state: liveState.IDLE,
     });
     mockSetLiveSessionDisplayName.mockResolvedValue({
       success: liveSessionFactory({ display_name: 'John_Doe' }),
     });
 
-    render(<StudentLiveWaitingRoom video={video} />);
+    render(wrapInVideo(<StudentLiveWaitingRoom />, video));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');

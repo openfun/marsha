@@ -1,7 +1,5 @@
 import React from 'react';
-import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
-import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { Video } from 'types/tracks';
+
 import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetGeneralTitle';
 import { DashboardVideoLiveWidgetJoinMode } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetJoinMode';
@@ -12,26 +10,23 @@ import { DashboardVideoLiveWidgetToolsAndApplications } from 'components/Dashboa
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVOD';
 import { DashboardVideoLiveWidgetSharedLiveMedia } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSharedLiveMedia';
+import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 
-interface DashboardVideoLiveTabConfigurationProps {
-  video: Video;
-}
-export const DashboardVideoLiveTabConfiguration = ({
-  video,
-}: DashboardVideoLiveTabConfigurationProps) => {
+export const DashboardVideoLiveTabConfiguration = () => {
   return (
     <InfoWidgetModalProvider value={null}>
       <DashboardVideoLiveWidgetsContainer>
-        <DashboardVideoLiveWidgetToolsAndApplications video={video} />
-        <DashboardVideoLiveWidgetGeneralTitle video={video} />
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
-        <DashboardVideoLiveWidgetLivePairing video={video} />
-        <DashboardVideoLiveWidgetVOD video={video} />
-        <DashboardVideoLiveWidgetJoinMode video={video} />
+        <DashboardVideoLiveWidgetToolsAndApplications />
+        <DashboardVideoLiveWidgetGeneralTitle />
+        <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        <DashboardVideoLiveWidgetSchedulingAndDescription />
+        <DashboardVideoLiveWidgetLivePairing />
+        <DashboardVideoLiveWidgetVOD />
+        <DashboardVideoLiveWidgetJoinMode />
         <DashboardVideoLiveWidgetThumbnail />
         <DeleteUploadModalProvider value={null}>
-          <DashboardVideoLiveWidgetSharedLiveMedia video={video} />
+          <DashboardVideoLiveWidgetSharedLiveMedia />
         </DeleteUploadModalProvider>
       </DashboardVideoLiveWidgetsContainer>
     </InfoWidgetModalProvider>

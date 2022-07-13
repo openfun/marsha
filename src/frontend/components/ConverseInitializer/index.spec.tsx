@@ -8,6 +8,7 @@ import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { ConverseInitializer } from '.';
 
@@ -63,7 +64,7 @@ describe('<ConverseInitializer />', () => {
     };
     mockConverse = {};
 
-    render(<ConverseInitializer video={video} />);
+    render(wrapInVideo(<ConverseInitializer />, video));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockInitConverse).not.toHaveBeenCalled();
@@ -101,7 +102,7 @@ describe('<ConverseInitializer />', () => {
     };
     mockConverse = {};
 
-    render(<ConverseInitializer video={video} />);
+    render(wrapInVideo(<ConverseInitializer />, video));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockInitConverse).not.toHaveBeenCalled();
@@ -128,7 +129,7 @@ describe('<ConverseInitializer />', () => {
     };
     mockConverse = {};
 
-    render(<ConverseInitializer video={video} />);
+    render(wrapInVideo(<ConverseInitializer />, video));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockInitConverse).not.toHaveBeenCalled();
@@ -156,7 +157,7 @@ describe('<ConverseInitializer />', () => {
     };
     mockConverse = {};
 
-    render(<ConverseInitializer video={video} />);
+    render(wrapInVideo(<ConverseInitializer />, video));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockInitConverse).not.toHaveBeenCalled();
@@ -184,7 +185,7 @@ describe('<ConverseInitializer />', () => {
     };
     mockConverse = {};
 
-    render(<ConverseInitializer video={video} />);
+    render(wrapInVideo(<ConverseInitializer />, video));
     // mockConverseMounter returns itself a mock. We want to inspect this mock to be sure that
     // is was called with the container name and the xmpp object
     expect(mockInitConverse).not.toHaveBeenCalled();
@@ -219,9 +220,12 @@ describe('<ConverseInitializer />', () => {
     mockConverse = {};
 
     render(
-      <ConverseInitializer video={mockVideo}>
-        <span>loaded</span>
-      </ConverseInitializer>,
+      wrapInVideo(
+        <ConverseInitializer>
+          <span>loaded</span>
+        </ConverseInitializer>,
+        mockVideo,
+      ),
     );
 
     screen.getByText('loaded');
@@ -239,9 +243,12 @@ describe('<ConverseInitializer />', () => {
     useLiveSession.getState().setLiveSession(liveSession);
 
     render(
-      <ConverseInitializer video={mockVideo}>
-        <span>loaded</span>
-      </ConverseInitializer>,
+      wrapInVideo(
+        <ConverseInitializer>
+          <span>loaded</span>
+        </ConverseInitializer>,
+        mockVideo,
+      ),
     );
 
     screen.getByTestId('loader-id');
@@ -281,9 +288,12 @@ describe('<ConverseInitializer />', () => {
     useLiveSession.getState().setLiveSession(liveSession);
 
     render(
-      <ConverseInitializer video={video}>
-        <span>loaded</span>
-      </ConverseInitializer>,
+      wrapInVideo(
+        <ConverseInitializer>
+          <span>loaded</span>
+        </ConverseInitializer>,
+        video,
+      ),
     );
 
     screen.getByTestId('loader-id');

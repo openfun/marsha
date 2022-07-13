@@ -5,6 +5,7 @@ import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { LiveModeType } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TeacherLiveTypeSwitch } from '.';
 
@@ -22,9 +23,12 @@ describe('<TeacherLiveTypeSwitch />', () => {
     const video = videoMockFactory({ live_type: LiveModeType.JITSI });
 
     render(
-      <LiveFeedbackProvider value={false}>
-        <TeacherLiveTypeSwitch video={video} />
-      </LiveFeedbackProvider>,
+      wrapInVideo(
+        <LiveFeedbackProvider value={false}>
+          <TeacherLiveTypeSwitch />
+        </LiveFeedbackProvider>,
+        video,
+      ),
     );
 
     screen.getByText('Raw');

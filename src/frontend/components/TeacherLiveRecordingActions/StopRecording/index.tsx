@@ -7,11 +7,10 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { RecordSVG } from 'components/SVGIcons/RecordSVG';
+import { formatSecToTimeStamp } from 'components/TeacherLiveRecordingActions/utils';
 import { useStopLiveRecording } from 'data/queries';
-import { Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
-
-import { formatSecToTimeStamp } from '../utils';
 
 const BlinkedBox = styled(Box)`
   animation: blink-animation 1s ease-in infinite;
@@ -43,11 +42,8 @@ const messages = defineMessage({
   },
 });
 
-interface StopRecordingProps {
-  video: Video;
-}
-
-export const StopRecording = ({ video }: StopRecordingProps) => {
+export const StopRecording = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));

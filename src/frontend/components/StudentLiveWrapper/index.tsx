@@ -15,15 +15,16 @@ import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { appData } from 'data/appData';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
-import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
+import { convertLiveToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { Video } from 'types/tracks';
+
 import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
 
 const messages = defineMessages({
@@ -36,14 +37,13 @@ const messages = defineMessages({
 });
 
 interface StudentLiveWrapperProps {
-  video: Video;
   playerType: string;
 }
 
 export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
-  video,
   playerType,
 }) => {
+  const live = useCurrentLive();
   const intl = useIntl();
   const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
     (state) => ({
@@ -77,9 +77,9 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
 
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled
-    if (video.xmpp !== null) {
+    if (live.xmpp !== null) {
       const items = [];
-      if (video.has_chat) {
+      if (live.has_chat) {
         items.push(LivePanelItem.CHAT);
       }
       items.push(LivePanelItem.VIEWERS_LIST);
@@ -93,29 +93,29 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     else {
       configPanel([]);
     }
-  }, [video.xmpp]);
+  }, [live.xmpp]);
 
   // show panel only when user first time comes on the live
   useEffect(() => {
-    if (video.xmpp && currentItem && showPanelTrigger) {
+    if (live.xmpp && currentItem && showPanelTrigger) {
       setPanelVisibility(true);
       setShowPanelTrigger(false);
     }
-  }, [video.xmpp, currentItem, showPanelTrigger]);
+  }, [live.xmpp, currentItem, showPanelTrigger]);
 
-  const jitsiLive = convertVideoToJitsiLive(video);
+  const jitsiLive = convertLiveToJitsiLive(live);
   if (isParticipantOnstage && !jitsiLive) {
     return <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />;
   }
 
   return (
     <LiveVideoLayout
-      actionsElement={<StudentLiveControlBar video={video} />}
-      displayActionsElement={!!video.xmpp}
-      isXmppReady={!!video.xmpp}
+      actionsElement={<StudentLiveControlBar />}
+      displayActionsElement={!!live.xmpp}
+      isXmppReady={!!live.xmpp}
       liveTitleElement={
         <StudentLiveInfoBar
-          title={video.title ?? intl.formatMessage(messages.defaultLiveTitle)}
+          title={live.title ?? intl.formatMessage(messages.defaultLiveTitle)}
           startDate={null}
         />
       }
@@ -128,18 +128,18 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
               <VideoPlayer
                 playerType={playerType}
                 timedTextTracks={[]}
-                video={video}
+                video={live}
               />
             )
           }
           secondElement={
-            video.active_shared_live_media &&
-            (video.active_shared_live_media.urls ? (
+            live.active_shared_live_media &&
+            (live.active_shared_live_media.urls ? (
               <SharedMediaExplorer
-                initialPage={video.active_shared_live_media_page!}
-                pages={video.active_shared_live_media.urls.pages}
+                initialPage={live.active_shared_live_media_page!}
+                pages={live.active_shared_live_media.urls.pages}
               >
-                <UpdateCurrentSharedLiveMediaPage video={video} />
+                <UpdateCurrentSharedLiveMediaPage />
               </SharedMediaExplorer>
             ) : (
               <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
@@ -153,7 +153,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
           }
         />
       }
-      sideElement={<LiveVideoPanel video={video} />}
+      sideElement={<LiveVideoPanel />}
     />
   );
 };
