@@ -7,6 +7,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from '.';
 
@@ -35,9 +36,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Visibility and interaction parameters');
@@ -65,9 +69,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {
@@ -103,11 +110,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction
-          video={{ ...mockedVideo, is_public: true }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, is_public: true },
+      ),
     );
 
     const copyButtonReRendered = screen.getByRole('button', {
@@ -133,9 +141,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {
@@ -167,11 +178,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction
-          video={{ ...mockedVideo, is_public: false }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, is_public: false },
+      ),
     );
 
     expect(
@@ -192,9 +204,12 @@ describe('<DashboardVideoLiveWidgetVisibilityAndInteraction />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const visibilityToggleButton = screen.getByRole('checkbox', {

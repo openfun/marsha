@@ -5,7 +5,8 @@ import { toast } from 'react-hot-toast';
 
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
-import { JoinMode, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { JoinMode } from 'types/tracks';
 import { report } from 'utils/errors/report';
 
 const { APPROVAL, DENIED, FORCED } = JoinMode;
@@ -54,13 +55,8 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetJoinModeProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetJoinMode = ({
-  video,
-}: DashboardVideoLiveWidgetJoinModeProps) => {
+export const DashboardVideoLiveWidgetJoinMode = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
 
   const videoMutation = useUpdateVideo(video.id, {

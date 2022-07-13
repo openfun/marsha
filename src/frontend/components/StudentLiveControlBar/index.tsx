@@ -4,32 +4,28 @@ import { Box, ResponsiveContext } from 'grommet';
 import { AppsWrapper } from 'components/LiveControls/AppsWrapper';
 import { ChatWrapper } from 'components/LiveControls/ChatWrapper';
 import { ViewersWrapper } from 'components/LiveControls/ViewersWrapper';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { JoinMode, LiveModeType, liveState, Video } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState } from 'types/tracks';
 
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
 
-interface StudentLiveControlBarProps {
-  video: Video;
-}
-
-export const StudentLiveControlBar = ({
-  video,
-}: StudentLiveControlBarProps) => {
+export const StudentLiveControlBar = () => {
+  const live = useCurrentLive();
   const size = useContext(ResponsiveContext);
   const { availableItems } = useLivePanelState((state) => ({
     availableItems: state.availableItems,
   }));
 
   const displayJoinDiscussionButtons =
-    video.xmpp &&
-    video.live_type === LiveModeType.JITSI &&
-    video.live_state &&
-    video.live_state === liveState.RUNNING &&
-    video.join_mode === JoinMode.APPROVAL;
+    live.xmpp &&
+    live.live_type === LiveModeType.JITSI &&
+    live.live_state &&
+    live.live_state === liveState.RUNNING &&
+    live.join_mode === JoinMode.APPROVAL;
 
   return (
     <Box

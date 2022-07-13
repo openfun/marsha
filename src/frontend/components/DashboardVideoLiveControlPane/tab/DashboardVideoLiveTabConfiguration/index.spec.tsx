@@ -14,6 +14,7 @@ import {
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveTabConfiguration } from '.';
 
@@ -58,7 +59,7 @@ describe('<DashboardVideoLiveTabConfiguration />', () => {
     useThumbnail.getState().addResource(mockedThumbnail);
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
-    render(<DashboardVideoLiveTabConfiguration video={mockVideo} />);
+    render(wrapInVideo(<DashboardVideoLiveTabConfiguration />, mockVideo));
 
     // DashboardVideoLiveWidgetToolsAndApplications
     screen.getByText('Tools and applications');

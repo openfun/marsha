@@ -10,6 +10,7 @@ import {
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';
 
 import { ViewersList } from '.';
@@ -68,7 +69,7 @@ describe('<ViewersList /> when user is an instructor', () => {
   it('displays severals participants, not on stage and not asking, and then remove some of them', () => {
     const video = videoMockFactory();
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
     screen.getByText('On stage');
@@ -112,7 +113,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       ],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -131,7 +132,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -152,7 +153,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     screen.getByText('Demands');
     screen.getByText('On stage');
@@ -177,7 +178,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants: [mockedParticipantOnStage1Full],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
     screen.getByText('On stage');
@@ -200,14 +201,16 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants: [mockedParticipantOnStage1Full],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
+
     expect(screen.queryByText('Terminate')).not.toBeInTheDocument();
   });
 
   it('does not display participants not in stage list when join mode is forced', () => {
     const video = videoMockFactory({ join_mode: JoinMode.FORCED });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
+
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
     expect(
       screen.queryByText('No viewers are currently connected to your stream.'),
@@ -234,7 +237,7 @@ describe('<ViewersList /> when user is an instructor', () => {
       ],
     });
 
-    render(<ViewersList isInstructor={true} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     screen.getByText('my name');
     expect(screen.queryByText(anonymousName)).not.toBeInTheDocument();
@@ -246,7 +249,7 @@ describe('<ViewersList /> when user is a student', () => {
   it('adds and removes several users from the list.', () => {
     const video = videoMockFactory();
     const { rerender } = render(
-      <ViewersList isInstructor={false} video={video} />,
+      wrapInVideo(<ViewersList isInstructor={false} />, video),
     );
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
@@ -300,7 +303,9 @@ describe('<ViewersList /> when user is a student', () => {
         name: 'Student 2',
       }),
     );
-    rerender(<ViewersList isInstructor={false} video={video} />);
+
+    rerender(wrapInVideo(<ViewersList isInstructor={false} />, video));
+
     screen.getByText('Student 2');
   });
 
@@ -315,7 +320,8 @@ describe('<ViewersList /> when user is a student', () => {
       ],
     });
 
-    render(<ViewersList isInstructor={false} video={video} />);
+    render(wrapInVideo(<ViewersList isInstructor={false} />, video));
+
     expect(screen.queryByText('Other participants')).toBeInTheDocument();
     expect(
       screen.queryByText('No viewers are currently connected to your stream.'),

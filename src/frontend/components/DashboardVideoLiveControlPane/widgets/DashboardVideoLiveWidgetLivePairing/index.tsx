@@ -2,7 +2,6 @@ import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Video } from 'types/tracks';
 import { DashboardVideoLivePairing } from 'components/DashboardVideoLivePairing';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 
@@ -21,14 +20,9 @@ const messages = defineMessages({
   },
 });
 
-interface DashboardVideoLiveWidgetLivePairingProps {
-  video: Video;
-}
-
-export const DashboardVideoLiveWidgetLivePairing = ({
-  video,
-}: DashboardVideoLiveWidgetLivePairingProps) => {
+export const DashboardVideoLiveWidgetLivePairing = () => {
   const intl = useIntl();
+
   return (
     <DashboardVideoLiveWidgetTemplate
       title={intl.formatMessage(messages.title)}
@@ -36,7 +30,7 @@ export const DashboardVideoLiveWidgetLivePairing = ({
       initialOpenValue={false}
     >
       <Box direction={'row'} justify={'center'}>
-        <DashboardVideoLivePairing video={video} />
+        <DashboardVideoLivePairing />
       </Box>
     </DashboardVideoLiveWidgetTemplate>
   );

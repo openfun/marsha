@@ -1,8 +1,10 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
+import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveDescription } from '.';
 
@@ -11,9 +13,10 @@ describe('<StudentLiveDescription />', () => {
     const video = videoMockFactory({
       title: 'live title',
       description: 'live description',
+      live_state: liveState.IDLE,
     });
 
-    render(<StudentLiveDescription video={video} />);
+    render(wrapInVideo(<StudentLiveDescription />, video));
 
     screen.getByRole('heading', { name: 'live title' });
     screen.getByText('live description');
@@ -23,9 +26,10 @@ describe('<StudentLiveDescription />', () => {
     const video = videoMockFactory({
       title: undefined,
       description: 'live description',
+      live_state: liveState.IDLE,
     });
 
-    render(<StudentLiveDescription video={video} />);
+    render(wrapInVideo(<StudentLiveDescription />, video));
 
     screen.getByRole('heading', { name: 'This live has no title yet.' });
     screen.getByText('live description');

@@ -1,20 +1,21 @@
 import { Box } from 'grommet';
 import React, { Fragment } from 'react';
 
-import { liveState, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { liveState } from 'types/tracks';
 
 import { StartRecording } from './StartRecording';
 import { StopRecording } from './StopRecording';
 
 interface TeacherLiveRecordingActionsProps {
   isJitsiAdministrator: boolean;
-  video: Video;
 }
 
 export const TeacherLiveRecordingActions = ({
   isJitsiAdministrator,
-  video,
 }: TeacherLiveRecordingActionsProps) => {
+  const video = useCurrentVideo();
+
   if (
     video.live_state !== liveState.RUNNING ||
     !isJitsiAdministrator ||
@@ -30,7 +31,7 @@ export const TeacherLiveRecordingActions = ({
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >
-        <StopRecording video={video} />
+        <StopRecording />
       </Box>
     );
   } else {
@@ -40,7 +41,7 @@ export const TeacherLiveRecordingActions = ({
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >
-        <StartRecording video={video} />
+        <StartRecording />
       </Box>
     );
   }

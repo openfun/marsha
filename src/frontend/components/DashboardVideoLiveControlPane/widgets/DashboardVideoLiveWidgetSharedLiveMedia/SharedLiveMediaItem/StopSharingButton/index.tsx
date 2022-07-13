@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useStopSharingMedia } from 'data/queries';
-import { Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({
@@ -35,11 +35,8 @@ const StyledButton = styled(Button)`
   margin: 0px;
 `;
 
-interface StopSharingButtonProps {
-  video: Video;
-}
-
-export const StopSharingButton = ({ video }: StopSharingButtonProps) => {
+export const StopSharingButton = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const shareMediaStop = useStopSharingMedia(video.id, {
     onSuccess: () => {

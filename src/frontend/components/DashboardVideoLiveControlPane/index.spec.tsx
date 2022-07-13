@@ -5,6 +5,7 @@ import React from 'react';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveControlPane } from '.';
 
@@ -27,9 +28,12 @@ describe('<DashboardVideoLiveControlPane />', () => {
     });
 
     render(
-      <ResponsiveContext.Provider value="large">
-        <DashboardVideoLiveControlPane video={mockVideo} />
-      </ResponsiveContext.Provider>,
+      wrapInVideo(
+        <ResponsiveContext.Provider value="large">
+          <DashboardVideoLiveControlPane />
+        </ResponsiveContext.Provider>,
+        mockVideo,
+      ),
     );
 
     screen.getByRole('tab', { name: 'configuration' });

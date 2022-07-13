@@ -5,23 +5,29 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
+import { liveState } from 'types/tracks';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { ViewersWrapper } from '.';
 
 describe('<ViewersWrapper />', () => {
   it('renders <StudentShowViewersButton /> when panel is closed and viewers is not selected', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [],
+      live_state: liveState.IDLE,
+    });
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(<ViewersWrapper />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
@@ -30,13 +36,17 @@ describe('<ViewersWrapper />', () => {
   });
 
   it('renders <StudentShowViewersButton /> when panel is closed and viewers is selected', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [],
+      live_state: liveState.IDLE,
+    });
     useLivePanelState.setState({
       isPanelVisible: false,
       currentItem: LivePanelItem.VIEWERS_LIST,
       availableItems: [LivePanelItem.APPLICATION, LivePanelItem.CHAT],
     });
 
-    render(<ViewersWrapper />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
@@ -45,13 +55,17 @@ describe('<ViewersWrapper />', () => {
   });
 
   it('renders <StudentShowViewersButton /> when panel is opened but not selecting viewers', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [],
+      live_state: liveState.IDLE,
+    });
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(<ViewersWrapper />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     screen.getByRole('button', { name: 'Show viewers' });
     expect(
@@ -60,13 +74,17 @@ describe('<ViewersWrapper />', () => {
   });
 
   it('renders <StudentShowViewersButton /> when panel is opened and viewers is selected', () => {
+    const video = videoMockFactory({
+      participants_asking_to_join: [],
+      live_state: liveState.IDLE,
+    });
     useLivePanelState.setState({
       isPanelVisible: true,
       currentItem: LivePanelItem.VIEWERS_LIST,
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(<ViewersWrapper />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),
@@ -77,6 +95,7 @@ describe('<ViewersWrapper />', () => {
   it('renders <StudentShowViewersButton /> with one user wanting to go on stage', () => {
     const video = videoMockFactory({
       participants_asking_to_join: [participantMockFactory()],
+      live_state: liveState.IDLE,
     });
 
     useLivePanelState.setState({
@@ -85,7 +104,7 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(<ViewersWrapper video={video} />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),
@@ -109,6 +128,7 @@ describe('<ViewersWrapper />', () => {
         participantMockFactory(),
         participantMockFactory(),
       ],
+      live_state: liveState.IDLE,
     });
 
     useLivePanelState.setState({
@@ -117,7 +137,7 @@ describe('<ViewersWrapper />', () => {
       availableItems: [LivePanelItem.VIEWERS_LIST, LivePanelItem.APPLICATION],
     });
 
-    render(<ViewersWrapper video={video} />);
+    render(wrapInVideo(<ViewersWrapper />, video));
 
     expect(
       screen.queryByRole('button', { name: 'Show viewers' }),

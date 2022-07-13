@@ -7,6 +7,7 @@ import { navigateSharingDoc } from 'data/sideEffects/navigateSharingDoc';
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PreviousPageButton } from '.';
 
@@ -26,9 +27,14 @@ describe('<PreviousPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      <SharedMediaCurrentPageProvider value={{ page: 2, imageUrl: 'some url' }}>
-        <PreviousPageButton video={video} />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{ page: 2, imageUrl: 'some url' }}
+        >
+          <PreviousPageButton />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
     );
 
     userEvent.click(screen.getByRole('button', { name: 'Previous page' }));
@@ -39,9 +45,14 @@ describe('<PreviousPageButton />', () => {
     const video = videoMockFactory();
 
     render(
-      <SharedMediaCurrentPageProvider value={{ page: 1, imageUrl: 'some url' }}>
-        <PreviousPageButton video={video} />
-      </SharedMediaCurrentPageProvider>,
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{ page: 1, imageUrl: 'some url' }}
+        >
+          <PreviousPageButton />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
     );
 
     expect(

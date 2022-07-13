@@ -3,6 +3,7 @@ import React from 'react';
 
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { liveState } from 'types/tracks';
 
 import { TeacherLiveLifecycleControls } from '.';
@@ -23,11 +24,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={false}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={false}
+        />,
+        video,
+      ),
     );
 
     //  only admin message is visible
@@ -52,11 +55,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={false}
-        hasRightToStart={false}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={false}
+          hasRightToStart={false}
+        />,
+        video,
+      ),
     );
 
     //  only message to join the room is visible
@@ -81,11 +86,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={true}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+        />,
+        video,
+      ),
     );
 
     //  start button is visible
@@ -110,11 +117,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.STARTING });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={true}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+        />,
+        video,
+      ),
     );
 
     //  live is starting, render the message
@@ -141,11 +150,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.RUNNING });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={true}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+        />,
+        video,
+      ),
     );
 
     //  live is running, we can pause it
@@ -170,11 +181,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.STOPPING });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={true}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+        />,
+        video,
+      ),
     );
 
     //  live is stopping, render the message
@@ -202,11 +215,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
     const video = videoMockFactory({ live_state: liveState.HARVESTING });
 
     render(
-      <TeacherLiveLifecycleControls
-        canStartStreaming={true}
-        hasRightToStart={true}
-        video={video}
-      />,
+      wrapInVideo(
+        <TeacherLiveLifecycleControls
+          canStartStreaming={true}
+          hasRightToStart={true}
+        />,
+        video,
+      ),
     );
 
     //  live is stopping, render the message
@@ -235,11 +250,13 @@ describe('<TeacherLiveLifecycleControls />', () => {
 
     try {
       render(
-        <TeacherLiveLifecycleControls
-          canStartStreaming={true}
-          hasRightToStart={true}
-          video={video}
-        />,
+        wrapInVideo(
+          <TeacherLiveLifecycleControls
+            canStartStreaming={true}
+            hasRightToStart={true}
+          />,
+          video,
+        ),
       );
     } catch (e: any) {
       expect(e.message).toEqual(

@@ -8,19 +8,14 @@ import React, {
 } from 'react';
 
 import { getDecodedJwt } from 'data/appData';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { liveState, Video } from 'types/tracks';
+import { liveState } from 'types/tracks';
 import { converseMounter } from 'utils/conversejs/converse';
 import { converse } from 'utils/window';
 
-interface ConverseMonterProps {
-  video: Video;
-}
-
-export const ConverseInitializer = ({
-  children,
-  video,
-}: PropsWithChildren<ConverseMonterProps>) => {
+export const ConverseInitializer = ({ children }: PropsWithChildren<{}>) => {
+  const video = useCurrentVideo();
   const initConverse = useMemo(() => {
     return converseMounter();
   }, [converseMounter]);

@@ -4,10 +4,11 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { updateResource } from 'data/sideEffects/updateResource';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
-import { LiveModeType, Video } from 'types/tracks';
+import { LiveModeType } from 'types/tracks';
 
 const messages = defineMessages({
   RAW: {
@@ -28,13 +29,8 @@ const messages = defineMessages({
   },
 });
 
-interface TeacherLiveTypeSwitchProps {
-  video: Video;
-}
-
-export const TeacherLiveTypeSwitch = ({
-  video,
-}: TeacherLiveTypeSwitchProps) => {
+export const TeacherLiveTypeSwitch = () => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const [_, setIsLiveFeedbackVisible] = useLiveFeedback();
   const { updateVideo } = useVideo((state) => ({

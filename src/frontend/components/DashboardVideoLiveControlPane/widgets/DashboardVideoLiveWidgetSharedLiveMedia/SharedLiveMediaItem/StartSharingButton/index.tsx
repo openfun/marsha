@@ -5,7 +5,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useStartSharingMedia } from 'data/queries';
-import { SharedLiveMedia, Video } from 'types/tracks';
+import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { SharedLiveMedia } from 'types/tracks';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({
@@ -37,13 +38,12 @@ const StyledButton = styled(Button)`
 
 interface StartSharingButtonProps {
   sharedLiveMediaId: SharedLiveMedia['id'];
-  video: Video;
 }
 
 export const StartSharingButton = ({
   sharedLiveMediaId,
-  video,
 }: StartSharingButtonProps) => {
+  const video = useCurrentVideo();
   const intl = useIntl();
   const shareMediaStart = useStartSharingMedia(video.id, {
     onSuccess: () => {

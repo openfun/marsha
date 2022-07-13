@@ -10,6 +10,7 @@ import {
   sharedLiveMediaMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StartSharingButton } from '.';
 
@@ -46,10 +47,10 @@ describe('<StartSharingButton />', () => {
     });
 
     render(
-      <StartSharingButton
-        sharedLiveMediaId={mockedSharedLiveMedia.id}
-        video={mockedVideo}
-      />,
+      wrapInVideo(
+        <StartSharingButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+        mockedVideo,
+      ),
     );
 
     const startSharingButton = screen.getByRole('button', { name: 'Share' });
@@ -86,10 +87,10 @@ describe('<StartSharingButton />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/start-sharing/`, 500);
 
     render(
-      <StartSharingButton
-        sharedLiveMediaId={mockedSharedLiveMedia.id}
-        video={mockedVideo}
-      />,
+      wrapInVideo(
+        <StartSharingButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+        mockedVideo,
+      ),
     );
 
     const startSharingButton = screen.getByRole('button', { name: 'Share' });

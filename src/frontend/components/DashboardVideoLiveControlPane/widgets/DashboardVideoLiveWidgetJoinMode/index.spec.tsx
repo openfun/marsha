@@ -10,6 +10,7 @@ import { videoMockFactory } from 'utils/tests/factories';
 import { JoinMode } from 'types/tracks';
 import { DashboardVideoLiveWidgetJoinMode } from '.';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 jest.mock('data/appData', () => ({
   appData: {
@@ -33,9 +34,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     screen.getByText('Join the discussion');
@@ -57,9 +61,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const button = screen.getByRole('button', {
@@ -90,11 +97,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode
-          video={{ ...mockedVideo, join_mode: JoinMode.DENIED }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, join_mode: JoinMode.DENIED },
+      ),
     );
     expect(within(button).getByRole('textbox')).toHaveValue('Not allowed');
   });
@@ -110,9 +118,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const button = screen.getByRole('button', {
@@ -145,11 +156,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode
-          video={{ ...mockedVideo, join_mode: JoinMode.APPROVAL }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, join_mode: JoinMode.APPROVAL },
+      ),
     );
     expect(within(button).getByRole('textbox')).toHaveValue(
       'Accept joining the discussion after approval',
@@ -167,9 +179,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     });
 
     const { rerender } = render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const button = screen.getByRole('button', {
@@ -200,11 +215,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
 
     // simulate video update
     rerender(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode
-          video={{ ...mockedVideo, join_mode: JoinMode.FORCED }}
-        />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        { ...mockedVideo, join_mode: JoinMode.FORCED },
+      ),
     );
     expect(within(button).getByRole('textbox')).toHaveValue(
       'Everybody will join the discussion',
@@ -219,9 +235,12 @@ describe('<DashboardVideoLiveWidgetJoinMode />', () => {
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetJoinMode video={mockedVideo} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DashboardVideoLiveWidgetJoinMode />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
     );
 
     const button = screen.getByRole('button', {

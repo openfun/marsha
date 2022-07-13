@@ -10,25 +10,23 @@ import { StudentLiveWaitingRoom } from 'components/StudentLiveWaitingRoom';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
 import { getDecodedJwt } from 'data/appData';
 import { pollForLive } from 'data/sideEffects/pollForLive';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { JitsiApiProvider } from 'data/stores/useJitsiApi';
+import { useLiveSession } from 'data/stores/useLiveSession';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { modelName } from 'types/models';
-import { JoinMode, Live, liveState } from 'types/tracks';
+import { JoinMode, liveState } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { converse } from 'utils/window';
-import { useLiveSession } from 'data/stores/useLiveSession';
-import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
-import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 
 interface StudentLiveStarterProps {
-  live: Live;
   playerType: string;
 }
 
-export const StudentLiveStarter = ({
-  live,
-  playerType,
-}: StudentLiveStarterProps) => {
+export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
+  const live = useCurrentLive();
   const intl = useIntl();
   const session = useLiveSession();
   const liveScheduleStartDate = useMemo(() => {
@@ -76,6 +74,7 @@ export const StudentLiveStarter = ({
   }, [live, isStarted]);
 
   useEffect(() => {
+    let canceled = false;
     let askParticipantToJoinTimeout: Maybe<number>;
     let waitAskParticipantToJoinTimeout: Maybe<number>;
 
@@ -84,6 +83,10 @@ export const StudentLiveStarter = ({
     const askParticipantToJoin = async () => {
       try {
         await converse.askParticipantToJoin();
+
+        if (canceled) {
+          return;
+        }
         setAsked();
       } catch (_) {
         askParticipantToJoinTimeout = window.setTimeout(
@@ -91,6 +94,9 @@ export const StudentLiveStarter = ({
           1000,
         );
       }
+      return () => {
+        canceled = true;
+      };
     };
 
     // Wait for askParticipantToJoin to be loaded in converse
@@ -176,18 +182,18 @@ export const StudentLiveStarter = ({
   ) {
     return <FullScreenError code={'liveStopped'} />;
   } else if (!isStarted) {
-    return <StudentLiveAdvertising video={live} />;
+    return <StudentLiveAdvertising />;
   } else if (
     !session.liveSession?.display_name &&
     live.join_mode === JoinMode.FORCED
   ) {
-    return <StudentLiveWaitingRoom video={live} />;
+    return <StudentLiveWaitingRoom />;
   }
 
   return (
     <PictureInPictureProvider value={{ reversed: true }}>
       <JitsiApiProvider value={undefined}>
-        <StudentLiveWrapper video={live} playerType={playerType} />
+        <StudentLiveWrapper playerType={playerType} />
       </JitsiApiProvider>
     </PictureInPictureProvider>
   );

@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadingObject } from 'components/UploadManager';
-import { SharedLiveMedia, uploadState, Video } from 'types/tracks';
+import { SharedLiveMedia, uploadState } from 'types/tracks';
 import { Nullable } from 'utils/types';
 import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DisallowedDownloadButton } from './DisallowedDownloadButton';
@@ -28,7 +28,6 @@ interface SharedLiveMediaItemProps {
   onRetryFailedUpload: (sharedLiveMediaId: SharedLiveMedia['id']) => void;
   sharedLiveMedia: SharedLiveMedia;
   uploadingObject?: UploadingObject;
-  video: Video;
 }
 
 export const SharedLiveMediaItem = ({
@@ -36,7 +35,6 @@ export const SharedLiveMediaItem = ({
   onRetryFailedUpload,
   sharedLiveMedia,
   uploadingObject,
-  video,
 }: SharedLiveMediaItemProps) => {
   const intl = useIntl();
 
@@ -79,12 +77,9 @@ export const SharedLiveMediaItem = ({
         {sharedLiveMedia.upload_state === uploadState.READY ? (
           <Box justify="center" margin={{ left: 'auto' }}>
             {!isShared ? (
-              <StartSharingButton
-                sharedLiveMediaId={sharedLiveMedia.id}
-                video={video}
-              />
+              <StartSharingButton sharedLiveMediaId={sharedLiveMedia.id} />
             ) : (
-              <StopSharingButton video={video} />
+              <StopSharingButton />
             )}
           </Box>
         ) : IS_UPLOAD_IN_PROGRESS ? (

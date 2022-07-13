@@ -23,6 +23,7 @@ import {
   videoMockFactory,
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveWrapper } from '.';
 
@@ -150,9 +151,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -213,9 +217,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -274,9 +281,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -335,9 +345,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -390,9 +403,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     const joindChatButton = await screen.findByRole('button', {
@@ -426,9 +442,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -473,9 +492,12 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
 
     const { elementContainer: container } = render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() =>
@@ -568,9 +590,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -622,9 +647,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -674,9 +702,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -725,9 +756,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -771,9 +805,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -822,9 +859,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -863,9 +903,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -921,9 +964,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
@@ -998,9 +1044,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
 
     const { elementContainer: container } = render(
-      <PictureInPictureProvider value={{ reversed: true }}>
-        <StudentLiveWrapper video={video} playerType={'player_type'} />
-      </PictureInPictureProvider>,
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
     );
 
     expect(mockJitsi).toHaveBeenCalled();
