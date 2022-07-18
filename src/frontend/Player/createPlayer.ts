@@ -1,6 +1,6 @@
+import { TimedText, timedTextMode } from 'types/tracks';
 import { VideoPlayerCreator } from 'types/VideoPlayer';
 import { report } from 'utils/errors/report';
-
 import { createVideojsPlayer } from './createVideojsPlayer';
 
 export const createPlayer: VideoPlayerCreator = (
@@ -20,7 +20,40 @@ export const createPlayer: VideoPlayerCreator = (
         locale,
         onReady,
       );
+
+      const trackTextKind: { [key in timedTextMode]?: string } = {
+        [timedTextMode.CLOSED_CAPTIONING]: 'captions',
+        [timedTextMode.SUBTITLE]: 'subtitles',
+      };
+
+      const addTrackToPlayer = (
+        track: TimedText,
+        languages: { [key: string]: string },
+      ) => {
+        player.addRemoteTextTrack(
+          {
+            id: track.id,
+            src: track.url,
+            language: track.language,
+            kind: trackTextKind[track.mode] as 'captions' | 'subtitles',
+            label: languages[track.language] || track.language,
+          },
+          true,
+        );
+      };
+
+      const removeTrackFromPlayer = (track: TimedText) => {
+        if (track.id) {
+          player.removeRemoteTextTrack(
+            player.remoteTextTracks().getTrackById(track.id) as any,
+          );
+        }
+      };
+
       return {
+        addTrack: (track: TimedText, languages: { [key: string]: string }) =>
+          addTrackToPlayer(track, languages),
+        removeTrack: (track: TimedText) => removeTrackFromPlayer(track),
         destroy: () => player.dispose(),
         getSource: () => player.currentSource().src,
         setSource: (url: string) => player.src(url),

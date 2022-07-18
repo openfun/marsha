@@ -104,6 +104,8 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       { method: 'OPTIONS' },
     );
     mockCreatePlayer.mockReturnValue({
+      addTrack: jest.fn(),
+      removeTrack: jest.fn(),
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
@@ -891,6 +893,8 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       { method: 'OPTIONS' },
     );
     mockCreatePlayer.mockReturnValue({
+      addTrack: jest.fn(),
+      removeTrack: jest.fn(),
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
