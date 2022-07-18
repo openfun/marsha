@@ -11,7 +11,6 @@ const StyledTitleText = styled(Text)`
 `;
 
 const StyledText = styled(Text)`
-  font-family: 'Roboto-Regular';
   line-height: 20px;
 `;
 
