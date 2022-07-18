@@ -105,7 +105,6 @@ export const InputBar = ({
         plain
         size={isChatInput ? '16px' : '13px'}
         style={{
-          fontFamily: 'Roboto-Regular',
           fontWeight: isChatInput ? 'normal' : 'bold',
         }}
         value={inputText}

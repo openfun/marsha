@@ -22,7 +22,6 @@ import styled from 'styled-components';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 
 const StyledText = styled(Text)`
-  font-family: 'Roboto-Regular';
   padding-left: 10px;
   vertical-align: bottom;
 `;

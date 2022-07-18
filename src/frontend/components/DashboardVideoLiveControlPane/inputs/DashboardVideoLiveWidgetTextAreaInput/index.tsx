@@ -43,7 +43,6 @@ export const DashboardVideoLiveWidgetTextAreaInput = ({
         size="0.938rem"
         spellCheck={false}
         style={{
-          fontFamily: 'Roboto-Regular',
           height: '140px',
         }}
         title={title}
