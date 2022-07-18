@@ -2,9 +2,8 @@ import { DateTime, Duration } from 'luxon';
 import { Box, Grommet, Text, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import React, { Fragment, useCallback, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
-import styled from 'styled-components';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { DashboardVideoLiveWidgetDashedBoxCustom } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveWidgetDashedBoxCustom';
 import { DashboardVideoLiveWidgetTextAreaInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetTextAreaInput';
@@ -66,9 +65,6 @@ const messages = defineMessages({
 
 const schedulingFieldsTheme: ThemeType = deepMerge(theme, {
   global: {
-    font: {
-      family: 'Roboto-Regular',
-    },
     input: {
       font: {
         size: '0.8em',
@@ -112,10 +108,6 @@ const schedulingFieldsTheme: ThemeType = deepMerge(theme, {
     extend: 'font-size: 0.7em',
   },
 });
-
-const StyledText = styled(Text)`
-  font-family: 'Roboto-Regular';
-`;
 
 interface DashboardVideoLiveWidgetSchedulingAndDescriptionProps {
   video: Video;
@@ -184,10 +176,10 @@ export const DashboardVideoLiveWidgetSchedulingAndDescription = ({
         <DashboardVideoLiveWidgetDashedBoxCustom>
           {video.starting_at ? (
             <Fragment>
-              <StyledText color="blue-active" size="0.875rem">
+              <Text color="blue-active" size="0.875rem">
                 {intl.formatMessage(messages.endDateWebinarLabel)}
-              </StyledText>
-              <StyledText color="blue-active" size="0.875rem">
+              </Text>
+              <Text color="blue-active" size="0.875rem">
                 {video.estimated_duration
                   ? DateTime.fromISO(video.starting_at)
                       .plus(Duration.fromISOTime(video.estimated_duration))
@@ -198,17 +190,13 @@ export const DashboardVideoLiveWidgetSchedulingAndDescription = ({
                           : 'yyyy/MM/dd, HH:mm',
                       )
                   : ''}
-              </StyledText>
+              </Text>
             </Fragment>
           ) : (
             <Box fill>
-              <StyledText
-                alignSelf="center"
-                color="blue-active"
-                size="0.875rem"
-              >
+              <Text alignSelf="center" color="blue-active" size="0.875rem">
                 {intl.formatMessage(messages.notScheduledWebinar)}
-              </StyledText>
+              </Text>
             </Box>
           )}
         </DashboardVideoLiveWidgetDashedBoxCustom>

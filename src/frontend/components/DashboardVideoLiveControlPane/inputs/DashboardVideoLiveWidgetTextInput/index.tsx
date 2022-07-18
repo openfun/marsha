@@ -8,10 +8,8 @@ import { theme } from 'utils/theme/theme';
 const StyledTextInput = styled(TextInput)`
   border: 1px solid ${normalizeColor('blue-active', theme)};
   border-radius: 4px;
-  font-family: 'Roboto-Regular';
   ::placeholder {
     color: ${normalizeColor('blue-chat', theme)};
-    font-family: 'Roboto-Regular';
     font-size: 1rem;
     font-style: italic;
   }

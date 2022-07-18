@@ -32,12 +32,7 @@ export const JoinChatButton = ({
     >
       <Button disabled={disabled} fill onClick={handleClick}>
         <Box align="center" fill justify="center">
-          <Text
-            color="blue-chat"
-            size="1.063rem"
-            style={{ fontFamily: 'Roboto-Regular' }}
-            truncate
-          >
+          <Text color="blue-chat" size="1.063rem" truncate>
             {intl.formatMessage(messages.joinChatButton)}
           </Text>
         </Box>
