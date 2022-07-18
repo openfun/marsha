@@ -47,11 +47,6 @@ const messages = defineMessages({
 });
 
 const bbbTheme: ThemeType = deepMerge(theme, {
-  global: {
-    font: {
-      family: 'Roboto-Regular',
-    },
-  },
   box: {
     extend: null,
   },
