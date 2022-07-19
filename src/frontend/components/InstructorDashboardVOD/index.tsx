@@ -8,11 +8,16 @@ import { DashboardVideoLiveWidgetThumbnail } from 'components/DashboardVideoLive
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
+import { TimedTrackModalWrapper } from './custom/TimedTrackModalWrapper';
 import { InstructorDashboardVODWidgetDownloadVideo } from './widgets/InstructorDashboardVODWidgetDownloadVideo';
 import { InstructorDashboardVODWidgetGeneralTitle } from './widgets/InstructorDashboardVODWidgetGeneralTitle';
+import { InstructorDashboardVODWidgetUploadClosedCaptions } from './widgets/InstructorDashboardVODWidgetUploadClosedCaptions';
+import { InstructorDashboardVODWidgetUploadSubtitles } from './widgets/InstructorDashboardVODWidgetUploadSubtitles';
+import { InstructorDashboardVODWidgetUploadTranscripts } from './widgets/InstructorDashboardVODWidgetUploadTranscripts';
 import { InstructorDashboardVODWidgetUploadVideo } from './widgets/InstructorDashboardVODWidgetUploadVideo';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
@@ -56,12 +61,18 @@ export const InstructorDashboardVOD = () => {
       </StyledLiveVideoInformationBarWrapper>
 
       <InfoWidgetModalProvider value={null}>
-        <DashboardVideoLiveWidgetsContainer>
-          <InstructorDashboardVODWidgetGeneralTitle />
-          <InstructorDashboardVODWidgetUploadVideo />
-          <DashboardVideoLiveWidgetThumbnail isLive={false} />
-          <InstructorDashboardVODWidgetDownloadVideo />
-        </DashboardVideoLiveWidgetsContainer>
+        <DeleteTimedTextTrackUploadModalProvider value={null}>
+          <TimedTrackModalWrapper />
+          <DashboardVideoLiveWidgetsContainer>
+            <InstructorDashboardVODWidgetGeneralTitle />
+            <InstructorDashboardVODWidgetUploadVideo />
+            <DashboardVideoLiveWidgetThumbnail isLive={false} />
+            <InstructorDashboardVODWidgetDownloadVideo />
+            <InstructorDashboardVODWidgetUploadSubtitles />
+            <InstructorDashboardVODWidgetUploadTranscripts />
+            <InstructorDashboardVODWidgetUploadClosedCaptions />
+          </DashboardVideoLiveWidgetsContainer>
+        </DeleteTimedTextTrackUploadModalProvider>
       </InfoWidgetModalProvider>
     </Box>
   );
