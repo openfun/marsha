@@ -8,7 +8,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
-import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
+import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import {
   videoMockFactory,
   sharedLiveMediaMockFactory,
@@ -67,14 +67,14 @@ describe('<SharedLiveMediaItem />', () => {
             },
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
               uploadingObject={mockedUploadingObject}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -124,14 +124,14 @@ describe('<SharedLiveMediaItem />', () => {
             },
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
               uploadingObject={mockedUploadingObject}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -172,13 +172,13 @@ describe('<SharedLiveMediaItem />', () => {
             uploadManagerState: {},
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -215,13 +215,13 @@ describe('<SharedLiveMediaItem />', () => {
             uploadManagerState: {},
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -260,13 +260,13 @@ describe('<SharedLiveMediaItem />', () => {
             uploadManagerState: {},
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={true}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -302,13 +302,13 @@ describe('<SharedLiveMediaItem />', () => {
             uploadManagerState: {},
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -323,7 +323,7 @@ describe('<SharedLiveMediaItem />', () => {
     screen.getByText('Upload has failed');
     screen.getByText('Retry');
     const retryButton = screen.getByRole('button', {
-      name: 'Click on this button to retry uploading your media.',
+      name: 'Click on this button to retry uploading your failed upload.',
     });
     userEvent.click(retryButton);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledTimes(1);
@@ -352,13 +352,13 @@ describe('<SharedLiveMediaItem />', () => {
             uploadManagerState: {},
           }}
         >
-          <DeleteUploadModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
             <SharedLiveMediaItem
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
             />
-          </DeleteUploadModalProvider>
+          </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
       ),
@@ -373,7 +373,7 @@ describe('<SharedLiveMediaItem />', () => {
     screen.getByText('Upload has failed');
     screen.getByText('Retry');
     const retryButton = screen.getByRole('button', {
-      name: 'Click on this button to retry uploading your media.',
+      name: 'Click on this button to retry uploading your failed upload.',
     });
     userEvent.click(retryButton);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledTimes(1);
