@@ -86,5 +86,10 @@ describe('<InstructorDashboardVOD />', () => {
     });
     expect(textArea).toHaveValue('An example description');
     screen.getByPlaceholderText('Description...');
+
+    // InstructorDashboardVODWidgetUploadVideo
+    screen.getByText('Video');
+    screen.getByText('Video available');
+    screen.getByRole('button', { name: 'Replace the video' });
   });
 });

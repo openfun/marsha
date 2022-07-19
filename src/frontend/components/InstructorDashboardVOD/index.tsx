@@ -13,6 +13,7 @@ import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
 import { theme } from 'utils/theme/theme';
 import { InstructorDashboardVODWidgetGeneralTitle } from './widgets/InstructorDashboardVODWidgetGeneralTitle';
+import { InstructorDashboardVODWidgetUploadVideo } from './widgets/InstructorDashboardVODWidgetUploadVideo';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
@@ -56,7 +57,7 @@ export const InstructorDashboardVOD = () => {
       <InfoWidgetModalProvider value={null}>
         <DashboardVideoLiveWidgetsContainer>
           <InstructorDashboardVODWidgetGeneralTitle video={currentVideo} />
-          <React.Fragment />
+          <InstructorDashboardVODWidgetUploadVideo video={currentVideo} />
         </DashboardVideoLiveWidgetsContainer>
       </InfoWidgetModalProvider>
     </Box>

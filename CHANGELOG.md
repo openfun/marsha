@@ -20,6 +20,8 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
 - Add a new instructor dashboard VOD with a widget for 
 modifying video's title & description.
+-  Add a widget for uploading a new video in the instructor 
+dashboard VOD
 
 ### Changed
 
