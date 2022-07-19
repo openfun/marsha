@@ -47,6 +47,21 @@ jest.mock('./widgets/InstructorDashboardVODWidgetDownloadVideo', () => ({
     <p>InstructorDashboardVODWidgetDownloadVideo</p>
   ),
 }));
+jest.mock('./widgets/InstructorDashboardVODWidgetUploadSubtitles', () => ({
+  InstructorDashboardVODWidgetUploadSubtitles: () => (
+    <p>InstructorDashboardVODWidgetUploadSubtitles</p>
+  ),
+}));
+jest.mock('./widgets/InstructorDashboardVODWidgetUploadTranscripts', () => ({
+  InstructorDashboardVODWidgetUploadTranscripts: () => (
+    <p>InstructorDashboardVODWidgetUploadTranscripts</p>
+  ),
+}));
+jest.mock('./widgets/InstructorDashboardVODWidgetUploadClosedCaptions', () => ({
+  InstructorDashboardVODWidgetUploadClosedCaptions: () => (
+    <p>InstructorDashboardVODWidgetUploadClosedCaptions</p>
+  ),
+}));
 
 const languageChoices = [
   { label: 'English', value: 'en' },
@@ -92,5 +107,14 @@ describe('<InstructorDashboardVOD />', () => {
 
     // InstructorDashboardVODWidgetDownloadVideo
     screen.getByText('InstructorDashboardVODWidgetDownloadVideo');
+
+    // InstructorDashboardVODWidgetUploadSubtitles
+    screen.getByText('InstructorDashboardVODWidgetUploadSubtitles');
+
+    // InstructorDashboardVODWidgetUploadTranscripts
+    screen.getByText('InstructorDashboardVODWidgetUploadTranscripts');
+
+    // InstructorDashboardVODWidgetUploadClosedCaptions
+    screen.getByText('InstructorDashboardVODWidgetUploadClosedCaptions');
   });
 });
