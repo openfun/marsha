@@ -13,7 +13,7 @@ describe('<RetryButton />', () => {
     render(<RetryButton onClick={mockRetryFn} />);
 
     const retryButton = screen.getByRole('button', {
-      name: 'Click on this button to retry uploading your media.',
+      name: 'Click on this button to retry uploading your failed upload.',
     });
     userEvent.click(retryButton);
     expect(mockRetryFn).toHaveBeenCalledTimes(1);

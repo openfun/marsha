@@ -3,31 +3,31 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { BinSVG } from 'components/SVGIcons/BinSVG';
-import { useDeleteUploadModal } from 'data/stores/useDeleteUploadModal';
+import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { SharedLiveMedia } from 'types/tracks';
 
 const messages = defineMessages({
   buttonLabel: {
     defaultMessage: 'Click on this button to delete the media.',
     description: 'The label of the button to delete a media.',
-    id: 'components.DeleteUploadButton.buttonLabel',
+    id: 'components.DeleteSharedLiveMediaButton.buttonLabel',
   },
 });
 
-interface DeleteUploadButtonProps {
+interface DeleteSharedLiveMediaButtonProps {
   sharedLiveMedia: SharedLiveMedia;
 }
 
-export const DeleteUploadButton = ({
+export const DeleteSharedLiveMediaButton = ({
   sharedLiveMedia,
-}: DeleteUploadButtonProps) => {
-  const [_, setDeleteUploadModal] = useDeleteUploadModal();
+}: DeleteSharedLiveMediaButtonProps) => {
+  const [_, setDeleteSharedLiveMediaModal] = useDeleteSharedLiveMediaModal();
   const intl = useIntl();
 
   return (
     <Button
       a11yTitle={intl.formatMessage(messages.buttonLabel)}
-      onClick={() => setDeleteUploadModal(sharedLiveMedia)}
+      onClick={() => setDeleteSharedLiveMediaModal(sharedLiveMedia)}
       plain
       style={{ display: 'block', padding: 0 }}
     >

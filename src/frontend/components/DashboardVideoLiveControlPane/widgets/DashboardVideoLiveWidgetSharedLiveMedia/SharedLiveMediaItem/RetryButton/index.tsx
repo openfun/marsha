@@ -6,7 +6,8 @@ import styled, { keyframes } from 'styled-components';
 
 const messages = defineMessages({
   buttonLabel: {
-    defaultMessage: 'Click on this button to retry uploading your media.',
+    defaultMessage:
+      'Click on this button to retry uploading your failed upload.',
     description: 'The label of the retry button.',
     id: 'component.RetryButton.buttonLabel',
   },

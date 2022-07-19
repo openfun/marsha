@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { SharedLiveMediaModalWrapper } from 'components/DashboardVideoLiveControlPane/customs/SharedLiveMediaModalWrapper';
 import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetGeneralTitle';
 import { DashboardVideoLiveWidgetJoinMode } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetJoinMode';
@@ -10,25 +11,26 @@ import { DashboardVideoLiveWidgetToolsAndApplications } from 'components/Dashboa
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVOD';
 import { DashboardVideoLiveWidgetSharedLiveMedia } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSharedLiveMedia';
-import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
+import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 
 export const DashboardVideoLiveTabConfiguration = () => {
   return (
     <InfoWidgetModalProvider value={null}>
-      <DashboardVideoLiveWidgetsContainer>
-        <DashboardVideoLiveWidgetToolsAndApplications />
-        <DashboardVideoLiveWidgetGeneralTitle />
-        <DashboardVideoLiveWidgetVisibilityAndInteraction />
-        <DashboardVideoLiveWidgetSchedulingAndDescription />
-        <DashboardVideoLiveWidgetLivePairing />
-        <DashboardVideoLiveWidgetVOD />
-        <DashboardVideoLiveWidgetJoinMode />
-        <DashboardVideoLiveWidgetThumbnail />
-        <DeleteUploadModalProvider value={null}>
+      <DeleteSharedLiveMediaModalProvider value={null}>
+        <SharedLiveMediaModalWrapper />
+        <DashboardVideoLiveWidgetsContainer>
+          <DashboardVideoLiveWidgetToolsAndApplications />
+          <DashboardVideoLiveWidgetGeneralTitle />
+          <DashboardVideoLiveWidgetVisibilityAndInteraction />
+          <DashboardVideoLiveWidgetSchedulingAndDescription />
+          <DashboardVideoLiveWidgetLivePairing />
+          <DashboardVideoLiveWidgetVOD />
+          <DashboardVideoLiveWidgetJoinMode />
+          <DashboardVideoLiveWidgetThumbnail />
           <DashboardVideoLiveWidgetSharedLiveMedia />
-        </DeleteUploadModalProvider>
-      </DashboardVideoLiveWidgetsContainer>
+        </DashboardVideoLiveWidgetsContainer>
+      </DeleteSharedLiveMediaModalProvider>
     </InfoWidgetModalProvider>
   );
 };
