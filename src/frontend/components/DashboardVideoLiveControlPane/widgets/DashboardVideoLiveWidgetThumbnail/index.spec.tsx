@@ -14,9 +14,9 @@ import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { thumbnailMockFactory } from 'utils/tests/factories';
+import render from 'utils/tests/render';
 
 import { DashboardVideoLiveWidgetThumbnail } from '.';
-import render from 'utils/tests/render';
 
 jest.mock('components/UploadManager', () => ({
   useUploadManager: jest.fn(),
@@ -47,6 +47,15 @@ jest.mock('data/appData', () => ({
   },
 }));
 
+const mockSetInfoWidgetModal = jest.fn();
+jest.mock('data/stores/useInfoWidgetModal', () => ({
+  useInfoWidgetModal: () => [
+    { isVisible: false, text: null, title: null },
+    mockSetInfoWidgetModal,
+  ],
+  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
+}));
+
 describe('<DashboardVideoLiveWidgetThumbnail />', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -69,6 +78,12 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByRole('button', { name: 'Upload an image' });
+
+    act(() => userEvent.click(screen.getByRole('button', { name: 'help' })));
+    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
+      title: 'Thumbnail',
+      text: 'This widget allows you to change the default thumbnail used for your live. The uploaded image should have a 16:9 ratio.',
+    });
   });
 
   it('uploads a new image', async () => {
@@ -258,5 +273,35 @@ describe('<DashboardVideoLiveWidgetThumbnail />', () => {
         name: 'Delete thumbnail',
       }),
     ).toBeNull();
+  });
+
+  it('renders the component with default thumbnail in a VOD context', () => {
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      <InfoWidgetModalProvider value={null}>
+        <DashboardVideoLiveWidgetThumbnail isLive={false} />
+      </InfoWidgetModalProvider>,
+    );
+
+    screen.getByText('Thumbnail');
+    expect(
+      screen.queryByRole('button', {
+        name: 'Delete thumbnail',
+      }),
+    ).toEqual(null);
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toEqual('path/to/image.png');
+    screen.getByRole('button', { name: 'Upload an image' });
+
+    act(() => userEvent.click(screen.getByRole('button', { name: 'help' })));
+    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
+      title: 'Thumbnail',
+      text: 'This widget allows you to change the default thumbnail used for your VOD. The uploaded image should have a 16:9 ratio.',
+    });
   });
 });
