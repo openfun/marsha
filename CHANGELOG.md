@@ -28,6 +28,8 @@ dashboard
 VOD dashboard
 - Add a widget for downloading the video in the desired 
 quality in the VOD dashboard
+- Add 3 widgets to upload timed text tracks to the video
+in the VOD dashboard
 
 ### Changed
 
