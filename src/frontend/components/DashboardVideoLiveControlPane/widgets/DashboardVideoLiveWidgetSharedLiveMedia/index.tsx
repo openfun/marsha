@@ -1,4 +1,4 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button } from 'grommet';
 import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -15,6 +15,7 @@ import { Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { Nullable } from 'utils/types';
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
+import { DashboardVideoLiveItemList } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveItemList';
 
 const messages = defineMessages({
   info: {
@@ -150,6 +151,7 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
           style={{ display: 'none' }}
           type="file"
         />
+
         <Button
           a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
           color="blue-active"
@@ -164,58 +166,27 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
           title={intl.formatMessage(messages.uploadButtonLabel)}
         />
 
-        <Box
-          background="bg-select"
-          border={{
-            color: 'blue-off',
-            size: 'small',
-          }}
-          round="xsmall"
+        <DashboardVideoLiveItemList
+          itemList={sharedLiveMedias}
+          noItemsMessage={intl.formatMessage(messages.noUploadedDocuments)}
         >
-          <Box
-            align="center"
-            border={{
-              color: 'blue-off',
-              size: 'small',
-              style: 'dashed',
-              side: 'between',
-            }}
-            direction="column"
-            gap="small"
-            justify="center"
-          >
-            {sharedLiveMedias.length ? (
-              sharedLiveMedias.map((sharedLiveMedia, index) => {
-                return (
-                  <SharedLiveMediaItem
-                    isShared={
-                      video.active_shared_live_media &&
-                      video.active_shared_live_media.id === sharedLiveMedia.id
-                    }
-                    key={index}
-                    onRetryFailedUpload={onRetryFailedUpload}
-                    sharedLiveMedia={sharedLiveMedia}
-                    uploadingObject={Object.values(uploadManagerState).find(
-                      (uploadingObject) =>
-                        uploadingObject.objectId === sharedLiveMedia.id,
-                    )}
-                    video={video}
-                  />
-                );
-              })
-            ) : (
-              <Text
-                color="blue-active"
-                margin="small"
-                size="0.8rem"
-                style={{ fontFamily: 'Roboto-Regular' }}
-                truncate
-              >
-                {intl.formatMessage(messages.noUploadedDocuments)}
-              </Text>
-            )}
-          </Box>
-        </Box>
+          {(sharedLiveMedia, index) => (
+            <SharedLiveMediaItem
+              isShared={
+                video.active_shared_live_media &&
+                video.active_shared_live_media.id === sharedLiveMedia.id
+              }
+              key={index}
+              onRetryFailedUpload={onRetryFailedUpload}
+              sharedLiveMedia={sharedLiveMedia}
+              uploadingObject={Object.values(uploadManagerState).find(
+                (uploadingObject) =>
+                  uploadingObject.objectId === sharedLiveMedia.id,
+              )}
+              video={video}
+            />
+          )}
+        </DashboardVideoLiveItemList>
       </Box>
     </DashboardVideoLiveWidgetTemplate>
   );
