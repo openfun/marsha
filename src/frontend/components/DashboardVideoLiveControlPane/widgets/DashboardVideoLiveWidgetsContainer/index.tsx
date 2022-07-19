@@ -5,7 +5,7 @@ import { DashboardVideoLiveInfoModal } from 'components/DashboardVideoLiveContro
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal/index';
 
 interface DashboardVideoLiveWidgetsContainerProps {
-  children: React.ReactNode[];
+  children: React.ReactNode | React.ReactNode[];
 }
 
 export const DashboardVideoLiveWidgetsContainer = ({
@@ -26,7 +26,7 @@ export const DashboardVideoLiveWidgetsContainer = ({
       nbrOfColumns = 3;
   }
 
-  if (children.length === 0) {
+  if (!children || (Array.isArray(children) && children.length === 0)) {
     return null;
   }
 
@@ -48,15 +48,17 @@ export const DashboardVideoLiveWidgetsContainer = ({
             key={indexColumn}
             width={`${100 / nbrOfColumns}%`}
           >
-            {children
-              .filter((__, indexComponent) =>
-                indexComponent < nbrOfColumns
-                  ? indexComponent === indexColumn
-                  : indexComponent % nbrOfColumns === indexColumn,
-              )
-              .map((component, index) => (
-                <Box key={index}>{component}</Box>
-              ))}
+            {Array.isArray(children)
+              ? children
+                  .filter((__, indexComponent) =>
+                    indexComponent < nbrOfColumns
+                      ? indexComponent === indexColumn
+                      : indexComponent % nbrOfColumns === indexColumn,
+                  )
+                  .map((component, index) => <Box key={index}>{component}</Box>)
+              : indexColumn === 0
+              ? children
+              : null}
           </Box>
         ))}
       </Box>
