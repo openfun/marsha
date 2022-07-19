@@ -4,11 +4,12 @@ import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import React, { PropsWithChildren } from 'react';
 
+import { SharedLiveMediaModalWrapper } from 'components/DashboardVideoLiveControlPane/customs/SharedLiveMediaModalWrapper';
 import {
   UploadManagerContext,
   useUploadManager,
 } from 'components/UploadManager';
-import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
+import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { modelName } from 'types/models';
@@ -67,9 +68,10 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
           }}
         >
           <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
+            <DeleteSharedLiveMediaModalProvider value={null}>
+              <SharedLiveMediaModalWrapper />
               <DashboardVideoLiveWidgetSharedLiveMedia />
-            </DeleteUploadModalProvider>
+            </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
@@ -110,9 +112,10 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
           }}
         >
           <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
+            <DeleteSharedLiveMediaModalProvider value={null}>
+              <SharedLiveMediaModalWrapper />
               <DashboardVideoLiveWidgetSharedLiveMedia />
-            </DeleteUploadModalProvider>
+            </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
@@ -174,9 +177,10 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
           }}
         >
           <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
+            <DeleteSharedLiveMediaModalProvider value={null}>
+              <SharedLiveMediaModalWrapper />
               <DashboardVideoLiveWidgetSharedLiveMedia />
-            </DeleteUploadModalProvider>
+            </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
@@ -215,7 +219,7 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     });
     expect(report).not.toHaveBeenCalled();
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toHaveLength(0);
-    screen.getByText('Shared media updated.');
+    screen.getByText('Shared media deleted.');
   });
 
   it('fails to delete a shared live media', async () => {
@@ -246,9 +250,10 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
           }}
         >
           <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
+            <DeleteSharedLiveMediaModalProvider value={null}>
+              <SharedLiveMediaModalWrapper />
               <DashboardVideoLiveWidgetSharedLiveMedia />
-            </DeleteUploadModalProvider>
+            </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
@@ -290,7 +295,7 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     expect(useSharedLiveMedia.getState().getSharedLiveMedias()).toEqual([
       mockedSharedLiveMedia,
     ]);
-    screen.getByText('Shared media update has failed !');
+    screen.getByText('Shared media deletion has failed !');
   });
 
   it('retry to upload a failed upload', async () => {
@@ -327,9 +332,10 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
           }}
         >
           <InfoWidgetModalProvider value={null}>
-            <DeleteUploadModalProvider value={null}>
+            <DeleteSharedLiveMediaModalProvider value={null}>
+              <SharedLiveMediaModalWrapper />
               <DashboardVideoLiveWidgetSharedLiveMedia />
-            </DeleteUploadModalProvider>
+            </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
         mockedVideo,
@@ -347,7 +353,7 @@ describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
     });
     screen.getByText('Upload has failed');
     const retryButton = screen.getByRole('button', {
-      name: 'Click on this button to retry uploading your media.',
+      name: 'Click on this button to retry uploading your failed upload.',
     });
 
     userEvent.click(retryButton);
