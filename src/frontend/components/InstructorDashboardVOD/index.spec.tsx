@@ -112,5 +112,24 @@ describe('<InstructorDashboardVOD />', () => {
     });
     within(button).getByText('1080 p');
     screen.getByRole('button', { name: 'Download' });
+
+    // InstructorDashboardVODWidgetUpload Subtitles / Closed captions / Transcripts
+    screen.getByText('Subtitles');
+    screen.getByText('Closed captions');
+    screen.getByText('Transcripts');
+
+    expect(
+      screen.getAllByRole('button', {
+        name: 'Select the language for which you want to upload a timed text file; Selected: fr',
+      }),
+    ).toHaveLength(3);
+    const textboxes = screen.getAllByRole('textbox', {
+      name: 'Select the language for which you want to upload a timed text file, fr',
+    });
+    textboxes.forEach((textbox) => expect(textbox).toHaveValue('French'));
+    expect(screen.getAllByText('No uploaded files')).toHaveLength(3);
+    expect(screen.getAllByRole('button', { name: 'Upload file' })).toHaveLength(
+      3,
+    );
   });
 });

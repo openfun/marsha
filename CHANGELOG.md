@@ -26,6 +26,8 @@ dashboard VOD
 instructor dashboard VOD
 - Add a widget for downloading the video in the desired 
 quality in the instructor dashboard VOD
+- Add 3 widgets to upload timed text tracks to the video
+in the instructor dashboard VOD
 
 ### Changed
 
