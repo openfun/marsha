@@ -22,6 +22,8 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 - Manage license on video resource
 - Add a new instructor dashboard VOD with a widget for 
 modifying video's title & description.
+-  Add a widget for uploading a new video in the VOD
+dashboard
 
 ### Changed
 

@@ -30,6 +30,11 @@ jest.mock('./widgets/InstructorDashboardVODWidgetGeneralTitle', () => ({
     <p>InstructorDashboardVODWidgetGeneralTitle</p>
   ),
 }));
+jest.mock('./widgets/InstructorDashboardVODWidgetUploadVideo', () => ({
+  InstructorDashboardVODWidgetUploadVideo: () => (
+    <p>InstructorDashboardVODWidgetUploadVideo</p>
+  ),
+}));
 
 const languageChoices = [
   { label: 'English', value: 'en' },
@@ -59,5 +64,8 @@ describe('<InstructorDashboardVOD />', () => {
 
     // InstructorDashboardVODWidgetGeneralTitle
     screen.getByText('InstructorDashboardVODWidgetGeneralTitle');
+
+    // InstructorDashboardVODWidgetUploadVideo
+    screen.getByText('InstructorDashboardVODWidgetUploadVideo');
   });
 });
