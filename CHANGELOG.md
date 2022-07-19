@@ -18,6 +18,8 @@ react-testing-library and wrap the test component in most of
 the common application contexts (grommet, intl, react-router, 
 react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
+- Add a new instructor dashboard VOD with a widget for 
+modifying video's title & description.
 
 ### Changed
 
