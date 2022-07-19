@@ -8,7 +8,7 @@ import { SharedLiveMedia, uploadState, Video } from 'types/tracks';
 import { Nullable } from 'utils/types';
 import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DisallowedDownloadButton } from './DisallowedDownloadButton';
-import { DeleteUploadButton } from './DeleteUploadButton';
+import { DeleteSharedLiveMediaUploadButton } from './DeleteSharedLiveMediaUploadButton';
 import { RetryButton } from './RetryButton';
 import { StartSharingButton } from './StartSharingButton';
 import { StopSharingButton } from './StopSharingButton';
@@ -60,7 +60,7 @@ export const SharedLiveMediaItem = ({
       )}
 
       <Box direction="row" align="center" gap="small">
-        <DeleteUploadButton sharedLiveMedia={sharedLiveMedia} />
+        <DeleteSharedLiveMediaUploadButton sharedLiveMedia={sharedLiveMedia} />
       </Box>
 
       <Box style={{ minWidth: '0' }}>

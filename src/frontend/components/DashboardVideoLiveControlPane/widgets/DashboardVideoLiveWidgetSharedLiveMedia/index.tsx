@@ -1,18 +1,13 @@
 import { Box, Button } from 'grommet';
 import React, { useRef } from 'react';
-import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardVideoLiveConfirmationModal } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveConfirmationModal';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { useUploadManager } from 'components/UploadManager';
-import { useDeleteSharedLiveMedia } from 'data/queries';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia/index';
-import { useDeleteUploadModal } from 'data/stores/useDeleteUploadModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia/index';
 import { modelName } from 'types/models';
 import { Video } from 'types/tracks';
-import { report } from 'utils/errors/report';
 import { Nullable } from 'utils/types';
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 import { DashboardVideoLiveItemList } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveItemList';
@@ -40,30 +35,6 @@ const messages = defineMessages({
       "A message informing the user he hasn't any document imported yet.",
     id: 'component.DashboardVideoLiveWidgetSharedLiveMedia.noUploadedDocuments',
   },
-  confirmationModalTitle: {
-    defaultMessage: 'Delete shared media',
-    description:
-      'Title of the modal displayed when an instructor wants to delete a shared media',
-    id: 'component.DashboardVideoLiveWidgetSharedLiveMedia.confirmationModalTitle',
-  },
-  confirmationModalText: {
-    defaultMessage:
-      'Are you sure you want to delete file {sharedLiveMediaName} ?',
-    description:
-      'Title of the modal displayed when an instructor wants to delete a shared media',
-    id: 'component.DashboardVideoLiveWidgetSharedLiveMedia.confirmationModalText',
-  },
-  updateSharedLiveMediaSucces: {
-    defaultMessage: 'Shared media updated.',
-    description:
-      'Message displayed when a shared media is successfully updated.',
-    id: 'component.DashboardVideoLiveWidgetSharedLiveMedia.updateSharedLiveMediaSucces',
-  },
-  updateSharedLiveMediaFail: {
-    defaultMessage: 'Shared media update has failed !',
-    description: 'Message displayed when shared media update has failed.',
-    id: 'component.DashboardVideoLiveWidgetSharedLiveMedia.updateSharedLiveMediaFail',
-  },
 });
 
 interface DashboardVideoLiveWidgetSupportsSharingProps {
@@ -75,52 +46,35 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
 }: DashboardVideoLiveWidgetSupportsSharingProps) => {
   const retryUploadIdRef = useRef<Nullable<string>>(null);
   const intl = useIntl();
-  const [deleteUploadModalSharedLiveMedia, setDeleteUploadModal] =
-    useDeleteUploadModal();
   const { addUpload, uploadManagerState } = useUploadManager();
   const { sharedLiveMedias } = useSharedLiveMedia((state) => ({
     sharedLiveMedias: state.getSharedLiveMedias(),
   }));
-  const deleteSharedLiveMediaResource = useSharedLiveMedia(
-    (state) => state.removeResource,
-  );
   const hiddenFileInput = React.useRef<Nullable<HTMLInputElement>>(null);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let sharedLiveMediaId;
-    if (!retryUploadIdRef.current) {
-      const response = await createSharedLiveMedia();
-      sharedLiveMediaId = response.id;
-    } else {
-      sharedLiveMediaId = retryUploadIdRef.current;
-      retryUploadIdRef.current = null;
+    if (event.target.files && event.target.files[0]) {
+      if (!retryUploadIdRef.current) {
+        const response = await createSharedLiveMedia();
+        sharedLiveMediaId = response.id;
+      } else {
+        sharedLiveMediaId = retryUploadIdRef.current;
+        retryUploadIdRef.current = null;
+      }
+      addUpload(
+        modelName.SHAREDLIVEMEDIAS,
+        sharedLiveMediaId,
+        event.target.files[0],
+      );
     }
-    addUpload(
-      modelName.SHAREDLIVEMEDIAS,
-      sharedLiveMediaId!,
-      event.target.files![0],
-    );
   };
 
-  const sharedLiveMediaDelete = useDeleteSharedLiveMedia({
-    onSuccess: () => {
-      toast.success(intl.formatMessage(messages.updateSharedLiveMediaSucces), {
-        position: 'bottom-center',
-      });
-      deleteSharedLiveMediaResource(deleteUploadModalSharedLiveMedia!);
-      setDeleteUploadModal(null);
-    },
-    onError: (err: unknown) => {
-      report(err);
-      toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
-        position: 'bottom-center',
-      });
-    },
-  });
-
   const onRetryFailedUpload = (sharedLiveMediaId: string) => {
-    retryUploadIdRef.current = sharedLiveMediaId;
-    hiddenFileInput.current!.click();
+    if (hiddenFileInput.current) {
+      retryUploadIdRef.current = sharedLiveMediaId;
+      hiddenFileInput.current.click();
+    }
   };
 
   return (
@@ -129,19 +83,6 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      {deleteUploadModalSharedLiveMedia && (
-        <DashboardVideoLiveConfirmationModal
-          text={intl.formatMessage(messages.confirmationModalText, {
-            sharedLiveMediaName: deleteUploadModalSharedLiveMedia!.title,
-          })}
-          title={intl.formatMessage(messages.confirmationModalTitle)}
-          onModalCloseOrCancel={() => setDeleteUploadModal(null)}
-          onModalConfirm={() => {
-            sharedLiveMediaDelete.mutate(deleteUploadModalSharedLiveMedia!.id);
-          }}
-        />
-      )}
-
       <Box direction="column" gap="small">
         <input
           accept="application/pdf"
@@ -158,8 +99,10 @@ export const DashboardVideoLiveWidgetSharedLiveMedia = ({
           fill="horizontal"
           label={intl.formatMessage(messages.uploadButtonLabel)}
           onClick={() => {
-            retryUploadIdRef.current = null;
-            hiddenFileInput.current!.click();
+            if (hiddenFileInput.current) {
+              retryUploadIdRef.current = null;
+              hiddenFileInput.current.click();
+            }
           }}
           primary
           style={{ height: '60px', fontFamily: 'Roboto-Medium' }}

@@ -1,7 +1,6 @@
 import React from 'react';
-import { DeleteUploadModalProvider } from 'data/stores/useDeleteUploadModal';
-import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { Video } from 'types/tracks';
+
+import { SharedLiveMediaModalWrapper } from 'components/DashboardVideoLiveControlPane/customs/SharedLiveMediaModalWrapper';
 import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
 import { DashboardVideoLiveWidgetGeneralTitle } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetGeneralTitle';
 import { DashboardVideoLiveWidgetJoinMode } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetJoinMode';
@@ -12,6 +11,9 @@ import { DashboardVideoLiveWidgetToolsAndApplications } from 'components/Dashboa
 import { DashboardVideoLiveWidgetVisibilityAndInteraction } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVisibilityAndInteraction';
 import { DashboardVideoLiveWidgetVOD } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetVOD';
 import { DashboardVideoLiveWidgetSharedLiveMedia } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSharedLiveMedia';
+import { DeleteSharedLiveMediaUploadModalProvider } from 'data/stores/useDeleteSharedLiveMediaUploadModal';
+import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
+import { Video } from 'types/tracks';
 
 interface DashboardVideoLiveTabConfigurationProps {
   video: Video;
@@ -21,19 +23,20 @@ export const DashboardVideoLiveTabConfiguration = ({
 }: DashboardVideoLiveTabConfigurationProps) => {
   return (
     <InfoWidgetModalProvider value={null}>
-      <DashboardVideoLiveWidgetsContainer>
-        <DashboardVideoLiveWidgetToolsAndApplications video={video} />
-        <DashboardVideoLiveWidgetGeneralTitle video={video} />
-        <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
-        <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
-        <DashboardVideoLiveWidgetLivePairing video={video} />
-        <DashboardVideoLiveWidgetVOD video={video} />
-        <DashboardVideoLiveWidgetJoinMode video={video} />
-        <DashboardVideoLiveWidgetThumbnail />
-        <DeleteUploadModalProvider value={null}>
+      <DeleteSharedLiveMediaUploadModalProvider value={null}>
+        <SharedLiveMediaModalWrapper />
+        <DashboardVideoLiveWidgetsContainer>
+          <DashboardVideoLiveWidgetToolsAndApplications video={video} />
+          <DashboardVideoLiveWidgetGeneralTitle video={video} />
+          <DashboardVideoLiveWidgetVisibilityAndInteraction video={video} />
+          <DashboardVideoLiveWidgetSchedulingAndDescription video={video} />
+          <DashboardVideoLiveWidgetLivePairing video={video} />
+          <DashboardVideoLiveWidgetVOD video={video} />
+          <DashboardVideoLiveWidgetJoinMode video={video} />
+          <DashboardVideoLiveWidgetThumbnail />
           <DashboardVideoLiveWidgetSharedLiveMedia video={video} />
-        </DeleteUploadModalProvider>
-      </DashboardVideoLiveWidgetsContainer>
+        </DashboardVideoLiveWidgetsContainer>
+      </DeleteSharedLiveMediaUploadModalProvider>
     </InfoWidgetModalProvider>
   );
 };
