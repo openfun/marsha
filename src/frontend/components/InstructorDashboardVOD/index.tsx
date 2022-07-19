@@ -11,6 +11,7 @@ import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
+import { InstructorDashboardVODWidgetDownloadVideo } from './widgets/InstructorDashboardVODWidgetDownloadVideo';
 import { InstructorDashboardVODWidgetGeneralTitle } from './widgets/InstructorDashboardVODWidgetGeneralTitle';
 import { InstructorDashboardVODWidgetUploadVideo } from './widgets/InstructorDashboardVODWidgetUploadVideo';
 
@@ -59,6 +60,7 @@ export const InstructorDashboardVOD = () => {
           <InstructorDashboardVODWidgetGeneralTitle />
           <InstructorDashboardVODWidgetUploadVideo />
           <DashboardVideoLiveWidgetThumbnail isLive={false} />
+          <InstructorDashboardVODWidgetDownloadVideo />
         </DashboardVideoLiveWidgetsContainer>
       </InfoWidgetModalProvider>
     </Box>
