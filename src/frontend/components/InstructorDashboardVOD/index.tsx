@@ -4,6 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
+import { DashboardVideoLiveWidgetThumbnail } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { appData } from 'data/appData';
@@ -58,6 +59,7 @@ export const InstructorDashboardVOD = () => {
         <DashboardVideoLiveWidgetsContainer>
           <InstructorDashboardVODWidgetGeneralTitle video={currentVideo} />
           <InstructorDashboardVODWidgetUploadVideo video={currentVideo} />
+          <DashboardVideoLiveWidgetThumbnail isLive={false} />
         </DashboardVideoLiveWidgetsContainer>
       </InfoWidgetModalProvider>
     </Box>

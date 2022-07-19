@@ -91,5 +91,18 @@ describe('<InstructorDashboardVOD />', () => {
     screen.getByText('Video');
     screen.getByText('Video available');
     screen.getByRole('button', { name: 'Replace the video' });
+
+    // DashboardVideoLiveWidgetThumbnail
+    screen.getByText('Thumbnail');
+    expect(
+      screen.queryByRole('button', {
+        name: 'Delete thumbnail',
+      }),
+    ).toEqual(null);
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toEqual(
+      'https://liveBackground.com/liveBackgroung.png',
+    );
+    screen.getByRole('button', { name: 'Upload an image' });
   });
 });

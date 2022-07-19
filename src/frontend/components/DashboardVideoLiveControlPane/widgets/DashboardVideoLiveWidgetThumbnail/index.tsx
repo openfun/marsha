@@ -23,11 +23,17 @@ const messages = defineMessages({
     description: 'Title used in the thumbnail widget.',
     id: 'components.DashboardVideoLiveWidgetThumbnail.title',
   },
-  info: {
+  infoLive: {
     defaultMessage:
       'This widget allows you to change the default thumbnail used for your live. The uploaded image should have a 16:9 ratio.',
     description: 'Helper explaining how to use the widget.',
-    id: 'components.DashboardVideoLiveWidgetThumbnail.info',
+    id: 'components.DashboardVideoLiveWidgetThumbnail.infoLive',
+  },
+  infoVOD: {
+    defaultMessage:
+      'This widget allows you to change the default thumbnail used for your VOD. The uploaded image should have a 16:9 ratio.',
+    description: 'Helper explaining how to use the widget.',
+    id: 'components.DashboardVideoLiveWidgetThumbnail.infoVOD',
   },
   uploadThumbnailButtonLabel: {
     defaultMessage: 'Upload an image',
@@ -36,7 +42,13 @@ const messages = defineMessages({
   },
 });
 
-export const DashboardVideoLiveWidgetThumbnail = () => {
+interface DashboardVideoLiveWidgetThumbnailProps {
+  isLive?: boolean;
+}
+
+export const DashboardVideoLiveWidgetThumbnail = ({
+  isLive = true,
+}: DashboardVideoLiveWidgetThumbnailProps) => {
   const intl = useIntl();
 
   const { addUpload, uploadManagerState, resetUpload } = useUploadManager();
@@ -72,7 +84,11 @@ export const DashboardVideoLiveWidgetThumbnail = () => {
   return (
     <DashboardVideoLiveWidgetTemplate
       title={intl.formatMessage(messages.title)}
-      infoText={intl.formatMessage(messages.info)}
+      infoText={
+        isLive
+          ? intl.formatMessage(messages.infoLive)
+          : intl.formatMessage(messages.infoVOD)
+      }
       initialOpenValue={true}
     >
       <Box direction={'column'} justify={'center'} gap="small">

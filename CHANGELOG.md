@@ -22,6 +22,8 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 modifying video's title & description.
 -  Add a widget for uploading a new video in the instructor 
 dashboard VOD
+-  Add a widget for uploading a new thumbnail in the 
+instructor dashboard VOD
 
 ### Changed
 
