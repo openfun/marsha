@@ -34,6 +34,14 @@ jest.mock('./widgets/InstructorDashboardVODWidgetUploadVideo', () => ({
     <p>InstructorDashboardVODWidgetUploadVideo</p>
   ),
 }));
+jest.mock(
+  'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail',
+  () => ({
+    DashboardVideoLiveWidgetThumbnail: (props: { isLive: boolean }) => (
+      <p>{`DashboardVideoLiveWidgetThumbnail ${props.isLive}`}</p>
+    ),
+  }),
+);
 
 const languageChoices = [
   { label: 'English', value: 'en' },
@@ -73,5 +81,11 @@ describe('<InstructorDashboardVOD />', () => {
 
     // InstructorDashboardVODWidgetUploadVideo
     screen.getByText('InstructorDashboardVODWidgetUploadVideo');
+
+    // DashboardVideoLiveWidgetThumbnail
+    screen.getByText('DashboardVideoLiveWidgetThumbnail false');
+
+    // InstructorDashboardVODWidgetDownloadVideo
+    screen.getByText('InstructorDashboardVODWidgetDownloadVideo');
   });
 });
