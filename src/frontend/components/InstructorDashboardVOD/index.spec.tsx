@@ -42,6 +42,11 @@ jest.mock(
     ),
   }),
 );
+jest.mock('./widgets/InstructorDashboardVODWidgetDownloadVideo', () => ({
+  InstructorDashboardVODWidgetDownloadVideo: () => (
+    <p>InstructorDashboardVODWidgetDownloadVideo</p>
+  ),
+}));
 
 const languageChoices = [
   { label: 'English', value: 'en' },
