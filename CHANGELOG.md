@@ -20,6 +20,8 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
 - Manage tags on video resource
 - Manage license on video resource
+- Add a new instructor dashboard VOD with a widget for 
+modifying video's title & description.
 
 ### Changed
 
