@@ -24,6 +24,8 @@ modifying video's title & description.
 dashboard VOD
 -  Add a widget for uploading a new thumbnail in the 
 instructor dashboard VOD
+- Add a widget for downloading the video in the desired 
+quality in the instructor dashboard VOD
 
 ### Changed
 

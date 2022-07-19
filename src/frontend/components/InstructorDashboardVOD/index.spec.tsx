@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import React from 'react';
 
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
@@ -104,5 +104,13 @@ describe('<InstructorDashboardVOD />', () => {
       'https://liveBackground.com/liveBackgroung.png',
     );
     screen.getByRole('button', { name: 'Upload an image' });
+
+    // InstructorDashboardVODWidgetDownloadVideo
+    screen.getByText('Download video');
+    const button = screen.getByRole('button', {
+      name: 'This input allows you to select the quality you desire for your download.; Selected: 1080',
+    });
+    within(button).getByText('1080 p');
+    screen.getByRole('button', { name: 'Download' });
   });
 });

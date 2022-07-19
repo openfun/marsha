@@ -13,6 +13,7 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
 import { theme } from 'utils/theme/theme';
+import { InstructorDashboardVODWidgetDownloadVideo } from './widgets/InstructorDashboardVODWidgetDownloadVideo';
 import { InstructorDashboardVODWidgetGeneralTitle } from './widgets/InstructorDashboardVODWidgetGeneralTitle';
 import { InstructorDashboardVODWidgetUploadVideo } from './widgets/InstructorDashboardVODWidgetUploadVideo';
 
@@ -60,6 +61,7 @@ export const InstructorDashboardVOD = () => {
           <InstructorDashboardVODWidgetGeneralTitle video={currentVideo} />
           <InstructorDashboardVODWidgetUploadVideo video={currentVideo} />
           <DashboardVideoLiveWidgetThumbnail isLive={false} />
+          <InstructorDashboardVODWidgetDownloadVideo video={currentVideo} />
         </DashboardVideoLiveWidgetsContainer>
       </InfoWidgetModalProvider>
     </Box>
