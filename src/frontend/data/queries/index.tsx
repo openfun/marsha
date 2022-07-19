@@ -134,6 +134,50 @@ export const useTimedTextTracks = (
   >(key, fetchList, queryConfig);
 };
 
+type UseDeleteTimedTextTrackData = string;
+type UseDeleteTimedTextTrackError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseDeleteTimedTextTrackData]?: string[] }[];
+    };
+type UseDeleteTimedTextTrackOptions = UseMutationOptions<
+  TimedText,
+  UseDeleteTimedTextTrackError,
+  UseDeleteTimedTextTrackData
+>;
+export const useDeleteTimedTextTrack = (
+  options?: UseDeleteTimedTextTrackOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    TimedText,
+    UseDeleteTimedTextTrackError,
+    UseDeleteTimedTextTrackData
+  >(
+    (timedTextTrackId) =>
+      deleteOne({
+        name: 'timedtexttracks',
+        id: timedTextTrackId,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('timedtexttracks');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('timedtexttracks');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
 type UseDeleteThumbnailData = string;
 type UseDeleteThumbnailError =
   | { code: 'exception' }
