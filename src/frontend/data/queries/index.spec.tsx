@@ -40,6 +40,7 @@ import {
   useVideo,
   useVideos,
   useLiveSessionsQuery,
+  useDeleteTimedTextTrack,
 } from '.';
 
 setLogger({
@@ -495,6 +496,56 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useDeleteTimedTextTracks', () => {
+    it('deletes the resource', async () => {
+      const timedTextTracks = timedTextMockFactory();
+      fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 204);
+
+      const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(timedTextTracks.id);
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/timedtexttracks/${timedTextTracks.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to delete the resource', async () => {
+      const timedTextTracks = timedTextMockFactory();
+      fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 400);
+
+      const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(timedTextTracks.id);
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/timedtexttracks/${timedTextTracks.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
