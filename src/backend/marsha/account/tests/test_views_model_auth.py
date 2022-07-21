@@ -1,5 +1,6 @@
 """Test the ``account`` views."""
 import re
+from urllib.parse import parse_qs, urlparse
 
 from django.contrib.auth import get_user as auth_get_user
 from django.contrib.auth.tokens import default_token_generator
@@ -10,6 +11,7 @@ from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode
 
 from marsha.core.factories import UserFactory
+from marsha.core.simple_jwt.tokens import ChallengeToken
 
 
 class BaseAuthenticationTestCase(TestCase):
@@ -79,14 +81,14 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         self.assertUserIsNotAuthenticated()
 
     def test_login_post_success(self):
-        """Assert the login view redirects properly to the main page."""
+        """Assert the login view redirects properly to the challenge token page."""
         response = self.client.post(
             reverse("account:login"),
             {"username": self.existing_user.username, "password": "password"},
         )
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "/account/login/complete/")
         self.assertUserIsAuthenticated()
 
     def test_logout_post_success(self):
@@ -96,7 +98,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.post(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "http://localhost:8060/")
         self.assertUserIsNotAuthenticated()
 
     def test_logout_get_success(self):
@@ -106,7 +108,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.get(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "http://localhost:8060/")
         self.assertUserIsNotAuthenticated()
 
     def test_logout_get_success_if_not_logged_in(self):
@@ -115,7 +117,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.get(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "http://localhost:8060/")
         self.assertUserIsNotAuthenticated()
 
     def test_password_reset_get(self):
@@ -234,3 +236,34 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
             '<a href="/account/login/">Log in</a>',
             response.content.decode("utf-8"),
         )
+
+
+class RedirectToFrontendViewTestCase(BaseAuthenticationTestCase):
+    """Test case for the full login/logout process."""
+
+    def test_if_not_logged_in(self):
+        """Assert the view is restricted to authenticated users."""
+        self.assertUserIsNotAuthenticated()
+        response = self.client.get(reverse("account:login_complete_redirect"))
+
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url, "/account/login/?next=/account/login/complete/")
+        self.assertUserIsNotAuthenticated()
+
+    def test_redirects_with_token(self):
+        """Assert the view is restricted to authenticated users."""
+        self._login_user()
+
+        response = self.client.get(reverse("account:login_complete_redirect"))
+
+        self.assertEqual(response.status_code, 302)
+
+        # Assert frontend redirection
+        parsed_response_url = urlparse(response.url)
+        self.assertEqual(parsed_response_url.netloc, "localhost:8060")
+        self.assertEqual(parsed_response_url.path, "/")
+
+        # Assert token presence
+        challenge_token_str = parse_qs(parsed_response_url.query)["token"][0]
+        challenge_token = ChallengeToken(challenge_token_str)
+        self.assertEqual(challenge_token["user_id"], str(self.existing_user.pk))

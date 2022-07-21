@@ -174,7 +174,7 @@ class RenaterSAMLFullProcessTestCase(TestCase):
                 },
             )
             self.assertEqual(response.status_code, 302)
-            self.assertEqual(response["Location"], "/")
+            self.assertEqual(response["Location"], "/account/login/complete/")
 
         # Assert the user is authenticated
         user = auth_get_user(self.client)

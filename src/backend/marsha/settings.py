@@ -222,8 +222,16 @@ class Base(Configuration):
     WAFFLE_CREATE_MISSING_SWITCHES = True
 
     # User login base Django settings
-    LOGIN_REDIRECT_URL = "site"  # redirect to home (React site)
+    LOGIN_REDIRECT_URL = "account:login_complete_redirect"
     LOGIN_URL = "account:login"
+
+    FRONTEND_HOME_URL = values.URLValue("http://localhost:8060/")
+    CHALLENGE_TOKEN_LIFETIME = timedelta(
+        seconds=values.IntegerValue(
+            default=60,
+            environ_name="CHALLENGE_TOKEN_LIFETIME",
+        ),
+    )
 
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
@@ -643,6 +651,7 @@ class Base(Configuration):
             "SIGNING_KEY": str(self.JWT_SIGNING_KEY),
             "AUTH_TOKEN_CLASSES": (
                 "rest_framework_simplejwt.tokens.AccessToken",
+                "marsha.core.simple_jwt.tokens.ChallengeToken",
                 # For now ResourceAccessToken & UserAccessToken are also AccessToken
                 # but this will allow migration when types will differ.
                 # Note: AccessToken must remain enabled during the migration and removed
