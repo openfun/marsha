@@ -2,8 +2,33 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.serializers import TokenVerifySerializer
+from rest_framework_simplejwt.settings import api_settings
 
 from ..models import Organization, OrganizationAccess
+from ..simple_jwt.tokens import ChallengeToken, UserAccessToken
+
+
+class ChallengeTokenSerializer(TokenVerifySerializer):
+    """Validate the challenge token and return a user access token."""
+
+    def validate(self, attrs):
+        """Assert the token is a valid challenge token and generate the access token."""
+        data = super().validate(attrs)
+
+        token = ChallengeToken(attrs["token"])
+
+        try:
+            user_access_token = UserAccessToken.for_user_id(
+                token.payload[api_settings.USER_ID_CLAIM],
+            )
+        except KeyError as exc:
+            raise TokenError(exc.args[0]) from exc
+
+        data["access"] = str(user_access_token)
+
+        return data
 
 
 class OrganizationAccessSerializer(serializers.ModelSerializer):

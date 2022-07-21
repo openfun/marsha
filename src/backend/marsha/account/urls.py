@@ -11,6 +11,7 @@ from .views import (
     PasswordResetConfirmView,
     PasswordResetDoneView,
     PasswordResetView,
+    RedirectToFrontendView,
 )
 from .views.social_edu_federation_saml_auth import MarshaEduFederationIdpChoiceView
 
@@ -38,6 +39,11 @@ urlpatterns = [
         name="password_reset_complete",
     ),
     # Django social auth
+    path(
+        "login/complete/",
+        RedirectToFrontendView.as_view(),
+        name="login_complete_redirect",
+    ),
     path("", include("social_django.urls", namespace="social")),
     # SAML
     path(

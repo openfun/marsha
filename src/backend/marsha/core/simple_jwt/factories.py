@@ -10,7 +10,11 @@ from faker.utils.text import slugify
 from marsha.core.factories import LiveSessionFactory, PlaylistFactory, UserFactory
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, NONE, STUDENT
 from marsha.core.simple_jwt.permissions import ResourceAccessPermissions
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, UserAccessToken
+from marsha.core.simple_jwt.tokens import (
+    ChallengeToken,
+    ResourceAccessToken,
+    UserAccessToken,
+)
 
 
 class BaseTokenFactory(factory.Factory):
@@ -88,6 +92,15 @@ class UserAccessTokenFactory(BaseTokenFactory):
 
     class Meta:  # pylint:disable=missing-class-docstring
         model = UserAccessToken.for_user
+
+
+class ChallengeTokenFactory(BaseTokenFactory):
+    """ChallengeToken factory, this creates a User if not provided."""
+
+    user = factory.SubFactory(UserFactory)
+
+    class Meta:  # pylint:disable=missing-class-docstring
+        model = ChallengeToken.for_user
 
 
 class ResourcePermissionsFactory(factory.DictFactory):
