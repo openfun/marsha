@@ -5,13 +5,20 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework_simplejwt.exceptions import TokenError
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, Token
 
 from marsha.core.models import NONE, STUDENT
 from marsha.core.simple_jwt.utils import define_locales
 from marsha.core.utils.react_locales_utils import react_locale
 
 from .permissions import ResourceAccessPermissions
+
+
+class ChallengeToken(Token):
+    """Very short lifetime token to allow frontend authentication."""
+
+    token_type = "challenge"  # nosec
+    lifetime = settings.CHALLENGE_TOKEN_LIFETIME
 
 
 class LTISelectFormAccessToken(AccessToken):
@@ -285,6 +292,30 @@ class UserAccessToken(AccessToken):
     """
 
     token_type = "user_access"  # nosec
+
+    @classmethod
+    def for_user_id(cls, user_id):
+        """
+        Build a user JWT, used to authenticate user through the application.
+        The token is build directly from the user ID to spare a database request.
+
+        This is only valid since the user token is not expected to store other information
+        than the user ID.
+
+        Parameters
+        ----------
+        user_id: str
+            The user ID to authenticate.
+
+        Returns
+        -------
+        AccessToken
+            JWT containing:
+            - user_id
+        """
+        token = cls()
+        token.payload["user_id"] = user_id
+        return token
 
     def verify(self):
         """Performs additional validation steps to test payload content."""

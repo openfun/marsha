@@ -1,13 +1,40 @@
 """Declare API endpoints for user and organisation with Django RestFramework viewsets."""
 from django.contrib.auth import get_user_model
 
-from rest_framework import viewsets
+from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from .. import permissions, serializers
 from ..models import Organization
+from ..serializers import ChallengeTokenSerializer
 from .base import APIViewMixin, ObjectPkMixin
+
+
+class ChallengeAuthenticationView(GenericAPIView):
+    """
+    Provide an endpoint to get user credential providing a challenge token.
+
+    Note: Authentication is done at the Django level.
+    We may also remove authentication and leave the token verification to the serializer.
+    This would allow to prevent challenge token use as an access token by removing `ChallengeToken`
+    from `AUTH_TOKEN_CLASSES` setting.
+    """
+
+    serializer_class = ChallengeTokenSerializer
+
+    def post(self, request, *args, **kwargs):
+        """Validate the POSTed challenge and return a user access token."""
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except TokenError as exc:
+            raise InvalidToken(exc.args[0]) from exc
+
+        return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
 class UserViewSet(APIViewMixin, viewsets.GenericViewSet):

@@ -10,6 +10,7 @@ from rest_framework.schemas import get_schema_view
 
 from marsha.core import models
 from marsha.core.api import (
+    ChallengeAuthenticationView,
     DocumentViewSet,
     LiveSessionViewSet,
     OrganizationViewSet,
@@ -79,6 +80,11 @@ urlpatterns = [
     path("videos/<uuid:uuid>", VideoView.as_view(), name="video_direct_access"),
     path("documents/<uuid:uuid>", DocumentView.as_view(), name="document_public"),
     # API
+    path(
+        "api/auth/challenge/",
+        ChallengeAuthenticationView.as_view(),
+        name="api_authentication",
+    ),
     path("api/pairing-challenge", pairing_challenge, name="pairing_challenge"),
     path("api/update-state", update_state, name="update_state"),
     path(
