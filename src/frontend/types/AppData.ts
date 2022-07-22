@@ -1,4 +1,5 @@
 import { Nullable } from 'utils/types';
+
 import { Document } from './file';
 import { modelName } from './models';
 import { Live, Playlist, Video } from './tracks';
@@ -24,9 +25,8 @@ export enum appNames {
   MARKDOWN = 'markdown',
 }
 
-export interface AppData {
+export interface AppConfig {
   attendanceDelay: number;
-  jwt?: string;
   state: appState;
   video?: Nullable<Video>;
   videos?: Video[];
@@ -64,3 +64,9 @@ export interface AppData {
   };
   uploadPollInterval: number;
 }
+
+export interface AuthenticatedUser {
+  jwt?: string;
+}
+
+export type AppData = AppConfig & AuthenticatedUser;
