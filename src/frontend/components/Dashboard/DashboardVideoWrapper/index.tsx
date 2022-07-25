@@ -1,5 +1,5 @@
 import React from 'react';
-import { uploadState, Video } from 'types/tracks';
+import { liveState, uploadState, Video } from 'types/tracks';
 
 import { DashboardVideo } from 'components/DashboardVideo';
 import { DashboardVideoLive } from 'components/DashboardVideoLive';
@@ -22,7 +22,7 @@ export const DashboardVideoWrapper = ({
   initVideoWebsocket(currentVideo);
 
   if (
-    currentVideo.live_state &&
+    ![null, liveState.ENDED].includes(currentVideo.live_state) &&
     currentVideo.upload_state === uploadState.PENDING
   ) {
     return (
