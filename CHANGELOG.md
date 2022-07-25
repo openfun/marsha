@@ -29,6 +29,8 @@ managing on-stage request
 
 - Missing migration to migrate key format of live_attendance 
 field of liveSession
+- Redirect to VOD dashboard when the live_state is ENDED and the 
+  upload_state is pending
 
 ## [4.0.0-beta.7] - 2022-06-27
 
