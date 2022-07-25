@@ -1,6 +1,8 @@
 """Specific Marsha JWT models"""
 from django.conf import settings
+from django.utils.translation import gettext_lazy as _
 
+from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.models import NONE, STUDENT
@@ -44,6 +46,13 @@ class LTISelectFormAccessToken(AccessToken):
         token = cls()
         token.payload[cls.PAYLOAD_FORM_DATA] = lti_select_form_data
         return token
+
+    def verify(self):
+        """Performs additional validation steps to test payload content."""
+        super().verify()
+
+        if self.PAYLOAD_FORM_DATA not in self.payload:
+            raise TokenError(_("Malformed LTI form token"))
 
 
 class ResourceAccessToken(AccessToken):
@@ -247,3 +256,10 @@ class UserAccessToken(AccessToken):
         token = super().for_user(user)
         token.payload[cls.PAYLOAD_USER] = {"id": str(user.id)}
         return token
+
+    def verify(self):
+        """Performs additional validation steps to test payload content."""
+        super().verify()
+
+        if self.PAYLOAD_USER not in self.payload:
+            raise TokenError(_("Malformed user token"))

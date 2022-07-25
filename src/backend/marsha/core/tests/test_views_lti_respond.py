@@ -140,7 +140,7 @@ class RespondLTIViewTestCase(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_views_lti_respond_no_lti_select_form_data(self):
-        """Missing lti_select_form_data in JWT should raise a 400 error."""
+        """Missing lti_select_form_data in JWT should raise a 403 error."""
         jwt_token = AccessToken()
         response = self.client.post(
             "/lti/respond/",
@@ -149,7 +149,8 @@ class RespondLTIViewTestCase(TestCase):
                 "content_items": "some content items",
             },
         )
-        self.assertEqual(response.status_code, 400)
+        # The token is invalid because of its payload, making it unauthorized access
+        self.assertEqual(response.status_code, 403)
 
     def test_views_lti_respond_no_content_items(self):
         """Missing content_items post data should raise a 400 error."""
