@@ -79,7 +79,7 @@ const appendUtilsElement = (
   element: ReactElement,
   options?: Partial<RenderOptions>,
 ) => {
-  return (
+  return wrapInIntlProvider(
     <Grommet
       theme={options?.grommetOptions?.theme}
       style={options?.grommetOptions?.style}
@@ -94,20 +94,18 @@ const appendUtilsElement = (
           >
             <Toaster />
             <ToastHack />
-            {wrapInIntlProvider(
-              wrapInRouter(
-                <div data-testid="test-component-container">{element}</div>,
-                options?.routerOptions?.routes,
-                options?.routerOptions?.componentPath || '/',
-                options?.routerOptions?.history,
-                options?.routerOptions?.header,
-              ),
-              options?.intlOptions?.locale || 'en',
+            {wrapInRouter(
+              <div data-testid="test-component-container">{element}</div>,
+              options?.routerOptions?.routes,
+              options?.routerOptions?.componentPath || '/',
+              options?.routerOptions?.history,
+              options?.routerOptions?.header,
             )}
           </QueryClientProvider>
         </BreadCrumbsProvider>
       </ResponsiveContext.Provider>
-    </Grommet>
+    </Grommet>,
+    options?.intlOptions?.locale || 'en',
   );
 };
 
