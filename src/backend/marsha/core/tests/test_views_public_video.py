@@ -131,6 +131,7 @@ class VideoPublicViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("state"), "success")
@@ -296,6 +297,7 @@ class VideoPublicViewTestCase(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
         self.assertEqual(context.get("state"), "success")

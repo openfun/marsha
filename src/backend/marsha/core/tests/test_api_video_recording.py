@@ -239,6 +239,7 @@ class TestApiVideoRecording(TestCase):
                     "jid": "conference.xmpp-server.com",
                     "websocket_url": None,
                 },
+                "tags": [],
             },
         )
 
@@ -504,5 +505,6 @@ class TestApiVideoRecording(TestCase):
                     "jid": "conference.xmpp-server.com",
                     "websocket_url": None,
                 },
+                "tags": [],
             },
         )

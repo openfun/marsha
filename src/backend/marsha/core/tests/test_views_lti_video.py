@@ -152,6 +152,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -316,6 +317,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_type": RAW,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -495,6 +497,7 @@ class VideoLTIViewTestCase(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -644,6 +647,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_state": RUNNING,
                 "live_type": RAW,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -777,6 +781,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -906,6 +911,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1040,6 +1046,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1148,6 +1155,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1284,6 +1292,7 @@ class VideoLTIViewTestCase(TestCase):
                 },
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1428,6 +1437,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -1741,6 +1751,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -1836,6 +1847,7 @@ class VideoLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
