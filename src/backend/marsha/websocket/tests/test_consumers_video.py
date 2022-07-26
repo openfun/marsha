@@ -339,6 +339,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "live_type": JITSI,
                     "xmpp": None,
                     "shared_live_medias": [],
+                    "tags": [],
                 },
             },
         )
@@ -484,6 +485,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "live_type": JITSI,
                     "xmpp": None,
                     "shared_live_medias": [],
+                    "tags": [],
                 },
             },
         )

@@ -149,6 +149,13 @@ class Video(BaseFile):
         help_text=_("Is the video publicly accessible?"),
     )
 
+    tags = ArrayField(
+        models.CharField(max_length=200),
+        blank=True,
+        default=list,
+        help_text=_("video tags"),
+    )
+
     class Meta:
         """Options for the ``Video`` model."""
 

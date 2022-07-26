@@ -179,6 +179,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")
@@ -264,6 +265,7 @@ class DevelopmentLTIViewTestCase(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
         self.assertEqual(context.get("modelName"), "videos")

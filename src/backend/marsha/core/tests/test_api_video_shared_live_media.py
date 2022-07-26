@@ -367,6 +367,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
                     },
+                    "tags": [],
                 },
             )
             self.assertEqual(video.active_shared_live_media, shared_live_media)
@@ -717,6 +718,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
                     },
+                    "tags": [],
                 },
                 content,
             )
@@ -1113,6 +1115,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "conference_url": f"{video.id}@conference.xmpp-server.com",
                         "jid": "conference.xmpp-server.com",
                     },
+                    "tags": [],
                 },
                 content,
             )
