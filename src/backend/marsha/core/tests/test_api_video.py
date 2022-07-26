@@ -202,6 +202,7 @@ class VideoAPITest(TestCase):
             resolutions=resolutions,
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
+            tags=["mathematics", "algebra"],
         )
         timed_text_track = factories.TimedTextTrackFactory(
             video=video,
@@ -368,6 +369,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": ["mathematics", "algebra"],
             },
         )
 
@@ -585,6 +587,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -796,6 +799,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -876,6 +880,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -956,6 +961,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -1021,6 +1027,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -1175,6 +1182,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -1262,6 +1270,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -1399,6 +1408,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     }
                 ],
             },
@@ -1489,6 +1499,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     },
                     {
                         "active_shared_live_media": None,
@@ -1527,6 +1538,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     },
                 ],
             },
@@ -1631,6 +1643,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     }
                 ],
             },
@@ -1710,6 +1723,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     }
                 ],
             },
@@ -1818,6 +1832,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     }
                 ],
             },
@@ -1896,6 +1911,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     },
                     {
                         "active_shared_live_media": None,
@@ -1934,6 +1950,7 @@ class VideoAPITest(TestCase):
                         "upload_state": "pending",
                         "urls": None,
                         "xmpp": None,
+                        "tags": [],
                     },
                 ],
             },
@@ -2142,6 +2159,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -2280,6 +2298,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -2359,6 +2378,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -2465,6 +2485,7 @@ class VideoAPITest(TestCase):
                 "upload_state": "pending",
                 "urls": None,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -2991,6 +3012,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
         video.refresh_from_db()
@@ -3227,6 +3249,27 @@ class VideoAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
         self.assertFalse(video.allow_recording)
+
+    def test_api_video_patch_detail_token_user_tags(self):
+        """Instructors and administrators should be able to
+        patch tags."""
+        video = factories.VideoFactory()
+        self.assertEqual(video.tags, [])
+
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token.payload["permissions"] = {"can_update": True}
+        data = {"tags": ["foo", "bar"]}
+        response = self.client.patch(
+            f"/api/videos/{video.id}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(video.tags, ["foo", "bar"])
 
     def test_api_video_patch_detail_token_user_estimated_duration(self):
         """Instructors and administrators should be able to
@@ -4490,6 +4533,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "xmpp": None,
                 "live_type": "raw",
+                "tags": [],
             },
         )
 
@@ -4562,6 +4606,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "xmpp": None,
                 "live_type": "raw",
+                "tags": [],
             },
         )
 
@@ -4638,6 +4683,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -4725,6 +4771,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -4865,6 +4912,7 @@ class VideoAPITest(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
 
@@ -5005,6 +5053,7 @@ class VideoAPITest(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
 
@@ -5153,6 +5202,7 @@ class VideoAPITest(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
         self.assertEqual(
@@ -5366,6 +5416,7 @@ class VideoAPITest(TestCase):
                     "conference_url": f"{video.id}@conference.xmpp-server.com",
                     "jid": "conference.xmpp-server.com",
                 },
+                "tags": [],
             },
         )
         video.refresh_from_db()
@@ -5585,6 +5636,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": RAW,
                 "xmpp": None,
+                "tags": [],
             },
         )
 
@@ -5860,6 +5912,7 @@ class VideoAPITest(TestCase):
                     "jid": "conference.xmpp-server.com",
                     "websocket_url": None,
                 },
+                "tags": [],
             },
         )
         video.refresh_from_db()
@@ -5982,6 +6035,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": RAW,
                 "xmpp": None,
+                "tags": [],
             },
         )
         video.refresh_from_db()
@@ -6179,6 +6233,7 @@ class VideoAPITest(TestCase):
                 },
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
         video.refresh_from_db()
@@ -6315,6 +6370,7 @@ class VideoAPITest(TestCase):
                 "live_info": {},
                 "live_type": JITSI,
                 "xmpp": None,
+                "tags": [],
             },
         )
         video.refresh_from_db()
