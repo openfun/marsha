@@ -234,6 +234,8 @@ class UserAccessToken(AccessToken):
     Note: `api_settings.USER_ID_CLAIM` is currently `resource_id`.
     """
 
+    token_type = "user_access"  # nosec
+
     PAYLOAD_USER = "user"
 
     @classmethod

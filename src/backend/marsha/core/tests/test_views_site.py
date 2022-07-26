@@ -5,8 +5,9 @@ import re
 
 from django.test import Client, TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
 from waffle.testutils import override_switch
+
+from marsha.core.simple_jwt.tokens import UserAccessToken
 
 from .. import factories
 
@@ -38,11 +39,12 @@ class SiteViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = UserAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(user.id))
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-        }
+        self.assertDictEqual(
+            jwt_token.payload["user"],
+            {"id": str(user.id)},
+        )
 
         self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
         self.assertEqual(context.get("environment"), "test")
