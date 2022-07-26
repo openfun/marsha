@@ -1,7 +1,7 @@
 """Tests for the User API of the Marsha project."""
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 from .. import factories
 
@@ -37,13 +37,7 @@ class UserAPITest(TestCase):
             user=user, organization=org_2
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": str(user.username),
-        }
-        print(jwt_token.payload["user"])
+        jwt_token = UserAccessTokenFactory(user=user)
 
         with self.assertNumQueries(3):
             response = self.client.get(

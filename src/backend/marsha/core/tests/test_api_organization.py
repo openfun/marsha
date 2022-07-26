@@ -1,7 +1,7 @@
 """Tests for the Organization API of the Marsha project."""
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 from .. import factories, models
 
@@ -20,15 +20,7 @@ class OrganizationAPITest(TestCase):
 
     def test_create_organization_by_random_logged_in_user(self):
         """Random logged-in users cannot create organizations."""
-        user = factories.UserFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "email": user.email,
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
             "/api/organizations/",
@@ -47,16 +39,9 @@ class OrganizationAPITest(TestCase):
 
     def test_retrieve_organization_by_random_logged_in_user(self):
         """Random logged-in users cannot retrieve organizations unrelated to them."""
-        user = factories.UserFactory()
         organization = factories.OrganizationFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "email": user.email,
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
@@ -73,12 +58,7 @@ class OrganizationAPITest(TestCase):
             user=user, organization=organization, role=models.INSTRUCTOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
@@ -95,13 +75,7 @@ class OrganizationAPITest(TestCase):
             user=user, organization=organization, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": str(user.username),
-        }
-
+        jwt_token = UserAccessTokenFactory(user=user)
         response = self.client.get(
             f"/api/organizations/{organization.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -128,15 +102,9 @@ class OrganizationAPITest(TestCase):
 
     def test_list_organizations_by_random_logged_in_user(self):
         """Random logged-in users cannot list organizations."""
-        user = factories.UserFactory()
         factories.OrganizationFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             "/api/organizations/",
@@ -152,12 +120,7 @@ class OrganizationAPITest(TestCase):
             user=user, organization=organization, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/organizations/",
@@ -176,16 +139,10 @@ class OrganizationAPITest(TestCase):
 
     def test_delete_organization_by_random_logged_in_user(self):
         """Random logged-in users cannot delete organizations."""
-        user = factories.UserFactory()
         organization = factories.OrganizationFactory()
         self.assertEqual(models.Organization.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.delete(
             f"/api/organizations/{organization.id}/",
@@ -203,12 +160,7 @@ class OrganizationAPITest(TestCase):
         )
         self.assertEqual(models.Organization.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/organizations/{organization.id}/",
@@ -230,15 +182,9 @@ class OrganizationAPITest(TestCase):
 
     def test_update_organization_by_random_logged_in_user(self):
         """Random logged-in users cannot update organizations."""
-        user = factories.UserFactory()
         organization = factories.OrganizationFactory(name="existing name")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.put(
             f"/api/organizations/{organization.id}/",
@@ -258,12 +204,7 @@ class OrganizationAPITest(TestCase):
             user=user, organization=organization, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/organizations/{organization.id}/",

@@ -7,6 +7,8 @@ from django.test import TestCase
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+
 from .. import factories, models
 
 
@@ -38,12 +40,7 @@ class PlaylistAPITest(TestCase):
         org = factories.OrganizationFactory()
         consumer_site = factories.ConsumerSiteFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/playlists/",
@@ -70,13 +67,7 @@ class PlaylistAPITest(TestCase):
         random_uuid = uuid.uuid4()
         consumer_site = factories.ConsumerSiteFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "email": user.email,
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/playlists/",
@@ -99,12 +90,7 @@ class PlaylistAPITest(TestCase):
         )
         consumer_site = factories.ConsumerSiteFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/playlists/",
@@ -127,12 +113,7 @@ class PlaylistAPITest(TestCase):
         )
         consumer_site = factories.ConsumerSiteFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Playlist.objects.count(), 0)
 
@@ -179,12 +160,7 @@ class PlaylistAPITest(TestCase):
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -201,12 +177,7 @@ class PlaylistAPITest(TestCase):
             user=user, playlist=playlist, role=models.INSTRUCTOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -255,12 +226,7 @@ class PlaylistAPITest(TestCase):
             user=user, playlist=playlist, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -295,12 +261,7 @@ class PlaylistAPITest(TestCase):
             user=user, organization=organization, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/playlists/{playlist.id}/",
@@ -341,12 +302,7 @@ class PlaylistAPITest(TestCase):
         user = factories.UserFactory()
         factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/playlists/",
@@ -377,12 +333,7 @@ class PlaylistAPITest(TestCase):
         org_3 = factories.OrganizationFactory()
         factories.PlaylistFactory(organization=org_3)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/playlists/",
@@ -451,12 +402,7 @@ class PlaylistAPITest(TestCase):
         org_3 = factories.OrganizationFactory()
         factories.PlaylistFactory(organization=org_3)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/playlists/?organization={str(org_1.id)}",
@@ -501,12 +447,7 @@ class PlaylistAPITest(TestCase):
         playlist = factories.PlaylistFactory()
         self.assertEqual(models.Playlist.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",
@@ -524,12 +465,7 @@ class PlaylistAPITest(TestCase):
         )
         self.assertEqual(models.Playlist.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/playlists/{playlist.id}/",
@@ -555,12 +491,7 @@ class PlaylistAPITest(TestCase):
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory(title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/playlists/{playlist.id}/",
@@ -579,12 +510,7 @@ class PlaylistAPITest(TestCase):
             user=user, playlist=playlist, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/playlists/{playlist.id}/",

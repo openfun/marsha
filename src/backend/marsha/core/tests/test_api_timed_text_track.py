@@ -8,6 +8,8 @@ from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+
 from .. import factories, models
 from ..api import timezone
 from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
@@ -456,9 +458,7 @@ class TimedTextTrackAPITest(TestCase):
         video = factories.VideoFactory()
         track = TimedTextTrackFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -483,9 +483,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = TimedTextTrackFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -510,9 +508,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = TimedTextTrackFactory(mode="cc", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -552,9 +548,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = TimedTextTrackFactory(mode="cc", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -580,9 +574,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = TimedTextTrackFactory(mode="cc", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -658,7 +650,6 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot list
         timed text tracks for a video.
         """
-        user = factories.UserFactory()
         video = factories.VideoFactory()
 
         TimedTextTrackFactory(mode="st", video=video)
@@ -666,9 +657,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             f"/api/timedtexttracks/?video={video.id}",
@@ -697,9 +686,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/?video={video.id}",
@@ -728,9 +715,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/?video={video.id}",
@@ -771,9 +756,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/?video={video.id}",
@@ -803,9 +786,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/?video={video.id}",
@@ -846,9 +827,7 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/timedtexttracks/",
@@ -925,12 +904,9 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot create a timed text
         track for any given video.
         """
-        user = factories.UserFactory()
         video = factories.VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
             "/api/timedtexttracks/",
@@ -956,9 +932,7 @@ class TimedTextTrackAPITest(TestCase):
             user=user, playlist=playlist, role=models.INSTRUCTOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/timedtexttracks/",
@@ -984,9 +958,7 @@ class TimedTextTrackAPITest(TestCase):
             user=user, playlist=playlist, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/timedtexttracks/",
@@ -1028,9 +1000,7 @@ class TimedTextTrackAPITest(TestCase):
             user=user, organization=organization, role=models.INSTRUCTOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/timedtexttracks/",
@@ -1057,9 +1027,7 @@ class TimedTextTrackAPITest(TestCase):
             user=user, organization=organization, role=models.ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/timedtexttracks/",
@@ -1221,12 +1189,9 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot update
         a single timed text track.
         """
-        user = factories.UserFactory()
         track = factories.TimedTextTrackFactory(language="fr")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -1261,9 +1226,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -1298,9 +1261,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -1336,9 +1297,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -1374,9 +1333,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/timedtexttracks/{track.id}/",
@@ -1516,12 +1473,9 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot patch
         a single timed text track.
         """
-        user = factories.UserFactory()
         track = factories.TimedTextTrackFactory(language="fr")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         data = {"language": "en"}
 
@@ -1551,9 +1505,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         data = {"language": "en"}
 
@@ -1583,9 +1535,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         data = {"language": "en"}
 
@@ -1616,9 +1566,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         data = {"language": "en"}
 
@@ -1649,9 +1597,7 @@ class TimedTextTrackAPITest(TestCase):
         )
         track = factories.TimedTextTrackFactory(language="fr", video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         data = {"language": "en"}
 
@@ -1742,15 +1688,12 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot delete
         a single timed text track.
         """
-        user = factories.UserFactory()
         video = factories.VideoFactory()
 
         track = TimedTextTrackFactory(video=video)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.delete(
             f"/api/timedtexttracks/{track.id}/",
@@ -1778,9 +1721,7 @@ class TimedTextTrackAPITest(TestCase):
         track = factories.TimedTextTrackFactory(video=video)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/timedtexttracks/{track.id}/",
@@ -1808,9 +1749,7 @@ class TimedTextTrackAPITest(TestCase):
         track = factories.TimedTextTrackFactory(video=video)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/timedtexttracks/{track.id}/",
@@ -1839,9 +1778,7 @@ class TimedTextTrackAPITest(TestCase):
         track = factories.TimedTextTrackFactory(video=video)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/timedtexttracks/{track.id}/",
@@ -1870,9 +1807,7 @@ class TimedTextTrackAPITest(TestCase):
         track = factories.TimedTextTrackFactory(video=video)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/timedtexttracks/{track.id}/",
@@ -2023,7 +1958,6 @@ class TimedTextTrackAPITest(TestCase):
         A user with a user token, without any specific access, cannot initiate an upload
         for any timed text track.
         """
-        user = factories.UserFactory()
         video = factories.VideoFactory(
             id="b8d40ed7-95b8-4848-98c9-50728dfee25d",
         )
@@ -2035,9 +1969,7 @@ class TimedTextTrackAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2074,9 +2006,7 @@ class TimedTextTrackAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2113,9 +2043,7 @@ class TimedTextTrackAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
@@ -2186,9 +2114,7 @@ class TimedTextTrackAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2226,9 +2152,7 @@ class TimedTextTrackAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
