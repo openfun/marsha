@@ -103,7 +103,7 @@ class BaseFileAdmin(admin.ModelAdmin):
         "updated_on",
         "created_on",
     )
-    readonly_fields = [
+    readonly_fields = (
         "id",
         "created_by",
         "created_on",
@@ -111,7 +111,7 @@ class BaseFileAdmin(admin.ModelAdmin):
         "upload_state",
         "uploaded_on",
         "updated_on",
-    ]
+    )
     list_filter = ("upload_state", "playlist__consumer_site__domain")
     search_fields = (
         "id",
@@ -273,12 +273,26 @@ class VideoAdmin(BaseFileAdmin):
     """Admin class for the Video model."""
 
     fields = BaseFileAdmin.fields + (
+        "live_state",
+        "live_type",
+        "live_info",
+        "recording_slices",
         "starting_at",
+        "estimated_duration",
+        "join_mode",
         "is_public",
+        "tags",
     )
     list_display = BaseFileAdmin.list_display + (
         "starting_at",
         "is_public",
+    )
+    readonly_fields = BaseFileAdmin.readonly_fields + (
+        "live_state",
+        "live_type",
+        "recording_slices",
+        "live_info",
+        "join_mode"
     )
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")
