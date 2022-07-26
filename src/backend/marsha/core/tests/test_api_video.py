@@ -10,6 +10,8 @@ from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+
 from .. import api, factories, models
 from ..api import timezone
 from ..defaults import (
@@ -1115,12 +1117,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -1139,12 +1136,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -1205,12 +1197,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -1228,12 +1215,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -1318,7 +1300,6 @@ class VideoAPITest(TestCase):
         A user with a user token, with no playlist or organization access should not
         get any videos in response to video list requests.
         """
-        user = factories.UserFactory()
         # An organization with a playlist and one video
         organization = factories.OrganizationFactory()
         organization_playlist = factories.PlaylistFactory(organization=organization)
@@ -1327,12 +1308,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory()
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -1363,12 +1339,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory()
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -1456,12 +1427,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory(organization=organization_2)
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -1565,17 +1531,11 @@ class VideoAPITest(TestCase):
         A user with a user token, with no playlist or organization access should not
         get any videos in response to requests to list videos by playlist.
         """
-        user = factories.UserFactory()
         # A playlist, where the user has no access, with a video
         playlist = factories.PlaylistFactory()
         factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             f"/api/videos/?playlist={playlist.id}",
@@ -1601,12 +1561,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory()
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/?playlist={first_playlist.id}",
@@ -1682,12 +1637,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory(organization=other_organization)
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/?playlist={first_playlist.id}",
@@ -1758,12 +1708,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1792,12 +1737,7 @@ class VideoAPITest(TestCase):
         other_playlist = factories.PlaylistFactory(organization=organization)
         factories.VideoFactory(playlist=other_playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
@@ -1872,12 +1812,7 @@ class VideoAPITest(TestCase):
         playlist_2 = factories.PlaylistFactory(organization=organization)
         video_2 = factories.VideoFactory(playlist=playlist_2, title="Second video")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/videos/?organization={organization.id}",
@@ -2058,11 +1993,12 @@ class VideoAPITest(TestCase):
 
     def test_api_video_create_token_user_playlist_preexists(self):
         """A token user should not be able to create a video."""
-        jwt_token = AccessToken()
+        jwt_token = UserAccessTokenFactory()
         response = self.client.post(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 401)
+        # Te user is authenticated, but action is forbidden => 403
+        self.assertEqual(response.status_code, 403)
         self.assertFalse(models.Video.objects.exists())
 
     def test_api_video_create_student(self):
@@ -2118,12 +2054,7 @@ class VideoAPITest(TestCase):
             role=models.ADMINISTRATOR, playlist=playlist, user=user
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -2189,15 +2120,9 @@ class VideoAPITest(TestCase):
 
         Requests with a UUID that does not match an existing playlist should fail.
         """
-        user = factories.UserFactory()
         some_uuid = uuid.uuid4()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory()
         self.assertEqual(models.Video.objects.count(), 0)
 
         response = self.client.post(
@@ -2222,12 +2147,7 @@ class VideoAPITest(TestCase):
             role=models.INSTRUCTOR, playlist=playlist, user=user
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -2258,12 +2178,7 @@ class VideoAPITest(TestCase):
         )
         playlist = factories.PlaylistFactory(organization=organization)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -2336,12 +2251,7 @@ class VideoAPITest(TestCase):
         )
         playlist = factories.PlaylistFactory(organization=organization)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 0)
         # try to set starting_at and is_scheduled
@@ -2418,12 +2328,7 @@ class VideoAPITest(TestCase):
         )
         playlist = factories.PlaylistFactory(organization=organization)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -3453,12 +3358,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3632,12 +3532,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3659,12 +3554,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3686,12 +3576,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3714,12 +3599,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -3742,12 +3622,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -3769,12 +3644,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -3796,12 +3666,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist, title="existing title")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -3965,12 +3830,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -3995,12 +3855,7 @@ class VideoAPITest(TestCase):
         )
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -4027,12 +3882,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -4059,12 +3909,7 @@ class VideoAPITest(TestCase):
         playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=playlist)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertEqual(models.Video.objects.count(), 1)
 
@@ -4254,12 +4099,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -4296,12 +4136,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -4363,12 +4198,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
@@ -4404,12 +4234,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {
-            "id": str(user.id),
-            "username": user.username,
-        }
+        jwt_token = UserAccessTokenFactory(user=user)
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)

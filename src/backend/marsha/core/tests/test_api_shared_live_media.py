@@ -8,6 +8,8 @@ from django.test import TestCase, override_settings
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+
 from .. import defaults
 from ..api import timezone
 from ..factories import (
@@ -119,12 +121,9 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot create a shared live
         media for any given video.
         """
-        user = UserFactory()
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -149,9 +148,7 @@ class SharedLiveMediaAPITest(TestCase):
         video = VideoFactory(playlist=playlist)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -175,9 +172,7 @@ class SharedLiveMediaAPITest(TestCase):
         video = VideoFactory(playlist=playlist)
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -219,9 +214,7 @@ class SharedLiveMediaAPITest(TestCase):
         video = VideoFactory(playlist=playlist)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -248,9 +241,7 @@ class SharedLiveMediaAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -770,11 +761,8 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot read a shared live
         media for any given video.
         """
-        user = UserFactory()
         shared_live_media = SharedLiveMediaFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -797,9 +785,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -822,9 +808,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -864,9 +848,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -892,9 +874,7 @@ class SharedLiveMediaAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1227,11 +1207,8 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot list shared live
         medias for any given video.
         """
-        user = UserFactory()
         SharedLiveMediaFactory.create_batch(2)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
             "/api/sharedlivemedias/",
@@ -1254,9 +1231,7 @@ class SharedLiveMediaAPITest(TestCase):
         SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             "/api/sharedlivemedias/",
@@ -1297,9 +1272,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={video.id}",
@@ -1389,9 +1362,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={other_video.id}",
@@ -1415,9 +1386,7 @@ class SharedLiveMediaAPITest(TestCase):
         SharedLiveMediaFactory(video=video)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={video.id}",
@@ -1461,9 +1430,7 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=5,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={video.id}",
@@ -1557,9 +1524,7 @@ class SharedLiveMediaAPITest(TestCase):
             video=other_video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={other_video.id}",
@@ -1654,12 +1619,9 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot update a shared live
         medias for any given video.
         """
-        user = UserFactory()
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.put(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1684,9 +1646,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1717,9 +1677,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
@@ -1765,9 +1723,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1801,9 +1757,7 @@ class SharedLiveMediaAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
@@ -1902,12 +1856,9 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot delete a shared live
         medias for any given video.
         """
-        user = UserFactory()
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.delete(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1930,9 +1881,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1961,9 +1910,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
@@ -1994,9 +1941,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -2028,9 +1973,7 @@ class SharedLiveMediaAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
@@ -2320,12 +2263,9 @@ class SharedLiveMediaAPITest(TestCase):
         A user with a user token, without any specific access, cannot initiate an upload
         on shared live medias for any given video.
         """
-        user = UserFactory()
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
@@ -2350,9 +2290,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
@@ -2386,9 +2324,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2456,9 +2392,7 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory(video=video)
         OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
@@ -2496,9 +2430,7 @@ class SharedLiveMediaAPITest(TestCase):
             user=user, organization=organization, role=ADMINISTRATOR
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(user.id)
-        jwt_token.payload["user"] = {"id": str(user.id)}
+        jwt_token = UserAccessTokenFactory(user=user)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
