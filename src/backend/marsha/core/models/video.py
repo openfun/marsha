@@ -21,6 +21,7 @@ from ..defaults import (
     HARVESTED,
     IDLE,
     JOIN_MODE_CHOICES,
+    LICENCES_CHOICES,
     LIVE_CHOICES,
     LIVE_TYPE_CHOICES,
     PENDING,
@@ -154,6 +155,14 @@ class Video(BaseFile):
         blank=True,
         default=list,
         help_text=_("video tags"),
+    )
+    license = models.CharField(
+        max_length=20,
+        verbose_name=_("licenses"),
+        help_text=_("License for this video"),
+        choices=LICENCES_CHOICES,
+        null=True,
+        blank=True,
     )
 
     class Meta:

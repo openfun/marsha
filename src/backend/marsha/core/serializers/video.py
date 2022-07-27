@@ -209,6 +209,7 @@ class VideoSerializer(VideoBaseSerializer):
             "xmpp",
             "shared_live_medias",
             "tags",
+            "license",
         )
         read_only_fields = (
             "active_shared_live_media",

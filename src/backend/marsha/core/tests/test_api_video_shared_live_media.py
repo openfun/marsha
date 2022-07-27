@@ -368,6 +368,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "jid": "conference.xmpp-server.com",
                     },
                     "tags": [],
+                    "license": None,
                 },
             )
             self.assertEqual(video.active_shared_live_media, shared_live_media)
@@ -719,6 +720,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "jid": "conference.xmpp-server.com",
                     },
                     "tags": [],
+                    "license": None,
                 },
                 content,
             )
@@ -1116,6 +1118,7 @@ class TestVideoSharedLiveMedia(TestCase):
                         "jid": "conference.xmpp-server.com",
                     },
                     "tags": [],
+                    "license": None,
                 },
                 content,
             )
