@@ -31,7 +31,7 @@ from ..defaults import (
     STOPPED,
     STOPPING,
 )
-from ..factories import LiveSessionFactory, PlaylistFactory
+from ..factories import LiveSessionFactory, PlaylistFactory, VideoFactory
 from ..utils.api_utils import generate_hash
 from ..utils.medialive_utils import ManifestMissingException
 from ..utils.time_utils import to_timestamp
@@ -7015,3 +7015,92 @@ class VideoAPITest(TestCase):
             mock_dispatch_video_to_groups.assert_not_called()
 
         self.assertEqual(response.status_code, 200)
+
+    def test_api_video_options_as_student(self):
+        """A student can fetch the video options endpoint"""
+
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = ["student"]
+
+        response = self.client.options(
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        content = json.loads(response.content)
+        self.assertEqual(
+            content["actions"]["POST"]["license"]["choices"],
+            [
+                {"value": "CC_BY", "display_name": "Creative Common By Attribution"},
+                {
+                    "value": "CC_BY-SA",
+                    "display_name": "Creative Common By Attribution Share Alike",
+                },
+                {
+                    "value": "CC_BY-NC",
+                    "display_name": "Creative Common By Attribution Non Commercial",
+                },
+                {
+                    "value": "CC_BY-NC-SA",
+                    "display_name": "Creative Common By Attribution Non Commercial Share Alike",
+                },
+                {
+                    "value": "CC_BY-ND",
+                    "display_name": "Creative Common By Attribution No Derivates",
+                },
+                {
+                    "value": "CC_BY-NC-ND",
+                    "display_name": "Creative Common By Attribution Non Commercial No Derivates",
+                },
+                {"value": "CC0", "display_name": "Public Domain Dedication "},
+                {"value": "NO_CC", "display_name": "All rights reserved"},
+            ],
+        )
+
+    def test_api_video_options_as_instructor(self):
+        """An instructor can fetch the video options endpoint"""
+
+        video = VideoFactory()
+        jwt_token = AccessToken()
+        jwt_token.payload["resource_id"] = str(video.id)
+        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+
+        response = self.client.options(
+            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        content = json.loads(response.content)
+        self.assertEqual(
+            content["actions"]["POST"]["license"]["choices"],
+            [
+                {"value": "CC_BY", "display_name": "Creative Common By Attribution"},
+                {
+                    "value": "CC_BY-SA",
+                    "display_name": "Creative Common By Attribution Share Alike",
+                },
+                {
+                    "value": "CC_BY-NC",
+                    "display_name": "Creative Common By Attribution Non Commercial",
+                },
+                {
+                    "value": "CC_BY-NC-SA",
+                    "display_name": "Creative Common By Attribution Non Commercial Share Alike",
+                },
+                {
+                    "value": "CC_BY-ND",
+                    "display_name": "Creative Common By Attribution No Derivates",
+                },
+                {
+                    "value": "CC_BY-NC-ND",
+                    "display_name": "Creative Common By Attribution Non Commercial No Derivates",
+                },
+                {"value": "CC0", "display_name": "Public Domain Dedication "},
+                {"value": "NO_CC", "display_name": "All rights reserved"},
+            ],
+        )
+
+    def test_api_video_options_anonymous(self):
+        """Anonymous user can't fetch the video options endpoint"""
+
+        response = self.client.options("/api/videos/")
+
+        self.assertEqual(response.status_code, 401)
