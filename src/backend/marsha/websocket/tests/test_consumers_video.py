@@ -340,6 +340,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "xmpp": None,
                     "shared_live_medias": [],
                     "tags": [],
+                    "license": None,
                 },
             },
         )
@@ -486,6 +487,7 @@ class VideoConsumerTest(TransactionTestCase):
                     "xmpp": None,
                     "shared_live_medias": [],
                     "tags": [],
+                    "license": None,
                 },
             },
         )
