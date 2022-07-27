@@ -83,7 +83,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
                 | permissions.IsVideoPlaylistAdmin
                 | permissions.IsVideoOrganizationAdmin
             ]
-        elif self.action in ["list"]:
+        elif self.action in ["list", "metadata"]:
             permission_classes = [IsAuthenticated]
         elif self.action in ["create"]:
             permission_classes = [
