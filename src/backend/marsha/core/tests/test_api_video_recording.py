@@ -240,6 +240,7 @@ class TestApiVideoRecording(TestCase):
                     "websocket_url": None,
                 },
                 "tags": [],
+                "license": None,
             },
         )
 
@@ -506,5 +507,6 @@ class TestApiVideoRecording(TestCase):
                     "websocket_url": None,
                 },
                 "tags": [],
+                "license": None,
             },
         )

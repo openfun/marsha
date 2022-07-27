@@ -22,4 +22,31 @@ class Migration(migrations.Migration):
                 size=None,
             ),
         ),
+        migrations.AddField(
+            model_name="video",
+            name="license",
+            field=models.CharField(
+                blank=True,
+                choices=[
+                    ("CC_BY", "Creative Common By Attribution"),
+                    ("CC_BY-SA", "Creative Common By Attribution Share Alike"),
+                    ("CC_BY-NC", "Creative Common By Attribution Non Commercial"),
+                    (
+                        "CC_BY-NC-SA",
+                        "Creative Common By Attribution Non Commercial Share Alike",
+                    ),
+                    ("CC_BY-ND", "Creative Common By Attribution No Derivates"),
+                    (
+                        "CC_BY-NC-ND",
+                        "Creative Common By Attribution Non Commercial No Derivates",
+                    ),
+                    ("CC0", "Public Domain Dedication "),
+                    ("NO_CC", "All rights reserved"),
+                ],
+                help_text="License for this video",
+                max_length=20,
+                null=True,
+                verbose_name="licenses",
+            ),
+        ),
     ]

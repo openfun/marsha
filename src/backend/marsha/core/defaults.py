@@ -77,3 +77,25 @@ MARKDOWN = "markdown"
 RENATER_FER_SAML = "renater_fer_saml"
 
 VIDEO_ATTENDANCE_KEY_CACHE = "attendances:video:"
+
+# Licenses
+
+CC_BY = "CC_BY"
+CC_BY_SA = "CC_BY-SA"
+CC_BY_NC = "CC_BY-NC"
+CC_BY_NC_SA = "CC_BY-NC-SA"
+CC_BY_ND = "CC_BY-ND"
+CC_BY_NC_ND = "CC_BY-NC-ND"
+CC0 = "CC0"
+NO_CC = "NO_CC"
+
+LICENCES_CHOICES = (
+    (CC_BY, _("Creative Common By Attribution")),
+    (CC_BY_SA, _("Creative Common By Attribution Share Alike")),
+    (CC_BY_NC, _("Creative Common By Attribution Non Commercial")),
+    (CC_BY_NC_SA, _("Creative Common By Attribution Non Commercial Share Alike")),
+    (CC_BY_ND, _("Creative Common By Attribution No Derivates")),
+    (CC_BY_NC_ND, _("Creative Common By Attribution Non Commercial No Derivates")),
+    (CC0, _("Public Domain Dedication ")),
+    (NO_CC, _("All rights reserved")),
+)

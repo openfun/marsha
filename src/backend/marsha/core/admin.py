@@ -282,6 +282,7 @@ class VideoAdmin(BaseFileAdmin):
         "join_mode",
         "is_public",
         "tags",
+        "license",
     )
     list_display = BaseFileAdmin.list_display + (
         "starting_at",
@@ -292,7 +293,7 @@ class VideoAdmin(BaseFileAdmin):
         "live_type",
         "recording_slices",
         "live_info",
-        "join_mode"
+        "join_mode",
     )
     inlines = [AudioTrackInline, TimedTextTrackInline, SignTrackInline]
     verbose_name = _("Video")

@@ -19,6 +19,7 @@ the common application contexts (grommet, intl, react-router,
 react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
 - Manage tags on video resource
+- Manage license on video resource
 
 ### Changed
 
