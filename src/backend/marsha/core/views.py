@@ -221,6 +221,20 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
         return self._get_prepare_to_render(app_data)
 
+    def _get_resource_data(self, resource, user_id, session_id, is_admin=False):
+        """Serializes the resource, provided some context, for the frontend app data."""
+        if not resource:
+            return None
+
+        return self.serializer_class(
+            resource,
+            context={
+                "is_admin": is_admin,
+                "user_id": user_id,
+                "session_id": session_id,
+            },
+        ).data
+
     def _get_app_data(self, cache_key, lti=None, resource_id=None):
         """Build app data for the frontend with information retrieved from the LTI launch request.
 
@@ -234,7 +248,7 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
 
             - state: state of the LTI launch request. Can be one of `success` or `error`.
             - modelName: the type of resource (video, document,...)
-            - resource: representation of the targetted resource including urls for the resource
+            - resource: representation of the targeted resource including urls for the resource
                 file (e.g. for a video: all resolutions, thumbnails and timed text tracks).
 
             For instructors only
@@ -249,36 +263,34 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             app_data = cache.get(cache_key)
 
         permissions = {"can_access_dashboard": False, "can_update": False}
-        user_id = getattr(lti, "user_id", None) if lti else None
         session_id = str(uuid.uuid4())
-        if app_data is None:
-            resource = (
-                get_or_create_resource(self.model, lti)
-                if lti
-                else self._get_public_resource(resource_id)
-            )
 
+        if app_data is None:
             if lti:
+                user_id = getattr(lti, "user_id", None)
+                resource = get_or_create_resource(self.model, lti)
+                is_instructor_or_admin = lti.is_instructor or lti.is_admin
                 permissions = {
-                    "can_access_dashboard": lti.is_instructor or lti.is_admin,
-                    "can_update": (lti.is_instructor or lti.is_admin)
-                    and resource.playlist.lti_id == lti.context_id,
+                    "can_access_dashboard": is_instructor_or_admin,
+                    "can_update": (
+                        is_instructor_or_admin
+                        and resource.playlist.lti_id == lti.context_id
+                    ),
                 }
+            else:
+                user_id = None
+                resource = self._get_public_resource(resource_id)
+                is_instructor_or_admin = False
+
             app_data = self._get_base_app_data()
             app_data.update(
                 {
-                    "resource": self.serializer_class(
+                    "resource": self._get_resource_data(
                         resource,
-                        context={
-                            "is_admin": lti.is_admin or lti.is_instructor
-                            if lti
-                            else False,
-                            "user_id": user_id,
-                            "session_id": session_id,
-                        },
-                    ).data
-                    if resource
-                    else None,
+                        user_id,
+                        session_id,
+                        is_admin=is_instructor_or_admin,
+                    ),
                     "state": "success",
                     "player": settings.VIDEO_PLAYER,
                     "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
