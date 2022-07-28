@@ -267,12 +267,6 @@ class BaseLTIView(ABC, TemplateResponseMixin, View):
             app_data = self._get_base_app_data()
             app_data.update(
                 {
-                    "flags": {
-                        SENTRY: switch_is_active(SENTRY),
-                        BBB: settings.BBB_ENABLED,
-                        LIVE_RAW: settings.LIVE_RAW_ENABLED,
-                        MARKDOWN: settings.MARKDOWN_ENABLED,
-                    },
                     "resource": self.serializer_class(
                         resource,
                         context={
@@ -356,11 +350,6 @@ class BaseView(BaseLTIView, ABC):
             app_data = self._get_base_app_data()
             app_data.update(
                 {
-                    "flags": {
-                        SENTRY: switch_is_active(SENTRY),
-                        BBB: settings.BBB_ENABLED,
-                        LIVE_RAW: settings.LIVE_RAW_ENABLED,
-                    },
                     "resource": self.serializer_class(
                         resource,
                         context={
