@@ -6,10 +6,6 @@ import render from 'utils/tests/render';
 
 import { ThumbnailDisplayer } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
-}));
-
 describe('<ThumbnailDisplayer />', () => {
   it('renders ThumbnailDisplayer', () => {
     const mockedThumbnail = thumbnailMockFactory();

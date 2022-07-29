@@ -3,21 +3,22 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
+import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
 import * as factories from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { VideosList } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'cool_token_m8',
-  },
-}));
-
-beforeEach(() => fetchMock.restore());
-
 describe('<VideosList />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+
+    fetchMock.restore();
+  });
+
   it('loads the list of videos and shows it in a table', async () => {
     const deferred = new Deferred();
     fetchMock.get('/api/videos/?limit=999', deferred.promise);

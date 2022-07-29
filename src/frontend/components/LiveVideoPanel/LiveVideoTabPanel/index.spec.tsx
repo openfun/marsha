@@ -3,6 +3,7 @@ import { Tabs } from 'grommet';
 import React from 'react';
 import renderer from 'react-test-renderer';
 
+import { useJwt } from 'data/stores/useJwt';
 import {
   LivePanelItem,
   useLivePanelState,
@@ -18,13 +19,16 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LiveVideoTabPanel } from '.';
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    permissions: { can_update: true },
-  }),
-}));
-
 describe('<LiveVideoTabPanel /> titles', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: { can_update: true },
+        } as any),
+    });
+  });
+
   it('renders for item in LivePanelItem', () => {
     const tabTitles = {
       [LivePanelItem.APPLICATION]: 'application',
@@ -71,6 +75,15 @@ describe('<LiveVideoTabPanel /> titles', () => {
 });
 
 describe('<LiveVideoTabPanel /> styles', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: { can_update: true },
+        } as any),
+    });
+  });
+
   it('renders with default style when not selected, not hovered, not focused [screenshot]', async () => {
     render(
       wrapInVideo(

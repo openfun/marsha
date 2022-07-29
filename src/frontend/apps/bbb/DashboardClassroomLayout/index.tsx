@@ -1,7 +1,7 @@
 import { Box, Grid, ResponsiveContext, Text } from 'grommet';
 import React, { useContext } from 'react';
 
-import { appData } from 'data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { Nullable } from 'utils/types';
 
 interface DashboardClassroomMessageProps {
@@ -32,6 +32,7 @@ export const DashboardClassroomLayout = ({
   left,
   right,
 }: DashboardClassroomLayoutProps) => {
+  const appData = useAppConfig();
   const size = useContext(ResponsiveContext);
   let columns = ['1/2', '1/2'];
   if (size === 'medium') {

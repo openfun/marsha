@@ -1,7 +1,7 @@
 import { QueryFunction } from 'react-query';
-import { Maybe } from 'utils/types';
 
-import { appData } from '../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { Maybe } from 'utils/types';
 
 export type FetchListQueryKey =
   | [string, Maybe<{ [key in string]: Maybe<string> }>]
@@ -16,6 +16,8 @@ export const fetchList: QueryFunction<any, FetchListQueryKey> = async ({
   const name = queryKey[0];
   const queryParams = queryKey[1] || {};
 
+  const jwt = useJwt.getState().jwt;
+
   // remove keys with undefined value
   Object.keys(queryParams).forEach(
     (key) => queryParams[key] === undefined && delete queryParams[key],
@@ -29,7 +31,7 @@ export const fetchList: QueryFunction<any, FetchListQueryKey> = async ({
     {
       headers: {
         'Content-Type': 'application/json',
-        ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
+        ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
       },
     },
   );

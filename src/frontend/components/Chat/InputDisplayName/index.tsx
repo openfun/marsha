@@ -4,8 +4,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { InputBar } from 'components/Chat/InputBar';
 import { QuestionMarkSVG } from 'components/SVGIcons/QuestionMarkSVG';
-import { getDecodedJwt } from 'data/appData';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,
@@ -88,6 +88,7 @@ interface InputDisplayNameProps {
 
 export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
   const intl = useIntl();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const { liveSession, setLiveSession } = useLiveSession((state) => ({

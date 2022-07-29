@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
-import { getDecodedJwt } from 'data/appData';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
+import { useJwt } from 'data/stores/useJwt';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -15,12 +15,7 @@ const setRegistrationCompleted = jest.fn();
 
 let matchMedia: MatchMediaMock;
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
-}));
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
+const mockGetDecodedJwt = jest.fn();
 
 jest.mock('data/sideEffects/createLiveSession', () => ({
   createLiveSession: jest.fn(),
@@ -59,6 +54,8 @@ describe('<RegistrationForm />', () => {
         user_fullname: 'user full name',
       },
     });
+
+    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   afterEach(() => {

@@ -4,7 +4,7 @@ import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { Loader } from 'components/Loader';
 import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
@@ -109,6 +109,7 @@ const bbbTheme: ThemeType = deepMerge(theme, {
 
 const DashboardClassroom = () => {
   const intl = useIntl();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   let canUpdate: boolean;
   try {
     canUpdate = getDecodedJwt().permissions.can_update;

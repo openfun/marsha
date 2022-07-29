@@ -1,6 +1,6 @@
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { LiveSession } from 'types/tracks';
-import { appData } from 'data/appData';
 
 /**
  * Create a new liveSession record for an email and the video of the jwt token.
@@ -18,7 +18,7 @@ export const createLiveSession = async (
   const response = await fetch(`${API_ENDPOINT}/livesessions/`, {
     body: JSON.stringify(body),
     headers: {
-      Authorization: `Bearer ${appData.jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

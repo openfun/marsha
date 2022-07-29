@@ -1,16 +1,18 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useJwt } from 'data/stores/useJwt';
 import { liveSessionFactory } from 'utils/tests/factories';
+
 import { getLiveSessions } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 describe('getLiveSessions', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('getLiveRegitrations without anonymous_id', async () => {

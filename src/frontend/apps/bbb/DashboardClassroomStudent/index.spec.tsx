@@ -7,14 +7,14 @@ import render from 'utils/tests/render';
 
 import DashboardClassroomStudent from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         bbbBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
 
 Settings.defaultLocale = 'en';

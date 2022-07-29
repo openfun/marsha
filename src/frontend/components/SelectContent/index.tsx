@@ -25,13 +25,13 @@ import styled from 'styled-components';
 
 import { Loader } from 'components/Loader';
 import { appConfigs } from 'data/appConfigs';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { appNames } from 'types/AppData';
 import { Document } from 'types/file';
 import { Live, LiveModeType, Playlist, Video, videoSize } from 'types/tracks';
 import { Nullable } from 'utils/types';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 
 const messages = defineMessages({
   playlistTitle: {
@@ -324,6 +324,7 @@ export const SelectContent = ({
       ),
   });
   const intl = useIntl();
+  const isFeatureEnabled = useIsFeatureEnabled();
 
   const appTabs: React.LazyExoticComponent<
     React.ComponentType<SelectContentTabProps>

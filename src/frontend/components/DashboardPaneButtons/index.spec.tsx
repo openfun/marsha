@@ -14,8 +14,8 @@ import { DashboardPaneButtons } from '.';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 describe('<DashboardPaneButtons />', () => {

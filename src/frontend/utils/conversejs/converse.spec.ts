@@ -1,3 +1,4 @@
+import { useJwt } from 'data/stores/useJwt';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
@@ -18,13 +19,12 @@ jest.mock('utils/window', () => ({
     },
   },
 }));
-let mockDecodedJwtToken = {};
+
 const mockVideo = videoMockFactory();
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => mockDecodedJwtToken,
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     video: mockVideo,
-  },
+  }),
 }));
 
 jest.mock('utils/chat/chat', () => ({
@@ -39,13 +39,17 @@ describe('initConverse', () => {
   });
 
   it('initializes once converse.js', () => {
-    mockDecodedJwtToken = {
-      user: {
-        username: 'jane_doe',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            username: 'jane_doe',
+          },
+        } as any),
+    });
     document.body.innerHTML = '<div id="converse-container"></div>';
 
+    const video = videoMockFactory();
     const xmpp = {
       bosh_url: 'https://xmpp-server.com/http-bind',
       converse_persistent_store: PersistentStore.LOCALSTORAGE,
@@ -62,7 +66,7 @@ describe('initConverse', () => {
 
     // first call, converse is initialized
     const initConverse = converseMounter();
-    initConverse(xmpp);
+    initConverse(xmpp, video);
 
     expect(mockWindow.converse.initialize).toHaveBeenCalledTimes(1);
     expect(mockWindow.converse.initialize).toHaveBeenCalledWith({

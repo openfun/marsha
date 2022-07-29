@@ -4,6 +4,7 @@ import React from 'react';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { useJwt } from 'data/stores/useJwt';
 import { timedTextMode, uploadState } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import render from 'utils/tests/render';
@@ -11,10 +12,13 @@ import render from 'utils/tests/render';
 import { TimedTextCreationForm } from '.';
 
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('data/appData', () => ({ appData: { jwt: 'some token' } }));
 
 describe('<TimedTextCreationForm />', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {

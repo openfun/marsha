@@ -1,5 +1,6 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 
@@ -13,18 +14,20 @@ jest.mock('jwt-decode', () => {
   }));
 });
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     flags: {},
-    jwt: 'foo',
-  },
+  }),
 }));
 
 jest.mock('./createVideojsPlayer');
+
 jest.mock('utils/errors/report');
 
 describe('createPlayer', () => {
   beforeEach(() => {
+    useJwt.setState({ jwt: 'foo' });
+
     jest.clearAllMocks();
     jest.useFakeTimers();
   });

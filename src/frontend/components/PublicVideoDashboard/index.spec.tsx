@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import {
   useLivePanelState,
@@ -73,18 +74,12 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
 
-let mockCanUpdate: boolean;
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
       },
-    },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
     },
   }),
 }));
@@ -95,7 +90,18 @@ describe('PublicVideoDashboard', () => {
     //    set system date to 2022-01-27T14:00:00
     jest.setSystemTime(new Date(2022, 0, 27, 14, 0, 0));
   });
+
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some jwt',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {
@@ -117,7 +123,7 @@ describe('PublicVideoDashboard', () => {
       getSource: jest.fn(),
       setSource: jest.fn(),
     });
-    mockCanUpdate = false;
+
     useLiveStateStarted.setState({
       isStarted: true,
     });

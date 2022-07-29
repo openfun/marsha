@@ -6,24 +6,25 @@ import { v4 as uuidv4 } from 'uuid';
 import { modelName } from 'types/models';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { videoMockFactory } from 'utils/tests/factories';
-import { getDecodedJwt } from './appData';
-import { useVideo } from './stores/useVideo';
 
-jest.mock('./appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
-  getDecodedJwt: jest.fn(),
-}));
+import { useVideo } from './stores/useVideo';
 
 jest.mock('utils/getOrInitAnonymousId', () => ({
   getOrInitAnonymousId: jest.fn(),
 }));
-
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
 const mockGetOrInitAnonymousId = getOrInitAnonymousId as jest.MockedFunction<
   typeof getOrInitAnonymousId
 >;
+
+const mockedGetDecodedJwt = jest.fn();
+jest.mock('./stores/useJwt', () => ({
+  useJwt: {
+    getState: () => ({
+      jwt: 'cool_token_m8',
+      getDecodedJwt: mockedGetDecodedJwt,
+    }),
+  },
+}));
 
 const publicToken = {
   locale: 'en',
@@ -57,24 +58,24 @@ const ltiToken = {
 };
 
 describe('initVideoWebsocket', () => {
-  afterEach(() => {
-    fetchMock.restore();
-    WS.clean();
-  });
   beforeEach(() => {
     jest.resetAllMocks();
   });
 
+  afterEach(() => {
+    fetchMock.restore();
+    WS.clean();
+  });
+
+  let initVideoWebsocket: any;
+  jest.isolateModules(() => {
+    initVideoWebsocket = require('./websocket').initVideoWebsocket;
+  });
   it('connects to the websocket and updates video zustand store when message is received', async () => {
-    let initVideoWebsocket: any;
-    jest.isolateModules(() => {
-      initVideoWebsocket = require('./websocket').initVideoWebsocket;
-    });
+    mockedGetDecodedJwt.mockReturnValue(ltiToken);
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
-
-    mockGetDecodedJwt.mockReturnValue(ltiToken);
 
     global.window = Object.create(window);
     Object.defineProperty(window, 'location', {
@@ -110,16 +111,16 @@ describe('initVideoWebsocket', () => {
     server.close();
   });
 
+  let connectUsingAnonymousId: any;
+  jest.isolateModules(() => {
+    connectUsingAnonymousId = require('./websocket').initVideoWebsocket;
+  });
   it('connects to the websocket using an anonymous id', async () => {
-    let initVideoWebsocket: any;
-    jest.isolateModules(() => {
-      initVideoWebsocket = require('./websocket').initVideoWebsocket;
-    });
+    mockedGetDecodedJwt.mockReturnValue(publicToken);
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
 
-    mockGetDecodedJwt.mockReturnValue(publicToken);
     mockGetOrInitAnonymousId.mockReturnValue(uuidv4());
 
     global.window = Object.create(window);
@@ -132,7 +133,7 @@ describe('initVideoWebsocket', () => {
       writable: true,
     });
 
-    initVideoWebsocket!(video);
+    connectUsingAnonymousId!(video);
     await server.connected;
 
     expect(mockGetOrInitAnonymousId).toHaveBeenCalled();
@@ -156,16 +157,15 @@ describe('initVideoWebsocket', () => {
     server.close();
   });
 
+  let connectUsingHttp: any;
+  jest.isolateModules(() => {
+    connectUsingHttp = require('./websocket').initVideoWebsocket;
+  });
   it('connects to the websocket using https protocol', async () => {
-    let initVideoWebsocket: any;
-    jest.isolateModules(() => {
-      initVideoWebsocket = require('./websocket').initVideoWebsocket;
-    });
+    mockedGetDecodedJwt.mockReturnValue(ltiToken);
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
-
-    mockGetDecodedJwt.mockReturnValue(ltiToken);
 
     global.window = Object.create(window);
     Object.defineProperty(window, 'location', {
@@ -177,7 +177,7 @@ describe('initVideoWebsocket', () => {
       writable: true,
     });
 
-    initVideoWebsocket!(video);
+    connectUsingHttp!(video);
     await server.connected;
 
     expect(mockGetOrInitAnonymousId).not.toHaveBeenCalled();
@@ -201,11 +201,12 @@ describe('initVideoWebsocket', () => {
     server.close();
   });
 
+  let reconnectSocket: any;
+  jest.isolateModules(() => {
+    reconnectSocket = require('./websocket').initVideoWebsocket;
+  });
   it('reconnects to the server after a disconnection and fetch the video data.', async () => {
-    let initVideoWebsocket: any;
-    jest.isolateModules(() => {
-      initVideoWebsocket = require('./websocket').initVideoWebsocket;
-    });
+    mockedGetDecodedJwt.mockReturnValue(ltiToken);
     const video = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${video.id}/`,
@@ -217,8 +218,6 @@ describe('initVideoWebsocket', () => {
     useVideo.getState().addResource(video);
     const server = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
 
-    mockGetDecodedJwt.mockReturnValue(ltiToken);
-
     global.window = Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
@@ -229,7 +228,7 @@ describe('initVideoWebsocket', () => {
       writable: true,
     });
 
-    initVideoWebsocket!(video);
+    reconnectSocket!(video);
     await server.connected;
 
     expect(mockGetOrInitAnonymousId).not.toHaveBeenCalled();
@@ -274,11 +273,12 @@ describe('initVideoWebsocket', () => {
     newServer.close();
   });
 
+  let stopReconnectingSocket: any;
+  jest.isolateModules(() => {
+    stopReconnectingSocket = require('./websocket').initVideoWebsocket;
+  });
   it('stops reconnecting when websocket close code is 4003.', async () => {
-    let initVideoWebsocket: any;
-    jest.isolateModules(() => {
-      initVideoWebsocket = require('./websocket').initVideoWebsocket;
-    });
+    mockedGetDecodedJwt.mockReturnValue(ltiToken);
     const video = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${video.id}/`,
@@ -290,8 +290,6 @@ describe('initVideoWebsocket', () => {
     useVideo.getState().addResource(video);
     const server = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
 
-    mockGetDecodedJwt.mockReturnValue(ltiToken);
-
     global.window = Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
@@ -302,7 +300,7 @@ describe('initVideoWebsocket', () => {
       writable: true,
     });
 
-    initVideoWebsocket!(video);
+    stopReconnectingSocket!(video);
     await server.connected;
 
     expect(mockGetOrInitAnonymousId).not.toHaveBeenCalled();

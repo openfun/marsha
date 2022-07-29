@@ -10,8 +10,8 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 describe('stores/generics', () => {

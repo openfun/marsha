@@ -1,4 +1,5 @@
 import { act, fireEvent, screen } from '@testing-library/react';
+import { useJwt } from 'data/stores/useJwt';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -10,14 +11,20 @@ import render from 'utils/tests/render';
 import { DashboardDocumentTitleForm } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     document: null,
-    jwt: 'cool_token_m8',
-  },
+  }),
 }));
 
 describe('DashboardDocumentTitleForm', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('shows the title form', () => {

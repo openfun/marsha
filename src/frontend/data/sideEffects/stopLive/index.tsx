@@ -1,6 +1,6 @@
-import { API_ENDPOINT } from '../../../settings';
-import { Video } from '../../../types/tracks';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { Video } from 'types/tracks';
 
 /**
  * Post to an action endpoint to stop a live streaming.
@@ -12,7 +12,7 @@ export const stopLive = async (video: Video): Promise<Video> => {
     `${API_ENDPOINT}/videos/${video.id}/stop-live/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

@@ -1,9 +1,8 @@
 import { act, screen } from '@testing-library/react';
 import React from 'react';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { DecodedJwt } from 'types/jwt';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
@@ -19,15 +18,11 @@ jest.mock('utils/window', () => ({
   },
 }));
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     video: mockVideo,
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
 
 const mockInitConverse = jest.fn();
 jest.mock('utils/conversejs/converse', () => ({
@@ -43,12 +38,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse without liveRegistration if user can not access dashboard', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -85,17 +83,21 @@ describe('<ConverseInitializer />', () => {
         prebind_url: 'https://xmpp-server.com/http-pre-bind',
         jid: 'xmpp-server.com',
       },
+      video,
       null,
     );
   });
 
   it('does not initialize converse for a video without xmpp', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -109,12 +111,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse for a video without live state', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       xmpp: {
@@ -136,12 +141,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse for a video with a live state idle', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       live_state: liveState.IDLE,
@@ -164,12 +172,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse with the displayname', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -206,17 +217,21 @@ describe('<ConverseInitializer />', () => {
         prebind_url: 'https://xmpp-server.com/http-pre-bind',
         jid: 'xmpp-server.com',
       },
+      video,
       'john',
     );
   });
 
   it('renders children if converse is initialized in the window', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     mockConverse = {};
 
     render(
@@ -233,12 +248,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse in the window if not define yet', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const liveSession = liveSessionFactory();
     useLiveSession.getState().setLiveSession(liveSession);
 
@@ -265,12 +283,15 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse plugins if video has xmpp and live_state not idle', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-    } as DecodedJwt);
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -317,6 +338,7 @@ describe('<ConverseInitializer />', () => {
         prebind_url: 'https://xmpp-server.com/http-pre-bind',
         jid: 'xmpp-server.com',
       },
+      video,
       null,
     );
   });

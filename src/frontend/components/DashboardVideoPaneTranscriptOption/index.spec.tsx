@@ -7,13 +7,11 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { timedTextMode, uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
-
-import { DashboardVideoPaneTranscriptOption } from '.';
 import render from 'utils/tests/render';
 
-jest.mock('data/appData', () => ({
-  appData: {},
-}));
+import { DashboardVideoPaneTranscriptOption } from '.';
+
+jest.mock('data/stores/useAppConfig', () => ({}));
 
 describe('<DashboardVideoPaneTranscriptOption />', () => {
   afterEach(jest.resetAllMocks);

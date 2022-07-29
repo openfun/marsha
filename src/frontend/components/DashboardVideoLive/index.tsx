@@ -20,7 +20,7 @@ import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
-import { appData } from 'data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
@@ -40,6 +40,7 @@ import {
 import { TeacherPIPControls } from './TeacherPIPControls';
 
 export const DashboardVideoLive = () => {
+  const appData = useAppConfig();
   const video = useCurrentVideo();
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
 

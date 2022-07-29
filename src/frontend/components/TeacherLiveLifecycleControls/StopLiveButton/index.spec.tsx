@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { stopLive } from 'data/sideEffects/stopLive';
+import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
@@ -13,9 +14,6 @@ import render from 'utils/tests/render';
 import { StopLiveButton } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
-}));
 
 jest.mock('data/sideEffects/stopLive', () => ({
   stopLive: jest.fn(),
@@ -23,6 +21,12 @@ jest.mock('data/sideEffects/stopLive', () => ({
 const mockedStopLive = stopLive as jest.MockedFunction<typeof stopLive>;
 
 describe('<StopLiveButton />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

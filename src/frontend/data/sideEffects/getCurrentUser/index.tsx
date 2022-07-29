@@ -1,8 +1,8 @@
-import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
-import { report } from '../../../utils/errors/report';
-import { appData } from '../../appData';
-import { AnonymousUser } from '../../stores/useCurrentUser';
+import { useJwt } from 'data/stores/useJwt';
+import { AnonymousUser } from 'data/stores/useCurrentUser';
+import { API_ENDPOINT } from 'settings';
+import { requestStatus } from 'types/api';
+import { report } from 'utils/errors/report';
 
 /**
  * Makes and handles the GET request for the current user.
@@ -10,11 +10,11 @@ import { AnonymousUser } from '../../stores/useCurrentUser';
  */
 export const getCurrentUser = async (): Promise<requestStatus> => {
   try {
-    const { useCurrentUser } = await import('../../stores/useCurrentUser');
+    const { useCurrentUser } = await import('data/stores/useCurrentUser');
 
     const response = await fetch(`${API_ENDPOINT}/users/whoami/`, {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
     });

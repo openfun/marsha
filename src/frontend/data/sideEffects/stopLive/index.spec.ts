@@ -1,12 +1,18 @@
 import fetchMock from 'fetch-mock';
 
-import { liveState } from '../../../types/tracks';
-import { videoMockFactory } from '../../../utils/tests/factories';
+import { useJwt } from 'data/stores/useJwt';
+import { liveState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
+
 import { stopLive } from '.';
 
-jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
-
 describe('sideEffects/stopLive', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   const video = videoMockFactory();

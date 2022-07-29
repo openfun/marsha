@@ -7,6 +7,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
@@ -17,14 +18,16 @@ import render from 'utils/tests/render';
 import { DashboardVideoPane } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'cool_token_m8',
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     flags: {},
     uploadPollInterval: 60,
-  },
+  }),
 }));
+
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+
 jest.mock('components/DashboardVideoPaneStats', () => ({
   DashboardVideoPaneStats: (props: { video: Video }) => (
     <p>{`Stats for ${props.video.id}`}</p>
@@ -34,7 +37,13 @@ jest.mock('components/DashboardVideoPaneStats', () => ({
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
 describe('<DashboardVideoPane />', () => {
-  beforeEach(() => jest.useFakeTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
 
   afterEach(() => {
     fetchMock.restore();

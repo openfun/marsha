@@ -11,7 +11,7 @@ import render from 'utils/tests/render';
 
 import { UploadField } from '.';
 
-jest.mock('data/appData', () => ({}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 describe('<UploadField />', () => {
   const objectType = modelName.VIDEOS;

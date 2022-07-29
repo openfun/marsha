@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -11,12 +12,6 @@ import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetSchedulingAndDescription } from '.';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
@@ -26,9 +21,14 @@ const currentDate = DateTime.fromISO('2022-01-01T12:00');
 
 describe('<DashboardVideoLiveWidgetSchedulingAndDescription />', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
   });
+
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();

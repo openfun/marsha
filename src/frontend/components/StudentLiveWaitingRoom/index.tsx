@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { StudentLiveDescription } from 'components/StudentLiveAdvertising/StudentLiveDescription';
 import { InputDisplayName } from 'components/Chat/InputDisplayName';
-import { appData } from 'data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   title: {
@@ -22,6 +22,7 @@ const messages = defineMessages({
 });
 
 export const StudentLiveWaitingRoom = () => {
+  const appData = useAppConfig();
   const size = useContext(ResponsiveContext);
   let containerStyle: CSSProperties;
   if (size === 'small') {

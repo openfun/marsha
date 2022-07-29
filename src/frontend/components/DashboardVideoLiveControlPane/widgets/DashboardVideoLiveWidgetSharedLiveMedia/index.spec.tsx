@@ -9,6 +9,7 @@ import {
   UploadManagerContext,
   useUploadManager,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
@@ -35,17 +36,17 @@ const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<DashboardVideoLiveWidgetSharedLiveMedia />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

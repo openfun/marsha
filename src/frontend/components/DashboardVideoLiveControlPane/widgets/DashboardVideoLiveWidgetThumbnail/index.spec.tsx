@@ -9,6 +9,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
@@ -36,18 +37,23 @@ mockUseUploadManager.mockReturnValue({
   uploadManagerState: {},
 });
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'path/to/image.png',
       },
     },
-    jwt: 'json web token',
-  },
+  }),
 }));
 
 describe('<DashboardVideoLiveWidgetThumbnail />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

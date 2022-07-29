@@ -11,8 +11,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StartRecording } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 let queryClient: QueryClient;

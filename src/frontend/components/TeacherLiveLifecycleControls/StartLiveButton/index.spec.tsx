@@ -7,6 +7,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { startLive } from 'data/sideEffects/startLive';
+import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
@@ -17,9 +18,6 @@ import render from 'utils/tests/render';
 import { StartLiveButton } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
-}));
 
 jest.mock('data/sideEffects/startLive', () => ({
   startLive: jest.fn(),
@@ -27,6 +25,12 @@ jest.mock('data/sideEffects/startLive', () => ({
 const mockedStartLive = startLive as jest.MockedFunction<typeof startLive>;
 
 describe('<StartLiveButton />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
+
   it('renders a loader while fetching and updates the video', async () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
     const startDeferred = new Deferred<Video>();

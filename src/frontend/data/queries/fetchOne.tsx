@@ -1,16 +1,18 @@
 import { QueryFunction } from 'react-query';
-import { appData } from '../appData';
+
+import { useJwt } from 'data/stores/useJwt';
 
 /**
  * `react-query` fetcher for individual items from the Marsha API.
  */
 export const fetchOne: QueryFunction<any> = async ({ queryKey }) => {
+  const jwt = useJwt.getState().jwt;
   const [name, id, action] = queryKey;
   const endpoint = action ? `${action}/` : '';
   const response = await fetch(`/api/${name}/${id}/${endpoint}`, {
     headers: {
       'Content-Type': 'application/json',
-      ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
+      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
     },
   });
 

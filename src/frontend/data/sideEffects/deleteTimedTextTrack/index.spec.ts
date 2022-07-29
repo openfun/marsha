@@ -1,11 +1,17 @@
 import fetchMock from 'fetch-mock';
 
-import { deleteTimedTextTrack } from '.';
-import { TimedText } from '../../../types/tracks';
+import { useJwt } from 'data/stores/useJwt';
+import { TimedText } from 'types/tracks';
 
-jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
+import { deleteTimedTextTrack } from '.';
 
 describe('sideEffects/deleteTimedTextTrack', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('issues a DELETE request for the relevant timedtexttrack', async () => {

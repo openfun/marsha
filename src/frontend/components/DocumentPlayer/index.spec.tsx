@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { XAPI_ENDPOINT } from 'settings';
 import { uploadState } from 'types/tracks';
 import { documentMockFactory } from 'utils/tests/factories';
@@ -14,17 +15,23 @@ const mockDocument = documentMockFactory({
   title: 'foo.pdf',
   upload_state: uploadState.READY,
 });
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     document: mockDocument,
-    jwt: 'foo',
-  },
-  getDecodedJwt: jest.fn().mockImplementation(() => ({
-    session_id: 'abcd',
-  })),
+  }),
 }));
 
 describe('<DocumentPlayer />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'foo',
+      getDecodedJwt: () =>
+        ({
+          session_id: 'abcd',
+        } as any),
+    });
+  });
+
   it('renders', () => {
     const document = documentMockFactory({
       id: '42',

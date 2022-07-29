@@ -5,6 +5,8 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { useJwt } from 'data/stores/useJwt';
 import { appState } from 'types/AppData';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
@@ -12,48 +14,36 @@ import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
 
-let mockState: any;
-let mockVideo: any;
-let mockDocument: any;
-let mockLtiSelectFormData: any;
-let mockModelName: any;
-let mockCanUpdate: boolean;
-jest.mock('data/appData', () => ({
-  appData: {
-    get isEditable() {
-      return mockCanUpdate;
-    },
-    get state() {
-      return mockState;
-    },
-    get video() {
-      return mockVideo;
-    },
-    get document() {
-      return mockDocument;
-    },
-    get lti_select_form_data() {
-      return mockLtiSelectFormData;
-    },
-    get modelName() {
-      return mockModelName;
-    },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-  }),
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: jest.fn(),
 }));
+const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
+  typeof useAppConfig
+>;
+
+const mockedGetDecodedJwt = jest.fn();
 
 describe('<RedirectOnLoad />', () => {
-  beforeEach(jest.resetAllMocks);
+  beforeEach(() => {
+    jest.resetAllMocks();
+
+    useJwt.setState({
+      getDecodedJwt: mockedGetDecodedJwt,
+    });
+  });
 
   it('redirects users to the error view on LTI error', () => {
-    mockState = appState.ERROR;
-    mockVideo = null;
-    mockDocument = null;
-    mockModelName = modelName.VIDEOS;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.ERROR,
+      video: null,
+      document: null,
+      modelName: modelName.VIDEOS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: undefined,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -72,10 +62,17 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to the error view when there is no resource', () => {
-    mockState = appState.SUCCESS;
-    mockVideo = null;
-    mockDocument = null;
-    mockModelName = modelName.VIDEOS;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.SUCCESS,
+      video: null,
+      document: null,
+      modelName: modelName.VIDEOS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: undefined,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -94,13 +91,19 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to the player when the video can be shown', () => {
-    mockState = appState.SUCCESS;
-    mockModelName = modelName.VIDEOS;
-    mockDocument = null;
-    mockCanUpdate = false;
-
     for (const state of Object.values(uploadState)) {
-      mockVideo = { is_ready_to_show: true, upload_state: state };
+      mockedUseAppConfig.mockReturnValue({
+        state: appState.SUCCESS,
+        video: { is_ready_to_show: true, upload_state: state },
+        document: null,
+        modelName: modelName.VIDEOS,
+      } as any);
+      mockedGetDecodedJwt.mockReturnValue({
+        permissions: {
+          can_update: false,
+        },
+      } as any);
+
       const { getByText } = render(<RedirectOnLoad />, {
         routerOptions: {
           routes: [
@@ -118,13 +121,19 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to the player when the document can be shown', () => {
-    mockState = appState.SUCCESS;
-    mockModelName = modelName.DOCUMENTS;
-    mockVideo = null;
-    mockCanUpdate = false;
-
     for (const state of Object.values(uploadState)) {
-      mockDocument = { is_ready_to_show: true, upload_state: state };
+      mockedUseAppConfig.mockReturnValue({
+        state: appState.SUCCESS,
+        video: null,
+        document: { is_ready_to_show: true, upload_state: state },
+        modelName: modelName.DOCUMENTS,
+      } as any);
+      mockedGetDecodedJwt.mockReturnValue({
+        permissions: {
+          can_update: false,
+        },
+      } as any);
+
       const { getByText } = render(<RedirectOnLoad />, {
         routerOptions: {
           routes: [
@@ -142,14 +151,20 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /dashboard when video is not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockVideo = {
-      is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
-    };
-    mockModelName = modelName.VIDEOS;
-    mockDocument = null;
-    mockCanUpdate = true;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.SUCCESS,
+      video: {
+        is_ready_to_show: false,
+        upload_state: uploadState.PROCESSING,
+      },
+      document: null,
+      modelName: modelName.VIDEOS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: true,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -168,14 +183,20 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockDocument = {
-      is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
-    };
-    mockModelName = modelName.DOCUMENTS;
-    mockVideo = null;
-    mockCanUpdate = true;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.SUCCESS,
+      video: null,
+      document: {
+        is_ready_to_show: false,
+        upload_state: uploadState.PROCESSING,
+      },
+      modelName: modelName.DOCUMENTS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: true,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -194,14 +215,20 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /error when video is not ready to be shown and it has no permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockVideo = {
-      is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
-    };
-    mockModelName = modelName.VIDEOS;
-    mockDocument = null;
-    mockCanUpdate = false;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.SUCCESS,
+      video: {
+        is_ready_to_show: false,
+        upload_state: uploadState.PROCESSING,
+      },
+      document: null,
+      modelName: modelName.VIDEOS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: false,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -220,14 +247,20 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /error when document is not ready to be shown and it has no permissions to update it', () => {
-    mockState = appState.SUCCESS;
-    mockDocument = {
-      is_ready_to_show: false,
-      upload_state: uploadState.PROCESSING,
-    };
-    mockModelName = modelName.DOCUMENTS;
-    mockVideo = null;
-    mockCanUpdate = false;
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.SUCCESS,
+      video: null,
+      document: {
+        is_ready_to_show: false,
+        upload_state: uploadState.PROCESSING,
+      },
+      modelName: modelName.DOCUMENTS,
+    } as any);
+    mockedGetDecodedJwt.mockReturnValue({
+      permissions: {
+        can_update: false,
+      },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -246,7 +279,9 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to /select when LTI select data are passed', () => {
-    mockLtiSelectFormData = { key: 'value' };
+    mockedUseAppConfig.mockReturnValue({
+      lti_select_form_data: { key: 'value' },
+    } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {

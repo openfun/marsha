@@ -2,29 +2,31 @@ import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
+import { Deferred } from 'utils/tests/Deferred';
 import {
   playlistLiteMockFactory,
   playlistMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { Deferred } from 'utils/tests/Deferred';
-
-import { PlaylistPortability } from '.';
 import render from 'utils/tests/render';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: true,
-    },
-    maintenance: false,
-  }),
-}));
+import { PlaylistPortability } from '.';
 
 describe('<PlaylistPortability />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+          maintenance: false,
+        } as any),
+    });
+  });
+
   afterEach(() => {
     fetchMock.restore();
   });

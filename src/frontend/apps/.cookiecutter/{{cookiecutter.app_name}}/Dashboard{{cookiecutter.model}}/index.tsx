@@ -2,10 +2,10 @@ import { Box, Spinner, Text, ThemeContext, ThemeType } from 'grommet';
 import React, { Suspense, useRef } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { Loader } from 'components/Loader';
 
-import {{'{'}} {{cookiecutter.app_name}}AppData } from 'apps/{{cookiecutter.app_name}}/data/{{cookiecutter.app_name}}AppData';
+import { {{cookiecutter.app_name}}AppData } from 'apps/{{cookiecutter.app_name}}/data/{{cookiecutter.app_name}}AppData';
 import { use{{cookiecutter.model}} } from 'apps/{{cookiecutter.app_name}}/data/queries';
 
 const messages = defineMessages({
@@ -31,6 +31,8 @@ const messages = defineMessages({
 const extendedTheme: ThemeType = {};
 
 const Dashboard{{cookiecutter.model}} = () => {
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+
   let canUpdate: boolean;
   try {
     canUpdate = getDecodedJwt().permissions.can_update;

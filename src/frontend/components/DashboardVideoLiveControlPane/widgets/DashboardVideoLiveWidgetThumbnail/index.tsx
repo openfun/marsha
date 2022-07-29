@@ -6,13 +6,14 @@ import { defineMessages, useIntl } from 'react-intl';
 import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
 import { PictureSVG } from 'components/SVGIcons/PictureSVG';
 import { useUploadManager } from 'components/UploadManager';
-import { appData } from 'data/appData';
 import { createThumbnail } from 'data/sideEffects/createThumbnail';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { theme } from 'utils/theme/theme';
 import { Nullable } from 'utils/types';
+
 import { ThumbnailManager } from './ThumbnailManager';
 import { ThumbnailRemoveButton } from './ThumbnailRemoveButton/index';
 import { ThumbnailDisplayer } from './ThumbnailDisplayer/index';
@@ -37,6 +38,7 @@ const messages = defineMessages({
 });
 
 export const DashboardVideoLiveWidgetThumbnail = () => {
+  const appData = useAppConfig();
   const intl = useIntl();
 
   const { addUpload, uploadManagerState, resetUpload } = useUploadManager();

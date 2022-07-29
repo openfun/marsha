@@ -1,9 +1,11 @@
 import './entry.js';
 
+import { Video } from 'types/tracks.js';
 import { XMPP } from 'types/XMPP';
 import { generateAnonymousNickname } from 'utils/chat/chat';
 import { Nullable } from 'utils/types.js';
 import { converse } from 'utils/window';
+
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';
 import { marshaJoinDiscussionPlugin } from './converse-plugins/marshaJoinDiscussionPlugin';
@@ -12,11 +14,11 @@ import { participantsTrackingPlugin } from './converse-plugins/participantsTrack
 
 let isChatInitialized = false;
 export const converseMounter = () => {
-  return (xmpp: XMPP, displayName?: Nullable<string>) => {
+  return (xmpp: XMPP, video: Video, displayName?: Nullable<string>) => {
     if (!isChatInitialized) {
       chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
-      marshaJoinDiscussionPlugin.addPlugin(xmpp);
+      marshaJoinDiscussionPlugin.addPlugin(xmpp, video);
       nicknameManagementPlugin.addPlugin(xmpp);
       participantsTrackingPlugin.addPlugin();
 

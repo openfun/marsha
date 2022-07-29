@@ -1,11 +1,14 @@
 import create from 'zustand';
 
-import { Document } from '../../../types/file';
-import { modelName } from '../../../types/models';
-import { StoreState } from '../../../types/stores';
-import { Nullable } from '../../../utils/types';
-import { appData } from '../../appData';
-import { addMultipleResources, addResource, removeResource } from '../actions';
+import {
+  addMultipleResources,
+  addResource,
+  removeResource,
+} from 'data/stores/actions';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { Nullable } from 'utils/types';
 
 type DocumentStateResource = {
   [modelName.DOCUMENTS]: {
@@ -48,7 +51,5 @@ export const useDocument = create<DocumentState>((set, get) => ({
         document,
       ) as DocumentStateResource,
     ),
-  [modelName.DOCUMENTS]: {
-    ...(appData.document ? { [appData.document.id]: appData.document } : {}),
-  },
+  [modelName.DOCUMENTS]: {},
 }));

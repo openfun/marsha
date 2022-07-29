@@ -13,8 +13,8 @@ import render from 'utils/tests/render';
 
 import { OrganizationView } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 describe('<OrganizationView />', () => {

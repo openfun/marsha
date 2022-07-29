@@ -6,6 +6,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { Playlist, uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
@@ -15,18 +16,25 @@ import render from 'utils/tests/render';
 import DashboardDocument from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     document: null,
-    jwt: 'cool_token_m8',
-  },
+  }),
 }));
 
 describe('<DashboardDocument />', () => {
-  beforeEach(() => jest.useFakeTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
 
-  afterEach(() => fetchMock.restore());
-  afterEach(jest.resetAllMocks);
+  afterEach(() => {
+    fetchMock.restore();
+    jest.resetAllMocks();
+  });
 
   it('starts polling when the document is in pending, uploading and processing', async () => {
     let deferred = new Deferred();

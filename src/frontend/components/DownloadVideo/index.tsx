@@ -6,9 +6,9 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import videojs, { VideoJsPlayer } from 'video.js';
 
-import { appData, getDecodedJwt } from '../../data/appData';
-import { videoSize, VideoUrls } from '../../types/tracks';
-import { VideoXAPIStatement } from '../../XAPI/VideoXAPIStatement';
+import { videoSize, VideoUrls } from 'types/tracks';
+import { VideoXAPIStatement } from 'XAPI/VideoXAPIStatement';
+import { useJwt } from 'data/stores/useJwt';
 
 const messages = defineMessages({
   downloadVideo: {
@@ -40,18 +40,29 @@ const StatusInfo = styled.span`
 type downloadableSize = Extract<videoSize, 1080 | 720 | 480>;
 
 export const DownloadVideo = ({ urls }: { urls: VideoUrls }) => {
+  const { jwt, getDecodedJwt } = useJwt((state) => ({
+    jwt: state.jwt,
+    getDecodedJwt: state.getDecodedJwt,
+  }));
+
+  if (!jwt) {
+    throw new Error('Jwt is required.');
+  }
+
   const resolutions = Object.keys(urls.mp4).map(
     (size) => Number(size) as videoSize,
   );
   const player = useRef<VideoJsPlayer>();
+
   useEffect(() => {
     player.current = Object.values(videojs.getPlayers())[0];
   }, []);
+
   const onDownload = (size: videoSize) => {
     if (player.current) {
       const callback = () => {
         const videoXAPIStatement = new VideoXAPIStatement(
-          appData.jwt!,
+          jwt,
           getDecodedJwt().session_id,
         );
         videoXAPIStatement.setDuration(player.current!.duration());

@@ -4,15 +4,15 @@ import render from 'utils/tests/render';
 
 import { DashboardClassroomLayout } from './index';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         bbbBackground: 'some_url',
         bbbLogo: 'some_url',
       },
     },
-  },
+  }),
 }));
 
 const left = <p>Left content</p>;

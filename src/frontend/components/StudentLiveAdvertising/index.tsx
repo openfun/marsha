@@ -10,16 +10,17 @@ import React, {
 } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { useIntl, defineMessages } from 'react-intl';
+import styled from 'styled-components';
 
 import { ThumbnailDisplayer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail/ThumbnailDisplayer';
-import { appData } from 'data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState } from 'types/tracks';
+
 import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';
 import { StudentLiveRegistration } from './StudentLiveRegistration';
 import { StudentLiveScheduleInfo } from './StudentLiveScheduleInfo';
-import styled from 'styled-components';
-import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 
 const StyledText = styled(Text)`
   padding-left: 10px;
@@ -52,6 +53,7 @@ const messages = defineMessages({
 });
 
 export const StudentLiveAdvertising = () => {
+  const appData = useAppConfig();
   const live = useCurrentLive();
   const size = useContext(ResponsiveContext);
   const intl = useIntl();

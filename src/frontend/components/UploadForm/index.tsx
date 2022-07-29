@@ -13,12 +13,12 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { appData } from 'data/appData';
 import { getResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
 import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -99,6 +99,7 @@ export interface UploadFormProps {
 }
 
 export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
+  const appData = useAppConfig();
   const { uploadManagerState, resetUpload } = useUploadManager();
   const objectStatus = uploadManagerState[objectId]?.status;
 

@@ -1,14 +1,16 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { createSharedLiveMedia } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'token',
-  },
-}));
-
 describe('sideEffects/createSharedLiveMedia', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('creates a new shared live media and returns it', async () => {

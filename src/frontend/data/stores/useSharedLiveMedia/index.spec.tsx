@@ -1,16 +1,17 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { appData } from 'data/appData';
 import { modelName } from 'types/models';
-import { useSharedLiveMedia } from './';
+import { uploadState } from 'types/tracks';
+
+import { useSharedLiveMedia } from '.';
 
 const sharedLiveMedia = {
   id: 'sharedLiveMediaId',
   filename: 'filename.pdf',
   is_ready_to_show: false,
   show_download: true,
-  upload_state: 'ready',
+  upload_state: uploadState.PROCESSING,
   urls: {
     media: 'www.example.com/media-url',
     pages: {
@@ -20,16 +21,15 @@ const sharedLiveMedia = {
     },
   },
   video: 'videoId',
+  active_stamp: null,
+  nb_pages: 3,
+  title: 'my title',
 };
 
-jest.mock('data/appData', () => ({
-  appData: {
-    video: {
-      id: 'videoId',
-      shared_live_medias: [sharedLiveMedia],
-    },
-  },
-}));
+const video = {
+  id: 'videoId',
+  shared_live_medias: [sharedLiveMedia],
+};
 
 describe('stores/useSharedLiveMedia', () => {
   // Build a helper component with an out-of-scope function to let us reach our Hook from
@@ -41,6 +41,10 @@ describe('stores/useSharedLiveMedia', () => {
     return <div />;
   };
 
+  beforeEach(() => {
+    useSharedLiveMedia.getState().addResource(sharedLiveMedia);
+  });
+
   it('parses appData to found video element and its associated shared media live', () => {
     render(<TestComponent />);
     const state = getLatestHookValues();
@@ -49,7 +53,7 @@ describe('stores/useSharedLiveMedia', () => {
       sharedLiveMediaId: sharedLiveMedia,
     });
     expect(state.getSharedLiveMedias({ id: sharedLiveMedia.id })).toEqual(
-      appData.video!.shared_live_medias,
+      video.shared_live_medias,
     );
   });
 
@@ -62,6 +66,7 @@ describe('stores/useSharedLiveMedia', () => {
       id: 'newResource',
     });
   });
+
   it('removes an existing shared media live', () => {
     useSharedLiveMedia.getState().addResource({ id: 'toDelete' } as any);
 
@@ -77,6 +82,7 @@ describe('stores/useSharedLiveMedia', () => {
       useSharedLiveMedia.getState()[modelName.SHAREDLIVEMEDIAS].toDelete,
     ).toBeUndefined();
   });
+
   it('adds multiple shared media live to the store', () => {
     useSharedLiveMedia
       .getState()

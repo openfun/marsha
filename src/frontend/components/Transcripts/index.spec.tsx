@@ -2,16 +2,11 @@ import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { timedTextMode, uploadState } from 'types/tracks';
 import render from 'utils/tests/render';
 
 import { Transcripts } from '.';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'foo',
-  },
-}));
 
 const transcriptContent = `
 WEBVTT
@@ -54,7 +49,11 @@ const transcripts = [
 ];
 
 describe('<Transcripts />', () => {
-  beforeEach(() =>
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'foo',
+    });
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {
@@ -70,8 +69,8 @@ describe('<Transcripts />', () => {
         },
       },
       { method: 'OPTIONS' },
-    ),
-  );
+    );
+  });
 
   afterEach(() => fetchMock.restore());
 

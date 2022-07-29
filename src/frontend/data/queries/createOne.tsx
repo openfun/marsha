@@ -1,15 +1,16 @@
 import { MutationFunction } from 'react-query';
 
-import { appData } from '../appData';
+import { useJwt } from 'data/stores/useJwt';
 
 export const createOne: MutationFunction<
   any,
   { name: string; object: any }
 > = async ({ name, object }) => {
+  const jwt = useJwt.getState().jwt;
   const response = await fetch(`/api/${name}/`, {
     headers: {
       'Content-Type': 'application/json',
-      ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
+      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
     },
     method: 'POST',
     body: JSON.stringify(object),

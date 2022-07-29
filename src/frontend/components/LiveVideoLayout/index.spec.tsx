@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
@@ -14,11 +15,13 @@ const LiveTitleElement = <p>live title element</p>;
 const MainCompo = <p>main component</p>;
 const PanelCompo = <p>panel component</p>;
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
-}));
-
 describe('<LiveVideoLayout />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: jest.fn(),
+    });
+  });
+
   it('renders components with panel [screenshot]', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,

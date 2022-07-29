@@ -13,23 +13,15 @@ import { documentMockFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { LTINav } from '.';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { useJwt } from 'data/stores/useJwt';
 
-let mockModelName: any;
-let mockCanUpdate: boolean;
-let mockMaintenance: boolean;
-jest.mock('data/appData', () => ({
-  appData: {
-    get modelName() {
-      return mockModelName;
-    },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-    maintenance: mockMaintenance,
-  }),
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: jest.fn(),
 }));
+const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
+  typeof useAppConfig
+>;
 
 describe('<LTINav />', () => {
   afterEach(() => {
@@ -42,9 +34,18 @@ describe('<LTINav />', () => {
       const video = videoMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.VIDEOS;
-      mockCanUpdate = true;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.VIDEOS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(
         <Router history={history}>
@@ -66,9 +67,18 @@ describe('<LTINav />', () => {
       const video = videoMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.VIDEOS;
-      mockCanUpdate = false;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.VIDEOS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: false,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(<LTINav object={video} />);
 
@@ -81,9 +91,18 @@ describe('<LTINav />', () => {
       const video = videoMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.VIDEOS;
-      mockCanUpdate = true;
-      mockMaintenance = true;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.VIDEOS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: true,
+          } as any),
+      });
 
       render(<LTINav object={video} />);
 
@@ -96,9 +115,18 @@ describe('<LTINav />', () => {
       const video = videoMockFactory({
         upload_state: uploadState.PENDING,
       });
-      mockModelName = modelName.VIDEOS;
-      mockCanUpdate = true;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.VIDEOS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(<LTINav object={video} />);
 
@@ -114,9 +142,18 @@ describe('<LTINav />', () => {
       const document = documentMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.DOCUMENTS;
-      mockCanUpdate = true;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.DOCUMENTS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(
         wrapInIntlProvider(
@@ -144,9 +181,18 @@ describe('<LTINav />', () => {
       const document = documentMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.DOCUMENTS;
-      mockCanUpdate = false;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.DOCUMENTS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: false,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(<LTINav object={document} />);
 
@@ -159,9 +205,18 @@ describe('<LTINav />', () => {
       const document = documentMockFactory({
         upload_state: uploadState.READY,
       });
-      mockModelName = modelName.DOCUMENTS;
-      mockCanUpdate = true;
-      mockMaintenance = true;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.DOCUMENTS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: true,
+          } as any),
+      });
 
       render(<LTINav object={document} />);
 
@@ -174,9 +229,18 @@ describe('<LTINav />', () => {
       const document = documentMockFactory({
         upload_state: uploadState.PENDING,
       });
-      mockModelName = modelName.DOCUMENTS;
-      mockCanUpdate = true;
-      mockMaintenance = false;
+      mockedUseAppConfig.mockReturnValue({
+        modelName: modelName.DOCUMENTS,
+      } as any);
+      useJwt.setState({
+        getDecodedJwt: () =>
+          ({
+            permissions: {
+              can_update: true,
+            },
+            maintenance: false,
+          } as any),
+      });
 
       render(<LTINav object={document} />);
 

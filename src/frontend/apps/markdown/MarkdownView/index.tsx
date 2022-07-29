@@ -10,7 +10,7 @@
 
 import React from 'react';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { DecodedJwt } from 'types/jwt';
 import { OrganizationAccessRole } from 'types/User';
 import { Nullable } from 'utils/types';
@@ -20,6 +20,7 @@ import MarkdownNotFoundView from 'apps/markdown/MarkdownNotFoundView';
 import MarkdownViewer from 'apps/markdown/MarkdownViewer';
 
 const MarkdownView = () => {
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   let decodedJwt: Nullable<DecodedJwt>;
   try {
     decodedJwt = getDecodedJwt();

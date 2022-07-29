@@ -1,4 +1,4 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { LiveSession } from 'types/tracks';
 
@@ -23,7 +23,7 @@ export const updateLiveSession = async (
   const response = await fetch(endpoint, {
     body: JSON.stringify(body),
     headers: {
-      Authorization: `Bearer ${appData.jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'PATCH',

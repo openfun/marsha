@@ -1,6 +1,6 @@
-import { API_ENDPOINT } from '../../../settings';
-import { LiveModeType, Video } from '../../../types/tracks';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { LiveModeType, Video } from 'types/tracks';
 
 /**
  * Post to an action endpoint that declares the beginning of live video.
@@ -15,7 +15,7 @@ export const initiateLive = async (
     `${API_ENDPOINT}/videos/${video.id}/initiate-live/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

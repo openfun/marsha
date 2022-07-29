@@ -3,6 +3,8 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
 
 import {
@@ -14,12 +16,6 @@ import {
   useJoinClassroomAction,
 } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -28,6 +24,10 @@ let Wrapper: WrapperComponent<Element>;
 
 describe('queries', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {

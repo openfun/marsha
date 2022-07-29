@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { useJwt } from 'data/stores/useJwt';
 import React from 'react';
 
 import { OrganizationAccessRole } from 'types/User';
@@ -8,27 +9,31 @@ import MarkdownView from '.';
 
 let mockCanUpdate: boolean;
 let mockRole: OrganizationAccessRole;
-let mockEnableJwt: boolean;
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'markdown_documents',
-  },
-  getDecodedJwt: () =>
-    mockEnableJwt
-      ? {
-          permissions: {
-            can_update: mockCanUpdate,
-          },
-          roles: [mockRole],
-          consumer_site: 'consumer_site',
-        }
-      : null,
+  }),
 }));
 
 jest.mock('apps/markdown/MarkdownEditor', () => () => <p>MarkdownEditor</p>);
 jest.mock('apps/markdown/MarkdownViewer', () => () => <p>MarkdownViewer</p>);
 
 describe('<MarkdownView />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () => {
+        return {
+          permissions: {
+            can_update: mockCanUpdate,
+          },
+          roles: [mockRole],
+          consumer_site: 'consumer_site',
+        } as any;
+      },
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -36,7 +41,6 @@ describe('<MarkdownView />', () => {
   it('shows editor for instructor', async () => {
     mockCanUpdate = true;
     mockRole = OrganizationAccessRole.INSTRUCTOR;
-    mockEnableJwt = true;
 
     render(<MarkdownView />);
 
@@ -47,7 +51,6 @@ describe('<MarkdownView />', () => {
   it('shows viewer for instructor without editing permission', async () => {
     mockCanUpdate = false;
     mockRole = OrganizationAccessRole.INSTRUCTOR;
-    mockEnableJwt = true;
 
     render(<MarkdownView />);
 
@@ -58,7 +61,6 @@ describe('<MarkdownView />', () => {
   it('shows viewer for student', async () => {
     mockCanUpdate = true; // or false
     mockRole = OrganizationAccessRole.STUDENT;
-    mockEnableJwt = true;
 
     render(<MarkdownView />);
 
@@ -67,9 +69,13 @@ describe('<MarkdownView />', () => {
   });
 
   it('shows not found for student if still draft', async () => {
-    mockCanUpdate = true; // or false
+    mockCanUpdate = false;
     mockRole = OrganizationAccessRole.STUDENT;
-    mockEnableJwt = false;
+    useJwt.setState({
+      getDecodedJwt: () => {
+        throw new Error('failed');
+      },
+    });
 
     render(<MarkdownView />);
 

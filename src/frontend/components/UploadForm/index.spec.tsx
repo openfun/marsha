@@ -16,14 +16,14 @@ import { UploadForm } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('data/appData', () => ({
-  appData: {
-    modelName: 'videos',
-  },
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({ modelName: 'videos' }),
 }));
+
 jest.mock('data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
+
 jest.mock('data/stores/generics', () => ({
   getResource: jest.fn(),
 }));

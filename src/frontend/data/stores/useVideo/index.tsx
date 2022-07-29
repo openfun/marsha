@@ -1,15 +1,14 @@
 import create from 'zustand';
 
-import { modelName } from 'types/models';
-import { StoreState } from 'types/stores';
-import { Video } from 'types/tracks';
-import { Nullable } from 'utils/types';
-import { appData } from 'data/appData';
 import {
   addMultipleResources,
   addResource,
   removeResource,
 } from 'data/stores/actions';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { Video } from 'types/tracks';
+import { Nullable } from 'utils/types';
 
 type VideoStateResource = {
   [modelName.VIDEOS]: {
@@ -55,7 +54,5 @@ export const useVideo = create<VideoState>((set, get) => ({
   },
   removeResource: (video: Video) =>
     set(removeResource(get(), modelName.VIDEOS, video) as VideoStateResource),
-  [modelName.VIDEOS]: {
-    ...(appData.video ? { [appData.video.id]: appData.video } : {}),
-  },
+  [modelName.VIDEOS]: {},
 }));

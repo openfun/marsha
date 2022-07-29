@@ -8,8 +8,8 @@ import render from 'utils/tests/render';
 
 import DashboardClassroomInstructor from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'classrooms',
     resource: {
       id: '1',
@@ -19,7 +19,7 @@ jest.mock('data/appData', () => ({
         bbbBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
 
 jest.mock('apps/bbb/data/bbbAppData', () => ({

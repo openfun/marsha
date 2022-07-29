@@ -2,6 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { timedTextMode, uploadState } from 'types/tracks';
 import { timedTextMockFactory } from 'utils/tests/factories';
@@ -9,14 +10,12 @@ import render from 'utils/tests/render';
 
 import { TimedTextListItem } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'foo',
-  },
-}));
-
 describe('<TimedTextListItem />', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'foo',
+    });
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {

@@ -1,15 +1,16 @@
 import { MutationFunction } from 'react-query';
 
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 
 export const deleteOne: MutationFunction<
   any,
   { name: string; id: string }
 > = async ({ name, id }) => {
+  const jwt = useJwt.getState().jwt;
   const response = await fetch(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',
-      ...(appData.jwt ? { Authorization: `Bearer ${appData.jwt}` } : {}),
+      ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
     },
     method: 'DELETE',
   });

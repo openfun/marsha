@@ -4,20 +4,12 @@ import React from 'react';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
+import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { documentMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { RedirectDocument } from './RedirectDocument';
-
-let mockCanUpdate: boolean;
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-  }),
-}));
 
 describe('RedirectDocument', () => {
   beforeEach(() => jest.resetAllMocks());
@@ -52,7 +44,14 @@ describe('RedirectDocument', () => {
   });
 
   it('redirects to the dashboard when the user has update permission and the document is not ready to show', () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const document = documentMockFactory({
       is_ready_to_show: false,
     });
@@ -82,7 +81,14 @@ describe('RedirectDocument', () => {
   });
 
   it('redirects to the error view when the user has no update permission and the document is not ready to show', () => {
-    mockCanUpdate = false;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const document = documentMockFactory({
       is_ready_to_show: false,
     });

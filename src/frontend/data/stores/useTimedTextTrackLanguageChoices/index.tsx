@@ -1,14 +1,14 @@
 import create from 'zustand';
 
-import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
-import { LanguageChoice } from '../../../types/LanguageChoice';
-import { modelName } from '../../../types/models';
-import { RouteOptions } from '../../../types/RouteOptions';
-import { TimedText } from '../../../types/tracks';
-import { report } from '../../../utils/errors/report';
-import { Maybe } from '../../../utils/types';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { requestStatus } from 'types/api';
+import { LanguageChoice } from 'types/LanguageChoice';
+import { modelName } from 'types/models';
+import { RouteOptions } from 'types/RouteOptions';
+import { TimedText } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { Maybe } from 'utils/types';
 
 type State = {
   choices: Maybe<LanguageChoice[]>;
@@ -18,7 +18,7 @@ type State = {
 export const useTimedTextTrackLanguageChoices = create<State>((set, get) => ({
   choices: undefined,
   getChoices: async () => {
-    const jwt = appData.jwt;
+    const jwt = useJwt.getState().jwt;
     const choices = get().choices;
 
     if (!choices) {

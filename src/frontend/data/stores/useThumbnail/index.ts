@@ -1,11 +1,14 @@
 import create from 'zustand';
 
-import { modelName } from '../../../types/models';
-import { StoreState } from '../../../types/stores';
-import { Thumbnail } from '../../../types/tracks';
-import { Nullable } from '../../../utils/types';
-import { appData } from '../../appData';
-import { addMultipleResources, addResource, removeResource } from '../actions';
+import {
+  addMultipleResources,
+  addResource,
+  removeResource,
+} from 'data/stores/actions';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { Thumbnail } from 'types/tracks';
+import { Nullable } from 'utils/types';
 
 type ThumbnailStateResource = {
   [modelName.THUMBNAILS]: {
@@ -19,13 +22,6 @@ type ThumbnailState = StoreState<Thumbnail> &
   };
 
 export const useThumbnail = create<ThumbnailState>((set, get) => {
-  let thumbnails = {};
-  if (appData.video && appData.video.thumbnail !== null) {
-    thumbnails = {
-      [appData.video.thumbnail.id]: appData.video.thumbnail,
-    };
-  }
-
   return {
     addMultipleResources: (thumbnailsToAdd: Thumbnail[]) =>
       set(
@@ -59,6 +55,6 @@ export const useThumbnail = create<ThumbnailState>((set, get) => {
           thumbnail,
         ) as ThumbnailStateResource,
       ),
-    [modelName.THUMBNAILS]: thumbnails,
+    [modelName.THUMBNAILS]: {},
   };
 });

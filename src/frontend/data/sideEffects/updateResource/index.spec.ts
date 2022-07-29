@@ -1,12 +1,18 @@
 import fetchMock from 'fetch-mock';
 
-import { updateResource } from '.';
-import { modelName } from '../../../types/models';
-import { Video } from '../../../types/tracks';
+import { useJwt } from 'data/stores/useJwt';
+import { modelName } from 'types/models';
+import { Video } from 'types/tracks';
 
-jest.mock('../../appData', () => ({ appData: { jwt: 'foo' } }));
+import { updateResource } from '.';
 
 describe('sideEffects/updateResource', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   const video = {

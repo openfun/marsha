@@ -2,15 +2,17 @@ import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route } from 'react-router-dom';
 
 import { Loader } from 'components/Loader';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
 
 const MarkdownNotFoundView = lazy(() => import('./MarkdownNotFoundView'));
 const MarkdownView = lazy(() => import('./MarkdownView'));
 
 const notFoundPath = '/errors/not-found';
 
-export const Routes = () => {
+const Routes = () => {
+  const isFeatureEnabled = useIsFeatureEnabled();
+
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
@@ -28,3 +30,5 @@ export const Routes = () => {
     </Suspense>
   );
 };
+
+export default Routes;

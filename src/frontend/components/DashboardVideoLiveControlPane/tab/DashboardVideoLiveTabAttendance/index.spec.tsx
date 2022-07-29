@@ -1,4 +1,5 @@
 import { screen, waitFor } from '@testing-library/react';
+import { useJwt } from 'data/stores/useJwt';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
@@ -11,16 +12,16 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveTabAttendance } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
+
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -28,6 +29,12 @@ const mockedVideo = videoMockFactory({ live_state: liveState.RUNNING });
 
 describe('<DashboardVideoLiveTabAttendance />', () => {
   jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
 
   afterEach(() => fetchMock.restore());
 

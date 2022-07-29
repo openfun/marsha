@@ -13,7 +13,6 @@ import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
-import { appData } from 'data/appData';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
@@ -26,6 +25,7 @@ import { convertLiveToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -43,8 +43,10 @@ interface StudentLiveWrapperProps {
 export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   playerType,
 }) => {
-  const live = useCurrentLive();
   const intl = useIntl();
+  const appData = useAppConfig();
+  const live = useCurrentLive();
+
   const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
     (state) => ({
       configPanel: state.setAvailableItems,
@@ -73,7 +75,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         window.clearInterval(interval);
       };
     }
-  }, [isParticipantOnstage, intl.locale]);
+  }, [isParticipantOnstage, intl.locale, appData]);
 
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled

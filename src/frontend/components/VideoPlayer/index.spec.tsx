@@ -56,10 +56,8 @@ const mockVideo = videoMockFactory({
     },
   },
 });
-jest.mock('../../data/appData', () => ({
-  appData: {
-    video: mockVideo,
-  },
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({ video: mockVideo }),
 }));
 
 describe('VideoPlayer', () => {

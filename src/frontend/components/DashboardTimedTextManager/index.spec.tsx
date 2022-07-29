@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { defineMessages } from 'react-intl';
 
+import { useJwt } from 'data/stores/useJwt';
 import { TimedText, timedTextMode, uploadState } from 'types/tracks';
 import render from 'utils/tests/render';
 
@@ -10,13 +11,11 @@ import { DashboardTimedTextManager } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'foo',
-  },
-}));
-
 describe('<DashboardTimedTextManager />', () => {
+  beforeEach(() => {
+    useJwt.setState({ jwt: 'foo' });
+  });
+
   it('renders the message & tracks it is passed', async () => {
     fetchMock.mock(
       '/api/timedtexttracks/',

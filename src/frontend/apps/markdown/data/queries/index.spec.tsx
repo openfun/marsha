@@ -3,6 +3,8 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
 
 import {
@@ -11,13 +13,7 @@ import {
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
-} from './index';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
+} from '.';
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
@@ -27,6 +23,10 @@ let Wrapper: WrapperComponent<Element>;
 
 describe('queries', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {

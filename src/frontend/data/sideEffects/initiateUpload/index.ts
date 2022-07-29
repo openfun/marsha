@@ -1,7 +1,7 @@
-import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
-import { UploadableObject } from '../../../types/tracks';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { modelName } from 'types/models';
+import { UploadableObject } from 'types/tracks';
 
 /**
  * Post to an action endpoint that declares the beginning of an upload. Returns the AWS upload
@@ -23,7 +23,7 @@ export const initiateUpload = async (
         mimetype,
       }),
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

@@ -1,17 +1,19 @@
-import React from 'react';
-import { NavLink } from 'react-router-dom';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { PLAYER_ROUTE } from '../routes';
-import { appData, getDecodedJwt } from '../../data/appData';
 import { Box, Nav } from 'grommet';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
-import { uploadState, Video } from '../../types/tracks';
-import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { useVideo } from '../../data/stores/useVideo';
-import { useDocument } from '../../data/stores/useDocument';
-import { PLAYLIST_ROUTE } from '../PlaylistPortability/route';
+
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
+import { PLAYER_ROUTE } from 'components/routes';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { useJwt } from 'data/stores/useJwt';
+import { useDocument } from 'data/stores/useDocument';
+import { useVideo } from 'data/stores/useVideo';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { uploadState, Video } from 'types/tracks';
 
 const messages = defineMessages({
   linkDashboard: {
@@ -60,6 +62,8 @@ interface LTINavProps {
  */
 
 export const LTINav = ({ object: baseObject }: LTINavProps) => {
+  const appData = useAppConfig();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const videoState = useVideo();
   const documentState = useDocument();
   const object =

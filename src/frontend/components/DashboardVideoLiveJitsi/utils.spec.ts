@@ -1,3 +1,4 @@
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveModeType, liveState } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
@@ -9,14 +10,12 @@ const node = jest.fn() as unknown as HTMLDivElement;
 
 const mockJitsi = jest.fn();
 
-let mockDecodedJwtToken = {};
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => mockDecodedJwtToken,
-}));
-
 describe('DashboardVideoLiveJitsi/utils', () => {
   beforeEach(() => {
-    mockDecodedJwtToken = {};
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     global.JitsiMeetExternalAPI = mockJitsi;
   });
 
@@ -302,11 +301,14 @@ describe('DashboardVideoLiveJitsi/utils', () => {
         video: video.id,
       },
     });
-    mockDecodedJwtToken = {
-      user: {
-        username: 'user name',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            username: 'user name',
+          },
+        } as any),
+    });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
 
@@ -388,11 +390,14 @@ describe('DashboardVideoLiveJitsi/utils', () => {
       },
       live_state: liveState.RUNNING,
     });
-    mockDecodedJwtToken = {
-      user: {
-        username: 'user name',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            username: 'user name',
+          },
+        } as any),
+    });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
 
@@ -477,11 +482,14 @@ describe('DashboardVideoLiveJitsi/utils', () => {
       live_state: liveState.RUNNING,
       join_mode: JoinMode.FORCED,
     });
-    mockDecodedJwtToken = {
-      user: {
-        username: 'user name',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            username: 'user name',
+          },
+        } as any),
+    });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
 
@@ -566,11 +574,14 @@ describe('DashboardVideoLiveJitsi/utils', () => {
       live_state: liveState.RUNNING,
       join_mode: JoinMode.FORCED,
     });
-    mockDecodedJwtToken = {
-      user: {
-        username: 'user name',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            username: 'user name',
+          },
+        } as any),
+    });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, true, node);
 

@@ -4,7 +4,7 @@ import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
 import { ViewersList } from 'components/ViewersList';
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import {
   LivePanelItem,
   useLivePanelState,
@@ -27,6 +27,7 @@ const RelativeBox = styled(Box)`
 
 export const LiveVideoPanel = () => {
   const size = useContext(ResponsiveContext);
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
     (state) => ({
       currentItem: state.currentItem,

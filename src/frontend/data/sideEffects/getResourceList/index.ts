@@ -1,9 +1,9 @@
-import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from '../../../settings';
-import { APIListCommonRequestParams, requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
-import { report } from '../../../utils/errors/report';
-import { appData } from '../../appData';
-import { addMultipleResources } from '../../stores/generics';
+import { addMultipleResources } from 'data/stores/generics';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from 'settings';
+import { APIListCommonRequestParams, requestStatus } from 'types/api';
+import { modelName } from 'types/models';
+import { report } from 'utils/errors/report';
 
 /**
  * Makes and handles the GET request for a resource list. First returns a curried function that
@@ -24,7 +24,7 @@ export const getResourceList = async (
       `${endpoint}?limit=${params.limit}&offset=${params.offset}`,
       {
         headers: {
-          Authorization: `Bearer ${appData.jwt}`,
+          Authorization: `Bearer ${useJwt.getState().jwt}`,
           'Content-Type': 'application/json',
         },
       },
