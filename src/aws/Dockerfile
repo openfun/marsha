@@ -10,6 +10,8 @@ FROM amazon/aws-lambda-nodejs:14 as core
 ARG POPPLER_VERSION
 ARG POPPLER_DATA_VERSION
 ARG OPENJPEG_VERSION
+ARG CAIRO_VERSION
+ARG PIXMAN_VERSION
 
 # COPY mediainfo in core stage
 COPY --from=mediainfo /tmp/mediainfo/bin/mediainfo /opt/bin/mediainfo
@@ -45,11 +47,17 @@ RUN yum install -y \
    libjpeg-devel \
    libpng-devel \
    libtiff-devel \
+   libXrender-devel\
    make \
    tar \
    xz \
-   zip && \
-## download poppler, poppler-data and openjpeg
+   zip \
+   zlib-devel && \
+## download cairo, poppler, poppler-data and openjpeg
+    curl -k -o cairo.tar.gz https://cairographics.org/snapshots/cairo-${CAIRO_VERSION}.tar.xz && \
+    tar -xf cairo.tar.gz && \
+    curl -k -o pixman.tar.gz https://cairographics.org/releases/pixman-${PIXMAN_VERSION}.tar.gz && \
+    tar -xf pixman.tar.gz && \
     curl -k -o poppler.tar.xz https://poppler.freedesktop.org/poppler-${POPPLER_VERSION}.tar.xz && \
     tar -xf poppler.tar.xz && \
     curl -k -o poppler-data.tar.gz https://poppler.freedesktop.org/poppler-data-${POPPLER_DATA_VERSION}.tar.gz && \
@@ -73,9 +81,25 @@ RUN yum install -y \
     -DENABLE_LIBOPENJPEG=openjpeg2 -DENABLE_CMS=none  -DBUILD_SHARED_LIBS=OFF && \
     make && \
     make install && cd /root && \
+## deinstall cairo
+    yum erase -y \
+        cairo-devel \
+        cairo \
+        pixman && \
+## install pixman
+    cd pixman-${PIXMAN_VERSION} && \
+    PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --prefix=/usr/local && \
+    make && \
+    make install && \
+    cd /root && \
+## install cairo
+    cd cairo-${CAIRO_VERSION} && \
+    PKG_CONFIG_PATH=/usr/local/lib/pkgconfig ./configure --prefix=/usr/local && \
+    make && \
+    make install && \
+    cd /root && \
 ## Uninstall packages needed to compile poppler
     yum erase -y \
-    cairo-devel \
     cmake \
     cmake3 \
     fontconfig-devel \
@@ -84,10 +108,12 @@ RUN yum install -y \
     libjpeg-devel \
     libpng-devel \
     libtiff-devel \
+    libXrender-devel\
     make \
     tar \
     xz \
-    zip && \
+    zip \
+    zlib-devel && \
 ## Cleanup yum caches
     yum clean all  && \
     rm -rf /var/cache/yum
