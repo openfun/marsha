@@ -1587,6 +1587,9 @@ class VideoLTIViewTestCase(TestCase):
                     },
                     "svg": {"icons": "/static/svg/icons.svg"},
                 },
+                "player": "videojs",
+                "uploadPollInterval": "60",
+                "attendanceDelay": 60000,
             },
         )
 
