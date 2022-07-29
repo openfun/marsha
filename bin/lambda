@@ -59,9 +59,11 @@ TAG: optional tag used for the marsha/lambda image (default: production)
   tag="${1:-production}"
   target="${2:-production}"
   DOCKER_BUILDKIT=1 docker build \
-    --build-arg POPPLER_VERSION="${POPPLER_VERSION:-21.12.0}" \
+    --build-arg POPPLER_VERSION="${POPPLER_VERSION:-22.07.0}" \
     --build-arg POPPLER_DATA_VERSION="${POPPLER_DATA_VERSION:-0.4.11}" \
     --build-arg OPENJPEG_VERSION="${OPENJPEG_VERSION:-2.4.0}" \
+    --build-arg CAIRO_VERSION="${CAIRO_VERSION:-1.17.4}" \
+    --build-arg PIXMAN_VERSION="${PIXMAN_VERSION:-0.40.0}" \
     -t "${LAMBDA_IMAGE_NAME}:${tag}" --target "${target}" "${BASE_DIR}"/../src/aws/
 }
 

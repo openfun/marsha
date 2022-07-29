@@ -33,6 +33,7 @@ managing on-stage request
 field of liveSession
 - Redirect to VOD dashboard when the live_state is ENDED and the 
   upload_state is pending
+- Upgrade cairo version in lambda-convert to generate better SVG
 
 ## [4.0.0-beta.7] - 2022-06-27
 
