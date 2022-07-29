@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';
@@ -14,13 +15,13 @@ const mockedUseSetDisplayName = useSetDisplayName as jest.MockedFunction<
   typeof useSetDisplayName
 >;
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    user: {},
-  }),
-}));
-
 describe('<DisplayNameForm />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () => ({ user: {} } as any),
+    });
+  });
+
   it('does not render the layer', () => {
     mockedUseSetDisplayName.mockReturnValue([false, jest.fn()]);
 

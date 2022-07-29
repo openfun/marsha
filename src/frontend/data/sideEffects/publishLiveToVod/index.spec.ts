@@ -1,16 +1,17 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 
 import { publishLiveToVod } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 describe('publishLiveToVod', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('returns the updated video on success', async () => {

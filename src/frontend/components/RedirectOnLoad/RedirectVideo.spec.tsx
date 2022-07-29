@@ -4,6 +4,7 @@ import React from 'react';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
+import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { LiveModeType } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -11,18 +12,16 @@ import render from 'utils/tests/render';
 
 import { RedirectVideo } from './RedirectVideo';
 
-let mockCanUpdate: boolean;
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-  }),
-}));
-
 describe('RedirectVideo', () => {
   it('redirects to the dashboard when the video is a live and user has update permission', () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       is_ready_to_show: true,
       live_type: LiveModeType.JITSI,
@@ -53,8 +52,15 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the player when the video is ready to show', () => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const liveTypes = [null, LiveModeType.JITSI];
-    mockCanUpdate = false;
     const video = videoMockFactory({
       is_ready_to_show: true,
       live_type: liveTypes[Math.floor(Math.random() * liveTypes.length)],
@@ -85,7 +91,14 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the dashboard when the user has update permission', () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       is_ready_to_show: false,
     });
@@ -115,7 +128,14 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the error view when the user has no update permission and the video is not ready to show', () => {
-    mockCanUpdate = false;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       is_ready_to_show: false,
     });
@@ -147,7 +167,14 @@ describe('RedirectVideo', () => {
   it('redirects to the player view when the starting date is set to past', () => {
     const startingAtPast = new Date();
     startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
-    mockCanUpdate = false;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       is_ready_to_show: false,
       starting_at: startingAtPast.toISOString(),
@@ -180,7 +207,14 @@ describe('RedirectVideo', () => {
   it('redirects to the player view when the starting date is set to future', () => {
     const startingAt = new Date();
     startingAt.setDate(startingAt.getDate() + 10);
-    mockCanUpdate = false;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       is_ready_to_show: false,
       starting_at: startingAt.toISOString(),

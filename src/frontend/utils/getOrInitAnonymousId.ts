@@ -1,9 +1,9 @@
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { checkLtiToken } from './checkLtiToken';
 import { getAnonymousId, setAnonymousId } from './localstorage';
 
 export const getOrInitAnonymousId = () => {
-  const decodedJwt = getDecodedJwt();
+  const decodedJwt = useJwt.getState().getDecodedJwt();
   let anonymousId = decodedJwt.user?.anonymous_id;
   if (anonymousId) {
     setAnonymousId(anonymousId);

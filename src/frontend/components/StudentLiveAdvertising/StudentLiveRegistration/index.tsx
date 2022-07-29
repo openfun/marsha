@@ -4,7 +4,6 @@ import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
-import { getDecodedJwt } from 'data/appData';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
@@ -13,6 +12,7 @@ import { Maybe } from 'utils/types';
 import { RegistrationForm } from './RegistrationForm';
 import { useLiveSessionsQuery } from 'data/queries';
 import { useLiveSession } from 'data/stores/useLiveSession';
+import { useJwt } from 'data/stores/useJwt';
 
 const messages = defineMessages({
   formTitle: {
@@ -36,7 +36,7 @@ const messages = defineMessages({
 
 export const StudentLiveRegistration = () => {
   const intl = useIntl();
-  const decodedJWT = getDecodedJwt();
+  const decodedJWT = useJwt((state) => state.getDecodedJwt)();
   const userEmail = useMemo(() => {
     return decodedJWT.user?.email ?? undefined;
   }, [decodedJWT]);

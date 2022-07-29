@@ -1,7 +1,7 @@
-import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
-import { Resource } from '../../../types/tracks';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { modelName } from 'types/models';
+import { Resource } from 'types/tracks';
 
 export async function updateResource<R extends Resource>(
   resource: R,
@@ -12,7 +12,7 @@ export async function updateResource<R extends Resource>(
   const response = await fetch(endpoint, {
     body: JSON.stringify(resource),
     headers: {
-      Authorization: `Bearer ${appData.jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'PUT',

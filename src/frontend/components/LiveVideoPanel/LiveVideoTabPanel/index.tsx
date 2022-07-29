@@ -5,10 +5,10 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { RingingBellSVG } from 'components/SVGIcons/RingingBellSVG';
-import { getDecodedJwt } from 'data/appData';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { LivePanelItem } from 'data/stores/useLivePanelState';
 import { colors as themeColors, theme } from 'utils/theme/theme';
+import { useJwt } from 'data/stores/useJwt';
 
 interface StyledTabProps {
   selected?: boolean;
@@ -96,6 +96,8 @@ export const LiveVideoTabPanel = ({
   selected,
 }: LiveVideoTabPanelProps) => {
   const video = useCurrentVideo();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+
   const canUpdate = getDecodedJwt().permissions.can_update;
 
   const displayRingingBell =

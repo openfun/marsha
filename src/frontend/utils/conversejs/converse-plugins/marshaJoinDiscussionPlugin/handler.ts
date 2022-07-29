@@ -1,14 +1,14 @@
-import { getDecodedJwt } from 'data/appData';
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
-import { EventType, MessageType } from 'types/XMPP';
 import {
   addParticipantAskingToJoin,
   moveParticipantToDiscussion,
   removeParticipantAskingToJoin,
   removeParticipantFromDiscussion,
 } from 'data/sideEffects/updateLiveParticipants';
+import { useJwt } from 'data/stores/useJwt';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { useVideo } from 'data/stores/useVideo';
+import { Video } from 'types/tracks';
+import { EventType, MessageType } from 'types/XMPP';
 
 export default async function marshaJoinDiscussionPluginHandler(
   messageStanza: any,
@@ -16,7 +16,7 @@ export default async function marshaJoinDiscussionPluginHandler(
   video: Video,
 ) {
   if (
-    getDecodedJwt().permissions.can_update &&
+    useJwt.getState().getDecodedJwt().permissions.can_update &&
     messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
     messageStanza.getAttribute('event') === EventType.PARTICIPANT_ASK_TO_JOIN
   ) {
@@ -26,7 +26,7 @@ export default async function marshaJoinDiscussionPluginHandler(
       name: username,
     });
   } else if (
-    getDecodedJwt().permissions.can_update &&
+    useJwt.getState().getDecodedJwt().permissions.can_update &&
     messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
     messageStanza.getAttribute('event') === EventType.ACCEPTED
   ) {
@@ -52,7 +52,7 @@ export default async function marshaJoinDiscussionPluginHandler(
   ) {
     useParticipantWorkflow.getState().setRejected();
   } else if (
-    getDecodedJwt().permissions.can_update &&
+    useJwt.getState().getDecodedJwt().permissions.can_update &&
     messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
     messageStanza.getAttribute('event') === EventType.REJECTED
   ) {
@@ -64,14 +64,14 @@ export default async function marshaJoinDiscussionPluginHandler(
   ) {
     useParticipantWorkflow.getState().setKicked();
   } else if (
-    getDecodedJwt().permissions.can_update &&
+    useJwt.getState().getDecodedJwt().permissions.can_update &&
     messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
     messageStanza.getAttribute('event') === EventType.KICKED
   ) {
     const participant = JSON.parse(messageStanza.getAttribute('participant'));
     await removeParticipantFromDiscussion(video, participant);
   } else if (
-    getDecodedJwt().permissions.can_update &&
+    useJwt.getState().getDecodedJwt().permissions.can_update &&
     messageStanza.getAttribute('type') === MessageType.GROUPCHAT &&
     messageStanza.getAttribute('event') === EventType.LEAVE
   ) {

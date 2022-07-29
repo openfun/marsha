@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -11,17 +12,17 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveWidgetToolsAndApplications } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<DashboardVideoLiveWidgetToolsAndApplications />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

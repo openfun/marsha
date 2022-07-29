@@ -1,17 +1,12 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
 import { getResource } from 'data/sideEffects/getResource';
 import { modelName } from 'types/models';
 
 import { videoMockFactory } from './tests/factories';
 import { resumeLive } from './resumeLive';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
 
 jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn(),
@@ -21,6 +16,10 @@ const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
 
 describe('resumeLive', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     jest.clearAllMocks();
     jest.useFakeTimers();
   });

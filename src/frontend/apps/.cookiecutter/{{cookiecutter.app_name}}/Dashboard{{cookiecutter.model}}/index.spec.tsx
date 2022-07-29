@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
 import {
   ltiInstructorTokenMockFactory,
@@ -14,19 +14,16 @@ import render from 'utils/tests/render';
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{cookiecutter.app_name}}/utils/tests/factories';
 import Dashboard{{cookiecutter.model}} from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: '{{cookiecutter.model_name}}',
     resource: {
       id: '1',
     },
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
 
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
+const mockGetDecodedJwt = jest.fn();
 
 jest.mock('apps/{{cookiecutter.app_name}}/data/{{cookiecutter.app_name}}AppData', () => ({
   {{cookiecutter.app_name}}AppData: {
@@ -39,6 +36,12 @@ jest.mock('apps/{{cookiecutter.app_name}}/data/{{cookiecutter.app_name}}AppData'
 }));
 
 describe('<Dashboard{{cookiecutter.model}} />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: mockGetDecodedJwt,
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

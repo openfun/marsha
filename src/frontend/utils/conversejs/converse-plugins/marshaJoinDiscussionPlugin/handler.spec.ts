@@ -1,26 +1,15 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
+import { useVideo } from 'data/stores/useVideo';
+import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
+import { EventType, MessageType } from 'types/XMPP';
 import {
   participantMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import { useVideo } from 'data/stores/useVideo';
-import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { EventType, MessageType } from 'types/XMPP';
 
 import marshaJoinDiscussionPluginHandler from './handler';
-
-let mockCanUpdate: boolean;
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: mockCanUpdate,
-    },
-  }),
-}));
 
 const mockStanza = (
   type: string,
@@ -57,7 +46,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   afterEach(() => fetchMock.restore());
 
   it('executes addParticipantAskingToJoin', async () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory();
     const stanza = mockStanza(
       MessageType.GROUPCHAT,
@@ -91,7 +88,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('executes moveParticipantToDiscussion', async () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       participants_asking_to_join: [targetParticipant],
     });
@@ -125,7 +130,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('updates video with jitsi info and accepts a user', async () => {
-    mockCanUpdate = false;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory();
     const jitsi = {
       domain: 'meet.jit.si',
@@ -154,7 +167,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('rejects a user asking to join', async () => {
-    mockCanUpdate = false;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory();
     const stanza = mockStanza(
       MessageType.EVENT,
@@ -171,7 +192,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('executes removeParticipantAskingToJoin', async () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       participants_asking_to_join: [targetParticipant],
     });
@@ -205,7 +234,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('rejects a user in discussion', async () => {
-    mockCanUpdate = false;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
     const video = videoMockFactory();
     const stanza = mockStanza(
       MessageType.EVENT,
@@ -222,7 +259,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('executes removeParticipantFromDiscussion when kicked', async () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       participants_in_discussion: [targetParticipant],
     });
@@ -256,7 +301,15 @@ describe('marshaJoinDiscussionPluginHandler', () => {
   });
 
   it('executes removeParticipantFromDiscussion when leaving', async () => {
-    mockCanUpdate = true;
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
     const video = videoMockFactory({
       participants_in_discussion: [fromParticipant],
     });

@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -7,24 +8,25 @@ import { InstructorView } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-let mockDecodedJwt: any;
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'videos',
-  },
-  getDecodedJwt: () => mockDecodedJwt,
+  }),
 }));
 
 describe('<InstructorView />', () => {
   const video = videoMockFactory();
 
   it('renders the instructor controls', () => {
-    mockDecodedJwt = {
-      maintenance: false,
-      permissions: {
-        can_update: true,
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          maintenance: false,
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
 
     const { getByText } = render(
       <InstructorView resource={video}>
@@ -37,12 +39,15 @@ describe('<InstructorView />', () => {
   });
 
   it('removes the button when permissions.can_update is set to false', () => {
-    mockDecodedJwt = {
-      maintenance: false,
-      permissions: {
-        can_update: false,
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          maintenance: false,
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
 
     const { getByText, queryByText } = render(
       <InstructorView resource={video}>
@@ -57,12 +62,15 @@ describe('<InstructorView />', () => {
   });
 
   it('removes the button when permissions.maintenance is set to true', () => {
-    mockDecodedJwt = {
-      maintenance: true,
-      permissions: {
-        can_update: true,
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          maintenance: true,
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
 
     const { getByText, queryByText } = render(
       <InstructorView resource={video}>

@@ -2,8 +2,10 @@ import { cleanup, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
+import { DecodedJwt } from 'types/jwt';
 import { modelName } from 'types/models';
 import {
   LiveModeType,
@@ -18,8 +20,8 @@ import render from 'utils/tests/render';
 import { DashboardVideoWrapper } from '.';
 
 const mockedAppName = modelName.VIDEOS;
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: mockedAppName,
     video: {
       id: 'dd44',
@@ -32,14 +34,9 @@ jest.mock('data/appData', () => ({
         liveBackground: 'path/to/image.png',
       },
     },
-  },
-  getDecodedJwt: () => ({
-    maintenance: false,
-    permissions: {
-      can_update: true,
-    },
   }),
 }));
+
 jest.mock('components/DashboardVideoPaneStats', () => ({
   DashboardVideoPaneStats: (props: { video: Video }) => (
     <p>{`Stats for ${props.video.id}`}</p>
@@ -55,6 +52,16 @@ const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
 describe('<DashboardVideoWrapper />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          maintenance: false,
+          permissions: {
+            can_update: true,
+          },
+        } as DecodedJwt),
+    });
 
     fetchMock.mock(
       '/api/timedtexttracks/',

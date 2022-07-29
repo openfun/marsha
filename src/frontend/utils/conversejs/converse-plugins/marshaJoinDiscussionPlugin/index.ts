@@ -1,6 +1,5 @@
-import { appData, getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { useVideo } from 'data/stores/useVideo';
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
 import { EventType, MessageType, XMPP } from 'types/XMPP';
@@ -10,7 +9,7 @@ import marshaJoinDiscussionPluginHandler from './handler';
 
 const PLUGIN_NAME = 'marsha-join-discussion-plugin';
 
-const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
+const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
   converse.plugins.add(PLUGIN_NAME, {
     dependencies: ['converse-muc'],
     initialize() {
@@ -53,7 +52,6 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
           async (messageStanza: any) => {
             const jid = messageStanza.getAttribute('from');
             const username = converse.env.Strophe.getResourceFromJid(jid);
-            const video = useVideo.getState().getVideo(appData.video!);
             return await marshaJoinDiscussionPluginHandler(
               messageStanza,
               username,
@@ -94,10 +92,10 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
 
       const acceptParticipantToJoin = (
         participant: Participant,
-        video: Video,
+        aVideo: Video,
       ) => {
         // only instructors or admin have update permissions
-        if (!getDecodedJwt().permissions.can_update) {
+        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
           return;
         }
 
@@ -107,7 +105,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
           to: participant.id,
           type: MessageType.EVENT,
           event: EventType.ACCEPT,
-          jitsi: JSON.stringify(video.live_info.jitsi),
+          jitsi: JSON.stringify(aVideo.live_info.jitsi),
         });
         _converse.connection.send(msg);
 
@@ -124,7 +122,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
 
       const rejectParticipantToJoin = (participant: Participant) => {
         // only instructors or admin have update permissions
-        if (!getDecodedJwt().permissions.can_update) {
+        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
           return;
         }
         const msg = converse.env.$msg({
@@ -147,7 +145,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP) =>
 
       const kickParticipant = (participant: Participant) => {
         // only instructors or admin have update permissions
-        if (!getDecodedJwt().permissions.can_update) {
+        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
           return;
         }
         const msg = converse.env.$msg({

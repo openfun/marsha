@@ -9,8 +9,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TeacherLiveRecordingActions } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 let queryClient: QueryClient;

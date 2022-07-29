@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
 import React, { Suspense } from 'react';
 
-import { appData } from 'data/appData';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { LiveModeType, liveState, uploadState } from 'types/tracks';
 import {
@@ -17,13 +16,17 @@ import render from 'utils/tests/render';
 
 import { SelectContent, SelectContentTabProps } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    new_document_url: 'https://example.com/lti/documents/',
-    new_video_url: 'https://example.com/lti/videos/',
-    lti_select_form_action_url: '/lti/select/',
-    lti_select_form_data: {},
-  },
+const mockAppData = {
+  new_document_url: 'https://example.com/lti/documents/',
+  new_video_url: 'https://example.com/lti/videos/',
+  lti_select_form_action_url: '/lti/select/',
+  lti_select_form_data: {},
+  documents: undefined,
+  videos: undefined,
+};
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppconfig: () => mockAppData,
 }));
 
 jest.mock('components/Loader', () => ({
@@ -93,6 +96,7 @@ jest.mock(
  * Mock available app type in the front to provide the app used in the test
  */
 jest.mock('types/AppData.ts', () => ({
+  ...jest.requireActual('types/AppData.ts'),
   appNames: {
     custom_app: 'custom_app',
     other_custom_app: 'other_custom_app',
@@ -103,8 +107,8 @@ jest.mock('types/AppData.ts', () => ({
  * Mock appConfig to override real config because enums are mock
  * and real values don't exist anymore
  */
-jest.mock('data/appConfigs.ts', () => ({
-  appConfigs: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 window.HTMLFormElement.prototype.submit = jest.fn();
@@ -162,10 +166,10 @@ describe('<SelectContent />', () => {
             live_type: LiveModeType.JITSI,
           }),
         ]}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
 
@@ -262,10 +266,10 @@ describe('<SelectContent />', () => {
             },
           }),
         ]}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
     userEvent.click(screen.getByRole('tab', { name: /videos/i }));
@@ -298,10 +302,10 @@ describe('<SelectContent />', () => {
             },
           }),
         ]}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
 
@@ -335,10 +339,10 @@ describe('<SelectContent />', () => {
             },
           }),
         ]}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
 
@@ -361,10 +365,10 @@ describe('<SelectContent />', () => {
             urls: null,
           }),
         ]}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
 
@@ -387,7 +391,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -433,7 +437,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -481,7 +485,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -529,7 +533,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -573,12 +577,12 @@ describe('<SelectContent />', () => {
     const { elementContainer: container } = render(
       <SelectContent
         playlist={playlist}
-        documents={appData.documents}
-        videos={appData.videos}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        documents={mockAppData.documents}
+        videos={mockAppData.videos}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
     act(() => {
@@ -631,12 +635,12 @@ describe('<SelectContent />', () => {
     const { elementContainer: container } = render(
       <SelectContent
         playlist={playlist}
-        documents={appData.documents}
-        videos={appData.videos}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
-        lti_select_form_data={appData.lti_select_form_data!}
+        documents={mockAppData.documents}
+        videos={mockAppData.videos}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
     userEvent.click(screen.getByRole('tab', { name: /videos/i }));
@@ -685,13 +689,13 @@ describe('<SelectContent />', () => {
     const { elementContainer: container } = render(
       <SelectContent
         playlist={playlist}
-        documents={appData.documents}
-        videos={appData.videos}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        documents={mockAppData.documents}
+        videos={mockAppData.videos}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
-          ...appData.lti_select_form_data!,
+          ...mockAppData.lti_select_form_data!,
           activity_title: 'Activity title',
           activity_description: 'Activity description',
         }}
@@ -747,13 +751,13 @@ describe('<SelectContent />', () => {
     const { elementContainer: container } = render(
       <SelectContent
         playlist={playlist}
-        documents={appData.documents}
-        videos={appData.videos}
-        new_document_url={appData.new_document_url}
-        new_video_url={appData.new_video_url}
-        lti_select_form_action_url={appData.lti_select_form_action_url!}
+        documents={mockAppData.documents}
+        videos={mockAppData.videos}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
         lti_select_form_data={{
-          ...appData.lti_select_form_data!,
+          ...mockAppData.lti_select_form_data!,
           activity_title: '',
           activity_description: '',
         }}
@@ -799,7 +803,7 @@ describe('<SelectContent />', () => {
     const { elementContainer: container } = render(
       <Suspense fallback="Loading...">
         <SelectContent
-          lti_select_form_action_url={appData.lti_select_form_action_url!}
+          lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
           lti_select_form_data={{
             lti_response_url: 'https://example.com/lti',
             lti_message_type: 'ContentItemSelection',

@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
@@ -13,13 +14,16 @@ jest.mock('data/stores/useLiveModale', () => ({
 }));
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
-}));
 
 jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
 describe('<TeacherLiveLifecycleControls />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
+
   it('renders info when you are not an jitsi moderator', () => {
     const video = videoMockFactory({ live_state: liveState.IDLE });
 

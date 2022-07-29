@@ -10,8 +10,8 @@ import render from 'utils/tests/render';
 
 import DashboardClassroomForm from './index';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'classrooms',
     resource: {
       id: '1',
@@ -21,7 +21,7 @@ jest.mock('data/appData', () => ({
         bbbBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
 
 Settings.defaultLocale = 'en';

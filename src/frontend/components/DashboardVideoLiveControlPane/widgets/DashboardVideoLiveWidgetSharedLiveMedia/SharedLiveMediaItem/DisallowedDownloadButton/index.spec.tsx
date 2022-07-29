@@ -4,23 +4,24 @@ import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { report } from 'utils/errors/report';
 import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { DisallowedDownloadButton } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<DisallowedDownloadButton />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

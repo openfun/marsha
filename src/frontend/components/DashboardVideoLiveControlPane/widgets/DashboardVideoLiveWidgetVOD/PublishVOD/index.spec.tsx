@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
 import { Deferred } from 'utils/tests/Deferred';
@@ -11,13 +12,13 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PublishVOD } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 describe('PublishVOD', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     fetchMock.restore();
   });

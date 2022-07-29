@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { appData } from '../../data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 type SvgProps = { size: string };
 
@@ -18,6 +18,8 @@ interface IconProps {
 }
 
 export const Icon = ({ name, size = '1rem', title }: IconProps) => {
+  const appData = useAppConfig();
+
   return (
     <Svg role="img" size={size} aria-hidden={!title}>
       <use xlinkHref={`${appData.static.svg.icons}#${name}`} />

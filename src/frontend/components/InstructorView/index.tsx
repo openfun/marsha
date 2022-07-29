@@ -3,11 +3,11 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { getDecodedJwt } from '../../data/appData';
-import { theme } from '../../utils/theme/theme';
-import { Document } from '../../types/file';
-import { Video } from '../../types/tracks';
-import { LTINav } from '../LTINav';
+import { LTINav } from 'components/LTINav';
+import { useJwt } from 'data/stores/useJwt';
+import { theme } from 'utils/theme/theme';
+import { Document } from 'types/file';
+import { Video } from 'types/tracks';
 
 const messages = defineMessages({
   btnDashboard: {
@@ -67,6 +67,8 @@ interface InstructorViewProps {
 }
 
 export const InstructorView = ({ children, resource }: InstructorViewProps) => {
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+
   const canAccessDashboard =
     getDecodedJwt().permissions.can_update &&
     false === getDecodedJwt().maintenance;
@@ -78,6 +80,7 @@ export const InstructorView = ({ children, resource }: InstructorViewProps) => {
   const messagePlaceholder = canAccessDashboard
     ? {}
     : { lti_id: resource.playlist.lti_id };
+
   return (
     <DashboardContainer>
       <LTINav object={resource} />

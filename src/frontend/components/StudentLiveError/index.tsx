@@ -3,8 +3,8 @@ import React, { CSSProperties, useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail/ThumbnailDisplayer';
-import { appData } from 'data/appData';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   title: {
@@ -26,6 +26,7 @@ interface StudentLiveAdvertisingProps {
 }
 
 export const StudentLiveError = ({ error }: StudentLiveAdvertisingProps) => {
+  const appData = useAppConfig();
   const size = useContext(ResponsiveContext);
   const intl = useIntl();
 

@@ -1,29 +1,31 @@
 import fetchMock from 'fetch-mock';
 
-import { requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
-import { report } from '../../../utils/errors/report';
-import { videoMockFactory } from '../../../utils/tests/factories';
-import { addResource } from '../../stores/generics';
+import { useJwt } from 'data/stores/useJwt';
+import { addResource } from 'data/stores/generics';
+import { requestStatus } from 'types/api';
+import { modelName } from 'types/models';
+import { report } from 'utils/errors/report';
+import { videoMockFactory } from 'utils/tests/factories';
+
 import { getResource } from './';
 
-jest.mock('../../appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
-jest.mock('../../stores/generics', () => ({
+jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
 }));
 
-jest.mock('../../../utils/errors/report', () => ({
+jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 const mockAddResource = addResource as jest.MockedFunction<typeof addResource>;
 
 describe('sideEffects/getResource', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
   afterEach(jest.resetAllMocks);
 

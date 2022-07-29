@@ -12,8 +12,8 @@ import render from 'utils/tests/render';
 
 import { OrganizationPlaylists } from './OrganizationPlaylists';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 describe('<OrganizationPlaylists />', () => {

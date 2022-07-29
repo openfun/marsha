@@ -2,16 +2,17 @@ import { render, screen } from '@testing-library/react';
 import React from 'react';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
+
 import { StudentLiveError } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveErrorBackground: 'path/to/image.png',
       },
     },
-  },
+  }),
 }));
 
 describe('StudentLiveError', () => {

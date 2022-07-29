@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -16,20 +17,19 @@ jest.mock('components/InstructorView/index', () => {
   };
 });
 
-let mockCanAccessDashboard: boolean;
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    permissions: {
-      can_access_dashboard: mockCanAccessDashboard,
-    },
-  }),
-}));
-
 describe('<InstructorWrapper />', () => {
   const video = videoMockFactory();
 
   it('wraps its children in an instructor view if the current user is an instructor', () => {
-    mockCanAccessDashboard = true;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: true,
+          },
+        } as any),
+    });
+
     const { getByText, getByTitle } = render(
       <InstructorWrapper resource={video}>
         <div title="some-child" />
@@ -41,7 +41,15 @@ describe('<InstructorWrapper />', () => {
   });
 
   it('just renders the children if the current user is not an instructor', () => {
-    mockCanAccessDashboard = false;
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+          },
+        } as any),
+    });
+
     const { getByTitle, queryByText } = render(
       <InstructorWrapper resource={video}>
         <div title="some-child" />

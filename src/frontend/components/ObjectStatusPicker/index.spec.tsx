@@ -12,7 +12,9 @@ import render from 'utils/tests/render';
 
 import { ObjectStatusPicker } from '.';
 
-jest.mock('data/appData', () => ({}));
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
+}));
 
 const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {

@@ -1,4 +1,4 @@
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveJitsi } from 'types/tracks';
 
@@ -45,6 +45,8 @@ export const initializeJitsi = async (
   isInstructor: boolean,
   jitsiNode: HTMLDivElement,
 ): Promise<JitsiMeetExternalAPI> => {
+  const getDecodedJwt = useJwt.getState().getDecodedJwt;
+
   if (!window.JitsiMeetExternalAPI) {
     await loadScript(live.live_info.jitsi.external_api_url);
   }

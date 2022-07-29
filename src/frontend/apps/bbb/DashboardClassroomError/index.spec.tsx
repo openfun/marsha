@@ -5,14 +5,14 @@ import render from 'utils/tests/render';
 
 import { DashboardClassroomError } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         bbbBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
 
 describe('<DashboardClassroomError />', () => {

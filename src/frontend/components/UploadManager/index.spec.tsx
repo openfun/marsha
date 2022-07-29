@@ -10,9 +10,7 @@ import render from 'utils/tests/render';
 
 import { UploadManager, UploadManagerStatus, useUploadManager } from '.';
 
-jest.mock('data/appData.ts', () => ({
-  appData: {},
-}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 describe('<UploadManager />', () => {
   let getLatestHookValues: () => any = () => {};

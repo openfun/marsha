@@ -6,15 +6,10 @@ import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
 } from 'apps/markdown/utils/tests/factories';
+import { useJwt } from 'data/stores/useJwt';
 import render from 'utils/tests/render';
 
 import MarkdownViewer from '.';
-
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => ({
-    locale: 'en_US',
-  }),
-}));
 
 jest.mock('apps/markdown/data/MarkdownAppData', () => ({
   MarkdownAppData: {
@@ -27,6 +22,11 @@ const MarkdownAppDataMock = jest.requireMock(
 );
 
 describe('<MarkdownViewer />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () => ({ locale: 'en_US' } as any),
+    });
+  });
   afterEach(() => {
     jest.resetAllMocks();
   });

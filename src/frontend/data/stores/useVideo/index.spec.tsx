@@ -1,76 +1,83 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { appData } from 'data/appData';
-
 import { modelName } from 'types/models';
+import { timedTextMode, uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
+
 import { useVideo } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    video: {
-      description: 'Some description',
-      id: 'video-id',
+const video = videoMockFactory({
+  description: 'Some description',
+  id: 'video-id',
+  is_ready_to_show: true,
+  show_download: false,
+  thumbnail: null,
+  timed_text_tracks: [
+    {
+      active_stamp: 1549385921,
+      id: 'ttt-1',
       is_ready_to_show: true,
-      show_download: false,
-      thumbnail: null,
-      timed_text_tracks: [
-        {
-          active_stamp: 1549385921,
-          id: 'ttt-1',
-          is_ready_to_show: true,
-          language: 'fr',
-          mode: 'st',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-1.vtt',
-        },
-        {
-          active_stamp: 1549385922,
-          id: 'ttt-2',
-          is_ready_to_show: false,
-          language: 'fr',
-          mode: 'st',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-2.vtt',
-        },
-        {
-          active_stamp: 1549385923,
-          id: 'ttt-3',
-          is_ready_to_show: true,
-          language: 'en',
-          mode: 'cc',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-3.vtt',
-        },
-        {
-          active_stamp: 1549385924,
-          id: 'ttt-4',
-          is_ready_to_show: true,
-          language: 'fr',
-          mode: 'ts',
-          upload_state: 'ready',
-          url: 'https://example.com/timedtext/ttt-4.vtt',
-        },
-      ],
-      title: 'Some title',
-      upload_state: 'ready',
-      urls: {
-        manifests: {
-          dash: 'https://example.com/dash.mpd',
-          hls: 'https://example.com/hls.m3u8',
-        },
-        mp4: {
-          144: 'https://example.com/144p.mp4',
-          1080: 'https://example.com/1080p.mp4',
-        },
-        thumbnails: {
-          720: 'https://example.com/144p.jpg',
-        },
-      },
+      language: 'fr',
+      mode: timedTextMode.SUBTITLE,
+      upload_state: uploadState.READY,
+      url: 'https://example.com/timedtext/ttt-1.vtt',
+      source_url: 'some_url',
+      video: 'video-id',
+      title: 'subtitle1',
+    },
+    {
+      active_stamp: 1549385922,
+      id: 'ttt-2',
+      is_ready_to_show: false,
+      language: 'fr',
+      mode: timedTextMode.SUBTITLE,
+      upload_state: uploadState.READY,
+      url: 'https://example.com/timedtext/ttt-2.vtt',
+      source_url: 'some_url_2',
+      video: 'video-id',
+      title: 'subtitle2',
+    },
+    {
+      active_stamp: 1549385923,
+      id: 'ttt-3',
+      is_ready_to_show: true,
+      language: 'en',
+      mode: timedTextMode.CLOSED_CAPTIONING,
+      upload_state: uploadState.READY,
+      url: 'https://example.com/timedtext/ttt-3.vtt',
+      source_url: 'some_url_3',
+      video: 'video-id',
+      title: 'subtitle3',
+    },
+    {
+      active_stamp: 1549385924,
+      id: 'ttt-4',
+      is_ready_to_show: true,
+      language: 'fr',
+      mode: timedTextMode.TRANSCRIPT,
+      upload_state: uploadState.READY,
+      url: 'https://example.com/timedtext/ttt-4.vtt',
+      source_url: 'some_url_4',
+      video: 'video-id',
+      title: 'subtitle4',
+    },
+  ],
+  title: 'Some title',
+  upload_state: uploadState.READY,
+  urls: {
+    manifests: {
+      hls: 'https://example.com/hls.m3u8',
+    },
+    mp4: {
+      144: 'https://example.com/144p.mp4',
+      1080: 'https://example.com/1080p.mp4',
+    },
+    thumbnails: {
+      720: 'https://example.com/144p.jpg',
     },
   },
-}));
+});
 
 describe('stores/useVideo', () => {
   // Build a helper component with an out-of-scope function to let us reach our Hook from
@@ -82,16 +89,21 @@ describe('stores/useVideo', () => {
     return <div />;
   };
 
+  beforeEach(() => {
+    useVideo.getState().addResource(video);
+  });
+
   it('parses appData to found video element', () => {
     render(<TestComponent />);
 
     const state = getLatestHookValues();
 
     expect(state[modelName.VIDEOS]).toEqual({
-      'video-id': appData.video,
+      'video-id': video,
     });
-    expect(state.getVideo({ id: 'video-id' })).toEqual(appData.video);
+    expect(state.getVideo({ id: 'video-id' })).toEqual(video);
   });
+
   it('adds a resource to the store', () => {
     useVideo.getState().addResource({ id: 'newResource' } as any);
 
@@ -99,6 +111,7 @@ describe('stores/useVideo', () => {
       id: 'newResource',
     });
   });
+
   it('removes an existing resource', () => {
     useVideo.getState().addResource({ id: 'toDelete' } as any);
 
@@ -110,6 +123,7 @@ describe('stores/useVideo', () => {
 
     expect(useVideo.getState()[modelName.VIDEOS].toDelete).toBeUndefined();
   });
+
   it('adds multiple resources to the store', () => {
     useVideo
       .getState()
@@ -129,8 +143,9 @@ describe('stores/useVideo', () => {
       id: 'multi3',
     });
   });
+
   it('keeps jitsi infos if already existing', () => {
-    const video = videoMockFactory({
+    const live = videoMockFactory({
       live_info: {
         medialive: { input: { endpoints: ['endpoint1'] } },
         jitsi: {
@@ -141,9 +156,9 @@ describe('stores/useVideo', () => {
         },
       },
     });
-    useVideo.getState().addResource(video);
+    useVideo.getState().addResource(live);
 
-    expect(useVideo.getState().getVideo(video).live_info).toEqual({
+    expect(useVideo.getState().getVideo(live).live_info).toEqual({
       medialive: { input: { endpoints: ['endpoint1'] } },
       jitsi: {
         external_api_url: 'https://example.com/jitsi',
@@ -153,9 +168,9 @@ describe('stores/useVideo', () => {
       },
     });
 
-    useVideo.getState().addResource({ ...video, live_info: {} });
+    useVideo.getState().addResource({ ...live, live_info: {} });
 
-    expect(useVideo.getState().getVideo(video).live_info).toEqual({
+    expect(useVideo.getState().getVideo(live).live_info).toEqual({
       jitsi: {
         external_api_url: 'https://example.com/jitsi',
         config_overwrite: {},

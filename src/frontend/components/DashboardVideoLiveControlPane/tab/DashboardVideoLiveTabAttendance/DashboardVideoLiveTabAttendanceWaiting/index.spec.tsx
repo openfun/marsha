@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { useJwt } from 'data/stores/useJwt';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -7,22 +8,28 @@ import render from 'utils/tests/render';
 
 import { DashboardVideoLiveTabAttendanceWaiting } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
       },
     },
-  },
+  }),
 }));
+
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<DashboardVideoLiveTabAttendanceWaiting />', () => {
   jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
 
   afterEach(() => fetchMock.restore());
 

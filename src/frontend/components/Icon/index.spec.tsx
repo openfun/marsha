@@ -5,10 +5,10 @@ import render from 'utils/tests/render';
 
 import { Icon } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: { svg: { icons: '' } },
-  },
+  }),
 }));
 
 describe('<Icon />', () => {

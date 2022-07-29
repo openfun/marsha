@@ -1,4 +1,4 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { Video } from 'types/tracks';
 
@@ -7,7 +7,7 @@ export const publishLiveToVod = async (video: Video) => {
     `${API_ENDPOINT}/videos/${video.id}/live-to-vod/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

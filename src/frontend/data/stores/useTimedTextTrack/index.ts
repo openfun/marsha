@@ -1,10 +1,13 @@
 import create from 'zustand';
 
-import { modelName } from '../../../types/models';
-import { StoreState } from '../../../types/stores';
-import { TimedText } from '../../../types/tracks';
-import { appData } from '../../appData';
-import { addMultipleResources, addResource, removeResource } from '../actions';
+import {
+  addMultipleResources,
+  addResource,
+  removeResource,
+} from 'data/stores/actions';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { TimedText } from 'types/tracks';
 
 type TimedTextTrackStore = {
   [modelName.TIMEDTEXTTRACKS]: {
@@ -18,14 +21,6 @@ type TimedTextTrackState = StoreState<TimedText> &
   };
 
 export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
-  const timedTextTracks: { [id: string]: TimedText } = {};
-
-  if (appData.video && appData.video.timed_text_tracks.length > 0) {
-    appData.video.timed_text_tracks.forEach(
-      (timedTextTrack) => (timedTextTracks[timedTextTrack.id] = timedTextTrack),
-    );
-  }
-
   return {
     addMultipleResources: (timedTextTracksToAdd: TimedText[]) =>
       set(
@@ -54,6 +49,6 @@ export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
           timedTextTrack,
         ) as TimedTextTrackStore,
       ),
-    [modelName.TIMEDTEXTTRACKS]: timedTextTracks,
+    [modelName.TIMEDTEXTTRACKS]: {},
   };
 });

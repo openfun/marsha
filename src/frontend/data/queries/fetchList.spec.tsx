@@ -1,20 +1,16 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { fetchList } from './fetchList';
 
-let mockAppData = {};
-jest.mock('../appData', () => ({
-  get appData() {
-    return mockAppData;
-  },
-}));
-
 describe('queries/fetchList', () => {
-  beforeEach(() => (mockAppData = {}));
   afterEach(() => fetchMock.restore());
 
   it('requests the resource list, handles the response and resolves with a success', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
@@ -34,7 +30,9 @@ describe('queries/fetchList', () => {
   });
 
   it('requests the resource list with parameters, handles the response and resolves with a success', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     fetchMock.mock('/api/model-name/?key=value&limit=999', { key: 'value' });
 
     const response = await fetchList({
@@ -56,7 +54,9 @@ describe('queries/fetchList', () => {
   });
 
   it('requests the resource list without JWT token', async () => {
-    mockAppData = {};
+    useJwt.setState({
+      jwt: undefined,
+    });
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
@@ -75,7 +75,9 @@ describe('queries/fetchList', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource list (local)', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     fetchMock.mock(
       '/api/model-name/?limit=999',
       Promise.reject(new Error('Failed to perform the request')),
@@ -99,7 +101,9 @@ describe('queries/fetchList', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource list (api)', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     fetchMock.mock('/api/model-name/?limit=999', 404);
 
     await expect(

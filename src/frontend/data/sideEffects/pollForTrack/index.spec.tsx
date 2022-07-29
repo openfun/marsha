@@ -1,30 +1,31 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
-import { pollForTrack } from '.';
-import { addResource } from '../../stores/generics';
-import { requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
-import { report } from '../../../utils/errors/report';
+import { useJwt } from 'data/stores/useJwt';
+import { addResource } from 'data/stores/generics';
+import { requestStatus } from 'types/api';
+import { modelName } from 'types/models';
+import { report } from 'utils/errors/report';
 import {
   documentMockFactory,
   timedTextMockFactory,
   videoMockFactory,
-} from '../../../utils/tests/factories';
+} from 'utils/tests/factories';
 
-jest.mock('../../../utils/errors/report', () => ({ report: jest.fn() }));
-jest.mock('../../appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
+import { pollForTrack } from '.';
 
-jest.mock('../../stores/generics', () => ({
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+
+jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
 }));
 
 describe('sideEffects/pollForTrack', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     jest.clearAllMocks();
     jest.useFakeTimers();
   });

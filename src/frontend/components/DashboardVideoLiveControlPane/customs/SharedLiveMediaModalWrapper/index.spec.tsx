@@ -3,18 +3,13 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { report } from 'utils/errors/report';
 import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { SharedLiveMediaModalWrapper } from '.';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
@@ -31,6 +26,10 @@ const mockUseDeleteSharedLiveMediaModal =
 
 describe('<SharedLiveMediaModalWrapper />', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+
     jest.resetAllMocks();
   });
 

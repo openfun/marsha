@@ -18,11 +18,13 @@ jest.mock('../DashboardVideoPane', () => ({
     <span title={props.video.id} />
   ),
 }));
+
 jest.mock('components/DashboardTimedTextPane', () => ({
   DashboardTimedTextPane: () => <span>dashboard timed text pane</span>,
 }));
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     video: {
       id: 'dd44',
       thumbnail: null,
@@ -30,7 +32,7 @@ jest.mock('data/appData', () => ({
       upload_state: 'processing',
       live_state: null,
     },
-  },
+  }),
 }));
 
 describe('<DashboardVideo />', () => {

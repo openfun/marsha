@@ -1,11 +1,17 @@
 import fetchMock from 'fetch-mock';
 
-import { initiateUpload } from '.';
-import { modelName } from '../../../types/models';
+import { useJwt } from 'data/stores/useJwt';
+import { modelName } from 'types/models';
 
-jest.mock('../../appData', () => ({ appData: { jwt: 'some token' } }));
+import { initiateUpload } from '.';
 
 describe('sideEffects/initiateUpload', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('makes a POST request on the initiate-upload route & returns the policy', async () => {

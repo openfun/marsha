@@ -2,15 +2,13 @@ import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
+import { requestStatus } from 'types/api';
+import { report } from 'utils/errors/report';
+
 import { useTimedTextTrackLanguageChoices } from '.';
-import { requestStatus } from '../../../types/api';
-import { report } from '../../../utils/errors/report';
 
-jest.mock('../../appData', () => ({
-  appData: { jwt: 'some token' },
-}));
-
-jest.mock('../../../utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
 
 describe('stores/useTimedTextTrackLanguageChoices', () => {
   // Build a helper component with an out-of-scope function to let us reach our Hook from
@@ -23,6 +21,10 @@ describe('stores/useTimedTextTrackLanguageChoices', () => {
   };
 
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     useTimedTextTrackLanguageChoices.setState({ choices: undefined });
   });
 

@@ -21,7 +21,7 @@ export function addMultipleResources<R extends Resource>(
   objects: R[],
 ) {
   return {
-    [objectType as modelName]: {
+    [objectType]: {
       ...state[objectType],
       ...objects.reduce((acc, object) => ({ ...acc, [object.id]: object }), {}),
     },

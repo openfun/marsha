@@ -12,14 +12,17 @@ import render from 'utils/tests/render';
 import { UploadManagerContext, UploadManagerStatus } from '.';
 import { LTIUploadHandlers } from './LTIUploadHandlers';
 
-jest.mock('data/appData', () => ({}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+
 jest.mock('data/sideEffects/updateResource', () => ({
   updateResource: jest.fn(),
 }));
+
 jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
   getResource: jest.fn(),
 }));
+
 jest.mock('data/sideEffects/getResource', () => ({
   getResource: jest.fn(),
 }));

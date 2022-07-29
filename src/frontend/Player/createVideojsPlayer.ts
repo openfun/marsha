@@ -8,15 +8,15 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 
-import { appData, getDecodedJwt } from 'data/appData';
-import { liveState } from 'types/tracks';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useJwt } from 'data/stores/useJwt';
+import { useAttendance } from 'data/stores/useAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from 'types/libs/video.js/extend';
-import { Video, videoSize } from 'types/tracks';
+import { liveState, Video, videoSize } from 'types/tracks';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
@@ -36,6 +36,8 @@ export const createVideojsPlayer = (
   locale: Maybe<string>,
   onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
+  const { getDecodedJwt, jwt } = useJwt.getState();
+
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
@@ -118,13 +120,13 @@ export const createVideojsPlayer = (
 
   /************************** XAPI **************************/
 
+  if (!jwt) {
+    throw new Error('Authenticated jwt is required.');
+  }
+
   let xapiStatement: VideoXAPIStatementInterface;
   try {
-    xapiStatement = XAPIStatement(
-      appData.jwt!,
-      getDecodedJwt().session_id,
-      video,
-    );
+    xapiStatement = XAPIStatement(jwt, getDecodedJwt().session_id, video);
   } catch (error) {
     report(error);
     throw error;
@@ -182,7 +184,8 @@ export const createVideojsPlayer = (
     isInitialized = true;
     // setTimer
     if (hasAttendance) {
-      interval = player.setInterval(trackAttendance, appData.attendanceDelay);
+      const delay = useAttendance.getState().delay;
+      interval = player.setInterval(trackAttendance, delay);
     }
   };
 

@@ -7,7 +7,7 @@ import React, {
   useState,
 } from 'react';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveState } from 'types/tracks';
@@ -16,6 +16,7 @@ import { converse } from 'utils/window';
 
 export const ConverseInitializer = ({ children }: PropsWithChildren<{}>) => {
   const video = useCurrentVideo();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const initConverse = useMemo(() => {
     return converseMounter();
   }, [converseMounter]);
@@ -54,11 +55,11 @@ export const ConverseInitializer = ({ children }: PropsWithChildren<{}>) => {
 
     const isAdmin = getDecodedJwt().permissions.can_access_dashboard;
     if (!isAdmin && liveSession) {
-      initConverse(video.xmpp, liveSession.display_name);
+      initConverse(video.xmpp, video, liveSession.display_name);
     } else if (isAdmin) {
-      initConverse(video.xmpp);
+      initConverse(video.xmpp, video);
     }
-  }, [initConverse, isConverseLoaded, liveSession, video]);
+  }, [initConverse, isConverseLoaded, liveSession, video, getDecodedJwt]);
 
   if (!isConverseLoaded) {
     return (

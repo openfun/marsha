@@ -5,23 +5,18 @@ import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
-import { DecodedJwt } from 'types/jwt';
+import { useJwt } from 'data/stores/useJwt';
 import { getAnonymousId } from 'utils/localstorage';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { StudentLiveRegistration } from '.';
 
-let mockJwt: DecodedJwt;
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-    modelName: 'videos',
-    resource: {
-      id: '1',
-    },
+jest.mock('data/stores/useAppConfig', () => ({
+  modelName: 'videos',
+  resource: {
+    id: '1',
   },
-  getDecodedJwt: () => mockJwt,
 }));
 
 jest.mock('data/sideEffects/createLiveSession', () => ({
@@ -39,25 +34,28 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
 
 describe('<StudentLiveRegistration />', () => {
   beforeEach(() => {
-    mockJwt = {
-      consumer_site: 'a.site.fr',
-      context_id: 'course-v1:ufr+mathematics+0001',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: {
-        id: 'user_id',
-        username: 'username',
-        user_fullname: 'hisName',
-        email: null,
-      },
-    };
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () => ({
+        consumer_site: 'a.site.fr',
+        context_id: 'course-v1:ufr+mathematics+0001',
+        locale: 'en',
+        maintenance: false,
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+        resource_id: 'ressource_id',
+        roles: [],
+        session_id: 'session_id',
+        user: {
+          id: 'user_id',
+          username: 'username',
+          user_fullname: 'hisName',
+          email: null,
+        },
+      }),
+    });
   });
 
   afterEach(() => {
@@ -219,20 +217,23 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form using an anonymousId', async () => {
-    mockJwt = {
-      consumer_site: 'a.site.fr',
-      context_id: 'course-v1:ufr+mathematics+0001',
-      locale: 'en',
-      maintenance: false,
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-      user: undefined,
-    };
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () => ({
+        consumer_site: 'a.site.fr',
+        context_id: 'course-v1:ufr+mathematics+0001',
+        locale: 'en',
+        maintenance: false,
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+        resource_id: 'ressource_id',
+        roles: [],
+        session_id: 'session_id',
+        user: undefined,
+      }),
+    });
     const liveSession = liveSessionFactory({
       id: 'id',
       is_registered: false,

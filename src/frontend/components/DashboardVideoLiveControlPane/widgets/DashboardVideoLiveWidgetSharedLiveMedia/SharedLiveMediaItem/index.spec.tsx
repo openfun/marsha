@@ -8,6 +8,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import {
   videoMockFactory,
@@ -20,15 +21,15 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { SharedLiveMediaItem } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 const mockedOnRetryFailedUpload = jest.fn();
 
 describe('<SharedLiveMediaItem />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });

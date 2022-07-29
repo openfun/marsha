@@ -1,6 +1,7 @@
 import { cleanup, screen } from '@testing-library/react';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -10,11 +11,6 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { DashboardVideoLiveWidgetVOD } from '.';
 import { shouldDisplayDefaultMessage } from './utils';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
 jest.mock('./utils', () => ({
   shouldDisplayDefaultMessage: jest.fn(),
 }));
@@ -24,6 +20,12 @@ const mockedShouldDisplayDefaultMessage =
   >;
 
 describe('DashboardVideoLiveWidgetVOD', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

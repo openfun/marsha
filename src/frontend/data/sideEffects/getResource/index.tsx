@@ -1,5 +1,5 @@
-import { appData } from 'data/appData';
 import { addResource } from 'data/stores/generics';
+import { useJwt } from 'data/stores/useJwt';
 import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
@@ -21,7 +21,7 @@ export async function getResource(
   try {
     const response = await fetch(endpoint, {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
     });

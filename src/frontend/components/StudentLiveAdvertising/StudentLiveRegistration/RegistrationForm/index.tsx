@@ -4,7 +4,6 @@ import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { Form, FormField } from 'components/Form';
-import { getDecodedJwt } from 'data/appData';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
@@ -12,6 +11,7 @@ import { theme } from 'utils/theme/theme';
 import { Maybe } from 'utils/types';
 import { LiveSession } from 'types/tracks';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
+import { useJwt } from 'data/stores/useJwt';
 
 const formTheme: ThemeType = deepMerge(theme, {
   global: {
@@ -139,6 +139,7 @@ export const RegistrationForm = ({
   const trimedEmail = defaultEmail && defaultEmail.trim();
 
   const intl = useIntl();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const [values, setValues] = useState({ email: trimedEmail });
   const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
   const isLtiToken = useMemo(() => {

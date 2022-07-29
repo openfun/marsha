@@ -1,16 +1,18 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useJwt } from 'data/stores/useJwt';
 import { liveSessionFactory } from 'utils/tests/factories';
+
 import { pushAttendance } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 describe('pushAttendance', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('push new attendance without anonymous_id', async () => {

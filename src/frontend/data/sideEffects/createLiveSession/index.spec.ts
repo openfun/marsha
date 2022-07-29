@@ -1,15 +1,17 @@
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { createLiveSession } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'token',
-  },
-}));
-
 describe('sideEffects/createLiveSession', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('creates a new livesession and returns it', async () => {

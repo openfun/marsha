@@ -1,4 +1,4 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';
@@ -15,7 +15,7 @@ const updateLiveParticipants = async (
     {
       body: JSON.stringify(participant),
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method,

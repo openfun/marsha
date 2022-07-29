@@ -18,8 +18,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLiveTabConfiguration } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 const currentDate = DateTime.fromISO('2022-01-13T12:00');

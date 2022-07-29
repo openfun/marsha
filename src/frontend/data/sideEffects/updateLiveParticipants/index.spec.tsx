@@ -1,5 +1,6 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
 import {
   participantMockFactory,
   videoMockFactory,
@@ -11,9 +12,13 @@ import {
   removeParticipantFromDiscussion,
 } from '.';
 
-jest.mock('data/appData', () => ({ appData: { jwt: 'some token' } }));
-
 describe('updateLiveParticipants', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   describe('addParticipantAskingToJoin', () => {

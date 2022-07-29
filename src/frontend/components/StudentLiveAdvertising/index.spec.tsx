@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import {
@@ -16,8 +17,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveAdvertising } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'videos',
     resource: {
       id: '1',
@@ -26,26 +27,6 @@ jest.mock('data/appData', () => ({
       img: {
         liveBackground: 'path/to/image.png',
       },
-    },
-  },
-  getDecodedJwt: () => ({
-    context_id: 'context_id',
-    consumer_site: 'a.site.fr',
-    email: 'an.email@openfun.fr',
-    locale: 'en',
-    maintenance: false,
-    permissions: {
-      can_access_dashboard: false,
-      can_update: false,
-    },
-    resource_id: 'ressource_id',
-    roles: [],
-    session_id: 'session_id',
-    user: {
-      id: 'user_id',
-      username: 'username',
-      user_fullname: 'hisName',
-      email: 'test@openfun.fr',
     },
   }),
 }));
@@ -87,10 +68,35 @@ describe('<StudentLiveAdvertising />', () => {
     jest.useFakeTimers();
     //    set system date to 2022-01-27T14:00:00
     jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
+
+    useJwt.setState({
+      getDecodedJwt: () => ({
+        context_id: 'context_id',
+        consumer_site: 'a.site.fr',
+        email: 'an.email@openfun.fr',
+        locale: 'en',
+        maintenance: false,
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+        resource_id: 'ressource_id',
+        roles: [],
+        session_id: 'session_id',
+        user: {
+          id: 'user_id',
+          username: 'username',
+          user_fullname: 'hisName',
+          email: 'test@openfun.fr',
+        },
+      }),
+    });
   });
+
   afterEach(() => {
     jest.clearAllMocks();
   });
+
   afterAll(() => {
     jest.useRealTimers();
   });

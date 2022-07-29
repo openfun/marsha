@@ -4,15 +4,18 @@ import { Redirect } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { getDecodedJwt } from 'data/appData';
+
 import { modelName } from 'types/models';
 import { Video } from 'types/tracks';
+import { useJwt } from 'data/stores/useJwt';
 
 interface RedirectVideoProps {
   video: Video;
 }
 
 export const RedirectVideo = ({ video }: RedirectVideoProps) => {
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+
   if (video.live_type && getDecodedJwt().permissions.can_update) {
     return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
   }

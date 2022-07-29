@@ -2,15 +2,12 @@ import { screen } from '@testing-library/react';
 import React from 'react';
 import { uploadState } from 'types/tracks';
 
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TeacherPIPControls } from '.';
-
-jest.mock('data/appData', () => ({
-  appData: { jwt: 'cool_token_m8' },
-}));
 
 const mockCurrentPage = 1;
 const mockSetSharedCurrentPage = jest.fn();
@@ -19,6 +16,12 @@ jest.mock('data/stores/useSharedMediaCurrentPage', () => ({
 }));
 
 describe('<TeacherPIPControls />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
   });

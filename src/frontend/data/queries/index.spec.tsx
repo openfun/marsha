@@ -4,6 +4,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useJwt } from 'data/stores/useJwt';
 import { LiveModeType } from 'types/tracks';
 import {
   documentMockFactory,
@@ -50,12 +51,6 @@ setLogger({
   error: () => {},
 });
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -64,6 +59,10 @@ let Wrapper: WrapperComponent<Element>;
 
 describe('queries', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {
