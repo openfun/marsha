@@ -13,7 +13,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { Loader } from 'components/Loader';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useAuthenticatedUser } from 'data/stores/useAuthenticatedUser';
+import { useJwt } from 'data/stores/useJwt';
 import { appNames } from 'types/AppData';
 import { report } from 'utils/errors/report';
 import { GlobalStyles } from 'utils/theme/baseStyles';
@@ -21,7 +21,7 @@ import { colors, theme } from 'utils/theme/theme';
 
 import { decodeJwt } from './utils';
 
-const jwt = useAuthenticatedUser.getState().jwt;
+const jwt = useJwt.getState().jwt;
 
 let localeCode: string;
 let locale: string;

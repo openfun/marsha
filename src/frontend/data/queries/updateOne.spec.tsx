@@ -1,22 +1,16 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { updateOne } from './updateOne';
 
-let mockAppData = {};
-jest.mock('../appData', () => ({
-  get appData() {
-    return mockAppData;
-  },
-}));
-
 describe('queries/updateOne', () => {
-  beforeEach(() => {
-    mockAppData = {};
-  });
   afterEach(() => fetchMock.restore());
 
   it('updates the resource, handles the response and resolves with a success', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
@@ -39,7 +33,9 @@ describe('queries/updateOne', () => {
   });
 
   it('updates the resource without JWT token', async () => {
-    mockAppData = {};
+    useJwt.setState({
+      jwt: undefined,
+    });
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/', { key: 'value' });
 
@@ -61,7 +57,9 @@ describe('queries/updateOne', () => {
   });
 
   it('resolves with a failure and handles it when it fails to update the resource (local)', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     const objectToUpdate = { object: 'data' };
     fetchMock.mock(
       '/api/model-name/1/',
@@ -88,7 +86,9 @@ describe('queries/updateOne', () => {
   });
 
   it('resolves with a 404 and handles it when it fails to update the resource (api)', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/', 404);
 
@@ -118,7 +118,9 @@ describe('queries/updateOne', () => {
   });
 
   it('resolves with a 400 and handles it when it fails to update the resource (api)', async () => {
-    mockAppData = { jwt: 'some token' };
+    useJwt.setState({
+      jwt: 'some token',
+    });
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/', {
       body: JSON.stringify({ error: 'An error occured!' }),

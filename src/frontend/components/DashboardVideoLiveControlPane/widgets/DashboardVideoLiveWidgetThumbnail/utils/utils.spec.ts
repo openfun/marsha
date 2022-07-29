@@ -1,16 +1,12 @@
 import { defineMessages } from 'react-intl';
 
 import { UploadManagerStatus } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { thumbnailMockFactory } from 'utils/tests/factories';
-import { determineMessage } from './utils';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
+import { determineMessage } from './utils';
 
 const genericThumbnail = thumbnailMockFactory();
 const genericUploadManagerState = {
@@ -43,6 +39,12 @@ const messages = defineMessages({
 });
 
 describe('DashboardVideoLiveWidgetThumbnail/utils', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   it('determineMessage when thumbnail upload has an error', () => {
     const thumbnailInError = {
       ...genericThumbnail,

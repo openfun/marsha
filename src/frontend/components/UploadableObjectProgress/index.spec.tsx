@@ -11,7 +11,7 @@ import render from 'utils/tests/render';
 
 import { UploadableObjectProgress } from '.';
 
-jest.mock('data/appData', () => ({}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 describe('<UploadableObjectProgress />', () => {
   it('renders and displays the current progress', () => {

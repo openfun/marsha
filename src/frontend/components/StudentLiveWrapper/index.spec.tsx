@@ -5,6 +5,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useJwt } from 'data/stores/useJwt';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import {
   LivePanelItem,
@@ -28,19 +29,15 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { StudentLiveWrapper } from '.';
 
 const mockVideo = videoMockFactory();
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     attendanceDelay: 10000,
     video: mockVideo,
     static: {
       img: {
         liveBackground: 'some_url',
       },
-    },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: false,
     },
   }),
 }));
@@ -87,6 +84,15 @@ jest.mock('data/stores/useJitsiApi', () => ({
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
     jest.useFakeTimers();
+
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
 
     fetchMock.mock(
       '/api/timedtexttracks/',
@@ -535,6 +541,15 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
   }));
 
   beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
+
     useLiveStateStarted.setState({
       isStarted: true,
     });

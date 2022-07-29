@@ -13,14 +13,14 @@ import render from 'utils/tests/render';
 
 import { UploadsView } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       svg: {
         icons: '/path/to/icons.svg',
       },
     },
-  },
+  }),
 }));
 
 describe('<UploadsView />', () => {

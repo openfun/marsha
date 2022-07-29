@@ -2,7 +2,9 @@ import { act, cleanup, screen, waitFor } from '@testing-library/react';
 import React from 'react';
 
 import { PLAYER_ROUTE } from 'components/routes';
+import { useJwt } from 'data/stores/useJwt';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
+import { DecodedJwt } from 'types/jwt';
 import { LiveModeType, liveState } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -47,19 +49,18 @@ jest.mock('utils/window', () => ({
   },
 }));
 
-let mockDecodedJwtToken = {};
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => mockDecodedJwtToken,
-}));
-
 describe('<DashboardVideoLiveJitsi />', () => {
   beforeEach(() => {
-    mockDecodedJwtToken = {
-      user: {
-        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-        username: 'jane_doe',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+            username: 'jane_doe',
+          },
+        } as DecodedJwt),
+    });
+
     events = {};
     jest.clearAllMocks();
     jest.useFakeTimers();
@@ -196,7 +197,9 @@ describe('<DashboardVideoLiveJitsi />', () => {
     ];
 
     for (const decodedToken of decodedTokenWithoutUser) {
-      mockDecodedJwtToken = decodedToken;
+      useJwt.setState({
+        getDecodedJwt: () => decodedToken as DecodedJwt,
+      });
       const video = videoMockFactory({
         live_info: {
           medialive: {

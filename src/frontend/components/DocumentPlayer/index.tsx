@@ -2,10 +2,10 @@ import { Box } from 'grommet';
 import React from 'react';
 import styled from 'styled-components';
 
-import { appData, getDecodedJwt } from '../../data/appData';
-import { useDocument } from '../../data/stores/useDocument';
-import { Document } from '../../types/file';
-import { DocumentXapiStatement } from '../../XAPI/DocumentXapiStatement';
+import { useDocument } from 'data/stores/useDocument';
+import { Document } from 'types/file';
+import { DocumentXapiStatement } from 'XAPI/DocumentXapiStatement';
+import { useJwt } from 'data/stores/useJwt';
 
 const IconBox = styled.span`
   font-size: 64px;
@@ -18,11 +18,19 @@ interface DocumentPlayerProps {
 
 const DocumentPlayer = (props: DocumentPlayerProps) => {
   const document = useDocument((state) => state.getDocument(props.document));
+  const { jwt, getDecodedJwt } = useJwt((state) => ({
+    jwt: state.jwt,
+    getDecodedJwt: state.getDecodedJwt,
+  }));
+
+  if (!jwt) {
+    throw new Error('Jwt is required.');
+  }
 
   const onDownload = () => {
     const callback = () => {
       const documentXapiStatement = new DocumentXapiStatement(
-        appData.jwt!,
+        jwt,
         getDecodedJwt().session_id,
       );
       documentXapiStatement.downloaded();

@@ -3,19 +3,20 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
 } from 'utils/tests/factories';
-
-import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
-import DashboardClassroom from '.';
 import render from 'utils/tests/render';
 
-jest.mock('data/appData', () => ({
-  appData: {
+import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+
+import DashboardClassroom from '.';
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'classrooms',
     resource: {
       id: '1',
@@ -25,13 +26,10 @@ jest.mock('data/appData', () => ({
         bbbBackground: 'some_url',
       },
     },
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
 
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
+const mockGetDecodedJwt = jest.fn();
 
 jest.mock('apps/bbb/data/bbbAppData', () => ({
   bbbAppData: {
@@ -39,13 +37,19 @@ jest.mock('apps/bbb/data/bbbAppData', () => ({
     classroom: {
       id: '1',
     },
-    jwt: 'token',
   },
 }));
 
 describe('<DashboardClassroom />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'token',
+      getDecodedJwt: mockGetDecodedJwt,
+    });
+  });
+
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
     fetchMock.restore();
   });
 
@@ -60,6 +64,7 @@ describe('<DashboardClassroom />', () => {
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
     const { getByText } = render(<DashboardClassroom />);
+
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(classroom));
     getByText('Classroom not started yet.');
@@ -164,6 +169,7 @@ describe('<DashboardClassroom />', () => {
     expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
+        Authorization: 'Bearer token',
         'Content-Type': 'application/json',
       },
       method: 'PATCH',

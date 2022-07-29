@@ -1,26 +1,21 @@
+import { useJwt } from 'data/stores/useJwt';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getDecodedJwt } from 'data/appData';
 import { getOrInitAnonymousId } from './getOrInitAnonymousId';
 import { getAnonymousId, setAnonymousId } from './localstorage';
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
-}));
 jest.mock('./localstorage', () => ({
   getAnonymousId: jest.fn(),
   setAnonymousId: jest.fn(),
 }));
-
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
 const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
 const mockSetAnonymousId = setAnonymousId as jest.MockedFunction<
   typeof setAnonymousId
 >;
+
+const mockGetDecodedJwt = jest.fn();
 
 const publicToken = {
   locale: 'en',
@@ -56,6 +51,8 @@ const ltiToken = {
 describe('initAnonymousId', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   it('set the anonymous_is when present in the token and return it', () => {

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import React from 'react';
 
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import {
   LivePanelItem,
   useLivePanelState,
@@ -27,16 +27,13 @@ const mockVideo = videoMockFactory({
   participants_in_discussion: [mockParticipant],
 });
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
-}));
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
+const mockGetDecodedJwt = jest.fn();
 
 describe('<LiveVideoPanel />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+
+    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   it('closes the panel if no item is selected', () => {

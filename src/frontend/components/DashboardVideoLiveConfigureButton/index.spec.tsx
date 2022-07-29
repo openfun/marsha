@@ -10,8 +10,8 @@ import render from 'utils/tests/render';
 
 import { DashboardVideoLiveConfigureButton } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({}),
 }));
 
 describe('components/DashboardVideoLiveConfigureButton', () => {

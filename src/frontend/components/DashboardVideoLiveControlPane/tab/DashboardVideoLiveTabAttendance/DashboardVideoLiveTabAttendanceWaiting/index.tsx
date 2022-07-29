@@ -1,7 +1,8 @@
 import { Box, Heading } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { appData } from 'data/appData';
+
+import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   noParticipants: {
@@ -11,8 +12,10 @@ const messages = defineMessages({
   },
 });
 
-export const DashboardVideoLiveTabAttendanceWaiting = ({}) => {
+export const DashboardVideoLiveTabAttendanceWaiting = () => {
+  const appData = useAppConfig();
   const intl = useIntl();
+
   return (
     <Box
       background={{

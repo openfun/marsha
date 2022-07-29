@@ -1,25 +1,8 @@
-import { modelName } from '../../../types/models';
-import { useDocument } from './';
+import { modelName } from 'types/models';
 
-jest.mock('../../appData', () => ({
-  appData: {
-    document: {
-      id: 'doc1',
-    },
-  },
-}));
+import { useDocument } from '.';
 
 describe('stores/useDocument', () => {
-  it('parses appData to found document element', () => {
-    const state = useDocument.getState();
-
-    expect(state[modelName.DOCUMENTS]).toEqual({
-      doc1: {
-        id: 'doc1',
-      },
-    });
-    expect(state.getDocument({ id: 'doc1' } as any)).toEqual({ id: 'doc1' });
-  });
   it('adds a resource to the store', () => {
     useDocument.getState().addResource({ id: 'newResource' } as any);
 
@@ -27,6 +10,7 @@ describe('stores/useDocument', () => {
       id: 'newResource',
     });
   });
+
   it('removes an existing resource', () => {
     useDocument.getState().addResource({ id: 'toDelete' } as any);
 
@@ -40,6 +24,7 @@ describe('stores/useDocument', () => {
       useDocument.getState()[modelName.DOCUMENTS].toDelete,
     ).toBeUndefined();
   });
+
   it('adds multiple resources to the store', () => {
     useDocument
       .getState()

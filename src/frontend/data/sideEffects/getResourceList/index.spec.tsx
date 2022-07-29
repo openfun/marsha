@@ -1,24 +1,20 @@
 import fetchMock from 'fetch-mock';
 
-import { requestStatus } from '../../../types/api';
-import { modelName } from '../../../types/models';
-import { uploadState } from '../../../types/tracks';
-import { report } from '../../../utils/errors/report';
-import { videoMockFactory } from '../../../utils/tests/factories';
-import { addMultipleResources } from '../../stores/generics';
+import { useJwt } from 'data/stores/useJwt';
+import { addMultipleResources } from 'data/stores/generics';
+import { requestStatus } from 'types/api';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { videoMockFactory } from 'utils/tests/factories';
+
 import { getResourceList } from './';
 
-jest.mock('../../appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
-jest.mock('../../stores/generics', () => ({
+jest.mock('data/stores/generics', () => ({
   addMultipleResources: jest.fn(),
 }));
 
-jest.mock('../../../utils/errors/report', () => ({
+jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
@@ -35,6 +31,12 @@ describe('sideEffects/getResourceList', () => {
   const videoReady = videoMockFactory({
     is_ready_to_show: true,
     upload_state: uploadState.READY,
+  });
+
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
   });
 
   afterEach(() => fetchMock.restore());

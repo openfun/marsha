@@ -1,13 +1,18 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 
 import { harvestLive } from '.';
 
-jest.mock('data/appData', () => ({ appData: { jwt: 'some token' } }));
-
 describe('harvestLive', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('sends a POST request to harvest a live video', async () => {

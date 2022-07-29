@@ -8,7 +8,6 @@ import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getDecodedJwt } from 'data/appData';
 import { APIList } from 'types/api';
 import { Live, LiveSession, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
@@ -20,22 +19,20 @@ import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
+import { useJwt } from 'data/stores/useJwt';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
+const mockedGetDecodedJwt = jest.fn();
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
         liveErrorBackground: 'error_img_background.jpg',
       },
     },
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
-const mockedGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
 
 jest.mock('utils/getOrInitAnonymousId', () => ({
   getOrInitAnonymousId: jest.fn(),
@@ -66,6 +63,11 @@ describe('PublicLiveDashboard', () => {
       permissions: { can_update: false, can_access_dashboard: false },
       roles: [],
       session_id: 'session-id',
+    });
+
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: mockedGetDecodedJwt,
     });
   });
   afterEach(() => {

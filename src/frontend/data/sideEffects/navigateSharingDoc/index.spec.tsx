@@ -1,10 +1,17 @@
 import fetchMock from 'fetch-mock';
+
+import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
+
 import { navigateSharingDoc } from '.';
 
-jest.mock('data/appData', () => ({ appData: { jwt: 'some token' } }));
-
 describe('navigateSharingDoc', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('makes a PATCH and returns the updated video', async () => {

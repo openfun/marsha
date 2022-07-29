@@ -1,9 +1,8 @@
 import * as Sentry from '@sentry/browser';
-
-import { appData } from '../../data/appData';
+import { useSentry } from 'data/stores/useSentry';
 
 export const report = (error: unknown) => {
-  if (appData.sentry_dsn) {
+  if (useSentry.getState().isSentryReady) {
     Sentry.captureException(error);
   } else {
     // tslint:disable:no-console

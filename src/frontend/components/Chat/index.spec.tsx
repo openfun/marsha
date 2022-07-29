@@ -2,6 +2,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
+import { useJwt } from 'data/stores/useJwt';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -24,14 +25,20 @@ const mockVideo = videoMockFactory({
     jid: 'xmpp-server.com',
   },
 });
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     video: mockVideo,
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
 
 describe('<Chat />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: jest.fn(),
+    });
+  });
+
   it('renders the Chat component', () => {
     render(<Chat />);
 

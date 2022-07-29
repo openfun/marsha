@@ -1,13 +1,17 @@
 import fetchMock from 'fetch-mock';
 
-import { createTimedTextTrack } from '.';
-import { timedTextMode } from '../../../types/tracks';
+import { useJwt } from 'data/stores/useJwt';
+import { timedTextMode } from 'types/tracks';
 
-jest.mock('../../appData', () => ({
-  appData: { jwt: 'some token' },
-}));
+import { createTimedTextTrack } from '.';
 
 describe('sideEffects/createTimedTextTrack()', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('creates a new timedtexttrack and returns its id', async () => {

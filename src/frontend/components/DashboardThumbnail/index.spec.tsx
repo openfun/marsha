@@ -7,6 +7,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { initVideoWebsocket } from 'data/websocket';
 import { modelName } from 'types/models';
@@ -17,35 +18,33 @@ import render from 'utils/tests/render';
 
 import { DashboardThumbnail } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-  getDecodedJwt: () => ({
-    context_id: 'course-v1:ufr+mathematics+0001',
-    consumer_site: '112cf553-b8c3-4b98-9d47-d0793284b9b3',
-    locale: 'en_US',
-    maintenance: false,
-    permissions: {
-      can_access_dashboard: false,
-      can_update: false,
-    },
-    resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
-    roles: ['student'],
-    session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
-    user: {
-      email: 'sarah@test-mooc.fr',
-      id: 'aaace992-49e3-4e01-b809-7a84b1b55b72',
-      username: null,
-    },
-  }),
-}));
-
 const video = videoMockFactory();
 let server: WS;
 
 describe('<DashboardThumbnail />', () => {
   beforeAll(async () => {
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () => ({
+        context_id: 'course-v1:ufr+mathematics+0001',
+        consumer_site: '112cf553-b8c3-4b98-9d47-d0793284b9b3',
+        locale: 'en_US',
+        maintenance: false,
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        roles: ['student'],
+        session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
+        user: {
+          email: 'sarah@test-mooc.fr',
+          id: 'aaace992-49e3-4e01-b809-7a84b1b55b72',
+          username: null,
+        },
+      }),
+    });
+
     server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
 
     global.window = Object.create(window);
@@ -60,6 +59,31 @@ describe('<DashboardThumbnail />', () => {
     initVideoWebsocket(video);
     await server.connected;
   });
+
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () => ({
+        context_id: 'course-v1:ufr+mathematics+0001',
+        consumer_site: '112cf553-b8c3-4b98-9d47-d0793284b9b3',
+        locale: 'en_US',
+        maintenance: false,
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+        resource_id: '26debfee-8c3b-4c23-b08f-67f223de9832',
+        roles: ['student'],
+        session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
+        user: {
+          email: 'sarah@test-mooc.fr',
+          id: 'aaace992-49e3-4e01-b809-7a84b1b55b72',
+          username: null,
+        },
+      }),
+    });
+  });
+
   afterEach(jest.resetAllMocks);
 
   it('displays a thumbnail image when the related Thumbnail object is ready', () => {

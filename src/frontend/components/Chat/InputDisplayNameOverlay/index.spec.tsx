@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
+import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,
@@ -32,12 +33,9 @@ jest.mock('utils/window', () => ({
 jest.mock('data/sideEffects/setLiveSessionDisplayName', () => ({
   setLiveSessionDisplayName: jest.fn(),
 }));
+
 jest.mock('utils/checkLtiToken', () => ({
   checkLtiToken: jest.fn(),
-}));
-let mockDecodedJwtToken = {};
-jest.mock('data/appData', () => ({
-  getDecodedJwt: () => mockDecodedJwtToken,
 }));
 
 const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
@@ -59,31 +57,43 @@ describe('<InputDisplayNameOverlay />', () => {
     jest.resetAllMocks();
   });
 
-  it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, () => {
+  it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+
     userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
     act(() => userEvent.click(validateButton));
-    screen.getByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`);
+
+    await screen.findByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`);
     expect(
       screen.queryByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`),
-    ).toBeNull();
+    ).not.toBeInTheDocument();
     expect(
       screen.queryByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`),
-    ).toBeNull();
+    ).not.toBeInTheDocument();
     expect(inputTextbox).toHaveValue(`${ANONYMOUS_ID_PREFIX}-John`);
   });
 
-  it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, () => {
+  it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+
     userEvent.type(inputTextbox, 'JD');
     act(() => userEvent.click(validateButton));
-    screen.getByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`);
+
+    await screen.findByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`);
     expect(
       screen.queryByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`),
     ).toBeNull();
@@ -93,14 +103,20 @@ describe('<InputDisplayNameOverlay />', () => {
     expect(inputTextbox).toHaveValue('JD');
   });
 
-  it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, () => {
+  it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     render(<InputDisplayNameOverlay />);
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+
     userEvent.type(inputTextbox, 'John Doe the legend');
     act(() => userEvent.click(validateButton));
-    screen.getByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`);
+
+    await screen.findByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`);
     expect(
       screen.queryByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`),
     ).toBeNull();
@@ -111,6 +127,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname but the server takes too long to answer.', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -147,6 +167,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname but it is already used by a live registration', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -192,6 +216,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname but it is already used in the chat', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -237,6 +265,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname but the server returns an unknown response', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -280,6 +312,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname and validates it.', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -321,6 +357,16 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('closes the window.', () => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+            username: 'jane_doe',
+          },
+        } as any),
+    });
+
     render(<InputDisplayNameOverlay />);
 
     const closeButton = screen.getByTitle(
@@ -334,12 +380,16 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('displays the component and use liveragistration username as default value', () => {
-    mockDecodedJwtToken = {
-      user: {
-        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-        username: 'jane_doe',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+            username: 'jane_doe',
+          },
+        } as any),
+    });
+
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
@@ -349,12 +399,15 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('displays the component and use jwt display_name as default value', () => {
-    mockDecodedJwtToken = {
-      user: {
-        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-        username: 'jane_doe',
-      },
-    };
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          user: {
+            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+            username: 'jane_doe',
+          },
+        } as any),
+    });
 
     render(wrapInIntlProvider(<InputDisplayNameOverlay />));
 
@@ -362,6 +415,10 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('displays the component and compares it with previous render. [screenshot]', async () => {
+    useJwt.setState({
+      getDecodedJwt: () => ({} as any),
+    });
+
     await renderImageSnapshot(<InputDisplayNameOverlay />);
   });
 });

@@ -1,7 +1,7 @@
-import { API_ENDPOINT } from '../../../settings';
-import { modelName } from '../../../types/models';
-import { TimedText } from '../../../types/tracks';
-import { appData } from '../../appData';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { modelName } from 'types/models';
+import { TimedText } from 'types/tracks';
 
 /**
  * Delete one timedtexttrack record.
@@ -12,7 +12,7 @@ export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
       },
       method: 'DELETE',
     },

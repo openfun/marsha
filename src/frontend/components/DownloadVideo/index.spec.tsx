@@ -2,21 +2,13 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { XAPI_ENDPOINT } from 'settings';
 import { uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { DownloadVideo } from '.';
-
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'foo',
-  },
-  getDecodedJwt: jest.fn().mockImplementation(() => ({
-    session_id: 'abcd',
-  })),
-}));
 
 jest.mock('video.js', () => ({
   __esModule: true,
@@ -30,6 +22,13 @@ jest.mock('video.js', () => ({
 }));
 
 describe('<DownloadVideo />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'foo',
+      getDecodedJwt: () => ({ session_id: 'abcd' } as any),
+    });
+  });
+
   afterEach(() => fetchMock.reset());
 
   it('renders all video links', () => {

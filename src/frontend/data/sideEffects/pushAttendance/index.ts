@@ -1,6 +1,7 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { LiveSession } from 'types/tracks';
+
 export const pushAttendance = async (
   liveAttendance: LiveSession['live_attendance'],
   language: string,
@@ -14,7 +15,7 @@ export const pushAttendance = async (
   const response = await fetch(endpoint, {
     body: JSON.stringify({ live_attendance: liveAttendance, language }),
     headers: {
-      Authorization: `Bearer ${appData.jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

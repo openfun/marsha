@@ -1,14 +1,16 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from 'data/stores/useJwt';
+
 import { createThumbnail } from '.';
 
-jest.mock('../../appData', () => ({
-  appData: {
-    jwt: 'token',
-  },
-}));
-
 describe('sideEffects/createThumbnail', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('creates a new thumbnail and return it', async () => {

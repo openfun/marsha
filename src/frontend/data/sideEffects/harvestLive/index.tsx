@@ -1,13 +1,13 @@
-import { appData } from 'data/appData';
 import { Video } from 'types/tracks';
 import { API_ENDPOINT } from 'settings';
+import { useJwt } from 'data/stores/useJwt';
 
 export const harvestLive = async (video: Video) => {
   const response = await fetch(
     `${API_ENDPOINT}/videos/${video.id}/harvest-live/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

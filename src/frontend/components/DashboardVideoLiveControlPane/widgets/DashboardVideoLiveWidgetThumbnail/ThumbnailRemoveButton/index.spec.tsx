@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { report } from 'utils/errors/report';
 import { thumbnailMockFactory } from 'utils/tests/factories';
@@ -10,17 +11,17 @@ import render from 'utils/tests/render';
 
 import { ThumbnailRemoveButton } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'json web token',
-  },
-}));
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
 describe('<ThumbnailRemoveButton />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();

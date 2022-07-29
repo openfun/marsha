@@ -4,7 +4,9 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
+import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
+import render from 'utils/tests/render';
 
 import {
   markdownDocumentMockFactory,
@@ -12,18 +14,13 @@ import {
 } from 'apps/markdown/utils/tests/factories';
 
 import MarkdownEditor from '.';
-import render from 'utils/tests/render';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     modelName: 'markdown_documents',
     resource: {
       id: '1',
     },
-  },
-  getDecodedJwt: () => ({
-    locale: 'en_US',
   }),
 }));
 
@@ -57,6 +54,13 @@ describe('<MarkdownEditor />', () => {
 
     return range;
   };
+
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: () => ({ locale: 'en_US' } as any),
+    });
+  });
 
   afterEach(() => {
     jest.resetAllMocks();

@@ -4,6 +4,7 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { createPlayer } from 'Player/createPlayer';
 import { timedTextMode, uploadState } from 'types/tracks';
@@ -13,17 +14,12 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PublicVODDashboard } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
       },
-    },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_update: false,
     },
   }),
 }));
@@ -37,6 +33,16 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
 
 describe('<PublicVODDashboard />', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'token',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: false,
+          },
+        } as any),
+    });
+
     fetchMock.mock(
       '/api/timedtexttracks/',
       {

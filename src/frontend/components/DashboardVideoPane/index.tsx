@@ -17,12 +17,14 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { appData } from 'data/appData';
+
 import { useVideo } from 'data/stores/useVideo';
 import { API_ENDPOINT } from 'settings';
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { useJwt } from 'data/stores/useJwt';
 
 const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 
@@ -100,6 +102,8 @@ interface DashboardVideoPaneProps {
 
 export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
   const intl = useIntl();
+  const appData = useAppConfig();
+  const jwt = useJwt((state) => state.jwt);
   const [error, setError] = useState(false);
 
   const { uploadManagerState } = useUploadManager();
@@ -111,7 +115,7 @@ export const DashboardVideoPane = ({ video }: DashboardVideoPaneProps) => {
     try {
       const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/`, {
         headers: {
-          Authorization: `Bearer ${appData.jwt}`,
+          Authorization: `Bearer ${jwt}`,
         },
       });
 

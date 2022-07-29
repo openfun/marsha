@@ -20,9 +20,7 @@ jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-jest.mock('data/appData', () => ({
-  appData: {},
-}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer

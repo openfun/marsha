@@ -8,14 +8,12 @@ import React from 'react';
 import render from 'utils/tests/render';
 
 import MdxRenderer from '.';
+import { useJwt } from 'data/stores/useJwt';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-    modelName: 'markdown_documents',
-    resource: {
-      id: '1',
-    },
+jest.mock('data/stores/useAppConfig', () => ({
+  modelName: 'markdown_documents',
+  resource: {
+    id: '1',
   },
 }));
 
@@ -31,6 +29,10 @@ jest.mock('uuid', () => ({
 describe('<MdxRenderer />', () => {
   // Mock getBBox SVG for tests
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
     // @ts-ignore
     window.SVGElement.prototype.getBBox = () => ({
       x: 200,

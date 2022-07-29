@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { liveState } from 'types/tracks';
 
+import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
@@ -10,14 +11,14 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardVideoLivePairing } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 describe('<DashboardVideoLivePairing />', () => {
-  beforeEach(() => jest.useFakeTimers());
+  beforeEach(() => {
+    jest.useFakeTimers();
+
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
 
   afterEach(() => {
     fetchMock.restore();

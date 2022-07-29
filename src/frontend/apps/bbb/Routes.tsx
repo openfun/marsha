@@ -3,7 +3,7 @@ import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { Loader } from 'components/Loader';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
@@ -16,7 +16,9 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   </MemoryRouter>
 );
 
-export const Routes = () => {
+const Routes = () => {
+  const isFeatureEnabled = useIsFeatureEnabled();
+
   if (isFeatureEnabled(flags.BBB)) {
     return (
       <Wrappers>
@@ -35,3 +37,5 @@ export const Routes = () => {
     );
   }
 };
+
+export default Routes;

@@ -1,4 +1,4 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { Video } from 'types/tracks';
 
@@ -10,7 +10,7 @@ export const navigateSharingDoc = async (
     `${API_ENDPOINT}/videos/${video.id}/navigate-sharing/`,
     {
       headers: {
-        Authorization: `Bearer ${appData.jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'PATCH',

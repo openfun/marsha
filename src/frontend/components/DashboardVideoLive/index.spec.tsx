@@ -4,6 +4,7 @@ import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
@@ -32,22 +33,17 @@ import { converse } from 'utils/window';
 import { DashboardVideoLive } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'cool_token_m8',
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'path/to/image.png',
       },
     },
-  },
-  getDecodedJwt: () => ({
-    permissions: {
-      can_access_dashboard: false,
-      can_update: false,
-    },
   }),
 }));
+
 jest.mock(
   'components/DashboardVideoLiveRaw',
   () => (props: { video: Video }) =>
@@ -86,6 +82,17 @@ jest.setTimeout(10000);
 
 describe('components/DashboardVideoLive', () => {
   beforeEach(() => {
+    useJwt.setState({
+      jwt: 'cool_token_m8',
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_access_dashboard: false,
+            can_update: false,
+          },
+        } as any),
+    });
+
     queryClient = new QueryClient({
       defaultOptions: {
         queries: {

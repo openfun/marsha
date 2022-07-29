@@ -2,6 +2,7 @@ import React from 'react';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
+import { useJwt } from 'data/stores/useJwt';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveSessionFactory } from 'utils/tests/factories';
@@ -16,9 +17,6 @@ jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, mockSetDisplayName],
 }));
 
-jest.mock('data/appData', () => ({
-  getDecodedJwt: jest.fn(),
-}));
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -45,6 +43,12 @@ mockConverse.mockImplementation(
 );
 
 describe('<ChatLayout />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      getDecodedJwt: jest.fn(),
+    });
+  });
+
   it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
     render(<ChatLayout />);
 

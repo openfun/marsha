@@ -2,16 +2,18 @@ import * as faker from 'faker';
 import fetchMock from 'fetch-mock';
 import { v4 as uuidv4 } from 'uuid';
 
+import { useJwt } from 'data/stores/useJwt';
 import { liveSessionFactory } from 'utils/tests/factories';
+
 import { setLiveSessionDisplayName } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {
-    jwt: 'some token',
-  },
-}));
-
 describe('setLiveSessionDisplayName', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+  });
+
   afterEach(() => fetchMock.restore());
 
   it('returns a liveSession without anonymous_id', async () => {

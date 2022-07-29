@@ -3,8 +3,8 @@ import React from 'react';
 import videojs from 'video.js';
 
 import VideoPlayer from 'components/VideoPlayer';
-import { getDecodedJwt } from 'data/appData';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useJwt } from 'data/stores/useJwt';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import { liveState, timedTextMode, uploadState } from 'types/tracks';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
@@ -43,13 +43,12 @@ mockXAPIStatement.mockReturnValue(mockXAPIStatementInterface);
 jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
-jest.mock('data/appData', () => ({
-  appData: {
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     attendanceDelay: 10,
-    jwt: 'foo',
     video: mockVideo,
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
 
 jest.mock('data/sideEffects/pushAttendance', () => ({
@@ -68,13 +67,11 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
   typeof createPlayer
 >;
 
-const mockGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
-
 const mockPushAttendance = pushAttendance as jest.MockedFunction<
   typeof pushAttendance
 >;
+
+const mockGetDecodedJwt = jest.fn();
 
 // It prevents console to display error when it tries to play a non existing media
 jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
@@ -118,6 +115,13 @@ jest.mock('data/stores/useTimedTextTrackLanguageChoices', () => ({
 }));
 
 describe('createVideoJsPlayer', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'foo',
+      getDecodedJwt: mockGetDecodedJwt,
+    });
+  });
+
   afterEach(() => {
     // dispose all not disposed players
     videojs.getAllPlayers().forEach((player) => {

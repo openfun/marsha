@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
-import { getDecodedJwt } from 'data/appData';
+
 import { pollForLive } from 'data/sideEffects/pollForLive';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
@@ -19,20 +19,19 @@ import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { StudentLiveStarter } from '.';
+import { useJwt } from 'data/stores/useJwt';
 
-jest.mock('data/appData', () => ({
-  appData: {
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => ({
     static: {
       img: {
         liveBackground: 'some_url',
       },
     },
-  },
-  getDecodedJwt: jest.fn(),
+  }),
 }));
-const mockedGetDecodedJwt = getDecodedJwt as jest.MockedFunction<
-  typeof getDecodedJwt
->;
+
+const mockedGetDecodedJwt = jest.fn();
 
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
@@ -84,6 +83,8 @@ describe('StudentLiveStarter', () => {
       roles: [],
       session_id: 'session-id',
     });
+
+    useJwt.setState({ getDecodedJwt: mockedGetDecodedJwt });
   });
   afterEach(() => {
     jest.clearAllMocks();

@@ -8,7 +8,6 @@ import {
   markdownTranslationMockFactory,
 } from 'apps/markdown/utils/tests/factories';
 import { SelectContent } from 'components/SelectContent';
-import { appData } from 'data/appData';
 import { playlistMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -16,16 +15,18 @@ jest.mock('settings', () => ({
   APPS: ['markdown'],
 }));
 
-jest.mock('data/appData', () => ({
-  appData: {
-    new_document_url: 'https://example.com/lti/documents/new-hash',
-    new_video_url: 'https://example.com/lti/videos/new-hash',
-    lti_select_form_action_url: '/lti/select/',
-    lti_select_form_data: {},
-    flags: {
-      markdown: true,
-    },
+const appData = {
+  new_document_url: 'https://example.com/lti/documents/new-hash',
+  new_video_url: 'https://example.com/lti/videos/new-hash',
+  lti_select_form_action_url: '/lti/select/',
+  lti_select_form_data: {},
+  flags: {
+    markdown: true,
   },
+};
+
+jest.mock('data/stores/useAppConfig', () => ({
+  useAppConfig: () => appData,
 }));
 
 window.HTMLFormElement.prototype.submit = jest.fn();

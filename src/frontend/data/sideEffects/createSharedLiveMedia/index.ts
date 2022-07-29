@@ -1,11 +1,11 @@
-import { appData } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
 import { SharedLiveMedia } from 'types/tracks';
 
 export const createSharedLiveMedia = async () => {
   const response = await fetch(`${API_ENDPOINT}/sharedlivemedias/`, {
     headers: {
-      Authorization: `Bearer ${appData.jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

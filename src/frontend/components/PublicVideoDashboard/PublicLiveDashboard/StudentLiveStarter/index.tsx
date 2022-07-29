@@ -8,7 +8,7 @@ import { FullScreenError } from 'components/ErrorComponents';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveWaitingRoom } from 'components/StudentLiveWaitingRoom';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
-import { getDecodedJwt } from 'data/appData';
+import { useJwt } from 'data/stores/useJwt';
 import { pollForLive } from 'data/sideEffects/pollForLive';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
@@ -26,8 +26,9 @@ interface StudentLiveStarterProps {
 }
 
 export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
-  const live = useCurrentLive();
   const intl = useIntl();
+  const live = useCurrentLive();
+  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const session = useLiveSession();
   const liveScheduleStartDate = useMemo(() => {
     if (!live.starting_at) {

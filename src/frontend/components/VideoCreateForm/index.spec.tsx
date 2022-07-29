@@ -14,9 +14,7 @@ import render from 'utils/tests/render';
 
 import { VideoCreateForm } from '.';
 
-jest.mock('data/appData', () => ({
-  appData: {},
-}));
+jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 describe('<VideoCreateForm />', () => {
   jest.spyOn(console, 'error').mockImplementation(() => jest.fn());

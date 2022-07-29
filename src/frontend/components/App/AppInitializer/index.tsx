@@ -1,7 +1,7 @@
 import * as Sentry from '@sentry/browser';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 
-import { useIsFeatureEnable } from 'data/hooks/useIsFeatureEnabled';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useVideo } from 'data/stores/useVideo';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
@@ -28,7 +28,7 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const addDocument = useDocument((state) => state.addResource);
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
 
-  const isFeatureEnabled = useIsFeatureEnable();
+  const isFeatureEnabled = useIsFeatureEnabled();
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {

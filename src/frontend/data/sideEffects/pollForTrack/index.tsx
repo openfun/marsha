@@ -1,11 +1,11 @@
-import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
-import { Document } from '../../../types/file';
-import { modelName } from '../../../types/models';
-import { TimedText, Video } from '../../../types/tracks';
-import { report } from '../../../utils/errors/report';
-import { appData } from '../../appData';
-import { addResource } from '../../stores/generics';
+import { addResource } from 'data/stores/generics';
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+import { requestStatus } from 'types/api';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { TimedText, Video } from 'types/tracks';
+import { report } from 'utils/errors/report';
 
 export async function pollForTrack<
   T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS,
@@ -20,7 +20,7 @@ export async function pollForTrack<
       `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
       {
         headers: {
-          Authorization: `Bearer ${appData.jwt}`,
+          Authorization: `Bearer ${useJwt.getState().jwt}`,
         },
       },
     );

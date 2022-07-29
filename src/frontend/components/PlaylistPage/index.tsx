@@ -5,10 +5,12 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LTINav } from 'components/LTINav';
 import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
-import { appData } from 'data/appData';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName } from 'types/models';
 
 const PlaylistPage = () => {
+  const appData = useAppConfig();
+
   let content;
   if (appData.modelName === modelName.DOCUMENTS && appData.document) {
     content = (
