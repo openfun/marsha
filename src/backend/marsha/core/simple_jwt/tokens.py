@@ -1,4 +1,6 @@
 """Specific Marsha JWT models"""
+from dataclasses import asdict
+
 from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
@@ -8,6 +10,8 @@ from rest_framework_simplejwt.tokens import AccessToken
 from marsha.core.models import NONE, STUDENT
 from marsha.core.simple_jwt.utils import define_locales
 from marsha.core.utils.react_locales_utils import react_locale
+
+from .permissions import ResourceAccessPermissions
 
 
 class LTISelectFormAccessToken(AccessToken):
@@ -69,37 +73,40 @@ class ResourceAccessToken(AccessToken):
     Note: `api_settings.USER_ID_CLAIM` is currently `resource_id`.
     """
 
+    def verify(self):
+        """Performs additional validation steps to test payload content."""
+        super().verify()
+
+        try:
+            ResourceAccessPermissions(**self.payload["permissions"])
+        except TypeError as exc:
+            raise TokenError(_("Malformed resource access token")) from exc
+
     @classmethod
-    def for_resource_id(  # pylint: disable=too-many-arguments
+    def for_lti(
         cls,
+        lti,
         permissions,
         session_id,
-        lti=None,
         playlist_id=None,
-        resource_id=None,
     ):
         """
-        Returns an authorization token for the given resource that will be provided
-        after authenticating the resource's credentials.
-
-        Might be split later between LTI and simple behavior.
+        Returns an authorization token for the resource in the LTI request that will be provided
+        after authenticating the credentials.
 
         Parameters
         ----------
+        lti: Type[LTI]
+            LTI request.
+
         permissions: Type[Dict]
-            permissions to add to the token.
+            permissions to add to the token, must be determined by the caller.
 
         session_id: Type[str]
             session id to add to the token.
 
-        lti: Type[LTI]
-            LTI request.
-
         playlist_id: Type[str]
-            playlist id to add to the token.
-
-        resource_id: Type[str]
-            resource id to add to the token.
+            optional, playlist id to give access to in addition to the resource.
 
         Returns
         -------
@@ -111,36 +118,34 @@ class ResourceAccessToken(AccessToken):
             - locale
             - permissions
             - maintenance
-            - user:
+            - context_id
+            - consumer_site
+            - playlist_id (may not be present)
+            - user (may not be present):
                 - email
                 - id
                 - username
                 - user_fullname
         """
-        user_id = getattr(lti, "user_id", None) if lti else None
-
-        locale = define_locales(lti)
-
-        # Create a short-lived JWT token for the resource selection
-        token = cls()
-
-        if lti:
-            token.payload["context_id"] = lti.context_id
-            token.payload["consumer_site"] = str(lti.get_consumer_site().id)
-
-        if playlist_id:
-            token.payload["playlist_id"] = playlist_id
-
+        token = cls.for_resource_id(
+            str(lti.resource_id),
+            session_id,
+            permissions=permissions,
+            roles=lti.roles,
+            locale=define_locales(lti),
+        )
         token.payload.update(
             {
-                "session_id": session_id,
-                "resource_id": str(lti.resource_id) if lti else resource_id,
-                "roles": lti.roles if lti else [NONE],
-                "locale": locale,
-                "permissions": permissions,
-                "maintenance": settings.MAINTENANCE_MODE,
+                "context_id": lti.context_id,
+                "consumer_site": str(lti.get_consumer_site().id),
             }
         )
+
+        if playlist_id:
+            assert lti.is_instructor or lti.is_admin  # nosec
+            token.payload["playlist_id"] = playlist_id
+
+        user_id = getattr(lti, "user_id", None)
         if user_id:
             token.payload["user"] = {
                 "email": lti.email,
@@ -148,6 +153,65 @@ class ResourceAccessToken(AccessToken):
                 "username": lti.username,
                 "user_fullname": lti.user_fullname,
             }
+
+        return token
+
+    @classmethod
+    def for_resource_id(  # pylint: disable=too-many-arguments
+        cls,
+        resource_id,
+        session_id,
+        permissions=None,
+        roles=None,
+        locale=None,
+    ):
+        """
+        Returns an authorization token for the given resource that will be provided
+        after authenticating the resource's credentials.
+
+        Parameters
+        ----------
+        resource_id: Type[str]
+            resource id to add to the token.
+
+        session_id: Type[str]
+            session id to add to the token.
+
+        permissions: Type[Dict]
+            optional, permissions available for the token.
+
+        roles: List[Role]
+            optional, list of roles given to the token.
+
+        locale: str
+            optional, locale to provide to the frontend
+            available locales are defined in `settings.REACT_LOCALES`
+
+        Returns
+        -------
+        ResourceAccessToken
+            JWT containing:
+            - session_id
+            - resource_id
+            - roles
+            - locale
+            - permissions
+            - maintenance
+        """
+        permissions = ResourceAccessPermissions(**(permissions or {}))
+
+        # Create a short-lived JWT token for the resource selection
+        token = cls()
+        token.payload.update(
+            {
+                "session_id": session_id,
+                "resource_id": resource_id,
+                "roles": roles or [NONE],
+                "locale": locale or settings.REACT_LOCALES[0],
+                "permissions": asdict(permissions),
+                "maintenance": settings.MAINTENANCE_MODE,
+            }
+        )
         return token
 
     @classmethod
@@ -182,15 +246,17 @@ class ResourceAccessToken(AccessToken):
                 - username (if from LTI connection)
                 - anonymous_id (if not from LTI connection)
         """
-        token = cls()
+        token = cls.for_resource_id(
+            str(live_session.video.id),
+            session_id,
+            locale=react_locale(live_session.language),
+        )
 
-        token.payload["resource_id"] = str(live_session.video.id)
         token.payload["user"] = {
             "email": live_session.email,
         }
 
         if live_session.is_from_lti_connection:
-
             token.payload["consumer_site"] = str(live_session.consumer_site.id)
             token.payload["context_id"] = str(live_session.video.playlist.lti_id)
             token.payload["roles"] = [STUDENT]
@@ -200,22 +266,10 @@ class ResourceAccessToken(AccessToken):
                     "username": live_session.username,
                 }
             )
-
         else:
-
             token.payload["user"].update(
                 {"anonymous_id": str(live_session.anonymous_id)}
             )
-            token.payload["roles"] = [NONE]
-
-        token.payload.update(
-            {
-                "session_id": session_id,
-                "locale": react_locale(live_session.language),
-                "permissions": {"can_access_dashboard": False, "can_update": False},
-                "maintenance": settings.MAINTENANCE_MODE,
-            }
-        )
 
         return token
 
