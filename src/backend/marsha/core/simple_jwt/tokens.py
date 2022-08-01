@@ -18,16 +18,14 @@ class LTISelectFormAccessToken(AccessToken):
     """
     LTI select form access JWT.
 
-    For now, we stay with the same attributes as the original AccessToken for
-    backward compatibility:
-    ```
-        token_type = "access"
-        lifetime = api_settings.ACCESS_TOKEN_LIFETIME
-    ```
+    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
+    setting).
 
     Note: not usable through our authentication backend since it doesn't provide the
     `api_settings.USER_ID_CLAIM` information in payload.
     """
+
+    token_type = "lti_select_form_access"  # nosec
 
     PAYLOAD_FORM_DATA = "lti_select_form_data"
 
