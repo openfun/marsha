@@ -12,6 +12,8 @@ from django.utils import timezone
 
 from rest_framework_simplejwt.tokens import AccessToken
 
+from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken
+
 from ..defaults import ENDED, IDLE, JITSI
 from ..factories import DocumentFactory, PlaylistFactory, VideoFactory
 from ..models import Playlist
@@ -135,7 +137,7 @@ class SelectLTIViewTestCase(TestCase):
         )
 
         form_data = context.get("lti_select_form_data")
-        initial_jwt_token = AccessToken(form_data.get("jwt"))
+        initial_jwt_token = LTISelectFormAccessToken(form_data.get("jwt"))
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
 
@@ -212,7 +214,7 @@ class SelectLTIViewTestCase(TestCase):
         )
 
         form_data = context.get("lti_select_form_data")
-        jwt_token = AccessToken(form_data.get("jwt"))
+        jwt_token = LTISelectFormAccessToken(form_data.get("jwt"))
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(jwt_token.get("lti_select_form_data"), lti_parameters)
 
@@ -274,7 +276,7 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(context.get("new_video_url"), "https://testserver/lti/videos/")
 
         form_data = context.get("lti_select_form_data")
-        jwt_token = AccessToken(form_data.get("jwt"))
+        jwt_token = LTISelectFormAccessToken(form_data.get("jwt"))
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(jwt_token.get("lti_select_form_data"), lti_parameters)
 

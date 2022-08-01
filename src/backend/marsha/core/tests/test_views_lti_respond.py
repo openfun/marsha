@@ -4,7 +4,7 @@ from unittest import mock
 
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken
 
 from .utils import generate_passport_and_signed_lti_parameters
 
@@ -28,8 +28,9 @@ class RespondLTIViewTestCase(TestCase):
                 "context_id": "unknown",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -93,8 +94,9 @@ class RespondLTIViewTestCase(TestCase):
                 "shared_secret": "passport_secret",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -121,8 +123,9 @@ class RespondLTIViewTestCase(TestCase):
                 "context_id": "unknown",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -141,7 +144,7 @@ class RespondLTIViewTestCase(TestCase):
 
     def test_views_lti_respond_no_lti_select_form_data(self):
         """Missing lti_select_form_data in JWT should raise a 403 error."""
-        jwt_token = AccessToken()
+        jwt_token = LTISelectFormAccessToken()
         response = self.client.post(
             "/lti/respond/",
             {
@@ -162,8 +165,9 @@ class RespondLTIViewTestCase(TestCase):
                 "context_id": "unknown",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -181,8 +185,9 @@ class RespondLTIViewTestCase(TestCase):
                 "context_id": "unknown",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -202,8 +207,9 @@ class RespondLTIViewTestCase(TestCase):
                 "context_id": "unknown",
             },
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -224,8 +230,9 @@ class RespondLTIViewTestCase(TestCase):
             },
         )
         lti_select_form_data.pop("oauth_consumer_key")
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
@@ -246,8 +253,9 @@ class RespondLTIViewTestCase(TestCase):
             },
         )
         lti_select_form_data["oauth_consumer_key"] = "wrong oauth_consumer_key"
-        jwt_token = AccessToken()
-        jwt_token.payload["lti_select_form_data"] = lti_select_form_data
+        jwt_token = LTISelectFormAccessToken.for_lti_select_form_data(
+            lti_select_form_data,
+        )
         response = self.client.post(
             "/lti/respond/",
             {
