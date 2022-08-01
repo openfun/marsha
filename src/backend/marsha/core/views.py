@@ -414,11 +414,10 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 cache.set(self.cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            jwt_token = ResourceAccessToken.for_resource_id(
+            jwt_token = ResourceAccessToken.for_lti(
+                lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
-                lti=self.lti,
-                resource_id=app_data["resource"]["id"],
             )
             app_data["jwt"] = str(jwt_token)
 
@@ -479,10 +478,8 @@ class BaseView(BaseModelResourceView, ABC):
 
         if app_data["resource"] is not None:
             jwt_token = ResourceAccessToken.for_resource_id(
-                permissions={"can_access_dashboard": False, "can_update": False},
-                session_id=session_id,
-                lti=None,
                 resource_id=app_data["resource"]["id"],
+                session_id=session_id,
             )
             app_data["jwt"] = str(jwt_token)
 
@@ -764,10 +761,10 @@ class LTISelectView(BaseResourceView):
         permissions = {"can_access_dashboard": False, "can_update": True}
 
         app_data["jwt"] = str(
-            ResourceAccessToken.for_resource_id(
+            ResourceAccessToken.for_lti(
+                lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
-                lti=self.lti,
                 playlist_id=str(playlist.id),
             )
         )

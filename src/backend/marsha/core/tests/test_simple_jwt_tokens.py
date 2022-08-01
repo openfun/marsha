@@ -60,7 +60,7 @@ class LTISelectFormAccessTokenTestCase(TestCase):
 class ResourceAccessTokenTestCase(TestCase):
     """Test suite for the ResourceAccessToken"""
 
-    def make_lti_instance(self, resource_id=None):
+    def make_lti_instance(self, resource_id=None, role=None):
         """Helper to init some LTI context."""
         url = f"http://testserver/lti/videos/{resource_id or uuid.uuid4()}"
         lti_parameters, passport = generate_passport_and_signed_lti_parameters(
@@ -68,7 +68,7 @@ class ResourceAccessTokenTestCase(TestCase):
             lti_parameters={
                 "resource_link_id": "df7",
                 "context_id": "course-v1:ufr+mathematics+0001",
-                "roles": INSTRUCTOR,
+                "roles": role or INSTRUCTOR,
                 "user_id": "56255f3807599c377bf0e5bf072359fd",
                 "lis_person_sourcedid": "jane_doe",
                 "lis_person_contact_email_primary": "jane@test-mooc.fr",
@@ -85,46 +85,59 @@ class ResourceAccessTokenTestCase(TestCase):
 
     def test_for_resource_id(self):
         """Test JWT initialization from `for_resource_id` method without LTI"""
-        permissions = {"can_access_dashboard": False, "can_update": False}
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
 
-        token = ResourceAccessToken.for_resource_id(
-            permissions, session_id, resource_id=resource_id
-        )
+        token = ResourceAccessToken.for_resource_id(resource_id, session_id)
 
+        token.verify()  # Must not raise
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["resource_id"], resource_id)
         self.assertListEqual(token.payload["roles"], [NONE])
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
-        self.assertDictEqual(token.payload["permissions"], permissions)
+        self.assertDictEqual(
+            token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
         self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
-        # Same, with a playlist given
-        playlist_id = str(uuid.uuid4())
-        token_with_playlist = ResourceAccessToken.for_resource_id(
-            permissions,
+        token = ResourceAccessToken.for_resource_id(
+            resource_id,
             session_id,
-            resource_id=resource_id,
-            playlist_id=playlist_id,
+            roles=[STUDENT],
         )
-        self.assertEqual(token_with_playlist.payload["session_id"], session_id)
-        self.assertEqual(token_with_playlist.payload["resource_id"], resource_id)
-        self.assertListEqual(token_with_playlist.payload["roles"], [NONE])
-        self.assertEqual(token_with_playlist.payload["locale"], "en_US")
-        self.assertDictEqual(token_with_playlist.payload["permissions"], permissions)
-        self.assertFalse(token_with_playlist.payload["maintenance"])
-        self.assertEqual(token_with_playlist.payload["playlist_id"], playlist_id)
+        token.verify()  # Must not raise
+        self.assertEqual(token.payload["roles"], [STUDENT])
 
-    def test_for_resource_id_with_lti(self):
-        """Test JWT initialization from `for_resource_id` method with LTI"""
+        token = ResourceAccessToken.for_resource_id(
+            resource_id,
+            session_id,
+            locale="fr_FR",
+        )
+        token.verify()  # Must not raise
+        self.assertEqual(token.payload["locale"], "fr_FR")
+
+        token = ResourceAccessToken.for_resource_id(
+            resource_id,
+            session_id,
+            permissions={"can_access_dashboard": True},
+        )
+        token.verify()  # Must not raise
+        self.assertDictEqual(
+            token.payload["permissions"],
+            {"can_access_dashboard": True, "can_update": False},
+        )
+
+    def test_for_lti(self):
+        """Test JWT initialization from `for_lti` method"""
         permissions = {"can_access_dashboard": False, "can_update": False}
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
         lti, passport = self.make_lti_instance(resource_id=resource_id)
 
-        token = ResourceAccessToken.for_resource_id(permissions, session_id, lti=lti)
+        token = ResourceAccessToken.for_lti(lti, permissions, session_id)
 
+        token.verify()  # Must not raise
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["resource_id"], resource_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
@@ -144,34 +157,33 @@ class ResourceAccessTokenTestCase(TestCase):
             },
         )
 
-        # Same, with a playlist given
+    def test_for_lti_with_playlist(self):
+        """Test JWT initialization from `for_lti` method with a playlist"""
+        permissions = {"can_access_dashboard": False, "can_update": False}
+        session_id = str(uuid.uuid4())
+        resource_id = str(uuid.uuid4())
+        lti, passport = self.make_lti_instance(resource_id=resource_id)
+
         playlist_id = str(uuid.uuid4())
-        token_with_playlist = ResourceAccessToken.for_resource_id(
+        token = ResourceAccessToken.for_lti(
+            lti,
             permissions,
             session_id,
-            lti=lti,
             playlist_id=playlist_id,
         )
 
-        self.assertEqual(token_with_playlist.payload["session_id"], session_id)
-        self.assertEqual(token_with_playlist.payload["resource_id"], resource_id)
-        self.assertEqual(token_with_playlist.payload["roles"], [INSTRUCTOR])
-        self.assertEqual(token_with_playlist.payload["locale"], "en_US")
-        self.assertDictEqual(token_with_playlist.payload["permissions"], permissions)
-        self.assertFalse(
-            token_with_playlist.payload["maintenance"]
-        )  # settings.MAINTENANCE_MODE
+        token.verify()  # Must not raise
+        self.assertEqual(token.payload["session_id"], session_id)
+        self.assertEqual(token.payload["resource_id"], resource_id)
+        self.assertEqual(token.payload["roles"], [INSTRUCTOR])
+        self.assertEqual(token.payload["locale"], "en_US")
+        self.assertDictEqual(token.payload["permissions"], permissions)
+        self.assertFalse(token.payload["maintenance"])  # settings.MAINTENANCE_MODE
 
-        self.assertEqual(
-            token_with_playlist.payload["context_id"],
-            "course-v1:ufr+mathematics+0001",
-        )
-        self.assertEqual(
-            token_with_playlist.payload["consumer_site"],
-            str(passport.consumer_site.pk),
-        )
+        self.assertEqual(token.payload["context_id"], "course-v1:ufr+mathematics+0001")
+        self.assertEqual(token.payload["consumer_site"], str(passport.consumer_site.pk))
         self.assertDictEqual(
-            token_with_playlist.payload["user"],
+            token.payload["user"],
             {
                 "email": "jane@test-mooc.fr",
                 "id": "56255f3807599c377bf0e5bf072359fd",
@@ -179,7 +191,24 @@ class ResourceAccessTokenTestCase(TestCase):
                 "username": "jane_doe",
             },
         )
-        self.assertEqual(token_with_playlist.payload["playlist_id"], playlist_id)
+        self.assertEqual(token.payload["playlist_id"], playlist_id)
+
+    def test_for_lti_with_playlist_for_student(self):
+        """Test JWT initialization from `for_lti` method with a playlist but student role."""
+        permissions = {"can_access_dashboard": False, "can_update": False}
+        session_id = str(uuid.uuid4())
+        resource_id = str(uuid.uuid4())
+        lti, _passport = self.make_lti_instance(resource_id=resource_id, role=STUDENT)
+
+        playlist_id = str(uuid.uuid4())
+
+        with self.assertRaises(AssertionError):
+            ResourceAccessToken.for_lti(
+                lti,
+                permissions,
+                session_id,
+                playlist_id=playlist_id,
+            )
 
     def test_for_live_session_anonymous(self):
         """Test JWT initialization from `for_live_session` method with public session."""
@@ -193,6 +222,7 @@ class ResourceAccessTokenTestCase(TestCase):
 
         token = ResourceAccessToken.for_live_session(live_session, session_id)
 
+        token.verify()  # Must not raise
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -226,6 +256,7 @@ class ResourceAccessTokenTestCase(TestCase):
 
         token = ResourceAccessToken.for_live_session(live_session, session_id)
 
+        token.verify()  # Must not raise
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -245,6 +276,20 @@ class ResourceAccessTokenTestCase(TestCase):
             },
         )
         self.assertListEqual(token.payload["roles"], [STUDENT])
+
+    def test_verify_fails(self):
+        """Test JWT when `verify` method fails."""
+        session_id = str(uuid.uuid4())
+        resource_id = str(uuid.uuid4())
+
+        # Build a proper token
+        token = ResourceAccessToken.for_resource_id(resource_id, session_id)
+
+        # Mess with the permissions
+        token.payload["permissions"] = {"can_break_everything": True}
+
+        with self.assertRaises(TokenError):
+            token.verify()
 
 
 class UserAccessTokenTestCase(TestCase):
