@@ -82,6 +82,8 @@ describe('VideoPlayer', () => {
 
   beforeEach(() => {
     mockCreatePlayer.mockReturnValue({
+      addTrack: jest.fn(),
+      removeTrack: jest.fn(),
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
@@ -146,7 +148,6 @@ describe('VideoPlayer', () => {
       ),
     );
 
-    expect(container.querySelectorAll('track')).toHaveLength(2);
     expect(
       container.querySelector('source[src="https://example.com/144p.mp4"]'),
     ).not.toBeNull();

@@ -4,18 +4,13 @@ import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
 import { TimedText, timedTextMode, Video, videoSize } from 'types/tracks';
-import { Nullable } from 'utils/types';
-
-const trackTextKind: { [key in timedTextMode]?: string } = {
-  [timedTextMode.CLOSED_CAPTIONING]: 'captions',
-  [timedTextMode.SUBTITLE]: 'subtitles',
-};
+import { VideoPlayerInterface } from 'types/VideoPlayer';
+import { Maybe, Nullable } from 'utils/types';
 
 interface BaseVideoPlayerProps {
   video: Nullable<Video>;
@@ -54,16 +49,16 @@ const VideoPlayer = ({
       )) ||
     {};
 
+  const playerRef = useRef<Maybe<VideoPlayerInterface>>(undefined);
   /**
    * Initialize the video player.
    * Noop out if the video is missing, render will redirect to an error page.
    */
   useEffect(() => {
     getChoices();
-
     if (video) {
       // Instantiate the player and keep the instance in state
-      const createdPlayer = createPlayer(
+      playerRef.current = createPlayer(
         playerType,
         videoNodeRef.current!,
         setPlayerCurrentTime,
@@ -73,21 +68,65 @@ const VideoPlayer = ({
           if (defaultVolume !== undefined) {
             videoPlayer.volume(Math.min(1, Math.max(0, defaultVolume)));
           }
+          timedTextTracks
+            .filter((track) => track.is_ready_to_show)
+            .filter((track) =>
+              [
+                timedTextMode.CLOSED_CAPTIONING,
+                timedTextMode.SUBTITLE,
+              ].includes(track.mode),
+            )
+            .forEach((track) => {
+              if (playerRef.current) {
+                playerRef.current.addTrack(track, languages);
+              }
+            });
         },
       );
 
-      document.dispatchEvent(
-        new CustomEvent('marsha_player_created', {
-          detail: {
-            videoNode: videoNodeRef.current!,
-          },
-        }),
-      );
-
       /** Make sure to destroy the player on unmount. */
-      return () => createdPlayer && createdPlayer.destroy();
+      return () => playerRef.current && playerRef.current.destroy();
     }
   }, []);
+
+  useEffect(() => {
+    if (video?.urls?.manifests && playerRef.current) {
+      playerRef.current.setSource(video.urls.manifests.hls);
+    }
+  }, [video?.urls?.manifests.hls]);
+
+  const oldTimedTextTracks = useRef(timedTextTracks);
+  useEffect(() => {
+    if (!playerRef.current) {
+      return;
+    }
+    const playerApi = playerRef.current;
+
+    // tracks to add
+    timedTextTracks
+      .filter(
+        (track) =>
+          !oldTimedTextTracks.current.includes(track) &&
+          track.is_ready_to_show &&
+          [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+            track.mode,
+          ),
+      )
+      .forEach((track) => playerApi.addTrack(track, languages));
+    // tracks to remove
+    oldTimedTextTracks.current
+      .filter(
+        (track) =>
+          !timedTextTracks.includes(track) &&
+          track.is_ready_to_show &&
+          [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
+            track.mode,
+          ),
+      )
+      .forEach((track) => playerApi.removeTrack(track));
+
+    oldTimedTextTracks.current = timedTextTracks;
+  }, [timedTextTracks]);
 
   // The video is somehow missing and jwt must be set
   if (!video) {
@@ -115,31 +154,14 @@ const VideoPlayer = ({
         tabIndex={-1}
         playsInline
       >
-        {resolutions.map((size) => (
+        {resolutions.map((size, index) => (
           <source
-            key={video.urls!.mp4[size]}
+            key={`url_${index}`}
             size={`${size}`}
             src={video.urls!.mp4[size]}
             type="video/mp4"
           />
         ))}
-
-        {timedTextTracks
-          .filter((track) => track.is_ready_to_show)
-          .filter((track) =>
-            [timedTextMode.CLOSED_CAPTIONING, timedTextMode.SUBTITLE].includes(
-              track.mode,
-            ),
-          )
-          .map((track) => (
-            <track
-              key={track.id}
-              src={track.url}
-              srcLang={track.language}
-              kind={trackTextKind[track.mode]}
-              label={languages[track.language] || track.language}
-            />
-          ))}
       </video>
     </Box>
   );
