@@ -119,6 +119,8 @@ describe('PublicVideoDashboard', () => {
       { method: 'OPTIONS' },
     );
     mockCreatePlayer.mockReturnValue({
+      addTrack: jest.fn(),
+      removeTrack: jest.fn(),
       destroy: jest.fn(),
       getSource: jest.fn(),
       setSource: jest.fn(),
