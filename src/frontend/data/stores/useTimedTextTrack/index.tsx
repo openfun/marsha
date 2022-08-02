@@ -1,10 +1,14 @@
 import create from 'zustand';
 
-import { modelName } from '../../../types/models';
-import { StoreState } from '../../../types/stores';
-import { TimedText } from '../../../types/tracks';
-import { appData } from '../../appData';
-import { addMultipleResources, addResource, removeResource } from '../actions';
+import { appData } from 'data/appData';
+import {
+  addMultipleResources,
+  addResource,
+  removeResource,
+} from 'data/stores/actions';
+import { modelName } from 'types/models';
+import { StoreState } from 'types/stores';
+import { TimedText } from 'types/tracks';
 
 type TimedTextTrackStore = {
   [modelName.TIMEDTEXTTRACKS]: {
