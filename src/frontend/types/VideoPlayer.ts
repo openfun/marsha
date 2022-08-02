@@ -1,8 +1,11 @@
-import { Maybe } from 'utils/types';
 import { VideoJsPlayer } from 'video.js';
-import { Video } from './tracks';
+
+import { Video, TimedText } from 'types/tracks';
+import { Maybe } from 'utils/types';
 
 export interface VideoPlayerInterface {
+  addTrack(track: TimedText, languages: { [key: string]: string }): void;
+  removeTrack(track: TimedText): void;
   /** Destroy the instance and garbage collect any elements. */
   destroy(): void;
   getSource(): string;

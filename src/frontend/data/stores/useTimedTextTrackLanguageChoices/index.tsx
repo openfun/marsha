@@ -1,14 +1,14 @@
 import create from 'zustand';
 
-import { API_ENDPOINT } from '../../../settings';
-import { requestStatus } from '../../../types/api';
-import { LanguageChoice } from '../../../types/LanguageChoice';
-import { modelName } from '../../../types/models';
-import { RouteOptions } from '../../../types/RouteOptions';
-import { TimedText } from '../../../types/tracks';
-import { report } from '../../../utils/errors/report';
-import { Maybe } from '../../../utils/types';
-import { appData } from '../../appData';
+import { appData } from 'data/appData';
+import { API_ENDPOINT } from 'settings';
+import { requestStatus } from 'types/api';
+import { LanguageChoice } from 'types/LanguageChoice';
+import { modelName } from 'types/models';
+import { RouteOptions } from 'types/RouteOptions';
+import { TimedText } from 'types/tracks';
+import { report } from 'utils/errors/report';
+import { Maybe } from 'utils/types';
 
 type State = {
   choices: Maybe<LanguageChoice[]>;
