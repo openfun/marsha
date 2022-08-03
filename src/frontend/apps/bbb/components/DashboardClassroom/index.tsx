@@ -12,19 +12,19 @@ import { Maybe } from 'utils/types';
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useJoinClassroomAction, useClassroom } from 'apps/bbb/data/queries';
 import { Attendee } from 'apps/bbb/types/models';
-import { DashboardClassroomError } from 'apps/bbb/DashboardClassroomError';
+import { DashboardClassroomError } from 'apps/bbb/components/DashboardClassroomError';
 
 const DashboardClassroomStudent = lazy(
-  () => import('apps/bbb/DashboardClassroomStudent'),
+  () => import('apps/bbb/components/DashboardClassroomStudent'),
 );
 const DashboardClassroomInstructor = lazy(
-  () => import('apps/bbb/DashboardClassroomInstructor'),
+  () => import('apps/bbb/components/DashboardClassroomInstructor'),
 );
 const DashboardClassroomAskUsername = lazy(
-  () => import('apps/bbb/DashboardClassroomAskUsername'),
+  () => import('apps/bbb/components/DashboardClassroomAskUsername'),
 );
 const DashboardClassroomJoin = lazy(
-  () => import('apps/bbb/DashboardClassroomJoin'),
+  () => import('apps/bbb/components/DashboardClassroomJoin'),
 );
 
 const messages = defineMessages({

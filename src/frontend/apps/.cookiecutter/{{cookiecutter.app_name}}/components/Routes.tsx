@@ -7,12 +7,13 @@ import {
 } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { Loader } from 'components/Loader';
-import { isFeatureEnabled } from 'utils/isFeatureEnabled';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
 
 const Dashboard{{cookiecutter.model}} = lazy(() => import('./Dashboard{{cookiecutter.model}}'));
 
 export const Routes = () => {
+  const isFeatureEnabled = useIsFeatureEnabled();
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>

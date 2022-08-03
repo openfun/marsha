@@ -8,19 +8,19 @@ import { useQueryClient } from 'react-query';
 import { Loader } from 'components/Loader';
 import { Maybe, Nullable } from 'utils/types';
 
-import { CodeMirrorEditor } from 'apps/markdown/CodeMirrorEditor';
+import { CodeMirrorEditor } from 'apps/markdown/components/CodeMirrorEditor';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
 } from 'apps/markdown/data/queries';
-import LanguageSelector from 'apps/markdown/LanguageSelector';
-import MdxRenderer from 'apps/markdown/MdxRenderer';
-import MdxRenderingOptionsSelector from 'apps/markdown/MdxRenderingOptionsSelector';
+import LanguageSelector from 'apps/markdown/components/LanguageSelector';
+import MdxRenderer from 'apps/markdown/components/MdxRenderer';
+import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOptionsSelector';
 import ScreenDispositionSelector, {
   ScreenDisposition,
-} from 'apps/markdown/ScreenDispositionSelector';
+} from 'apps/markdown/components/ScreenDispositionSelector';
 import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
 import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
 

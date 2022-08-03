@@ -15,9 +15,9 @@ import { DecodedJwt } from 'types/jwt';
 import { OrganizationAccessRole } from 'types/User';
 import { Nullable } from 'utils/types';
 
-import MarkdownEditor from 'apps/markdown/MarkdownEditor';
-import MarkdownNotFoundView from 'apps/markdown/MarkdownNotFoundView';
-import MarkdownViewer from 'apps/markdown/MarkdownViewer';
+import MarkdownEditor from 'apps/markdown/components/MarkdownEditor';
+import MarkdownNotFoundView from 'apps/markdown/components/MarkdownNotFoundView';
+import MarkdownViewer from 'apps/markdown/components/MarkdownViewer';
 
 const MarkdownView = () => {
   const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
