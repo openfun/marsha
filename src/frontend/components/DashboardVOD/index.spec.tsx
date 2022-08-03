@@ -31,7 +31,7 @@ jest.mock('./widgets/DashboardVODWidgetUploadVideo', () => ({
   DashboardVODWidgetUploadVideo: () => <p>DashboardVODWidgetUploadVideo</p>,
 }));
 jest.mock(
-  'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail',
+  'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail',
   () => ({
     DashboardLiveWidgetThumbnail: (props: { isLive: boolean }) => (
       <p>{`DashboardLiveWidgetThumbnail ${props.isLive}`}</p>

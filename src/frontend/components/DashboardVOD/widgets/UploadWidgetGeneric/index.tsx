@@ -2,7 +2,7 @@ import { Box, Button } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveItemList } from 'components/DashboardLiveControlPane/customs/DashboardLiveItemList';
+import { DashboardLiveItemList } from 'components/DashboardLive/DashboardLiveControlPane/customs/DashboardLiveItemList';
 import { useUploadManager } from 'components/UploadManager';
 import { createTimedTextTrack } from 'data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
