@@ -3,7 +3,7 @@ import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { videoSize } from 'types/tracks';
 
@@ -79,7 +79,7 @@ export const DashboardVODWidgetDownloadVideo = () => {
   }>(options[options.length - 1]);
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
@@ -120,6 +120,6 @@ export const DashboardVODWidgetDownloadVideo = () => {
           title={intl.formatMessage(messages.downloadButtonLabel)}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

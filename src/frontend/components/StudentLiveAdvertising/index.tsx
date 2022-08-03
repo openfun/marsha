@@ -12,7 +12,7 @@ import ICalendarLink from 'react-icalendar-link';
 import { useIntl, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
-import { ThumbnailDisplayer } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail/ThumbnailDisplayer';
+import { ThumbnailDisplayer } from 'components/common/dashboard/widgets/WidgetThumbnail/ThumbnailDisplayer';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState } from 'types/tracks';

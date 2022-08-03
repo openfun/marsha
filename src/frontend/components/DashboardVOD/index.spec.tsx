@@ -30,14 +30,11 @@ jest.mock('./widgets/DashboardVODWidgetGeneralTitle', () => ({
 jest.mock('./widgets/DashboardVODWidgetUploadVideo', () => ({
   DashboardVODWidgetUploadVideo: () => <p>DashboardVODWidgetUploadVideo</p>,
 }));
-jest.mock(
-  'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail',
-  () => ({
-    DashboardLiveWidgetThumbnail: (props: { isLive: boolean }) => (
-      <p>{`DashboardLiveWidgetThumbnail ${props.isLive}`}</p>
-    ),
-  }),
-);
+jest.mock('components/common/dashboard/widgets/WidgetThumbnail', () => ({
+  WidgetThumbnail: (props: { isLive: boolean }) => (
+    <p>{`WidgetThumbnail ${props.isLive}`}</p>
+  ),
+}));
 jest.mock('./widgets/DashboardVODWidgetDownloadVideo', () => ({
   DashboardVODWidgetDownloadVideo: () => <p>DashboardVODWidgetDownloadVideo</p>,
 }));
@@ -94,8 +91,8 @@ describe('<DashboardVOD />', () => {
     // DashboardVODWidgetUploadVideo
     screen.getByText('DashboardVODWidgetUploadVideo');
 
-    // DashboardLiveWidgetThumbnail
-    screen.getByText('DashboardLiveWidgetThumbnail false');
+    // WidgetThumbnail
+    screen.getByText('WidgetThumbnail false');
 
     // DashboardVODWidgetDownloadVideo
     screen.getByText('DashboardVODWidgetDownloadVideo');

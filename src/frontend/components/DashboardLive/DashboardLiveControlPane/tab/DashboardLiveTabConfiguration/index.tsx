@@ -1,12 +1,12 @@
 import React from 'react';
 
-import { SharedLiveMediaModalWrapper } from 'components/DashboardLive/DashboardLiveControlPane/customs/SharedLiveMediaModalWrapper';
-import { DashboardLiveWidgetsContainer } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetsContainer';
+import { SharedLiveMediaModalWrapper } from 'components/DashboardLive/DashboardLiveControlPane/components/SharedLiveMediaModalWrapper';
+import { WidgetsContainer } from 'components/common/dashboard/widgets/WidgetsContainer';
 import { DashboardLiveWidgetGeneralTitle } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetGeneralTitle';
 import { DashboardLiveWidgetJoinMode } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetJoinMode';
 import { DashboardLiveWidgetLivePairing } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetLivePairing';
 import { DashboardLiveWidgetSchedulingAndDescription } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetSchedulingAndDescription';
-import { DashboardLiveWidgetThumbnail } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail';
+import { WidgetThumbnail } from 'components/common/dashboard/widgets/WidgetThumbnail';
 import { DashboardLiveWidgetToolsAndApplications } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetToolsAndApplications';
 import { DashboardLiveWidgetVisibilityAndInteraction } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetVisibilityAndInteraction';
 import { DashboardLiveWidgetVOD } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetVOD';
@@ -19,7 +19,7 @@ export const DashboardLiveTabConfiguration = () => {
     <InfoWidgetModalProvider value={null}>
       <DeleteSharedLiveMediaModalProvider value={null}>
         <SharedLiveMediaModalWrapper />
-        <DashboardLiveWidgetsContainer>
+        <WidgetsContainer>
           <DashboardLiveWidgetToolsAndApplications />
           <DashboardLiveWidgetGeneralTitle />
           <DashboardLiveWidgetVisibilityAndInteraction />
@@ -27,9 +27,9 @@ export const DashboardLiveTabConfiguration = () => {
           <DashboardLiveWidgetLivePairing />
           <DashboardLiveWidgetVOD />
           <DashboardLiveWidgetJoinMode />
-          <DashboardLiveWidgetThumbnail />
+          <WidgetThumbnail />
           <DashboardLiveWidgetSharedLiveMedia />
-        </DashboardLiveWidgetsContainer>
+        </WidgetsContainer>
       </DeleteSharedLiveMediaModalProvider>
     </InfoWidgetModalProvider>
   );

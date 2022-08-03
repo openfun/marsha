@@ -3,9 +3,9 @@ import React, { useCallback, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { DashboardLiveWidgetTextInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextInput';
-import { DashboardLiveWidgetToggleInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetToggleInput';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { TextInput } from 'components/common/dashboard/widgets/inputs/TextInput';
+import { ToggleInput } from 'components/common/dashboard/widgets/inputs/ToggleInput';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Video } from 'types/tracks';
@@ -109,25 +109,25 @@ export const DashboardLiveWidgetGeneralTitle = () => {
   };
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <DashboardLiveWidgetTextInput
+        <TextInput
           placeholder={intl.formatMessage(messages.placeholderTitleInput)}
           value={title || ''}
           setValue={handleChange}
           title={intl.formatMessage(messages.placeholderTitleInput)}
         />
-        <DashboardLiveWidgetToggleInput
+        <ToggleInput
           disabled={video.is_recording}
           checked={checked}
           onChange={onToggleChange}
           label={intl.formatMessage(messages.recordingToggleLabel)}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

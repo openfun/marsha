@@ -1,9 +1,9 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
+import { UploadWidgetGeneric } from 'components/DashboardVOD/components/UploadWidgetGeneric';
 import { timedTextMode } from 'types/tracks';
-import { UploadWidgetGeneric } from '../UploadWidgetGeneric';
 
 const messages = defineMessages({
   info: {
@@ -23,7 +23,7 @@ export const DashboardVODWidgetUploadClosedCaptions = () => {
   const intl = useIntl();
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
@@ -31,6 +31,6 @@ export const DashboardVODWidgetUploadClosedCaptions = () => {
       <UploadWidgetGeneric
         timedTextModeWidget={timedTextMode.CLOSED_CAPTIONING}
       />
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

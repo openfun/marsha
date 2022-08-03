@@ -2,8 +2,8 @@ import { Box, Button } from 'grommet';
 import React, { useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveItemList } from 'components/DashboardLive/DashboardLiveControlPane/customs/DashboardLiveItemList';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { ItemList } from 'components/common/dashboard/widgets/components/ItemList';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useUploadManager } from 'components/UploadManager';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -74,7 +74,7 @@ export const DashboardLiveWidgetSharedLiveMedia = () => {
   };
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
@@ -105,7 +105,7 @@ export const DashboardLiveWidgetSharedLiveMedia = () => {
           title={intl.formatMessage(messages.uploadButtonLabel)}
         />
 
-        <DashboardLiveItemList
+        <ItemList
           itemList={sharedLiveMedias}
           noItemsMessage={intl.formatMessage(messages.noUploadedDocuments)}
         >
@@ -124,8 +124,8 @@ export const DashboardLiveWidgetSharedLiveMedia = () => {
               )}
             />
           )}
-        </DashboardLiveItemList>
+        </ItemList>
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };
