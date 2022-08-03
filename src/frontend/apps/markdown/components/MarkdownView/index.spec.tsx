@@ -16,8 +16,12 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
-jest.mock('apps/markdown/MarkdownEditor', () => () => <p>MarkdownEditor</p>);
-jest.mock('apps/markdown/MarkdownViewer', () => () => <p>MarkdownViewer</p>);
+jest.mock('apps/markdown/components/MarkdownEditor', () => () => (
+  <p>MarkdownEditor</p>
+));
+jest.mock('apps/markdown/components/MarkdownViewer', () => () => (
+  <p>MarkdownViewer</p>
+));
 
 describe('<MarkdownView />', () => {
   beforeEach(() => {

@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Loader } from 'components/Loader';
 import { Nullable } from 'utils/types';
 
-import LanguageSelector from 'apps/markdown/LanguageSelector';
+import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
 

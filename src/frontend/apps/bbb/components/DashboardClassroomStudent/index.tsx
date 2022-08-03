@@ -8,8 +8,8 @@ import { Nullable } from 'utils/types';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/bbb/DashboardClassroomLayout';
-import { DashboardClassroomStudentCounter } from 'apps/bbb/DashboardClassroomStudentCounter';
+} from 'apps/bbb/components/DashboardClassroomLayout';
+import { DashboardClassroomStudentCounter } from 'apps/bbb/components/DashboardClassroomStudentCounter';
 import { Classroom } from 'apps/bbb/types/models';
 
 const messages = defineMessages({

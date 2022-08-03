@@ -33,7 +33,7 @@ jest.mock('apps/markdown/data/MarkdownAppData', () => ({
   },
 }));
 
-jest.mock('apps/markdown/MdxRenderer/constants', () => ({
+jest.mock('apps/markdown/components/MdxRenderer/constants', () => ({
   debouncingTime: 0, // override the debouncing time to make tests twice faster
 }));
 

@@ -27,6 +27,7 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 - Remove chat & viewers buttons from control bar and add a notification for
 managing on-stage request
 - Rework lti app configuration, replaced global variable by stores
+- Collect frontend applications components under a directory
 
 ### Fixed
 

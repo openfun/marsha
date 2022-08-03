@@ -335,7 +335,9 @@ export const SelectContent = ({
       return;
     }
 
-    appTabs.push(lazy(() => import(`apps/${appName}/SelectContentTab`)));
+    appTabs.push(
+      lazy(() => import(`apps/${appName}/components/SelectContentTab`)),
+    );
   });
 
   useEffect(() => {
