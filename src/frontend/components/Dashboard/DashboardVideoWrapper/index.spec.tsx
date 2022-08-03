@@ -30,8 +30,8 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
-jest.mock('components/DashboardVideoLive', () => ({
-  DashboardVideoLive: () => <p>{`Dashboard video live`}</p>,
+jest.mock('components/DashboardLive', () => ({
+  DashboardLive: () => <p>{`Dashboard video live`}</p>,
 }));
 
 jest.mock('components/DashboardVideo', () => ({

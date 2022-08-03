@@ -11,7 +11,7 @@ import { TeacherLiveContent } from '.';
 jest.mock('components/TeacherLiveRawWrapper', () => () => (
   <span>live raw wrapper</span>
 ));
-jest.mock('components/DashboardVideoLiveJitsi', () => () => (
+jest.mock('components/DashboardLiveJitsi', () => () => (
   <span>video live jitsi</span>
 ));
 

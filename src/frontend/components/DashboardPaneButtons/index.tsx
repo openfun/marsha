@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Document } from '../../types/file';
 import { modelName } from '../../types/models';
 import { uploadState, LiveModeType, Video } from '../../types/tracks';
-import { DashboardVideoLiveConfigureButton } from '../DashboardVideoLiveConfigureButton';
+import { DashboardLiveConfigureButton } from '../DashboardLiveConfigureButton';
 import { PLAYER_ROUTE } from '../routes';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { useUploadManager } from '../UploadManager';
@@ -82,7 +82,7 @@ export const DashboardPaneButtons = ({
       {objectType === modelName.VIDEOS &&
         object.upload_state === uploadState.PENDING &&
         !(object as Video).live_state && (
-          <DashboardVideoLiveConfigureButton
+          <DashboardLiveConfigureButton
             video={object as Video}
             type={LiveModeType.JITSI}
           />

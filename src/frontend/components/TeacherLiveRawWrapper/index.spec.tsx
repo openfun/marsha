@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
-import DashboardVideoLiveRaw from 'components/DashboardVideoLiveRaw';
+import DashboardLiveRaw from 'components/DashboardLiveRaw';
 import VideoPlayer from 'components/VideoPlayer';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -16,11 +16,11 @@ const mockedVideoPlayer = VideoPlayer as jest.MockedFunction<
   typeof VideoPlayer
 >;
 
-jest.mock('components/DashboardVideoLiveRaw', () =>
+jest.mock('components/DashboardLiveRaw', () =>
   jest.fn().mockImplementation((_: any) => <span>dashboard raw</span>),
 );
-const mockedDashboardRaw = DashboardVideoLiveRaw as jest.MockedFunction<
-  typeof DashboardVideoLiveRaw
+const mockedDashboardRaw = DashboardLiveRaw as jest.MockedFunction<
+  typeof DashboardLiveRaw
 >;
 
 describe('<TeacherLiveRawWrapper />', () => {

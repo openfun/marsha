@@ -2,7 +2,7 @@ import { Box, Text } from 'grommet';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { RetryButton } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetSharedLiveMedia/SharedLiveMediaItem/RetryButton';
+import { RetryButton } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetSharedLiveMedia/SharedLiveMediaItem/RetryButton';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadingObject } from 'components/UploadManager';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';

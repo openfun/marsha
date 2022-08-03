@@ -2,7 +2,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardVideoLiveConfirmationModal } from 'components/DashboardVideoLiveControlPane/customs/DashboardVideoLiveConfirmationModal';
+import { DashboardLiveConfirmationModal } from 'components/DashboardLiveControlPane/customs/DashboardLiveConfirmationModal';
 import { useDeleteTimedTextTrack } from 'data/queries';
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
@@ -63,7 +63,7 @@ export const TimedTrackModalWrapper = () => {
 
   if (deleteTimedTextTrackUploadModal) {
     return (
-      <DashboardVideoLiveConfirmationModal
+      <DashboardLiveConfirmationModal
         text={intl.formatMessage(messages.confirmationModalText, {
           timedTextTrackName: deleteTimedTextTrackUploadModal.title,
         })}

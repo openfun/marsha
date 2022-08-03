@@ -3,8 +3,8 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { DashboardVideoLiveWidgetsContainer } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetsContainer';
-import { DashboardVideoLiveWidgetThumbnail } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetThumbnail';
+import { DashboardLiveWidgetsContainer } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetsContainer';
+import { DashboardLiveWidgetThumbnail } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -63,15 +63,15 @@ export const DashboardVOD = () => {
       <InfoWidgetModalProvider value={null}>
         <DeleteTimedTextTrackUploadModalProvider value={null}>
           <TimedTrackModalWrapper />
-          <DashboardVideoLiveWidgetsContainer>
+          <DashboardLiveWidgetsContainer>
             <DashboardVODWidgetGeneralTitle />
             <DashboardVODWidgetUploadVideo />
-            <DashboardVideoLiveWidgetThumbnail isLive={false} />
+            <DashboardLiveWidgetThumbnail isLive={false} />
             <DashboardVODWidgetDownloadVideo />
             <DashboardVODWidgetUploadSubtitles />
             <DashboardVODWidgetUploadTranscripts />
             <DashboardVODWidgetUploadClosedCaptions />
-          </DashboardVideoLiveWidgetsContainer>
+          </DashboardLiveWidgetsContainer>
         </DeleteTimedTextTrackUploadModalProvider>
       </InfoWidgetModalProvider>
     </Box>

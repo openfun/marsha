@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
-import DashboardVideoLiveJitsi from 'components/DashboardVideoLiveJitsi';
+import DashboardLiveJitsi from 'components/DashboardLiveJitsi';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
@@ -125,7 +125,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         <PictureInPictureLayer
           mainElement={
             isParticipantOnstage && jitsiLive ? (
-              <DashboardVideoLiveJitsi liveJitsi={jitsiLive} />
+              <DashboardLiveJitsi liveJitsi={jitsiLive} />
             ) : (
               <VideoPlayer
                 playerType={playerType}
