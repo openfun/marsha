@@ -59,7 +59,7 @@ const mockCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/custom_app/SelectContentTab',
+  'apps/custom_app/components/SelectContentTab',
   () => mockCustomSelectContentTab,
   {
     virtual: true,
@@ -85,7 +85,7 @@ const mockOtherCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/other_custom_app/SelectContentTab',
+  'apps/other_custom_app/components/SelectContentTab',
   () => mockOtherCustomSelectContentTab,
   {
     virtual: true,

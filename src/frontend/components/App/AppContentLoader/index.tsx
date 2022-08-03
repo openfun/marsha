@@ -75,7 +75,7 @@ const intl = createIntl(
 
 const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {};
 Object.values(appNames).forEach((app) => {
-  appsContent[app] = lazy(() => import(`apps/${app}/Routes`));
+  appsContent[app] = lazy(() => import(`apps/${app}/components/Routes`));
 });
 const ltiSite = lazy(() => import('components/LTIRoutes'));
 

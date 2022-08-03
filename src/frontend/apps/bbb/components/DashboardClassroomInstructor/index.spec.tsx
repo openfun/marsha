@@ -31,9 +31,11 @@ jest.mock('apps/bbb/data/bbbAppData', () => ({
   },
 }));
 
-jest.mock('apps/bbb/DashboardClassroomForm', () => () => <p>classroom form</p>);
+jest.mock('apps/bbb/components/DashboardClassroomForm', () => () => (
+  <p>classroom form</p>
+));
 
-jest.mock('apps/bbb/DashboardClassroomInfos', () => () => (
+jest.mock('apps/bbb/components/DashboardClassroomInfos', () => () => (
   <p>classroom infos</p>
 ));
 

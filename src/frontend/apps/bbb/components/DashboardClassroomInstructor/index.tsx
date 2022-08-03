@@ -12,13 +12,13 @@ import { useEndClassroomAction } from 'apps/bbb/data/queries';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/bbb/DashboardClassroomLayout';
+} from 'apps/bbb/components/DashboardClassroomLayout';
 
 const DashboardClassroomForm = lazy(
-  () => import('apps/bbb/DashboardClassroomForm'),
+  () => import('apps/bbb/components/DashboardClassroomForm'),
 );
 const DashboardClassroomInfos = lazy(
-  () => import('apps/bbb/DashboardClassroomInfos'),
+  () => import('apps/bbb/components/DashboardClassroomInfos'),
 );
 
 const messages = defineMessages({

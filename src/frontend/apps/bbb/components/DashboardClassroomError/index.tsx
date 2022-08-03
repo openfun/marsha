@@ -6,7 +6,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/bbb/DashboardClassroomLayout';
+} from 'apps/bbb/components/DashboardClassroomLayout';
 
 const errorMessages = {
   notFound: defineMessages({

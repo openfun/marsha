@@ -6,7 +6,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { SchedulingFields } from 'components/SchedulingFields';
 import { Maybe } from 'utils/types';
 
-import { DashboardClassroomLayout } from 'apps/bbb/DashboardClassroomLayout';
+import { DashboardClassroomLayout } from 'apps/bbb/components/DashboardClassroomLayout';
 import {
   useCreateClassroomAction,
   useUpdateClassroom,
