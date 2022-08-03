@@ -3,9 +3,9 @@ import React, { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardVideoLiveWidgetTextAreaInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetTextAreaInput';
-import { DashboardVideoLiveWidgetTextInput } from 'components/DashboardVideoLiveControlPane/inputs/DashboardVideoLiveWidgetTextInput';
-import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
+import { DashboardLiveWidgetTextAreaInput } from 'components/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextAreaInput';
+import { DashboardLiveWidgetTextInput } from 'components/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextInput';
+import { DashboardLiveWidgetTemplate } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Video } from 'types/tracks';
@@ -101,13 +101,13 @@ export const DashboardVODWidgetGeneralTitle = () => {
   };
 
   return (
-    <DashboardVideoLiveWidgetTemplate
+    <DashboardLiveWidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <DashboardVideoLiveWidgetTextInput
+        <DashboardLiveWidgetTextInput
           placeholder={intl.formatMessage(messages.placeholderTitleInput)}
           value={title || ''}
           setValue={(inputText: string) => {
@@ -116,7 +116,7 @@ export const DashboardVODWidgetGeneralTitle = () => {
           }}
           title={intl.formatMessage(messages.placeholderTitleInput)}
         />
-        <DashboardVideoLiveWidgetTextAreaInput
+        <DashboardLiveWidgetTextAreaInput
           placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
           value={description || ''}
           setValue={(inputText: string) => {
@@ -126,6 +126,6 @@ export const DashboardVODWidgetGeneralTitle = () => {
           title={intl.formatMessage(messages.placeholderDescriptionInput)}
         />
       </Box>
-    </DashboardVideoLiveWidgetTemplate>
+    </DashboardLiveWidgetTemplate>
   );
 };

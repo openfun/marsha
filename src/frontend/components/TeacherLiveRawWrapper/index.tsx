@@ -1,6 +1,6 @@
 import React from 'react';
 
-import DashboardVideoLiveRaw from 'components/DashboardVideoLiveRaw';
+import DashboardLiveRaw from 'components/DashboardLiveRaw';
 import VideoPlayer from 'components/VideoPlayer';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
 import { Video } from 'types/tracks';
@@ -22,7 +22,7 @@ const TeacherLiveRawWrapper = ({ video }: TeacherLiveRawWrapperProps) => {
       />
     );
   } else {
-    return <DashboardVideoLiveRaw video={video} />;
+    return <DashboardLiveRaw video={video} />;
   }
 };
 

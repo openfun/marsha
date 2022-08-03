@@ -2,7 +2,7 @@ import React from 'react';
 import { liveState, uploadState, Video } from 'types/tracks';
 
 import { DashboardVideo } from 'components/DashboardVideo';
-import { DashboardVideoLive } from 'components/DashboardVideoLive';
+import { DashboardLive } from 'components/DashboardLive';
 import { LTINav } from 'components/LTINav';
 import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
@@ -30,7 +30,7 @@ export const DashboardVideoWrapper = ({
         <PictureInPictureProvider value={{ reversed: true }}>
           <JitsiApiProvider value={undefined}>
             <LiveModaleConfigurationProvider value={null}>
-              <DashboardVideoLive />
+              <DashboardLive />
             </LiveModaleConfigurationProvider>
           </JitsiApiProvider>
         </PictureInPictureProvider>

@@ -15,35 +15,35 @@ const messages = defineMessages({
   title: {
     defaultMessage: 'End live',
     description: 'Title for the button to end streaming as a teacher.',
-    id: 'components.DashboardVideoLiveEndButton.endLive',
+    id: 'components.DashboardLiveEndButton.endLive',
   },
   noTitle: {
     defaultMessage: 'No title',
     description: 'Title placeholder when no title is defined for this live',
-    id: 'components.DashboardVideoLiveEndButton.noTitle',
+    id: 'components.DashboardLiveEndButton.noTitle',
   },
   alertInfo: {
     defaultMessage:
       'You are about to stop the live.{br}Every viewers will be disconnected.{br}Are you sure you want to stop this Live ?{br}Beware, live is still running until stopped.',
     description:
       'Message shows when the teacher needs to confirm he wants to stop the live.',
-    id: 'components.DashboardVideoLiveEndButton.alertInfo',
+    id: 'components.DashboardLiveEndButton.alertInfo',
   },
   stopButtonTitle: {
     defaultMessage: 'Stop the live',
     description: 'Stop Button title',
-    id: 'components.DashboardVideoLiveEndButton.stopButtonTitle',
+    id: 'components.DashboardLiveEndButton.stopButtonTitle',
   },
   error: {
     defaultMessage: 'An error occured, please try again.',
     description:
       'Error message displayed when and error occured when trying to pause',
-    id: 'components.DashboardVideoLiveEndButton.error',
+    id: 'components.DashboardLiveEndButton.error',
   },
   cancel: {
     defaultMessage: 'Cancel',
     description: 'Button label to cancel stopping a live',
-    id: 'components.DashboardVideoLiveEndButton.cancel',
+    id: 'components.DashboardLiveEndButton.cancel',
   },
 });
 
