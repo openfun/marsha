@@ -3,7 +3,7 @@ import { normalizeColor } from 'grommet/utils';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
+import { DashboardLiveWidgetTemplate } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
 import { ValidSVG } from 'components/SVGIcons/ValidSVG';
 import { useUploadManager } from 'components/UploadManager';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -68,7 +68,7 @@ export const DashboardVODWidgetUploadVideo = () => {
   }, [video.upload_state]);
 
   return (
-    <DashboardVideoLiveWidgetTemplate
+    <DashboardLiveWidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
@@ -153,6 +153,6 @@ export const DashboardVODWidgetUploadVideo = () => {
           title={intl.formatMessage(messages.replaceVideoButtonLabel)}
         />
       </Box>
-    </DashboardVideoLiveWidgetTemplate>
+    </DashboardLiveWidgetTemplate>
   );
 };

@@ -1,7 +1,7 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardVideoLiveWidgetTemplate } from 'components/DashboardVideoLiveControlPane/widgets/DashboardVideoLiveWidgetTemplate';
+import { DashboardLiveWidgetTemplate } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
 import { timedTextMode } from 'types/tracks';
 import { UploadWidgetGeneric } from '../UploadWidgetGeneric';
 
@@ -22,12 +22,12 @@ export const DashboardVODWidgetUploadTranscripts = () => {
   const intl = useIntl();
 
   return (
-    <DashboardVideoLiveWidgetTemplate
+    <DashboardLiveWidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <UploadWidgetGeneric timedTextModeWidget={timedTextMode.TRANSCRIPT} />
-    </DashboardVideoLiveWidgetTemplate>
+    </DashboardLiveWidgetTemplate>
   );
 };

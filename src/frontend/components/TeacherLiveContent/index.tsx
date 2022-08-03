@@ -10,9 +10,7 @@ import { ShouldNotHappen } from 'utils/errors/exception';
 const TeacherLiveRawWrapper = lazy(
   () => import('components/TeacherLiveRawWrapper'),
 );
-const DashboardVideoLiveJitsi = lazy(
-  () => import('components/DashboardVideoLiveJitsi'),
-);
+const DashboardLiveJitsi = lazy(() => import('components/DashboardLiveJitsi'));
 
 interface TeacherLiveContentProps {
   setCanShowStartButton: Dispatch<SetStateAction<boolean>>;
@@ -34,7 +32,7 @@ export const TeacherLiveContent = ({
     case LiveModeType.JITSI:
       if (jitsiLive) {
         return (
-          <DashboardVideoLiveJitsi
+          <DashboardLiveJitsi
             isInstructor={true}
             setCanShowStartButton={setCanShowStartButton}
             setCanStartLive={setCanStartLive}
