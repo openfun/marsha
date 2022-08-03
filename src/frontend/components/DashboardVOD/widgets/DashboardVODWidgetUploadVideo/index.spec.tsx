@@ -14,7 +14,7 @@ import { uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
-import { InstructorDashboardVODWidgetUploadVideo } from '.';
+import { DashboardVODWidgetUploadVideo } from '.';
 
 jest.mock('components/UploadManager', () => ({
   useUploadManager: jest.fn(),
@@ -71,7 +71,7 @@ describe('<DashboardVODWidgetUploadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetUploadVideo />
+          <DashboardVODWidgetUploadVideo />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -107,7 +107,7 @@ describe('<DashboardVODWidgetUploadVideo />', () => {
               uploadManagerState: {},
             }}
           >
-            <InstructorDashboardVODWidgetUploadVideo />
+            <DashboardVODWidgetUploadVideo />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
         mockedVideo,
@@ -162,7 +162,7 @@ describe('<DashboardVODWidgetUploadVideo />', () => {
               uploadManagerState: {},
             }}
           >
-            <InstructorDashboardVODWidgetUploadVideo />
+            <DashboardVODWidgetUploadVideo />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
         mockedVideo,
@@ -179,7 +179,7 @@ describe('<DashboardVODWidgetUploadVideo />', () => {
               uploadManagerState: {},
             }}
           >
-            <InstructorDashboardVODWidgetUploadVideo />
+            <DashboardVODWidgetUploadVideo />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
         { ...mockedVideo, upload_state: uploadState.READY },

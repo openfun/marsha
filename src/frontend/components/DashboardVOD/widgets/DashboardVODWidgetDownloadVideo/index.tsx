@@ -12,30 +12,30 @@ const messages = defineMessages({
     defaultMessage:
       'This widget allows you to download the video, with the available quality you desire.',
     description: 'Info of the widget used for downloading the video.',
-    id: 'components.InstructorDashboardVODWidgetDownloadVideo.info',
+    id: 'components.DashboardVODWidgetDownloadVideo.info',
   },
   title: {
     defaultMessage: 'Download video',
     description: 'Title of the widget used for downloading the video.',
-    id: 'components.InstructorDashboardVODWidgetDownloadVideo.title',
+    id: 'components.DashboardVODWidgetDownloadVideo.title',
   },
   selectQualityLabel: {
     defaultMessage:
       'This input allows you to select the quality you desire for your download.',
     description: 'Label of the select button.',
-    id: 'components.InstructorDashboardVODWidgetDownloadVideo.selectQualityLabel',
+    id: 'components.DashboardVODWidgetDownloadVideo.selectQualityLabel',
   },
   noResolutionsAvailableOption: {
     defaultMessage: 'No resolutions available',
     description:
       'The disabled option displayed in the select when there is no selection to perform.',
-    id: 'components.InstructorDashboardVODWidgetDownloadVideo.noResolutionsAvailableOption',
+    id: 'components.DashboardVODWidgetDownloadVideo.noResolutionsAvailableOption',
   },
   downloadButtonLabel: {
     defaultMessage: 'Download',
     description:
       'Label of the button used to download the video in the selected quality.',
-    id: 'components.InstructorDashboardVODWidgetDownloadVideo.downloadButtonLabel',
+    id: 'components.DashboardVODWidgetDownloadVideo.downloadButtonLabel',
   },
 });
 
@@ -47,7 +47,7 @@ const StyledAnchorButton = styled(Button)`
   justify-content: center;
 `;
 
-export const InstructorDashboardVODWidgetDownloadVideo = () => {
+export const DashboardVODWidgetDownloadVideo = () => {
   const video = useCurrentVideo();
 
   const intl = useIntl();

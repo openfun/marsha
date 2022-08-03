@@ -8,7 +8,7 @@ import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
-import { InstructorDashboardVODWidgetDownloadVideo } from '.';
+import { DashboardVODWidgetDownloadVideo } from '.';
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('data/stores/useInfoWidgetModal', () => ({
@@ -35,7 +35,7 @@ describe('<InstructorDashboardVODWidgetDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetDownloadVideo />
+          <DashboardVODWidgetDownloadVideo />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -62,7 +62,7 @@ describe('<InstructorDashboardVODWidgetDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetDownloadVideo />
+          <DashboardVODWidgetDownloadVideo />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -92,7 +92,7 @@ describe('<InstructorDashboardVODWidgetDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetDownloadVideo />
+          <DashboardVODWidgetDownloadVideo />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -113,7 +113,7 @@ describe('<InstructorDashboardVODWidgetDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetDownloadVideo />
+          <DashboardVODWidgetDownloadVideo />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
