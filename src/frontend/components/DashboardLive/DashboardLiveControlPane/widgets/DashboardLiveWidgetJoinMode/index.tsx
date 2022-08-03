@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { JoinMode } from 'types/tracks';
@@ -89,7 +89,7 @@ export const DashboardLiveWidgetJoinMode = () => {
   ];
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
@@ -109,6 +109,6 @@ export const DashboardLiveWidgetJoinMode = () => {
           }}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

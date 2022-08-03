@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { DashboardLivePairing } from 'components/DashboardLivePairing';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 
 const messages = defineMessages({
   title: {
@@ -24,7 +24,7 @@ export const DashboardLiveWidgetLivePairing = () => {
   const intl = useIntl();
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       title={intl.formatMessage(messages.title)}
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue={false}
@@ -32,6 +32,6 @@ export const DashboardLiveWidgetLivePairing = () => {
       <Box direction={'row'} justify={'center'}>
         <DashboardLivePairing />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

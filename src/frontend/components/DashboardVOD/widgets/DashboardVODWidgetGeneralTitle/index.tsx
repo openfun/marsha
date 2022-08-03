@@ -3,9 +3,9 @@ import React, { useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveWidgetTextAreaInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextAreaInput';
-import { DashboardLiveWidgetTextInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextInput';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { TextAreaInput } from 'components/common/dashboard/widgets/inputs/TextAreaInput';
+import { TextInput } from 'components/common/dashboard/widgets/inputs/TextInput';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Video } from 'types/tracks';
@@ -101,13 +101,13 @@ export const DashboardVODWidgetGeneralTitle = () => {
   };
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <DashboardLiveWidgetTextInput
+        <TextInput
           placeholder={intl.formatMessage(messages.placeholderTitleInput)}
           value={title || ''}
           setValue={(inputText: string) => {
@@ -116,7 +116,7 @@ export const DashboardVODWidgetGeneralTitle = () => {
           }}
           title={intl.formatMessage(messages.placeholderTitleInput)}
         />
-        <DashboardLiveWidgetTextAreaInput
+        <TextAreaInput
           placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
           value={description || ''}
           setValue={(inputText: string) => {
@@ -126,6 +126,6 @@ export const DashboardVODWidgetGeneralTitle = () => {
           title={intl.formatMessage(messages.placeholderDescriptionInput)}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };
