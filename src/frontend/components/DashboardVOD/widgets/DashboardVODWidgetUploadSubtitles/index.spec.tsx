@@ -6,7 +6,7 @@ import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal';
 import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
-import { InstructorDashboardVODWidgetUploadTranscripts } from '.';
+import { DashboardVODWidgetUploadSubtitles } from '.';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: jest.fn(),
@@ -21,7 +21,7 @@ const languageChoices = [
   { label: 'French', value: 'fr' },
 ];
 
-describe('<DashboardVODWidgetUploadTranscripts />', () => {
+describe('<DashboardVODWidgetUploadSubtitles />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
@@ -29,7 +29,7 @@ describe('<DashboardVODWidgetUploadTranscripts />', () => {
     });
   });
 
-  it('renders the DashboardVODWidgetUploadTranscripts', () => {
+  it('renders the DashboardVODWidgetUploadSubtitles', () => {
     const mockSetInfoWidgetModalProvider = jest.fn();
     mockUseInfoWidgetModal.mockReturnValue([
       null,
@@ -40,17 +40,17 @@ describe('<DashboardVODWidgetUploadTranscripts />', () => {
       choices: languageChoices,
     });
 
-    render(<InstructorDashboardVODWidgetUploadTranscripts />);
+    render(<DashboardVODWidgetUploadSubtitles />);
 
-    screen.getByText('Transcripts');
+    screen.getByText('Subtitles');
 
     const infoButton = screen.getByRole('button', { name: 'help' });
     act(() => userEvent.click(infoButton));
 
     expect(mockSetInfoWidgetModalProvider).toHaveBeenCalledTimes(1);
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
-      title: 'Transcripts',
-      text: 'This widget allows you upload transcripts for the video.',
+      title: 'Subtitles',
+      text: 'This widget allows you upload subtitles for the video.',
     });
   });
 });

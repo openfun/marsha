@@ -13,19 +13,19 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
 import { TimedTrackModalWrapper } from './custom/TimedTrackModalWrapper';
-import { InstructorDashboardVODWidgetDownloadVideo } from './widgets/InstructorDashboardVODWidgetDownloadVideo';
-import { InstructorDashboardVODWidgetGeneralTitle } from './widgets/InstructorDashboardVODWidgetGeneralTitle';
-import { InstructorDashboardVODWidgetUploadClosedCaptions } from './widgets/InstructorDashboardVODWidgetUploadClosedCaptions';
-import { InstructorDashboardVODWidgetUploadSubtitles } from './widgets/InstructorDashboardVODWidgetUploadSubtitles';
-import { InstructorDashboardVODWidgetUploadTranscripts } from './widgets/InstructorDashboardVODWidgetUploadTranscripts';
-import { InstructorDashboardVODWidgetUploadVideo } from './widgets/InstructorDashboardVODWidgetUploadVideo';
+import { DashboardVODWidgetDownloadVideo } from './widgets/DashboardVODWidgetDownloadVideo';
+import { DashboardVODWidgetGeneralTitle } from './widgets/DashboardVODWidgetGeneralTitle';
+import { DashboardVODWidgetUploadClosedCaptions } from './widgets/DashboardVODWidgetUploadClosedCaptions';
+import { DashboardVODWidgetUploadSubtitles } from './widgets/DashboardVODWidgetUploadSubtitles';
+import { DashboardVODWidgetUploadTranscripts } from './widgets/DashboardVODWidgetUploadTranscripts';
+import { DashboardVODWidgetUploadVideo } from './widgets/DashboardVODWidgetUploadVideo';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
   box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
 `;
 
-export const InstructorDashboardVOD = () => {
+export const DashboardVOD = () => {
   const video = useCurrentVideo();
 
   const timedTextTracks = useTimedTextTrack((state) =>
@@ -64,13 +64,13 @@ export const InstructorDashboardVOD = () => {
         <DeleteTimedTextTrackUploadModalProvider value={null}>
           <TimedTrackModalWrapper />
           <DashboardVideoLiveWidgetsContainer>
-            <InstructorDashboardVODWidgetGeneralTitle />
-            <InstructorDashboardVODWidgetUploadVideo />
+            <DashboardVODWidgetGeneralTitle />
+            <DashboardVODWidgetUploadVideo />
             <DashboardVideoLiveWidgetThumbnail isLive={false} />
-            <InstructorDashboardVODWidgetDownloadVideo />
-            <InstructorDashboardVODWidgetUploadSubtitles />
-            <InstructorDashboardVODWidgetUploadTranscripts />
-            <InstructorDashboardVODWidgetUploadClosedCaptions />
+            <DashboardVODWidgetDownloadVideo />
+            <DashboardVODWidgetUploadSubtitles />
+            <DashboardVODWidgetUploadTranscripts />
+            <DashboardVODWidgetUploadClosedCaptions />
           </DashboardVideoLiveWidgetsContainer>
         </DeleteTimedTextTrackUploadModalProvider>
       </InfoWidgetModalProvider>

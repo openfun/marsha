@@ -10,13 +10,13 @@ import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
-import { InstructorDashboardVODWidgetGeneralTitle } from '.';
+import { DashboardVODWidgetGeneralTitle } from '.';
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
+describe('<DashboardVODWidgetGeneralTitle />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -43,7 +43,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -77,7 +77,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -125,7 +125,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -156,7 +156,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -202,7 +202,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -246,7 +246,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -285,7 +285,7 @@ describe('<InstructorDashboardVODWidgetGeneralTitle />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <InstructorDashboardVODWidgetGeneralTitle />
+          <DashboardVODWidgetGeneralTitle />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),

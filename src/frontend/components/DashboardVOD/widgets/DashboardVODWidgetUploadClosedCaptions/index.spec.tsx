@@ -7,7 +7,7 @@ import { useJwt } from 'data/stores/useJwt';
 
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
-import { InstructorDashboardVODWidgetUploadClosedCaptions } from '.';
+import { DashboardVODWidgetUploadClosedCaptions } from '.';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: jest.fn(),
@@ -40,7 +40,7 @@ describe('<DashboardVODWidgetUploadClosedCaptions />', () => {
       choices: languageChoices,
     });
 
-    render(<InstructorDashboardVODWidgetUploadClosedCaptions />);
+    render(<DashboardVODWidgetUploadClosedCaptions />);
 
     screen.getByText('Closed captions');
 
