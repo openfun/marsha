@@ -4,7 +4,6 @@ import { toast } from 'react-hot-toast';
 import { Redirect } from 'react-router-dom';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
-import { DashboardLiveControlPane } from 'components/DashboardLiveControlPane';
 import { toolbarButtons } from 'components/DashboardLiveJitsi/utils';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
@@ -33,6 +32,7 @@ import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { liveState, LiveModeType, JoinMode } from 'types/tracks';
 import { converse } from 'utils/window';
 
+import { DashboardLiveControlPane } from './DashboardLiveControlPane';
 import {
   OnStageRequestToast,
   ON_STAGE_REQUEST_TOAST_ID,
