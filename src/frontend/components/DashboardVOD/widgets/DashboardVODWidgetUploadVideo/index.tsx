@@ -17,33 +17,33 @@ const messages = defineMessages({
     defaultMessage:
       'This widget allows you to upload a video to replace the current one.',
     description: 'Info of the widget used for uploading a new video.',
-    id: 'components.InstructorDashboardVODWidgetUploadVideo.info',
+    id: 'components.DashboardVODWidgetUploadVideo.info',
   },
   title: {
     defaultMessage: 'Video',
     description: 'Title of the widget used for uploading a new video.',
-    id: 'components.InstructorDashboardVODWidgetUploadVideo.title',
+    id: 'components.DashboardVODWidgetUploadVideo.title',
   },
   replaceVideoButtonLabel: {
     defaultMessage: 'Replace the video',
     description: 'Label of the button used for replacing the video.',
-    id: 'components.InstructorDashboardVODWidgetUploadVideo.replaceVideoButtonLabel',
+    id: 'components.DashboardVODWidgetUploadVideo.replaceVideoButtonLabel',
   },
   videoAvailable: {
     defaultMessage: 'Video available',
     description:
       'A message indicating the video is available and correctly uploaded.',
-    id: 'components.InstructorDashboardVODWidgetUploadVideo.videoAvailable',
+    id: 'components.DashboardVODWidgetUploadVideo.videoAvailable',
   },
   videoProcessing: {
     defaultMessage:
       'Your video is currently processing. This may take up to an hour. You can close the window and come back later.',
     description: 'Label of the button used for replacing the video.',
-    id: 'components.InstructorDashboardVODWidgetUploadVideo.videoProcessing',
+    id: 'components.DashboardVODWidgetUploadVideo.videoProcessing',
   },
 });
 
-export const InstructorDashboardVODWidgetUploadVideo = () => {
+export const DashboardVODWidgetUploadVideo = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();

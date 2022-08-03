@@ -18,45 +18,45 @@ const messages = defineMessages({
       'This widget allows you to set the title of your video and its description',
     description:
       'Info of the widget used for setting title and live recording.',
-    id: 'components.InstructorDashboardVODWidgetGeneralTitle.info',
+    id: 'components.DashboardVODWidgetGeneralTitle.info',
   },
   title: {
     defaultMessage: 'General',
     description:
       'Title of the widget used for setting VOD title and activate recording.',
-    id: 'components.InstructorDashboardVODWidgetGeneralTitle.title',
+    id: 'components.DashboardVODWidgetGeneralTitle.title',
   },
   placeholderTitleInput: {
     defaultMessage: 'Enter title of your VOD here',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.InstructorDashboardVODWidgetGeneralTitle.placeholderTitleInput',
+    id: 'components.DashboardVODWidgetGeneralTitle.placeholderTitleInput',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
-    id: 'component.InstructorDashboardVODWidgetGeneralTitle.updateVideoSuccess',
+    id: 'component.DashboardVODWidgetGeneralTitle.updateVideoSuccess',
   },
   updateVideoFail: {
     defaultMessage: 'Video update has failed !',
     description: 'Message displayed when video update has failed.',
-    id: 'component.InstructorDashboardVODWidgetGeneralTitle.updateVideoFail',
+    id: 'component.DashboardVODWidgetGeneralTitle.updateVideoFail',
   },
   updateTitleBlank: {
     defaultMessage: "Title can't be blank !",
     description:
       'Message displayed when the user tried to enter a blank title.',
-    id: 'component.InstructorDashboardVODWidgetGeneralTitle.updateTitleBlank',
+    id: 'component.DashboardVODWidgetGeneralTitle.updateTitleBlank',
   },
   placeholderDescriptionInput: {
     defaultMessage: 'Description...',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.InstructorDashboardVODWidgetGeneralTitle.placeholderDescriptionInput',
+    id: 'components.DashboardVODWidgetGeneralTitle.placeholderDescriptionInput',
   },
 });
 
-export const InstructorDashboardVODWidgetGeneralTitle = () => {
+export const DashboardVODWidgetGeneralTitle = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
   const [title, setTitle] = useState(video.title);

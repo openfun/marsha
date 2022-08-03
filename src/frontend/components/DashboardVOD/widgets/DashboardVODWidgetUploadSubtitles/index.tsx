@@ -7,19 +7,18 @@ import { UploadWidgetGeneric } from '../UploadWidgetGeneric';
 
 const messages = defineMessages({
   info: {
-    defaultMessage:
-      'This widget allows you upload closed captions for the video.',
-    description: 'Info of the widget used for uploading closed captions.',
-    id: 'components.InstructorDashboardVODWidgetUploadClosedCaptions.info',
+    defaultMessage: 'This widget allows you upload subtitles for the video.',
+    description: 'Info of the widget used for uploading subtitles.',
+    id: 'components.DashboardVODWidgetUploadSubtitles.info',
   },
   title: {
-    defaultMessage: 'Closed captions',
-    description: 'Title of the widget used for uploading closed captions.',
-    id: 'components.InstructorDashboardVODWidgetUploadClosedCaptions.title',
+    defaultMessage: 'Subtitles',
+    description: 'Title of the widget used for uploading subtitles.',
+    id: 'components.DashboardVODWidgetUploadSubtitles.title',
   },
 });
 
-export const InstructorDashboardVODWidgetUploadClosedCaptions = () => {
+export const DashboardVODWidgetUploadSubtitles = () => {
   const intl = useIntl();
 
   return (
@@ -28,9 +27,7 @@ export const InstructorDashboardVODWidgetUploadClosedCaptions = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <UploadWidgetGeneric
-        timedTextModeWidget={timedTextMode.CLOSED_CAPTIONING}
-      />
+      <UploadWidgetGeneric timedTextModeWidget={timedTextMode.SUBTITLE} />
     </DashboardVideoLiveWidgetTemplate>
   );
 };
