@@ -1,10 +1,10 @@
 import { Box } from 'grommet';
 import React, { useCallback, useState } from 'react';
-import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
+import { toast } from 'react-hot-toast';
 
-import { DashboardLiveWidgetTextAreaInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextAreaInput';
 import { DashboardLiveWidgetTextInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextInput';
+import { DashboardLiveWidgetToggleInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetToggleInput';
 import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -15,52 +15,52 @@ import { debounce } from 'utils/widgets/widgets';
 const messages = defineMessages({
   info: {
     defaultMessage:
-      'This widget allows you to set the title of your video and its description',
+      'This widget allows you to set the title of your live, alongside activate / deactivate recording of it.',
     description:
       'Info of the widget used for setting title and live recording.',
-    id: 'components.DashboardVODWidgetGeneralTitle.info',
+    id: 'components.DashboardLiveWidgetGeneralTitle.info',
   },
   title: {
     defaultMessage: 'General',
     description:
-      'Title of the widget used for setting VOD title and activate recording.',
-    id: 'components.DashboardVODWidgetGeneralTitle.title',
+      'Title of the widget used for setting live title and activate recording.',
+    id: 'components.DashboardLiveWidgetGeneralTitle.title',
   },
   placeholderTitleInput: {
-    defaultMessage: 'Enter title of your VOD here',
+    defaultMessage: 'Enter title of your live here',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.DashboardVODWidgetGeneralTitle.placeholderTitleInput',
+    id: 'components.DashboardLiveWidgetGeneralTitle.placeholderTitleInput',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
-    id: 'component.DashboardVODWidgetGeneralTitle.updateVideoSuccess',
+    id: 'component.DashboardLiveWidgetGeneralTitle.updateVideoSuccess',
   },
   updateVideoFail: {
     defaultMessage: 'Video update has failed !',
     description: 'Message displayed when video update has failed.',
-    id: 'component.DashboardVODWidgetGeneralTitle.updateVideoFail',
+    id: 'component.DashboardLiveWidgetGeneralTitle.updateVideoFail',
   },
   updateTitleBlank: {
     defaultMessage: "Title can't be blank !",
     description:
       'Message displayed when the user tried to enter a blank title.',
-    id: 'component.DashboardVODWidgetGeneralTitle.updateTitleBlank',
+    id: 'component.DashboardLiveWidgetGeneralTitle.updateTitleBlank',
   },
-  placeholderDescriptionInput: {
-    defaultMessage: 'Description...',
+  recordingToggleLabel: {
+    defaultMessage: 'Activate live recording',
     description:
-      'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.DashboardVODWidgetGeneralTitle.placeholderDescriptionInput',
+      'The label associated to the toggle button reponsible of live recording activation / deactivation.',
+    id: 'components.DashboardLiveWidgetGeneralTitle.liveRecordingToggleLabel',
   },
 });
 
-export const DashboardVODWidgetGeneralTitle = () => {
+export const DashboardLiveWidgetGeneralTitle = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
   const [title, setTitle] = useState(video.title);
-  const [description, setDescription] = useState(video.description);
+  const [checked, setChecked] = useState(video.allow_recording);
 
   const videoMutation = useUpdateVideo(video.id, {
     onSuccess: () => {
@@ -72,8 +72,8 @@ export const DashboardVODWidgetGeneralTitle = () => {
       if ('title' in variables) {
         setTitle(video.title);
       }
-      if ('description' in variables) {
-        setDescription(video.description);
+      if ('allow_recording' in variables) {
+        setChecked(video.allow_recording);
       }
       report(err);
       toast.error(intl.formatMessage(messages.updateVideoFail), {
@@ -96,8 +96,16 @@ export const DashboardVODWidgetGeneralTitle = () => {
     [debounce, videoMutation.mutate, video.title],
   );
 
-  const handleChange = (updatedVideoProperty: Partial<Video>) => {
-    debouncedUpdatedVideo(updatedVideoProperty);
+  const handleChange = async (inputText: string) => {
+    setTitle(inputText);
+    debouncedUpdatedVideo({ title: inputText });
+  };
+
+  const onToggleChange = () => {
+    setChecked(!video.allow_recording);
+    videoMutation.mutate({
+      allow_recording: !video.allow_recording,
+    });
   };
 
   return (
@@ -110,20 +118,14 @@ export const DashboardVODWidgetGeneralTitle = () => {
         <DashboardLiveWidgetTextInput
           placeholder={intl.formatMessage(messages.placeholderTitleInput)}
           value={title || ''}
-          setValue={(inputText: string) => {
-            setTitle(inputText);
-            handleChange({ title: inputText });
-          }}
+          setValue={handleChange}
           title={intl.formatMessage(messages.placeholderTitleInput)}
         />
-        <DashboardLiveWidgetTextAreaInput
-          placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
-          value={description || ''}
-          setValue={(inputText: string) => {
-            setDescription(inputText);
-            handleChange({ description: inputText });
-          }}
-          title={intl.formatMessage(messages.placeholderDescriptionInput)}
+        <DashboardLiveWidgetToggleInput
+          disabled={video.is_recording}
+          checked={checked}
+          onChange={onToggleChange}
+          label={intl.formatMessage(messages.recordingToggleLabel)}
         />
       </Box>
     </DashboardLiveWidgetTemplate>

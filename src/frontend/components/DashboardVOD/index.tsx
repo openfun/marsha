@@ -3,8 +3,8 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { DashboardLiveWidgetsContainer } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetsContainer';
-import { DashboardLiveWidgetThumbnail } from 'components/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail';
+import { DashboardLiveWidgetsContainer } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetsContainer';
+import { DashboardLiveWidgetThumbnail } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';

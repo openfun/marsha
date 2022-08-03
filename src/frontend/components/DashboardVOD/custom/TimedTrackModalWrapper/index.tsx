@@ -2,7 +2,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveConfirmationModal } from 'components/DashboardLiveControlPane/customs/DashboardLiveConfirmationModal';
+import { DashboardLiveConfirmationModal } from 'components/DashboardLive/DashboardLiveControlPane/customs/DashboardLiveConfirmationModal';
 import { useDeleteTimedTextTrack } from 'data/queries';
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
