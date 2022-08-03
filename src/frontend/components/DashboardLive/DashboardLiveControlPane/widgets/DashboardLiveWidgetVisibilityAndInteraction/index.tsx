@@ -4,9 +4,9 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { DashboardLiveWidgetDashedBoxCustom } from 'components/DashboardLive/DashboardLiveControlPane/customs/DashboardLiveWidgetDashedBoxCustom';
-import { DashboardLiveWidgetToggleInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetToggleInput';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { DashedBoxCustom } from 'components/common/dashboard/widgets/components/DashedBoxCustom';
+import { ToggleInput } from 'components/common/dashboard/widgets/inputs/ToggleInput';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { CopySVG } from 'components/SVGIcons/CopySVG';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -109,19 +109,19 @@ export const DashboardLiveWidgetVisibilityAndInteraction = () => {
     .concat(video.id);
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <DashboardLiveWidgetToggleInput
+        <ToggleInput
           checked={visibilityChecked}
           onChange={onToggleChange}
           label={intl.formatMessage(messages.publiclyAvailableLabel)}
         />
         <Collapsible open={visibilityChecked}>
-          <DashboardLiveWidgetDashedBoxCustom>
+          <DashedBoxCustom>
             <Text
               color={video.is_public ? 'blue-active' : '#b4cff2'}
               size="0.875rem"
@@ -141,9 +141,9 @@ export const DashboardLiveWidgetVisibilityAndInteraction = () => {
             >
               <CopySVG iconColor="blue-active" width="20px" height="25px" />
             </Button>
-          </DashboardLiveWidgetDashedBoxCustom>
+          </DashedBoxCustom>
         </Collapsible>
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

@@ -5,9 +5,9 @@ import React, { Fragment, useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardLiveWidgetDashedBoxCustom } from 'components/DashboardLive/DashboardLiveControlPane/customs/DashboardLiveWidgetDashedBoxCustom';
-import { DashboardLiveWidgetTextAreaInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetTextAreaInput';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { DashedBoxCustom } from 'components/common/dashboard/widgets/components/DashedBoxCustom';
+import { TextAreaInput } from 'components/common/dashboard/widgets/inputs/TextAreaInput';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { SchedulingFields } from 'components/SchedulingFields';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -144,7 +144,7 @@ export const DashboardLiveWidgetSchedulingAndDescription = () => {
   };
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue={true}
       title={intl.formatMessage(messages.title)}
@@ -169,7 +169,7 @@ export const DashboardLiveWidgetSchedulingAndDescription = () => {
           />
         </Grommet>
 
-        <DashboardLiveWidgetDashedBoxCustom>
+        <DashedBoxCustom>
           {video.starting_at ? (
             <Fragment>
               <Text color="blue-active" size="0.875rem">
@@ -195,9 +195,9 @@ export const DashboardLiveWidgetSchedulingAndDescription = () => {
               </Text>
             </Box>
           )}
-        </DashboardLiveWidgetDashedBoxCustom>
+        </DashedBoxCustom>
 
-        <DashboardLiveWidgetTextAreaInput
+        <TextAreaInput
           placeholder={intl.formatMessage(messages.placeholderDescriptionInput)}
           value={description || ''}
           setValue={(inputText: string) => {
@@ -207,6 +207,6 @@ export const DashboardLiveWidgetSchedulingAndDescription = () => {
           title={intl.formatMessage(messages.placeholderDescriptionInput)}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

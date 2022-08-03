@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { DashboardLiveWidgetToggleInput } from 'components/DashboardLive/DashboardLiveControlPane/inputs/DashboardLiveWidgetToggleInput';
-import { DashboardLiveWidgetTemplate } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetTemplate';
+import { ToggleInput } from 'components/common/dashboard/widgets/inputs/ToggleInput';
+import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { report } from 'utils/errors/report';
@@ -70,18 +70,18 @@ export const DashboardLiveWidgetToolsAndApplications = () => {
   };
 
   return (
-    <DashboardLiveWidgetTemplate
+    <WidgetTemplate
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <DashboardLiveWidgetToggleInput
+        <ToggleInput
           checked={isChatActive}
           onChange={onChatActiveChange}
           label={intl.formatMessage(messages.chatActiveLabel)}
         />
       </Box>
-    </DashboardLiveWidgetTemplate>
+    </WidgetTemplate>
   );
 };

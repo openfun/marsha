@@ -4,7 +4,7 @@ import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import React, { PropsWithChildren } from 'react';
 
-import { SharedLiveMediaModalWrapper } from 'components/DashboardLive/DashboardLiveControlPane/customs/SharedLiveMediaModalWrapper';
+import { SharedLiveMediaModalWrapper } from 'components/DashboardLive/DashboardLiveControlPane/components/SharedLiveMediaModalWrapper';
 import {
   UploadManagerContext,
   useUploadManager,

@@ -3,8 +3,8 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { DashboardLiveWidgetsContainer } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetsContainer';
-import { DashboardLiveWidgetThumbnail } from 'components/DashboardLive/DashboardLiveControlPane/widgets/DashboardLiveWidgetThumbnail';
+import { WidgetsContainer } from 'components/common/dashboard/widgets/WidgetsContainer';
+import { WidgetThumbnail } from 'components/common/dashboard/widgets/WidgetThumbnail';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
@@ -12,7 +12,7 @@ import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTi
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
-import { TimedTrackModalWrapper } from './custom/TimedTrackModalWrapper';
+import { TimedTrackModalWrapper } from './components/TimedTrackModalWrapper';
 import { DashboardVODWidgetDownloadVideo } from './widgets/DashboardVODWidgetDownloadVideo';
 import { DashboardVODWidgetGeneralTitle } from './widgets/DashboardVODWidgetGeneralTitle';
 import { DashboardVODWidgetUploadClosedCaptions } from './widgets/DashboardVODWidgetUploadClosedCaptions';
@@ -63,15 +63,15 @@ export const DashboardVOD = () => {
       <InfoWidgetModalProvider value={null}>
         <DeleteTimedTextTrackUploadModalProvider value={null}>
           <TimedTrackModalWrapper />
-          <DashboardLiveWidgetsContainer>
+          <WidgetsContainer>
             <DashboardVODWidgetGeneralTitle />
             <DashboardVODWidgetUploadVideo />
-            <DashboardLiveWidgetThumbnail isLive={false} />
+            <WidgetThumbnail isLive={false} />
             <DashboardVODWidgetDownloadVideo />
             <DashboardVODWidgetUploadSubtitles />
             <DashboardVODWidgetUploadTranscripts />
             <DashboardVODWidgetUploadClosedCaptions />
-          </DashboardLiveWidgetsContainer>
+          </WidgetsContainer>
         </DeleteTimedTextTrackUploadModalProvider>
       </InfoWidgetModalProvider>
     </Box>
