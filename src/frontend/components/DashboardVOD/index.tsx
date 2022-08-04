@@ -13,12 +13,12 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
 import { TimedTrackModalWrapper } from './components/TimedTrackModalWrapper';
-import { DashboardVODWidgetDownloadVideo } from './widgets/DashboardVODWidgetDownloadVideo';
-import { DashboardVODWidgetGeneralTitle } from './widgets/DashboardVODWidgetGeneralTitle';
-import { DashboardVODWidgetUploadClosedCaptions } from './widgets/DashboardVODWidgetUploadClosedCaptions';
-import { DashboardVODWidgetUploadSubtitles } from './widgets/DashboardVODWidgetUploadSubtitles';
-import { DashboardVODWidgetUploadTranscripts } from './widgets/DashboardVODWidgetUploadTranscripts';
-import { DashboardVODWidgetUploadVideo } from './widgets/DashboardVODWidgetUploadVideo';
+import { DownloadVideo } from './widgets/DownloadVideo';
+import { GeneralTitle } from './widgets/GeneralTitle';
+import { UploadClosedCaptions } from './widgets/UploadClosedCaptions';
+import { UploadSubtitles } from './widgets/UploadSubtitles';
+import { UploadTranscripts } from './widgets/UploadTranscripts';
+import { UploadVideo } from './widgets/UploadVideo';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
@@ -64,13 +64,13 @@ export const DashboardVOD = () => {
         <DeleteTimedTextTrackUploadModalProvider value={null}>
           <TimedTrackModalWrapper />
           <WidgetsContainer>
-            <DashboardVODWidgetGeneralTitle />
-            <DashboardVODWidgetUploadVideo />
+            <GeneralTitle />
+            <UploadVideo />
             <WidgetThumbnail isLive={false} />
-            <DashboardVODWidgetDownloadVideo />
-            <DashboardVODWidgetUploadSubtitles />
-            <DashboardVODWidgetUploadTranscripts />
-            <DashboardVODWidgetUploadClosedCaptions />
+            <DownloadVideo />
+            <UploadSubtitles />
+            <UploadTranscripts />
+            <UploadClosedCaptions />
           </WidgetsContainer>
         </DeleteTimedTextTrackUploadModalProvider>
       </InfoWidgetModalProvider>

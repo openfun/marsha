@@ -61,7 +61,7 @@ describe('<DashboardLiveTabConfiguration />', () => {
 
     render(wrapInVideo(<DashboardLiveTabConfiguration />, mockVideo));
 
-    // DashboardLiveWidgetToolsAndApplications
+    // ToolsAndApplications
     screen.getByText('Tools and applications');
     const hasChatToggleButton = screen.getByRole('checkbox', {
       name: 'Activate chat',
@@ -69,7 +69,7 @@ describe('<DashboardLiveTabConfiguration />', () => {
     expect(hasChatToggleButton).toBeChecked();
     screen.getByText('Activate chat');
 
-    // DashboardLiveWidgetGeneralTitle
+    // GeneralTitle
     screen.getByText('General');
     const textInput = screen.getByRole('textbox', {
       name: 'Enter title of your live here',
@@ -81,7 +81,7 @@ describe('<DashboardLiveTabConfiguration />', () => {
     expect(liveRecordingToggleButton).not.toBeChecked();
     screen.getByText('Activate live recording');
 
-    // DashboardLiveWidgetVisibilityAndInteraction
+    // VisibilityAndInteraction
     screen.getByText('Visibility and interaction parameters');
     const visibilityToggleButton = screen.getByRole('checkbox', {
       name: 'Make the video publicly available',
@@ -109,7 +109,7 @@ describe('<DashboardLiveTabConfiguration />', () => {
     expect(textArea).toHaveValue('An example description');
     screen.getByPlaceholderText('Description...');
 
-    // DashboardLiveWidgetLivePairing
+    // LivePairing
     const openButton = screen.getByRole('button', {
       name: 'External broadcast sources',
     });
@@ -132,10 +132,10 @@ describe('<DashboardLiveTabConfiguration />', () => {
       name: 'Click on this button to delete the media.',
     });
 
-    // DashboardLiveWidgetVOD
+    // VODCreation
     screen.getByText(/There is nothing to harvest/);
 
-    // DashboardLiveWidgetJoinMode
+    // JoinMode
     screen.getByText('Join the discussion');
     const button = screen.getByRole('button', {
       name: /select join the discussion mode/i,
