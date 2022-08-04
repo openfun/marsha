@@ -24,34 +24,28 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
-jest.mock('./widgets/DashboardVODWidgetGeneralTitle', () => ({
-  DashboardVODWidgetGeneralTitle: () => <p>DashboardVODWidgetGeneralTitle</p>,
+jest.mock('./widgets/GeneralTitle', () => ({
+  GeneralTitle: () => <p>GeneralTitle</p>,
 }));
-jest.mock('./widgets/DashboardVODWidgetUploadVideo', () => ({
-  DashboardVODWidgetUploadVideo: () => <p>DashboardVODWidgetUploadVideo</p>,
+jest.mock('./widgets/UploadVideo', () => ({
+  UploadVideo: () => <p>UploadVideo</p>,
 }));
 jest.mock('components/common/dashboard/widgets/WidgetThumbnail', () => ({
   WidgetThumbnail: (props: { isLive: boolean }) => (
     <p>{`WidgetThumbnail ${props.isLive}`}</p>
   ),
 }));
-jest.mock('./widgets/DashboardVODWidgetDownloadVideo', () => ({
-  DashboardVODWidgetDownloadVideo: () => <p>DashboardVODWidgetDownloadVideo</p>,
+jest.mock('./widgets/DownloadVideo', () => ({
+  DownloadVideo: () => <p>DownloadVideo</p>,
 }));
-jest.mock('./widgets/DashboardVODWidgetUploadSubtitles', () => ({
-  DashboardVODWidgetUploadSubtitles: () => (
-    <p>DashboardVODWidgetUploadSubtitles</p>
-  ),
+jest.mock('./widgets/UploadSubtitles', () => ({
+  UploadSubtitles: () => <p>UploadSubtitles</p>,
 }));
-jest.mock('./widgets/DashboardVODWidgetUploadTranscripts', () => ({
-  DashboardVODWidgetUploadTranscripts: () => (
-    <p>DashboardVODWidgetUploadTranscripts</p>
-  ),
+jest.mock('./widgets/UploadTranscripts', () => ({
+  UploadTranscripts: () => <p>UploadTranscripts</p>,
 }));
-jest.mock('./widgets/DashboardVODWidgetUploadClosedCaptions', () => ({
-  DashboardVODWidgetUploadClosedCaptions: () => (
-    <p>DashboardVODWidgetUploadClosedCaptions</p>
-  ),
+jest.mock('./widgets/UploadClosedCaptions', () => ({
+  UploadClosedCaptions: () => <p>UploadClosedCaptions</p>,
 }));
 
 const languageChoices = [
@@ -85,25 +79,25 @@ describe('<DashboardVOD />', () => {
     // TeacherLiveInfoBar
     screen.getByRole('heading', { name: 'Title of the video' });
 
-    // DashboardVODWidgetGeneralTitle
-    screen.getByText('DashboardVODWidgetGeneralTitle');
+    // GeneralTitle
+    screen.getByText('GeneralTitle');
 
-    // DashboardVODWidgetUploadVideo
-    screen.getByText('DashboardVODWidgetUploadVideo');
+    // UploadVideo
+    screen.getByText('UploadVideo');
 
     // WidgetThumbnail
     screen.getByText('WidgetThumbnail false');
 
-    // DashboardVODWidgetDownloadVideo
-    screen.getByText('DashboardVODWidgetDownloadVideo');
+    // DownloadVideo
+    screen.getByText('DownloadVideo');
 
-    // DashboardVODWidgetUploadSubtitles
-    screen.getByText('DashboardVODWidgetUploadSubtitles');
+    // UploadSubtitles
+    screen.getByText('UploadSubtitles');
 
-    // DashboardVODWidgetUploadTranscripts
-    screen.getByText('DashboardVODWidgetUploadTranscripts');
+    // UploadTranscripts
+    screen.getByText('UploadTranscripts');
 
-    // DashboardVODWidgetUploadClosedCaptions
-    screen.getByText('DashboardVODWidgetUploadClosedCaptions');
+    // UploadClosedCaptions
+    screen.getByText('UploadClosedCaptions');
   });
 });
