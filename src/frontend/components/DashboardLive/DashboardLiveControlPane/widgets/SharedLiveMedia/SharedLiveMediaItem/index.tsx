@@ -2,6 +2,7 @@ import { Box, Text } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { RetryUploadButton } from 'components/common/dashboard/widgets/components/RetryUploadButton';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadingObject } from 'components/UploadManager';
 import { SharedLiveMedia, uploadState } from 'types/tracks';
@@ -9,7 +10,6 @@ import { Nullable } from 'utils/types';
 import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DisallowedDownloadButton } from './DisallowedDownloadButton';
 import { DeleteSharedLiveMediaButton } from './DeleteSharedLiveMediaButton';
-import { RetryButton } from './RetryButton';
 import { StartSharingButton } from './StartSharingButton';
 import { StopSharingButton } from './StopSharingButton';
 import { TitleDisplayer } from './TitleDisplayer';
@@ -103,7 +103,7 @@ export const SharedLiveMediaItem = ({
               </Text>
             </Box>
 
-            <RetryButton
+            <RetryUploadButton
               onClick={() => onRetryFailedUpload(sharedLiveMedia.id)}
             />
           </React.Fragment>

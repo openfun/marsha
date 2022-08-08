@@ -4,13 +4,13 @@ import React from 'react';
 
 import render from 'utils/tests/render';
 
-import { RetryButton } from '.';
+import { RetryUploadButton } from '.';
 
 const mockRetryFn = jest.fn();
 
-describe('<RetryButton />', () => {
+describe('<RetryUploadButton />', () => {
   it('renders the retry button and clicks on it', () => {
-    render(<RetryButton onClick={mockRetryFn} />);
+    render(<RetryUploadButton onClick={mockRetryFn} />);
 
     const retryButton = screen.getByRole('button', {
       name: 'Click on this button to retry uploading your failed upload.',
