@@ -171,8 +171,24 @@ class LiveSessionFactory(DjangoModelFactory):
     email = factory.Sequence("user{:d}@fun-mooc.fr".format)
     video = factory.SubFactory(VideoFactory)
 
+    class Params:  # pylint:disable=missing-class-docstring
+        is_from_lti_connection = factory.Trait(
+            consumer_site=factory.LazyAttribute(lambda o: o.video.consumer_site),
+            lti_id=factory.LazyAttribute(lambda o: o.video.playlist.lti_id),
+            lti_user_id=factory.Sequence("lti-user#{:d}".format),
+        )
+
     class Meta:  # noqa
         model = models.LiveSession
+
+
+class AnonymousLiveSessionFactory(LiveSessionFactory):
+    """Factory for anonymous liveSession model."""
+
+    anonymous_id = factory.Faker("uuid4")
+
+    class Params:  # pylint:disable=missing-class-docstring
+        is_from_lti_connection = False
 
 
 class LivePairingFactory(DjangoModelFactory):

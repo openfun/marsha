@@ -8,9 +8,12 @@ import uuid
 from django.conf import settings
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
-from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    PlaylistLtiTokenFactory,
+    StudentLtiTokenFactory,
+    UserAccessTokenFactory,
+)
 
 from .. import api, factories, models
 from ..api import timezone
@@ -33,7 +36,7 @@ from ..defaults import (
     STOPPED,
     STOPPING,
 )
-from ..factories import LiveSessionFactory, PlaylistFactory, VideoFactory
+from ..factories import LiveSessionFactory, VideoFactory
 from ..utils.api_utils import generate_hash
 from ..utils.medialive_utils import ManifestMissingException
 from ..utils.time_utils import to_timestamp
@@ -91,10 +94,7 @@ class VideoAPITest(TestCase):
     def test_api_video_read_detail_student(self):
         """Student users should be allowed to read a video detail."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -109,10 +109,7 @@ class VideoAPITest(TestCase):
             live_state=IDLE, live_type=RAW, starting_at=starting_at
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -132,10 +129,7 @@ class VideoAPITest(TestCase):
         with mock.patch.object(timezone, "now", return_value=now):
             self.assertFalse(video.is_scheduled)
             self.assertEqual(video.live_state, IDLE)
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(video.id)
-            jwt_token.payload["roles"] = ["student"]
-            jwt_token.payload["permissions"] = {"can_update": False}
+            jwt_token = StudentLtiTokenFactory(resource=video)
             # Get the video linked to the JWT token
             response = self.client.get(
                 f"/api/videos/{video.id}/",
@@ -147,10 +141,7 @@ class VideoAPITest(TestCase):
         """Student users should not be allowed to read an other video detail."""
         video = factories.VideoFactory()
         other_video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{other_video.id}/",
@@ -166,10 +157,7 @@ class VideoAPITest(TestCase):
             live_state=RUNNING,
             live_type=JITSI,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
         # Get the video linked to the JWT token
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -183,10 +171,10 @@ class VideoAPITest(TestCase):
         """Administrator should be able to read detail of a video."""
         video = factories.VideoFactory(upload_state="pending")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            roles=["administrator"],
+        )
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -231,10 +219,7 @@ class VideoAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -427,10 +412,7 @@ class VideoAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -646,10 +628,7 @@ class VideoAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -836,12 +815,11 @@ class VideoAPITest(TestCase):
             live_type=JITSI,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            context_id="Maths",
+            consumer_site=str(video.playlist.consumer_site.id),
+        )
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -897,10 +875,10 @@ class VideoAPITest(TestCase):
         """An instructor with read_only can read the video."""
         video = factories.VideoFactory(upload_state="ready")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -917,10 +895,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -985,10 +960,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -1056,10 +1028,7 @@ class VideoAPITest(TestCase):
             resolutions=[144],
             playlist__title="foo",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -1281,9 +1250,10 @@ class VideoAPITest(TestCase):
         It should however be empty as they have no rights on lists of videos.
         """
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -1925,10 +1895,7 @@ class VideoAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the video linked to the JWT token
         response = self.client.get(
@@ -2004,10 +1971,7 @@ class VideoAPITest(TestCase):
     def test_api_video_create_student(self):
         """Student users should not be able to create videos."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource=video)
         response = self.client.post(
             "/api/videos/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -2017,13 +1981,7 @@ class VideoAPITest(TestCase):
 
     def test_api_video_create_student_with_playlist_token(self):
         """A student with a playlist token should not be able to create a video."""
-        playlist = PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(roles=["student"])
 
         response = self.client.post(
             "/api/videos/",
@@ -2353,11 +2311,7 @@ class VideoAPITest(TestCase):
         """
         playlist = factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(models.Video.objects.count(), 0)
 
@@ -2433,9 +2387,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_student(self):
         """Student users should not be allowed to update a video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -2455,10 +2407,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_token_user_title(self):
         """Token users should be able to update the title of their video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"title": "my new title"}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -2473,10 +2422,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_token_user_title_null(self):
         """Token users can not set a null title."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"title": None}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -2492,10 +2438,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_token_user_title_empty(self):
         """Token users can not set an empty title."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"title": " "}
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -2520,10 +2463,7 @@ class VideoAPITest(TestCase):
             live_state=IDLE,
             live_type=JITSI,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (timezone.now() + timedelta(hours=1)).replace(microsecond=0)
         data = {
@@ -2615,10 +2555,7 @@ class VideoAPITest(TestCase):
             should_send_reminders=True,
             video=video,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # we only change the title
         response = self.client.put(
             f"/api/videos/{video.id}/",
@@ -2690,10 +2627,7 @@ class VideoAPITest(TestCase):
             title="my title",
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # try to set a date in the past
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -2731,10 +2665,7 @@ class VideoAPITest(TestCase):
             live_state=IDLE, live_type=JITSI, starting_at=starting_at, title="my title"
         )
         self.assertTrue(video.is_scheduled)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         data = {"title": "title required", "starting_at": None}
         response = self.client.put(
@@ -2756,10 +2687,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory(
             live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # now is set to after initial starting_at
         now = intial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -2789,10 +2717,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_token_user_description(self):
         """Token users should be able to update the description of their video through the API."""
         video = factories.VideoFactory(description="my description")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -2813,10 +2738,7 @@ class VideoAPITest(TestCase):
     def test_api_video_update_detail_token_user_uploaded_on(self):
         """Token users trying to update "uploaded_on" through the API should be ignored."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -2851,10 +2773,7 @@ class VideoAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -2953,10 +2872,7 @@ class VideoAPITest(TestCase):
             description="my description",
             join_mode=APPROVAL,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -2979,10 +2895,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_update_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to update the video."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         data = {"upload_state": "ready"}
 
@@ -3010,9 +2926,7 @@ class VideoAPITest(TestCase):
     def test_api_video_patch_video_student(self):
         """Student users should not be allowed to patch a video through the API."""
         video = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {"title": "my new title"}
         response = self.client.patch(
@@ -3032,10 +2946,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_patch_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to patch the video."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         data = {"upload_state": "ready"}
 
@@ -3053,10 +2967,7 @@ class VideoAPITest(TestCase):
         this field can only be updated by AWS via the separate update-state API endpoint.
         """
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         self.assertIsNone(video.uploaded_on)
 
         data = {"active_stamp": "1533686400"}
@@ -3076,10 +2987,7 @@ class VideoAPITest(TestCase):
         """Token users trying to update the ID of a video they own should be ignored."""
         video = factories.VideoFactory()
         original_id = video.id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/",
@@ -3102,10 +3010,7 @@ class VideoAPITest(TestCase):
         """Token users should not be allowed to update another video through the API."""
         video_token = factories.VideoFactory()
         video_update = factories.VideoFactory(title="my title")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video_token.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token)
 
         data = {"title": "my new title"}
         response = self.client.put(
@@ -3122,10 +3027,7 @@ class VideoAPITest(TestCase):
     def test_api_video_patch_detail_token_user_description(self):
         """Token users should be able to patch fields on their video through the API."""
         video = factories.VideoFactory(description="my description")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         data = {"description": "my new description"}
 
@@ -3143,10 +3045,7 @@ class VideoAPITest(TestCase):
         """Instructors and administrators should be able to
         patch the public flag of their video through the API."""
         video = factories.VideoFactory(is_public=False)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"is_public": True}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3164,10 +3063,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.allow_recording)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"allow_recording": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3185,10 +3081,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertEqual(video.tags, [])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"tags": ["foo", "bar"]}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3206,10 +3099,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.license)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"license": CC_BY_SA}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3227,10 +3117,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         estimated_duration = timedelta(seconds=2100)
         data = {"estimated_duration": estimated_duration}
         response = self.client.patch(
@@ -3249,10 +3136,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # from -7 days to -1 second
         estimated_duration = timedelta(seconds=random.randint(-604800, -1))
         data = {"estimated_duration": estimated_duration}
@@ -3281,10 +3165,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertIsNone(video.estimated_duration)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         estimated_duration = timedelta(seconds=-1)
         data = {"estimated_duration": estimated_duration}
@@ -3312,10 +3193,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.has_chat)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"has_chat": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3333,10 +3211,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory()
         self.assertTrue(video.has_live_media)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         data = {"has_live_media": False}
         response = self.client.patch(
             f"/api/videos/{video.id}/",
@@ -3385,10 +3260,7 @@ class VideoAPITest(TestCase):
         # starting_at is None there is no event scheduled
         self.assertFalse(video.is_scheduled)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # starting_at gets updated to a date in the future
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -3451,10 +3323,7 @@ class VideoAPITest(TestCase):
         video = factories.VideoFactory(
             live_state=IDLE, live_type=RAW, starting_at=intial_starting_at
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # now is set after video.starting_at
         now = intial_starting_at + timedelta(days=10)
         with mock.patch.object(timezone, "now", return_value=now):
@@ -3491,12 +3360,7 @@ class VideoAPITest(TestCase):
                 )
                 self.assertFalse(video.is_scheduled)
 
-                jwt_token = AccessToken()
-                jwt_token.payload["resource_id"] = str(video.id)
-                jwt_token.payload["roles"] = [
-                    random.choice(["instructor", "administrator"])
-                ]
-                jwt_token.payload["permissions"] = {"can_update": True}
+                jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
                 starting_at = timezone.now() + timedelta(days=10)
                 response = self.client.patch(
@@ -3689,12 +3553,7 @@ class VideoAPITest(TestCase):
                 )
                 self.assertFalse(video.is_scheduled)
 
-                jwt_token = AccessToken()
-                jwt_token.payload["resource_id"] = str(video.id)
-                jwt_token.payload["roles"] = [
-                    random.choice(["instructor", "administrator"])
-                ]
-                jwt_token.payload["permissions"] = {"can_update": True}
+                jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
                 starting_at = timezone.now() + timedelta(hours=1)
                 response = self.client.put(
                     f"/api/videos/{video.id}/",
@@ -3732,10 +3591,7 @@ class VideoAPITest(TestCase):
         self.assertTrue(video.starting_at > timezone.now())
         self.assertTrue(video.is_scheduled)
         self.assertEqual(video.live_state, IDLE)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         # Mock now to the future to check video gets set to not scheduled
         future = timezone.now() + timedelta(hours=1)
         with mock.patch.object(timezone, "now", return_value=future):
@@ -3770,10 +3626,7 @@ class VideoAPITest(TestCase):
     def test_api_video_delete_detail_token_user(self):
         """A token user associated to a video should not be able to delete it or any other."""
         videos = factories.VideoFactory.create_batch(2)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(videos[0].id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=videos[0])
 
         # Try deleting the video linked to the JWT token and the other one
         for video in videos:
@@ -3787,9 +3640,7 @@ class VideoAPITest(TestCase):
     def test_api_video_delete_detail_student(self):
         """Student users should not be able to delete a video."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.delete(
             f"/api/videos/{video.id}/",
@@ -3924,10 +3775,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_delete_video_in_read_only(self):
         """An instructor with read_only set to true should not be able to delete the video."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.delete(
             f"/api/videos/{video.id}/",
@@ -3947,9 +3798,10 @@ class VideoAPITest(TestCase):
     def test_api_video_delete_list_token_user(self):
         """A token user associated to a video should not be able to delete a list of videos."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.delete(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -3983,10 +3835,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_initiate_upload_in_read_only(self):
         """An instructor with read_only set to true should not be able to initiate an upload."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/videos/{video.id}/initiate-upload/",
@@ -4000,10 +3852,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Create another video to check that its upload state is unaffected
         other_video = factories.VideoFactory(
@@ -4297,10 +4146,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_initiate_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to initiate a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/videos/{video.id}/initiate-live/",
@@ -4311,9 +4160,7 @@ class VideoAPITest(TestCase):
     def test_api_video_student_initiate_live(self):
         """A student should not be able to initiate a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
             f"/api/videos/{video.id}/initiate-live/",
@@ -4346,10 +4193,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
         ) as mock_dispatch_video:
@@ -4419,11 +4263,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(video.playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=video.playlist)
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
         ) as mock_dispatch_video:
@@ -4489,10 +4329,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
@@ -4570,10 +4407,7 @@ class VideoAPITest(TestCase):
             playlist__title="foo bar",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         now = datetime(2022, 5, 4, tzinfo=timezone.utc)
         with mock.patch(
@@ -4664,11 +4498,10 @@ class VideoAPITest(TestCase):
             live_type=JITSI,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
@@ -4828,11 +4661,10 @@ class VideoAPITest(TestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
@@ -4978,11 +4810,10 @@ class VideoAPITest(TestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
@@ -5132,11 +4963,10 @@ class VideoAPITest(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch.object(
@@ -5309,10 +5139,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # start a live video,
         with mock.patch.object(api.video, "start_live_channel"), mock.patch(
@@ -5335,10 +5162,7 @@ class VideoAPITest(TestCase):
             ),
             live_type=RAW,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
@@ -5366,10 +5190,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_stop_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to stop a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/videos/{video.id}/stop-live/",
@@ -5380,9 +5204,7 @@ class VideoAPITest(TestCase):
     def test_api_video_student_stop_live(self):
         """A student should not be able to stop a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
             f"/api/videos/{video.id}/stop-live/",
@@ -5440,10 +5262,7 @@ class VideoAPITest(TestCase):
             },
             live_type=RAW,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # stop a live video,
         now = datetime(2021, 11, 16, tzinfo=timezone.utc)
@@ -5525,10 +5344,7 @@ class VideoAPITest(TestCase):
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice([s[0] for s in STATE_CHOICES]),
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # stop a live video,
         with mock.patch.object(
@@ -5553,10 +5369,7 @@ class VideoAPITest(TestCase):
             live_state=random.choice([s[0] for s in LIVE_CHOICES if s[0] != "running"]),
             live_type=RAW,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # stop a live video,
         with mock.patch.object(
@@ -5587,10 +5400,10 @@ class VideoAPITest(TestCase):
     def test_api_video_instructor_harvest_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to harvest a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/videos/{video.id}/harvest-live/",
@@ -5601,9 +5414,7 @@ class VideoAPITest(TestCase):
     def test_api_video_student_harvest_live(self):
         """A student should not be able to harvest a live."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
             f"/api/videos/{video.id}/harvest-live/",
@@ -5637,10 +5448,7 @@ class VideoAPITest(TestCase):
             live_type=JITSI,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         response = self.client.post(
             f"/api/videos/{video.id}/harvest-live/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -5693,10 +5501,7 @@ class VideoAPITest(TestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -5842,10 +5647,7 @@ class VideoAPITest(TestCase):
             },
             live_type=RAW,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # stop a live video,
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
@@ -5968,10 +5770,7 @@ class VideoAPITest(TestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -6035,10 +5834,7 @@ class VideoAPITest(TestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch.object(
             api.video, "delete_aws_element_stack"
@@ -6135,10 +5931,7 @@ class VideoAPITest(TestCase):
             ),
             live_type=JITSI,
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
@@ -6172,10 +5965,7 @@ class VideoAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
@@ -6272,10 +6062,7 @@ class VideoAPITest(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
             resolutions=[240, 480, 720],
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
@@ -6845,10 +6632,7 @@ class VideoAPITest(TestCase):
         """A student can fetch the video options endpoint"""
 
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-
+        jwt_token = StudentLtiTokenFactory(resource=video)
         response = self.client.options(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
@@ -6886,9 +6670,10 @@ class VideoAPITest(TestCase):
         """An instructor can fetch the video options endpoint"""
 
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.options(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"

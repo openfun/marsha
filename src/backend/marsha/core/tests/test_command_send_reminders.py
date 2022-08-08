@@ -1,7 +1,6 @@
 """Tests for send_reminders command."""
 from datetime import datetime, timedelta
 from io import StringIO
-import random
 import smtplib
 from unittest import mock
 import uuid
@@ -12,9 +11,8 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import dateformat, timezone
 
-from rest_framework_simplejwt.tokens import AccessToken
-
 from marsha.core.management.commands import send_reminders
+from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
 
 from ..defaults import IDLE, JITSI, RAW, RUNNING
 from ..factories import LiveSessionFactory, VideoFactory
@@ -1204,10 +1202,7 @@ class SendRemindersTest(TestCase):
         video = VideoFactory(
             title="my title", live_state=IDLE, live_type=JITSI, starting_at=None
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         self.assertFalse(video.is_scheduled)
         livesession = LiveSessionFactory(
             anonymous_id=uuid.uuid4(),

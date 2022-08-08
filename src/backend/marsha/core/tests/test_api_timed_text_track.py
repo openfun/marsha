@@ -6,9 +6,11 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
-from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+    UserAccessTokenFactory,
+)
 
 from .. import factories, models
 from ..api import timezone
@@ -30,9 +32,10 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_options_as_instructor(self):
         """The details of choices fields should be available via http options for an instructor."""
         timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.options(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -58,9 +61,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_options_as_student(self):
         """The details of choices fields should be available via http options for a student."""
         timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.options(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -86,9 +87,11 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_options_as_administrator(self):
         """The details of choices fields should be available via http options for an admin."""
         timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["administrator"]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+            roles=["administrator"],
+        )
 
         response = self.client.options(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -128,9 +131,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_read_detail_student(self):
         """Student users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
         # Get the timed text track using the JWT token
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -155,10 +156,7 @@ class TimedTextTrackAPITest(TestCase):
             extension="srt",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -214,10 +212,7 @@ class TimedTextTrackAPITest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -270,10 +265,10 @@ class TimedTextTrackAPITest(TestCase):
             extension="srt",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            roles=["administrator"],
+        )
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -321,10 +316,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to read a timed text track in read_only mode."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -339,10 +334,7 @@ class TimedTextTrackAPITest(TestCase):
         Its "url" field should be set to None.
         """
         timed_text_track = TimedTextTrackFactory(uploaded_on=None)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Get the timed text track using the JWT token
         response = self.client.get(
@@ -360,10 +352,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory(
             uploaded_on=None, upload_state=random.choice(["pending", "error", "ready"])
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Get the timed_text_track linked to the JWT token
         response = self.client.get(
@@ -391,10 +380,7 @@ class TimedTextTrackAPITest(TestCase):
             upload_state="ready",
             extension="srt",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Get the timed_text_track via the API using the JWT token
         # fix the time so that the url signature is deterministic and can be checked
@@ -614,10 +600,9 @@ class TimedTextTrackAPITest(TestCase):
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track_one.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track_one.video
+        )
 
         response = self.client.get(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -845,10 +830,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_create_token_user(self):
         """A token user should be able to create a timed text track for an existing video."""
         video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         data = {"language": "fr"}
         response = self.client.post(
@@ -879,10 +861,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to create a timed text track in read_only mode."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -1069,10 +1051,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_language(self):
         """Token users should be able to update the language of their timed_text_track."""
         timed_text_track = TimedTextTrackFactory(language="fr")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1093,10 +1072,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_closed_captioning(self):
         """Token users should be able to update the mode flag through the API."""
         timed_text_track = TimedTextTrackFactory(mode="cc")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1118,10 +1094,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_active_stamp(self):
         """Token users trying to update "active_stamp" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1144,10 +1117,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_update_detail_token_user_upload_state(self):
         """Token users trying to update "upload_state" through the API should be ignored."""
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1171,10 +1141,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to update a timed text track in read_only mode."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.put(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1358,10 +1328,7 @@ class TimedTextTrackAPITest(TestCase):
         These 2 fields can only be updated by AWS via the separate update-state API endpoint.
         """
         timed_text_track = TimedTextTrackFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
         self.assertEqual(timed_text_track.upload_state, "pending")
         self.assertIsNone(timed_text_track.uploaded_on)
 
@@ -1383,10 +1350,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users trying to update the ID of a timed text track they own should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         original_id = timed_text_track.id
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1409,10 +1373,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users trying to update the video of a timed text track should be ignored."""
         timed_text_track = TimedTextTrackFactory()
         original_video = timed_text_track.video
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         response = self.client.get(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1435,10 +1396,7 @@ class TimedTextTrackAPITest(TestCase):
         """Token users are not allowed to update a timed text track related to another video."""
         other_video = VideoFactory()
         timed_text_track_update = TimedTextTrackFactory(language="en")
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_video)
 
         data = {"language": "fr"}
         response = self.client.put(
@@ -1455,10 +1413,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to patch a timed text track in read_only mode."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.patch(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1630,12 +1588,9 @@ class TimedTextTrackAPITest(TestCase):
 
         # Delete the timed text tracks using the JWT token
         for timed_text_track in timed_text_tracks:
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-            jwt_token.payload["roles"] = [
-                random.choice(["instructor", "administrator"])
-            ]
-            jwt_token.payload["permissions"] = {"can_update": True}
+            jwt_token = InstructorOrAdminLtiTokenFactory(
+                resource=timed_text_track.video
+            )
             response = self.client.delete(
                 f"/api/timedtexttracks/{timed_text_track.id}/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1670,10 +1625,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to delete a timed text track in read_only mode."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.delete(
             f"/api/timedtexttracks/{timed_text_track.id}/",
@@ -1840,10 +1795,7 @@ class TimedTextTrackAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
             mode="cc",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
         # Create other timed text tracks to check that their upload state are unaffected
         # Make sure we avoid unicty constraints by setting a different language
@@ -1940,10 +1892,10 @@ class TimedTextTrackAPITest(TestCase):
         """Instructor should not be able to initiate a timed text track upload in read_only."""
         timed_text_track = TimedTextTrackFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=timed_text_track.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",

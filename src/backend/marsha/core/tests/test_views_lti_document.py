@@ -10,7 +10,8 @@ import uuid
 from django.test import TestCase
 
 from pylti.common import LTIException
-from rest_framework_simplejwt.tokens import AccessToken
+
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import STATE_CHOICES
 from ..factories import ConsumerSiteLTIPassportFactory, DocumentFactory, PlaylistFactory
@@ -58,7 +59,7 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -122,7 +123,7 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -182,7 +183,7 @@ class DocumentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],

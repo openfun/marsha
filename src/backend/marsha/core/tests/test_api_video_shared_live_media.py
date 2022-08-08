@@ -1,19 +1,19 @@
 """Tests for the Video API for SharedLiveMedia navigation of the Marsha project."""
 from datetime import datetime, timezone
 import json
-import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+# pylint: disable=too-many-public-methods,too-many-lines
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from ..api.video import channel_layers_utils
 from ..defaults import DELETED, ERROR, JITSI, PENDING, PROCESSING, READY, RUNNING
 from ..factories import SharedLiveMediaFactory, UserFactory, VideoFactory
-
-
-# pylint: disable=too-many-public-methods,too-many-lines
 
 
 class TestVideoSharedLiveMedia(TestCase):
@@ -68,14 +68,11 @@ class TestVideoSharedLiveMedia(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["context_id"] = str(shared_live_media.video.playlist.lti_id)
-        jwt_token.payload["consumer_site"] = str(
-            shared_live_media.video.playlist.consumer_site.id
+        jwt_token = StudentLtiTokenFactory(
+            resource=shared_live_media.video,
+            context_id=str(shared_live_media.video.playlist.lti_id),
+            consumer_site=str(shared_live_media.video.playlist.consumer_site.id),
         )
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
 
         response = self.client.patch(
             f"/api/videos/{shared_live_media.video.id}/start-sharing/",
@@ -93,9 +90,9 @@ class TestVideoSharedLiveMedia(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         response = self.client.patch(
             f"/api/videos/{shared_live_media.video.id}/navigate-sharing/",
@@ -113,9 +110,9 @@ class TestVideoSharedLiveMedia(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         response = self.client.patch(
             f"/api/videos/{shared_live_media.video.id}/end-sharing/",
@@ -216,12 +213,9 @@ class TestVideoSharedLiveMedia(TestCase):
             video=video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
-
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups, mock.patch(
@@ -427,13 +421,9 @@ class TestVideoSharedLiveMedia(TestCase):
                 video=video,
             )
 
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-            jwt_token.payload["roles"] = [
-                random.choice(["instructor", "administrator"])
-            ]
-            jwt_token.payload["permissions"] = {"can_update": True}
-            jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+            jwt_token = InstructorOrAdminLtiTokenFactory(
+                resource=shared_live_media.video,
+            )
 
             with mock.patch.object(
                 channel_layers_utils, "dispatch_video_to_groups"
@@ -457,10 +447,9 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory()
         other_shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(other_shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=other_shared_live_media.video,
+        )
 
         response = self.client.patch(
             f"/api/videos/{shared_live_media.video.id}/start-sharing/",
@@ -485,11 +474,9 @@ class TestVideoSharedLiveMedia(TestCase):
         shared_live_media = SharedLiveMediaFactory()
         other_shared_live_media = SharedLiveMediaFactory(upload_state=READY)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -544,11 +531,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         shared_live_media = SharedLiveMediaFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -605,11 +590,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -761,11 +744,7 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -825,11 +804,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -889,11 +866,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -953,11 +928,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -1016,11 +989,9 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+        )
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
@@ -1159,11 +1130,7 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"

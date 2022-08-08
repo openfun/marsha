@@ -10,8 +10,9 @@ import uuid
 from django.test import TestCase, override_settings
 
 from pylti.common import LTIException
-from rest_framework_simplejwt.tokens import AccessToken
 from waffle.testutils import override_switch
+
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import (
     DELETED,
@@ -80,7 +81,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
@@ -231,7 +232,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -406,7 +407,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -572,7 +573,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -723,7 +724,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -835,7 +836,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": False},
@@ -963,7 +964,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1099,7 +1100,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1209,7 +1210,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1347,7 +1348,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1487,7 +1488,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
@@ -1626,7 +1627,7 @@ class VideoLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(

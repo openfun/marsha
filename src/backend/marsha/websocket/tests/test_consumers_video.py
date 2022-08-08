@@ -1,6 +1,5 @@
 """Test for video consumers."""
 import json
-import random
 from uuid import uuid4
 
 from django.test import TransactionTestCase
@@ -8,7 +7,6 @@ from django.test import TransactionTestCase
 from asgiref.sync import sync_to_async
 from channels.layers import get_channel_layer
 from channels.testing import WebsocketCommunicator
-from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.defaults import JITSI, RUNNING
 from marsha.core.factories import (
@@ -17,11 +15,16 @@ from marsha.core.factories import (
     TimedTextTrackFactory,
     VideoFactory,
 )
-from marsha.core.models.account import NONE
 from marsha.core.serializers import (
     ThumbnailSerializer,
     TimedTextTrackSerializer,
     VideoSerializer,
+)
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    LiveSessionResourceAccessTokenFactory,
+    ResourceAccessTokenFactory,
+    StudentLtiTokenFactory,
 )
 from marsha.websocket.application import base_application
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
@@ -74,22 +77,12 @@ class VideoConsumerTest(TransactionTestCase):
         video = await self._get_video()
         live_session = await self._get_live_session(
             video=video,
-            consumer_site=video.consumer_site,
-            lti_id="Maths",
-            lti_user_id="444444",
+            is_from_lti_connection=True,
         )
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
+        jwt_token = LiveSessionResourceAccessTokenFactory(live_session=live_session)
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -119,9 +112,7 @@ class VideoConsumerTest(TransactionTestCase):
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [NONE]
+        jwt_token = ResourceAccessTokenFactory(resource=video)
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -146,22 +137,17 @@ class VideoConsumerTest(TransactionTestCase):
         video = await self._get_video()
         live_session = await self._get_live_session(
             video=video,
-            consumer_site=video.consumer_site,
-            lti_id="Maths",
-            lti_user_id="55555",
+            is_from_lti_connection=True,
         )
 
         self.assertIsNone(live_session.channel_name)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {
-            "id": "55555",
-        }
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            consumer_site=str(video.consumer_site.id),
+            context_id=str(video.playlist.lti_id),
+            user__id=live_session.lti_user_id,
+        )
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -186,15 +172,11 @@ class VideoConsumerTest(TransactionTestCase):
         video = await self._get_video()
         other_video = await self._get_video()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            consumer_site=str(video.consumer_site.id),
+            context_id=str(video.playlist.lti_id),
+        )
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -215,10 +197,7 @@ class VideoConsumerTest(TransactionTestCase):
     async def test_connect_video_not_existing(self):
         """Connection with a non-existent video should be refused."""
         video_id = uuid4()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video_id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(resource_id=str(video_id))
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -264,15 +243,10 @@ class VideoConsumerTest(TransactionTestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            consumer_site=str(video.consumer_site.id),
+        )
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -385,15 +359,10 @@ class VideoConsumerTest(TransactionTestCase):
             },
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["consumer_site"] = str(video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            consumer_site=str(video.consumer_site.id),
+        )
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -498,15 +467,10 @@ class VideoConsumerTest(TransactionTestCase):
         """Message received on thumbnail_updated event."""
         thumbnail = await self._get_thumbnail()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video_id)
-        jwt_token.payload["consumer_site"] = str(thumbnail.video.consumer_site.id)
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
+        jwt_token = StudentLtiTokenFactory(
+            resource=thumbnail.video,
+            consumer_site=str(thumbnail.video.consumer_site.id),
+        )
 
         communicator = WebsocketCommunicator(
             base_application,
@@ -547,17 +511,10 @@ class VideoConsumerTest(TransactionTestCase):
         """Message received on timed_text_track_updated event."""
         timed_text_track = await self._get_timed_text_track()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(timed_text_track.video_id)
-        jwt_token.payload["consumer_site"] = str(
-            timed_text_track.video.consumer_site.id
+        jwt_token = StudentLtiTokenFactory(
+            resource=timed_text_track.video,
+            consumer_site=str(timed_text_track.video.consumer_site.id),
         )
-        jwt_token.payload["context_id"] = "Maths"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
-        jwt_token.payload["user"] = {
-            "id": "444444",
-        }
 
         communicator = WebsocketCommunicator(
             base_application,

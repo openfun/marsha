@@ -8,7 +8,7 @@ import uuid
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
 from ..factories import LiveSessionFactory, VideoFactory
@@ -48,7 +48,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
 
         self.assertEqual(
             jwt_token.payload["permissions"],
@@ -240,7 +240,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
 
         self.assertEqual(
             jwt_token.payload["permissions"],
@@ -341,7 +341,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
 
         self.assertEqual(
             jwt_token.payload["permissions"],
@@ -390,7 +390,7 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
 
         self.assertEqual(
             jwt_token.payload["permissions"],

@@ -6,7 +6,11 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    PlaylistLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from ..api import timezone
 from ..factories import DocumentFactory, PlaylistFactory
@@ -37,10 +41,10 @@ class DocumentAPITest(TestCase):
         """A student should not be allowed to fetch a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             f"/api/documents/{document.id}/",
@@ -65,10 +69,7 @@ class DocumentAPITest(TestCase):
             title="bar baz",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.get(
             f"/api/documents/{document.id}/",
@@ -102,10 +103,10 @@ class DocumentAPITest(TestCase):
         """An instructor should not be able to fetch a document in read_only."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=document,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/documents/{document.id}/",
@@ -126,10 +127,10 @@ class DocumentAPITest(TestCase):
         """A student should not be able to fetch a list of document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -140,10 +141,7 @@ class DocumentAPITest(TestCase):
         """An instrustor should not be able to fetch a document list."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.get(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -159,10 +157,10 @@ class DocumentAPITest(TestCase):
         """A student should not be able to create a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -171,13 +169,10 @@ class DocumentAPITest(TestCase):
 
     def test_api_document_create_student_with_playlist_token(self):
         """A student with a playlist token should not be able to create a document."""
-        playlist = PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(
+            roles=["student"],
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -188,10 +183,7 @@ class DocumentAPITest(TestCase):
         """An instrustor should not be able to create a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.post(
             "/api/documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -206,11 +198,7 @@ class DocumentAPITest(TestCase):
         """
         playlist = PlaylistFactory(title="Playlist")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(Document.objects.count(), 0)
 
@@ -259,10 +247,10 @@ class DocumentAPITest(TestCase):
         """A student should not be able to delete a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
 
         response = self.client.delete(
             f"/api/documents/{document.id}/",
@@ -274,10 +262,7 @@ class DocumentAPITest(TestCase):
         """An instructor should not be able to create a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.delete(
             f"/api/documents/{document.id}/",
@@ -295,10 +280,10 @@ class DocumentAPITest(TestCase):
         """A student user should not be able to update a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -313,10 +298,10 @@ class DocumentAPITest(TestCase):
         """An instructor should not be able to update a document in read_only."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=document,
+            permissions__can_update=False,
+        )
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -331,10 +316,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to update a document."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -352,10 +334,7 @@ class DocumentAPITest(TestCase):
         """Serializer should remove the extension from the document title (if any)."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
         data = {"title": "new title.pdf"}
 
         response = self.client.put(
@@ -379,10 +358,10 @@ class DocumentAPITest(TestCase):
         """Student should not be able to initiate an upload."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=document,
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             f"/api/documents/{document.id}/initiate-upload/",
@@ -394,10 +373,10 @@ class DocumentAPITest(TestCase):
         """An instructor should not be able to initiate an upload for a document in read_only."""
         document = DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=document,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/documents/{document.id}/initiate-upload/",
@@ -412,10 +391,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -467,10 +443,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -522,10 +495,7 @@ class DocumentAPITest(TestCase):
             upload_state=random.choice(["ready", "error"]),
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

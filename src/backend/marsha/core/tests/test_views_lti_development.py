@@ -8,7 +8,7 @@ import uuid
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import STATE_CHOICES
 from ..factories import VideoFactory
@@ -67,7 +67,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -121,7 +121,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -210,7 +210,7 @@ class DevelopmentLTIViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         video = Video.objects.get()
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
