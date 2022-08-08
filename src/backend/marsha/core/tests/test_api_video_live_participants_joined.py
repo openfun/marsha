@@ -1,10 +1,12 @@
 """Tests API for persisting the list of participants who have joined a live."""
-import random
 from unittest import mock
 
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from ..api.video import channel_layers_utils
 from ..defaults import DENIED
@@ -35,12 +37,11 @@ class VideoParticipantsJoinedAPITest(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            context_id=str(video.playlist.lti_id),
+            consumer_site=str(video.playlist.consumer_site.id),
+        )
 
         response = self.client.post(
             f"/api/videos/{video.id}/participants-in-discussion/",
@@ -85,11 +86,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
             ]
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "2",
@@ -138,11 +138,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "1",
@@ -190,11 +189,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
             ],
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "2",
@@ -238,12 +236,11 @@ class VideoParticipantsJoinedAPITest(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            context_id=str(video.playlist.lti_id),
+            consumer_site=str(video.playlist.consumer_site.id),
+        )
 
         response = self.client.delete(
             f"/api/videos/{video.id}/participants-in-discussion/",
@@ -288,11 +285,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
             ]
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "2",
@@ -336,11 +332,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "1",
@@ -376,11 +371,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {}
 
@@ -422,11 +416,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
             ]
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "1",
@@ -477,11 +470,10 @@ class VideoParticipantsJoinedAPITest(TestCase):
             ]
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
 
         data = {
             "id": "3",

@@ -1,13 +1,13 @@
 """Tests for the Playlist API of the Marsha project."""
 import json
-import random
 import uuid
 
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
-
-from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    UserAccessTokenFactory,
+)
 
 from .. import factories, models
 
@@ -190,10 +190,7 @@ class PlaylistAPITest(TestCase):
         """Playlist instructors can retrieve playlists through video token."""
         video = factories.VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/playlists/{video.playlist.id}/",
@@ -206,10 +203,7 @@ class PlaylistAPITest(TestCase):
         """Playlist instructors can retrieve playlists through document token."""
         document = factories.DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.get(
             f"/api/playlists/{document.playlist.id}/",
@@ -526,10 +520,7 @@ class PlaylistAPITest(TestCase):
         """Playlist instructors or admins can update playlists through video token."""
         video = factories.VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/playlists/{video.playlist.id}/",
@@ -553,10 +544,7 @@ class PlaylistAPITest(TestCase):
         """Playlist instructors or admins can update playlists with document token."""
         document = factories.DocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
         response = self.client.get(
             f"/api/playlists/{document.playlist.id}/",
@@ -580,10 +568,7 @@ class PlaylistAPITest(TestCase):
         """Playlist instructors or admins can partially update playlists."""
         video = factories.VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.patch(
             f"/api/playlists/{video.playlist.id}/",

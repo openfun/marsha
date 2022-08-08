@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import LTIResourceAccessTokenFactory
 
 from ..defaults import ENDED, RAW, READY, RUNNING
 from ..factories import DocumentFactory, VideoFactory
@@ -27,9 +27,11 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+        )
+        del jwt_token.payload["user"]
 
         base_statement = {
             "context": {
@@ -113,10 +115,11 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
 
         base_statement = {
             "context": {
@@ -201,10 +204,11 @@ class XAPIVideoStatmentTest(TestCase):
             live_type=RAW,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
 
         base_statement = {
             "context": {
@@ -290,10 +294,11 @@ class XAPIVideoStatmentTest(TestCase):
             upload_state=READY,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
 
         base_statement = {
             "context": {
@@ -376,8 +381,11 @@ class XAPIVideoStatmentTest(TestCase):
             title="test video xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+        )
+        del jwt_token.payload["user"]
+        del jwt_token.payload["context_id"]
 
         base_statement = {
             "context": {
@@ -456,10 +464,11 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
 
         base_statement = {
             "context": {
@@ -532,9 +541,11 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["user"] = {"id": "b2584aa405540758db2a6278521b6478"}
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            user__id="b2584aa405540758db2a6278521b6478",
+        )
+        del jwt_token.payload["context_id"]
 
         base_statement = {
             "context": {
@@ -596,9 +607,11 @@ class XAPIDocumentStatementTest(TestCase):
             title="test document xapi",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["session_id"] = "326c0689-48c1-493e-8d2d-9fb0c289de7f"
-        jwt_token.payload["context_id"] = "course-v1:ufr+mathematics+0001"
+        jwt_token = LTIResourceAccessTokenFactory(
+            session_id="326c0689-48c1-493e-8d2d-9fb0c289de7f",
+            context_id="course-v1:ufr+mathematics+0001",
+        )
+        del jwt_token.payload["user"]
 
         base_statement = {
             "context": {

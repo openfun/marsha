@@ -1,7 +1,6 @@
 """Tests for the classroom API."""
 from datetime import datetime, timedelta
 import json
-import random
 from unittest import mock
 from urllib.parse import quote_plus
 import zoneinfo
@@ -9,10 +8,13 @@ import zoneinfo
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from rest_framework_simplejwt.tokens import AccessToken
-
 from marsha.bbb import api, serializers
 from marsha.core import factories as core_factories
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    PlaylistLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 from marsha.core.tests.utils import reload_urlconf
 
 from ..factories import ClassroomFactory
@@ -48,9 +50,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -97,9 +97,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -138,10 +136,10 @@ class ClassroomAPITest(TestCase):
         """A student should not be able to fetch a list of classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=classroom,
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -152,10 +150,7 @@ class ClassroomAPITest(TestCase):
         """An instructor should not be able to fetch a classroom list."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.get(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -171,10 +166,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id!s}/",
@@ -213,10 +205,10 @@ class ClassroomAPITest(TestCase):
         """A student should not be able to create a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=classroom,
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -225,13 +217,10 @@ class ClassroomAPITest(TestCase):
 
     def test_api_classroom_create_student_with_playlist_token(self):
         """A student with a playlist token should not be able to create a classroom."""
-        playlist = core_factories.PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(
+            roles=["student"],
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -243,10 +232,7 @@ class ClassroomAPITest(TestCase):
         """An instructor without playlist token should not be able to create a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.post(
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -269,11 +255,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(Classroom.objects.count(), 0)
 
@@ -332,9 +314,8 @@ class ClassroomAPITest(TestCase):
         """A student user should not be able to update a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
+
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -349,10 +330,10 @@ class ClassroomAPITest(TestCase):
         """An instructor should not be able to update a classroom in read_only."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom,
+            permissions__can_update=False,
+        )
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -373,10 +354,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
         data = {"title": "new title", "welcome_text": "Hello"}
 
         response = self.client.patch(
@@ -401,10 +379,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -465,10 +440,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         now = datetime(2018, 8, 8, tzinfo=zoneinfo.ZoneInfo("Europe/Paris"))
         # set microseconds to 0 to compare date surely as serializer truncate them
@@ -515,10 +487,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
@@ -576,10 +545,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
@@ -608,10 +574,7 @@ class ClassroomAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         estimated_duration = timedelta(seconds=60)
         data = {"estimated_duration": estimated_duration}
@@ -630,11 +593,7 @@ class ClassroomAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -653,11 +612,7 @@ class ClassroomAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -676,11 +631,7 @@ class ClassroomAPITest(TestCase):
         """An instructor should be able to fetch a classroom lti select."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(classroom.playlist_id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=classroom.playlist)
 
         response = self.client.get(
             "/api/classrooms/lti-select/",
@@ -736,9 +687,7 @@ class ClassroomAPITest(TestCase):
         """A student should not be able to create a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/create/",
@@ -757,10 +706,7 @@ class ClassroomAPITest(TestCase):
         mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}
         mock_create_request.return_value = {"returncode": "SUCCESS"}
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
         data = {"title": "new title", "welcome_text": "Hello"}
 
         response = self.client.patch(
@@ -799,10 +745,7 @@ class ClassroomAPITest(TestCase):
             {"message": "A classroom already exists with that classroom ID."}
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
         data = {"title": classroom.title, "welcome_text": classroom.welcome_text}
 
         response = self.client.patch(
@@ -855,11 +798,11 @@ class ClassroomAPITest(TestCase):
             moderator_password="0$C7Aaz0o",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["consumer_site"] = "consumer_site"
-        jwt_token.payload["user"] = {"id": "user_id"}
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(
+            resource=classroom,
+            consumer_site="consumer_site",
+            user__id="user_id",
+        )
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/join/",
@@ -885,12 +828,11 @@ class ClassroomAPITest(TestCase):
             moderator_password="0$C7Aaz0o",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["consumer_site"] = "consumer_site"
-        jwt_token.payload["user"] = {"id": "user_id"}
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom,
+            consumer_site="consumer_site",
+            user__id="user_id",
+        )
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/join/",
@@ -916,10 +858,7 @@ class ClassroomAPITest(TestCase):
             moderator_password="0$C7Aaz0o",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/join/",
@@ -962,9 +901,7 @@ class ClassroomAPITest(TestCase):
         """A student should not be able to end a classroom."""
         classroom = ClassroomFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/end/",
@@ -988,10 +925,7 @@ class ClassroomAPITest(TestCase):
             "returncode": "SUCCESS",
         }
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(classroom.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.patch(
             f"/api/classrooms/{classroom.id}/end/",

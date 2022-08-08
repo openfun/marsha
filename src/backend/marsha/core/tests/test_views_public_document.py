@@ -7,7 +7,7 @@ import uuid
 
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import STATE_CHOICES
 from ..factories import DocumentFactory
@@ -45,7 +45,7 @@ class DocumentPublicViewTestCase(TestCase):
         )
 
         context = json.loads(unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
 
         self.assertEqual(
             jwt_token.payload["permissions"],

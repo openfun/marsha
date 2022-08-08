@@ -1,11 +1,10 @@
 """Tests for the Playlist API of the Marsha project."""
 import json
-import random
 from uuid import uuid4
 
 from django.test import TestCase
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
 
 from .. import factories
 
@@ -15,10 +14,7 @@ class PlaylistPortabilityAPITest(TestCase):
 
     def _jwt_token(self, video):
         """Build JWT token for a video with admin or instructor role."""
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
         return jwt_token
 
     def _patch_video(self, video, params):

@@ -1,20 +1,20 @@
 """Tests for the Markdown application API."""
 
 import json
-import random
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
 from marsha.core import factories as core_factories
-
-from ..factories import MarkdownDocumentFactory
-from ..models import MarkdownDocument
-
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    PlaylistLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument
+from ..factories import MarkdownDocumentFactory
+from ..models import MarkdownDocument
 
 
 @override_settings(MARKDOWN_ENABLED=True)
@@ -38,10 +38,10 @@ class MarkdownAPITest(TestCase):
         """A student should not be allowed to fetch a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -65,10 +65,7 @@ class MarkdownAPITest(TestCase):
             translations__rendered_content="<h1>Heading1</h1>\n<p>Some content</p>",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -103,10 +100,10 @@ class MarkdownAPITest(TestCase):
         """An instructor should not be able to fetch a Markdown document in read_only."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -127,10 +124,10 @@ class MarkdownAPITest(TestCase):
         """A student should not be able to fetch a list of Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -141,10 +138,7 @@ class MarkdownAPITest(TestCase):
         """An instrustor should not be able to fetch a Markdown document list."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -160,10 +154,10 @@ class MarkdownAPITest(TestCase):
         """A student should not be able to create a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -172,13 +166,7 @@ class MarkdownAPITest(TestCase):
 
     def test_api_document_create_student_with_playlist_token(self):
         """A student with a playlist token should not be able to create a Markdown document."""
-        playlist = core_factories.PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(roles=["student"])
 
         response = self.client.post(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -189,10 +177,7 @@ class MarkdownAPITest(TestCase):
         """An instrustor should not be able to create a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         response = self.client.get(
             "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -207,11 +192,7 @@ class MarkdownAPITest(TestCase):
         """
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         self.assertEqual(MarkdownDocument.objects.count(), 0)
 
@@ -263,10 +244,10 @@ class MarkdownAPITest(TestCase):
         """A student should not be able to delete a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -278,10 +259,7 @@ class MarkdownAPITest(TestCase):
         """An instructor should not be able to create a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
@@ -311,10 +289,10 @@ class MarkdownAPITest(TestCase):
         """A student user should not be able to update a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -345,10 +323,10 @@ class MarkdownAPITest(TestCase):
         """An instructor should not be able to update a Markdown document in read_only."""
         markdown_document = MarkdownDocumentFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=False,
+        )
         data = {"title": "new title"}
 
         response = self.client.put(
@@ -379,10 +357,7 @@ class MarkdownAPITest(TestCase):
         """An instructor should be able to update a Markdown document."""
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         data = {"is_draft": False}
 
@@ -401,10 +376,7 @@ class MarkdownAPITest(TestCase):
         """An instructor should be able to update a Markdown document translated content."""
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         data = {
             "language_code": "en",
@@ -435,10 +407,7 @@ class MarkdownAPITest(TestCase):
         """An instructor should be able to render LaTeX content content."""
         markdown_document = MarkdownDocumentFactory(is_draft=True)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(markdown_document.pk)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
         response = self.client.post(
             f"/api/markdown-documents/{markdown_document.pk}/latex-rendering/",
@@ -456,13 +425,7 @@ class MarkdownAPITest(TestCase):
 
     def test_api_select_instructor_no_document(self):
         """An instructor should be able to fetch a Markdown document lti select."""
-        playlist = core_factories.PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory()
 
         response = self.client.get(
             "/api/markdown-documents/lti-select/",
@@ -485,11 +448,7 @@ class MarkdownAPITest(TestCase):
             translations__rendered_content="<h1>Heading1</h1>\n<p>Some content</p>",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(markdown_document.playlist_id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=markdown_document.playlist)
 
         response = self.client.get(
             "/api/markdown-documents/lti-select/",

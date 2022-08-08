@@ -10,9 +10,7 @@ from django.conf import settings
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from rest_framework_simplejwt.tokens import AccessToken
-
-from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken
+from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, ResourceAccessToken
 
 from ..defaults import ENDED, IDLE, JITSI
 from ..factories import DocumentFactory, PlaylistFactory, VideoFactory
@@ -141,7 +139,7 @@ class SelectLTIViewTestCase(TestCase):
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
 
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(
             jwt_token.get("permissions"),
             {"can_access_dashboard": False, "can_update": True},

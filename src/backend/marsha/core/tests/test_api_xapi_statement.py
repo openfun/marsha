@@ -6,13 +6,12 @@ import uuid
 from django.test import TestCase
 
 import requests
-from rest_framework_simplejwt.tokens import AccessToken
-
-from ..factories import DocumentFactory, VideoFactory
-
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument
+from marsha.core.simple_jwt.factories import StudentLtiTokenFactory
+
+from ..factories import DocumentFactory, VideoFactory
 
 
 class XAPIStatementApiTest(TestCase):
@@ -30,13 +29,7 @@ class XAPIStatementApiTest(TestCase):
     def test_xapi_statement_with_no_lrs_configured(self):
         """If no LRS configured a 501 status code should be returned."""
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "John Doe",
-            "username": "john_doe",
-        }
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {
             "verb": {
@@ -63,9 +56,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {"foo": "bar"}
 
@@ -88,9 +79,7 @@ class XAPIStatementApiTest(TestCase):
 
     def test_xapi_statement_with_invalid_video(self):
         """The video in the JWT Token does not exist in our database."""
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(uuid.uuid4())
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory()
 
         data = {
             "verb": {
@@ -118,13 +107,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "John Doe",
-            "username": "john_doe",
-        }
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {
             "verb": {
@@ -161,13 +144,7 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "John Doe",
-            "username": "john_doe",
-        }
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         data = {
             "verb": {
@@ -195,10 +172,8 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["session_id"] = str(uuid.uuid4())
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
+        del jwt_token.payload["user"]
 
         data = {
             "verb": {
@@ -226,15 +201,8 @@ class XAPIStatementApiTest(TestCase):
             playlist__consumer_site__lrs_url="http://lrs.com/data/xAPI",
             playlist__consumer_site__lrs_auth_token="Basic ThisIsABasicAuth",
         )
-        jwt_token = AccessToken()
         session_id = str(uuid.uuid4())
-        jwt_token.payload["resource_id"] = str(document.id)
-        jwt_token.payload["session_id"] = session_id
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["user"] = {
-            "id": "John Doe",
-            "username": "john_doe",
-        }
+        jwt_token = StudentLtiTokenFactory(resource=document, session_id=session_id)
 
         data = {
             "verb": {

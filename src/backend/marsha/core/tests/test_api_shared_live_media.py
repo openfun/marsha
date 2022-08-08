@@ -6,9 +6,11 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
-from marsha.core.simple_jwt.factories import UserAccessTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+    UserAccessTokenFactory,
+)
 
 from .. import defaults
 from ..api import timezone
@@ -45,10 +47,7 @@ class SharedLiveMediaAPITest(TestCase):
         """An instructor should be able to create a shared live media for an existing video."""
 
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -78,10 +77,10 @@ class SharedLiveMediaAPITest(TestCase):
     def test_api_shared_live_media_create_instructor_in_read_only(self):
         """An instructor in read only should not be able to create a shared live media."""
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -94,9 +93,7 @@ class SharedLiveMediaAPITest(TestCase):
     def test_api_shared_live_media_create_student(self):
         """A student should not be able to create a shared live media."""
         video = VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
             "/api/sharedlivemedias/",
@@ -286,9 +283,7 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=None,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.pk}/",
@@ -326,9 +321,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.pk}/",
@@ -390,9 +383,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -482,9 +473,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -554,9 +543,10 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=None,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.pk}/",
@@ -594,9 +584,10 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.pk}/",
@@ -658,9 +649,10 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=shared_live_media.video,
+            permissions__can_update=False,
+        )
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -733,11 +725,10 @@ class SharedLiveMediaAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
         other_video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(other_video.id)
-        jwt_token.payload["roles"] = [
-            random.choice(["instructor", "administrator", "student"])
-        ]
+        jwt_token = StudentLtiTokenFactory(
+            resource=other_video,
+            roles=[random.choice(["instructor", "administrator", "student"])],
+        )
 
         response = self.client.get(
             f"/api/sharedlivemedias/{shared_live_media.pk}/",
@@ -926,9 +917,7 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.get(
             "/api/sharedlivemedias/",
@@ -960,10 +949,7 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             "/api/sharedlivemedias/",
@@ -1049,10 +1035,7 @@ class SharedLiveMediaAPITest(TestCase):
             video=other_video,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/sharedlivemedias/?video={other_video.id}",
@@ -1102,10 +1085,7 @@ class SharedLiveMediaAPITest(TestCase):
             nb_pages=3,
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
         now = datetime(2021, 11, 30, tzinfo=timezone.utc)
@@ -1548,9 +1528,7 @@ class SharedLiveMediaAPITest(TestCase):
         """A student can not update a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.put(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1565,10 +1543,7 @@ class SharedLiveMediaAPITest(TestCase):
         """An instructor can update a shared live media."""
         shared_live_media = SharedLiveMediaFactory(title="update me!")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
@@ -1802,9 +1777,7 @@ class SharedLiveMediaAPITest(TestCase):
         """A student can not delete a shared live media."""
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.delete(
             f"/api/sharedlivemedias/{shared_live_media.id}/",
@@ -1819,10 +1792,7 @@ class SharedLiveMediaAPITest(TestCase):
         video = VideoFactory()
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
@@ -2002,10 +1972,7 @@ class SharedLiveMediaAPITest(TestCase):
         )
         video.shared_live_medias.set([shared_live_media])
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         self.assertTrue(SharedLiveMedia.objects.exists())
 
@@ -2042,9 +2009,7 @@ class SharedLiveMediaAPITest(TestCase):
 
         shared_live_media = SharedLiveMediaFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
@@ -2063,10 +2028,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2124,10 +2086,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2185,10 +2144,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -2217,10 +2173,7 @@ class SharedLiveMediaAPITest(TestCase):
             video__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(shared_live_media.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
         now = datetime(2021, 12, 2, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(

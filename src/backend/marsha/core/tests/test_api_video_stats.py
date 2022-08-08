@@ -1,10 +1,12 @@
 """Tests for the Video stats API of the Marsha project."""
-import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from ..factories import UserFactory, VideoFactory
 
@@ -31,12 +33,11 @@ class TestApiVideoStats(TestCase):
 
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["context_id"] = str(video.playlist.lti_id)
-        jwt_token.payload["consumer_site"] = str(video.playlist.consumer_site.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = StudentLtiTokenFactory(
+            resource=video,
+            context_id=str(video.playlist.lti_id),
+            consumer_site=str(video.playlist.consumer_site.id),
+        )
 
         response = self.client.get(
             f"/api/videos/{video.id}/stats/",
@@ -77,11 +78,9 @@ class TestApiVideoStats(TestCase):
         }
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["user"] = {"id": "56255f3807599c377bf0e5bf072359fd"}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+        )
 
         with mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"

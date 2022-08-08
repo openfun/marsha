@@ -1,7 +1,6 @@
 """Tests for the pairing device endpoint on the API of the Marsha project."""
 from datetime import timedelta
 import json
-import random
 import time
 from unittest import mock
 import uuid
@@ -15,9 +14,12 @@ from corsheaders.middleware import (
     ACCESS_CONTROL_ALLOW_ORIGIN,
 )
 from faker import Faker
-from rest_framework_simplejwt.tokens import AccessToken
 
 from marsha.core.defaults import IDLE, JITSI
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from .. import factories
 from ..api import timezone
@@ -50,9 +52,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_student_pairing_secret(self):
         """A student should not be able to request a live pairing secret."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -81,10 +81,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_instructor_pairing_secret_non_jitsi(self):
         """A request related to a non jitsi video should raise a 400 error."""
         video = factories.VideoFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -100,10 +97,7 @@ class PairingDeviceAPITest(TestCase):
     def test_api_video_instructor_pairing_secret_1st_request(self):
         """An instructor should be able to request a live pairing secret."""
         video = factories.VideoFactory(live_state=IDLE, live_type=JITSI)
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -123,10 +117,7 @@ class PairingDeviceAPITest(TestCase):
         live_pairing = LivePairingFactory(video=video)
         previous_secret = live_pairing.secret
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/videos/{video.id}/pairing-secret/",
@@ -147,12 +138,7 @@ class PairingDeviceAPITest(TestCase):
         )
         with mock.patch.object(timezone, "now", return_value=expired_date):
             video = factories.VideoFactory()
-            jwt_token = AccessToken()
-            jwt_token.payload["resource_id"] = str(video.id)
-            jwt_token.payload["roles"] = [
-                random.choice(["instructor", "administrator"])
-            ]
-            jwt_token.payload["permissions"] = {"can_update": True}
+            jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
             self.client.get(
                 f"/api/videos/{video.id}/pairing-secret/",
@@ -165,10 +151,7 @@ class PairingDeviceAPITest(TestCase):
         """Post request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(live_pairing.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
 
         response = self.client.post(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",
@@ -185,10 +168,7 @@ class PairingDeviceAPITest(TestCase):
         """Patch request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(live_pairing.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
 
         response = self.client.patch(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",
@@ -205,10 +185,7 @@ class PairingDeviceAPITest(TestCase):
         """Put request is not allowed."""
         live_pairing = LivePairingFactory()
         initial_secret = live_pairing.secret
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(live_pairing.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=live_pairing.video)
 
         response = self.client.put(
             f"/api/videos/{live_pairing.video.id}/pairing-secret/",

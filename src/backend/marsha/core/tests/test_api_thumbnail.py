@@ -1,12 +1,14 @@
 """Tests for the Thumbnail API."""
 from datetime import datetime
 import json
-import random
 from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 
 from ..api import timezone
 from ..factories import ThumbnailFactory, VideoFactory
@@ -38,9 +40,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -53,10 +53,10 @@ class ThumbnailApiTest(TestCase):
         """Instructor should not be able to read thumbnails in a read_only mode."""
         thumbnail = ThumbnailFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=thumbnail.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -73,10 +73,7 @@ class ThumbnailApiTest(TestCase):
         )
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -102,10 +99,10 @@ class ThumbnailApiTest(TestCase):
         """Admin should not be able to read thumbnails in a read_only mode."""
         thumbnail = ThumbnailFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=thumbnail.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -122,10 +119,10 @@ class ThumbnailApiTest(TestCase):
         )
         thumbnail = ThumbnailFactory(video=video, upload_state="pending")
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["administrator"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            roles=["administrator"],
+        )
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -160,10 +157,7 @@ class ThumbnailApiTest(TestCase):
             upload_state="ready",
         )
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -205,9 +199,7 @@ class ThumbnailApiTest(TestCase):
         """Student users should not be able to create a thumbnail."""
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -219,10 +211,7 @@ class ThumbnailApiTest(TestCase):
         """Student users should not be able to create a thumbnail."""
         video = VideoFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -249,10 +238,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
         ThumbnailFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -270,10 +256,10 @@ class ThumbnailApiTest(TestCase):
         """Instructor should not be able to create thumbnails in a read_only mode."""
         thumbnail = ThumbnailFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=thumbnail.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -294,9 +280,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.delete(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -309,10 +293,7 @@ class ThumbnailApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         self.assertEqual(Thumbnail.objects.count(), 1)
 
@@ -343,10 +324,10 @@ class ThumbnailApiTest(TestCase):
         """Instructor should not be able to delete thumbnails in a read_only mode."""
         thumbnail = ThumbnailFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=thumbnail.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.delete(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -361,10 +342,7 @@ class ThumbnailApiTest(TestCase):
         video_other = VideoFactory()
         thumbnail = ThumbnailFactory(video=video_other)
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video_token.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token)
 
         response = self.client.delete(
             f"/api/thumbnails/{thumbnail.id}/",
@@ -382,9 +360,7 @@ class ThumbnailApiTest(TestCase):
     def test_api_thumbnail_initiate_upload_student(self):
         """Student users should not be allowed to initiate an upload."""
         thumbnail = ThumbnailFactory()
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource=thumbnail.video)
 
         response = self.client.post(
             f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
@@ -400,10 +376,7 @@ class ThumbnailApiTest(TestCase):
         thumbnail = ThumbnailFactory(
             id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
         )
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # Get the upload policy for this thumbnail
         # It should generate a key file with the Unix timestamp of the present time
@@ -456,10 +429,10 @@ class ThumbnailApiTest(TestCase):
         """Instructor should not be able to initiate thumbnails upload in a read_only mode."""
         thumbnail = ThumbnailFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str(thumbnail.video.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=thumbnail.video,
+            permissions__can_update=False,
+        )
 
         response = self.client.post(
             f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
