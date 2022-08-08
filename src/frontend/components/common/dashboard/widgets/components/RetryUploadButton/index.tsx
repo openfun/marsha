@@ -9,7 +9,7 @@ const messages = defineMessages({
     defaultMessage:
       'Click on this button to retry uploading your failed upload.',
     description: 'The label of the retry button.',
-    id: 'component.RetryButton.buttonLabel',
+    id: 'component.RetryUploadButton.buttonLabel',
   },
 });
 
@@ -22,7 +22,7 @@ to {
 }
 `;
 
-const StyledRetryButton = styled(Button)`
+const StyledRetryUploadButton = styled(Button)`
   padding: 0;
   margin-right: -4px;
   :hover {
@@ -36,14 +36,14 @@ const StyledRetryButton = styled(Button)`
   }
 `;
 
-interface RetryButtonProps {
+interface RetryUploadButtonProps {
   onClick: () => void;
 }
 
-export const RetryButton = ({ onClick }: RetryButtonProps) => {
+export const RetryUploadButton = ({ onClick }: RetryUploadButtonProps) => {
   const intl = useIntl();
   return (
-    <StyledRetryButton
+    <StyledRetryUploadButton
       a11yTitle={intl.formatMessage(messages.buttonLabel)}
       justify="center"
       fill={false}
