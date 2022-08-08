@@ -2,7 +2,7 @@ import { Box, Text } from 'grommet';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { RetryButton } from 'components/DashboardLive/DashboardLiveControlPane/widgets/SharedLiveMedia/SharedLiveMediaItem/RetryButton';
+import { RetryUploadButton } from 'components/common/dashboard/widgets/components/RetryUploadButton';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadingObject } from 'components/UploadManager';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
@@ -109,7 +109,7 @@ export const TimedTextTrackItem = ({
                   </Text>
                 </Box>
 
-                <RetryButton
+                <RetryUploadButton
                   onClick={() => onRetryFailedUpload(timedTextTrack.id)}
                 />
               </React.Fragment>
