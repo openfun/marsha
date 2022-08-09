@@ -16,7 +16,7 @@ describe('metadata', () => {
     const response = await metadata({
       meta: undefined,
       pageParam: undefined,
-      queryKey: ['model-name'],
+      queryKey: ['model-name', 'fr'],
     });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
@@ -24,6 +24,7 @@ describe('metadata', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'fr',
       },
       method: 'OPTIONS',
     });
@@ -39,13 +40,14 @@ describe('metadata', () => {
     const response = await metadata({
       meta: undefined,
       pageParam: undefined,
-      queryKey: ['model-name'],
+      queryKey: ['model-name', 'en'],
     });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
+        'Accept-Language': 'en',
       },
       method: 'OPTIONS',
     });
@@ -65,7 +67,7 @@ describe('metadata', () => {
       metadata({
         meta: undefined,
         pageParam: undefined,
-        queryKey: ['model-name'],
+        queryKey: ['model-name', 'fr'],
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
@@ -74,6 +76,7 @@ describe('metadata', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'fr',
       },
       method: 'OPTIONS',
     });
@@ -89,7 +92,7 @@ describe('metadata', () => {
       metadata({
         meta: undefined,
         pageParam: undefined,
-        queryKey: ['model-name'],
+        queryKey: ['model-name', 'fr'],
       }),
     ).rejects.toThrowError('Failed to get metadata for /model-name/.');
 
@@ -98,6 +101,7 @@ describe('metadata', () => {
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
+        'Accept-Language': 'fr',
       },
       method: 'OPTIONS',
     });

@@ -805,7 +805,7 @@ describe('queries', () => {
       };
       fetchMock.mock(`/api/videos/`, videoMetadata);
 
-      const { result, waitFor } = renderHook(() => useVideoMetadata(), {
+      const { result, waitFor } = renderHook(() => useVideoMetadata('fr'), {
         wrapper: Wrapper,
       });
       await waitFor(() => result.current.isSuccess);
@@ -815,6 +815,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'fr',
         },
         method: 'OPTIONS',
       });
@@ -825,7 +826,7 @@ describe('queries', () => {
     it('fails to get the video metadata', async () => {
       fetchMock.mock(`/api/videos/`, 404);
 
-      const { result, waitFor } = renderHook(() => useVideoMetadata(), {
+      const { result, waitFor } = renderHook(() => useVideoMetadata('en'), {
         wrapper: Wrapper,
       });
 
@@ -836,6 +837,7 @@ describe('queries', () => {
         headers: {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
+          'Accept-Language': 'en',
         },
         method: 'OPTIONS',
       });
