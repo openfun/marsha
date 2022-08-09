@@ -95,6 +95,7 @@ class DepositedFile(UploadableFileMixin, BaseModel):
     """Model representing a file in a file depository."""
 
     RESOURCE_NAME = "depositedfiles"
+    S3_IDENTIFIER = "depositedfile"
 
     file_depository = models.ForeignKey(
         to=FileDepository,

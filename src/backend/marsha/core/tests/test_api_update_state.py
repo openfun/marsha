@@ -12,6 +12,7 @@ from channels.layers import get_channel_layer
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
 
+from ...deposit.factories import DepositedFileFactory
 from ..factories import (
     DocumentFactory,
     SharedLiveMediaFactory,
@@ -400,3 +401,34 @@ class UpdateStateAPITest(TestCase):
         )
         self.assertEqual(shared_live_media.nb_pages, 3)
         self.assertEqual(shared_live_media.extension, "pdf")
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_deposited_file(self):
+        """Confirming the successful upload of a shared live media."""
+        deposited_file = DepositedFileFactory(
+            id="d60d7971-5929-4f10-8e9c-06c5d15818ce",
+            file_depository__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
+        )
+
+        data = {
+            "extraParameters": {"extension": "pdf"},
+            "key": f"{deposited_file.file_depository.pk}/depositedfile/{deposited_file.pk}/"
+            "1533686400.pdf",
+            "state": "ready",
+        }
+        signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
+        response = self.client.post(
+            "/api/update-state",
+            data,
+            content_type="application/json",
+            HTTP_X_MARSHA_SIGNATURE=signature,
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        deposited_file.refresh_from_db()
+        self.assertEqual(deposited_file.upload_state, "ready")
+        self.assertEqual(
+            deposited_file.uploaded_on, datetime(2018, 8, 8, tzinfo=timezone.utc)
+        )
+        self.assertEqual(deposited_file.extension, "pdf")
