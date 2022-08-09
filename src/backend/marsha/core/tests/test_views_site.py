@@ -46,10 +46,8 @@ class SiteViewTestCase(TestCase):
         self.assertEqual(context.get("environment"), "test")
         self.assertEqual(context.get("frontend"), "Site")
         self.assertEqual(context.get("release"), "1.2.3")
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": True, "sentry": True},
-        )
+        self.assertFalse(context.get("flags").get("live_raw"))
+        self.assertTrue(context.get("flags").get("sentry"))
         self.assertEqual(
             context.get("static"),
             {

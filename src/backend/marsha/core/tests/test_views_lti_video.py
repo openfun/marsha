@@ -165,10 +165,8 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
         self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": False, "live_raw": False, "markdown": True, "sentry": True},
-        )
+        self.assertFalse(context.get("flags").get("live_raw"))
+        self.assertTrue(context.get("flags").get("sentry"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -1573,36 +1571,28 @@ class VideoLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "error")
         self.assertIsNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "videos")
+
+        self.assertEqual(context.get("environment"), "test")
+        self.assertFalse(context.get("flags").get("live_raw"))
+        self.assertTrue(context.get("flags").get("sentry"))
+        self.assertEqual(context.get("frontend"), "LTI")
+        self.assertEqual(context.get("release"), "1.2.3")
+        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
         self.assertEqual(
-            context,
+            context.get("static"),
             {
-                "environment": "test",
-                "flags": {
-                    "BBB": False,
-                    "live_raw": False,
-                    "markdown": True,
-                    "sentry": True,
+                "img": {
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "frontend": "LTI",
-                "modelName": "videos",
-                "release": "1.2.3",
-                "resource": None,
-                "sentry_dsn": "https://sentry.dsn",
-                "state": "error",
-                "static": {
-                    "img": {
-                        "liveBackground": "/static/img/liveBackground.jpg",
-                        "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
-                        "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
-                        "videoWizardBackground": "/static/img/videoWizardBackground.png",
-                    },
-                    "svg": {"icons": "/static/svg/icons.svg"},
-                },
-                "player": "videojs",
-                "uploadPollInterval": "60",
-                "attendanceDelay": 60000,
+                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
+        self.assertEqual(context.get("player"), "videojs")
+        self.assertEqual(context.get("uploadPollInterval"), "60")
+        self.assertEqual(context.get("attendanceDelay"), 60000)
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
