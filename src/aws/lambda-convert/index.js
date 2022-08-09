@@ -8,11 +8,13 @@ const resizeThumbnails = require('./src/resizeThumbnails');
 const convertSharedLiveMedia = require('./src/convertSharedLiveMedia');
 const copyDocument = require('./src/copyDocument');
 const copyMarkdownImage = require('./src/copyMarkdownImage');
+const scanDepositedFile = require("./src/scanDepositedFile");
 
 const READY = 'ready';
 const PROCESSING = 'processing';
 
 const ResourceKindEnum = {
+  DEPOSITED_FILE_KIND: 'depositedfile',
   DOCUMENT_KIND: 'document',
   MARKDOWN_IMAGE_KIND: 'markdown-image',
   SHARED_LIVE_MEDIA_KIND: 'sharedlivemedia',
@@ -29,9 +31,15 @@ exports.handler = async (event, context, callback) => {
 
   const parts = objectKey.split('/');
   const [resourceId, kind, recordId, extendedStamp] = parts;
+
   if (parts.length !== 4 || !Object.values(ResourceKindEnum).includes(kind)) {
     let error;
     switch (kind) {
+      case ResourceKindEnum.DEPOSITED_FILE_KIND:
+        error =
+          "Source depositedfile should be uploaded to a folder of the form " +
+          '"{file-deposit_id}/depositedfile/{depositedfile_id}/{stamp}".';
+        break;
       case ResourceKindEnum.DOCUMENT_KIND:
         error =
           'Source document should be uploaded to a folder of the form ' +
@@ -73,6 +81,17 @@ exports.handler = async (event, context, callback) => {
   }
 
   switch (kind) {
+    case ResourceKindEnum.DEPOSITED_FILE_KIND:
+      try {
+        const { extension } = await scanDepositedFile(objectKey, sourceBucket);
+        await updateState(objectKey, READY, { extension });
+      } catch (error) {
+        return callback(error);
+      }
+      console.log(
+        `Successfully received and copy deposited file ${objectKey} from ${sourceBucket}.`
+      );
+      break;
     case ResourceKindEnum.DOCUMENT_KIND:
       try {
         await copyDocument(objectKey, sourceBucket);
