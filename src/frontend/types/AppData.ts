@@ -55,6 +55,8 @@ export interface AppConfig {
       bbbLogo?: string;
       liveBackground: string;
       liveErrorBackground: string;
+      marshaWhiteLogo: string;
+      videoWizardBackground: string;
     };
   };
   player?: string;

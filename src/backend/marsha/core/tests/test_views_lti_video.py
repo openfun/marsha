@@ -110,6 +110,8 @@ class VideoLTIViewTestCase(TestCase):
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
@@ -261,6 +263,8 @@ class VideoLTIViewTestCase(TestCase):
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
@@ -436,6 +440,8 @@ class VideoLTIViewTestCase(TestCase):
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
@@ -602,6 +608,8 @@ class VideoLTIViewTestCase(TestCase):
                 "img": {
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
                 "svg": {"icons": "/static/svg/icons.svg"},
             },
@@ -1585,6 +1593,8 @@ class VideoLTIViewTestCase(TestCase):
                     "img": {
                         "liveBackground": "/static/img/liveBackground.jpg",
                         "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                        "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                        "videoWizardBackground": "/static/img/videoWizardBackground.png",
                     },
                     "svg": {"icons": "/static/svg/icons.svg"},
                 },
