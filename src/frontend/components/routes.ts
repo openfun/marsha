@@ -13,3 +13,11 @@ export const PLAYER_ROUTE = (
 
   return `/player/:objectType(${modelName.VIDEOS}|${modelName.DOCUMENTS})`;
 };
+
+export enum VideoWizzardSubPage {
+  createVideo = 'create_vod',
+}
+
+export const VIDEO_WIZARD_ROUTE = (subPage?: VideoWizzardSubPage) => {
+  return `/video_wizzard${subPage ? '/' + subPage : ''}`;
+};

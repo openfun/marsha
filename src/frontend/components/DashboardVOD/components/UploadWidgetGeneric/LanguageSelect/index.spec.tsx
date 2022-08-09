@@ -171,9 +171,11 @@ describe('<LanguageSelect />', () => {
     screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: error',
     });
-    screen.getByRole('textbox', {
-      name: 'Select the language for which you want to upload a timed text file, error',
-    });
+    expect(
+      screen.getByRole('textbox', {
+        name: 'Select the language for which you want to upload a timed text file, error',
+      }),
+    ).toHaveValue('No language availables');
   });
 
   it('changes the selected language', () => {
