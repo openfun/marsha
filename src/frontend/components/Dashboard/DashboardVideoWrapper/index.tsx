@@ -1,5 +1,4 @@
 import React from 'react';
-import { liveState, uploadState, Video } from 'types/tracks';
 
 import { DashboardLive } from 'components/DashboardLive';
 import { DashboardVOD } from 'components/DashboardVOD';
@@ -9,6 +8,7 @@ import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { useVideo } from 'data/stores/useVideo';
 import { initVideoWebsocket } from 'data/websocket';
+import { liveState, uploadState, Video } from 'types/tracks';
 
 interface DashboardVideoWrapperProps {
   video: Video;

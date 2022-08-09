@@ -34,8 +34,8 @@ jest.mock('components/DashboardLive', () => ({
   DashboardLive: () => <p>{`Dashboard video live`}</p>,
 }));
 
-jest.mock('components/DashboardVideo', () => ({
-  DashboardVideo: () => <p>{`Video dashboard`}</p>,
+jest.mock('components/DashboardVOD', () => ({
+  DashboardVOD: () => <p>{`VOD dashboard`}</p>,
 }));
 
 const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
@@ -103,7 +103,7 @@ describe('<DashboardVideoWrapper />', () => {
 
       expect(spiedInitVideoWebsocket).toHaveBeenCalled();
 
-      screen.getAllByText('Video dashboard');
+      screen.getAllByText('VOD dashboard');
 
       cleanup();
       jest.clearAllMocks();
@@ -127,6 +127,6 @@ describe('<DashboardVideoWrapper />', () => {
 
     render(<DashboardVideoWrapper video={video} />);
 
-    screen.getAllByText('Video dashboard');
+    screen.getAllByText('VOD dashboard');
   });
 });
