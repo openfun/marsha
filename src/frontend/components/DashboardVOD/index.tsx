@@ -5,11 +5,14 @@ import styled from 'styled-components';
 
 import { WidgetsContainer } from 'components/common/dashboard/widgets/WidgetsContainer';
 import { WidgetThumbnail } from 'components/common/dashboard/widgets/WidgetThumbnail';
+import { ThumbnailDisplayer } from 'components/common/dashboard/widgets/WidgetThumbnail/ThumbnailDisplayer';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
+import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { theme } from 'utils/theme/theme';
 import { TimedTrackModalWrapper } from './components/TimedTrackModalWrapper';
@@ -27,18 +30,32 @@ const StyledLiveVideoInformationBarWrapper = styled(Box)`
 
 export const DashboardVOD = () => {
   const video = useCurrentVideo();
+  const appData = useAppConfig();
 
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
+  const thumbnail = useThumbnail((state) => state.getThumbnail());
 
   return (
     <Box background={{ color: 'bg-marsha' }}>
-      <VideoPlayer
-        video={video}
-        playerType="videojs"
-        timedTextTracks={timedTextTracks}
-      />
+      {video.is_ready_to_show ? (
+        <VideoPlayer
+          video={video}
+          playerType="videojs"
+          timedTextTracks={timedTextTracks}
+        />
+      ) : (
+        <Box>
+          <ThumbnailDisplayer
+            urlsThumbnail={
+              thumbnail && thumbnail.urls
+                ? thumbnail.urls
+                : { 1080: appData.static.img.liveBackground }
+            }
+          />
+        </Box>
+      )}
 
       <StyledLiveVideoInformationBarWrapper
         align="center"

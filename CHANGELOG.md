@@ -38,6 +38,7 @@ in the VOD dashboard
 - Avoid record length lower than a video segment length
 - Add a video creation wizard to help instructor through 
 VOD & Live creation processus
+- Use the new dashboard VOD instead of the old one
 
 ### Changed
 

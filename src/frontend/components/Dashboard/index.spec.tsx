@@ -14,8 +14,8 @@ import render from 'utils/tests/render';
 import Dashboard from '.';
 
 const mockUseCurrentVideo = useCurrentVideo;
-jest.mock('components/DashboardVideo', () => ({
-  DashboardVideo: () => {
+jest.mock('components/DashboardVOD', () => ({
+  DashboardVOD: () => {
     const video = mockUseCurrentVideo();
 
     return <span title={video.id} />;
@@ -33,7 +33,7 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
-describe('<Dashboard /> videos', () => {
+describe('<Dashboard />', () => {
   beforeEach(() => {
     useJwt.setState({
       getDecodedJwt: () =>
@@ -63,8 +63,6 @@ describe('<Dashboard /> videos', () => {
         <Dashboard />
       </Suspense>,
     );
-
-    await screen.findByText('Dashboard');
     screen.getByTitle('dd44');
   });
 
