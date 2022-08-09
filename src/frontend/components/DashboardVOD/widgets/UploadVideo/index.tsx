@@ -1,15 +1,14 @@
-import { Box, Button, Meter, Spinner, Stack, Text } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
+import { Box, Button, Spinner, Text } from 'grommet';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { WidgetTemplate } from 'components/common/dashboard/widgets/WidgetTemplate';
+import { ProgressionBar } from 'components/common/dashboard/widgets/components/ProgressionBar';
 import { ValidSVG } from 'components/SVGIcons/ValidSVG';
 import { useUploadManager } from 'components/UploadManager';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { theme } from 'utils/theme/theme';
 import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
@@ -76,26 +75,9 @@ export const UploadVideo = () => {
       <Box direction="column" gap="small">
         {uploadManagerState[video.id] &&
           video.upload_state === uploadState.PENDING && (
-            <Box direction="row">
-              <Stack anchor="center">
-                <Meter
-                  round
-                  size="xlarge"
-                  type="bar"
-                  value={uploadManagerState[video.id].progress}
-                />
-                <Text
-                  color={
-                    uploadManagerState[video.id].progress < 45
-                      ? normalizeColor('blue-active', theme)
-                      : 'white'
-                  }
-                  size="0.725rem"
-                >
-                  {uploadManagerState[video.id].progress} %
-                </Text>
-              </Stack>
-            </Box>
+            <ProgressionBar
+              progressPercentage={uploadManagerState[video.id].progress}
+            />
           )}
 
         {video.upload_state === uploadState.PROCESSING && (

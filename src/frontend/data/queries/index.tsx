@@ -249,17 +249,27 @@ export const useVideo = (
 };
 
 export const useVideoMetadata = (
-  queryConfig?: UseQueryOptions<VideoMetadata, 'videos', VideoMetadata>,
+  locale: string,
+  queryConfig?: UseQueryOptions<
+    VideoMetadata,
+    'videos',
+    VideoMetadata,
+    string[]
+  >,
 ) => {
-  const key = ['videos'];
-  return useQuery<VideoMetadata, 'videos'>(key, metadata, {
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    cacheTime: Infinity,
-    staleTime: Infinity,
-    ...queryConfig,
-  });
+  const key = ['videos', locale];
+  return useQuery<VideoMetadata, 'videos', VideoMetadata, string[]>(
+    key,
+    metadata,
+    {
+      refetchInterval: false,
+      refetchIntervalInBackground: false,
+      refetchOnWindowFocus: false,
+      cacheTime: Infinity,
+      staleTime: Infinity,
+      ...queryConfig,
+    },
+  );
 };
 
 type UseCreateVideoData = {

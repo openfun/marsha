@@ -43,10 +43,11 @@ const messages = defineMessage({
 });
 
 export const StopRecording = () => {
+  const intl = useIntl();
   const [segmentDuration, setSegmentDuration] = useState(0);
   const [recordingActionEnabled, setRecordingActionEnabled] = useState(false);
   const video = useCurrentVideo();
-  useVideoMetadata({
+  useVideoMetadata(intl.locale, {
     onSuccess: (videoMetadata) => {
       setSegmentDuration(videoMetadata.live.segment_duration_seconds);
     },
@@ -63,7 +64,6 @@ export const StopRecording = () => {
       window.clearTimeout(timeoutId);
     };
   }, [segmentDuration]);
-  const intl = useIntl();
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));
   });
