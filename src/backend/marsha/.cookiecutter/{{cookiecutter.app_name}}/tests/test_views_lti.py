@@ -8,10 +8,9 @@ import uuid
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
 from marsha.core.lti import LTI
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..factories import {{cookiecutter.model}}Factory
 
@@ -57,7 +56,7 @@ class {{cookiecutter.model}}LTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(context.get("state"), "success")
         self.assertIsNotNone(context.get("resource"))
         self.assertEqual(context.get("modelName"), "{{cookiecutter.model_plural_lower}}")
@@ -145,7 +144,7 @@ class {{cookiecutter.model}}LTIViewTestCase(TestCase):
         )
 
         context = json.loads(html.unescape(match.group(1)))
-        jwt_token = AccessToken(context.get("jwt"))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
         self.assertEqual(jwt_token.payload["resource_id"], str({{cookiecutter.model_lower}}.id))
         self.assertEqual(
             jwt_token.payload["user"],

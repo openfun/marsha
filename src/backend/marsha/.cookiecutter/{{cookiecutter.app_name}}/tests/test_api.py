@@ -1,12 +1,14 @@
 """Tests for the {{cookiecutter.model_plural_lower}} API."""
 import json
-import random
 
 from django.test import TestCase, override_settings
 
-from rest_framework_simplejwt.tokens import AccessToken
-
 from marsha.core import factories as core_factories
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    PlaylistLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 from marsha.core.tests.utils import reload_urlconf
 
 from ..factories import {{cookiecutter.model}}Factory
@@ -39,10 +41,10 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student should not be able to fetch a list of {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource={{cookiecutter.model_lower}},
+            permissions__can_update=True,
+        )
 
         response = self.client.get(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -53,10 +55,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should not be able to fetch a {{cookiecutter.model_lower}} list."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
 
         response = self.client.get(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -67,9 +66,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student should be allowed to fetch a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource={{cookiecutter.model_lower}})
 
         response = self.client.get(
             f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
@@ -96,10 +93,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should be able to fetch a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
 
         response = self.client.get(
             f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
@@ -131,10 +125,10 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student should not be able to create a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = StudentLtiTokenFactory(
+            resource={{cookiecutter.model_lower}},
+            permissions__can_update=True,
+        )
 
         response = self.client.post(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -143,13 +137,7 @@ class {{cookiecutter.model}}APITest(TestCase):
 
     def test_api_{{cookiecutter.model_lower}}_create_student_with_playlist_token(self):
         """A student with a playlist token should not be able to create a {{cookiecutter.model_lower}}."""
-        playlist = core_factories.PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = ["student"]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(roles=["student"])
 
         response = self.client.post(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -161,10 +149,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor without playlist token should not be able to create a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
 
         response = self.client.post(
             "/api/{{cookiecutter.model_url_part}}/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -179,11 +164,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """
         playlist = core_factories.PlaylistFactory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
 
         self.assertEqual({{cookiecutter.model}}.objects.count(), 0)
 
@@ -235,9 +216,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """A student user should not be able to update a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = ["student"]
+        jwt_token = StudentLtiTokenFactory(resource={{cookiecutter.model_lower}})
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -252,10 +231,10 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should not be able to update a {{cookiecutter.model_lower}} in read_only."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": False}
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource={{cookiecutter.model_lower}},
+            permissions__can_update=False,
+        )
         data = {"title": "new title"}
 
         response = self.client.patch(
@@ -270,10 +249,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should be able to update a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = str({{cookiecutter.model_lower}}.id)
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource={{cookiecutter.model_lower}})
         data = {"title": "new title", "description": "Hello"}
 
         response = self.client.patch(
@@ -290,13 +266,7 @@ class {{cookiecutter.model}}APITest(TestCase):
 
     def test_api_select_instructor_no_{{cookiecutter.model_lower}}s(self):
         """An instructor should be able to fetch a {{cookiecutter.model_lower}} lti select."""
-        playlist = core_factories.PlaylistFactory()
-
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str(playlist.id)
+        jwt_token = PlaylistLtiTokenFactory()
 
         response = self.client.get(
             "/api/{{cookiecutter.model_url_part}}/lti-select/",
@@ -315,11 +285,7 @@ class {{cookiecutter.model}}APITest(TestCase):
         """An instructor should be able to fetch a {{cookiecutter.model_lower}} lti select."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
 
-        jwt_token = AccessToken()
-        jwt_token.payload["resource_id"] = "None"
-        jwt_token.payload["roles"] = [random.choice(["instructor", "administrator"])]
-        jwt_token.payload["permissions"] = {"can_update": True}
-        jwt_token.payload["playlist_id"] = str({{cookiecutter.model_lower}}.playlist_id)
+        jwt_token = PlaylistLtiTokenFactory(playlist={{cookiecutter.model_lower}}.playlist)
 
         response = self.client.get(
             "/api/{{cookiecutter.model_url_part}}/lti-select/",
