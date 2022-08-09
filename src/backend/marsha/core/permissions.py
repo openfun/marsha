@@ -8,7 +8,7 @@ from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 
 from . import models
-from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
+from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT
 
 
 class NotAllowed(permissions.BasePermission):
@@ -90,6 +90,14 @@ class IsTokenAdmin(BaseTokenRolePermission):
     """Class dedicated to administrator users."""
 
     role = ADMINISTRATOR
+
+
+class IsTokenStudent(BaseTokenRolePermission):
+    """Class dedicated to student users."""
+
+    def check_role(self, token):
+        """Check if the student role is in the token."""
+        return STUDENT in token.payload.get("roles", [])
 
 
 class IsTokenResourceRouteObject(permissions.BasePermission):
