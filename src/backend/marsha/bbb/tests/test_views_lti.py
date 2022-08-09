@@ -95,10 +95,7 @@ class ClassroomLTIViewTestCase(TestCase):
                 "id": "56255f3807599c377bf0e5bf072359fd",
             },
         )
-        self.assertEqual(
-            context.get("flags"),
-            {"BBB": True, "live_raw": False, "markdown": True, "sentry": False},
-        )
+        self.assertTrue(context.get("flags").get("BBB"))
         self.assertEqual(
             context.get("static"),
             {
