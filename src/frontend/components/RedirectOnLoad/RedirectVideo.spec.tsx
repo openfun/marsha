@@ -3,7 +3,7 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { LiveModeType } from 'types/tracks';
@@ -44,6 +44,7 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });
@@ -83,6 +84,7 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });
@@ -90,7 +92,7 @@ describe('RedirectVideo', () => {
     screen.getByText('video player');
   });
 
-  it('redirects to the dashboard when the user has update permission', () => {
+  it('redirects to the wizard when the user has update permission', () => {
     useJwt.setState({
       getDecodedJwt: () =>
         ({
@@ -120,11 +122,12 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });
 
-    screen.getByText('dashboard');
+    screen.getByText('wizard');
   });
 
   it('redirects to the error view when the user has no update permission and the video is not ready to show', () => {
@@ -157,6 +160,7 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });
@@ -197,6 +201,7 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });
@@ -237,6 +242,7 @@ describe('RedirectVideo', () => {
             path: PLAYER_ROUTE(modelName.VIDEOS),
             render: () => <span>video player</span>,
           },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
         ],
       },
     });

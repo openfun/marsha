@@ -10,7 +10,7 @@ import { Loader } from 'components/Loader';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { SelectContent } from 'components/SelectContent';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { UploadForm } from 'components/UploadForm';
@@ -22,6 +22,7 @@ import { modelName } from 'types/models';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));
+const VideoWizard = lazy(() => import('components/VideoWizard'));
 const PlaylistPage = lazy(() => import('components/PlaylistPage'));
 const PublicVideoDashboard = lazy(
   () => import('components/PublicVideoDashboard'),
@@ -53,6 +54,7 @@ const Routes = () => {
       <Suspense fallback={<Loader />}>
         <Switch>
           <Route exact path={DASHBOARD_ROUTE()} component={Dashboard} />
+
           <Route
             exact
             path={PLAYER_ROUTE()}
@@ -85,6 +87,9 @@ const Routes = () => {
               return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
             }}
           />
+
+          <Route path={VIDEO_WIZARD_ROUTE()} component={VideoWizard} />
+
           <Route
             exact
             path={SELECT_CONTENT_ROUTE()}
@@ -101,6 +106,7 @@ const Routes = () => {
               />
             )}
           />
+
           <Route
             exact
             path={UPLOAD_FORM_ROUTE()}
@@ -111,6 +117,7 @@ const Routes = () => {
               />
             )}
           />
+
           <Route
             exact
             path={FULL_SCREEN_ERROR_ROUTE()}
@@ -120,6 +127,7 @@ const Routes = () => {
               />
             )}
           />
+
           <Route exact path={PLAYLIST_ROUTE()} component={PlaylistPage} />
 
           <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
