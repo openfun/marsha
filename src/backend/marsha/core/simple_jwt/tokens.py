@@ -61,15 +61,13 @@ class ResourceAccessToken(AccessToken):
     """
     Resource dedicated access JWT.
 
-    For now, we stay with the same attributes as the original AccessToken for
-    backward compatibility:
-    ```
-        token_type = "access"
-        lifetime = api_settings.ACCESS_TOKEN_LIFETIME
-    ```
+    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
+    setting).
 
     Note: `api_settings.USER_ID_CLAIM` is currently `resource_id`.
     """
+
+    token_type = "resource_access"  # nosec
 
     def verify(self):
         """Performs additional validation steps to test payload content."""
