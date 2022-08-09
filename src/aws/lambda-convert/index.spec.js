@@ -22,6 +22,9 @@ jest.doMock("./src/copyDocument", () => mockCopyDocument);
 const mockConvertSharedLiveMedia = jest.fn();
 jest.doMock("./src/convertSharedLiveMedia", () => mockConvertSharedLiveMedia);
 
+const mockScanDepositedFile = jest.fn();
+jest.doMock("./src/scanDepositedFile", () => mockScanDepositedFile);
+
 const lambda = require("./index.js").handler;
 
 const callback = jest.fn();
@@ -384,6 +387,63 @@ describe("lambda", () => {
         { extension: "pdf", nbPages: 3 }
       );
       expect(mockUpdateState).toHaveBeenCalledTimes(2);
+    });
+  });
+
+  describe("called with a depositedfile object", () => {
+    it("reports an error when a depositedfile has an unexpected format", () => {
+      lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: "source bucket" },
+                object: {
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a",
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback
+      );
+      expect(callback).toHaveBeenCalledWith(
+        "Source depositedfile should be uploaded to a folder of the form " +
+          '"{file-deposit_id}/depositedfile/{depositedfile_id}/{stamp}".'
+      );
+    });
+
+    it("delegates to copyDepositFile and call updateState", async () => {
+      mockScanDepositedFile.mockImplementation(() =>
+        Promise.resolve({ extension: "pdf" })
+      );
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: "source bucket" },
+                object: {
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback
+      );
+
+      expect(mockScanDepositedFile).toHaveBeenCalledWith(
+        "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+        "source bucket"
+      );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+        "ready",
+        { extension: "pdf" }
+      );
     });
   });
 });

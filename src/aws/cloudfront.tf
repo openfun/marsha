@@ -153,6 +153,30 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
   }
 
   ordered_cache_behavior {
+    path_pattern     = "*/depositedfile/*"
+    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
+    cached_methods   = ["GET", "HEAD", "OPTIONS"]
+    target_origin_id = local.s3_destination_origin_id
+    trusted_signers  = []
+    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
+
+    forwarded_values {
+      query_string = true
+      headers = ["Access-Control-Request-Headers", "Access-Control-Request-Method", "Origin"]
+
+      cookies {
+        forward = "none"
+      }
+    }
+
+    min_ttl                = 0
+    default_ttl            = 3600
+    max_ttl                = 86400
+    compress               = true
+    viewer_protocol_policy = "redirect-to-https"
+  }
+
+  ordered_cache_behavior {
     path_pattern     = "*/sharedlivemedia/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
