@@ -26,6 +26,10 @@ class {{cookiecutter.model}}ViewSet(
 
     queryset = {{cookiecutter.model}}.objects.all()
     serializer_class = serializers.{{cookiecutter.model}}Serializer
+    permission_classes = [
+        core_permissions.IsTokenResourceRouteObject
+        & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+    ]
 
     def get_permissions(self):
         """
@@ -42,10 +46,7 @@ class {{cookiecutter.model}}ViewSet(
         elif self.action in ["retrieve"]:
             permission_classes = [IsAuthenticated]
         else:
-            permission_classes = [
-                core_permissions.IsTokenResourceRouteObject
-                & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
-            ]
+            permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
