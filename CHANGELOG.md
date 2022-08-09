@@ -36,6 +36,8 @@ quality in the VOD dashboard
 in the VOD dashboard
 - Notify students when a recording is started
 - Avoid record length lower than a video segment length
+- Add a video creation wizard to help instructor through 
+VOD & Live creation processus
 
 ### Changed
 

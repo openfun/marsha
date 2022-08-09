@@ -1,15 +1,14 @@
 import React from 'react';
 import { liveState, uploadState, Video } from 'types/tracks';
 
-import { DashboardVideo } from 'components/DashboardVideo';
 import { DashboardLive } from 'components/DashboardLive';
-import { LTINav } from 'components/LTINav';
-import { useVideo } from 'data/stores/useVideo';
-import { initVideoWebsocket } from 'data/websocket';
-import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
+import { DashboardVOD } from 'components/DashboardVOD';
+import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
-import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
+import { useVideo } from 'data/stores/useVideo';
+import { initVideoWebsocket } from 'data/websocket';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -40,8 +39,7 @@ export const DashboardVideoWrapper = ({
 
   return (
     <CurrentVideoProvider value={currentVideo}>
-      <LTINav object={currentVideo} />
-      <DashboardVideo />
+      <DashboardVOD />
     </CurrentVideoProvider>
   );
 };
