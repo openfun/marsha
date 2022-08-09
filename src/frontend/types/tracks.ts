@@ -217,6 +217,7 @@ export interface Video extends Resource {
   upload_state: uploadState;
   urls: Nullable<VideoUrls>;
   lti_url?: Nullable<string>;
+  license: Nullable<string>;
   should_use_subtitle_as_transcript: boolean;
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;

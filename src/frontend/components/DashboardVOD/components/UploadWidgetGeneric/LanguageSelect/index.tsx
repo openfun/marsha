@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { LanguageChoice } from 'types/LanguageChoice';
+import { LanguageChoice } from 'types/SelectOptions';
 import { timedTextMode } from 'types/tracks';
 
 const messages = defineMessages({
