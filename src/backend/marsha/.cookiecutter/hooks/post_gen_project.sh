@@ -35,17 +35,25 @@ src/backend/marsha/core/views.py
 +        {{ cookiecutter.flag }}: settings.{{ cookiecutter.setting_name }},
      },
 
+
+src/backend/marsha/development/views.py
++    from ..{{ cookiecutter.app_name }}.models import {{ cookiecutter.model }}
+
    In last_objects configuration:
      "last_objects": {
          […]
-         "{{ cookiecutter.model_url_part }}": {{ cookiecutter.model }}.objects.order_by("-updated_on")[:5],
++         "{{ cookiecutter.model_url_part }}": {{ cookiecutter.model }}.objects.order_by("-updated_on")[:5],
      },
+
 
 src/backend/marsha/core/templates/core/lti_development.html
      <select name="resource">
        […]
        <option value="{{ cookiecutter.model_url_part }}">{{ cookiecutter.model_short_description }}</option>
      </select>
+
+
+You will then have to fix tests checking the 'context.get("flags")' items.
 
 env.d/test, env.d/development.dist, env.d/development
 +   # {{ cookiecutter.app_name }} application

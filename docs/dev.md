@@ -337,10 +337,14 @@ src/backend/marsha/core/views.py
 +        ASSIGNMENTS: settings.ASSIGNMENTS_ENABLED,
      },
 
+
+src/backend/marsha/development/views.py
++    from ..assignments.models import Submission
+
    In last_objects configuration:
      "last_objects": {
          […]
-         "submissions": Submission.objects.order_by("-updated_on")[:5],
++         "submissions": Submission.objects.order_by("-updated_on")[:5],
      },
 
 src/backend/marsha/core/templates/core/lti_development.html
@@ -352,6 +356,8 @@ src/backend/marsha/core/templates/core/lti_development.html
 env.d/test, env.d/development.dist, env.d/development
 +   # assignments application
 +   DJANGO_ASSIGNMENTS_ENABLED=True
+
+You will then have to fix tests checking the `context.get("flags")` items.
 
 To generate the initial migration once the model is ready:
 docker-compose exec app python manage.py makemigrations assignments
