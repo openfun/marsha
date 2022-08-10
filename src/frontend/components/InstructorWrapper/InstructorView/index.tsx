@@ -5,9 +5,9 @@ import styled from 'styled-components';
 
 import { LTINav } from 'components/LTINav';
 import { useJwt } from 'data/stores/useJwt';
-import { theme } from 'utils/theme/theme';
 import { Document } from 'types/file';
 import { Video } from 'types/tracks';
+import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   btnDashboard: {
