@@ -3,9 +3,9 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { useDocument } from 'data/stores/useDocument';
+import { useJwt } from 'data/stores/useJwt';
 import { Document } from 'types/file';
 import { DocumentXapiStatement } from 'XAPI/DocumentXapiStatement';
-import { useJwt } from 'data/stores/useJwt';
 
 const IconBox = styled.span`
   font-size: 64px;

@@ -2,14 +2,14 @@ import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { uploadState, LiveModeType, Video } from '../../types/tracks';
-import { DashboardLiveConfigureButton } from '../DashboardLiveConfigureButton';
-import { PLAYER_ROUTE } from '../routes';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
-import { useUploadManager } from '../UploadManager';
-import { DashboardButtonWithLink } from './DashboardButtons';
+import { DashboardButtonWithLink } from 'components/common/dashboard/DashboardButtons';
+import { DashboardLiveConfigureButton } from 'components/DashboardLiveConfigureButton';
+import { PLAYER_ROUTE } from 'components/routes';
+import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { useUploadManager } from 'components/UploadManager';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { uploadState, LiveModeType, Video } from 'types/tracks';
 
 const messages = {
   [modelName.VIDEOS]: defineMessages({

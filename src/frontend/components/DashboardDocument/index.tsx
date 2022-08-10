@@ -3,18 +3,21 @@ import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { pollForTrack } from '../../data/sideEffects/pollForTrack';
-import { useDocument } from '../../data/stores/useDocument';
-import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { uploadState } from '../../types/tracks';
-import { DashboardInternalHeading } from '../Dashboard/DashboardInternalHeading';
-import { DashboardDocumentTitleForm } from '../DashboardDocumentTitleForm';
-import { DashboardPaneButtons } from '../DashboardPaneButtons';
-import DocumentPlayer from '../DocumentPlayer';
-import { ObjectStatusPicker } from '../ObjectStatusPicker';
-import { UploadableObjectProgress } from '../UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
+import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
+import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
+import { pollForTrack } from 'data/sideEffects/pollForTrack';
+import { useDocument } from 'data/stores/useDocument';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { uploadState } from 'types/tracks';
+import { DashboardDocumentTitleForm } from './DashboardDocumentTitleForm';
+import { DashboardDocumentPaneButtons } from './DashboardDocumentPaneButtons';
+import DocumentPlayer from './DocumentPlayer';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
@@ -104,10 +107,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
         <Box margin={'small'}>
           <DashboardDocumentTitleForm document={document} />
         </Box>
-        <DashboardPaneButtons
-          object={document}
-          objectType={modelName.DOCUMENTS}
-        />
+        <DashboardDocumentPaneButtons document={document} />
       </DashboardDocumentInnerContainer>
     );
   }
@@ -120,10 +120,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
     return (
       <DashboardDocumentInnerContainer>
         <CommonStatusLine document={document} />
-        <DashboardPaneButtons
-          object={document}
-          objectType={modelName.DOCUMENTS}
-        />
+        <DashboardDocumentPaneButtons document={document} />
       </DashboardDocumentInnerContainer>
     );
   }
@@ -138,10 +135,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
         <Box margin={{ vertical: 'small' }}>
           <UploadableObjectProgress objectId={document.id} />
         </Box>
-        <DashboardPaneButtons
-          object={document}
-          objectType={modelName.DOCUMENTS}
-        />
+        <DashboardDocumentPaneButtons document={document} />
       </DashboardDocumentInnerContainer>
     );
   }
@@ -151,10 +145,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       <CommonStatusLine document={document} />
       {document.upload_state === PENDING &&
         intl.formatMessage(messages[PENDING])}
-      <DashboardPaneButtons
-        object={document}
-        objectType={modelName.DOCUMENTS}
-      />
+      <DashboardDocumentPaneButtons document={document} />
     </DashboardDocumentInnerContainer>
   );
 };

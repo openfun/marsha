@@ -1,7 +1,7 @@
 import { Button } from 'grommet';
 import styled from 'styled-components';
 
-import { withLink } from '../withLink/withLink';
+import { withLink } from 'components/withLink/withLink';
 
 export const DashboardButton = styled(Button)`
   flex-grow: 1;
