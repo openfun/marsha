@@ -12,23 +12,23 @@ const messages = defineMessages({
     defaultMessage: 'Pair an external device',
     description:
       'Button label to request a secret for pairing an external device.',
-    id: 'components.DashboardLivePairing.pairingSecretLabel',
+    id: 'components.LivePairingButton.pairingSecretLabel',
   },
   pairingSecretDisplay: {
     defaultMessage: 'Pairing secret: {secret}',
     description:
       'Message displaying the secret for pairing an external device.',
-    id: 'components.DashboardLivePairing.pairingSecretDisplay',
+    id: 'components.LivePairingButton.pairingSecretDisplay',
   },
   pairingSecretCountdownExpired: {
     defaultMessage: 'Pairing secret expired',
     description:
       'Message displayed when the secret for pairing an external device has expired.',
-    id: 'components.DashboardLivePairing.pairingSecretCountdownExpired',
+    id: 'components.LivePairingButton.pairingSecretCountdownExpired',
   },
 });
 
-export const DashboardLivePairing = () => {
+export const LivePairingButton = () => {
   // secret expiration
   const expiration = 0;
   // reset 3 seconds after expiration
