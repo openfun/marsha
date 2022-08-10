@@ -6,7 +6,7 @@ import render from 'utils/tests/render';
 
 import { InstructorWrapper } from '.';
 
-jest.mock('components/InstructorView/index', () => {
+jest.mock('components/InstructorWrapper/InstructorView', () => {
   return {
     InstructorView: ({ children }: { children: React.ReactNode }) => (
       <div>
