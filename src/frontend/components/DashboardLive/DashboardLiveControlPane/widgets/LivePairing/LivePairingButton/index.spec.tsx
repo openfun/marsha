@@ -1,15 +1,15 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { liveState } from 'types/tracks';
 
 import { useJwt } from 'data/stores/useJwt';
+import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
-import { DashboardLivePairing } from '.';
+import { LivePairingButton } from '.';
 
 describe('<DashboardLivePairing />', () => {
   beforeEach(() => {
@@ -34,7 +34,7 @@ describe('<DashboardLivePairing />', () => {
       pairingSecretDefered.promise,
     );
 
-    render(wrapInVideo(<DashboardLivePairing />, video));
+    render(wrapInVideo(<LivePairingButton />, video));
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,
@@ -92,7 +92,7 @@ describe('<DashboardLivePairing />', () => {
       live_state: liveState.STOPPED,
     });
 
-    render(wrapInVideo(<DashboardLivePairing />, video));
+    render(wrapInVideo(<LivePairingButton />, video));
 
     const pairButton = screen.getByRole('button', {
       name: /pair an external device/i,
