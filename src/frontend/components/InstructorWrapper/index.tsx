@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { InstructorView } from 'components/InstructorView';
+import { InstructorView } from 'components/InstructorWrapper/InstructorView';
 import { useJwt } from 'data/stores/useJwt';
 import { Document } from 'types/file';
 import { Video } from 'types/tracks';
