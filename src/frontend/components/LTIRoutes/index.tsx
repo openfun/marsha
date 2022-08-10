@@ -21,8 +21,10 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName } from 'types/models';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
-const DocumentPlayer = lazy(() => import('components/DocumentPlayer'));
 const VideoWizard = lazy(() => import('components/VideoWizard'));
+const DocumentPlayer = lazy(
+  () => import('components/DashboardDocument/DocumentPlayer'),
+);
 const PlaylistPage = lazy(() => import('components/PlaylistPage'));
 const PublicVideoDashboard = lazy(
   () => import('components/PublicVideoDashboard'),

@@ -2,16 +2,16 @@ import React, { useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
-import { initiateLive } from '../../data/sideEffects/initiateLive';
-import { updateResource } from '../../data/sideEffects/updateResource';
-import { useVideo } from '../../data/stores/useVideo';
-import { modelName } from '../../types/models';
-import { LiveModeType, Video } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
-import { DASHBOARD_ROUTE } from '../Dashboard/route';
-import { DashboardButtonBeta } from '../DashboardPaneButtons/DashboardButtons';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
-import { Loader } from '../Loader';
+import { DashboardButtonBeta } from 'components/common/dashboard/DashboardButtons';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { Loader } from 'components/Loader';
+import { initiateLive } from 'data/sideEffects/initiateLive';
+import { updateResource } from 'data/sideEffects/updateResource';
+import { useVideo } from 'data/stores/useVideo';
+import { modelName } from 'types/models';
+import { LiveModeType, Video } from 'types/tracks';
+import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   raw: {

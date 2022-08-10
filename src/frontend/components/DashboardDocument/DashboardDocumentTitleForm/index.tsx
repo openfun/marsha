@@ -2,11 +2,11 @@ import { Button, Form, FormField, Text, TextInput } from 'grommet';
 import React, { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { updateResource } from '../../data/sideEffects/updateResource';
-import { useDocument } from '../../data/stores/useDocument';
-import { Document } from '../../types/file';
-import { modelName } from '../../types/models';
-import { Maybe } from '../../utils/types';
+import { updateResource } from 'data/sideEffects/updateResource';
+import { useDocument } from 'data/stores/useDocument';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { Maybe } from 'utils/types';
 
 const messages = defineMessages({
   updateError: {
