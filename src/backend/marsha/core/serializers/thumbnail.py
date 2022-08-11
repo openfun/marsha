@@ -3,9 +3,9 @@ from django.conf import settings
 from django.db.utils import IntegrityError
 
 from rest_framework import serializers
-from rest_framework_simplejwt.models import TokenUser
 
 from ..models import Thumbnail
+from ..simple_jwt.authentication import TokenResource
 from ..utils import time_utils
 from .base import TimestampField
 
@@ -58,7 +58,7 @@ class ThumbnailSerializer(serializers.ModelSerializer):
         # user here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         user = self.context["request"].user
-        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+        if not validated_data.get("video_id") and isinstance(user, TokenResource):
             validated_data["video_id"] = user.id
         try:
             return super().create(validated_data)

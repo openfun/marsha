@@ -40,11 +40,7 @@ class SiteViewTestCase(TestCase):
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = UserAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["resource_id"], str(user.id))
-        self.assertDictEqual(
-            jwt_token.payload["user"],
-            {"id": str(user.id)},
-        )
+        self.assertEqual(jwt_token.payload["user_id"], str(user.id))
 
         self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
         self.assertEqual(context.get("environment"), "test")

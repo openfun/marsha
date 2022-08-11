@@ -5,10 +5,10 @@ from django.db.models import Q
 from django.http.response import Http404
 
 from rest_framework import permissions
-from rest_framework_simplejwt.models import TokenUser
 
 from . import models
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
+from .simple_jwt.authentication import TokenResource
 
 
 class NotAllowed(permissions.BasePermission):
@@ -27,7 +27,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
     """Base permission class for JWT Tokens based on token roles.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
+    resource ie related to a TokenResource.
     """
 
     role = None
@@ -56,7 +56,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
 
         """
         user = request.user
-        return isinstance(user, TokenUser) and self.check_role(user.token)
+        return isinstance(user, TokenResource) and self.check_role(user.token)
 
 
 class IsTokenInstructor(BaseTokenRolePermission):
@@ -76,7 +76,7 @@ class IsTokenResourceRouteObject(permissions.BasePermission):
     Base permission class for JWT Tokens related to a resource object.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
+    resource ie related to a TokenResource.
     """
 
     def has_permission(self, request, view):
@@ -104,7 +104,7 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
     Base permission class for JWT Tokens related to a playlist linked to a video.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
+    resource ie related to a TokenResource.
     """
 
     def has_permission(self, request, view):
@@ -135,7 +135,7 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
     Base permission class for JWT Tokens related to a resource object linked to a video.
 
     These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenUser as defined in `rest_framework_simplejwt`.
+    resource ie related to a TokenResource.
     """
 
     def has_permission(self, request, view):
@@ -164,15 +164,14 @@ class IsVideoToken(permissions.IsAuthenticated):
     """A custom permission class for JWT Tokens related to a video object.
 
     These permissions build on the `IsAuthenticated` class but grants additional specific accesses
-    to users authenticated with a JWT token built from a video ie related to a TokenUser as
-    defined in `rest_framework_simplejwt`.
+    to users authenticated with a JWT token built from a video ie related to a TokenResource.
 
     """
 
     message = "Only connected users can access this resource."
 
     def has_permission(self, request, view):
-        """Allow TokenUser and postpone further check to the object permission check.
+        """Allow TokenResource and postpone further check to the object permission check.
 
         Parameters
         ----------
@@ -187,7 +186,7 @@ class IsVideoToken(permissions.IsAuthenticated):
             True if the request is authorized, False otherwise
 
         """
-        if isinstance(request.user, TokenUser):
+        if isinstance(request.user, TokenResource):
             return True
 
         return super().has_permission(request, view)
@@ -510,7 +509,7 @@ class HasPlaylistToken(permissions.BasePermission):
         Only if the playlist exists.
         """
         user = request.user
-        if isinstance(user, TokenUser):
+        if isinstance(user, TokenResource):
             playlist_id = user.token.payload.get("playlist_id")
             return models.Playlist.objects.filter(id=playlist_id).exists()
         return False

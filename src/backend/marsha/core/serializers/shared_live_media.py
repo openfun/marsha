@@ -7,6 +7,7 @@ from rest_framework import serializers
 from rest_framework_simplejwt.models import TokenUser
 
 from ..models import SharedLiveMedia
+from ..simple_jwt.authentication import TokenResource
 from ..utils import cloudfront_utils, time_utils
 from .base import (
     TimestampField,
@@ -75,14 +76,10 @@ class SharedLiveMediaSerializer(
         user = self.context["request"].user
         # Set the video field from the payload if there is one and the user is identified
         # as a proper user object through access rights
-        if (
-            self.initial_data.get("video")
-            and user.token.get("user")
-            and user.token["resource_id"] == user.token.get("user", {}).get("id")
-        ):
+        if self.initial_data.get("video") and isinstance(user, TokenUser):
             validated_data["video_id"] = self.initial_data.get("video")
         # If the user just has a token for a video, force the video ID on the shared live media
-        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+        if not validated_data.get("video_id") and isinstance(user, TokenResource):
             validated_data["video_id"] = user.id
         return super().create(validated_data)
 
