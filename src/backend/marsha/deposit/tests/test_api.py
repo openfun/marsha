@@ -347,6 +347,20 @@ class FileDepositoryAPITest(TestCase):
             response.json(),
         )
 
+
+@override_settings(DEPOSIT_ENABLED=True)
+class DepositedFileAPITest(TestCase):
+    """Test for the DepositedFile API."""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use DEPOSIT_ENABLED
+        reload_urlconf()
+
     def test_api_deposited_file_create_student(self):
         """
         A student should be able to create a deposited file

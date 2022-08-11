@@ -20,10 +20,11 @@ OAUTH_CONSUMER_KEY_SIZE = 20
 SHARED_SECRET_CHARS = string.ascii_letters + string.digits + "!#$%&*+-=?@^_"
 SHARED_SECRET_SIZE = 40
 
-ADMINISTRATOR, INSTRUCTOR, STUDENT, NONE = (
+ADMINISTRATOR, INSTRUCTOR, STUDENT, LEARNER, NONE = (
     "administrator",
     "instructor",
     "student",
+    "learner",
     "none",
 )
 LTI_ROLES = {
