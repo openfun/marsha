@@ -104,6 +104,7 @@ export const SharedLiveMediaItem = ({
             </Box>
 
             <RetryUploadButton
+              color="red-active"
               onClick={() => onRetryFailedUpload(sharedLiveMedia.id)}
             />
           </React.Fragment>

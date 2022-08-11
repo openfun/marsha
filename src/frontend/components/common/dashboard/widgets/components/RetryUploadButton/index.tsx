@@ -1,5 +1,5 @@
 import { Button } from 'grommet';
-import { FormRefresh } from 'grommet-icons';
+import { FormRefresh, IconProps } from 'grommet-icons';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled, { keyframes } from 'styled-components';
@@ -37,17 +37,23 @@ const StyledRetryUploadButton = styled(Button)`
 `;
 
 interface RetryUploadButtonProps {
+  color: string;
   onClick: () => void;
+  size?: IconProps['size'];
 }
 
-export const RetryUploadButton = ({ onClick }: RetryUploadButtonProps) => {
+export const RetryUploadButton = ({
+  color,
+  onClick,
+  size,
+}: RetryUploadButtonProps) => {
   const intl = useIntl();
   return (
     <StyledRetryUploadButton
       a11yTitle={intl.formatMessage(messages.buttonLabel)}
       justify="center"
       fill={false}
-      icon={<FormRefresh color="red-active" />}
+      icon={<FormRefresh color={color} size={size} />}
       onClick={onClick}
       plain
       title={intl.formatMessage(messages.buttonLabel)}
