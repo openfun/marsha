@@ -7,9 +7,9 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 from rest_framework import serializers
-from rest_framework_simplejwt.models import TokenUser
 
 from ..models import ConsumerSite, LiveSession, Video
+from ..simple_jwt.authentication import TokenResource
 
 
 class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
@@ -86,7 +86,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                 {"video": f"video with id {user.id} doesn't accept registration."}
             )
 
-        if not validated_data.get("video_id") and isinstance(user, TokenUser):
+        if not validated_data.get("video_id") and isinstance(user, TokenResource):
             validated_data["video_id"] = user.id
             is_lti = (
                 user.token.payload.get("context_id")

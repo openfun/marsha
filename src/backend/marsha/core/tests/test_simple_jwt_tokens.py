@@ -305,8 +305,7 @@ class UserAccessTokenTestCase(TestCase):
     def test_for_user(self):
         """Test JWT initialization from `for_user` method"""
         token = UserAccessToken.for_user(self.user)
-        self.assertEqual(token.payload["resource_id"], str(self.user.pk))
-        self.assertDictEqual(token.payload["user"], {"id": str(self.user.pk)})
+        self.assertEqual(token.payload["user_id"], str(self.user.pk))
 
     def test_verify(self):
         """Test JWT `verify` method"""
@@ -316,19 +315,8 @@ class UserAccessTokenTestCase(TestCase):
 
         handmade_token = UserAccessToken()  # new empty token
         with self.assertRaises(TokenError):
-            # missing in payload: resource_id, user
-            handmade_token.verify()
-
-        handmade_token.payload["resource_id"] = self.user.pk
-
-        with self.assertRaises(TokenError):
             # missing in payload: user
             handmade_token.verify()
 
-        handmade_token.payload["user"] = self.user.pk
+        handmade_token.payload["user_id"] = self.user.pk
         handmade_token.verify()  # Should not raise
-
-        del handmade_token.payload["resource_id"]
-        # missing in payload: resource_id, but not tested in verify
-        # (this is done in the authentication backend for now)
-        handmade_token.verify()

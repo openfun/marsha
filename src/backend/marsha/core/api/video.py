@@ -17,7 +17,6 @@ from rest_framework import status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework_simplejwt.models import TokenUser
 
 from marsha.core.defaults import JITSI
 from marsha.websocket.utils import channel_layers_utils
@@ -36,6 +35,7 @@ from ..services.video_recording import (
     start_recording,
     stop_recording,
 )
+from ..simple_jwt.authentication import TokenResource
 from ..utils import time_utils
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
@@ -114,7 +114,7 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         context = super().get_serializer_context()
 
         user = self.request.user
-        if isinstance(user, TokenUser):
+        if isinstance(user, TokenResource):
             context.update(user.token.payload)
             admin_role_permission = permissions.IsTokenAdmin()
             instructor_role_permission = permissions.IsTokenInstructor()

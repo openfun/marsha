@@ -286,32 +286,9 @@ class UserAccessToken(AccessToken):
 
     token_type = "user_access"  # nosec
 
-    PAYLOAD_USER = "user"
-
-    @classmethod
-    def for_user(cls, user):
-        """
-        Build a user JWT, used to authenticate user through the application.
-
-        Parameters
-        ----------
-        user: Type[core.User]
-            the user whom information are to store in JWT.
-
-        Returns
-        -------
-        AccessToken
-            JWT containing:
-            - resource_id (`api_settings.USER_ID_CLAIM`)
-            - user
-        """
-        token = super().for_user(user)
-        token.payload[cls.PAYLOAD_USER] = {"id": str(user.id)}
-        return token
-
     def verify(self):
         """Performs additional validation steps to test payload content."""
         super().verify()
 
-        if self.PAYLOAD_USER not in self.payload:
+        if "user_id" not in self.payload:
             raise TokenError(_("Malformed user token"))

@@ -6,12 +6,12 @@ from django.utils import timezone
 from rest_framework import viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from rest_framework_simplejwt.models import TokenUser
 
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, permissions, serializers
 from ..models import SharedLiveMedia
+from ..simple_jwt.authentication import TokenResource
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
 from .base import ObjectPkMixin
@@ -84,7 +84,7 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         # If the "user" is just representing a resource and not an actual user profile,
         # restrict the queryset to tracks linked to said resource
         user = self.request.user
-        if isinstance(user, TokenUser) and (
+        if isinstance(user, TokenResource) and (
             not user.token.get("user")
             or user.token.get("user", {}).get("id") != user.token.get("resource_id")
         ):
