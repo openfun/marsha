@@ -110,6 +110,7 @@ export const TimedTextTrackItem = ({
                 </Box>
 
                 <RetryUploadButton
+                  color="red-active"
                   onClick={() => onRetryFailedUpload(timedTextTrack.id)}
                 />
               </React.Fragment>
