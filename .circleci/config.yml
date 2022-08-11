@@ -626,7 +626,7 @@ jobs:
   # ---- Lambda related jobs ----
   test-lambda-configure:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -653,7 +653,7 @@ jobs:
 
   test-lambda-complete:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -680,7 +680,7 @@ jobs:
 
   test-lambda-medialive:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -706,7 +706,7 @@ jobs:
 
   test-lambda-mediapackage:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -732,7 +732,7 @@ jobs:
 
   test-lambda-elemental-routing:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -758,7 +758,7 @@ jobs:
 
   lint-lambda-configure:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -780,7 +780,7 @@ jobs:
 
   lint-lambda-convert:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -799,7 +799,7 @@ jobs:
 
   lint-lambda-complete:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -821,7 +821,7 @@ jobs:
 
   lint-lambda-medialive:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -843,7 +843,7 @@ jobs:
 
   lint-lambda-mediapackage:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
@@ -865,7 +865,7 @@ jobs:
 
   lint-lambda-elemental-routing:
     docker:
-      - image: cimg/node:14.19
+      - image: cimg/node:16.16
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
