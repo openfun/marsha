@@ -38,6 +38,7 @@ in the VOD dashboard
 managing on-stage request
 - Rework lti app configuration, replaced global variable by stores
 - Collect frontend applications components under a directory
+- Update AWS lambda nodejs image to version 16
 
 ### Fixed
 
