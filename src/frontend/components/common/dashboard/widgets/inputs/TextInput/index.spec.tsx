@@ -37,6 +37,7 @@ describe('<TextInput />', () => {
 
     expect(nbrOfCall).toEqual('An example typed text'.length);
     expect(inputTextValue).toEqual('An example typed text');
+    expect(textInput).not.toBeDisabled();
   });
 
   it('renders the input with text', () => {
@@ -52,5 +53,20 @@ describe('<TextInput />', () => {
     expect(screen.queryByText('An example placeholder')).toEqual(null);
     const textInput = screen.getByRole('textbox', { name: 'An example title' });
     expect(textInput).toHaveValue('An example typed text');
+    expect(textInput).not.toBeDisabled();
+  });
+
+  it('renders the input with text, but disabled', () => {
+    render(
+      <TextInput
+        disabled
+        placeholder="An example placeholder"
+        setValue={setValueMock}
+        title="An example title"
+        value={'An example typed text'}
+      />,
+    );
+    const textInput = screen.getByRole('textbox', { name: 'An example title' });
+    expect(textInput).toBeDisabled();
   });
 });

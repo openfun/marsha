@@ -16,6 +16,7 @@ const StyledGrommetTextInput = styled(GrommetTextInput)`
 `;
 
 interface TextInputProps {
+  disabled?: boolean;
   placeholder?: string;
   setValue: (inputText: string) => void;
   title?: string;
@@ -27,10 +28,12 @@ export const TextInput = ({
   setValue,
   title,
   value,
+  disabled,
 }: TextInputProps) => {
   return (
     <StyledGrommetTextInput
       a11yTitle={title}
+      disabled={disabled}
       focusIndicator={false}
       onChange={(event) => setValue(event.target.value)}
       placeholder={placeholder}
