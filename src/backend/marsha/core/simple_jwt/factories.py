@@ -8,7 +8,7 @@ import factory
 from faker.utils.text import slugify
 
 from marsha.core.factories import LiveSessionFactory, PlaylistFactory, UserFactory
-from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE, STUDENT
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, NONE, STUDENT
 from marsha.core.simple_jwt.permissions import ResourceAccessPermissions
 from marsha.core.simple_jwt.tokens import ResourceAccessToken, UserAccessToken
 
@@ -173,7 +173,7 @@ class LTIResourceAccessTokenFactory(BaseResourceTokenFactory):
 class StudentLtiTokenFactory(LTIResourceAccessTokenFactory):
     """LTI resource forged token for student."""
 
-    roles = [STUDENT]
+    roles = factory.fuzzy.FuzzyChoice(LTI_ROLES.get(STUDENT), getter=lambda x: [x])
 
 
 class InstructorOrAdminLtiTokenFactory(LTIResourceAccessTokenFactory):

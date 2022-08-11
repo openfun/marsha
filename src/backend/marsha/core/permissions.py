@@ -97,7 +97,7 @@ class IsTokenStudent(BaseTokenRolePermission):
 
     def check_role(self, token):
         """Check if the student role is in the token."""
-        return STUDENT in token.payload.get("roles", [])
+        return bool(LTI_ROLES[STUDENT] & set(token.payload.get("roles", [])))
 
 
 class IsTokenResourceRouteObject(permissions.BasePermission):
