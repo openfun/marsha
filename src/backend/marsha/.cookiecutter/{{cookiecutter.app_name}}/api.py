@@ -2,7 +2,6 @@
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.core import permissions as core_permissions
@@ -45,7 +44,7 @@ class {{cookiecutter.model}}ViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [core_permissions.ResourceIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]

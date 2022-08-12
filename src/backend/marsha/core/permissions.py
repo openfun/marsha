@@ -5,6 +5,7 @@ from django.db.models import Q
 from django.http.response import Http404
 
 from rest_framework import permissions
+from rest_framework.permissions import IsAuthenticated
 
 from . import models
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
@@ -20,6 +21,28 @@ class NotAllowed(permissions.BasePermission):
     def has_permission(self, request, view):
         """Deny permission always."""
         return False
+
+
+class UserOrResourceIsAuthenticated(IsAuthenticated):
+    """This allows access for in user or resource context."""
+
+
+class UserIsAuthenticated(IsAuthenticated):
+    """This allows access only in user context."""
+
+    def has_permission(self, request, view):
+        """Simply checks we are NOT in a resource context."""
+        has_permission = super().has_permission(request, view)
+        return has_permission and request.resource is None
+
+
+class ResourceIsAuthenticated(IsAuthenticated):
+    """This allows access only in resource context."""
+
+    def has_permission(self, request, view):
+        """Simply checks we are in a resource context."""
+        has_permission = super().has_permission(request, view)
+        return has_permission and request.resource is not None
 
 
 class BaseTokenRolePermission(permissions.BasePermission):
@@ -163,35 +186,6 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             )
         except (AssertionError, Http404):
             return False
-
-
-class IsVideoToken(permissions.IsAuthenticated):
-    """A custom permission class for JWT Tokens related to a video object.
-
-    These permissions build on the `IsAuthenticated` class but grants additional specific accesses
-    to users authenticated with a JWT token built from a video ie related to a TokenResource.
-
-    """
-
-    message = "Only connected users can access this resource."
-
-    def has_permission(self, request, view):
-        """Allow TokenResource and postpone further check to the object permission check.
-
-        Parameters
-        ----------
-        request : Type[rest_framework.request]
-            The request that holds the authenticated user
-        view : Type[restframework.viewsets or restframework.views]
-            The API view for which permissions are being checked
-
-        Returns
-        -------
-        boolean
-            True if the request is authorized, False otherwise
-
-        """
-        return request.resource is not None or super().has_permission(request, view)
 
 
 class IsParamsOrganizationAdmin(permissions.BasePermission):

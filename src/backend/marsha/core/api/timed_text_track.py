@@ -23,7 +23,7 @@ class TimedTextTrackViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "metadata":
-            permission_classes = [permissions.IsVideoToken]
+            permission_classes = [permissions.ResourceIsAuthenticated]
         elif self.action in ["create", "list"]:
             permission_classes = [
                 permissions.IsTokenInstructor

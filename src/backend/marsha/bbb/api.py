@@ -2,7 +2,6 @@
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
@@ -11,6 +10,7 @@ from marsha.core.api import APIViewMixin, ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
+from ..core.permissions import ResourceIsAuthenticated
 from .forms import ClassroomForm
 from .models import Classroom
 
@@ -47,7 +47,7 @@ class ClassroomViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [ResourceIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
@@ -137,7 +137,7 @@ class ClassroomViewSet(
         methods=["patch"],
         detail=True,
         url_path="join",
-        permission_classes=[IsAuthenticated],
+        permission_classes=[ResourceIsAuthenticated],
     )
     def service_join(self, request, *args, **kwargs):
         """Join a Big Blue Button classroom.

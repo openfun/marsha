@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 class XAPIStatementView(APIViewMixin, APIView):
     """Viewset managing xAPI requests."""
 
-    permission_classes = [permissions.IsVideoToken]
+    permission_classes = [permissions.ResourceIsAuthenticated]
     http_method_names = ["post"]
 
     def post(self, request, resource_kind):
@@ -45,7 +45,7 @@ class XAPIStatementView(APIViewMixin, APIView):
 
         model = apps.get_model(app_label="core", model_name=resource_kind)
         try:
-            # Note: permissions.IsVideoToken asserts request.resource is not None
+            # Note: permissions.ResourceIsAuthenticated asserts request.resource is not None
             object_instance = model.objects.get(pk=request.resource.id)
         except model.DoesNotExist:
             return Response(

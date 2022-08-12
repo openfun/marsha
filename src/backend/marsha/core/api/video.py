@@ -15,7 +15,6 @@ from django.utils.module_loading import import_string
 
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.core.defaults import JITSI
@@ -83,7 +82,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 | permissions.IsVideoOrganizationAdmin
             ]
         elif self.action in ["list", "metadata"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [permissions.UserOrResourceIsAuthenticated]
         elif self.action in ["create"]:
             permission_classes = [
                 permissions.IsParamsPlaylistAdmin

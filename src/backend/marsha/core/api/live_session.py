@@ -59,7 +59,7 @@ class LiveSessionViewSet(
 ):
     """Viewset for the API of the LiveSession object."""
 
-    permission_classes = [permissions.IsVideoToken]
+    permission_classes = [permissions.ResourceIsAuthenticated]
     queryset = LiveSession.objects.all()
     serializer_class = serializers.LiveSessionSerializer
 
