@@ -96,7 +96,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         live_session.save()
 
     def _is_admin(self):
-        """Check if the connected user has admin persmissions."""
+        """Check if the connected user has admin permissions."""
         token = self.scope["token"]
         return IsTokenInstructor().check_role(token) or IsTokenAdmin().check_role(token)
 

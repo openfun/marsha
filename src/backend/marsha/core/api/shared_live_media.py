@@ -11,13 +11,12 @@ from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, permissions, serializers
 from ..models import SharedLiveMedia
-from ..simple_jwt.authentication import TokenResource
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
-class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+class SharedLiveMediaViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the SharedLiveMedia object."""
 
     permission_classes = [permissions.NotAllowed]
@@ -83,13 +82,13 @@ class SharedLiveMediaViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         queryset = self.get_queryset().none()
         # If the "user" is just representing a resource and not an actual user profile,
         # restrict the queryset to tracks linked to said resource
-        user = self.request.user
-        if isinstance(user, TokenResource) and (
-            not user.token.get("user")
-            or user.token.get("user", {}).get("id") != user.token.get("resource_id")
+        if request.resource and (
+            (request.resource.user or {}).get("id") != request.resource.id
         ):
             queryset = (
-                self.get_queryset().filter(video__id=user.id).order_by("created_on")
+                self.get_queryset()
+                .filter(video__id=request.resource.id)
+                .order_by("created_on")
             )
 
         # find the video filter

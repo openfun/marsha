@@ -4,10 +4,8 @@ from urllib.parse import quote_plus
 from django.conf import settings
 
 from rest_framework import serializers
-from rest_framework_simplejwt.models import TokenUser
 
 from ..models import SharedLiveMedia
-from ..simple_jwt.authentication import TokenResource
 from ..utils import cloudfront_utils, time_utils
 from .base import (
     TimestampField,
@@ -71,16 +69,17 @@ class SharedLiveMediaSerializer(
             The "validated_data" dictionary is returned after modification.
 
         """
-        # user here is a video as it comes from the JWT
-        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
-        user = self.context["request"].user
+        resource = self.context["request"].resource
+
         # Set the video field from the payload if there is one and the user is identified
         # as a proper user object through access rights
-        if self.initial_data.get("video") and isinstance(user, TokenUser):
+        if self.initial_data.get("video") and not resource:
             validated_data["video_id"] = self.initial_data.get("video")
-        # If the user just has a token for a video, force the video ID on the shared live media
-        if not validated_data.get("video_id") and isinstance(user, TokenResource):
-            validated_data["video_id"] = user.id
+
+        # If the request regards a resource, force the video ID on the shared live media
+        if not validated_data.get("video_id") and resource:
+            validated_data["video_id"] = resource.id
+
         return super().create(validated_data)
 
     def get_filename(self, obj):

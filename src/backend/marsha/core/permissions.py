@@ -8,7 +8,6 @@ from rest_framework import permissions
 
 from . import models
 from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES
-from .simple_jwt.authentication import TokenResource
 
 
 class NotAllowed(permissions.BasePermission):
@@ -55,8 +54,7 @@ class BaseTokenRolePermission(permissions.BasePermission):
             True if the request is authorized, False otherwise
 
         """
-        user = request.user
-        return isinstance(user, TokenResource) and self.check_role(user.token)
+        return request.resource and self.check_role(request.resource.token)
 
 
 class IsTokenInstructor(BaseTokenRolePermission):
@@ -95,8 +93,7 @@ class IsTokenResourceRouteObject(permissions.BasePermission):
         boolean
             True if the request is authorized, False otherwise
         """
-        # NB: request.user.id is the ID of the related object from LTI, not an actual Django user
-        return view.get_object_pk() == request.user.id
+        return request.resource and view.get_object_pk() == request.resource.id
 
 
 class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
@@ -123,11 +120,16 @@ class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
         boolean
             True if the request is authorized, False otherwise
         """
-        # NB: request.user.id is the ID of the related object from LTI, not an actual Django user
-        return models.Playlist.objects.filter(
-            Q(pk=view.get_object_pk())
-            & (Q(videos__id=request.user.id) | Q(documents__id=request.user.id)),
-        ).exists()
+        return (
+            request.resource
+            and models.Playlist.objects.filter(
+                Q(pk=view.get_object_pk())
+                & (
+                    Q(videos__id=request.resource.id)
+                    | Q(documents__id=request.resource.id)
+                ),
+            ).exists()
+        )
 
 
 class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
@@ -155,7 +157,10 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             True if the request is authorized, False otherwise
         """
         try:
-            return str(view.get_object().video.id) == request.user.id
+            return (
+                request.resource
+                and str(view.get_object().video.id) == request.resource.id
+            )
         except (AssertionError, Http404):
             return False
 
@@ -186,10 +191,7 @@ class IsVideoToken(permissions.IsAuthenticated):
             True if the request is authorized, False otherwise
 
         """
-        if isinstance(request.user, TokenResource):
-            return True
-
-        return super().has_permission(request, view)
+        return request.resource is not None or super().has_permission(request, view)
 
 
 class IsParamsOrganizationAdmin(permissions.BasePermission):
@@ -508,8 +510,7 @@ class HasPlaylistToken(permissions.BasePermission):
 
         Only if the playlist exists.
         """
-        user = request.user
-        if isinstance(user, TokenResource):
-            playlist_id = user.token.payload.get("playlist_id")
+        if request.resource:
+            playlist_id = request.resource.playlist_id
             return models.Playlist.objects.filter(id=playlist_id).exists()
         return False

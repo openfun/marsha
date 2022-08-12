@@ -9,7 +9,6 @@ from django.utils import timezone
 from rest_framework import serializers
 
 from ..models import ConsumerSite, LiveSession, Video
-from ..simple_jwt.authentication import TokenResource
 
 
 class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
@@ -61,10 +60,10 @@ class LiveSessionSerializer(serializers.ModelSerializer):
     )
 
     def create(self, validated_data):
-        """Control or set data with token informations.
+        """Control or set data with token information.
         Force the video field to the video of the JWT Token if any.
         Check email, if present in the token, is equal to the one in the request.
-        Set lti informations if they are present in the token. Control integrity
+        Set lti information if they are present in the token. Control integrity
         errors and set specific messages.
         Parameters
         ----------
@@ -75,37 +74,34 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         dictionary
             The "data" dictionary is returned after modification.
         """
-        # User here is a video as it comes from the JWT
-        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
-        user = self.context["request"].user
-        video = get_object_or_404(Video, pk=user.id)
+        resource = self.context["request"].resource
+        video = get_object_or_404(Video, pk=resource.id)
         if not validated_data.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
         if video.is_scheduled is False:
             raise serializers.ValidationError(
-                {"video": f"video with id {user.id} doesn't accept registration."}
+                {"video": f"video with id {resource.id} doesn't accept registration."}
             )
 
-        if not validated_data.get("video_id") and isinstance(user, TokenResource):
-            validated_data["video_id"] = user.id
+        if not validated_data.get("video_id"):
+            validated_data["video_id"] = resource.id
             is_lti = (
-                user.token.payload.get("context_id")
-                and user.token.payload.get("consumer_site")
-                and user.token.payload.get("user")
-                and user.token.payload["user"].get("id")
+                resource.context_id
+                and resource.consumer_site
+                and (resource.user or {}).get("id")
             )
 
             if is_lti:
                 validated_data["consumer_site"] = get_object_or_404(
-                    ConsumerSite, pk=user.token.payload["consumer_site"]
+                    ConsumerSite, pk=resource.consumer_site
                 )
-                validated_data["lti_id"] = user.token.payload["context_id"]
-                validated_data["lti_user_id"] = user.token.payload["user"]["id"]
+                validated_data["lti_id"] = resource.context_id
+                validated_data["lti_user_id"] = resource.user["id"]
 
                 # If email is present in token, we make sure the one sent is the one expected
-                # lti users can't defined their email, the one from the token is used
-                if user.token.payload["user"].get("email"):
-                    if validated_data["email"] != user.token.payload["user"]["email"]:
+                # lti users can't define their email, the one from the token is used
+                if resource.user.get("email"):
+                    if validated_data["email"] != resource.user["email"]:
                         raise serializers.ValidationError(
                             {
                                 "email": "You are not authorized to register with a specific "
@@ -130,15 +126,12 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                     )
 
                 # If username is present in the token we catch it
-                validated_data["username"] = user.token.payload["user"].get("username")
+                validated_data["username"] = resource.user.get("username")
             else:  # public token should have no LTI info
                 if (
-                    user.token.payload.get("context_id")
-                    or user.token.payload.get("consumer_site")
-                    or (
-                        user.token.payload.get("user")
-                        and user.token.payload["user"].get("id")
-                    )
+                    resource.context_id
+                    or resource.consumer_site
+                    or (resource.user or {}).get("id")
                 ):
                     # we prevent any side effects if token's creation changes.
                     raise serializers.ValidationError(
@@ -178,7 +171,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         """Do not allow to update some fields."""
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
-        user = self.context["request"].user
+        resource = self.context["request"].resource
         updatable_fields = ["is_registered", "email", "language"]
 
         extra_fields = list(set(validated_data.keys()) - set(updatable_fields))
@@ -187,10 +180,10 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"not_allowed_fields": extra_fields})
         if validated_data.get("email"):
             # If the email is present in the token, we don't allow a different email
-            token_email = user.token.payload.get("user", {}).get("email")
-            is_admin = user.token.payload.get("roles") and any(
+            token_email = (resource.user or {}).get("email")
+            is_admin = any(
                 role in ["administrator", "instructor"]
-                for role in user.token.payload["roles"]
+                for role in (resource.roles or [])
             )
             if not is_admin and token_email and token_email != validated_data["email"]:
                 raise serializers.ValidationError(

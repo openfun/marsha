@@ -7,7 +7,7 @@ from rest_framework.response import Response
 
 from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
 from marsha.core import permissions as core_permissions
-from marsha.core.api import ObjectPkMixin
+from marsha.core.api import APIViewMixin, ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
@@ -16,6 +16,7 @@ from .models import Classroom
 
 
 class ClassroomViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -89,9 +90,7 @@ class ClassroomViewSet(
         new_url = build_absolute_uri_behind_proxy(self.request, "/lti/classrooms/")
 
         classrooms = serializers.ClassroomSelectLTISerializer(
-            Classroom.objects.filter(
-                playlist__id=request.user.token.payload.get("playlist_id")
-            ),
+            Classroom.objects.filter(playlist__id=request.resource.playlist_id),
             many=True,
             context={"request": self.request},
         ).data
@@ -158,11 +157,11 @@ class ClassroomViewSet(
         if not request.data.get("fullname"):
             return Response({"message": "missing fullname parameter"}, status=400)
         try:
-            roles = request.user.token.payload.get("roles")
+            roles = request.resource.roles
             moderator = "administrator" in roles or "instructor" in roles
             consumer_site_user_id = (
-                f"{request.user.token.payload.get('consumer_site')}_"
-                f"{request.user.token.payload.get('user', {}).get('id')}"
+                f"{request.resource.consumer_site}_"
+                f"{(request.resource.user or {}).get('id')}"
             )
             response = join(
                 classroom=self.get_object(),
@@ -197,7 +196,7 @@ class ClassroomViewSet(
             HttpResponse with the serialized classroom.
         """
         try:
-            roles = request.user.token.payload.get("roles")
+            roles = request.resource.roles
             moderator = "administrator" in roles or "instructor" in roles
             response = end(classroom=self.get_object(), moderator=moderator)
             status = 200

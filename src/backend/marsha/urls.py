@@ -103,7 +103,7 @@ urlpatterns = [
         name="reminders_cancel",
     ),
     re_path(
-        r"^xapi/(?P<resource>video|document)/$",
+        r"^xapi/(?P<resource_kind>video|document)/$",
         XAPIStatementView.as_view(),
         name="xapi",
     ),

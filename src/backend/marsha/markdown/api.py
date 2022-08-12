@@ -6,7 +6,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from marsha.core import permissions as core_permissions
-from marsha.core.api import ObjectPkMixin
+from marsha.core.api import APIViewMixin, ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
@@ -16,6 +16,7 @@ from .utils.converter import LatexConversionException, render_latex_to_image
 
 
 class MarkdownDocumentViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -88,7 +89,7 @@ class MarkdownDocumentViewSet(
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(
             MarkdownDocument.objects.filter(
-                playlist__id=request.user.token.payload.get("playlist_id")
+                playlist__id=request.resource.playlist_id,
             ),
             many=True,
             context={"request": self.request},

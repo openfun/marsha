@@ -6,7 +6,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.core import permissions as core_permissions
-from marsha.core.api import ObjectPkMixin
+from marsha.core.api import APIViewMixin, ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
@@ -15,6 +15,7 @@ from .models import {{cookiecutter.model}}
 
 
 class {{cookiecutter.model}}ViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,
@@ -88,7 +89,7 @@ class {{cookiecutter.model}}ViewSet(
 
         {{cookiecutter.model_plural_lower}} = serializers.{{cookiecutter.model}}SelectLTISerializer(
             {{cookiecutter.model}}.objects.filter(
-                playlist__id=request.user.token.payload.get("playlist_id")
+                playlist__id=request.resource.playlist_id,
             ),
             many=True,
             context={"request": self.request},

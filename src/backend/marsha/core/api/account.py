@@ -7,10 +7,10 @@ from rest_framework.response import Response
 
 from .. import permissions, serializers
 from ..models import Organization
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
-class UserViewSet(viewsets.GenericViewSet):
+class UserViewSet(APIViewMixin, viewsets.GenericViewSet):
     """ViewSet for all user-related interactions."""
 
     serializer_class = serializers.UserSerializer
@@ -44,7 +44,7 @@ class UserViewSet(viewsets.GenericViewSet):
         return Response(data=self.get_serializer(user).data)
 
 
-class OrganizationViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+class OrganizationViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """ViewSet for all organization-related interactions."""
 
     permission_classes = [permissions.NotAllowed]

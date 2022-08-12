@@ -8,13 +8,12 @@ from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers
 from ..models import TimedTextTrack
-from ..simple_jwt.authentication import TokenResource
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
-class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+class TimedTextTrackViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the TimedTextTrack object."""
 
     permission_classes = [permissions.NotAllowed]
@@ -48,12 +47,8 @@ class TimedTextTrackViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         queryset = self.get_queryset()
         # If the "user" is just representing a resource and not an actual user profile, restrict
         # the queryset to tracks linked to said resource
-        user = self.request.user
-        if isinstance(user, TokenResource) and (
-            not user.token.get("user")
-            or user.token.get("user", {}).get("id") != user.token.get("resource_id")
-        ):
-            queryset = queryset.filter(video__id=user.id)
+        if self.request.resource:
+            queryset = queryset.filter(video__id=self.request.resource.id)
 
         # Apply the video filter if appropriate
         video = request.query_params.get("video")

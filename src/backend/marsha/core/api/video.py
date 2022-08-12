@@ -35,7 +35,6 @@ from ..services.video_recording import (
     start_recording,
     stop_recording,
 )
-from ..simple_jwt.authentication import TokenResource
 from ..utils import time_utils
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
@@ -50,13 +49,13 @@ from ..utils.medialive_utils import (
 )
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
 # pylint: disable=too-many-public-methods
 
 
-class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the video object."""
 
     queryset = Video.objects.all()
@@ -113,9 +112,8 @@ class VideoViewSet(ObjectPkMixin, viewsets.ModelViewSet):
         """Extra context provided to the serializer class."""
         context = super().get_serializer_context()
 
-        user = self.request.user
-        if isinstance(user, TokenResource):
-            context.update(user.token.payload)
+        if self.request.resource:
+            context.update(self.request.resource.token.payload)
             admin_role_permission = permissions.IsTokenAdmin()
             instructor_role_permission = permissions.IsTokenInstructor()
 

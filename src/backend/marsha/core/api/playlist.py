@@ -5,10 +5,10 @@ from rest_framework.response import Response
 
 from .. import permissions, serializers
 from ..models import Playlist
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
-class PlaylistViewSet(ObjectPkMixin, viewsets.ModelViewSet):
+class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """ViewSet for all playlist-related interactions."""
 
     permission_classes = [permissions.NotAllowed]
