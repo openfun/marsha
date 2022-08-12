@@ -414,7 +414,7 @@ describe("lambda", () => {
       );
     });
 
-    it("delegates to copyDepositFile and call updateState", async () => {
+    it("delegates to copyDepositFile", async () => {
       mockScanDepositedFile.mockImplementation(() =>
         Promise.resolve({ extension: "pdf" })
       );
@@ -439,11 +439,37 @@ describe("lambda", () => {
         "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
         "source bucket"
       );
-      expect(mockUpdateState).toHaveBeenCalledWith(
-        "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
-        "ready",
-        { extension: "pdf" }
+    });
+
+    it("delegates to copyDepositFile and reports an error when thrown", async () => {
+      const error = new Error("Something went wrong")
+      mockScanDepositedFile.mockImplementation(() => {
+          throw error;
+        }
       );
+
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: "source bucket" },
+                object: {
+                  key: "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback
+      );
+
+      expect(mockScanDepositedFile).toHaveBeenCalledWith(
+        "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/depositedfile/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735",
+        "source bucket"
+      );
+      expect(callback).toHaveBeenCalledWith(error);
     });
   });
 });
