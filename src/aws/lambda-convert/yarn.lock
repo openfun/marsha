@@ -1653,6 +1653,11 @@ cjs-module-lexer@^1.0.0:
   resolved "https://registry.yarnpkg.com/cjs-module-lexer/-/cjs-module-lexer-1.2.1.tgz#2fd46d9906a126965aa541345c499aaa18e8cd73"
   integrity sha512-jVamGdJPDeuQilKhvVn1h3knuMOZzr8QDnpk+M9aMlCaMkTDd6fBWPhiDqFvFZ07pL0liqabAiuy8SY4jGHeaw==
 
+clamscan@2.1.2:
+  version "2.1.2"
+  resolved "https://registry.yarnpkg.com/clamscan/-/clamscan-2.1.2.tgz#ed58ef77b9095e3b28a3e7855b2c2acf6a2088ef"
+  integrity sha512-pcovgLHcrg3l/mI51Kuk0kN++07pSZdBTskISw0UFvsm8UXda8oNCm0eLeODxFg85Mz+k+TtSS9+XPlriJ8/Fg==
+
 cliui@^7.0.2:
   version "7.0.4"
   resolved "https://registry.yarnpkg.com/cliui/-/cliui-7.0.4.tgz#a0265ee655476fc807aea9df3df8df7783808b4f"
