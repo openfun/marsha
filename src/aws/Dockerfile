@@ -118,6 +118,10 @@ RUN yum install -y \
     yum clean all  && \
     rm -rf /var/cache/yum
 
+## install clamav
+RUN yum -y install clamav && \
+    freshclam
+
 WORKDIR /var/task
 
 # Image used in developement with development dependencies

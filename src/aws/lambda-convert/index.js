@@ -83,8 +83,7 @@ exports.handler = async (event, context, callback) => {
   switch (kind) {
     case ResourceKindEnum.DEPOSITED_FILE_KIND:
       try {
-        const { extension } = await scanDepositedFile(objectKey, sourceBucket);
-        await updateState(objectKey, READY, { extension });
+        await scanDepositedFile(objectKey, sourceBucket);
       } catch (error) {
         return callback(error);
       }

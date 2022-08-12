@@ -9,6 +9,7 @@
   "dependencies": {
     "@openfun/subsrt": "1.0.5",
     "aws-sdk": "2.1209.0",
+    "clamscan": "2.1.2",
     "he": "1.2.0",
     "jimp": "0.16.1",
     "node-poppler": "6.0.0",
