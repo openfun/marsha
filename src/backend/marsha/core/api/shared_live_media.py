@@ -83,7 +83,7 @@ class SharedLiveMediaViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet)
         # If the "user" is just representing a resource and not an actual user profile,
         # restrict the queryset to tracks linked to said resource
         if request.resource and (
-            (request.resource.user or {}).get("id") != request.resource.id
+            request.resource.user.get("id") != request.resource.id
         ):
             queryset = (
                 self.get_queryset()

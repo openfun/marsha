@@ -88,7 +88,7 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             is_lti = (
                 resource.context_id
                 and resource.consumer_site
-                and (resource.user or {}).get("id")
+                and resource.user.get("id")
             )
 
             if is_lti:
@@ -128,10 +128,11 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                 # If username is present in the token we catch it
                 validated_data["username"] = resource.user.get("username")
             else:  # public token should have no LTI info
+                print(type(resource), dir(resource))
                 if (
                     resource.context_id
                     or resource.consumer_site
-                    or (resource.user or {}).get("id")
+                    or resource.user.get("id")
                 ):
                     # we prevent any side effects if token's creation changes.
                     raise serializers.ValidationError(
@@ -180,10 +181,9 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"not_allowed_fields": extra_fields})
         if validated_data.get("email"):
             # If the email is present in the token, we don't allow a different email
-            token_email = (resource.user or {}).get("email")
+            token_email = resource.user.get("email")
             is_admin = any(
-                role in ["administrator", "instructor"]
-                for role in (resource.roles or [])
+                role in ["administrator", "instructor"] for role in resource.roles
             )
             if not is_admin and token_email and token_email != validated_data["email"]:
                 raise serializers.ValidationError(

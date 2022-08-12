@@ -82,7 +82,7 @@ class LiveSessionViewSet(
             # admin and instructors can access all registrations of this course
             if any(
                 role in ["administrator", "instructor"]
-                for role in self.request.resource.roles or []
+                for role in self.request.resource.roles
             ):
                 return LiveSession.objects.filter(**filters)
 
@@ -221,7 +221,7 @@ class LiveSessionViewSet(
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        token_user = self.request.resource.user or {}
+        token_user = self.request.resource.user
         # livesession already exists, we update email and username if necessary
         if not created:
             # Update livesession email only if it's defined in the token user
