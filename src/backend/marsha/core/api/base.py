@@ -8,6 +8,7 @@ from rest_framework.response import Response
 
 from .. import defaults, serializers
 from ..models import Video
+from ..simple_jwt.tokens import ResourceAccessToken
 from ..utils.api_utils import validate_signature
 
 
@@ -136,3 +137,38 @@ def recording_slices_state(request):
 
     video = get_object_or_404(Video, pk=request.data["video_id"])
     return Response(video.get_recording_slices_state())
+
+
+class APIViewMixin:
+    """
+    Mixin to enhance the base DRF APIView.
+
+    Must be used on every Marsha API views (APIView, Viewset, ...)
+
+    This provides a way to separate request information between `request.user`
+    and `request.resource`
+    """
+
+    def check_permissions(self, request):
+        """
+        Add resource attribute to the request when we are in a resource context.
+
+        Note, we use the `check_permissions` method to do it because:
+         - we need the authentication to be done to know whether we have a user
+           token or a resource token
+         - AND we also need to be before the call to `check_permissions` and we
+           can't do it in `self.initial`
+         - PLUS we can't be in `perform_authentication` because "metadata" views
+           partially duplicates the request (see `clone_request`) and our
+           `resource` won't be passed along. But `check_permissions`is called
+           after the cloning so this works.
+
+        Also, we can't alter the `request.user` without messing up with the
+        middleware called with `process_response` so in case of a resource,
+        we keep it as a TokenResource...
+        """
+        request.resource = None
+        if isinstance(request.auth, ResourceAccessToken):  # otherwise, nothing to do
+            request.resource = request.user
+
+        super().check_permissions(request)

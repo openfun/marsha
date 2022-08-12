@@ -9,10 +9,11 @@ from rest_framework.response import Response
 from .. import defaults, permissions, serializers, storage
 from ..forms import DocumentForm
 from ..models import Document
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
 class DocumentViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.RetrieveModelMixin,

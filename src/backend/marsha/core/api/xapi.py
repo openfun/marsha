@@ -9,6 +9,7 @@ import requests
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
+from . import APIViewMixin
 from .. import permissions, serializers
 from ..xapi import XAPI, get_xapi_statement
 
@@ -16,13 +17,13 @@ from ..xapi import XAPI, get_xapi_statement
 logger = logging.getLogger(__name__)
 
 
-class XAPIStatementView(APIView):
+class XAPIStatementView(APIViewMixin, APIView):
     """Viewset managing xAPI requests."""
 
     permission_classes = [permissions.IsVideoToken]
     http_method_names = ["post"]
 
-    def post(self, request, resource):
+    def post(self, request, resource_kind):
         """Send a xAPI statement to a defined LRS.
 
         Parameters
@@ -38,17 +39,19 @@ class XAPIStatementView(APIView):
 
         """
         try:
-            statement_object = get_xapi_statement(resource)
+            statement_object = get_xapi_statement(resource_kind)
         except NotImplementedError:
             return HttpResponseNotFound()
 
-        user = request.user
-        model = apps.get_model(app_label="core", model_name=resource)
+        model = apps.get_model(app_label="core", model_name=resource_kind)
         try:
-            object_instance = model.objects.get(pk=user.id)
+            # Note: permissions.IsVideoToken asserts request.resource is not None
+            object_instance = model.objects.get(pk=request.resource.id)
         except model.DoesNotExist:
             return Response(
-                {"reason": f"{resource} with id {user.id} does not exist"},
+                {
+                    "reason": f"{resource_kind} with id {request.resource.id} does not exist"
+                },
                 status=404,
             )
 
@@ -65,9 +68,11 @@ class XAPIStatementView(APIView):
         if not partial_xapi_statement.is_valid():
             return Response(partial_xapi_statement.errors, status=400)
 
-        # xapi statement enriched with video and jwt_token informations
+        # xapi statement enriched with video and jwt_token information
         xapi_statement = statement_object(
-            object_instance, partial_xapi_statement.validated_data, user.token
+            object_instance,
+            partial_xapi_statement.validated_data,
+            request.resource.token,
         )
 
         # Log the statement in the xapi logger

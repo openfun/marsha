@@ -29,7 +29,7 @@ from ..services.live_session import (
     is_lti_token,
     is_public_token,
 )
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
 logger = getLogger(__name__)
@@ -50,6 +50,7 @@ class LiveSessionThrottle(SimpleRateThrottle):
 
 
 class LiveSessionViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
@@ -68,10 +69,8 @@ class LiveSessionViewSet(
         present in the JWT token. Email is ignored. Lti user id from the token can be used as well
         depending on the role.
         """
-        user = self.request.user
-        token = user.token
-        filters = {"video__id": user.id}
-        if is_lti_token(token):
+        filters = {"video__id": self.request.resource.id}
+        if is_lti_token(self.request.resource.token):
             if self.kwargs.get("pk"):
                 filters["pk"] = self.kwargs["pk"]
 
@@ -81,19 +80,19 @@ class LiveSessionViewSet(
                 )
 
             # admin and instructors can access all registrations of this course
-            if token.payload.get("roles") and any(
+            if any(
                 role in ["administrator", "instructor"]
-                for role in token.payload["roles"]
+                for role in self.request.resource.roles or []
             ):
                 return LiveSession.objects.filter(**filters)
 
-            filters["lti_id"] = token.payload["context_id"]
-            filters["consumer_site"] = token.payload["consumer_site"]
+            filters["lti_id"] = self.request.resource.context_id
+            filters["consumer_site"] = self.request.resource.consumer_site
 
             # token has email or not, user has access to this registration if it's the right
             # combination of lti_user_id, lti_id and consumer_site
             # email doesn't necessary have a match
-            filters["lti_user_id"] = token.payload["user"]["id"]
+            filters["lti_user_id"] = self.request.resource.user["id"]
             return LiveSession.objects.filter(**filters)
 
         if self.request.query_params.get("anonymous_id"):
@@ -192,7 +191,7 @@ class LiveSessionViewSet(
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        token = self.request.user.token
+        token = self.request.resource.token
         if is_lti_token(token):
             try:
                 livesession, created = get_livesession_from_lti(token)
@@ -222,7 +221,7 @@ class LiveSessionViewSet(
                 status=status.HTTP_401_UNAUTHORIZED,
             )
 
-        token_user = self.request.user.token.payload.get("user", {})
+        token_user = self.request.resource.user or {}
         # livesession already exists, we update email and username if necessary
         if not created:
             # Update livesession email only if it's defined in the token user
@@ -256,29 +255,29 @@ class LiveSessionViewSet(
                 {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        user = self.request.user
-        video = get_object_or_404(Video, pk=user.id)
+        resource = self.request.resource
+        video = get_object_or_404(Video, pk=resource.id)
 
         try:
             update_fields = {
                 "display_name": serializer.validated_data["display_name"],
             }
-            if is_lti_token(user.token):
-                token_user = user.token.payload.get("user")
+            if is_lti_token(resource.token):
+                token_user = resource.user
                 consumer_site = get_object_or_404(
-                    ConsumerSite, pk=user.token.payload["consumer_site"]
+                    ConsumerSite, pk=resource.token.payload["consumer_site"]
                 )
                 # Update email only if it's defined in the token user
-                if token_user.get("email"):
-                    update_fields.update({"email": token_user.get("email")})
+                if "email" in token_user:
+                    update_fields.update({"email": token_user["email"]})
 
                 # Update username only it's defined in the token user
-                if token_user.get("username"):
-                    update_fields.update({"username": token_user.get("username")})
+                if "username" in token_user:
+                    update_fields.update({"username": token_user["username"]})
 
                 livesession, _ = LiveSession.objects.update_or_create(
                     consumer_site=consumer_site,
-                    lti_id=user.token.payload.get("context_id"),
+                    lti_id=resource.context_id,
                     lti_user_id=token_user.get("id"),
                     video=video,
                     defaults=update_fields,
@@ -319,7 +318,7 @@ class LiveSessionViewSet(
         The same one will then be used for all the students on this list.
         Serializer is cached so the listing don't get recalculated too often
         """
-        prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{self.request.user.id}"
+        prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{self.request.resource.id}"
         cache_key = (
             f"{prefix_key}offset:{self.request.query_params.get('offset')}"
             f"limit:{self.request.query_params.get('limit')}"
@@ -337,7 +336,7 @@ class LiveSessionViewSet(
             )
 
         try:
-            video = Video.objects.get(pk=self.request.user.id)
+            video = Video.objects.get(pk=self.request.resource.id)
         except (Video.DoesNotExist) as exception:
             raise Http404("No resource matches the given query.") from exception
 

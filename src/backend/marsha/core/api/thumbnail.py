@@ -8,13 +8,13 @@ from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers
 from ..models import Thumbnail
-from ..simple_jwt.authentication import TokenResource
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin
 
 
 class ThumbnailViewSet(
+    APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
@@ -43,9 +43,8 @@ class ThumbnailViewSet(
 
     def get_queryset(self):
         """Restrict list access to thumbnail related to the video in the JWT token."""
-        user = self.request.user
-        if isinstance(user, TokenResource):
-            return Thumbnail.objects.filter(video__id=user.id)
+        if self.request.resource:
+            return Thumbnail.objects.filter(video__id=self.request.resource.id)
         return Thumbnail.objects.none()
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
