@@ -20,6 +20,9 @@ from django.utils.translation import gettext_lazy as _
     APPROVAL,
     DENIED,
     FORCED,
+    SCANNING,
+    INFECTED,
+    COPYING,
 ) = (
     "pending",
     "processing",
@@ -38,6 +41,9 @@ from django.utils.translation import gettext_lazy as _
     "approval",
     "denied",
     "forced",
+    "scanning",
+    "infected",
+    "copying",
 )
 STATE_CHOICES = (
     (PENDING, _("pending")),
@@ -45,6 +51,9 @@ STATE_CHOICES = (
     (ERROR, _("error")),
     (READY, _("ready")),
     (DELETED, _("deleted")),
+    (SCANNING, _("scanning")),
+    (INFECTED, _("infected")),
+    (COPYING, _("copying")),
 )
 
 LIVE_CHOICES = (
