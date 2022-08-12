@@ -10,7 +10,16 @@ from django.utils.text import slugify
 
 from rest_framework import serializers
 
-from ..defaults import ERROR, HARVESTED, PROCESSING, READY, STATE_CHOICES
+from ..defaults import (
+    COPYING,
+    ERROR,
+    HARVESTED,
+    INFECTED,
+    PROCESSING,
+    READY,
+    SCANNING,
+    STATE_CHOICES,
+)
 from ..models import TimedTextTrack
 from ..utils import cloudfront_utils, time_utils
 from ..utils.api_utils import get_uploadable_models_s3_mapping
@@ -135,7 +144,12 @@ class UpdateStateSerializer(serializers.Serializer):
 
     key = serializers.RegexField(KEY_REGEX)
     state = serializers.ChoiceField(
-        tuple(c for c in STATE_CHOICES if c[0] in (PROCESSING, READY, ERROR, HARVESTED))
+        tuple(
+            c
+            for c in STATE_CHOICES
+            if c[0]
+            in (PROCESSING, READY, ERROR, HARVESTED, SCANNING, INFECTED, COPYING)
+        )
     )
     extraParameters = serializers.DictField()
 
