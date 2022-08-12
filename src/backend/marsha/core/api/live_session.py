@@ -80,10 +80,9 @@ class LiveSessionViewSet(
                 )
 
             # admin and instructors can access all registrations of this course
-            if any(
-                role in ["administrator", "instructor"]
-                for role in self.request.resource.roles
-            ):
+            if permissions.IsTokenInstructor().check_role(
+                self.request.resource.token
+            ) or permissions.IsTokenAdmin().check_role(self.request.resource.token):
                 return LiveSession.objects.filter(**filters)
 
             filters["lti_id"] = self.request.resource.context_id
