@@ -1,6 +1,5 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from .. import permissions, serializers
@@ -23,7 +22,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         to the ViewSet's default permissions.
         """
         if self.action in ["list"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [permissions.UserIsAuthenticated]
         elif self.action in ["retrieve"]:
             permission_classes = [
                 # users who are playlist administrators
