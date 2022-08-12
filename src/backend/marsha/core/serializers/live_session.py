@@ -8,6 +8,8 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
+from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
+
 from ..models import ConsumerSite, LiveSession, Video
 
 
@@ -182,9 +184,9 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         if validated_data.get("email"):
             # If the email is present in the token, we don't allow a different email
             token_email = resource.user.get("email")
-            is_admin = any(
-                role in ["administrator", "instructor"] for role in resource.roles
-            )
+            is_admin = IsTokenInstructor().check_role(
+                resource.token
+            ) or IsTokenAdmin().check_role(resource.token)
             if not is_admin and token_email and token_email != validated_data["email"]:
                 raise serializers.ValidationError(
                     {
