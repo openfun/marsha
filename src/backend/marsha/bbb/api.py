@@ -161,7 +161,7 @@ class ClassroomViewSet(
             moderator = "administrator" in roles or "instructor" in roles
             consumer_site_user_id = (
                 f"{request.resource.consumer_site}_"
-                f"{(request.resource.user or {}).get('id')}"
+                f"{request.resource.user.get('id')}"
             )
             response = join(
                 classroom=self.get_object(),

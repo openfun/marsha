@@ -8,12 +8,22 @@ from rest_framework_simplejwt.models import TokenUser
 
 
 class TokenResource(TokenUser):
-    """Same as TokenUser but for resource access JWT"""
+    """Same as TokenUser but for resource access JWT, with helpers for payload."""
 
     @cached_property
     def id(self):
         """Returns the resource ID."""
         return self.token["resource_id"]
+
+    @cached_property
+    def roles(self):
+        """Payload roles is a list"""
+        return self.token.get("roles", [])
+
+    @cached_property
+    def user(self):
+        """Payload user is a dict"""
+        return self.token.get("user", {})
 
 
 class JWTStatelessUserOrResourceAuthentication(JWTStatelessUserAuthentication):
