@@ -11,7 +11,7 @@ import { GlobalStyles } from '../theme/baseStyles';
 
 const checkSnapshot = () => {
   // check if test name contains '[screenshot]'
-  if (!expect.getState().currentTestName.includes('[screenshot]')) {
+  if (!expect.getState().currentTestName!.includes('[screenshot]')) {
     throw new Error('[screenshot] is missing from test name');
   }
 };
