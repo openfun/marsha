@@ -1,7 +1,7 @@
 import React from 'react';
 
+import { ProgressionBar } from 'components/graphicals/ProgressionBar';
 import { BigDashedBox } from 'components/VideoWizard/CreateVOD/UploadVideoForm/BigDashedBox';
-import { ProgressionBar } from 'components/common/dashboard/widgets/components/ProgressionBar';
 
 interface UploadVideoProgressProps {
   progress: number;
