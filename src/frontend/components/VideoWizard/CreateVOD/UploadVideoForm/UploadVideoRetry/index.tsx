@@ -2,7 +2,7 @@ import { Text } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { RetryUploadButton } from 'components/common/dashboard/widgets/components/RetryUploadButton';
+import { RetryUploadButton } from 'components/RetryUploadButton';
 import { BigDashedBox } from 'components/VideoWizard/CreateVOD/UploadVideoForm/BigDashedBox';
 
 const messages = defineMessages({

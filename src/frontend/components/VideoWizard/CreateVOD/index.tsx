@@ -4,9 +4,9 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
-import { TextInput } from 'components/common/dashboard/widgets/inputs/TextInput';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { VIDEO_WIZARD_ROUTE } from 'components/routes';
+import { TextInput } from 'components/graphicals/TextInput';
 import { useUploadManager } from 'components/UploadManager';
 import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';

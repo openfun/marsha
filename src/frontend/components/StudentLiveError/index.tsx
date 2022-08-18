@@ -2,7 +2,7 @@ import { Box, Heading, Paragraph, ResponsiveContext, Stack } from 'grommet';
 import React, { CSSProperties, useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ThumbnailDisplayer } from 'components/common/dashboard/widgets/WidgetThumbnail/ThumbnailDisplayer';
+import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
