@@ -2,13 +2,16 @@ import { Box } from 'grommet';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { DashboardButtonWithLink } from 'components/common/dashboard/DashboardButtons';
 import { PLAYER_ROUTE } from 'components/routes';
+import { DashboardButton } from 'components/Styled/DashboardButtons';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { useUploadManager } from 'components/UploadManager';
+import { withLink } from 'components/withLink/withLink';
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
+
+const DashboardButtonWithLink = withLink(DashboardButton);
 
 const messages = defineMessages({
   btnPlay: {

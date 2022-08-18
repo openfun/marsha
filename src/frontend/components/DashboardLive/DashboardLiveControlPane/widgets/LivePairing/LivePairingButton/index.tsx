@@ -2,7 +2,7 @@ import { Meter, Text } from 'grommet';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { DashboardButton } from 'components/common/dashboard/DashboardButtons';
+import { DashboardButton } from 'components/Styled/DashboardButtons';
 import { usePairingVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState } from 'types/tracks';

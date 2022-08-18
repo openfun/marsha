@@ -2,7 +2,7 @@ import { Box, FormField, TextInput } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardButton } from 'components/common/dashboard/DashboardButtons';
+import { DashboardButton } from 'components/Styled/DashboardButtons';
 
 const messages = defineMessages({
   label: {
