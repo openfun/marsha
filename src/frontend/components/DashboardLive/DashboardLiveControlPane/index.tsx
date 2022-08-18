@@ -2,9 +2,11 @@ import { Box, Tabs, Tab, ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+
+import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
 import { theme } from 'utils/theme/theme';
-import { DashboardLiveTabAttendance } from './tab/DashboardLiveTabAttendance';
-import { DashboardLiveTabConfiguration } from './tab/DashboardLiveTabConfiguration';
+
+import { DashboardLiveTabAttendance } from './DashboardLiveTabAttendance';
 
 const messages = defineMessages({
   titleConfiguration: {
@@ -55,7 +57,7 @@ export const DashboardLiveControlPane = () => {
       <ThemeContext.Extend value={extendedTheme}>
         <Tabs>
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>
-            <DashboardLiveTabConfiguration />
+            <VideoWidgetProvider isLive />
           </Tab>
           <Tab title={intl.formatMessage(messages.titleAttendance)}>
             <DashboardLiveTabAttendance />

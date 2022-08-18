@@ -24,28 +24,8 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
-jest.mock('./widgets/GeneralTitle', () => ({
-  GeneralTitle: () => <p>GeneralTitle</p>,
-}));
-jest.mock('./widgets/UploadVideo', () => ({
-  UploadVideo: () => <p>UploadVideo</p>,
-}));
-jest.mock('components/common/dashboard/widgets/WidgetThumbnail', () => ({
-  WidgetThumbnail: (props: { isLive: boolean }) => (
-    <p>{`WidgetThumbnail ${props.isLive}`}</p>
-  ),
-}));
-jest.mock('./widgets/DownloadVideo', () => ({
-  DownloadVideo: () => <p>DownloadVideo</p>,
-}));
-jest.mock('./widgets/UploadSubtitles', () => ({
-  UploadSubtitles: () => <p>UploadSubtitles</p>,
-}));
-jest.mock('./widgets/UploadTranscripts', () => ({
-  UploadTranscripts: () => <p>UploadTranscripts</p>,
-}));
-jest.mock('./widgets/UploadClosedCaptions', () => ({
-  UploadClosedCaptions: () => <p>UploadClosedCaptions</p>,
+jest.mock('components/VideoWidgetProvider', () => ({
+  VideoWidgetProvider: () => <p>VideoWidgetProvider</p>,
 }));
 
 const languageChoices = [
@@ -79,25 +59,6 @@ describe('<DashboardVOD />', () => {
     // TeacherLiveInfoBar
     screen.getByRole('heading', { name: 'Title of the video' });
 
-    // GeneralTitle
-    screen.getByText('GeneralTitle');
-
-    // UploadVideo
-    screen.getByText('UploadVideo');
-
-    // WidgetThumbnail
-    screen.getByText('WidgetThumbnail false');
-
-    // DownloadVideo
-    screen.getByText('DownloadVideo');
-
-    // UploadSubtitles
-    screen.getByText('UploadSubtitles');
-
-    // UploadTranscripts
-    screen.getByText('UploadTranscripts');
-
-    // UploadClosedCaptions
-    screen.getByText('UploadClosedCaptions');
+    screen.getByText('VideoWidgetProvider');
   });
 });
