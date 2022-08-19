@@ -48,7 +48,7 @@ describe('queries', () => {
     it('requests the resource list', async () => {
       const fileDepositories = Array(4).fill(fileDepositoryMockFactory());
       fetchMock.mock(
-        '/api/filedepositories/?organization=1&limit=999',
+        '/api/filedepositories/?limit=999&organization=1',
         fileDepositories,
       );
 
@@ -61,7 +61,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/filedepositories/?organization=1&limit=999',
+        '/api/filedepositories/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -74,7 +74,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/filedepositories/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/filedepositories/?limit=999&organization=1', 404);
 
       const { result, waitFor } = renderHook(
         () => useFileDepositories({ organization: '1' }),
@@ -84,7 +84,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/filedepositories/?organization=1&limit=999',
+        '/api/filedepositories/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

@@ -33,7 +33,7 @@ describe('queries/fetchList', () => {
     useJwt.setState({
       jwt: 'some token',
     });
-    fetchMock.mock('/api/model-name/?key=value&limit=999', { key: 'value' });
+    fetchMock.mock('/api/model-name/?limit=999&key=value', { key: 'value' });
 
     const response = await fetchList({
       meta: undefined,
@@ -42,7 +42,7 @@ describe('queries/fetchList', () => {
     });
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      '/api/model-name/?key=value&limit=999',
+      '/api/model-name/?limit=999&key=value',
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

@@ -22,7 +22,7 @@ describe('<PlaylistView />', () => {
 
     const videosDeferred = new Deferred();
     fetchMock.get(
-      `/api/videos/?playlist=${playlist.id}&limit=999`,
+      `/api/videos/?limit=999&playlist=${playlist.id}`,
       videosDeferred.promise,
     );
 
