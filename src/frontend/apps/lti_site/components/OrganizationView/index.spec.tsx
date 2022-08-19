@@ -31,13 +31,13 @@ describe('<OrganizationView />', () => {
 
     const videosDeferred = new Deferred();
     fetchMock.get(
-      `/api/videos/?organization=${org.id}&limit=999`,
+      `/api/videos/?limit=999&organization=${org.id}`,
       videosDeferred.promise,
     );
 
     const playlistsDeferred = new Deferred();
     fetchMock.get(
-      `/api/playlists/?organization=${org.id}&limit=999`,
+      `/api/playlists/?limit=999&organization=${org.id}`,
       playlistsDeferred.promise,
     );
 

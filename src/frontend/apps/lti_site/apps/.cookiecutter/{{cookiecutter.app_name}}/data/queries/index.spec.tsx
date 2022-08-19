@@ -47,7 +47,7 @@ describe('queries', () => {
   describe('use{{cookiecutter.model_plural}}', () => {
     it('requests the resource list', async () => {
       const {{cookiecutter.model_plural_lower}} = Array(4).fill({{cookiecutter.model_lower}}MockFactory());
-      fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999', {{cookiecutter.model_plural_lower}});
+      fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?limit=999&organization=1', {{cookiecutter.model_plural_lower}});
 
       const { result, waitFor } = renderHook(
         () => use{{cookiecutter.model_plural}}({ organization: '1' }),
@@ -58,7 +58,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999',
+        '/api/{{cookiecutter.model_url_part}}/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -71,7 +71,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?limit=999&organization=1', 404);
 
       const { result, waitFor } = renderHook(
         () => use{{cookiecutter.model_plural}}({ organization: '1' }),
@@ -81,7 +81,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999',
+        '/api/{{cookiecutter.model_url_part}}/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

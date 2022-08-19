@@ -70,7 +70,7 @@ describe('<VideoView />', () => {
 
     const getTimedTextTracksDeferred = new Deferred();
     fetchMock.get(
-      `/api/timedtexttracks/?video=${video.id}&limit=999`,
+      `/api/timedtexttracks/?limit=999&video=${video.id}`,
       getTimedTextTracksDeferred.promise,
     );
 
@@ -196,7 +196,7 @@ describe('<VideoView />', () => {
 
     const getTimedTextTracksDeferred = new Deferred();
     fetchMock.get(
-      `/api/timedtexttracks/?video=${video.id}&limit=999`,
+      `/api/timedtexttracks/?limit=999&video=${video.id}`,
       getTimedTextTracksDeferred.promise,
     );
 

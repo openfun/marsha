@@ -29,7 +29,7 @@ describe('<OrganizationPlaylists />', () => {
 
     const deferred = new Deferred();
     fetchMock.get(
-      `/api/playlists/?organization=${org.id}&limit=999`,
+      `/api/playlists/?limit=999&organization=${org.id}`,
       deferred.promise,
     );
 
@@ -62,7 +62,7 @@ describe('<OrganizationPlaylists />', () => {
 
     const deferred = new Deferred();
     fetchMock.get(
-      `/api/playlists/?organization=${org.id}&limit=999`,
+      `/api/playlists/?limit=999&organization=${org.id}`,
       deferred.promise,
     );
 
@@ -96,7 +96,7 @@ describe('<OrganizationPlaylists />', () => {
 
     const deferred = new Deferred();
     fetchMock.get(
-      `/api/playlists/?organization=${org.id}&limit=999`,
+      `/api/playlists/?limit=999&organization=${org.id}`,
       deferred.promise,
     );
 

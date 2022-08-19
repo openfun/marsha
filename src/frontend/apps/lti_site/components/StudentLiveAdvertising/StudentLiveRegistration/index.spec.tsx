@@ -243,7 +243,7 @@ describe('<StudentLiveRegistration />', () => {
     });
     const anonymousId = uuidv4();
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    fetchMock.get(`/api/livesessions/?anonymous_id=${anonymousId}&limit=999`, {
+    fetchMock.get(`/api/livesessions/?limit=999&anonymous_id=${anonymousId}`, {
       count: 1,
       results: [liveSession],
     });
