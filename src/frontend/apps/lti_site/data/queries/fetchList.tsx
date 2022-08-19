@@ -25,8 +25,8 @@ export const fetchList: QueryFunction<any, FetchListQueryKey> = async ({
 
   const response = await fetch(
     `/api/${name}/?${new URLSearchParams({
-      ...queryParams,
       limit: '999',
+      ...queryParams,
     }).toString()}`,
     {
       headers: {

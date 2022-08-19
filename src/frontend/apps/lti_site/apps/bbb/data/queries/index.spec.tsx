@@ -49,7 +49,7 @@ describe('queries', () => {
   describe('useClassrooms', () => {
     it('requests the resource list', async () => {
       const classrooms = Array(4).fill(classroomMockFactory());
-      fetchMock.mock('/api/classrooms/?organization=1&limit=999', classrooms);
+      fetchMock.mock('/api/classrooms/?limit=999&organization=1', classrooms);
 
       const { result, waitFor } = renderHook(
         () => useClassrooms({ organization: '1' }),
@@ -60,7 +60,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/classrooms/?organization=1&limit=999',
+        '/api/classrooms/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -73,7 +73,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/classrooms/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/classrooms/?limit=999&organization=1', 404);
 
       const { result, waitFor } = renderHook(
         () => useClassrooms({ organization: '1' }),
@@ -83,7 +83,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/classrooms/?organization=1&limit=999',
+        '/api/classrooms/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {

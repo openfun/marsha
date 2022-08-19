@@ -137,7 +137,7 @@ describe('PublicLiveDashboard', () => {
 
       const deferred = new Deferred<APIList<LiveSession>>();
       fetchMock.get(
-        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
         deferred.promise,
       );
 
@@ -165,7 +165,7 @@ describe('PublicLiveDashboard', () => {
 
       expect(
         fetchMock.called(
-          `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+          `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
         ),
       ).toEqual(true);
 
@@ -245,7 +245,7 @@ describe('PublicLiveDashboard', () => {
 
       const deferred = new Deferred<APIList<LiveSession>>();
       fetchMock.get(
-        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
         deferred.promise,
       );
 
@@ -279,7 +279,7 @@ describe('PublicLiveDashboard', () => {
 
       expect(
         fetchMock.called(
-          `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+          `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
         ),
       ).toEqual(true);
       expect(

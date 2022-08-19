@@ -304,7 +304,7 @@ describe('queries', () => {
   describe('usePlaylists', () => {
     it('requests the resource list', async () => {
       const playlists = Array(4).fill(playlistMockFactory());
-      fetchMock.mock('/api/playlists/?organization=1&limit=999', playlists);
+      fetchMock.mock('/api/playlists/?limit=999&organization=1', playlists);
 
       const { result, waitFor } = renderHook(
         () => usePlaylists({ organization: '1' }),
@@ -315,7 +315,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/playlists/?organization=1&limit=999',
+        '/api/playlists/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -328,7 +328,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/playlists/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/playlists/?limit=999&organization=1', 404);
 
       const { result, waitFor } = renderHook(
         () => usePlaylists({ organization: '1' }),
@@ -338,7 +338,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/playlists/?organization=1&limit=999',
+        '/api/playlists/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -453,7 +453,7 @@ describe('queries', () => {
     it('requests the resource list', async () => {
       const timedTextTracks = Array(4).fill(timedTextMockFactory());
       fetchMock.mock(
-        '/api/timedtexttracks/?video=1&limit=999',
+        '/api/timedtexttracks/?limit=999&video=1',
         timedTextTracks,
       );
 
@@ -466,7 +466,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/timedtexttracks/?video=1&limit=999',
+        '/api/timedtexttracks/?limit=999&video=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -479,7 +479,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/timedtexttracks/?video=1&limit=999', 404);
+      fetchMock.mock('/api/timedtexttracks/?limit=999&video=1', 404);
 
       const { result, waitFor } = renderHook(
         () => useTimedTextTracks({ video: '1' }),
@@ -489,7 +489,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/timedtexttracks/?video=1&limit=999',
+        '/api/timedtexttracks/?limit=999&video=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -849,7 +849,7 @@ describe('queries', () => {
   describe('useVideos', () => {
     it('requests the resource list', async () => {
       const videos = Array(4).fill(videoMockFactory());
-      fetchMock.mock('/api/videos/?organization=1&limit=999', videos);
+      fetchMock.mock('/api/videos/?limit=999&organization=1', videos);
 
       const { result, waitFor } = renderHook(
         () => useVideos({ organization: '1' }),
@@ -860,7 +860,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/videos/?organization=1&limit=999',
+        '/api/videos/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -873,7 +873,7 @@ describe('queries', () => {
     });
 
     it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/videos/?organization=1&limit=999', 404);
+      fetchMock.mock('/api/videos/?limit=999&organization=1', 404);
 
       const { result, waitFor } = renderHook(
         () => useVideos({ organization: '1' }),
@@ -883,7 +883,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/videos/?organization=1&limit=999',
+        '/api/videos/?limit=999&organization=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
@@ -1500,7 +1500,7 @@ describe('queries', () => {
       const liveSessions = Array(4).fill(liveSessionFactory());
       const anonymousId = uuidv4();
       fetchMock.mock(
-        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
         liveSessions,
       );
 
@@ -1513,7 +1513,7 @@ describe('queries', () => {
       await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
+        `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
