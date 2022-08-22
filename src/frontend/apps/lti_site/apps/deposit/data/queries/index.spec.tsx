@@ -5,13 +5,17 @@ import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import { useJwt } from 'data/stores/useJwt';
 
-import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
+import {
+  depositedFileMockFactory,
+  fileDepositoryMockFactory,
+} from 'apps/deposit/utils/tests/factories';
 
 import {
   useFileDepository,
   useFileDepositories,
   useCreateFileDepository,
   useUpdateFileDepository,
+  useDepositedFiles,
 } from '.';
 
 jest.mock('utils/errors/report', () => ({
@@ -277,6 +281,102 @@ describe('queries', () => {
         body: JSON.stringify({
           title: 'updated title',
         }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useDepositedFiles', () => {
+    it('requests the first page of the resource list', async () => {
+      const fileDepository = fileDepositoryMockFactory();
+      const depositedFiles = Array(4).fill(
+        depositedFileMockFactory({ file_depository: fileDepository }),
+      );
+      fetchMock.mock(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
+        depositedFiles.slice(0, 3),
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDepositedFiles(fileDepository.id, { limit: 3 }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+      });
+      expect(result.current.data).toEqual(depositedFiles.slice(0, 3));
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('requests the second page of the resource list', async () => {
+      const fileDepository = fileDepositoryMockFactory();
+      const depositedFiles = Array(4).fill(
+        depositedFileMockFactory({ file_depository: fileDepository }),
+      );
+      fetchMock.mock(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3&offset=3`,
+        depositedFiles.slice(3, 4),
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDepositedFiles(fileDepository.id, { limit: 3, offset: 3 }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3&offset=3`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+      });
+      expect(result.current.data).toEqual(depositedFiles.slice(3, 4));
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to get the resource list', async () => {
+      const fileDepository = fileDepositoryMockFactory();
+      Array(4).fill(
+        depositedFileMockFactory({ file_depository: fileDepository }),
+      );
+      fetchMock.mock(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
+        404,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useDepositedFiles(fileDepository.id, { limit: 3 }),
+        {
+          wrapper: Wrapper,
+        },
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');

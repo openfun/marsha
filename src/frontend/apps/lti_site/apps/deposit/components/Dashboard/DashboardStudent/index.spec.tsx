@@ -1,12 +1,20 @@
-import { screen } from '@testing-library/react';
+import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
 import React from 'react';
+import { QueryClient } from 'react-query';
+
+import { APIList } from 'types/api';
+import { uploadState } from 'types/tracks';
+import { Deferred } from 'utils/tests/Deferred';
 import render from 'utils/tests/render';
 
+import { DepositedFile } from 'apps/deposit/types/models';
 import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,
 } from 'apps/deposit/utils/tests/factories';
+
 import { DashboardStudent } from '.';
 
 const { READY } = uploadState;
@@ -16,6 +24,11 @@ jest.mock('./UploadFiles', () => ({
 }));
 
 describe('<DashboardStudent />', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+    fetchMock.reset();
+  });
+
   it('shows deposited files from a file depository', async () => {
     const depositedFile = depositedFileMockFactory({
       filename: 'file.txt',
@@ -29,7 +42,35 @@ describe('<DashboardStudent />', () => {
       id: '1',
       deposited_files: [depositedFile],
     });
-    render(<DashboardStudent fileDepository={fileDepository} />);
+
+    const queryClient = new QueryClient();
+    const deferred = new Deferred<APIList<DepositedFile>>();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=999`,
+      deferred.promise,
+    );
+    render(<DashboardStudent fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    const loader = screen.getByRole('status');
+    expect(
+      fetchMock.called(
+        `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=999`,
+      ),
+    ).toEqual(true);
+    act(() => {
+      deferred.resolve({
+        count: 1,
+        next: '',
+        previous: '',
+        results: [depositedFile],
+      });
+    });
+
+    await waitForElementToBeRemoved(loader);
     screen.getByText('Upload Files.');
     screen.getByText('My files');
     screen.getByText('user');
