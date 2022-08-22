@@ -86,7 +86,6 @@ class FileDepositoryAPITest(TestCase):
                     "title": file_depository.playlist.title,
                     "lti_id": file_depository.playlist.lti_id,
                 },
-                "deposited_files": [],
             },
             content,
         )
@@ -113,44 +112,6 @@ class FileDepositoryAPITest(TestCase):
                     "title": file_depository.playlist.title,
                     "lti_id": file_depository.playlist.lti_id,
                 },
-                "deposited_files": [],
-            },
-            content,
-        )
-
-    def test_api_file_depository_fetch_instructor_with_deposited_files(self):
-        """An instructor should be able to fetch a file_depository."""
-        file_depository = FileDepositoryFactory()
-        deposited_file = DepositedFileFactory(file_depository=file_depository)
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
-
-        response = self.client.get(
-            f"/api/filedepositories/{file_depository.id!s}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-        self.assertDictEqual(
-            {
-                "id": str(file_depository.id),
-                "lti_id": str(file_depository.lti_id),
-                "title": file_depository.title,
-                "description": file_depository.description,
-                "playlist": {
-                    "id": str(file_depository.playlist_id),
-                    "title": file_depository.playlist.title,
-                    "lti_id": file_depository.playlist.lti_id,
-                },
-                "deposited_files": [
-                    {
-                        "id": str(deposited_file.id),
-                        "file_depository": str(file_depository.id),
-                        "filename": None,
-                        "url": None,
-                        "uploaded_on": None,
-                        "upload_state": "pending",
-                    }
-                ],
             },
             content,
         )
@@ -228,7 +189,6 @@ class FileDepositoryAPITest(TestCase):
                     "title": playlist.title,
                 },
                 "title": "Some file_depository",
-                "deposited_files": [],
             },
         )
 
@@ -345,6 +305,70 @@ class FileDepositoryAPITest(TestCase):
                 ],
             },
             response.json(),
+        )
+
+    def test_api_file_depository_list_deposited_files_anonymous(self):
+        """An anonymous should not be able to fetch a list of deposited files."""
+        file_depository = FileDepositoryFactory()
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/"
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_file_depository_list_deposited_files_student(self):
+        """A student should be able to fetch a list of his own deposited files."""
+        file_depository = FileDepositoryFactory()
+        DepositedFileFactory.create_batch(3, file_depository=file_depository)
+        jwt_token = StudentLtiTokenFactory(
+            resource=file_depository,
+            permissions__can_update=True,
+        )
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_api_file_depository_list_deposited_files_instructor(self):
+        """An instructor should be able to fetch list of deposited files."""
+        file_depository = FileDepositoryFactory()
+        deposited_files = DepositedFileFactory.create_batch(
+            3, file_depository=file_depository
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/filedepositories/{file_depository.id}"
+                "/depositedfiles/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "filename": None,
+                        "id": str(deposited_files[2].id),
+                        "file_depository": str(file_depository.id),
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files[1].id),
+                        "file_depository": str(file_depository.id),
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                ],
+            },
         )
 
 
