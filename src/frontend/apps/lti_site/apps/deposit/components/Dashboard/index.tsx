@@ -1,5 +1,5 @@
 import { Box, Spinner, Text, ThemeContext, ThemeType } from 'grommet';
-import React, { Suspense, useRef } from 'react';
+import React, { Suspense } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { useJwt } from 'data/stores/useJwt';
@@ -58,10 +58,10 @@ const Dashboard = () => {
     return <Text>Token Error</Text>;
   }
 
-  const fileDepositoryRefetchInterval = useRef(10000);
   const { data: fileDepository, status: useFileDepositoryStatus } =
     useFileDepository(depositAppData.fileDepository!.id, {
-      refetchInterval: fileDepositoryRefetchInterval.current,
+      refetchInterval: 0,
+      refetchOnWindowFocus: false,
     });
 
   let content: JSX.Element;
