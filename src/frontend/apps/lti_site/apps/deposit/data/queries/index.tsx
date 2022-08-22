@@ -13,7 +13,11 @@ import { updateOne } from 'data/queries/updateOne';
 import { APIList } from 'types/api';
 import { Maybe } from 'utils/types';
 
-import { FileDepository, modelName } from 'apps/deposit/types/models';
+import {
+  DepositedFile,
+  FileDepository,
+  modelName,
+} from 'apps/deposit/types/models';
 
 type FileDepositoriesResponse = APIList<FileDepository>;
 type UseFileDepositoriesParams = { organization: Maybe<string> };
@@ -159,4 +163,28 @@ export const useUpdateFileDepository = (
       },
     },
   );
+};
+
+type DepositedFilesResponse = APIList<DepositedFile>;
+type UseDepositedFilesParams = {};
+export const useDepositedFiles = (
+  fileDepositoryId: string,
+  params: UseDepositedFilesParams,
+  queryConfig?: UseQueryOptions<
+    DepositedFilesResponse,
+    modelName.DepositedFiles,
+    DepositedFilesResponse,
+    FetchListQueryKey
+  >,
+) => {
+  const key: FetchListQueryKey = [
+    `${modelName.FileDepositories}/${fileDepositoryId}/${modelName.DepositedFiles}`,
+    params,
+  ];
+  return useQuery<
+    DepositedFilesResponse,
+    modelName.DepositedFiles,
+    DepositedFilesResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };

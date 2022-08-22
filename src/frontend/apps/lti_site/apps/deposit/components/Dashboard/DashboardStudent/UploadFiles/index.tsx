@@ -6,14 +6,15 @@ import { useUploadManager } from 'components/UploadManager';
 import { Nullable } from 'utils/types';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
-import { useFileDepository } from 'apps/deposit/data/queries';
+import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { modelName } from 'apps/deposit/types/models';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
 
 export const UploadFiles = () => {
-  const { refetch: refreshFileDepository } = useFileDepository(
+  const { refetch: refreshDepositedFiles } = useDepositedFiles(
     depositAppData.fileDepository!.id,
+    {},
   );
   const retryUploadIdRef = useRef<Nullable<string>>(null);
 
@@ -36,7 +37,7 @@ export const UploadFiles = () => {
       }
       addUpload(modelName.DepositedFiles, depositedFileId, file);
       filesToUpload.pop();
-      await refreshFileDepository();
+      await refreshDepositedFiles();
     });
   };
 
