@@ -129,7 +129,7 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         db_table = "deposited_file"
         ordering = ["-uploaded_on"]
         verbose_name = _("Deposited file")
-        verbose_name_plural = _("Deposited file belonging to a file depository")
+        verbose_name_plural = _("Deposited files")
 
     def get_source_s3_key(self, stamp=None, extension=None):
         """Compute the S3 key in the source bucket.

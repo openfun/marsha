@@ -177,17 +177,14 @@ class FileDepositorySerializer(serializers.ModelSerializer):
             "title",
             "description",
             "playlist",
-            "deposited_files",
         )
         read_only_fields = (
             "id",
             "lti_id",
             "playlist",
-            "deposited_files",
         )
 
     playlist = PlaylistLiteSerializer(read_only=True)
-    deposited_files = DepositedFileSerializer(many=True, read_only=True)
 
 
 class FileDepositorySelectLTISerializer(FileDepositorySerializer):

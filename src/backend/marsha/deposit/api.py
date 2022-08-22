@@ -107,6 +107,46 @@ class FileDepositoryViewSet(
             }
         )
 
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="depositedfiles",
+        permission_classes=[
+            core_permissions.IsTokenInstructor
+            | core_permissions.IsTokenAdmin
+            | core_permissions.IsTokenStudent
+        ],
+    )
+    # pylint: disable=unused-argument
+    def depositedfiles(self, request, pk=None):
+        """Get deposited files from a file_depository.
+
+        Calling the endpoint returns a list of deposited files.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk : int
+            The primary key of the file_depository
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying deposited files as a JSON object.
+
+        """
+        file_depository = self.get_object()
+        queryset = file_depository.deposited_files.all()
+
+        page = self.paginate_queryset(self.filter_queryset(queryset))
+        serializer = serializers.DepositedFileSerializer(
+            page,
+            many=True,
+            context={"request": self.request},
+        )
+        return self.get_paginated_response(serializer.data)
+
 
 class DepositedFileViewSet(
     APIViewMixin,
