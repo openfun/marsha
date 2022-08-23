@@ -188,3 +188,49 @@ export const useDepositedFiles = (
     FetchListQueryKey
   >(key, fetchList, queryConfig);
 };
+
+type UseUpdateDepositedFileData = Partial<DepositedFile>;
+type UseUpdateDepositedFileError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseUpdateDepositedFileData]?: string[] }[];
+    };
+type UseUpdateDepositedFileOptions = UseMutationOptions<
+  DepositedFile,
+  UseUpdateDepositedFileError,
+  UseUpdateDepositedFileData
+>;
+export const useUpdateDepositedFile = (
+  id: string,
+  options?: UseUpdateDepositedFileOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    DepositedFile,
+    UseUpdateDepositedFileError,
+    UseUpdateDepositedFileData
+  >(
+    (updatedDepositedFile) =>
+      updateOne({
+        name: modelName.DepositedFiles,
+        id,
+        object: updatedDepositedFile,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(modelName.DepositedFiles);
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries(modelName.DepositedFiles);
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
