@@ -29,6 +29,7 @@ export const depositedFileMockFactory = (
     filename: faker.system.fileName(),
     size: faker.datatype.number().toString(),
     id: faker.datatype.uuid(),
+    read: false,
     upload_state: faker.random.word(),
     uploaded_by: faker.name.firstName() + ' ' + faker.name.lastName(),
     uploaded_on: faker.date.recent().toISOString(),

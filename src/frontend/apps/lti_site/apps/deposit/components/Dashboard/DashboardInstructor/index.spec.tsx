@@ -78,7 +78,6 @@ describe('<DashboardInstructor />', () => {
       'href',
       'https://example.com/file.txt',
     );
-    userEvent.click(downloadButton);
   });
 
   it('paginates deposited files', async () => {

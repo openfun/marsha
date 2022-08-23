@@ -18,6 +18,7 @@ export interface DepositedFile extends Resource {
   file_depository: FileDepository;
   filename: string;
   size: string;
+  read: boolean;
   upload_state: string;
   uploaded_by: string;
   uploaded_on: string;
