@@ -16,6 +16,7 @@ import {
   useCreateFileDepository,
   useUpdateFileDepository,
   useDepositedFiles,
+  useUpdateDepositedFile,
 } from '.';
 
 jest.mock('utils/errors/report', () => ({
@@ -377,6 +378,75 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe.only('useUpdateDepositedFile', () => {
+    it('updates the resource', async () => {
+      const depositedFile = depositedFileMockFactory();
+      fetchMock.patch(
+        `/api/depositedfiles/${depositedFile.id}/`,
+        depositedFile,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateDepositedFile(depositedFile.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        read: true,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/depositedfiles/${depositedFile.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          read: true,
+        }),
+      });
+      expect(result.current.data).toEqual(depositedFile);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to update the resource', async () => {
+      const depositedFile = depositedFileMockFactory();
+      fetchMock.patch(`/api/depositedfiles/${depositedFile.id}/`, 400);
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateDepositedFile(depositedFile.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        read: true,
+      });
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/depositedfiles/${depositedFile.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          read: true,
+        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');

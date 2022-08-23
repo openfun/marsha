@@ -1,14 +1,23 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import React from 'react';
 import render from 'utils/tests/render';
 
+import { useJwt } from 'data/stores/useJwt';
+import { uploadState } from 'types/tracks';
+
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
+
 import { DepositedFileRow } from '.';
 
 const { READY } = uploadState;
 
 describe('<DepositedFileRow />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
   it('shows deposited file row', async () => {
     const depositedFile = depositedFileMockFactory({
       filename: 'file.txt',
@@ -29,6 +38,27 @@ describe('<DepositedFileRow />', () => {
       'href',
       'https://example.com/file.txt',
     );
-    userEvent.click(downloadButton);
+
+    fetchMock.patch(`/api/depositedfiles/${depositedFile.id}/`, {
+      ...depositedFile,
+      read: true,
+    });
+
+    fireEvent.click(downloadButton);
+    fireEvent.blur(window);
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/depositedfiles/${depositedFile.id}/`,
+      ),
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({ read: true }),
+    });
   });
 });
