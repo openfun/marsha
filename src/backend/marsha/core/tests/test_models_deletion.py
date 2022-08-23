@@ -428,7 +428,7 @@ class DeletionTestCase(TestCase):
         )
 
     def test_playlist_soft_deletion(self):
-        """Ensure soft deletion work as expected for playlists."""
+        """Playlist containing resources can not be soft deleted in cascade."""
         organization = OrganizationFactory()
         user = UserFactory()
         self._test_soft_deletion(
@@ -443,11 +443,13 @@ class DeletionTestCase(TestCase):
         )
         playlist_access = PlaylistAccessFactory(user=user, playlist=playlist)
 
-        playlist.delete()
+        with self.assertRaises(ProtectedError):
+            playlist.delete()
 
+        self.assertIsVisible(playlist)
         self.assertIsVisible(video)
         self.assertIsVisible(copied_playlist)
-        self.assertIsSoftDeleted(playlist_access)
+        self.assertIsVisible(playlist_access)
 
     def test_playlist_hard_deletion_cascade(self):
         """It should not be possible to hard delete a playlist that still contains videos."""
