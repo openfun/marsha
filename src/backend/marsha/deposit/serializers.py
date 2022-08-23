@@ -34,6 +34,7 @@ class DepositedFileSerializer(
             "filename",
             "id",
             "file_depository",
+            "read",
             "url",
             "uploaded_on",
             "upload_state",

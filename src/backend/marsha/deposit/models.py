@@ -123,6 +123,12 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         verbose_name=_("extension"),
     )
 
+    read = models.BooleanField(
+        default=False,
+        help_text=_("whether the file has been read by an instructor"),
+        verbose_name=_("read"),
+    )
+
     class Meta:
         """Options for the ``DepositedFile`` model."""
 

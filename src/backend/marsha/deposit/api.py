@@ -152,6 +152,7 @@ class DepositedFileViewSet(
     APIViewMixin,
     ObjectPkMixin,
     mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -170,6 +171,10 @@ class DepositedFileViewSet(
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
                 | core_permissions.IsTokenStudent
+            ]
+        elif self.action in ["update", "partial_update"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
             ]
         else:
             permission_classes = self.permission_classes

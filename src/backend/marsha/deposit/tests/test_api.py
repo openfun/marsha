@@ -355,6 +355,7 @@ class FileDepositoryAPITest(TestCase):
                         "filename": None,
                         "id": str(deposited_files[2].id),
                         "file_depository": str(file_depository.id),
+                        "read": False,
                         "url": None,
                         "uploaded_on": None,
                         "upload_state": "pending",
@@ -363,6 +364,7 @@ class FileDepositoryAPITest(TestCase):
                         "filename": None,
                         "id": str(deposited_files[1].id),
                         "file_depository": str(file_depository.id),
+                        "read": False,
                         "url": None,
                         "uploaded_on": None,
                         "upload_state": "pending",
@@ -408,6 +410,7 @@ class DepositedFileAPITest(TestCase):
                 "file_depository": str(file_depository.id),
                 "filename": None,
                 "id": str(DepositedFile.objects.first().id),
+                "read": False,
                 "url": None,
                 "uploaded_on": None,
                 "upload_state": "pending",
@@ -476,3 +479,48 @@ class DepositedFileAPITest(TestCase):
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")
+
+    def test_api_deposited_file_update_student(self):
+        """A student user should not be able to update a deposited_file."""
+        deposited_file = DepositedFileFactory()
+        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+        data = {"read": True}
+
+        response = self.client.patch(
+            f"/api/depositedfiles/{deposited_file.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_deposited_file_update_instructor(self):
+        """An instructor should be able to update a deposited_file."""
+        deposited_file = DepositedFileFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=deposited_file.file_depository
+        )
+        data = {"read": True}
+
+        response = self.client.patch(
+            f"/api/depositedfiles/{deposited_file.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "file_depository": str(deposited_file.file_depository.id),
+                "filename": None,
+                "id": str(deposited_file.id),
+                "read": True,
+                "url": None,
+                "uploaded_on": None,
+                "upload_state": "pending",
+            },
+        )
+
+        deposited_file.refresh_from_db()
+        self.assertTrue(deposited_file.read)
