@@ -26,6 +26,16 @@
         "react-router-dom",
         "react-test-renderer"
       ]
+    },
+    {
+      "groupName": "allowed django versions",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "django"
+      ],
+      "allowedVersions": "<4.1"
     }
   ]
 }
