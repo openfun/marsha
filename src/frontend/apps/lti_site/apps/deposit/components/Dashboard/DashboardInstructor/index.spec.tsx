@@ -138,4 +138,85 @@ describe('<DashboardInstructor />', () => {
       screen.findByText(depositedFile.filename);
     });
   });
+
+  it('filters deposited files', async () => {
+    const fileDepository = fileDepositoryMockFactory();
+    const depositedFiles: DepositedFile[] = [];
+    for (let i = 0; i < 40; i++) {
+      const read = i % 2 === 0;
+      const readStatus = read ? 'read' : 'new';
+      depositedFiles.push(
+        depositedFileMockFactory({
+          file_depository: fileDepository,
+          filename: `file${i}_${readStatus}.txt`,
+          read,
+        }),
+      );
+    }
+    const queryClient = new QueryClient();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
+      {
+        count: 40,
+        next: `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=10`,
+        previous: '',
+        results: depositedFiles.slice(0, 10),
+      },
+    );
+    render(<DashboardInstructor fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    await screen.findByText('Showing 1 - 10 of 40');
+    for (let i = 0; i < 10; i++) {
+      const read = i % 2 === 0;
+      const readStatus = read ? 'read' : 'new';
+      await screen.findByText(`file${i}_${readStatus}.txt`);
+    }
+
+    // filter by unread
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0&read=false`,
+      {
+        count: 20,
+        next: `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=10&read=false`,
+        previous: '',
+        results: depositedFiles
+          .slice(0, 20)
+          .filter((depositedFile) => !depositedFile.read),
+      },
+    );
+
+    const fileFilter = screen.getByRole('button', { name: /Filter files/i });
+    userEvent.click(fileFilter);
+    userEvent.click(await screen.findByRole('option', { name: 'Unread' }));
+
+    await screen.findByText('Showing 1 - 10 of 20');
+    for (let i = 0; i < 10; i++) {
+      await screen.findByText(`file${i * 2 + 1}_new.txt`);
+    }
+
+    // filter by read
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0&read=true`,
+      {
+        count: 20,
+        next: `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=10&read=true`,
+        previous: '',
+        results: depositedFiles
+          .slice(0, 20)
+          .filter((depositedFile) => depositedFile.read),
+      },
+    );
+
+    userEvent.click(fileFilter);
+    userEvent.click(await screen.findByRole('option', { name: 'Read' }));
+
+    await screen.findByText('Showing 1 - 10 of 20');
+    for (let i = 0; i < 10; i++) {
+      await screen.findByText(`file${i * 2}_read.txt`);
+    }
+  });
 });
