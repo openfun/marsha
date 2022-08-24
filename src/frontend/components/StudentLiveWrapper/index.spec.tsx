@@ -196,6 +196,60 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(useLivePanelState.getState().isPanelVisible).toEqual(false);
   });
 
+  it('configures live state with recording on', async () => {
+    useLivePanelState.setState({
+      isPanelVisible: false,
+      currentItem: undefined,
+      availableItems: [],
+    });
+    useLiveStateStarted.getState().setIsStarted(true);
+    const video = videoMockFactory({
+      title: 'live title',
+      live_state: liveState.RUNNING,
+      is_recording: true,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
+    );
+
+    await waitFor(() =>
+      // The player is created
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'player_type',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
+      ),
+    );
+
+    screen.getByText('live title');
+    screen.getByText('Recording');
+  });
+
   it('configures live state with panel opened on chat', async () => {
     useLivePanelState.setState({
       isPanelVisible: true,

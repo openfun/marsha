@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import { Box, Layer } from 'grommet';
+import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
@@ -12,8 +13,10 @@ import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
 import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
 import { StudentLiveControlBar } from 'components/StudentLiveControlBar';
 import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
+import { StudentLiveRecordingInfo } from 'components/StudentLiveRecordingInfo';
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,
@@ -23,9 +26,9 @@ import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { convertLiveToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { Nullable } from 'utils/types';
 
 import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
-import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
   defaultLiveTitle: {
@@ -46,6 +49,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   const intl = useIntl();
   const appData = useAppConfig();
   const live = useCurrentLive();
+  const mainElementRef = useRef<Nullable<HTMLDivElement>>(null);
 
   const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
     (state) => ({
@@ -122,38 +126,50 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         />
       }
       mainElement={
-        <PictureInPictureLayer
-          mainElement={
-            isParticipantOnstage && jitsiLive ? (
-              <DashboardLiveJitsi liveJitsi={jitsiLive} />
-            ) : (
-              <VideoPlayer
-                playerType={playerType}
-                timedTextTracks={[]}
-                video={live}
-              />
-            )
-          }
-          secondElement={
-            live.active_shared_live_media &&
-            (live.active_shared_live_media.urls ? (
-              <SharedMediaExplorer
-                initialPage={live.active_shared_live_media_page!}
-                pages={live.active_shared_live_media.urls.pages}
-              >
-                <UpdateCurrentSharedLiveMediaPage />
-              </SharedMediaExplorer>
-            ) : (
-              <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
-            ))
-          }
-          reversed={pipState.reversed}
-          pictureActions={
-            pipState.reversed && isParticipantOnstage && jitsiLive
-              ? [<AudioControl />, <CameraControl />]
-              : undefined
-          }
-        />
+        <Box ref={mainElementRef}>
+          <PictureInPictureLayer
+            mainElement={
+              isParticipantOnstage && jitsiLive ? (
+                <DashboardLiveJitsi liveJitsi={jitsiLive} />
+              ) : (
+                <VideoPlayer
+                  playerType={playerType}
+                  timedTextTracks={[]}
+                  video={live}
+                />
+              )
+            }
+            secondElement={
+              live.active_shared_live_media &&
+              (live.active_shared_live_media.urls ? (
+                <SharedMediaExplorer
+                  initialPage={live.active_shared_live_media_page!}
+                  pages={live.active_shared_live_media.urls.pages}
+                >
+                  <UpdateCurrentSharedLiveMediaPage />
+                </SharedMediaExplorer>
+              ) : (
+                <Redirect to={FULL_SCREEN_ERROR_ROUTE()} />
+              ))
+            }
+            reversed={pipState.reversed}
+            pictureActions={
+              pipState.reversed && isParticipantOnstage && jitsiLive
+                ? [<AudioControl />, <CameraControl />]
+                : undefined
+            }
+          />
+          {live.is_recording && mainElementRef.current && (
+            <Layer
+              position="top-left"
+              modal={false}
+              background="transparent"
+              target={mainElementRef.current}
+            >
+              <StudentLiveRecordingInfo />
+            </Layer>
+          )}
+        </Box>
       }
       sideElement={<LiveVideoPanel />}
     />
