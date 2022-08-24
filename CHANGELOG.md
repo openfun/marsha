@@ -30,6 +30,7 @@ VOD dashboard
 quality in the VOD dashboard
 - Add 3 widgets to upload timed text tracks to the video
 in the VOD dashboard
+- Notify students when a recording is started
 
 ### Changed
 
