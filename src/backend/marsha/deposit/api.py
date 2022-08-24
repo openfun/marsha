@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.utils import timezone
 
+import django_filters
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
@@ -16,6 +17,16 @@ from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 from . import permissions, serializers
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
+
+
+class DepositedFileFilter(django_filters.FilterSet):
+    """Filter for DepositedFile."""
+
+    class Meta:
+        model = DepositedFile
+        fields = {
+            "read": ["exact"],
+        }
 
 
 class FileDepositoryViewSet(
@@ -137,9 +148,10 @@ class FileDepositoryViewSet(
 
         """
         file_depository = self.get_object()
-        queryset = file_depository.deposited_files.all()
-
-        page = self.paginate_queryset(self.filter_queryset(queryset))
+        filter_set = DepositedFileFilter(
+            request.query_params, queryset=file_depository.deposited_files.all()
+        )
+        page = self.paginate_queryset(self.filter_queryset(filter_set.qs))
         serializer = serializers.DepositedFileSerializer(
             page,
             many=True,

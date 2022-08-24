@@ -373,6 +373,137 @@ class FileDepositoryAPITest(TestCase):
             },
         )
 
+    def test_api_file_depository_list_deposited_files_instructor_filtered(self):
+        """An instructor should be able to fetch list of deposited files."""
+        file_depository = FileDepositoryFactory()
+        deposited_files_read = DepositedFileFactory.create_batch(
+            2, file_depository=file_depository, read=True
+        )
+        deposited_files_new = DepositedFileFactory.create_batch(
+            2, file_depository=file_depository
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=10",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 4,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_new[1].id),
+                        "file_depository": str(file_depository.id),
+                        "read": False,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_new[0].id),
+                        "file_depository": str(file_depository.id),
+                        "read": False,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_read[1].id),
+                        "file_depository": str(file_depository.id),
+                        "read": True,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_read[0].id),
+                        "file_depository": str(file_depository.id),
+                        "read": True,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                ],
+            },
+        )
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?read=True&limit=10",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 2,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_read[1].id),
+                        "file_depository": str(file_depository.id),
+                        "read": True,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_read[0].id),
+                        "file_depository": str(file_depository.id),
+                        "read": True,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                ],
+            },
+        )
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?read=False&limit=10",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 2,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_new[1].id),
+                        "file_depository": str(file_depository.id),
+                        "read": False,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                    {
+                        "filename": None,
+                        "id": str(deposited_files_new[0].id),
+                        "file_depository": str(file_depository.id),
+                        "read": False,
+                        "url": None,
+                        "uploaded_on": None,
+                        "upload_state": "pending",
+                    },
+                ],
+            },
+        )
+
 
 @override_settings(DEPOSIT_ENABLED=True)
 class DepositedFileAPITest(TestCase):

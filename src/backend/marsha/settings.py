@@ -112,6 +112,7 @@ class Base(Configuration):
         "django.contrib.sites",
         "django.contrib.staticfiles",
         "django_extensions",
+        "django_filters",
         "dockerflow.django",
         "waffle",
         "rest_framework",
@@ -204,6 +205,9 @@ class Base(Configuration):
         "EXCEPTION_HANDLER": "marsha.core.views.exception_handler",
         "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
         "PAGE_SIZE": 50,
+        "DEFAULT_FILTER_BACKENDS": [
+            "django_filters.rest_framework.DjangoFilterBackend"
+        ],
         "DEFAULT_THROTTLE_RATES": {
             "anon": values.Value(
                 "3/minute", environ_name="REST_FRAMEWORK_ANON_THROTTLE_RATE"
