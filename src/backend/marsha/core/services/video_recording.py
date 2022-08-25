@@ -1,8 +1,9 @@
 """Services for video recording."""
+from django.conf import settings
 from django.utils import timezone
 
 from ..defaults import PENDING, RUNNING
-from ..utils.time_utils import to_timestamp
+from ..utils.time_utils import to_datetime, to_timestamp
 
 
 class VideoRecordingError(Exception):
@@ -32,6 +33,10 @@ def stop_recording(video):
         raise VideoRecordingError("Video recording is not started.")
 
     slices = video.recording_slices
-    slices[-1].update({"stop": to_timestamp(timezone.now()), "status": PENDING})
+    now = timezone.now()
+    diff = now - to_datetime(slices[-1].get("start"))
+    if diff.total_seconds() < settings.LIVE_SEGMENT_DURATION_SECONDS:
+        raise VideoRecordingError("Segment not long enough.")
+    slices[-1].update({"stop": to_timestamp(now), "status": PENDING})
     video.recording_slices = slices
     video.save()
