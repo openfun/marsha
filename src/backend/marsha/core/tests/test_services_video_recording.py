@@ -3,7 +3,7 @@ from datetime import timedelta
 import random
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from ..defaults import HARVESTING, JITSI, LIVE_CHOICES, PENDING, RUNNING
@@ -181,3 +181,19 @@ class VideoRecordingServicesTestCase(TestCase):
                 },
             ],
         )
+
+    @override_settings(LIVE_SEGMENT_DURATION_SECONDS=10)
+    def test_services_recording_stop_recording_segment_too_short(self):
+        """When start slice is lower than LIVE_SEGMENT_DURATION_SECONDS stop_recording should
+        fails."""
+        start = timezone.now() - timedelta(seconds=1)
+        video = VideoFactory(
+            recording_slices=[
+                {"start": to_timestamp(start)},
+            ],
+        )
+
+        with self.assertRaises(VideoRecordingError) as context:
+            stop_recording(video)
+
+        self.assertEqual(str(context.exception), "Segment not long enough.")
