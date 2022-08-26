@@ -12,6 +12,8 @@ from .playlist import Playlist
 class UploadableFileMixin(models.Model):
     """Mixin adding fields related to upload management."""
 
+    S3_IDENTIFIER = None
+
     uploaded_on = models.DateTimeField(
         verbose_name=_("uploaded on"),
         help_text=_("datetime at which the active version of the file was uploaded."),
@@ -142,6 +144,7 @@ class Document(BaseFile):
     """Model representing a document."""
 
     RESOURCE_NAME = "documents"
+    S3_IDENTIFIER = "document"
 
     extension = models.CharField(
         blank=True,
