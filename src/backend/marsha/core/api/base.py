@@ -1,6 +1,5 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 
-from django.apps import apps
 from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
@@ -9,7 +8,7 @@ from rest_framework.response import Response
 from .. import defaults, serializers
 from ..models import Video
 from ..simple_jwt.tokens import ResourceAccessToken
-from ..utils.api_utils import validate_signature
+from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
 
 
 class ObjectPkMixin:
@@ -58,7 +57,8 @@ def update_state(request):
     key_elements = serializer.get_key_elements()
 
     # Update the object targeted by the "object_id" and "resource_id"
-    model = apps.get_model(app_label="core", model_name=key_elements["model_name"])
+    model_from_s3_identifier = get_uploadable_models_s3_mapping()
+    model = model_from_s3_identifier[key_elements["model_name"]]
 
     extra_parameters = serializer.validated_data["extraParameters"]
     if (

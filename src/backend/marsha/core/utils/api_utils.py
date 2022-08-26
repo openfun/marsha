@@ -1,7 +1,9 @@
 """Utils used by the api module."""
+from functools import cache
 import hashlib
 import hmac
 
+import django.apps
 from django.conf import settings
 from django.utils.crypto import salted_hmac
 
@@ -55,3 +57,35 @@ def generate_hash(secret, message):
 def generate_salted_hmac(secret, key):
     """Generate a salted_hmac with secret and key"""
     return salted_hmac(secret, key, algorithm="sha256").hexdigest()
+
+
+@cache
+def get_uploadable_models_s3_mapping():
+    """
+    Generates a map between the S3 key model identifier and Django models.
+    Used in the update_state API called when the lamda "convert" notify us it has done its job
+
+    This must always be used after all applications are loaded
+    (`django.apps.apps.get_models` takes care of that assertion).
+
+    Return
+    ------
+    dict
+        The returned dict looks like
+
+        ```
+        {
+            "document": marsha.core.models.Document,
+            "sharedlivemedia": marsha.core.models.SharedLiveMedia,
+            "thumbnail": marsha.core.models.Thumbnail,
+            "timedtexttrack": marsha.core.models.TimedTextTrack,
+            "video": marsha.core.models.Video,
+        }
+        ```
+    """
+    all_models = django.apps.apps.get_models()
+    return {
+        model.S3_IDENTIFIER: model
+        for model in all_models
+        if getattr(model, "S3_IDENTIFIER", None) is not None
+    }

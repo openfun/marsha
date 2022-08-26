@@ -41,6 +41,7 @@ class Video(BaseFile):
     """Model representing a video, created by an author."""
 
     RESOURCE_NAME = "videos"
+    S3_IDENTIFIER = "video"
 
     active_shared_live_media = models.ForeignKey(
         "SharedLiveMedia",
@@ -445,6 +446,7 @@ class TimedTextTrack(BaseTrack):
     """
 
     RESOURCE_NAME = "timedtexttracks"
+    S3_IDENTIFIER = "timedtexttrack"
 
     SUBTITLE, TRANSCRIPT, CLOSED_CAPTIONING = "st", "ts", "cc"
     MODE_CHOICES = (
@@ -563,6 +565,7 @@ class Thumbnail(AbstractImage):
     """Thumbnail model illustrating a video."""
 
     RESOURCE_NAME = "thumbnails"
+    S3_IDENTIFIER = "thumbnail"
 
     video = models.ForeignKey(
         Video,
@@ -947,6 +950,7 @@ class SharedLiveMedia(UploadableFileMixin, BaseModel):
     """Model representing a shared media in a video live."""
 
     RESOURCE_NAME = "sharedlivemedias"
+    S3_IDENTIFIER = "sharedlivemedia"
 
     video = models.ForeignKey(
         Video,
