@@ -569,12 +569,18 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
+          name: Install Python 3.10
+          command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.10 python3.10-dev build-essential
+      - run:  # Can be removed when switching to mcr.microsoft.com/playwright:jammy
+          name: Install pip for Python 3.10
+          command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
       - run:
-          name: Install pip & xmlsec1 requirements
-          command: apt-get update && apt-get install -y python3-pip pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
+          name: Install xmlsec1 requirements
+          command: apt-get update && apt-get install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
       - run:
           name: Install e2e dependencies
-          command: pip install --user .[dev,e2e]
+          command: python3.10 -m pip install --user .[dev,e2e]
       - run:
           name: Install front-end dependencies
           working_directory: ~/marsha/src/frontend
@@ -589,7 +595,7 @@ jobs:
           command: yarn copy-iframe-resizer
       - run:
           name: Ensure << parameters.browser >> browser is installed
-          command: python3 -m playwright install "<< parameters.browser >>"
+          command: python3.10 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
           command: |
@@ -610,7 +616,7 @@ jobs:
                 command: apt update
             - run:
                 name: Install chrome
-                command: python3 -m playwright install chrome
+                command: python3.10 -m playwright install chrome
       - run:
           name: Run e2e tests
           command: |
