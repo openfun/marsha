@@ -42,6 +42,7 @@ import {
   useVideos,
   useLiveSessionsQuery,
   useDeleteTimedTextTrack,
+  useVideoMetadata,
 } from '.';
 
 setLogger({
@@ -781,6 +782,62 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useVideoMetadata', () => {
+    it('requests the video metadata', async () => {
+      const videoMetadata = {
+        name: 'Video List',
+        description: 'Viewset for the API of the video object.',
+        renders: ['application/json', 'text/html'],
+        parses: [
+          'application/json',
+          'application/x-www-form-urlencoded',
+          'multipart/form-data',
+        ],
+        live: {
+          segment_duration_seconds: 4,
+        },
+      };
+      fetchMock.mock(`/api/videos/`, videoMetadata);
+
+      const { result, waitFor } = renderHook(() => useVideoMetadata(), {
+        wrapper: Wrapper,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'OPTIONS',
+      });
+      expect(result.current.data).toEqual(videoMetadata);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to get the video metadata', async () => {
+      fetchMock.mock(`/api/videos/`, 404);
+
+      const { result, waitFor } = renderHook(() => useVideoMetadata(), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'OPTIONS',
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
