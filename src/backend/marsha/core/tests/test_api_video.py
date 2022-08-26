@@ -6628,6 +6628,7 @@ class VideoAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
+    @override_settings(LIVE_SEGMENT_DURATION_SECONDS=4)
     def test_api_video_options_as_student(self):
         """A student can fetch the video options endpoint"""
 
@@ -6665,7 +6666,9 @@ class VideoAPITest(TestCase):
                 {"value": "NO_CC", "display_name": "All rights reserved"},
             ],
         )
+        self.assertEqual(content["live"]["segment_duration_seconds"], 4)
 
+    @override_settings(LIVE_SEGMENT_DURATION_SECONDS=4)
     def test_api_video_options_as_instructor(self):
         """An instructor can fetch the video options endpoint"""
 
@@ -6707,6 +6710,7 @@ class VideoAPITest(TestCase):
                 {"value": "NO_CC", "display_name": "All rights reserved"},
             ],
         )
+        self.assertEqual(content["live"]["segment_duration_seconds"], 4)
 
     def test_api_video_options_anonymous(self):
         """Anonymous user can't fetch the video options endpoint"""
