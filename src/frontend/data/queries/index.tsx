@@ -29,6 +29,8 @@ import { deleteOne } from './deleteOne';
 import { fetchList, FetchListQueryKey } from './fetchList';
 import { fetchOne } from './fetchOne';
 import { updateOne } from './updateOne';
+import { metadata } from './metadata';
+import { VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (
   organizationId: string,
@@ -244,6 +246,20 @@ export const useVideo = (
 ) => {
   const key = ['videos', videoId];
   return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
+};
+
+export const useVideoMetadata = (
+  queryConfig?: UseQueryOptions<VideoMetadata, 'videos', VideoMetadata>,
+) => {
+  const key = ['videos'];
+  return useQuery<VideoMetadata, 'videos'>(key, metadata, {
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    cacheTime: Infinity,
+    staleTime: Infinity,
+    ...queryConfig,
+  });
 };
 
 type UseCreateVideoData = {
