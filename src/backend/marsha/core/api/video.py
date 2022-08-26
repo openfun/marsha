@@ -21,6 +21,7 @@ from marsha.core.defaults import JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
+from ..metadata import VideoMetadata
 from ..models import LivePairing, LiveSession, SharedLiveMedia, Video
 from ..services.video_participants import (
     VideoParticipantsException,
@@ -60,6 +61,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     queryset = Video.objects.all()
     serializer_class = serializers.VideoSerializer
     permission_classes = [permissions.NotAllowed]
+    metadata_class = VideoMetadata
 
     def get_permissions(self):
         """
