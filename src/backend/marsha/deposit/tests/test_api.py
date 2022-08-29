@@ -352,6 +352,7 @@ class FileDepositoryAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files[2].id),
                         "file_depository": str(file_depository.id),
@@ -361,6 +362,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files[1].id),
                         "file_depository": str(file_depository.id),
@@ -397,6 +399,7 @@ class FileDepositoryAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_new[1].id),
                         "file_depository": str(file_depository.id),
@@ -406,6 +409,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_new[0].id),
                         "file_depository": str(file_depository.id),
@@ -415,6 +419,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_read[1].id),
                         "file_depository": str(file_depository.id),
@@ -424,6 +429,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_read[0].id),
                         "file_depository": str(file_depository.id),
@@ -449,6 +455,7 @@ class FileDepositoryAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_read[1].id),
                         "file_depository": str(file_depository.id),
@@ -458,6 +465,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_read[0].id),
                         "file_depository": str(file_depository.id),
@@ -483,6 +491,7 @@ class FileDepositoryAPITest(TestCase):
                 "previous": None,
                 "results": [
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_new[1].id),
                         "file_depository": str(file_depository.id),
@@ -492,6 +501,7 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                     },
                     {
+                        "author_name": None,
                         "filename": None,
                         "id": str(deposited_files_new[0].id),
                         "file_depository": str(file_depository.id),
@@ -518,7 +528,7 @@ class DepositedFileAPITest(TestCase):
         # Force URLs reload to use DEPOSIT_ENABLED
         reload_urlconf()
 
-    def test_api_deposited_file_create_student(self):
+    def test_api_deposited_file_create_student_with_user_fullname(self):
         """
         A student should be able to create a deposited file
         for an existing file deposit.
@@ -540,6 +550,7 @@ class DepositedFileAPITest(TestCase):
             {
                 "file_depository": str(file_depository.id),
                 "filename": None,
+                "author_name": jwt_token.get("user").get("user_fullname"),
                 "id": str(DepositedFile.objects.first().id),
                 "read": False,
                 "url": None,
@@ -548,8 +559,54 @@ class DepositedFileAPITest(TestCase):
             },
         )
 
-        file_depository.refresh_from_db()
         self.assertEqual(file_depository.deposited_files.count(), 1)
+        self.assertEqual(
+            file_depository.deposited_files.first().author_name,
+            jwt_token.get("user").get("user_fullname"),
+        )
+
+    def test_api_deposited_file_create_student_with_username(self):
+        """
+        A student should be able to create a deposited file
+        for an existing file deposit.
+        """
+
+        file_depository = FileDepositoryFactory()
+        jwt_token = StudentLtiTokenFactory(
+            resource=file_depository, user__user_fullname=None, user__username="student"
+        )
+
+        response = self.client.post(
+            "/api/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(
+            file_depository.deposited_files.first().author_name,
+            jwt_token.get("user").get("username"),
+        )
+
+    def test_api_deposited_file_create_student_without_username(self):
+        """
+        A student should be able to create a deposited file
+        for an existing file deposit.
+        """
+
+        file_depository = FileDepositoryFactory()
+        jwt_token = StudentLtiTokenFactory(
+            resource=file_depository, user__user_fullname=None, user__username=None
+        )
+
+        response = self.client.post(
+            "/api/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertIsNone(file_depository.deposited_files.first().author_name)
 
     def test_api_deposited_file_initiate_upload_student(self):
         """
@@ -643,6 +700,7 @@ class DepositedFileAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "author_name": None,
                 "file_depository": str(deposited_file.file_depository.id),
                 "filename": None,
                 "id": str(deposited_file.id),

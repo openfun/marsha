@@ -10,7 +10,6 @@ from django.utils import timezone
 
 from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
-from rest_framework_simplejwt.models import TokenUser
 
 from marsha.core.serializers import (
     InitiateUploadSerializer,
@@ -32,6 +31,7 @@ class DepositedFileSerializer(
         model = DepositedFile
         fields = (
             "filename",
+            "author_name",
             "id",
             "file_depository",
             "read",
@@ -56,7 +56,8 @@ class DepositedFileSerializer(
     )
 
     def create(self, validated_data):
-        """Force the file depository field to the file depository of the JWT Token if any.
+        """Force the file depository field to the file depository of the JWT Token if any,
+        and set the author name to the username of the JWT Token if any.
 
         Parameters
         ----------
@@ -69,20 +70,19 @@ class DepositedFileSerializer(
             The "validated_data" dictionary is returned after modification.
 
         """
-        # user here is a file depository as it comes from the JWT
-        # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
-        user = self.context["request"].user
-        # Set the file depository field from the payload if there is one and the user is identified
-        # as a proper user object through access rights
-        if (
-            self.initial_data.get("file_depository")
-            and user.token.get("user")
-            and user.token["resource_id"] == user.token.get("user", {}).get("id")
-        ):
-            validated_data["file_depository"] = self.initial_data.get("file_depository")
-        # If the user just has a token for a video, force the video ID on the shared live media
-        if not validated_data.get("file_depository_id") and isinstance(user, TokenUser):
-            validated_data["file_depository_id"] = user.id
+        resource = self.context["request"].resource
+
+        if not validated_data.get("file_depository_id") and resource:
+            validated_data["file_depository_id"] = resource.id
+
+        validated_data["author_id"] = resource.user.get("id")
+
+        # try to get the most useful username from the token
+        if resource.user:
+            if author_name := (
+                resource.user.get("user_fullname") or resource.user.get("username")
+            ):
+                validated_data["author_name"] = author_name
         return super().create(validated_data)
 
     def _get_extension_string(self, obj):
