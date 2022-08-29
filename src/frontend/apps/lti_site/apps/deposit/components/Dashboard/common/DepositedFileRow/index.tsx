@@ -60,7 +60,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
         margin="xsmall"
       >
         <Box justify="start" direction="row" gap="small">
-          <Text>{file.uploaded_by || 'user'}</Text>
+          <Text>{file.author_name}</Text>
         </Box>
         <Box justify="center" direction="row" gap="small">
           <Text>{uploadedOnDate}</Text>

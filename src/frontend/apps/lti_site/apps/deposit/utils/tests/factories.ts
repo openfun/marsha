@@ -25,13 +25,13 @@ export const depositedFileMockFactory = (
   depositedFile: Partial<DepositedFile> = {},
 ): DepositedFile => {
   return {
+    author_name: faker.name.firstName() + ' ' + faker.name.lastName(),
     file_depository: fileDepositoryMockFactory(),
     filename: faker.system.fileName(),
     size: faker.datatype.number().toString(),
     id: faker.datatype.uuid(),
     read: false,
-    upload_state: faker.random.word(),
-    uploaded_by: faker.name.firstName() + ' ' + faker.name.lastName(),
+    upload_state: READY,
     uploaded_on: faker.date.recent().toISOString(),
     url: faker.internet.url(),
     ...depositedFile,
