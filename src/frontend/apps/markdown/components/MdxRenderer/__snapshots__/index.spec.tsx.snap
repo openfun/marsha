@@ -1046,7 +1046,7 @@ exports[`<MdxRenderer /> renders markdown without XSS 1`] = `
     
 
     <img
-      alt="XSS'\\"\`onerror=prompt(document.cookie)"
+      alt="XSS'"\`onerror=prompt(document.cookie)"
       src="x"
     />
     \\
@@ -1260,7 +1260,7 @@ exports[`<MdxRenderer /> renders markdown without XSS 2`] = `
     
 
     <img
-      alt="XSS'\\"\`onerror=prompt(document.cookie)"
+      alt="XSS'"\`onerror=prompt(document.cookie)"
       src="x"
     />
     \\
