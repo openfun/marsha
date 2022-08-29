@@ -222,7 +222,10 @@ class XAPI:
         }
 
         response = requests.post(
-            self.url, json=xapi_statement.get_statement(), headers=headers
+            self.url,
+            json=xapi_statement.get_statement(),
+            headers=headers,
+            timeout=settings.STAT_BACKEND_TIMEOUT,
         )
 
         response.raise_for_status()

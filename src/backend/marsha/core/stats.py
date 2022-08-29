@@ -1,6 +1,8 @@
 """Stats module for marsha"""
 import logging
 
+from django.conf import settings
+
 import requests
 from requests.exceptions import HTTPError, RequestException
 from sentry_sdk import capture_exception
@@ -58,6 +60,7 @@ def grafana_xapi_fun_backend(video, **kwargs):
                 "Authorization": f"Bearer {kwargs['api_key']}",
                 "Content-Type": "application/json",
             },
+            timeout=settings.STAT_BACKEND_TIMEOUT,
         )
         response.raise_for_status()
     except HTTPError as http_err:
