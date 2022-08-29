@@ -15,12 +15,12 @@ export interface FileDepository extends Resource {
 }
 
 export interface DepositedFile extends Resource {
+  author_name: string;
   file_depository: FileDepository;
   filename: string;
   size: string;
   read: boolean;
-  upload_state: string;
-  uploaded_by: string;
+  upload_state: uploadState;
   uploaded_on: string;
   url: string;
 }
