@@ -62,6 +62,7 @@ def request_api(action, parameters, prepare=False):
         params=signed_parameters,
         # bypass cert verification if debug is enabled
         verify=not settings.DEBUG,
+        timeout=settings.BBB_API_TIMEOUT,
     )
     logger.debug(request.content)
     api_response = xmltodict.parse(request.content).get("response")
