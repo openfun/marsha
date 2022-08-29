@@ -320,6 +320,7 @@ class Base(Configuration):
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()
     BBB_API_SECRET = values.Value(None)
+    BBB_API_TIMEOUT = values.PositiveIntegerValue(10)
 
     # Markdown application
     MARKDOWN_ENABLED = values.BooleanValue(False)
@@ -485,6 +486,7 @@ class Base(Configuration):
             ),
         }
     )
+    STAT_BACKEND_TIMEOUT = values.PositiveIntegerValue(10)
     ATTENDANCE_POINTS = values.Value(20)
     ATTENDANCE_PUSH_DELAY = values.Value(60)
 
