@@ -1,14 +1,14 @@
 import { defineMessage } from '@formatjs/intl';
 import { Box, Button, Clock, Spinner, Stack } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { RecordSVG } from 'components/SVGIcons/RecordSVG';
 import { formatSecToTimeStamp } from 'components/TeacherLiveRecordingActions/utils';
-import { useStopLiveRecording } from 'data/queries';
+import { useStopLiveRecording, useVideoMetadata } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
 
@@ -43,7 +43,26 @@ const messages = defineMessage({
 });
 
 export const StopRecording = () => {
+  const [segmentDuration, setSegmentDuration] = useState(0);
+  const [recordingActionEnabled, setRecordingActionEnabled] = useState(false);
   const video = useCurrentVideo();
+  useVideoMetadata({
+    onSuccess: (videoMetadata) => {
+      setSegmentDuration(videoMetadata.live.segment_duration_seconds);
+    },
+  });
+  useEffect(() => {
+    let timeoutId: number;
+    if (segmentDuration > 0) {
+      timeoutId = window.setTimeout(() => {
+        setRecordingActionEnabled(true);
+      }, segmentDuration * 1000);
+    }
+
+    return () => {
+      window.clearTimeout(timeoutId);
+    };
+  }, [segmentDuration]);
   const intl = useIntl();
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));
@@ -53,7 +72,7 @@ export const StopRecording = () => {
     <Button
       color={normalizeColor('red-active', theme)}
       data-testid="stop-recording"
-      disabled={isLoading}
+      disabled={isLoading || !recordingActionEnabled}
       margin="auto"
       onClick={() => mutate()}
       primary
