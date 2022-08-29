@@ -99,7 +99,7 @@ def _preview_video(live_server, page, video_uploaded=False):
     page.click('#lti_resource_page input[type="submit"]')
 
     if not video_uploaded:
-        page.wait_for_selector("text=There is currently no video to display.")
+        page.wait_for_selector("text=What are you willing to do ?")
     return page, video
 
 
@@ -682,18 +682,17 @@ def test_lti_video_upload(page: Page, live_server: LiveServer):
     """Test LTI Video upload."""
     page, _ = _preview_video(live_server, page)
 
-    page.click("text=Upload a video")
+    page.click("text=Create a video")
+    page.fill("input[placeholder='Enter title of your video here']", "My video")
 
     with page.expect_file_chooser() as fc_info:
-        page.click("text=Select a file to upload")
+        page.click("text=Add a video or drag & drop it")
     file_chooser = fc_info.value
     file_chooser.set_files(f"{settings.MEDIA_ROOT}/e2e/big_buck_bunny_480p.mp4")
+    page.click("text=Create a video")
 
-    page.wait_for_selector("text=Your video is ready to play.")
-    assert "Your video is ready to play." in page.content()
-
-    page.click("text=Preview")
-    assert page.is_enabled('button:has-text("Play Video")')
+    page.wait_for_selector("text=100 %")
+    page.wait_for_selector("text=Replace the video")
 
 
 @pytest.mark.django_db()
@@ -706,12 +705,8 @@ def test_lti_nav_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page, video_uploaded=True)
 
-    assert "There is currently no video to display." not in page.content()
+    assert "What are you willing to do ?" not in page.content()
     assert page.is_enabled('button:has-text("Play Video")')
-
-    page.click("text=Dashboard")
-    page.wait_for_selector("text=Your video is ready to play.")
-    assert "Instructor Preview" not in page.content()
 
 
 @pytest.mark.django_db()
@@ -724,7 +719,7 @@ def test_lti_nav_no_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page)
 
-    assert "There is currently no video to display." in page.content()
+    assert "What are you willing to do ?" in page.content()
     assert "Preview" not in page.content()
 
 
@@ -783,6 +778,9 @@ def test_lti_nav_no_document(page: Page, live_server: LiveServer):
 
 @pytest.mark.django_db()
 @pytest.mark.usefixtures("mock_video_cloud_storage")
+@pytest.mark.skip(
+    "Portability is disable with new VOD Dashboard. Must be implemented soon."
+)
 def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
     """Test LTI playlist portability."""
     page, video = _preview_video(live_server, page, video_uploaded=True)

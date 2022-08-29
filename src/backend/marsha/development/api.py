@@ -29,7 +29,7 @@ def local_video_upload(request: HttpRequest, uuid=None):
         resolutions=settings.VIDEO_RESOLUTIONS,
     )
 
-    return Response({"success": True})
+    return Response({"success": True}, status=204)
 
 
 @api_view(["POST"])
@@ -45,4 +45,4 @@ def local_document_upload(request: HttpRequest, uuid=None):
         uploaded_on=time_utils.to_datetime(1533686400),
     )
 
-    return Response({"success": True})
+    return Response({"success": True}, status=204)
