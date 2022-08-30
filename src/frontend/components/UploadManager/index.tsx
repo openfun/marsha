@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useState,
+} from 'react';
 
 import { initiateUpload } from 'data/sideEffects/initiateUpload';
 import { uploadFile } from 'data/sideEffects/uploadFile';
@@ -49,16 +55,14 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
   useEffect(() => {
     Object.values(uploadManagerState)
       .filter(({ status }) => status === UploadManagerStatus.INIT)
-      .forEach(async (upload) => {
-        const { file, objectId, objectType } = upload;
-
+      .forEach(async ({ file, objectId, objectType }) => {
         let presignedPost: AWSPresignedPost;
         try {
           presignedPost = await initiateUpload(
             objectType,
             objectId,
-            file!.name,
-            file!.type,
+            file.name,
+            file.type,
           );
         } catch (error) {
           setUploadState((state) => ({
@@ -73,21 +77,25 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
 
         // Use FormData to meet the requirement of a multi-part POST request for s3
         // NB: order of keys is important here, which is why we do not iterate over an object
-        const formData = makeFormData.apply(null, [
-          ...Object.keys(presignedPost.fields).map((key) => [
-            key,
-            presignedPost.fields[key],
-          ]),
-          ...(([
+        const formArguments: [string, string | File][] = [];
+        formArguments.push(
+          ...Object.keys(presignedPost.fields).map((key) => {
+            const value: [string, string] = [key, presignedPost.fields[key]];
+            return value;
+          }),
+        );
+        if (
+          [
             modelName.VIDEOS,
             modelName.THUMBNAILS,
             modelName.SHAREDLIVEMEDIAS,
           ].includes(objectType)
-            ? [['Content-Type', file!.type]]
-            : []) as any),
-          // Add the file after all of the text fields
-          ['file', file!],
-        ]);
+        ) {
+          formArguments.push(['Content-Type', file.type]);
+        }
+        formArguments.push(['file', file]);
+
+        const formData = makeFormData.apply(null, formArguments);
 
         setUploadState((state) => ({
           ...state,
@@ -141,29 +149,35 @@ export const useUploadManager = () => {
   const { uploadManagerState, setUploadState } =
     useContext(UploadManagerContext);
 
-  const addUpload = (objectType: modelName, objectId: string, file: File) => {
-    setUploadState((state) => ({
-      ...state,
-      [objectId]: {
-        objectId,
-        objectType,
-        file,
-        progress: 0,
-        status: UploadManagerStatus.INIT,
-      },
-    }));
-  };
+  const addUpload = useCallback(
+    (objectType: modelName, objectId: string, file: File) => {
+      setUploadState((state) => ({
+        ...state,
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.INIT,
+        },
+      }));
+    },
+    [setUploadState],
+  );
 
-  const resetUpload = (objectId: string) => {
-    setUploadState((state) =>
-      Object.keys(state)
-        .filter((resourceId) => resourceId !== objectId)
-        .reduce(
-          (acc, resourceId) => ({ ...acc, [resourceId]: state[resourceId] }),
-          {},
-        ),
-    );
-  };
+  const resetUpload = useCallback(
+    (objectId: string) => {
+      setUploadState((state) =>
+        Object.keys(state)
+          .filter((resourceId) => resourceId !== objectId)
+          .reduce(
+            (acc, resourceId) => ({ ...acc, [resourceId]: state[resourceId] }),
+            {},
+          ),
+      );
+    },
+    [setUploadState],
+  );
 
   return { addUpload, resetUpload, uploadManagerState };
 };
