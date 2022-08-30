@@ -1,6 +1,7 @@
 import { Box, Button } from 'grommet';
 import Dropzone from 'react-dropzone';
 import React, { useRef, useState } from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { useUploadManager } from 'components/UploadManager';
 import { Nullable } from 'utils/types';
@@ -10,6 +11,19 @@ import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { modelName } from 'apps/deposit/types/models';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
+
+const messages = {
+  dropzonePlaceholder: {
+    defaultMessage: "Drag 'n' drop some files here, or click to select files",
+    description: 'Placeholder for dropzone.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.dropzonePlaceholder',
+  },
+  uploadButtonLabel: {
+    defaultMessage: 'Upload',
+    description: 'Label for upload button.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadButtonLabel',
+  },
+};
 
 export const UploadFiles = () => {
   const { refetch: refreshDepositedFiles } = useDepositedFiles(
@@ -48,7 +62,7 @@ export const UploadFiles = () => {
           <section>
             <div {...getRootProps()}>
               <input {...getInputProps()} />
-              <p>Drag 'n' drop some files here, or click to select files</p>
+              <FormattedMessage {...messages.dropzonePlaceholder} />
             </div>
           </section>
         )}
@@ -61,7 +75,7 @@ export const UploadFiles = () => {
         ))}
       </ul>
       <Button primary onClick={uploadFiles}>
-        Upload
+        <FormattedMessage {...messages.uploadButtonLabel} />
       </Button>
     </Box>
   );
