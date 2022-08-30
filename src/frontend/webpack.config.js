@@ -71,6 +71,10 @@ const config = {
       },
     ],
   },
+  watchOptions: {
+    ignored: '**/node_modules',
+    aggregateTimeout: 1000,
+  },
 };
 
 module.exports = (_, argv) => {
