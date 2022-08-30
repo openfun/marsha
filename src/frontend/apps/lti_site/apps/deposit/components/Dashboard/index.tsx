@@ -1,4 +1,4 @@
-import { Box, Spinner, Text, ThemeContext, ThemeType } from 'grommet';
+import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
 import React, { Suspense } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -16,17 +16,22 @@ const messages = defineMessages({
     defaultMessage: 'Loading fileDepository...',
     description:
       'Accessible message for the spinner while loading the fileDepository in dashboard view.',
-    id: 'component.DashboardFileDepository.loadingFileDepository',
+    id: 'apps.deposit.components.Dashboard.loadingFileDepository',
   },
   loadFileDepositorySuccess: {
     defaultMessage: 'FileDepository loaded.',
     description: 'Message when fileDepository is loaded.',
-    id: 'component.DashboardFileDepository.loadFileDepositorySuccess',
+    id: 'apps.deposit.components.Dashboard.loadFileDepositorySuccess',
   },
   loadFileDepositoryError: {
     defaultMessage: 'FileDepository not loaded!',
     description: 'Message when fileDepository failed to load.',
-    id: 'component.DashboardFileDepository.loadFileDepositoryError',
+    id: 'apps.deposit.components.Dashboard.loadFileDepositoryError',
+  },
+  tokenError: {
+    defaultMessage: 'Token Error',
+    description: 'Message when token is not valid.',
+    id: 'apps.deposit.components.Dashboard.tokenError',
   },
 });
 
@@ -55,7 +60,7 @@ const Dashboard = () => {
   try {
     canUpdate = getDecodedJwt().permissions.can_update;
   } catch (e) {
-    return <Text>Token Error</Text>;
+    return <FormattedMessage {...messages.tokenError} />;
   }
 
   const { data: fileDepository, status: useFileDepositoryStatus } =
