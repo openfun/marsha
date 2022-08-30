@@ -18,6 +18,7 @@
     "build-sass": "sass scss/_main.scss ../backend/marsha/static/css/main.css --load-path=node_modules",
     "build-sass-production": "sass scss/_main.scss ../backend/marsha/static/css/main.css --style=compressed --load-path=node_modules",
     "test": "TZ=UTC jest",
+    "test:windows": "SET TZ=UTC && jest",
     "test-summary": "TZ=UTC jest 2>&1 | grep 'FAIL' | sort -t: -u -k1,1",
     "test-coverage": "sh -c 'TZ=UTC jest $0 --coverage --collectCoverageFrom=\"$0/**\"'",
     "test-screenshots": "TZ=UTC jest --testNamePattern='\\[screenshot\\]'"
