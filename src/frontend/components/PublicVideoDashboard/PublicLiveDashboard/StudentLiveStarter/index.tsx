@@ -4,7 +4,6 @@ import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FullScreenError } from 'components/ErrorComponents';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveWaitingRoom } from 'components/StudentLiveWaitingRoom';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
@@ -173,16 +172,15 @@ export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
     // user has update permission, we redirect him to the dashboard
     return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
   } else if (
-    [
+    ([
       liveState.STOPPING,
       liveState.STOPPED,
       liveState.HARVESTING,
       liveState.HARVESTED,
     ].includes(live.live_state) &&
-    isScheduledPassed
+      isScheduledPassed) ||
+    !isStarted
   ) {
-    return <FullScreenError code={'liveStopped'} />;
-  } else if (!isStarted) {
     return <StudentLiveAdvertising />;
   } else if (
     !session.liveSession?.display_name &&

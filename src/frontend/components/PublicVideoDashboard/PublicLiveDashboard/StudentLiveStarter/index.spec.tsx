@@ -205,7 +205,7 @@ describe('StudentLiveStarter', () => {
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
-      await screen.findByText(/This live has ended/);
+      await screen.findByText(/Live is starting/);
 
       cleanup();
     }
@@ -390,6 +390,9 @@ describe('StudentLiveStarter', () => {
     render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     await screen.findByText(/Live is starting/);
+    screen.getByText(
+      /You can wait here, the page will be refreshed as soon as the event starts./,
+    );
 
     deferred.resolve(null);
 
@@ -400,6 +403,27 @@ describe('StudentLiveStarter', () => {
       },
       {},
     );
+
+    jest.useRealTimers();
+  });
+
+  it('check title and descrition when scheduled past live and live state stopped', async () => {
+    jest.useFakeTimers();
+    jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
+
+    const video = videoMockFactory();
+    const live: Live = {
+      ...video,
+      live_state: liveState.STOPPED,
+      starting_at: new Date(2022, 1, 20, 13, 0, 0).toISOString(),
+    };
+
+    render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
+
+    await screen.findByText(/This live has ended/);
+    screen.getByText(/You can wait here, the VOD will be available soon./);
+
+    expect(mockedPollForLive).not.toHaveBeenCalled();
 
     jest.useRealTimers();
   });

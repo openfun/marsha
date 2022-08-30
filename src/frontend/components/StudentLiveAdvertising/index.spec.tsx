@@ -64,6 +64,8 @@ jest.mock(
 );
 
 describe('<StudentLiveAdvertising />', () => {
+  const nextYear = new Date().getFullYear() + 1;
+
   beforeEach(() => {
     jest.useFakeTimers();
     //    set system date to 2022-01-27T14:00:00
@@ -206,7 +208,30 @@ describe('<StudentLiveAdvertising />', () => {
     screen.getByRole('heading', {
       name: 'Live is starting',
     });
-    screen.getByText('Add to my calendar');
+    expect(screen.queryByText('Add to my calendar')).not.toBeInTheDocument();
+  });
+
+  it('renders live information only when live is stopping and starting_at is in the past', () => {
+    const video = videoMockFactory({
+      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      live_state: liveState.STOPPING,
+      title: 'live title',
+      description: 'live description',
+    });
+
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
+
+    expect(
+      screen.queryByRole('button', { name: 'Register' }),
+    ).not.toBeInTheDocument();
+
+    screen.getByRole('heading', { name: 'live title' });
+    screen.getByText('live description');
+
+    screen.getByRole('heading', {
+      name: 'This live has ended',
+    });
+    expect(screen.queryByText('Add to my calendar')).not.toBeInTheDocument();
   });
 
   it('renders live information with no uploaded thumbnail', () => {
@@ -227,7 +252,9 @@ describe('<StudentLiveAdvertising />', () => {
     const videoId = faker.datatype.uuid();
     const video = videoMockFactory({
       id: videoId,
-      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      starting_at: DateTime.fromJSDate(
+        new Date(nextYear, 1, 25, 11, 0, 0),
+      ).toISO(),
       live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
@@ -245,11 +272,35 @@ describe('<StudentLiveAdvertising />', () => {
     screen.getByText('Add to my calendar');
   });
 
-  it('renders live information with an uploaded thumbnail', () => {
+  it('renders live information with uploaded thumbnail but with no urls and past scheduled', () => {
     const videoId = faker.datatype.uuid();
     const video = videoMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      live_state: liveState.IDLE,
+      title: 'live title',
+      description: 'live description',
+      thumbnail: thumbnailMockFactory({
+        is_ready_to_show: true,
+        video: videoId,
+        urls: undefined,
+      }),
+    });
+
+    render(wrapInVideo(<StudentLiveAdvertising />, video));
+
+    const img = screen.getByRole('img');
+    expect(img.getAttribute('src')).toEqual('path/to/image.png');
+    expect(screen.queryByText('Add to my calendar')).not.toBeInTheDocument();
+  });
+
+  it('renders live information with an uploaded thumbnail', () => {
+    const videoId = faker.datatype.uuid();
+    const video = videoMockFactory({
+      id: videoId,
+      starting_at: DateTime.fromJSDate(
+        new Date(nextYear, 1, 25, 11, 0, 0),
+      ).toISO(),
       live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
@@ -297,7 +348,9 @@ describe('<StudentLiveAdvertising />', () => {
 
   it('uses default values for description, duration and title when the video has none for the ics link', () => {
     const video = videoMockFactory({
-      starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
+      starting_at: DateTime.fromJSDate(
+        new Date(nextYear, 1, 25, 11, 0, 0),
+      ).toISO(),
       live_state: liveState.IDLE,
       description: '',
       is_public: false,
@@ -311,9 +364,9 @@ describe('<StudentLiveAdvertising />', () => {
     // default description
     screen.getByText('description:Come and join us!');
     // date of the ics link
-    screen.getByText('startTime:2022-02-25T11:00:00.000+00:00');
+    screen.getByText(`startTime:${nextYear}-02-25T11:00:00.000+00:00`);
     // one hour has been added for the end
-    screen.getByText('endlive:2022-02-25T12:00:00.000+00:00');
+    screen.getByText(`endlive:${nextYear}-02-25T12:00:00.000+00:00`);
     // public is false, there is no URL
     expect(screen.queryByText('url:')).not.toBeInTheDocument();
   });

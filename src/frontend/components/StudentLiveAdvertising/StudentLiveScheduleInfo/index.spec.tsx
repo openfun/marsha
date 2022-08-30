@@ -1,6 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import React from 'react';
+import { liveState } from 'types/tracks';
 
 import render from 'utils/tests/render';
 
@@ -30,11 +31,12 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={false}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.STOPPED}
       />,
     );
 
     screen.getByRole('heading', {
-      name: 'Live is starting',
+      name: 'This live has ended',
     });
 
     expect(mockSetTimeIsOver).toHaveBeenCalledTimes(1);
@@ -48,6 +50,7 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={true}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.STARTING}
       />,
     );
 
@@ -64,6 +67,7 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={false}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.RUNNING}
       />,
     );
 
@@ -96,6 +100,7 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={false}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.RUNNING}
       />,
     );
 
@@ -119,6 +124,7 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={false}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.RUNNING}
       />,
     );
 
@@ -142,6 +148,7 @@ describe('<StudentLiveScheduleInfo />', () => {
         isTimeOver={false}
         setTimeIsOver={mockSetTimeIsOver}
         startDate={startDate}
+        live_state={liveState.RUNNING}
       />,
     );
 
