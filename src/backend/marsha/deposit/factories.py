@@ -30,4 +30,7 @@ class DepositedFileFactory(DjangoModelFactory):
     class Meta:
         model = models.DepositedFile
 
+    author_name = factory.Faker("name")
+    author_id = factory.Faker("uuid4")
     file_depository = factory.SubFactory(FileDepositoryFactory)
+    filename = factory.Faker("file_name")
