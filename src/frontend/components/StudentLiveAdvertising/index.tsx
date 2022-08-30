@@ -94,6 +94,10 @@ export const StudentLiveAdvertising = () => {
     return undefined;
   }, [live, liveScheduleStartDate, intl]);
 
+  const isScheduledPassed =
+    (liveScheduleStartDate && liveScheduleStartDate < DateTime.now()) ||
+    !liveScheduleStartDate;
+
   useEffect(() => {
     if (
       live.live_state &&
@@ -133,9 +137,10 @@ export const StudentLiveAdvertising = () => {
             isTimeOver={isWaitingOver}
             setTimeIsOver={() => setIsWaitingOver(true)}
             startDate={liveScheduleStartDate}
+            live_state={live.live_state}
           />
-          <StudentLiveDescription />
-          {scheduledEvent && (
+          <StudentLiveDescription startDate={liveScheduleStartDate} />
+          {scheduledEvent && !isScheduledPassed && (
             <Paragraph alignSelf="center" textAlign="justify">
               <ICalendarLink event={scheduledEvent}>
                 <Schedule

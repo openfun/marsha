@@ -14,6 +14,7 @@ import styled from 'styled-components';
 
 import { ChronometerSVG } from 'components/SVGIcons/ChronometerSVG';
 import { theme } from 'utils/theme/theme';
+import { liveState } from 'types/tracks';
 
 const Header = ({ title }: { title: ReactNode }) => (
   <Heading
@@ -54,6 +55,17 @@ function splitDay(scheduleDate: DateTime) {
 const timeIsOver = 'P0H0M0S';
 const durationFullDay = 'PT23H59M59S';
 const messages = defineMessages({
+  scheduledPassed: {
+    defaultMessage: 'This live has ended',
+    description: 'Text message to inform that the live has ended.',
+    id: 'components.StudentLiveScheduleInfo.scheduledPassed',
+  },
+  waitingMessageScheduledPassed: {
+    defaultMessage: 'You can wait here, the VOD will be available soon.',
+    description:
+      'Message display when the live is starting to tell the user to wait in the current page, it will be refresh automaticaly',
+    id: 'components.StudentLiveScheduleInfo.waitingMessageScheduledPassed',
+  },
   timeEnded: {
     defaultMessage: 'Live is starting',
     description:
@@ -91,12 +103,14 @@ interface StudentLiveScheduleInfoProps {
   isTimeOver: boolean;
   startDate?: DateTime;
   setTimeIsOver: () => void;
+  live_state: liveState;
 }
 
 export const StudentLiveScheduleInfo = ({
   isTimeOver,
   startDate,
   setTimeIsOver,
+  live_state,
 }: StudentLiveScheduleInfoProps) => {
   const intl = useIntl();
   const size = useContext(ResponsiveContext);
@@ -142,6 +156,22 @@ export const StudentLiveScheduleInfo = ({
   const localizedStartDate = startDate?.setLocale(intl.locale) ?? undefined;
 
   if (isTimeOver || isWaitEnded || localizedStartDate === undefined) {
+    const isStillRunning = [
+      liveState.STARTING,
+      liveState.RUNNING,
+      liveState.IDLE,
+    ].includes(live_state);
+
+    // if scheduled passed we give a different message
+    const headingMessage =
+      startDate && startDate < DateTime.now() && !isStillRunning
+        ? messages.scheduledPassed
+        : messages.timeEnded;
+    const descriptionMessage =
+      startDate && startDate < DateTime.now() && !isStillRunning
+        ? messages.waitingMessageScheduledPassed
+        : messages.waitingMessage;
+
     return (
       <Fragment>
         <Box margin="auto" pad={{ horizontal: '36px' }}>
@@ -150,7 +180,7 @@ export const StudentLiveScheduleInfo = ({
             level={3}
             margin="auto"
           >
-            {intl.formatMessage(messages.timeEnded)}
+            {intl.formatMessage(headingMessage)}
           </Heading>
           <Paragraph
             alignSelf="center"
@@ -158,7 +188,7 @@ export const StudentLiveScheduleInfo = ({
             textAlign="center"
             margin={{ horizontal: 'auto', top: 'small' }}
           >
-            {intl.formatMessage(messages.waitingMessage)}
+            {intl.formatMessage(descriptionMessage)}
           </Paragraph>
         </Box>
       </Fragment>

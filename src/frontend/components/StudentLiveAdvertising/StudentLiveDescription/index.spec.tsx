@@ -5,6 +5,7 @@ import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
+import { DateTime } from 'luxon';
 
 import { StudentLiveDescription } from '.';
 
@@ -32,6 +33,26 @@ describe('<StudentLiveDescription />', () => {
     render(wrapInVideo(<StudentLiveDescription />, video));
 
     screen.getByRole('heading', { name: 'This live has no title yet.' });
+    screen.getByText('live description');
+  });
+
+  it('check renders title and description when scheduled passed', () => {
+    const video = videoMockFactory({
+      title: undefined,
+      description: 'live description',
+      live_state: liveState.IDLE,
+    });
+
+    render(
+      wrapInVideo(
+        <StudentLiveDescription
+          startDate={DateTime.utc(2017, 5, 15, 17, 36)}
+        />,
+        video,
+      ),
+    );
+
+    screen.getByRole('heading', { name: '' });
     screen.getByText('live description');
   });
 });

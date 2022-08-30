@@ -2,6 +2,7 @@ import { Heading, Paragraph, Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { DateTime } from 'luxon';
 
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
@@ -14,9 +15,16 @@ const messages = defineMessages({
   },
 });
 
-export const StudentLiveDescription = () => {
+interface StudentLiveScheduleInfoProps {
+  startDate?: DateTime;
+}
+
+export const StudentLiveDescription = ({
+  startDate,
+}: StudentLiveScheduleInfoProps) => {
   const intl = useIntl();
   const live = useCurrentLive();
+  const isScheduledPassed = startDate && startDate < DateTime.now();
 
   return (
     <Box margin={{ top: 'small' }}>
@@ -29,7 +37,8 @@ export const StudentLiveDescription = () => {
         size="small"
         style={{ fontStyle: live.title ? undefined : 'italic' }}
       >
-        {live.title || intl.formatMessage(messages.noTitle)}
+        {live.title ||
+          (!isScheduledPassed && intl.formatMessage(messages.noTitle))}
       </Heading>
       {live.description && (
         <Paragraph
