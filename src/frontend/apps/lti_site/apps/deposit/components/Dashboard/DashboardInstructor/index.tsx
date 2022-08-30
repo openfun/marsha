@@ -1,5 +1,6 @@
 import { Box, Heading, Pagination, Select, Text } from 'grommet';
 import React, { useState } from 'react';
+import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Loader } from 'components/Loader';
 
@@ -11,6 +12,44 @@ import { FileDepository } from 'apps/deposit/types/models';
 
 const PAGE_SIZE = 10;
 
+const messages = {
+  fetchFilesError: {
+    defaultMessage: 'Error fetching files',
+    description: 'Error message when fetching files.',
+    id: 'apps.deposit.components.DashboardInstructor.fetchFilesError',
+  },
+  readFilterOptionsAll: {
+    defaultMessage: 'All',
+    description: 'Filter option for all files.',
+    id: 'apps.deposit.components.DashboardInstructor.readFilterOptionsAll',
+  },
+  readFilterOptionsUnread: {
+    defaultMessage: 'Unread',
+    description: 'Filter option for unread files.',
+    id: 'apps.deposit.components.DashboardInstructor.readFilterOptionsUnread',
+  },
+  readFilterOptionsRead: {
+    defaultMessage: 'Read',
+    description: 'Filter option for read files.',
+    id: 'apps.deposit.components.DashboardInstructor.readFilterOptionsRead',
+  },
+  readFilterTitle: {
+    defaultMessage: 'Filter files',
+    description: 'Title for filter files select.',
+    id: 'apps.deposit.components.DashboardInstructor.readFilterTitle',
+  },
+  readFilterPlaceholder: {
+    defaultMessage: 'Filter',
+    description: 'Placeholder for filter files select.',
+    id: 'apps.deposit.components.DashboardInstructor.readFilterPlaceholder',
+  },
+  filesListHeader: {
+    defaultMessage: 'Students files',
+    description: 'Header for student files list.',
+    id: 'apps.deposit.components.DashboardInstructor.filesListHeader',
+  },
+};
+
 interface DashboardInstructorProps {
   fileDepository: FileDepository;
 }
@@ -18,6 +57,7 @@ interface DashboardInstructorProps {
 export const DashboardInstructor = ({
   fileDepository,
 }: DashboardInstructorProps) => {
+  const intl = useIntl();
   const [depositedFilesOffset, setDepositedFilesOffset] = useState(0);
   const [indices, setIndices] = useState([0, PAGE_SIZE]);
   const [readFilter, setReadFilter] = useState<Maybe<string>>(undefined);
@@ -31,15 +71,15 @@ export const DashboardInstructor = ({
   );
   const readFilterOptions = [
     {
-      label: 'All',
+      label: intl.formatMessage(messages.readFilterOptionsAll),
       value: undefined,
     },
     {
-      label: 'Unread',
+      label: intl.formatMessage(messages.readFilterOptionsUnread),
       value: 'false',
     },
     {
-      label: 'Read',
+      label: intl.formatMessage(messages.readFilterOptionsRead),
       value: 'true',
     },
   ];
@@ -67,10 +107,10 @@ export const DashboardInstructor = ({
           {isSuccess && (
             <React.Fragment>
               <Select
-                a11yTitle="Filter files"
+                a11yTitle={intl.formatMessage(messages.readFilterTitle)}
                 id="readFilterSelect"
                 name="read"
-                placeholder={'Filter'}
+                placeholder={intl.formatMessage(messages.readFilterPlaceholder)}
                 value={readFilter}
                 options={readFilterOptions}
                 labelKey="label"
@@ -98,11 +138,13 @@ export const DashboardInstructor = ({
         pad="medium"
         round="xsmall"
       >
-        <Heading>Students files</Heading>
+        <Heading>
+          <FormattedMessage {...messages.filesListHeader} />
+        </Heading>
         {isLoading ? (
           <Loader />
         ) : isError ? (
-          <p>Error</p>
+          <FormattedMessage {...messages.fetchFilesError} />
         ) : (
           <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
             {data?.results.map((file) => (

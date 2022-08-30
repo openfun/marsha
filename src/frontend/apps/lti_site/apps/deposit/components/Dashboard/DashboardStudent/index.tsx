@@ -1,5 +1,6 @@
 import { Box, Grid, Heading, Paragraph } from 'grommet';
 import React from 'react';
+import { FormattedMessage } from 'react-intl';
 
 import { Loader } from 'components/Loader';
 
@@ -8,6 +9,19 @@ import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { FileDepository } from 'apps/deposit/types/models';
 
 import { UploadFiles } from './UploadFiles';
+
+const messages = {
+  fetchFilesError: {
+    defaultMessage: 'Error fetching files',
+    description: 'Error message when fetching files.',
+    id: 'apps.deposit.components.DashboardStudent.fetchFilesError',
+  },
+  filesListHeader: {
+    defaultMessage: 'My files',
+    description: 'Header for student files list.',
+    id: 'apps.deposit.components.DashboardStudent.filesListHeader',
+  },
+};
 
 interface DashboardStudentProps {
   fileDepository: FileDepository;
@@ -41,11 +55,13 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         pad="medium"
         round="xsmall"
       >
-        <Heading>My files</Heading>
+        <Heading>
+          <FormattedMessage {...messages.filesListHeader} />
+        </Heading>
         {isLoading ? (
           <Loader />
         ) : isError ? (
-          <p>Error</p>
+          <FormattedMessage {...messages.fetchFilesError} />
         ) : (
           <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
             {data?.results.map((file) => (
