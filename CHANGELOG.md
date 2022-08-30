@@ -10,6 +10,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add missing ended webinar screens when live is stopped 
+  and not scheduled
+- Add missing ended webinar screens when live is stopped
+  and scheduled is in the past
 - Allow to disable chrome sandboxing in puppeteer.
   To disable it set DISABLE_PUPPETEER_SANDBOX=1
 - Add endpoint to list attendances for a video

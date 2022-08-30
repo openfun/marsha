@@ -410,9 +410,9 @@ describe('PublicVideoDashboard', () => {
       results: [liveSessionFactory()],
     });
 
-    await screen.findByText('This live has ended');
+    await screen.findByText('Live is starting');
     screen.getByText(
-      'This live has now ended. If the host decides to publish the recording, the video will be available here in a while.',
+      'You can wait here, the page will be refreshed as soon as the event starts.',
     );
   });
 
