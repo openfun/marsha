@@ -15,6 +15,7 @@ from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
+from ..core.models import LTI_ROLES, STUDENT
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
 
@@ -148,9 +149,10 @@ class FileDepositoryViewSet(
 
         """
         file_depository = self.get_object()
-        filter_set = DepositedFileFilter(
-            request.query_params, queryset=file_depository.deposited_files.all()
-        )
+        queryset = file_depository.deposited_files.all()
+        if any(x in LTI_ROLES.get(STUDENT) for x in request.resource.roles):
+            queryset = queryset.filter(author_id=request.resource.user.get("id"))
+        filter_set = DepositedFileFilter(request.query_params, queryset=queryset)
         page = self.paginate_queryset(self.filter_queryset(filter_set.qs))
         serializer = serializers.DepositedFileSerializer(
             page,

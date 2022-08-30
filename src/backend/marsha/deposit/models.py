@@ -122,6 +122,14 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         blank=True,
     )
 
+    author_id = models.CharField(
+        max_length=255,
+        verbose_name=_("author id"),
+        help_text=_("author id of the deposited file"),
+        null=True,
+        blank=True,
+    )
+
     extension = models.CharField(
         blank=True,
         default=None,
