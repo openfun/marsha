@@ -18,6 +18,7 @@
 - [Raphael Fernandes](https://github.com/RaphaelFernandes92) <rfer92@gmail.com>
 - [Ronan Le Viennesse](https://github.com/roro-lv) <ronan.le-viennesse@polyconseil.fr>
 - [Quentin Bey](https://github.com/qbey) <quentin.bey@polyconseil.fr>
+- [Anthony Le Courric](https://github.com/AntoLC) <freelance.anthony@gmail.com>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
