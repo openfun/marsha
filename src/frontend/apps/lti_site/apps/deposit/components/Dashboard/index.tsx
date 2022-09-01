@@ -1,9 +1,11 @@
-import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
-import React, { Suspense } from 'react';
+import { Box, Grommet, Spinner, ThemeType } from 'grommet';
+import { deepMerge, normalizeColor } from 'grommet/utils';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { useJwt } from 'data/stores/useJwt';
 import { UploadManager } from 'components/UploadManager';
+import { useJwt } from 'data/stores/useJwt';
+import { theme } from 'utils/theme/theme';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useFileDepository } from 'apps/deposit/data/queries';
@@ -36,6 +38,15 @@ const messages = defineMessages({
 });
 
 const extendedTheme: ThemeType = {
+  global: {
+    breakpoints: {
+      xsmall: { value: 840 },
+      small: { value: 1024 },
+      medium: { value: 1440 },
+      large: { value: 1800 },
+      xlarge: {},
+    },
+  },
   heading: {
     font: {
       family: 'Roboto-Bold',
@@ -51,6 +62,17 @@ const extendedTheme: ThemeType = {
   },
   button: {
     primary: {},
+  },
+  text: {
+    extend: `color: ${normalizeColor('blue-active', theme)};`,
+  },
+  paragraph: {
+    extend: `color: ${normalizeColor('blue-active', theme)};`,
+  },
+  pagination: {
+    button: {
+      extend: `color: ${normalizeColor('blue-active', theme)};`,
+    },
   },
 };
 
@@ -97,7 +119,7 @@ const Dashboard = () => {
 
   return (
     <UploadManager>
-      <ThemeContext.Extend value={extendedTheme}>
+      <Grommet theme={deepMerge(theme, extendedTheme)}>
         <Box
           align="center"
           background={'linear-gradient(-180deg, #dce9fa 0%, #EDF5FA 100%);'}
@@ -105,7 +127,7 @@ const Dashboard = () => {
         >
           {content}
         </Box>
-      </ThemeContext.Extend>
+      </Grommet>
     </UploadManager>
   );
 };

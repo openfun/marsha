@@ -1,5 +1,5 @@
-import { Box, Grid, Heading, Paragraph } from 'grommet';
-import React from 'react';
+import { Box, Grid, Heading, Paragraph, ResponsiveContext } from 'grommet';
+import React, { useContext } from 'react';
 import { FormattedMessage } from 'react-intl';
 
 import { Loader } from 'components/Loader';
@@ -28,6 +28,7 @@ interface DashboardStudentProps {
 }
 
 export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
+  const size = useContext(ResponsiveContext);
   const { data, isError, isLoading } = useDepositedFiles(fileDepository.id, {});
 
   return (
@@ -36,23 +37,28 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         background="white"
         elevation="medium"
         fill
-        pad="medium"
+        pad="xlarge"
         round="xsmall"
       >
         <Heading>{fileDepository.title}</Heading>
-        <Grid columns={{ count: 2, size: 'auto' }} gap="small">
-          <Paragraph color="blue-active">
-            {fileDepository.description}
-          </Paragraph>
-          <UploadFiles />
-        </Grid>
+        {size === 'small' || size === 'xsmall' ? (
+          <React.Fragment>
+            <Paragraph>{fileDepository.description}</Paragraph>
+            <UploadFiles />
+          </React.Fragment>
+        ) : (
+          <Grid columns={{ count: 2, size: 'auto' }} gap="xlarge">
+            <Paragraph>{fileDepository.description}</Paragraph>
+            <UploadFiles />
+          </Grid>
+        )}
       </Box>
       <Box
         background="white"
         elevation="medium"
         fill
         margin={{ top: 'small' }}
-        pad="medium"
+        pad="xlarge"
         round="xsmall"
       >
         <Heading>

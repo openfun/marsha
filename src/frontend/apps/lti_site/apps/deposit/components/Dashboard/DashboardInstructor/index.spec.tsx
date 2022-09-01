@@ -1,6 +1,7 @@
 import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { ResponsiveContext } from 'grommet';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
@@ -14,6 +15,7 @@ import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,
 } from 'apps/deposit/utils/tests/factories';
+import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 
 import { DashboardInstructor } from '.';
 
@@ -69,8 +71,7 @@ describe('<DashboardInstructor />', () => {
     await waitForElementToBeRemoved(loader);
     screen.getByText('Students files');
     screen.getByText('John Doe');
-    screen.getByText('01/01/2020');
-    screen.getByText('00:00');
+    screen.getByText('01/01/2020 00:00');
     screen.getByText('12.1 KB');
     screen.getByText('file.txt');
     const downloadButton = screen.getByRole('link', { name: 'Download' });
@@ -94,11 +95,16 @@ describe('<DashboardInstructor />', () => {
       `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
       deferred.promise,
     );
-    render(<DashboardInstructor fileDepository={fileDepository} />, {
-      queryOptions: {
-        client: queryClient,
+    render(
+      <ResponsiveContext.Provider value="medium">
+        <DashboardInstructor fileDepository={fileDepository} />
+      </ResponsiveContext.Provider>,
+      {
+        queryOptions: {
+          client: queryClient,
+        },
       },
-    });
+    );
 
     const loader = screen.getByRole('status');
 
@@ -115,7 +121,7 @@ describe('<DashboardInstructor />', () => {
 
     screen.getByText('Showing 1 - 10 of 40');
     depositedFiles.slice(0, 10).forEach((depositedFile) => {
-      screen.getByText(depositedFile.filename);
+      screen.getByText(truncateFilename(depositedFile.filename, 40));
     });
 
     fetchMock.get(
@@ -135,7 +141,7 @@ describe('<DashboardInstructor />', () => {
 
     screen.getByText('Showing 11 - 20 of 40');
     depositedFiles.slice(10, 20).forEach((depositedFile) => {
-      screen.findByText(depositedFile.filename);
+      screen.findByText(truncateFilename(depositedFile.filename, 40));
     });
   });
 
