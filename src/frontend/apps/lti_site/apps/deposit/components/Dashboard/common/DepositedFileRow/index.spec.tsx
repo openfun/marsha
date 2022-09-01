@@ -29,8 +29,7 @@ describe('<DepositedFileRow />', () => {
     });
     render(<DepositedFileRow file={depositedFile} />);
     screen.getByText('John Doe');
-    screen.getByText('01/01/2020');
-    screen.getByText('00:00');
+    screen.getByText('01/01/2020 00:00');
     screen.getByText('12.1 KB');
     screen.getByText('file.txt');
     const downloadButton = screen.getByRole('link', { name: 'Download' });
