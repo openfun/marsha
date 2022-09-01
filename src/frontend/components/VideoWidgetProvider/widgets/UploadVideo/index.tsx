@@ -66,6 +66,19 @@ export const UploadVideo = () => {
     }
   }, [video.upload_state]);
 
+  useEffect(() => {
+    if (video.upload_state !== uploadState.PENDING) {
+      return;
+    }
+
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      event.preventDefault();
+      event.returnValue = '';
+    };
+    window.addEventListener('beforeunload', beforeUnload);
+    return () => window.removeEventListener('beforeunload', beforeUnload);
+  }, [video.upload_state]);
+
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
