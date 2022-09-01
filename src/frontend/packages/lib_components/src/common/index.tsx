@@ -24,6 +24,7 @@ export * from './SVGIcons/OpenClosePanelSVG';
 export * from './SVGIcons/PauseSVG';
 export * from './SVGIcons/PictureSVG';
 export * from './SVGIcons/PlaySVG';
+export * from './SVGIcons/PlusSVG';
 export * from './SVGIcons/QuestionMarkSVG';
 export * from './SVGIcons/RecordSVG';
 export * from './SVGIcons/RingingBellSVG';

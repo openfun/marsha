@@ -1,4 +1,4 @@
-import { Box, Heading, Pagination, Select, Text } from 'grommet';
+import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
 import React, { useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -13,6 +13,21 @@ import { FileDepository } from 'apps/deposit/types/models';
 const PAGE_SIZE = 10;
 
 const messages = {
+  currentPaginatedItems: {
+    defaultMessage: 'Showing {firstIndex} - {lastIndex} of {total}',
+    description: 'Message to inform the user of the current displayed files.',
+    id: 'components.DashboardInstructor.currentPaginatedItems',
+  },
+  noTitle: {
+    defaultMessage: 'Click here to add a title',
+    description: 'Instruction message to set a title for a file deposit',
+    id: 'components.DashboardInstructor.noTitle',
+  },
+  noDescription: {
+    defaultMessage: 'Click here to add a description',
+    description: 'Instruction message to set a description for a file deposit',
+    id: 'components.DashboardInstructor.noDescription',
+  },
   fetchFilesError: {
     defaultMessage: 'Error fetching files',
     description: 'Error message when fetching files.',
@@ -62,7 +77,7 @@ export const DashboardInstructor = ({
   const [indices, setIndices] = useState([0, PAGE_SIZE]);
   const [readFilter, setReadFilter] = useState<Maybe<string>>(undefined);
 
-  const { data, isError, isLoading, isSuccess, refetch } = useDepositedFiles(
+  const { data, isError, isLoading, refetch } = useDepositedFiles(
     fileDepository.id,
     { limit: PAGE_SIZE, offset: depositedFilesOffset, read: readFilter },
     {
@@ -100,42 +115,19 @@ export const DashboardInstructor = ({
         background="white"
         elevation="medium"
         fill
-        pad="medium"
+        pad="xlarge"
         round="xsmall"
       >
-        <Box align="center" direction="row" justify="between">
-          {isSuccess && (
-            <React.Fragment>
-              <Select
-                a11yTitle={intl.formatMessage(messages.readFilterTitle)}
-                id="readFilterSelect"
-                name="read"
-                placeholder={intl.formatMessage(messages.readFilterPlaceholder)}
-                value={readFilter}
-                options={readFilterOptions}
-                labelKey="label"
-                valueKey={{ key: 'value', reduce: true }}
-                onChange={onReadFilterChange}
-              />
-              <Text>
-                Showing {indices[0] + 1} - {Math.min(indices[1], data!.count)}{' '}
-                of {data!.count}
-              </Text>
-              <Pagination
-                step={PAGE_SIZE}
-                numberItems={data?.count}
-                onChange={onPageChange}
-              />
-            </React.Fragment>
-          )}
-        </Box>
+        <Heading>{fileDepository.title}</Heading>
+        <Paragraph>{fileDepository.description}</Paragraph>
       </Box>
+
       <Box
         background="white"
         elevation="medium"
         fill
         margin={{ top: 'small' }}
-        pad="medium"
+        pad="xlarge"
         round="xsmall"
       >
         <Heading>
@@ -146,11 +138,50 @@ export const DashboardInstructor = ({
         ) : isError ? (
           <FormattedMessage {...messages.fetchFilesError} />
         ) : (
-          <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
-            {data?.results.map((file) => (
-              <DepositedFileRow key={file.id} file={file} />
-            ))}
-          </Box>
+          data && (
+            <React.Fragment>
+              <Box
+                align="center"
+                direction="row"
+                justify="between"
+                pad="medium"
+              >
+                <Select
+                  a11yTitle={intl.formatMessage(messages.readFilterTitle)}
+                  id="readFilterSelect"
+                  name="read"
+                  placeholder={intl.formatMessage(
+                    messages.readFilterPlaceholder,
+                  )}
+                  value={readFilter}
+                  options={readFilterOptions}
+                  labelKey="label"
+                  valueKey={{ key: 'value', reduce: true }}
+                  onChange={onReadFilterChange}
+                />
+                <Text>
+                  <FormattedMessage
+                    {...messages.currentPaginatedItems}
+                    values={{
+                      firstIndex: indices[0] + 1,
+                      lastIndex: Math.min(indices[1], data.count),
+                      total: data.count,
+                    }}
+                  />
+                </Text>
+                <Pagination
+                  step={PAGE_SIZE}
+                  numberItems={data.count}
+                  onChange={onPageChange}
+                />
+              </Box>
+              <Box fill margin={{ top: 'small' }} pad="medium" round="xsmall">
+                {data.results.map((file) => (
+                  <DepositedFileRow key={file.id} file={file} />
+                ))}
+              </Box>
+            </React.Fragment>
+          )
         )}
       </Box>
     </React.Fragment>
