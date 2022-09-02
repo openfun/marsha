@@ -130,6 +130,13 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         blank=True,
     )
 
+    size = models.PositiveIntegerField(
+        verbose_name=_("size"),
+        help_text=_("size of the deposited file"),
+        null=True,
+        blank=True,
+    )
+
     extension = models.CharField(
         blank=True,
         default=None,
