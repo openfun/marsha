@@ -1,0 +1,25 @@
+import { useJwt } from 'data/stores/useJwt';
+import { API_ENDPOINT } from 'settings';
+
+import { MarkdownImage, modelName } from 'apps/markdown/types/models';
+
+export const createMarkdownImage = async () => {
+  const response = await fetch(
+    `${API_ENDPOINT}/${modelName.MARKDOWN_IMAGES}/`,
+    {
+      headers: {
+        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'POST',
+    },
+  );
+
+  if (!response.ok) {
+    throw new Error('Failed to create a new markdown image.');
+  }
+
+  const markdownImage: MarkdownImage = await response.json();
+
+  return markdownImage;
+};
