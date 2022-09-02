@@ -1,4 +1,3 @@
-import { EditorView } from '@codemirror/view';
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
@@ -6,9 +5,12 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
 import { Loader } from 'components/Loader';
-import { Maybe, Nullable } from 'utils/types';
+import { Nullable } from 'utils/types';
 
-import { CodeMirrorEditor } from 'apps/markdown/components/CodeMirrorEditor';
+import {
+  CodeMirrorEditor,
+  useCodemirrorEditor,
+} from 'apps/markdown/components/CodeMirrorEditor';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
   useMarkdownDocument,
@@ -88,13 +90,18 @@ const MarkdownEditor = () => {
   const [initialRenderingOptions, setInitialRenderingOptions] =
     React.useState<MarkdownDocumentRenderingOptions>({});
 
-  const [codemirrorView, setCodemirrorView] =
-    React.useState<Maybe<EditorView>>();
   const [screenDisposition, setScreenDisposition] = React.useState(
     ScreenDisposition.splitScreen,
   );
 
   const contentChanged = React.useRef(false);
+
+  const {
+    codemirrorEditor,
+    insertText,
+    replaceEditorWholeContent,
+    replaceOnceInDocument,
+  } = useCodemirrorEditor();
 
   // note: we don't want to fetch the markdown document regularly to prevent
   // any editor update while the user has not saved her document.
@@ -140,7 +147,7 @@ const MarkdownEditor = () => {
     );
     setInitialMarkdownContent(translatedContent);
     setLocalMarkdownContent(translatedContent);
-    updateEditorContent(translatedContent);
+    replaceEditorWholeContent(translatedContent);
 
     const translatedRenderedContent = getMarkdownDocumentTranslatedContent(
       markdownDocument,
@@ -199,24 +206,6 @@ const MarkdownEditor = () => {
       is_draft: false,
     });
     // This will invalidate query cache, and refetch all data
-  };
-
-  const updateEditorContent = (content: string) => {
-    if (!codemirrorView) return;
-    const update = codemirrorView.state.update({
-      changes: {
-        from: 0,
-        to: codemirrorView.state.doc.length,
-        insert: content,
-      },
-    });
-    codemirrorView.update([update]);
-    // Warning: this does not clear the state, ie. an "undo"
-    // in the editor will restore the previous content (bad
-    // when we are talking about language change).
-    // `codemirrorView.setState(state)` would be a better solution,
-    // but it would be a bad idea not to make it inside the
-    // `CodeMirrorEditor` component.
   };
 
   return (
@@ -297,7 +286,7 @@ const MarkdownEditor = () => {
                 <CodeMirrorEditor
                   onEditorContentChange={setLocalMarkdownContent}
                   initialContent={localMarkdownContent}
-                  setCodemirrorView={setCodemirrorView}
+                  codemirrorEditor={codemirrorEditor}
                 />
                 {!localMarkdownContent && (
                   <React.Fragment>

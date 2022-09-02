@@ -1,26 +1,33 @@
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
-import { EditorState } from '@codemirror/state';
+import { EditorState, Text } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import { Nullable } from 'utils/types';
+import { RegExpCursor } from '@codemirror/search';
+
+type CodeMirrorRef = {
+  // This store values for the `useCodemirrorEditor` hook.
+  view: EditorView;
+};
 
 type EditorProps = {
   onEditorContentChange: (newContent: string) => void;
   initialContent: string;
-  setCodemirrorView: (view: EditorView) => void;
+  codemirrorEditor: React.MutableRefObject<Nullable<CodeMirrorRef>>;
 };
 
 export const CodeMirrorEditor = ({
   onEditorContentChange,
   initialContent,
-  setCodemirrorView,
+  codemirrorEditor,
 }: EditorProps) => {
-  const editorRef = React.useRef<HTMLDivElement>(null);
+  const editorDivRef = React.useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (editorRef.current === null) return;
+    if (editorDivRef.current === null) return;
     const state = EditorState.create({
       doc: initialContent,
       extensions: [
@@ -39,13 +46,78 @@ export const CodeMirrorEditor = ({
         EditorView.lineWrapping,
       ],
     });
-    const view = new EditorView({ state, parent: editorRef.current });
-    setCodemirrorView(view);
-
+    const view = new EditorView({ state, parent: editorDivRef.current });
+    codemirrorEditor.current = { view };
     return () => {
       view.destroy();
+      codemirrorEditor.current = null;
     };
-  }, [editorRef.current]);
+  }, [editorDivRef.current]);
 
-  return <div style={{ maxHeight: '100%' }} ref={editorRef} />;
+  return <div style={{ maxHeight: '100%' }} ref={editorDivRef} />;
+};
+
+export const useCodemirrorEditor = () => {
+  const codemirrorEditor = React.useRef<Nullable<CodeMirrorRef>>(null);
+
+  const replaceEditorWholeContent = useCallback((content: string | Text) => {
+    if (!codemirrorEditor.current) return;
+
+    const update = codemirrorEditor.current.view.state.update({
+      changes: {
+        from: 0,
+        to: codemirrorEditor.current.view.state.doc.length,
+        insert: content,
+      },
+    });
+    codemirrorEditor.current.view.update([update]);
+    // Warning: this does not clear the state, ie. an "undo"
+    // in the editor will restore the previous content (bad
+    // when we are talking about language change).
+    // `codemirrorView.setState(state)` would be a better solution,
+    // but it would be a bad idea not to make it inside the
+    // `CodeMirrorEditor` component.
+  }, []);
+
+  const insertText = useCallback((text: string | Text) => {
+    if (!codemirrorEditor.current)
+      throw new Error('CodeMirrorEditor is not yet available');
+    codemirrorEditor.current.view.dispatch(
+      codemirrorEditor.current.view.state.update(
+        codemirrorEditor.current.view.state.replaceSelection(text),
+      ),
+    );
+  }, []);
+
+  const replaceOnceInDocument = useCallback(
+    (contentToReplace: string, newContent: string) => {
+      if (!codemirrorEditor.current)
+        throw new Error('CodeMirrorEditor is not yet available');
+      const cursor = new RegExpCursor(
+        codemirrorEditor.current.view.state.doc,
+        contentToReplace,
+      );
+
+      cursor.next();
+
+      if (cursor.value.from === -1 || cursor.value.to === -1) return;
+
+      const update = codemirrorEditor.current.view.state.update({
+        changes: {
+          from: cursor.value.from,
+          to: cursor.value.to,
+          insert: newContent,
+        },
+      });
+      codemirrorEditor.current.view.update([update]);
+    },
+    [],
+  );
+
+  return {
+    codemirrorEditor,
+    insertText,
+    replaceEditorWholeContent,
+    replaceOnceInDocument,
+  };
 };
