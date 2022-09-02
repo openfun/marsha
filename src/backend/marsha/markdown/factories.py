@@ -44,3 +44,13 @@ class MarkdownDocumentFactory(DjangoModelFactory):
         MarkdownDocumenTranslationFactory,
         factory_related_name="master",
     )
+
+
+class MarkdownImageFactory(DjangoModelFactory):
+    """Factory for the MarkdownImage model."""
+
+    markdown_document = factory.SubFactory(MarkdownDocumentFactory)
+    extension = factory.fuzzy.FuzzyChoice([None, "jpg", "jpeg", "png", "gif"])
+
+    class Meta:  # noqa
+        model = models.MarkdownImage

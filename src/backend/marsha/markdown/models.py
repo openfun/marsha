@@ -13,7 +13,8 @@ from django.utils.translation import gettext_lazy as _
 from parler.managers import TranslatableManager
 from parler.models import TranslatableModelMixin, TranslatedFields
 
-from marsha.core.models import BaseModel, Playlist, User
+from marsha.core.models import AbstractImage, BaseModel, Playlist, User
+from marsha.core.utils.time_utils import to_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -147,3 +148,85 @@ class MarkdownDocument(TranslatableModelMixin, BaseModel):
     def consumer_site(self):
         """Return the consumer site linked to this file via the playlist."""
         return self.playlist.consumer_site
+
+
+class MarkdownImage(AbstractImage):
+    """Model for image included in a Markdown document.
+
+    Lifecycle looks like:
+     - The markdown document writer ask to add an image.
+     - The backend returns an access policy to allow
+       frontend to upload the image.
+     - The frontend starts uploading the image.
+     - When uploaded to the bucket, a lambda is triggered
+       to move the image to the destination bucket.
+     - When the image is on the final bucket, AWS (for now)
+       will trigger the `update_upload_state` method, which
+       in turn will send Channel message to the frontend.
+    """
+
+    RESOURCE_NAME = "markdown-images"
+    S3_IDENTIFIER = "markdown-image"
+
+    markdown_document = models.ForeignKey(
+        to=MarkdownDocument,
+        related_name="images",
+        verbose_name=_("Markdown document"),
+        help_text=_("markdown document using this image"),
+        # No need to keep image without Markdown document
+        # it's ok since it's soft deleted,
+        # but may add cleaning when hard deleted.
+        on_delete=models.CASCADE,
+    )
+
+    extension = models.CharField(
+        blank=True,
+        null=True,
+        default=None,
+        max_length=10,
+        verbose_name=_("file extension"),
+        help_text=_('image extension (like "png", "jpg", etc.'),
+    )
+
+    class Meta:
+        """Options for the ``MarkdownImage`` model."""
+
+        db_table = "md_images"
+        verbose_name = _("image")
+        ordering = ["-created_on", "id"]
+
+    def get_source_s3_key(self, stamp=None, extension=None):
+        """Compute the S3 key in the source bucket.
+
+        It is built from the document ID + ID of the image.
+
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the image
+            assuming its active stamp is set to this value. This is not for versioning but
+            so client can upload the file to S3 and the confirmation lambda can set the
+            `uploaded_on` field to this value only after the file upload and processing
+            is successful.
+
+        Returns
+        -------
+        string
+            The S3 key for the image file in the source bucket, where uploaded files are
+            stored before they are converted and copied to the destination bucket.
+
+        """
+        stamp = stamp or to_timestamp(self.uploaded_on)
+
+        # We don't want to deal with None value, so we set it with an empty string
+        extension = extension or ""
+
+        # We check if the extension starts with a leading dot or not. If it's not the case we add
+        # it at the beginning of the string
+        if extension and extension[:1] != ".":
+            extension = "." + extension
+
+        return (
+            f"{self.markdown_document_id}/markdown-image/"
+            f"{self.pk}/{stamp}{extension}"
+        )

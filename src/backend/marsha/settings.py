@@ -324,6 +324,15 @@ class Base(Configuration):
 
     # Markdown application
     MARKDOWN_ENABLED = values.BooleanValue(False)
+    ALLOWED_MARKDOWN_IMAGES_MIME_TYPES = [
+        "image/bmp",
+        "image/gif",
+        "image/jpeg",
+        "image/png",
+        "image/svg+xml",
+        "image/tiff",
+        "image/webp",
+    ]
 
     # LIVE_RAW
     LIVE_RAW_ENABLED = values.BooleanValue(False)
@@ -353,6 +362,7 @@ class Base(Configuration):
     SUBTITLE_SOURCE_MAX_SIZE = values.Value(2**20)  # 1MB
     THUMBNAIL_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
     SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE = values.Value(300 * (2**20))  # 300MB
+    MARKDOWN_IMAGE_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 
