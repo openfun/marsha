@@ -1,6 +1,6 @@
 import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
-import { modelName } from 'types/models';
+import { uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 
 /**
@@ -10,7 +10,7 @@ import { UploadableObject } from 'types/tracks';
  * @param objectId The ID of the object for which we're uploading a file.
  */
 export const initiateUpload = async (
-  objectType: modelName,
+  objectType: uploadableModelName,
   objectId: UploadableObject['id'],
   filename: string,
   mimetype: string,

@@ -5,3 +5,6 @@ export enum modelName {
   DOCUMENTS = 'documents',
   SHAREDLIVEMEDIAS = 'sharedlivemedias',
 }
+
+export type uploadableModelName =
+  | modelName

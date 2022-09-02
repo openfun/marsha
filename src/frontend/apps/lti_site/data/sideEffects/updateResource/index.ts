@@ -1,11 +1,11 @@
 import { useJwt } from 'data/stores/useJwt';
 import { API_ENDPOINT } from 'settings';
-import { modelName } from 'types/models';
+import { uploadableModelName } from 'types/models';
 import { Resource } from 'types/tracks';
 
 export async function updateResource<R extends Resource>(
   resource: R,
-  resourceName: modelName,
+  resourceName: uploadableModelName,
 ): Promise<R> {
   const endpoint = `${API_ENDPOINT}/${resourceName}/${resource.id}/`;
 
