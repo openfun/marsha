@@ -7,6 +7,10 @@ import {
   Video,
   SharedLiveMedia,
 } from './tracks';
+import {
+  MarkdownImage,
+  modelName as markdownModelName,
+} from 'apps/markdown/types/models';
 
 export type StoreState<R extends Resource> = {
   addResource: (Resource: R) => void;
@@ -26,5 +30,8 @@ export type StoreState<R extends Resource> = {
   };
   [modelName.SHAREDLIVEMEDIAS]?: {
     [id: string]: SharedLiveMedia;
+  };
+  [markdownModelName.MARKDOWN_IMAGES]?: {
+    [id: string]: MarkdownImage;
   };
 };
