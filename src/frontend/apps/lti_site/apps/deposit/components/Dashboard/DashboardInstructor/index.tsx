@@ -1,5 +1,5 @@
 import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
-import React, { useState } from 'react';
+import React, { FocusEvent, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import { Loader } from 'components/Loader';
@@ -7,7 +7,10 @@ import { Loader } from 'components/Loader';
 import { Maybe } from 'utils/types';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
-import { useDepositedFiles } from 'apps/deposit/data/queries';
+import {
+  useDepositedFiles,
+  useUpdateFileDepository,
+} from 'apps/deposit/data/queries';
 import { FileDepository } from 'apps/deposit/types/models';
 
 const PAGE_SIZE = 10;
@@ -109,6 +112,35 @@ export const DashboardInstructor = ({
     setIndices([event.startIndex, Math.min(event.endIndex, data!.count)]);
   };
 
+  const { mutate } = useUpdateFileDepository(fileDepository.id);
+
+  const onFocusTitle = (event: FocusEvent) => {
+    if (event.target.textContent === intl.formatMessage(messages.noTitle)) {
+      event.target.textContent = '';
+    }
+  };
+  const onBlurTitle = (event: FocusEvent) => {
+    mutate({ title: event.target.textContent });
+    if (event.target.textContent === '') {
+      event.target.textContent = intl.formatMessage(messages.noTitle);
+    }
+  };
+
+  const onFocusDescription = (event: FocusEvent) => {
+    if (
+      event.target.textContent === intl.formatMessage(messages.noDescription)
+    ) {
+      event.target.textContent = '';
+    }
+  };
+
+  const onBlurDescription = (event: FocusEvent) => {
+    mutate({ description: event.target.textContent });
+    if (event.target.textContent === '') {
+      event.target.textContent = intl.formatMessage(messages.noDescription);
+    }
+  };
+
   return (
     <React.Fragment>
       <Box
@@ -118,8 +150,23 @@ export const DashboardInstructor = ({
         pad="xlarge"
         round="xsmall"
       >
-        <Heading>{fileDepository.title}</Heading>
-        <Paragraph>{fileDepository.description}</Paragraph>
+        <Heading
+          contentEditable={true}
+          onBlur={onBlurTitle}
+          onFocus={onFocusTitle}
+          suppressContentEditableWarning={true}
+        >
+          {fileDepository.title || intl.formatMessage(messages.noTitle)}
+        </Heading>
+        <Paragraph
+          contentEditable={true}
+          onBlur={onBlurDescription}
+          onFocus={onFocusDescription}
+          suppressContentEditableWarning={true}
+        >
+          {fileDepository.description ||
+            intl.formatMessage(messages.noDescription)}
+        </Paragraph>
       </Box>
 
       <Box
