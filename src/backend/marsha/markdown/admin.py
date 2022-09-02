@@ -7,7 +7,7 @@ from parler.admin import TranslatableAdmin
 
 from marsha.core.admin import link_field
 
-from .models import MarkdownDocument
+from .models import MarkdownDocument, MarkdownImage
 
 
 @admin.register(MarkdownDocument)
@@ -47,4 +47,34 @@ class MarkdownDocumentAdmin(TranslatableAdmin):
         "playlist__title",
         "playlist__organization__name",
         "title",
+    )
+
+
+@admin.register(MarkdownImage)
+class MarkdownImageAdmin(admin.ModelAdmin):
+    """Admin class for the MarkdownDocument model."""
+
+    verbose_name = _("Markdown image")
+    list_display = (
+        "pk",
+        "extension",
+        link_field("markdown_document"),
+        "uploaded_on",
+        "upload_state",
+    )
+    fields = (
+        "pk",
+        "extension",
+        "markdown_document",
+        "uploaded_on",
+        "upload_state",
+    )
+    readonly_fields = [
+        "pk",
+    ]
+    list_filter = ("extension",)
+    search_fields = (
+        "pk",
+        "markdown_document_id",
+        "extension",
     )

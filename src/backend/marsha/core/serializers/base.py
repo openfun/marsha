@@ -72,6 +72,20 @@ def get_video_cloudfront_url_params(video_id):
     return get_resource_cloudfront_url_params("video", video_id)
 
 
+class ReadOnlyModelSerializer(serializers.ModelSerializer):
+    """A base serializer whose fields are all readonly."""
+
+    def get_fields(self):
+        """
+        Returns a dictionary of {field_name: field_instance}
+        where all fields are read-only.
+        """
+        fields = super().get_fields()
+        for field in fields.values():
+            field.read_only = True
+        return fields
+
+
 class TimestampField(serializers.DateTimeField):
     """A serializer field to serialize/deserialize a datetime to a Unix timestamp."""
 
