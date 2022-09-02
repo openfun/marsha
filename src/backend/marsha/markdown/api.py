@@ -1,17 +1,22 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 
+from django.conf import settings
+from django.utils import timezone
+
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
-from marsha.core import permissions as core_permissions
+from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin
+from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
-from . import serializers
+from . import permissions as markdown_permissions, serializers
+from ..core.utils.s3_utils import create_presigned_post
 from .forms import MarkdownDocumentForm
-from .models import MarkdownDocument
+from .models import MarkdownDocument, MarkdownImage
 from .utils.converter import LatexConversionException, render_latex_to_image
 
 
@@ -185,3 +190,96 @@ class MarkdownDocumentViewSet(
         return Response(
             self.get_serializer(instance=markdown_document).data, status=HTTP_200_OK
         )
+
+
+class MarkdownImageViewSet(
+    APIViewMixin,
+    ObjectPkMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    """Viewset for the API of the MarkdownImage object."""
+
+    permission_classes = [core_permissions.NotAllowed]
+    serializer_class = serializers.MarkdownImageSerializer
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action == "create":
+            permission_classes = [
+                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+            ]
+        else:
+            permission_classes = [
+                markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
+                & core_permissions.IsTokenInstructor
+                | markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
+                & core_permissions.IsTokenAdmin
+            ]
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        """
+        Restrict list access to Markdown images related to the Markdown document in the JWT token.
+        """
+        if self.request.resource:
+            return MarkdownImage.objects.filter(
+                markdown_document__id=self.request.resource.id,
+            )
+        return MarkdownImage.objects.none()
+
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
+    def initiate_upload(self, request, *args, pk=None, **kwargs):
+        """Get an upload policy for a Markdown image.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
+
+        Parameters
+        ----------
+        request : Type[rest_framework.request.Request]
+            The request on the API endpoint
+        pk: string
+            The primary key of the Markdown image
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+
+        """
+
+        serializer = serializers.MarkdownImageUploadSerializer(
+            data=request.data,
+        )
+
+        if not serializer.is_valid():
+            return Response(serializer.errors, status=HTTP_400_BAD_REQUEST)
+
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        markdown_image = self.get_object()
+        key = markdown_image.get_source_s3_key(
+            stamp=stamp,
+            extension=serializer.validated_data["extension"],
+        )
+
+        presigned_post = create_presigned_post(
+            [
+                ["starts-with", "$Content-Type", "image/"],
+                ["content-length-range", 0, settings.MARKDOWN_IMAGE_SOURCE_MAX_SIZE],
+            ],
+            {},
+            key,
+        )
+
+        # Reset the upload state of the Markdown image
+        MarkdownImage.objects.filter(pk=pk).update(
+            upload_state=defaults.PENDING,
+            extension=serializer.validated_data["extension"],
+        )
+
+        return Response(presigned_post)
