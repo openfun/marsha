@@ -13,6 +13,7 @@ import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { modelName } from 'apps/deposit/types/models';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
+import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 
 const messages = {
   dropzonePlaceholder: {
@@ -46,7 +47,10 @@ export const UploadFiles = () => {
     filesToUpload.forEach(async (file) => {
       let depositedFileId;
       if (!retryUploadIdRef.current) {
-        const response = await createDepositedFile();
+        const response = await createDepositedFile({
+          size: file.size,
+          filename: file.name,
+        });
         depositedFileId = response.id;
       } else {
         depositedFileId = retryUploadIdRef.current;
@@ -86,7 +90,7 @@ export const UploadFiles = () => {
               >
                 <Grid columns={{ count: 3, size: 'small' }} fill>
                   <Box justify="start">
-                    <Text weight="bold">{file.name}</Text>
+                    <Text weight="bold">{truncateFilename(file.name, 40)}</Text>
                   </Box>
                   <Box justify="center">
                     <Text alignSelf="center">{bytesToSize(file.size)}</Text>

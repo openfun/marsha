@@ -21,8 +21,12 @@ describe('sideEffects/createDepositedFile', () => {
       upload_state: 'pending',
       video: 'video_id',
     });
+    const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
 
-    const depositedFile = await createDepositedFile();
+    const depositedFile = await createDepositedFile({
+      size: file.size,
+      filename: file.name,
+    });
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
@@ -45,17 +49,19 @@ describe('sideEffects/createDepositedFile', () => {
       '/api/depositedfiles/',
       Promise.reject(new Error('Failed to perform the request')),
     );
+    const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
 
-    await expect(createDepositedFile()).rejects.toThrowError(
-      'Failed to perform the request',
-    );
+    await expect(
+      createDepositedFile({ size: file.size, filename: file.name }),
+    ).rejects.toThrowError('Failed to perform the request');
   });
 
   it('throws when it fails to create the deposited file (API error)', async () => {
     fetchMock.mock('/api/depositedfiles/', 400);
+    const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
 
-    await expect(createDepositedFile()).rejects.toThrowError(
-      'Failed to create a new deposited file.',
-    );
+    await expect(
+      createDepositedFile({ size: file.size, filename: file.name }),
+    ).rejects.toThrowError('Failed to create a new deposited file.');
   });
 });
