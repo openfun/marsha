@@ -171,6 +171,7 @@ class MarkdownLTIViewTestCase(TestCase):
         self.assertEqual(
             {
                 "id": str(markdown_document.id),
+                "images": [],
                 "is_draft": True,
                 "rendering_options": {},
                 "playlist": {
