@@ -25,6 +25,9 @@ import ScreenDispositionSelector, {
 } from 'apps/markdown/components/ScreenDispositionSelector';
 import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
 import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
+import MarkdownImageDropzone from '../MarkdownImageDropzone';
+import { useImageUploadManager } from '../useImageUploadManager';
+import { escapeMarkdown } from '../../utils/escapeMarkdown';
 
 const messages = defineMessages({
   // Inputs
@@ -102,6 +105,19 @@ const MarkdownEditor = () => {
     replaceEditorWholeContent,
     replaceOnceInDocument,
   } = useCodemirrorEditor();
+
+  const onImageUploadFinished = async (
+    imageId: string,
+    imageFileName: string,
+  ) => {
+    // Called once the image has been uploaded *and* processed
+    replaceOnceInDocument(
+      `\\[//\\]: # \\(${imageId}\\)`,
+      `![${escapeMarkdown(imageFileName)}](/uploaded/image/${imageId})`,
+    );
+  };
+
+  const { addImageUpload } = useImageUploadManager(onImageUploadFinished);
 
   // note: we don't want to fetch the markdown document regularly to prevent
   // any editor update while the user has not saved her document.
@@ -208,6 +224,13 @@ const MarkdownEditor = () => {
     // This will invalidate query cache, and refetch all data
   };
 
+  const onDropAccepted = (files: File[]) => {
+    files.forEach(async (file) => {
+      const markdownImageId = await addImageUpload(file);
+      insertText(`[//]: # (${markdownImageId})\n`);
+    });
+  };
+
   return (
     <Box pad="xsmall">
       <Suspense fallback={<Loader />}>
@@ -283,11 +306,13 @@ const MarkdownEditor = () => {
           >
             {localMarkdownContent !== null ? (
               <React.Fragment>
-                <CodeMirrorEditor
-                  onEditorContentChange={setLocalMarkdownContent}
-                  initialContent={localMarkdownContent}
-                  codemirrorEditor={codemirrorEditor}
-                />
+                <MarkdownImageDropzone onDropAccepted={onDropAccepted}>
+                  <CodeMirrorEditor
+                    onEditorContentChange={setLocalMarkdownContent}
+                    initialContent={localMarkdownContent}
+                    codemirrorEditor={codemirrorEditor}
+                  />
+                </MarkdownImageDropzone>
                 {!localMarkdownContent && (
                   <React.Fragment>
                     <Footer background="brand" pad="xxsmall">
