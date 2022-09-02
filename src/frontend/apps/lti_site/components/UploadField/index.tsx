@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import styled from 'styled-components';
 
-import { modelName } from '../../types/models';
+import { uploadableModelName } from '../../types/models';
 import { Maybe } from '../../utils/types';
 import { useUploadManager } from '../UploadManager';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
@@ -13,7 +13,7 @@ const DropzoneStyled = styled.div`
 `;
 
 export interface UploadFieldProps {
-  objectType: modelName;
+  objectType: uploadableModelName;
   objectId: string;
 }
 

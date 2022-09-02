@@ -9,7 +9,7 @@ import React, {
 import { initiateUpload } from 'data/sideEffects/initiateUpload';
 import { uploadFile } from 'data/sideEffects/uploadFile';
 import { AWSPresignedPost } from 'types/AWSPresignedPost';
-import { modelName } from 'types/models';
+import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
 
 export enum UploadManagerStatus {
@@ -22,7 +22,7 @@ export enum UploadManagerStatus {
 
 export interface UploadingObject {
   file: File;
-  objectType: modelName;
+  objectType: uploadableModelName;
   objectId: string;
   progress: number;
   status: UploadManagerStatus;
@@ -150,7 +150,7 @@ export const useUploadManager = () => {
     useContext(UploadManagerContext);
 
   const addUpload = useCallback(
-    (objectType: modelName, objectId: string, file: File) => {
+    (objectType: uploadableModelName, objectId: string, file: File) => {
       setUploadState((state) => ({
         ...state,
         [objectId]: {
