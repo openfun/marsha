@@ -11,6 +11,7 @@ import { uploadFile } from 'data/sideEffects/uploadFile';
 import { AWSPresignedPost } from 'types/AWSPresignedPost';
 import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
+import { modelName as markdownModelName } from 'apps/markdown/types/models';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',
@@ -89,6 +90,7 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
             modelName.VIDEOS,
             modelName.THUMBNAILS,
             modelName.SHAREDLIVEMEDIAS,
+            markdownModelName.MARKDOWN_IMAGES,
           ].includes(objectType)
         ) {
           formArguments.push(['Content-Type', file.type]);

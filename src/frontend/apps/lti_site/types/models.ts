@@ -1,3 +1,5 @@
+import { modelName as markdownModelName } from 'apps/markdown/types/models';
+
 export enum modelName {
   TIMEDTEXTTRACKS = 'timedtexttracks',
   THUMBNAILS = 'thumbnails',
@@ -8,3 +10,4 @@ export enum modelName {
 
 export type uploadableModelName =
   | modelName
+  | Extract<markdownModelName, markdownModelName.MARKDOWN_IMAGES>;
