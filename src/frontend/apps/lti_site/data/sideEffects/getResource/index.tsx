@@ -1,7 +1,7 @@
 import { addResource } from 'data/stores/generics';
 import { useJwt } from 'data/stores/useJwt';
 import { requestStatus } from 'types/api';
-import { modelName } from 'types/models';
+import { uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { API_ENDPOINT } from 'settings';
@@ -13,7 +13,7 @@ import { API_ENDPOINT } from 'settings';
  * @returns a promise for a request status, so the side effect caller can simply wait for it if needed.
  */
 export async function getResource(
-  resourceName: modelName,
+  resourceName: uploadableModelName,
   resourceId: string,
 ): Promise<UploadableObject | requestStatus.FAILURE> {
   const endpoint = `${API_ENDPOINT}/${resourceName}/${resourceId}/`;

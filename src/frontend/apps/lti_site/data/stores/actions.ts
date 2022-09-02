@@ -1,10 +1,10 @@
-import { modelName } from '../../types/models';
+import { uploadableModelName } from '../../types/models';
 import { StoreState } from '../../types/stores';
 import { Resource } from '../../types/tracks';
 
 export function addResource<R extends Resource>(
   state: StoreState<R>,
-  objectType: modelName,
+  objectType: uploadableModelName,
   object: R,
 ) {
   return {
@@ -17,7 +17,7 @@ export function addResource<R extends Resource>(
 
 export function addMultipleResources<R extends Resource>(
   state: StoreState<R>,
-  objectType: modelName,
+  objectType: uploadableModelName,
   objects: R[],
 ) {
   return {
@@ -30,7 +30,7 @@ export function addMultipleResources<R extends Resource>(
 
 export function removeResource<R extends Resource>(
   state: StoreState<R>,
-  objectType: modelName,
+  objectType: uploadableModelName,
   object: R,
 ) {
   const objects = Object.values(state[objectType]!).filter(

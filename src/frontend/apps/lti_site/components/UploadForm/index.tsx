@@ -14,7 +14,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { getResource } from 'data/stores/generics';
-import { modelName } from 'types/models';
+import { modelName, uploadableModelName } from 'types/models';
 import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
@@ -95,7 +95,7 @@ const UploadFormBack = styled.div`
 /** Props shape for the UploadForm component. */
 export interface UploadFormProps {
   objectId: UploadableObject['id'];
-  objectType: modelName;
+  objectType: uploadableModelName;
 }
 
 export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {

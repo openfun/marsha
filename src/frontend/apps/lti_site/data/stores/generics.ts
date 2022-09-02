@@ -1,7 +1,7 @@
-import { modelName } from 'types/models';
+import { modelName, uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 
-const getStore = async (objectType: modelName) => {
+const getStore = async (objectType: uploadableModelName) => {
   switch (objectType) {
     case modelName.THUMBNAILS:
       const { useThumbnail } = await import('./useThumbnail');
@@ -22,7 +22,7 @@ const getStore = async (objectType: modelName) => {
 };
 
 export const addMultipleResources = async (
-  objectType: modelName,
+  objectType: uploadableModelName,
   objects: UploadableObject[],
 ) => {
   const store = await getStore(objectType);
@@ -30,14 +30,17 @@ export const addMultipleResources = async (
 };
 
 export const addResource = async (
-  objectType: modelName,
+  objectType: uploadableModelName,
   object: UploadableObject,
 ) => {
   const store = await getStore(objectType);
   store.getState().addResource(object as any);
 };
 
-export const getResource = async (objectType: modelName, objectId: string) => {
+export const getResource = async (
+  objectType: uploadableModelName,
+  objectId: string,
+) => {
   const store = await getStore(objectType);
   const state = store.getState();
   return state[objectType] && state[objectType]![objectId];
