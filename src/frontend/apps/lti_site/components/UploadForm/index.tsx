@@ -19,6 +19,7 @@ import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
 import { Maybe } from 'utils/types';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
+import { modelName as markdownModelName } from 'apps/markdown/types/models';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -49,6 +50,11 @@ const titleMessages = defineMessages({
     defaultMessage: 'Upload a new document',
     description: 'Title for the document upload form',
     id: 'components.UploadForm.title-document',
+  },
+  [markdownModelName.MARKDOWN_IMAGES]: {
+    defaultMessage: 'Upload a new Markdown image',
+    description: 'Title for the Markdown image upload form',
+    id: 'components.UploadForm.title-markdown-image',
   },
 });
 

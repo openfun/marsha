@@ -1,3 +1,4 @@
+import { MarkdownImage } from 'apps/markdown/types/models';
 import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { Participant } from './Participant';
@@ -259,4 +260,5 @@ export type UploadableObject =
   | Video
   | Thumbnail
   | Document
-  | SharedLiveMedia;
+  | SharedLiveMedia
+  | MarkdownImage;
