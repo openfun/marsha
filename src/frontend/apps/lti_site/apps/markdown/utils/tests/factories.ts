@@ -1,10 +1,13 @@
 import * as faker from 'faker';
 
+import { playlistMockFactory } from 'utils/tests/factories';
+import { uploadState } from 'types/tracks';
+
 import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
+  MarkdownImage,
 } from 'apps/markdown/types/models';
-import { playlistMockFactory } from 'utils/tests/factories';
 
 export const markdownDocumentMockFactory = (
   markdownDocument: Partial<MarkdownDocument> = {},
@@ -16,6 +19,7 @@ export const markdownDocumentMockFactory = (
     is_draft: false,
     rendering_options: {},
     translations: [markdownTranslationMockFactory()],
+    images: [],
     ...markdownDocument,
   };
 };
@@ -29,5 +33,20 @@ export const markdownTranslationMockFactory = (
     content: faker.lorem.sentence(),
     rendered_content: `<p>${faker.lorem.sentence()}</p>`,
     ...documentTranslation,
+  };
+};
+
+export const markdownImageMockFactory = (
+  markdownImage: Partial<MarkdownImage> = {},
+): MarkdownImage => {
+  return {
+    id: faker.datatype.uuid(),
+    markdown_document: faker.datatype.uuid(),
+    filename: faker.system.commonFileName('png'),
+    is_ready_to_show: faker.datatype.boolean(),
+    upload_state: faker.helpers.randomize(Object.values(uploadState)),
+    active_stamp: faker.date.past().getTime().valueOf(),
+    url: faker.internet.url(),
+    ...markdownImage,
   };
 };
