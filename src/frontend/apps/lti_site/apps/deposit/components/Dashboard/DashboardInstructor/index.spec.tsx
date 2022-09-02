@@ -1,4 +1,9 @@
-import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
+import {
+  act,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
@@ -9,6 +14,8 @@ import { APIList } from 'types/api';
 import { uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import render from 'utils/tests/render';
+
+import { useJwt } from 'data/stores/useJwt';
 
 import { DepositedFile } from 'apps/deposit/types/models';
 import {
@@ -22,9 +29,16 @@ import { DashboardInstructor } from '.';
 const { READY } = uploadState;
 
 describe('<DashboardInstructor />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
   afterEach(() => {
     jest.clearAllMocks();
     fetchMock.reset();
+    fetchMock.restore();
   });
 
   it('shows deposited files from a file depository', async () => {
@@ -139,10 +153,10 @@ describe('<DashboardInstructor />', () => {
       });
     });
 
-    screen.getByText('Showing 11 - 20 of 40');
-    depositedFiles.slice(10, 20).forEach((depositedFile) => {
-      screen.findByText(truncateFilename(depositedFile.filename, 40));
-    });
+    await screen.findByText('Showing 11 - 20 of 40');
+    for (let i = 11; i > 20; i++) {
+      await screen.findByText(truncateFilename(depositedFiles[i].filename, 40));
+    }
   });
 
   it('filters deposited files', async () => {
@@ -224,5 +238,218 @@ describe('<DashboardInstructor />', () => {
     for (let i = 0; i < 10; i++) {
       await screen.findByText(`file${i * 2}_read.txt`);
     }
+  });
+
+  it('edits the file depository title', async () => {
+    const fileDepository = fileDepositoryMockFactory({
+      id: '1',
+      title: 'My file depository title',
+    });
+
+    const queryClient = new QueryClient();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
+      {
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      },
+    );
+    render(<DashboardInstructor fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    fetchMock.patch(`/api/filedepositories/${fileDepository.id}/`, {
+      ...fileDepository,
+      title: 'My file depository title updated',
+    });
+
+    const heading = screen.getByRole('heading', {
+      name: 'My file depository title',
+    });
+    userEvent.type(heading, ` updated`);
+    userEvent.tab();
+
+    expect(heading).not.toHaveFocus();
+    expect(heading).toHaveTextContent('My file depository title updated');
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/`,
+      ),
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({ title: 'My file depository title updated' }),
+    });
+    expect(fetchMock.calls()).toHaveLength(2);
+  });
+
+  it('edits the file depository description', async () => {
+    const fileDepository = fileDepositoryMockFactory({
+      id: '1',
+      description: 'My file depository description',
+    });
+
+    const queryClient = new QueryClient();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
+      {
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      },
+    );
+    render(<DashboardInstructor fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    fetchMock.patch(`/api/filedepositories/${fileDepository.id}/`, {
+      ...fileDepository,
+      description: 'My file depository description updated',
+    });
+
+    const description = screen.getByText('My file depository description');
+    userEvent.type(description, ` updated`);
+    userEvent.tab();
+
+    expect(description).not.toHaveFocus();
+    expect(description).toHaveTextContent(
+      'My file depository description updated',
+    );
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/`,
+      ),
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        description: 'My file depository description updated',
+      }),
+    });
+    expect(fetchMock.calls()).toHaveLength(2);
+  });
+
+  it('shows instructions for setting a title', async () => {
+    const fileDepository = fileDepositoryMockFactory({
+      id: '1',
+      title: null,
+    });
+
+    const queryClient = new QueryClient();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
+      {
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      },
+    );
+    render(<DashboardInstructor fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    fetchMock.patch(
+      `/api/filedepositories/${fileDepository.id}/`,
+      fileDepository,
+    );
+
+    const heading = screen.getByRole('heading', {
+      name: 'Click here to add a title',
+    });
+    userEvent.click(heading);
+    expect(heading).toHaveTextContent('');
+    userEvent.tab();
+
+    expect(heading).not.toHaveFocus();
+    expect(heading).toHaveTextContent('Click here to add a title');
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/`,
+      ),
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: '',
+      }),
+    });
+    expect(fetchMock.calls()).toHaveLength(2);
+  });
+
+  it('shows instructions for setting a description', async () => {
+    const fileDepository = fileDepositoryMockFactory({
+      id: '1',
+      description: null,
+    });
+
+    const queryClient = new QueryClient();
+    fetchMock.get(
+      `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=10&offset=0`,
+      {
+        count: 0,
+        next: '',
+        previous: '',
+        results: [],
+      },
+    );
+    render(<DashboardInstructor fileDepository={fileDepository} />, {
+      queryOptions: {
+        client: queryClient,
+      },
+    });
+
+    fetchMock.patch(
+      `/api/filedepositories/${fileDepository.id}/`,
+      fileDepository,
+    );
+
+    const description = screen.getByText('Click here to add a description');
+    userEvent.click(description);
+    expect(description).toHaveTextContent('');
+    userEvent.tab();
+
+    expect(description).not.toHaveFocus();
+    expect(description).toHaveTextContent('Click here to add a description');
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/filedepositories/${fileDepository.id}/`,
+      ),
+    );
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        description: '',
+      }),
+    });
+    expect(fetchMock.calls()).toHaveLength(2);
   });
 });
