@@ -20,6 +20,7 @@ import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
 import { debouncingTime } from './constants';
 import remarkLatexPlugin from './remarkLatexPlugin'; // Support backend LaTeX rendering
 import remarkMermaidPlugin from './remarkMermaidPlugin'; // Support Mermaid
+import remarkLocallyHostedImagePlugin from './remarkLocallyHostedImagePlugin';
 
 const additionalHighlightLanguages = {
   latex: langLatex,
@@ -65,6 +66,7 @@ const MdxRenderer = ({
           remarkLatexPlugin(markdownDocumentId),
           remarkMermaidPlugin,
           remarkMath,
+          remarkLocallyHostedImagePlugin,
         ];
         const rehypePlugins: PluggableList = [
           options?.useMathjax ? rehypeMathjax : rehypeKatex,

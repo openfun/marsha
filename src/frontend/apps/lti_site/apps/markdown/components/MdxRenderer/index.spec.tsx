@@ -9,6 +9,7 @@ import render from 'utils/tests/render';
 
 import MdxRenderer from '.';
 import { useJwt } from 'data/stores/useJwt';
+import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 
 jest.mock('data/stores/useAppConfig', () => ({
   modelName: 'markdown_documents',
@@ -383,5 +384,75 @@ describe('<MdxRenderer />', () => {
     expect(
       container.getElementsByClassName('markdown-body')[0],
     ).toMatchSnapshot();
+  });
+
+  it('renders uploaded images', async () => {
+    const markdownDocumentId = '3a309e40-2ddb-11ed-be97-b38eb2b50afc'; // unused: no API call
+    const onRenderedContentChange = jest.fn();
+    const renderingOptions = {};
+
+    const file = path.join(
+      __dirname,
+      '__tests__',
+      'markdownLocallyHostedImage.md',
+    );
+    const markdownText = fs.readFileSync(file, { encoding: 'utf8' });
+
+    fetchMock.getOnce(
+      '/api/markdown-images/981a52a2-7caf-49a5-bb36-1d8512152214/',
+      markdownImageMockFactory({
+        id: '981a52a2-7caf-49a5-bb36-1d8512152214',
+        url: 'https://s3.link/easy-to-find.png',
+      }),
+    );
+
+    fetchMock.getOnce(
+      '/api/markdown-images/066036cc-2dde-11ed-89f4-afcf72a20b4c/',
+      markdownImageMockFactory({
+        id: '066036cc-2dde-11ed-89f4-afcf72a20b4c',
+        url: null,
+      }),
+    );
+
+    const { container } = render(
+      <MdxRenderer
+        markdownText={markdownText}
+        markdownDocumentId={markdownDocumentId}
+        onRenderedContentChange={onRenderedContentChange}
+        renderingOptions={renderingOptions}
+        mardownImages={[]}
+      />,
+    );
+
+    // Wait for rendered content
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { level: 1, name: 'An h1 header' }),
+      ).toBeInTheDocument(),
+    );
+
+    // Cool cat external image remains the same
+    const coolCat = container.getElementsByTagName('img')[0];
+    expect(coolCat).toHaveAttribute(
+      'src',
+      'https://steamuserimages-a.akamaihd.net/ugc/1644340994747007967/853B20CD7694F5CF40E83AAC670572A3FE1E3D35/',
+    );
+    expect(coolCat).toHaveAttribute('alt', 'cool cat image');
+
+    // Local image (uploaded) URL is updated
+    const localImage = container.getElementsByTagName('img')[1];
+    expect(localImage).toHaveAttribute(
+      'src',
+      'https://s3.link/easy-to-find.png',
+    );
+    expect(localImage).toHaveAttribute('alt', 'local_image.png');
+
+    // Local image (not uploaded) URL is untouched
+    const unavailableImage = container.getElementsByTagName('img')[2];
+    expect(unavailableImage).toHaveAttribute(
+      'src',
+      '/uploaded/image/066036cc-2dde-11ed-89f4-afcf72a20b4c',
+    );
+    expect(unavailableImage).toHaveAttribute('alt', 'not available image');
   });
 });
