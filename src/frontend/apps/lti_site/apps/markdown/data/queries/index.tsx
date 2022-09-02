@@ -212,3 +212,12 @@ export const markdownRenderLatex = (id: string, rawLatexContent: string) => {
     object: { text: rawLatexContent },
   });
 };
+
+// It has to be called outside hook context
+export const fetchOneMarkdownImage = (markdownImageId: string) => {
+  return fetchOne({
+    meta: undefined,
+    pageParam: undefined,
+    queryKey: ['markdown-images', markdownImageId],
+  });
+};
