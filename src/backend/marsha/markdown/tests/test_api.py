@@ -77,6 +77,7 @@ class MarkdownAPITest(TestCase):
             content,
             {
                 "id": "4c51f469-f91e-4998-b438-e31ee3bd3ea6",
+                "images": [],
                 "is_draft": True,
                 "rendering_options": {},
                 "translations": [
@@ -213,6 +214,7 @@ class MarkdownAPITest(TestCase):
             response.json(),
             {
                 "id": str(document.id),
+                "images": [],
                 "is_draft": True,
                 "playlist": {
                     "id": str(playlist.id),
@@ -461,6 +463,7 @@ class MarkdownAPITest(TestCase):
                 "markdown_documents": [
                     {
                         "id": str(markdown_document.id),
+                        "images": [],
                         "is_draft": markdown_document.is_draft,
                         "lti_id": str(markdown_document.lti_id),
                         "lti_url": (
