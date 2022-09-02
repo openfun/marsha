@@ -1,7 +1,9 @@
-import { Playlist, Resource } from 'types/tracks';
+import { Playlist, Resource, uploadState } from 'types/tracks';
+import { Nullable } from 'utils/types';
 
 export enum modelName {
   MARKDOWN_DOCUMENTS = 'markdown-documents',
+  MARKDOWN_IMAGES = 'markdown-images',
 }
 
 export interface MarkdownDocumentRenderingOptions {
@@ -22,6 +24,16 @@ export interface MarkdownDocument extends Resource {
   is_draft: boolean;
   rendering_options: MarkdownDocumentRenderingOptions;
   translations: MarkdownDocumentTranslation[];
+  images: MarkdownImage[];
+}
+
+export interface MarkdownImage extends Resource {
+  active_stamp: Nullable<number>;
+  markdown_document: string;
+  filename: Nullable<string>;
+  is_ready_to_show: boolean;
+  upload_state: uploadState;
+  url: Nullable<string>;
 }
 
 // React queries
