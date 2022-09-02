@@ -38,6 +38,7 @@ class DepositedFileSerializer(
             "url",
             "uploaded_on",
             "upload_state",
+            "size",
         )
         read_only_fields = (
             "id",

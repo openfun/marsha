@@ -34,3 +34,4 @@ class DepositedFileFactory(DjangoModelFactory):
     author_id = factory.Faker("uuid4")
     file_depository = factory.SubFactory(FileDepositoryFactory)
     filename = factory.Faker("file_name")
+    size = factory.Faker("pyint", min_value=1, max_value=2**30)
