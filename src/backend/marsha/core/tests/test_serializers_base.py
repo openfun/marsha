@@ -11,6 +11,7 @@ from ..serializers import (
     get_video_cloudfront_url_params,
 )
 from ..utils.time_utils import to_timestamp
+from .utils import RSA_KEY_MOCK
 
 
 FIXED_TIME = datetime(2018, 8, 8, tzinfo=timezone.utc)
