@@ -27,14 +27,31 @@ const MarkdownViewer = () => {
   const [htmlContent, setHtmlContent] = React.useState<Nullable<string>>(null);
 
   useEffect(() => {
-    setHtmlContent(
-      getMarkdownDocumentTranslatedContent(
-        markdownDocument,
-        'rendered_content',
-        language,
-        intl.formatMessage(messages.translationNotFound),
-      ),
+    let documentTranslatedContent = getMarkdownDocumentTranslatedContent(
+      markdownDocument,
+      'rendered_content',
+      language,
+      intl.formatMessage(messages.translationNotFound),
     );
+
+    // Update image URL to use fresh signature
+    markdownDocument.images.map((value) => {
+      if (!value.url) return;
+      const imageUrlRegex = new RegExp(
+        'src="https://.*/' +
+          markdownDocument.id +
+          '/markdown-image/' +
+          value.id +
+          '/.*\\?(Policy|Signature|Key-Pair-Id)=.*(Policy|Signature|Key-Pair-Id)=.*(Signature|Key-Pair-Id)=.*"',
+        'g',
+      );
+      documentTranslatedContent = documentTranslatedContent.replace(
+        imageUrlRegex,
+        `src="${value.url}"`,
+      );
+    });
+
+    setHtmlContent(documentTranslatedContent);
   }, [language]);
 
   const availableLanguages = markdownDocument.translations.map(
