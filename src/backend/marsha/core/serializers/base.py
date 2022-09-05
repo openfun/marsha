@@ -37,24 +37,39 @@ KEY_PATTERN = (
 KEY_REGEX = re.compile(KEY_PATTERN)
 
 
-def get_video_cloudfront_url_params(video_id):
+def get_resource_cloudfront_url_params(resource_kind, resource_id):
     """
-    Generate the policy and sign it to allow to access to all resources for a given video id.
+    Generate the policy and sign it to allow to access to all sub resources
+    for a given resource id.
+    Parameters
+    ----------
+    resource_kind: str
+        Only used to define the cache key.
+    resource_id: str
+        The "parent" resource ID
     """
     resource = (
-        f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{video_id}/*"
+        f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/{resource_id}/*"
     )
-    cache_key = f"cloudfront_signed_url:video:{video_id}:{resource}"
+    cache_key = f"cloudfront_signed_url:{resource_kind}:{resource_id}:{resource}"
     date_less_than = timezone.now() + timedelta(
         seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
     )
     if (params := cache.get(cache_key)) is None:
         params = cloudfront_utils.generate_cloudfront_urls_signed_parameters(
-            resource, date_less_than=date_less_than
+            resource,
+            date_less_than=date_less_than,
         )
         cache.set(cache_key, params, settings.CLOUDFRONT_SIGNED_URL_CACHE_DURATION)
 
     return params
+
+
+def get_video_cloudfront_url_params(video_id):
+    """
+    Generate the policy and sign it to allow to access to all resources for a given video id.
+    """
+    return get_resource_cloudfront_url_params("video", video_id)
 
 
 class TimestampField(serializers.DateTimeField):
