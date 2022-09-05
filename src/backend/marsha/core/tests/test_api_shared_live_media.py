@@ -25,7 +25,7 @@ from ..factories import (
 )
 from ..models import SharedLiveMedia
 from ..models.account import ADMINISTRATOR, INSTRUCTOR
-from .test_api_video import RSA_KEY_MOCK
+from .utils import RSA_KEY_MOCK
 
 
 # We don't enforce arguments documentation in tests
