@@ -15,12 +15,16 @@ import { PluggableList } from 'unified';
 import { Spinner } from 'components/Loader';
 import { Nullable } from 'utils/types';
 
-import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
+import {
+  MarkdownImage,
+  MarkdownDocumentRenderingOptions,
+} from 'apps/markdown/types/models';
 
 import { debouncingTime } from './constants';
 import remarkLatexPlugin from './remarkLatexPlugin'; // Support backend LaTeX rendering
 import remarkMermaidPlugin from './remarkMermaidPlugin'; // Support Mermaid
 import remarkLocallyHostedImagePlugin from './remarkLocallyHostedImagePlugin';
+import { MarkdownImageCache } from './types';
 
 const additionalHighlightLanguages = {
   latex: langLatex,
@@ -38,6 +42,7 @@ type MdxRendererProps = {
   markdownDocumentId: string;
   onRenderedContentChange: (renderedContent: Nullable<string>) => void;
   renderingOptions?: MarkdownDocumentRenderingOptions;
+  mardownImages: MarkdownImage[];
 };
 
 const MdxRenderer = ({
@@ -45,10 +50,23 @@ const MdxRenderer = ({
   markdownDocumentId,
   onRenderedContentChange,
   renderingOptions,
+  mardownImages,
 }: MdxRendererProps) => {
   const [renderedText, setRenderedText] =
     React.useState<Nullable<string>>(null);
   const [loading, setLoading] = React.useState(true);
+
+  const localImagesUrlCache = React.useRef<MarkdownImageCache>({});
+
+  // Init the image URL cache as best effort
+  // (use what is available, the rest will be filled on the fly)
+  mardownImages.map((value) => {
+    if (!value.url) return;
+    localImagesUrlCache.current[value.id] = {
+      url: value.url,
+      expiration: Date.now() + 15 * 60 * 1000, // 15 minutes
+    };
+  });
 
   const debouncedRendering = React.useRef(
     debounce(
@@ -66,7 +84,7 @@ const MdxRenderer = ({
           remarkLatexPlugin(markdownDocumentId),
           remarkMermaidPlugin,
           remarkMath,
-          remarkLocallyHostedImagePlugin,
+          remarkLocallyHostedImagePlugin(localImagesUrlCache.current),
         ];
         const rehypePlugins: PluggableList = [
           options?.useMathjax ? rehypeMathjax : rehypeKatex,
