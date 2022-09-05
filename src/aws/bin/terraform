@@ -3,7 +3,7 @@
 set -eo pipefail
 
 declare MARSHA_TERRAFORM_ENV_FILE
-declare -r TERRAFORM_VERSION="1.0.9"
+declare -r TERRAFORM_VERSION="1.2.8"
 
 function _check_workspace() {
     current_workspace=$(
