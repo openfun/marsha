@@ -231,6 +231,9 @@ const MarkdownEditor = () => {
     });
   };
 
+  // Don't try to load components while the document has not been fetched
+  if (!markdownDocument) return <Loader />;
+
   return (
     <Box pad="xsmall">
       <Suspense fallback={<Loader />}>
@@ -365,6 +368,7 @@ const MarkdownEditor = () => {
               markdownDocumentId={markdownDocumentId}
               onRenderedContentChange={setLocalRenderedContent}
               renderingOptions={localRenderingOptions}
+              mardownImages={markdownDocument.images}
             />
           </Box>
         </Box>
