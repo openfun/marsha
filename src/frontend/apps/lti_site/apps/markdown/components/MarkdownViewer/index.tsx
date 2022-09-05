@@ -38,12 +38,12 @@ const MarkdownViewer = () => {
     markdownDocument.images.map((value) => {
       if (!value.url) return;
       const imageUrlRegex = new RegExp(
-        'src="https://.*/' +
+        'src="https?://[^"]+/' +
           markdownDocument.id +
           '/markdown-image/' +
           value.id +
-          '/.*\\?(Policy|Signature|Key-Pair-Id)=.*(Policy|Signature|Key-Pair-Id)=.*(Signature|Key-Pair-Id)=.*"',
-        'g',
+          '/.*\\?(Policy|Signature|Key-Pair-Id)=[^"]+(Policy|Signature|Key-Pair-Id)=[^"]+(Signature|Key-Pair-Id)=[^"]+"',
+        'g', // global
       );
       documentTranslatedContent = documentTranslatedContent.replace(
         imageUrlRegex,

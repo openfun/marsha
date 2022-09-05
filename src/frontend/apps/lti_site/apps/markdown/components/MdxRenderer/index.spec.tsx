@@ -62,6 +62,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={{}}
+        mardownImages={[]}
       />,
     );
 
@@ -89,6 +90,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -116,6 +118,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -146,6 +149,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -183,6 +187,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -227,6 +232,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -259,6 +265,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -295,6 +302,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={renderingOptions}
+        mardownImages={[]}
       />,
     );
 
@@ -344,6 +352,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={{ useMdx: false }}
+        mardownImages={[]}
       />,
     );
 
@@ -368,6 +377,7 @@ describe('<MdxRenderer />', () => {
         markdownDocumentId={markdownDocumentId}
         onRenderedContentChange={onRenderedContentChange}
         renderingOptions={{ useMdx: true }}
+        mardownImages={[]}
       />,
     );
 
