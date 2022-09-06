@@ -1,4 +1,5 @@
-import { Box, BoxProps, Heading, Paragraph } from 'grommet';
+import { LiveInfoBar } from 'components/LiveInfoBar';
+import { Box, BoxProps } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -23,7 +24,6 @@ export const TeacherLiveInfoBar = ({
   ...props
 }: TeacherLiveInfoBarProps) => {
   const intl = useIntl();
-
   const liveTitle = title || intl.formatMessage(messages.noTitle);
   return (
     <Box
@@ -31,31 +31,7 @@ export const TeacherLiveInfoBar = ({
       style={{ flexBasis: '0%', minWidth: '0' }}
       {...props}
     >
-      <Heading
-        a11yTitle={liveTitle}
-        color="blue-active"
-        level="1"
-        margin={{ bottom: 'small' }}
-        size="1.3rem"
-        title={liveTitle}
-        truncate
-        style={{ maxWidth: '100%' }}
-      >
-        {liveTitle}
-      </Heading>
-
-      <Box direction="row">
-        {startDate && (
-          <Paragraph
-            color="blue-active"
-            margin={{ right: 'large', bottom: 'none' }}
-            size="small"
-          >
-            {/* video.started_at */}
-            {startDate}
-          </Paragraph>
-        )}
-      </Box>
+      <LiveInfoBar title={liveTitle} startDate={startDate} />
     </Box>
   );
 };
