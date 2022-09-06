@@ -85,7 +85,7 @@ const Section = ({
     <Box margin={{ top: 'medium' }}>
       <ViewersListHeader
         margin={{ left: 'medium', bottom: 'xsmall' }}
-        text={title}
+        text={`${title} (${items.length})`}
       />
 
       {items.length !== 0 && (

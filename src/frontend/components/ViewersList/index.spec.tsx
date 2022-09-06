@@ -72,11 +72,11 @@ describe('<ViewersList /> when user is an instructor', () => {
     render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
-    screen.getByText('On stage');
+    screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
     );
-    screen.getByText('Other participants');
+    screen.getByText('Other participants (0)');
     screen.getByText('No viewers are currently connected to your stream.');
 
     act(() => useParticipantsStore.getState().addParticipant(participant1));
@@ -115,9 +115,9 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
-    screen.getByText('Demands');
-    screen.getByText('On stage');
-    screen.getByText('Other participants');
+    screen.getByText('Demands (2)');
+    screen.getByText('On stage (3)');
+    screen.getByText('Other participants (1)');
 
     screen.getByText('Student 1');
     screen.getByText('Student 2');
@@ -134,12 +134,12 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
-    screen.getByText('Demands');
-    screen.getByText('On stage');
+    screen.getByText('Demands (1)');
+    screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
     );
-    screen.getByText('Other participants');
+    screen.getByText('Other participants (0)');
     screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnDemands1.name);
 
@@ -155,12 +155,12 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
-    screen.getByText('Demands');
-    screen.getByText('On stage');
+    screen.getByText('Demands (1)');
+    screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
     );
-    screen.getByText('Other participants');
+    screen.getByText('Other participants (0)');
     screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnDemands1.name);
 
@@ -181,8 +181,8 @@ describe('<ViewersList /> when user is an instructor', () => {
     render(wrapInVideo(<ViewersList isInstructor={true} />, video));
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
-    screen.getByText('On stage');
-    screen.getByText('Other participants');
+    screen.getByText('On stage (1)');
+    screen.getByText('Other participants (0)');
     screen.getByText('No viewers are currently connected to your stream.');
     screen.getByText(mockedParticipantOnStage1Full.name);
 
@@ -253,11 +253,11 @@ describe('<ViewersList /> when user is a student', () => {
     );
 
     expect(screen.queryByText('Demands')).not.toBeInTheDocument();
-    screen.getByText('On stage');
+    screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
     );
-    screen.getByText('Other participants');
+    screen.getByText('Other participants (0)');
     screen.getByText('No viewers are currently connected to your stream.');
 
     act(() =>
@@ -322,7 +322,7 @@ describe('<ViewersList /> when user is a student', () => {
 
     render(wrapInVideo(<ViewersList isInstructor={false} />, video));
 
-    expect(screen.queryByText('Other participants')).toBeInTheDocument();
+    expect(screen.queryByText('Other participants (0)')).toBeInTheDocument();
     expect(
       screen.queryByText('No viewers are currently connected to your stream.'),
     ).not.toBeInTheDocument();

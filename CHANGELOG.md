@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Display amount of participants in the viewers panel
 - Add missing ended webinar screens when live is stopped 
   and not scheduled
 - Add missing ended webinar screens when live is stopped

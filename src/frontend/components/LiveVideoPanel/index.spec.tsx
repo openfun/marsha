@@ -123,7 +123,8 @@ describe('<LiveVideoPanel />', () => {
     screen.getByRole('tab', { name: 'chat' });
     screen.getByRole('tab', { name: 'viewers' });
 
-    screen.getByText('On stage');
+    screen.getByText('On stage (1)');
+    screen.getByText('Other participants (0)');
     screen.getByText(mockParticipant.name);
     expect(screen.queryByText('Demands')).toEqual(null);
     expect(screen.queryByText(mockAskingParticipant.name)).toEqual(null);
@@ -162,9 +163,10 @@ describe('<LiveVideoPanel />', () => {
     screen.getByRole('tab', { name: 'chat' });
     screen.getByRole('tab', { name: 'viewers' });
 
-    screen.getByText('On stage');
+    screen.getByText('On stage (1)');
     screen.getByText(mockParticipant.name);
-    screen.getByText('Demands');
+    screen.getByText('Demands (1)');
+    screen.getByText('Other participants (0)');
     screen.getByText(mockAskingParticipant.name);
   });
 
