@@ -41,6 +41,7 @@ in the VOD dashboard
 - Add a video creation wizard to help instructor through 
 VOD & Live creation processus
 - Use the new dashboard VOD instead of the old one
+- Add image upload for Markdown documents
 
 ### Changed
 
