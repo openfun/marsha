@@ -2,11 +2,12 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
 
 import {
-  UploadManagerContext,
+  UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
 import { Deferred } from 'utils/tests/Deferred';
 import render from 'utils/tests/render';
+import { uploadState } from 'types/tracks';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { DepositedFile, modelName } from 'apps/deposit/types/models';
@@ -51,6 +52,8 @@ const mockCreateDepositedFile = createDepositedFile as jest.MockedFunction<
   typeof createDepositedFile
 >;
 
+const { PENDING } = uploadState;
+
 describe('<UploadFiles />', () => {
   it('renders a Dropzone with the relevant messages', () => {
     render(<UploadFiles />);
@@ -88,6 +91,33 @@ describe('<UploadFiles />', () => {
       modelName.DepositedFiles,
       depositedFile.id,
       file,
+    );
+  });
+
+  it('shows the upload progress when the file is uploading', async () => {
+    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+    const depositedFile = depositedFileMockFactory({
+      upload_state: PENDING,
+    });
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {
+        [depositedFile.id]: {
+          file,
+          objectType: modelName.DepositedFiles,
+          objectId: depositedFile.id,
+          progress: 20,
+          status: UploadManagerStatus.UPLOADING,
+        },
+      },
+    });
+    render(<UploadFiles />);
+
+    await screen.findByText('20%');
+    await screen.findByText(
+      'Upload in progress... Please do not close or reload this page.',
     );
   });
 });

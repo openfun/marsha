@@ -1,12 +1,15 @@
 import { Box, Button, Grid, Paragraph, Text } from 'grommet';
 import Dropzone from 'react-dropzone';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
 
 import { PlusSVG } from 'lib-components';
-import { useUploadManager } from 'components/UploadManager';
-import { Nullable } from 'utils/types';
+import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from 'components/UploadManager';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
@@ -26,6 +29,13 @@ const messages = {
     description: 'Label for upload button.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadButtonLabel',
   },
+  uploadingFile: {
+    defaultMessage:
+      'Upload in progress... Please do not close or reload this page.',
+    description:
+      'Help text to warn user not to navigate away during file upload.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadingFile',
+  },
 };
 
 export const UploadFiles = () => {
@@ -34,33 +44,49 @@ export const UploadFiles = () => {
     depositAppData.fileDepository!.id,
     {},
   );
-  const retryUploadIdRef = useRef<Nullable<string>>(null);
 
-  const { addUpload } = useUploadManager();
+  const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
+  const [uploading, setUploading] = useState(false);
+
+  const uploadsInProgress = Object.values(uploadManagerState).filter((state) =>
+    [UploadManagerStatus.INIT, UploadManagerStatus.UPLOADING].includes(
+      state.status,
+    ),
+  );
+  const uploadsSucceeded = Object.values(uploadManagerState).filter((state) =>
+    [UploadManagerStatus.SUCCESS].includes(state.status),
+  );
 
   const onDrop = (files: any) => {
     setFilesToUpload(filesToUpload.concat(files));
   };
 
   const uploadFiles = () => {
-    filesToUpload.forEach(async (file) => {
-      let depositedFileId;
-      if (!retryUploadIdRef.current) {
-        const response = await createDepositedFile({
-          size: file.size,
-          filename: file.name,
-        });
-        depositedFileId = response.id;
-      } else {
-        depositedFileId = retryUploadIdRef.current;
-        retryUploadIdRef.current = null;
-      }
-      addUpload(modelName.DepositedFiles, depositedFileId, file);
-      filesToUpload.pop();
-      await refreshDepositedFiles();
+    const file = filesToUpload.shift();
+    if (!file) {
+      return;
+    }
+
+    setUploading(true);
+    createDepositedFile({
+      size: file.size,
+      filename: file.name,
+    }).then((response) => {
+      addUpload(modelName.DepositedFiles, response.id, file);
+      refreshDepositedFiles();
     });
   };
+
+  useEffect(() => {
+    if (uploading) {
+      if (filesToUpload.length > 0) {
+        uploadFiles();
+      } else {
+        setUploading(false);
+      }
+    }
+  }, [uploadsSucceeded.length]);
 
   return (
     <Box>
@@ -76,6 +102,26 @@ export const UploadFiles = () => {
         margin={{ bottom: 'large' }}
         round="small"
       >
+        {uploadsInProgress.length > 0 && (
+          <Box fill>
+            {uploadsInProgress.map((state) => (
+              <Box
+                key={state.objectId}
+                fill
+                background="#F9FBFD"
+                pad="large"
+                align="center"
+                margin={{ bottom: 'xsmall' }}
+              >
+                <Text weight="bold">
+                  {truncateFilename(state.file.name, 40)}
+                </Text>
+                <UploadableObjectProgress objectId={state.objectId} />
+                {intl.formatMessage(messages.uploadingFile)}
+              </Box>
+            ))}
+          </Box>
+        )}
         {filesToUpload.length !== 0 && (
           <Box fill>
             {filesToUpload.map((file) => (
