@@ -1,6 +1,7 @@
 *.md
-frontend/i18n/*.json
+frontend/apps/lti_site/i18n/*.json
 node_modules
-frontend/translations/*.json
-frontend/public-path.js
-frontend/apps/.cookiecutter
+frontend/apps/lti_site/translations/*.json
+frontend/apps/lti_site/public-path.js
+frontend/apps/lti_site/apps/.cookiecutter
+lib

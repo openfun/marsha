@@ -342,7 +342,7 @@ class SelectLTIViewTestCase(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertContains(
-            response, '<meta name="public-path" value="/static/js/build/" />'
+            response, '<meta name="public-path" value="/static/js/build/lti_site/" />'
         )
 
     @mock.patch.object(Logger, "warning")
