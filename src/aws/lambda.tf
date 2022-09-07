@@ -58,6 +58,10 @@ resource "aws_lambda_function" "marsha_convert_lambda" {
   memory_size      = "${var.lambda_convert_memory}"
   timeout          = "90"
 
+  ephemeral_storage {
+    size = var.lambda_convert_ephemeral_storage
+  }
+
   image_config {
     command = ["/var/task/lambda-convert/index.handler"]
   }

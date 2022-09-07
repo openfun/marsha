@@ -113,3 +113,8 @@ variable "lambda_convert_memory" {
   type    = number
   default = 1536
 }
+
+variable "lambda_convert_ephemeral_storage" {
+  type    = number
+  default = 512
+}
