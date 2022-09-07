@@ -1,19 +1,17 @@
 """Structure of deposit related models API responses with Django Rest Framework serializers."""
-from datetime import timedelta
 import mimetypes
 from os.path import splitext
 from urllib.parse import quote_plus
 
 from django.conf import settings
 from django.urls import reverse
-from django.utils import timezone
 
-from botocore.signers import CloudFrontSigner
 from rest_framework import serializers
 
 from marsha.core.serializers import (
     InitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
+    get_resource_cloudfront_url_params,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
@@ -125,25 +123,22 @@ class DepositedFileSerializer(
         if obj.uploaded_on is None:
             return None
 
-        url = (
+        base = (
             f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
             f"{obj.file_depository.pk}/depositedfile/{obj.pk}/"
-            f"{time_utils.to_timestamp(obj.uploaded_on)}{self._get_extension_string(obj)}?response"
-            f"-content-disposition={quote_plus('attachment; filename=' + obj.filename)}"
+            f"{time_utils.to_timestamp(obj.uploaded_on)}"
         )
 
-        # Sign the deposited file urls only if the functionality is activated
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            date_less_than = timezone.now() + timedelta(
-                seconds=settings.CLOUDFRONT_SIGNED_URLS_VALIDITY
-            )
-            cloudfront_signer = CloudFrontSigner(
-                settings.CLOUDFRONT_SIGNED_PUBLIC_KEY_ID, cloudfront_utils.rsa_signer
-            )
-            url = cloudfront_signer.generate_presigned_url(
-                url, date_less_than=date_less_than
-            )
+        url = (
+            f"{base:s}{self._get_extension_string(obj)}?"
+            f"response-content-disposition={quote_plus('attachment; filename=' + obj.filename)}"
+        )
 
+        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
+            params = get_resource_cloudfront_url_params(
+                "depositedfile", obj.file_depository_id
+            )
+            url = cloudfront_utils.build_signed_url(url, params)
         return url
 
 
