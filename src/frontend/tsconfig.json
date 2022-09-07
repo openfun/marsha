@@ -1,37 +1,27 @@
 {
+  "exclude": ["node_modules", "dist", "lib", "__tests__"],
   "compilerOptions": {
+    "skipLibCheck": true,
+    "target": "ES5",
+    "module": "CommonJS",
+    "lib": ["dom", "esnext"],
+    "jsx": "react",
+    "rootDir": ".",
+    "outDir": "lib",
+    "downlevelIteration": true,
+    "strict": true,
+    "removeComments": false,
+    "noImplicitReturns": true,
+    "noFallthroughCasesInSwitch": true,
+    "moduleResolution": "node",
     "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
+    "forceConsistentCasingInFileNames": true,
     "baseUrl": ".",
-    "jsx": "preserve",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "es6",
-      "scripthost",
-      "es2015",
-      "es2016",
-      "es2017",
-      "es2018.intl",
-      "esnext.intl"
-    ],
-    "module": "esnext",
-    "moduleResolution": "node",
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "paths": {
-      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
-      "converse": ["types/libs/converse"],
-      "intl-pluralrules": ["types/libs/intl-pluralrules"],
-      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
-      "vtt.js": ["types/libs/vtt.js"]
-    },
-    "resolveJsonModule": true,
-    "skipLibCheck": true,
-    "strict": true,
-    "sourceMap": true,
-    "target": "es6",
-    "types": ["jest"]
-  },
-  "include": ["./**/*"]
+    // https://github.com/RyanCavanaugh/learn-a/#tsconfigsettingsjson
+    "composite": false,
+    "declaration": true,
+    "declarationMap": true,
+    "sourceMap": true
+  }
 }

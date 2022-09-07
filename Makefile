@@ -226,16 +226,16 @@ build-front: \
 .PHONY: build-front
 
 build-sass: ## Build Sass file to CSS
-	@$(YARN) build-sass
+	@$(YARN) workspace marsha run build-sass
 .PHONY: build-sass
 
 build-ts: ### Build TypeScript application
-	@$(YARN) compile-translations
+	@$(YARN) workspace marsha run compile-translations
 	@$(YARN) build
 .PHONY: build-ts
 
 watch-front: ## Build front application and activate watch mode
-	@$(YARN) build --watch
+	@$(YARN) build-lti --watch
 .PHONY: watch-front
 
 ## -- AWS
@@ -378,7 +378,7 @@ i18n-compile-back:
 .PHONY: i18n-compile-back
 
 i18n-compile-front:
-	@$(YARN) compile-translations
+	@$(YARN) workspace marsha run compile-translations
 .PHONY: i18n-compile-front
 
 i18n-generate: ## Generate source translations files for all applications
@@ -392,7 +392,7 @@ i18n-generate-back:
 .PHONY: i18n-generate-back
 
 i18n-generate-front:
-	@$(YARN) build
+	@$(YARN) workspace marsha run build
 	@$(YARN) extract-translations
 .PHONY: i18n-generate-front
 
