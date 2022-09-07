@@ -1,0 +1,37 @@
+{
+  "compilerOptions": {
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "baseUrl": ".",
+    "jsx": "preserve",
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "es6",
+      "scripthost",
+      "es2015",
+      "es2016",
+      "es2017",
+      "es2018.intl",
+      "esnext.intl"
+    ],
+    "module": "esnext",
+    "moduleResolution": "node",
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "paths": {
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
+      "converse": ["types/libs/converse"],
+      "intl-pluralrules": ["types/libs/intl-pluralrules"],
+      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
+      "vtt.js": ["types/libs/vtt.js"]
+    },
+    "resolveJsonModule": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "sourceMap": true,
+    "target": "es6",
+    "types": ["jest"]
+  },
+  "include": ["./**/*"]
+}

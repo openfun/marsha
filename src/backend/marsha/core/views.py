@@ -130,7 +130,7 @@ class MarshaViewMixin:
         """Utility to build expected params to render_to_response"""
         return {
             "app_data": json.dumps(app_data),
-            "static_base_url": f"{settings.STATIC_URL}js/build/",
+            "static_base_url": f"{settings.STATIC_URL}js/build/lti_site/",
             "external_javascript_scripts": settings.EXTERNAL_JAVASCRIPT_SCRIPTS,
         }
 

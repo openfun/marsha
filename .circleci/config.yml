@@ -59,7 +59,7 @@ jobs:
       - run:
           name: lint commit messages added to master
           command: |
-              ~/.local/bin/gitlint --commits origin/master..HEAD
+            ~/.local/bin/gitlint --commits origin/master..HEAD
 
   # Check that the CHANGELOG has been updated in the current branch
   check-changelog:
@@ -76,7 +76,7 @@ jobs:
           command: |
             git whatchanged --name-only --pretty="" origin..HEAD | grep CHANGELOG
 
-# Check that the CHANGELOG max line length does not exceed 80 characters
+  # Check that the CHANGELOG max line length does not exceed 80 characters
   lint-changelog:
     docker:
       - image: debian:stretch
@@ -157,7 +157,7 @@ jobs:
       - run:
           name: Make lambda environment
           command: make env.d/lambda
-      - run: 
+      - run:
           name: Build production image
           command: |
             ./bin/lambda build ${CIRCLE_SHA1}
@@ -202,7 +202,6 @@ jobs:
       - run:
           name: Check built image availability
           command: docker image ls "marsha-ffmpeg-transmux:${CIRCLE_SHA1}"
-
 
   # Build backend development environment
   build-back:
@@ -364,10 +363,10 @@ jobs:
       - run:
           name: Run tests
           command: |
-                dockerize \
-                  -wait tcp://localhost:5432 \
-                  -timeout 60s \
-                    ~/.local/bin/pytest marsha --ignore=marsha/e2e
+            dockerize \
+              -wait tcp://localhost:5432 \
+              -timeout 60s \
+                ~/.local/bin/pytest marsha --ignore=marsha/e2e
 
   # ---- Front-end jobs ----
   build-front:
@@ -382,7 +381,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v6-front-dependencies-{{ checksum "yarn.lock" }}
+            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -390,21 +389,31 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: Compile translations
-          command: yarn compile-translations
+          command: yarn workspace marsha run compile-translations
+      - run:
+          name: Build lib_tests
+          command: yarn build-tests
       - run:
           name: Build front-end application
-          command: yarn build
+          command: yarn build-lti
       - run:
           name: Use formatjs cli to generate frontend.json file
-          command: yarn extract-translations
+          command: yarn workspace marsha run extract-translations
       - persist_to_workspace:
           root: ~/marsha
           paths:
-            - src/frontend/i18n/frontend.json
+            - src/frontend/apps/lti_site/i18n/frontend.json
       - save_cache:
           paths:
             - ./node_modules
-          key: v6-front-dependencies-{{ checksum "yarn.lock" }}
+            - ./apps/lti_site/node_modules
+            - ./packages/lib_common/node_modules
+            - ./packages/lib_common/lib
+            - ./packages/lib_tests/node_modules
+            - ./packages/lib_tests/lib
+            - ./packages/lib_components/node_modules
+            - ./packages/lib_components/lib
+          key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
 
   # ---- mail jobs ----
   build-mails:
@@ -449,7 +458,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v6-front-dependencies-{{ checksum "yarn.lock" }}
+            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -471,7 +480,7 @@ jobs:
           path: ~/marsha
       - restore_cache:
           keys:
-            - v6-front-dependencies-{{ checksum "yarn.lock" }}
+            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - run:
           name: Install Puppeteer dependencies for visual regression testing
           command: |
@@ -518,7 +527,9 @@ jobs:
           name: Run tests
           command: yarn test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
-          path: ~/marsha/src/frontend/__diff_output__
+          path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
+      - store_artifacts:
+          path: ~/marsha/src/frontend/packages/lib_components/__diff_output__
 
   test-e2e:
     docker:
@@ -572,7 +583,7 @@ jobs:
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.10 python3.10-dev build-essential
-      - run:  # Can be removed when switching to mcr.microsoft.com/playwright:jammy
+      - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install pip for Python 3.10
           command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
       - run:
@@ -588,28 +599,28 @@ jobs:
       - run:
           name: Build front-end application
           working_directory: ~/marsha/src/frontend
-          command: yarn build
+          command: yarn build-lti
       - run:
           name: Copy iframe resizer
           working_directory: ~/marsha/src/frontend
-          command: yarn copy-iframe-resizer
+          command: yarn workspace marsha run copy-iframe-resizer
       - run:
           name: Ensure << parameters.browser >> browser is installed
           command: python3.10 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
           command: |
-                curl -LO https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-                && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
-                && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
+            curl -LO https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+            && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+            && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz
       - run:
           name: Copy e2e media files
           command: |
-                mkdir -p /data/media \
-                && cp -r marsha/e2e/media /data/media/e2e
+            mkdir -p /data/media \
+            && cp -r marsha/e2e/media /data/media/e2e
       - when:
           condition:
-            equal: [ chrome, << parameters.browser_channel >> ]
+            equal: [chrome, << parameters.browser_channel >>]
           steps:
             - run:
                 name: Build apt cache
@@ -620,12 +631,12 @@ jobs:
       - run:
           name: Run e2e tests
           command: |
-                dockerize \
-                  -wait tcp://localhost:5432 \
-                  -timeout 60s \
-                    ~/.local/bin/pytest --tracing on \
-                    --browser-channel "<< parameters.browser_channel >>" \
-                    --browser "<< parameters.browser >>" marsha/e2e
+            dockerize \
+              -wait tcp://localhost:5432 \
+              -timeout 60s \
+                ~/.local/bin/pytest --tracing on \
+                --browser-channel "<< parameters.browser_channel >>" \
+                --browser "<< parameters.browser >>" marsha/e2e
       - store_artifacts:
           path: ~/marsha/src/backend/test-results
 
@@ -931,7 +942,7 @@ jobs:
             export DOCKER_BUILDKIT=1
             docker build \
               -t marsha:${CIRCLE_SHA1} \
-              .      
+              .
 
       # Tag docker images with the same pattern used in Git (Semantic Versioning)
       #
@@ -1089,7 +1100,6 @@ jobs:
             if [[ -n "$CIRCLE_TAG" ]]; then
               ./bin/lambda publish latest
             fi
-        
 
 workflows:
   version: 2
@@ -1143,7 +1153,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      
+
       # Build mails
       - build-mails:
           filters:

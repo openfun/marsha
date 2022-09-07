@@ -1,0 +1,53 @@
+{
+  "name": "lib-common",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "jsnext:main": "lib/index.es.js",
+  "scripts": {
+    "build": "rollup -c",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "yarn run lint -- --fix",
+    "test": "TZ=UTC jest --passWithNoTests",
+    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
+  },
+  "peerDependencies": {
+    "grommet": "*",
+    "styled-components": "*"
+  },
+  "devDependencies": {
+    "@babel/core": "7.19.0",
+    "@babel/plugin-proposal-class-properties": "7.18.6",
+    "@babel/plugin-syntax-dynamic-import": "7.8.3",
+    "@babel/plugin-transform-runtime": "7.18.10",
+    "@babel/polyfill": "7.12.1",
+    "@babel/preset-env": "7.19.0",
+    "@babel/preset-typescript": "7.18.6",
+    "@formatjs/cli": "5.1.0",
+    "@rollup/plugin-babel": "5.3.1",
+    "@rollup/plugin-commonjs": "22.0.2",
+    "@rollup/plugin-json": "4.1.0",
+    "@rollup/plugin-node-resolve": "13.3.0",
+    "@types/styled-components": "5.1.26",
+    "@typescript-eslint/eslint-plugin": "2.34.0",
+    "@typescript-eslint/parser": "2.34.0",
+    "babel-jest": "29.0.2",
+    "babel-loader": "8.2.5",
+    "babel-plugin-react-intl": "8.2.25",
+    "babel-preset-react": "7.0.0-beta.3",
+    "eslint": "8.23.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.31.6",
+    "grommet": "2.25.0",
+    "prettier": "2.7.1",
+    "rollup": "2.77.0",
+    "rollup-plugin-peer-deps-external": "2.2.4",
+    "rollup-plugin-polyfill-node": "0.10.2",
+    "rollup-plugin-typescript2": "0.26.0",
+    "styled-components": "5.3.5",
+    "typescript": "4.8.2"
+  }
+}
