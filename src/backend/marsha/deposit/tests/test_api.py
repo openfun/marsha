@@ -15,6 +15,7 @@ from marsha.core.simple_jwt.factories import (
 )
 from marsha.core.tests.utils import reload_urlconf
 
+from ...core.tests.test_api_video import RSA_KEY_MOCK
 from ..factories import DepositedFileFactory, FileDepositoryFactory
 from ..models import DepositedFile, FileDepository
 
@@ -543,6 +544,101 @@ class FileDepositoryAPITest(TestCase):
                         "upload_state": "pending",
                         "uploaded_on": None,
                         "url": None,
+                    },
+                ],
+            },
+        )
+
+    @override_settings(
+        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+    )
+    def test_api_file_depository_list_deposited_files_instructor_signed_urls(self):
+        """All deposited files should have the same signature."""
+        file_depository = FileDepositoryFactory(
+            id="4e126eac-9ca8-47b1-8dcd-157686b43c60"
+        )
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        deposited_files = DepositedFileFactory.create_batch(
+            3, file_depository=file_depository, uploaded_on=now
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
+
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        ):
+            response = self.client.get(
+                f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+
+        expected_cloudfront_signature = (
+            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvNGUxM"
+            "jZlYWMtOWNhOC00N2IxLThkY2QtMTU3Njg2YjQzYzYwLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuI"
+            "jp7IkFXUzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=BGMvqnlKwJW~PwkL1Om4Pp7Pk5"
+            "ZLlJGgS~q5c02NIL5--QBssu6C-gbhBgfGVQOY8~YwEqkJVSFfsqX54jOvzjVi-0t4mDANocv0hD5CQAy103"
+            "79gj14UQ5-4i2lcPoDdEcpsTekrtC9W1oRzZlyKSygNnL5NJKSjLy7St3TN8AK7sHbOMYTiFEpnxvuz8CaIh"
+            "DLf0xG~IbILgw83w9D1xlmAFu9Mxe5KXXQZa6Z60dXcXf67AS9vO1YRTK4CxtfF5EkDI31DeOm-Fm78VZzFE"
+            "j4MtdzMRQV1ag~4SruE7RMS10nIgHLN7CxpdHpybqAK4V-OWXlMsx8vSxC1bLHcQ__"
+            "&Key-Pair-Id=cloudfront-access-key-id"
+        )
+
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "author_name": deposited_files[2].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[2].filename,
+                        "id": str(deposited_files[2].id),
+                        "read": False,
+                        "size": deposited_files[2].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[2].id}/1533686400?response-content-disposition"
+                            f"=attachment%3B+filename%3D{deposited_files[2].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                    {
+                        "author_name": deposited_files[1].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[1].filename,
+                        "id": str(deposited_files[1].id),
+                        "read": False,
+                        "size": deposited_files[1].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[1].id}/1533686400?response-content-disposition"
+                            f"=attachment%3B+filename%3D{deposited_files[1].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                    {
+                        "author_name": deposited_files[0].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[0].filename,
+                        "id": str(deposited_files[0].id),
+                        "read": False,
+                        "size": deposited_files[0].size,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{file_depository.id}/depositedfile/"
+                            f"{deposited_files[0].id}/1533686400?response-content-disposition"
+                            f"=attachment%3B+filename%3D{deposited_files[0].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
                     },
                 ],
             },
