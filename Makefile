@@ -388,12 +388,12 @@ i18n-generate: \
 .PHONY: i18n-generate
 
 i18n-generate-back:
-	@$(COMPOSE_RUN_APP) python manage.py makemessages --ignore "venv/**/*" --keep-pot
+	@$(COMPOSE_RUN_APP) python manage.py makemessages --ignore "venv/**/*" --keep-pot --all
 .PHONY: i18n-generate-back
 
 i18n-generate-front:
 	@$(YARN) workspace marsha run build
-	@$(YARN) extract-translations
+	@$(YARN) workspace marsha run extract-translations
 .PHONY: i18n-generate-front
 
 

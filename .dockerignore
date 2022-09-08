@@ -44,7 +44,7 @@ renovate.json
 # Assets
 data
 src/backend/marsha/static/js
-src/frontend/i18n/frontend.json
+src/frontend/apps/**/i18n/frontend.json
 
 # Front-end
 **/node_modules
