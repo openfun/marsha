@@ -122,7 +122,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       liveTitleElement={
         <StudentLiveInfoBar
           title={live.title ?? intl.formatMessage(messages.defaultLiveTitle)}
-          startDate={null}
+          startDate={live.starting_at}
         />
       }
       mainElement={
