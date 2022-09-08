@@ -18,41 +18,41 @@ const messages = defineMessages({
       'This widget allows you to set the title of your live, alongside activate / deactivate recording of it.',
     description:
       'Info of the widget used for setting title and live recording.',
-    id: 'components.GeneralTitle.info',
+    id: 'components.TitleAndRecordConfigWidget.info',
   },
   title: {
     defaultMessage: 'General',
     description:
       'Title of the widget used for setting live title and activate recording.',
-    id: 'components.GeneralTitle.title',
+    id: 'components.TitleAndRecordConfigWidget.title',
   },
   placeholderTitleInput: {
     defaultMessage: 'Enter title of your live here',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.GeneralTitle.placeholderTitleInput',
+    id: 'components.TitleAndRecordConfigWidget.placeholderTitleInput',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
-    id: 'component.GeneralTitle.updateVideoSuccess',
+    id: 'component.TitleAndRecordConfigWidget.updateVideoSuccess',
   },
   updateVideoFail: {
     defaultMessage: 'Video update has failed !',
     description: 'Message displayed when video update has failed.',
-    id: 'component.GeneralTitle.updateVideoFail',
+    id: 'component.TitleAndRecordConfigWidget.updateVideoFail',
   },
   updateTitleBlank: {
     defaultMessage: "Title can't be blank !",
     description:
       'Message displayed when the user tried to enter a blank title.',
-    id: 'component.GeneralTitle.updateTitleBlank',
+    id: 'component.TitleAndRecordConfigWidget.updateTitleBlank',
   },
   recordingToggleLabel: {
     defaultMessage: 'Activate live recording',
     description:
       'The label associated to the toggle button reponsible of live recording activation / deactivation.',
-    id: 'components.GeneralTitle.liveRecordingToggleLabel',
+    id: 'components.TitleAndRecordConfigWidget.liveRecordingToggleLabel',
   },
 });
 

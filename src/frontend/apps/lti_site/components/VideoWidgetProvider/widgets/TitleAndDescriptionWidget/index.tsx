@@ -18,41 +18,41 @@ const messages = defineMessages({
       'This widget allows you to set the title of your video and its description',
     description:
       'Info of the widget used for setting title and live recording.',
-    id: 'components.GeneralTitle.info',
+    id: 'components.TitleAndDescriptionWidget.info',
   },
   title: {
     defaultMessage: 'General',
     description:
       'Title of the widget used for setting VOD title and activate recording.',
-    id: 'components.GeneralTitle.title',
+    id: 'components.TitleAndDescriptionWidget.title',
   },
   placeholderTitleInput: {
     defaultMessage: 'Enter title of your VOD here',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.GeneralTitle.placeholderTitleInput',
+    id: 'components.TitleAndDescriptionWidget.placeholderTitleInput',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
-    id: 'component.GeneralTitle.updateVideoSuccess',
+    id: 'component.TitleAndDescriptionWidget.updateVideoSuccess',
   },
   updateVideoFail: {
     defaultMessage: 'Video update has failed !',
     description: 'Message displayed when video update has failed.',
-    id: 'component.GeneralTitle.updateVideoFail',
+    id: 'component.TitleAndDescriptionWidget.updateVideoFail',
   },
   updateTitleBlank: {
     defaultMessage: "Title can't be blank !",
     description:
       'Message displayed when the user tried to enter a blank title.',
-    id: 'component.GeneralTitle.updateTitleBlank',
+    id: 'component.TitleAndDescriptionWidget.updateTitleBlank',
   },
   placeholderDescriptionInput: {
     defaultMessage: 'Description...',
     description:
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.GeneralTitle.placeholderDescriptionInput',
+    id: 'components.TitleAndDescriptionWidget.placeholderDescriptionInput',
   },
 });
 
