@@ -65,7 +65,7 @@ coverage.xml
 # Translations
 *.mo
 *.pot
-src/frontend/translations/*.json
+
 
 # Django stuff:
 *.log
@@ -126,7 +126,8 @@ venv.bak/
 __diff_output__/
 node_modules
 src/frontend/coverage
-src/frontend/i18n/frontend.json
+src/frontend/apps/**/translations/*.json
+src/frontend/apps/**/i18n/frontend.json
 src/backend/marsha/static/css
 src/backend/marsha/static/js
 storybook-static
