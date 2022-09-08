@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { actionOne } from 'data/queries/actionOne';
 import { createOne } from 'data/queries/createOne';
@@ -83,7 +83,7 @@ export const useCreateMarkdownDocument = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
+        queryClient.invalidateQueries(['markdown-documents']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
@@ -125,13 +125,13 @@ export const useUpdateMarkdownDocument = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
+        queryClient.invalidateQueries(['markdown-documents']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('markdown-documents');
+        queryClient.invalidateQueries(['markdown-documents']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -182,14 +182,14 @@ const markdownDocumentActionMutation =
         ...options,
         onSuccess: (data, variables, context) => {
           if (!doNotInvalidateQueries)
-            queryClient.invalidateQueries('markdown-documents');
+            queryClient.invalidateQueries(['markdown-documents']);
           if (options?.onSuccess) {
             options.onSuccess(data, variables, context);
           }
         },
         onError: (error, variables, context) => {
           if (!doNotInvalidateQueries)
-            queryClient.invalidateQueries('markdown-documents');
+            queryClient.invalidateQueries(['markdown-documents']);
           if (options?.onError) {
             options.onError(error, variables, context);
           }

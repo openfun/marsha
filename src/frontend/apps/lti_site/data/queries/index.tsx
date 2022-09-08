@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { APIList } from 'types/api';
@@ -73,13 +73,13 @@ export const useUpdatePlaylist = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('playlists');
+        queryClient.invalidateQueries(['playlists']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('playlists');
+        queryClient.invalidateQueries(['playlists']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -165,13 +165,13 @@ export const useDeleteTimedTextTrack = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
+        queryClient.invalidateQueries(['timedtexttracks']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
+        queryClient.invalidateQueries(['timedtexttracks']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -207,13 +207,13 @@ export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
+        queryClient.invalidateQueries(['thumbnails']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
+        queryClient.invalidateQueries(['thumbnails']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -297,7 +297,7 @@ export const useCreateVideo = (options?: UseCreateVideoOptions) => {
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
@@ -325,13 +325,13 @@ export const useUpdateVideo = (id: string, options?: UseUpdateVideoOptions) => {
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -383,13 +383,13 @@ export const usePairingVideo = (
       }),
     {
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -410,11 +410,11 @@ export const useStartLiveRecording = (id: string, onError: () => void) => {
       }),
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         useVideoStore.getState().addResource(data);
       },
       onError: () => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         onError();
       },
     },
@@ -433,11 +433,11 @@ export const useStopLiveRecording = (id: string, onError: () => void) => {
       }),
     {
       onSuccess: (data) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         useVideoStore.getState().addResource(data);
       },
       onError: () => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         onError();
       },
     },
@@ -476,7 +476,7 @@ export const useCreateDocument = (options?: UseCreateDocumentOptions) => {
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('documents');
+        queryClient.invalidateQueries(['documents']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
@@ -515,13 +515,13 @@ export const useUpdateSharedLiveMedia = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(['sharedlivemedias']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(['sharedlivemedias']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -559,13 +559,13 @@ export const useDeleteSharedLiveMedia = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(['sharedlivemedias']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(['sharedlivemedias']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -600,13 +600,13 @@ export const useStartSharingMedia = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -635,13 +635,13 @@ export const useStopSharingMedia = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
+        queryClient.invalidateQueries(['videos']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }

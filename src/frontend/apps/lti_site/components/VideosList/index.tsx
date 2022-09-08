@@ -117,7 +117,6 @@ export const VideosList: React.FC<VideosListProps> = ({
   const { data: videosList, status: videosListStatus } = useVideos(params);
 
   switch (videosListStatus) {
-    case 'idle':
     case 'loading':
       return (
         <VideosListStructure>

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { liveState } from 'types/tracks';
 
 import { videoMockFactory } from 'utils/tests/factories';
@@ -18,6 +18,8 @@ let queryClient: QueryClient;
 describe('<TeacherLiveRecordingActions />', () => {
   beforeEach(() => {
     queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

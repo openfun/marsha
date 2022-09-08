@@ -5,7 +5,7 @@ import {
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
 import { APIList } from 'types/api';
@@ -93,7 +93,10 @@ describe('PublicLiveDashboard', () => {
 
       mockGetInitOrAnonymousId.mockReturnValue(undefined);
 
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
@@ -142,7 +145,10 @@ describe('PublicLiveDashboard', () => {
       );
 
       mockGetInitOrAnonymousId.mockReturnValue(anonymousId);
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
@@ -197,7 +203,10 @@ describe('PublicLiveDashboard', () => {
 
       mockGetInitOrAnonymousId.mockReturnValue(undefined);
 
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
@@ -256,7 +265,10 @@ describe('PublicLiveDashboard', () => {
 
       mockGetInitOrAnonymousId.mockReturnValue(anonymousId);
 
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
@@ -311,7 +323,10 @@ describe('PublicLiveDashboard', () => {
 
       mockGetInitOrAnonymousId.mockReturnValue(undefined);
 
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'videojs'} />, live),
@@ -362,7 +377,10 @@ describe('PublicLiveDashboard', () => {
 
       mockGetInitOrAnonymousId.mockReturnValue(undefined);
 
-      const queryClient = new QueryClient();
+      const queryClient = new QueryClient({
+        // tslint:disable-next-line:no-console
+        logger: { log: console.log, warn: console.warn, error: () => {} },
+      });
 
       render(
         wrapInVideo(<PublicLiveDashboard playerType={'someplayer'} />, live),
@@ -402,6 +420,8 @@ describe('PublicLiveDashboard', () => {
 
     mockGetInitOrAnonymousId.mockReturnValue(undefined);
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

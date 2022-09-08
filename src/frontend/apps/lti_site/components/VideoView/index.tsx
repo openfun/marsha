@@ -132,7 +132,6 @@ const VideoTab = ({ video }: VideoTabProps) => {
       case 'error':
         return <ErrorMessage code="generic" />;
 
-      case 'idle':
       case 'loading':
         return (
           <Spinner size="large">
@@ -200,7 +199,6 @@ export const VideoView: React.FC = () => {
 
   let content: JSX.Element;
   switch (status) {
-    case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">

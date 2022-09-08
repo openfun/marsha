@@ -2,7 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import { useVideo } from 'data/stores/useVideo';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -20,6 +20,8 @@ let queryClient: QueryClient;
 describe('<StopRecording />', () => {
   beforeEach(() => {
     queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

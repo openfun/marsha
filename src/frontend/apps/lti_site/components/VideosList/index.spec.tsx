@@ -1,7 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
@@ -79,6 +79,8 @@ describe('<VideosList />', () => {
 
   it('shows an error message when it fails to load the list of videos', async () => {
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

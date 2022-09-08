@@ -1,7 +1,7 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useJwt } from 'data/stores/useJwt';
@@ -45,14 +45,6 @@ import {
   useVideoMetadata,
 } from '.';
 
-setLogger({
-  // tslint:disable-next-line:no-console
-  log: console.log,
-  warn: console.warn,
-  // no more errors on the console
-  error: () => {},
-});
-
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
@@ -66,6 +58,8 @@ describe('queries', () => {
     });
 
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

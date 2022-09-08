@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { Loader } from 'components/Loader';
@@ -35,8 +35,8 @@ export const PublicLiveDashboard = ({
           setLiveSession(data.results[0]);
         } else {
           setLiveSession(await pushAttendance({}, intl.locale, anonymousId));
-          queryClient.invalidateQueries('livesessions', {
-            refetchActive: false,
+          queryClient.invalidateQueries(['livesessions'], {
+            refetchType: 'none',
           });
         }
         initVideoWebsocket(live);

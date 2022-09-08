@@ -197,7 +197,6 @@ const SelectContentTab = ({
 
   let content: JSX.Element;
   switch (useSelectClassroomStatus) {
-    case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">

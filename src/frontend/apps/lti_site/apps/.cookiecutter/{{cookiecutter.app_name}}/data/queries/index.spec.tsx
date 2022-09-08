@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import { useJwt } from 'data/stores/useJwt';
@@ -27,6 +27,8 @@ describe('queries', () => {
     });
 
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

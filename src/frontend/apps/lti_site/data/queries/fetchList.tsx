@@ -1,4 +1,4 @@
-import { QueryFunction } from 'react-query';
+import { QueryFunction } from '@tanstack/react-query';
 
 import { useJwt } from 'data/stores/useJwt';
 import { Maybe } from 'utils/types';

@@ -2,7 +2,6 @@
 import 'jest-styled-components';
 // Jest helpers for testing-library
 import '@testing-library/jest-dom';
-import { setLogger } from 'react-query';
 // Add TextEncoder & TextDecoder to jsdom
 import { TextEncoder, TextDecoder } from 'util';
 
@@ -16,8 +15,3 @@ global.TextDecoder = TextDecoder;
 
 import ResizeObserver from 'resize-observer-polyfill';
 global.ResizeObserver = ResizeObserver;
-
-// During tests we want queries to be silent
-// see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
-// tslint:disable-next-line:no-console
-setLogger({ log: console.log, warn: console.warn, error: () => {} });

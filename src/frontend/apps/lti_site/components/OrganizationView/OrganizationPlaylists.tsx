@@ -85,7 +85,6 @@ export const OrganizationPlaylists: React.FC<OrganizationPlaylistsProps> = ({
   const { data, status } = usePlaylists({ organization: organizationId });
 
   switch (status) {
-    case 'idle':
     case 'loading':
       return (
         <OrganizationPlaylistsStructure>

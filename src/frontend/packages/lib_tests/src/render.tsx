@@ -9,7 +9,7 @@ import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { BreadCrumbsProvider, GlobalStyles, theme } from 'lib-common';
 
@@ -72,7 +72,10 @@ const ToastHack = () => {
 //  react-query setup
 
 //  create the default client used by react-query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  // tslint:disable-next-line:no-console
+  logger: { log: console.log, warn: console.warn, error: () => {} },
+});
 
 /////////////////////////
 //  wrap the component

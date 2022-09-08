@@ -3,7 +3,7 @@ import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useQueryClient } from 'react-query';
+import { useQueryClient } from '@tanstack/react-query';
 
 import { Loader } from 'components/Loader';
 import { Maybe, Nullable } from 'utils/types';

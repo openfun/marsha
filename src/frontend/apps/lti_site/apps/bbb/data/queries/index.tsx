@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { APIList } from 'types/api';
 import { actionOne } from 'data/queries/actionOne';
@@ -97,7 +97,7 @@ export const useCreateClassroom = (options?: UseCreateClassroomOptions) => {
   >((newClassroom) => createOne({ name: 'classrooms', object: newClassroom }), {
     ...options,
     onSuccess: (data, variables, context) => {
-      queryClient.invalidateQueries('classrooms');
+      queryClient.invalidateQueries(['classrooms']);
       if (options?.onSuccess) {
         options.onSuccess(data, variables, context);
       }
@@ -134,13 +134,13 @@ export const useUpdateClassroom = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
+        queryClient.invalidateQueries(['classrooms']);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('classrooms');
+        queryClient.invalidateQueries(['classrooms']);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
@@ -191,13 +191,13 @@ const classroomActionMutation =
       {
         ...options,
         onSuccess: (data, variables, context) => {
-          queryClient.invalidateQueries('classrooms');
+          queryClient.invalidateQueries(['classrooms']);
           if (options?.onSuccess) {
             options.onSuccess(data, variables, context);
           }
         },
         onError: (error, variables, context) => {
-          queryClient.invalidateQueries('classrooms');
+          queryClient.invalidateQueries(['classrooms']);
           if (options?.onError) {
             options.onError(error, variables, context);
           }

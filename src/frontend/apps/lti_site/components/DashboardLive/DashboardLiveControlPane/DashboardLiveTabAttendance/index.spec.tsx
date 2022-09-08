@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import { useJwt } from 'data/stores/useJwt';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
@@ -207,6 +207,8 @@ describe('<DashboardLiveTabAttendance />', () => {
 
   it('shows an error message when it fails to get the list of attendances', async () => {
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

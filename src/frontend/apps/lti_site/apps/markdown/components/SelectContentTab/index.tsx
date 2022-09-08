@@ -254,7 +254,6 @@ const SelectContentTab = ({
 
   let content: JSX.Element;
   switch (useSelectMarkdownDocumentStatus) {
-    case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">

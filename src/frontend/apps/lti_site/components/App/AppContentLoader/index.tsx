@@ -8,8 +8,8 @@ import React, {
 } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { createIntlCache, createIntl, RawIntlProvider } from 'react-intl';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { ReactQueryDevtools } from 'react-query/devtools';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 import { Loader } from 'components/Loader';
 import { useAppConfig } from 'data/stores/useAppConfig';

@@ -1,7 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient } from 'react-query';
+import { QueryClient } from '@tanstack/react-query';
 
 import { Deferred } from 'utils/tests/Deferred';
 import {
@@ -86,6 +86,8 @@ describe('<OrganizationPlaylists />', () => {
 
   it('shows an error message when it fails to get the list of playlists for an organization', async () => {
     const queryClient = new QueryClient({
+      // tslint:disable-next-line:no-console
+      logger: { log: console.log, warn: console.warn, error: () => {} },
       defaultOptions: {
         queries: {
           retry: false,

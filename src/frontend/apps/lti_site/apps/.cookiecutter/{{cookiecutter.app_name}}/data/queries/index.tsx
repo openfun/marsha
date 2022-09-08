@@ -4,7 +4,7 @@ import {
   useQuery,
   useQueryClient,
   UseQueryOptions,
-} from 'react-query';
+} from '@tanstack/react-query';
 
 import { createOne } from 'data/queries/createOne';
 import { fetchList, FetchListQueryKey } from 'data/queries/fetchList';

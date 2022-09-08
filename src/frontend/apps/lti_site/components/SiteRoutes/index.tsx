@@ -2,7 +2,7 @@ import { Box, Heading } from 'grommet';
 import { BreadCrumbs } from 'lib-components';
 import { BreadCrumbsProvider } from 'lib-common';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { OrganizationView } from 'components/OrganizationView';
@@ -11,7 +11,10 @@ import { UploadManager } from 'components/UploadManager';
 import { UploadsView } from 'components/UploadsView';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  // tslint:disable-next-line:no-console
+  logger: { log: console.log, warn: console.warn, error: () => {} },
+});
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => {
   const appData = useAppConfig();

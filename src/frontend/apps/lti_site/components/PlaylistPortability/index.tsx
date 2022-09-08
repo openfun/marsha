@@ -204,7 +204,6 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
 
   let content: JSX.Element;
   switch (usePlaylistStatus) {
-    case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">

@@ -40,7 +40,6 @@ export const DashboardLiveTabAttendance = () => {
   });
 
   switch (status) {
-    case 'idle':
     case 'loading':
       return (
         <Box width="full">

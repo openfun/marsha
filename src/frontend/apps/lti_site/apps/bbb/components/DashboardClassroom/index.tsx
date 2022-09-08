@@ -198,7 +198,6 @@ const DashboardClassroom = () => {
 
   let content: JSX.Element;
   switch (useClassroomStatus) {
-    case 'idle':
     case 'loading':
       content = (
         <Spinner size="large">
