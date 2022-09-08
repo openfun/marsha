@@ -1,4 +1,9 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import {
+  act,
+  getDefaultNormalizer,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
@@ -972,6 +977,49 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     screen.getByText('No title');
+  });
+
+  it('inits the live title bar with title and starting date', async () => {
+    const video = videoMockFactory({
+      title: "Hello world, it's me",
+      starting_at: '2020-10-01T08:00:00Z',
+      live_info: {
+        jitsi: {
+          room_name: 'room',
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+        },
+      },
+      live_state: liveState.IDLE,
+      live_type: LiveModeType.JITSI,
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+
+    render(
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType={'player_type'} />
+        </PictureInPictureProvider>,
+        video,
+      ),
+    );
+
+    await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
+
+    screen.getByText("Hello world, it's me");
+    screen.getByText('10/1/2020  ·  8:00:00 AM', {
+      normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
+    });
   });
 
   it('pushes attendance when student is on stage', async () => {

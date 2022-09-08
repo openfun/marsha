@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
@@ -475,6 +475,35 @@ describe('components/DashboardLive', () => {
     await waitFor(() =>
       expect(mockAcceptParticipantToJoin).toHaveBeenCalledTimes(3),
     );
+  });
+
+  it('check display title and starting date on the title bar ', async () => {
+    render(
+      wrapInVideo(
+        <LiveModaleConfigurationProvider value={null}>
+          <PictureInPictureProvider value={{ reversed: false }}>
+            <JitsiApiProvider value={undefined}>
+              <Suspense fallback="loading...">
+                <DashboardLive />
+              </Suspense>
+            </JitsiApiProvider>
+          </PictureInPictureProvider>
+        </LiveModaleConfigurationProvider>,
+        {
+          ...video,
+          join_mode: JoinMode.FORCED,
+          live_state: liveState.STARTING,
+          starting_at: '2020-10-01T08:00:00Z',
+          title: "Hello world, it's me",
+        },
+      ),
+      { queryOptions: { client: queryClient } },
+    );
+
+    screen.getByText("Hello world, it's me");
+    screen.getByText('10/1/2020  ·  8:00:00 AM', {
+      normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
+    });
   });
 
   it('starts picture in picture mode when a file is shared', async () => {

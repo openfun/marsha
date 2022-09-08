@@ -1,8 +1,9 @@
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
 import { Box, Heading, Paragraph } from 'grommet';
-import React, { Fragment } from 'react';
-
+import React, { Fragment, useMemo } from 'react';
+import { DateTime } from 'luxon';
 import { Nullable } from 'utils/types';
+import { useIntl } from 'react-intl';
 
 interface LiveInfoBarProps {
   title: string;
@@ -11,6 +12,14 @@ interface LiveInfoBarProps {
 
 export const LiveInfoBar = ({ title, startDate }: LiveInfoBarProps) => {
   const participants = useParticipantsStore((state) => state.participants);
+  const intl = useIntl();
+  const localStartDate = useMemo(() => {
+    if (!startDate) return null;
+
+    const dt = DateTime.fromISO(startDate);
+    return dt.isValid ? dt.setLocale(intl.locale).toFormat('D  ·  tt') : null;
+  }, [startDate, intl]);
+
   return (
     <Fragment>
       <Heading
@@ -36,14 +45,13 @@ export const LiveInfoBar = ({ title, startDate }: LiveInfoBarProps) => {
             {`${participants.length} viewers connected.`}
           </Paragraph>
         )}
-        {startDate && (
+        {localStartDate && (
           <Paragraph
             color="blue-active"
             margin={{ right: 'large', bottom: 'none' }}
             size="small"
           >
-            {/* video.started_at */}
-            {startDate}
+            {localStartDate}
           </Paragraph>
         )}
       </Box>
