@@ -231,7 +231,7 @@ build-sass: ## Build Sass file to CSS
 
 build-ts: ### Build TypeScript application
 	@$(YARN) workspace marsha run compile-translations
-	@$(YARN) build
+	@$(YARN) build-lti
 .PHONY: build-ts
 
 watch-front: ## Build front application and activate watch mode
