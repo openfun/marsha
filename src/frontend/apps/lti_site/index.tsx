@@ -1,11 +1,17 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
 
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { App } from 'components/App';
 
 // Wait for the DOM to load before we scour it for an element that requires React to render
 document.addEventListener('DOMContentLoaded', async () => {
-  ReactDOM.render(<App />, document.querySelector('#marsha-frontend-root'));
+  const container = document.querySelector('#marsha-frontend-root');
+  if (!container) {
+    throw new Error('Missing element to render App.');
+  }
+
+  const root = createRoot(container);
+  root.render(<App />);
 });

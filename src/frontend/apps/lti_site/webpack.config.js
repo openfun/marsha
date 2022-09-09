@@ -39,6 +39,9 @@ const config = {
       buffer: require.resolve('buffer/'),
       stream: require.resolve('stream-browserify'),
     },
+    alias: {
+      'react/jsx-runtime.js': 'react/jsx-runtime',
+    },
   },
 
   module: {
