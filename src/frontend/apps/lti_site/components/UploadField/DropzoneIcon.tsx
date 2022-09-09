@@ -2,7 +2,7 @@ import { normalizeColor } from 'grommet/utils';
 import * as React from 'react';
 import styled from 'styled-components';
 
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 
 // Use a large "download" icon to make the dropzone stand out visually
 //

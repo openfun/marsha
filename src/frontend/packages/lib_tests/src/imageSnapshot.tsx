@@ -3,6 +3,7 @@ import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
 import { Grommet } from 'grommet';
 import React from 'react';
 import path from 'path';
+import { defaultArgs } from 'puppeteer';
 
 import { GlobalStyles, theme } from 'lib-common';
 
@@ -29,9 +30,7 @@ export const imageSnapshot = async (width?: number, height?: number) => {
     viewport: { width, height },
   };
   if (disableSandbox) {
-    generateImageOptions.launch = {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    };
+    defaultArgs({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   }
   const screenshot = await generateImage(generateImageOptions);
   expect(screenshot).toMatchImageSnapshot({

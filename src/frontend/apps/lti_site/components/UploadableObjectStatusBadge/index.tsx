@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { UploadableObject, uploadState } from '../../types/tracks';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({

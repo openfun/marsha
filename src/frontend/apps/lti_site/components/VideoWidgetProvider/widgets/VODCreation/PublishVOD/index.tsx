@@ -9,7 +9,7 @@ import { videoSize } from 'types/tracks';
 import { publishLiveToVod } from 'data/sideEffects/publishLiveToVod';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Maybe } from 'utils/types';
 import { useFetchButton } from 'utils/useFetchButton';
 

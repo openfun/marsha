@@ -5,7 +5,7 @@ import React from 'react';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 import { ChatConversationDisplayer } from '.';
 

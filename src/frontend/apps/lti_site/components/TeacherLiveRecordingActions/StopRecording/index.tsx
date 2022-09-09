@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { formatSecToTimeStamp } from 'components/TeacherLiveRecordingActions/utils';
 import { useStopLiveRecording, useVideoMetadata } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const BlinkedBox = styled(Box)`
   animation: blink-animation 1s ease-in infinite;

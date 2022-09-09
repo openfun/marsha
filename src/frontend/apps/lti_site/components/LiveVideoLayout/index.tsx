@@ -13,7 +13,7 @@ import {
   MAX_PANEL_WIDTH_RATIO,
   MIN_PANEL_WIDTH_RATIO,
 } from 'default/livePanel';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Nullable } from 'utils/types';
 import { useResizer } from 'utils/useResizer';
 

@@ -7,7 +7,7 @@ import { LTINav } from 'components/LTINav';
 import { useJwt } from 'data/stores/useJwt';
 import { Document } from 'types/file';
 import { Video } from 'types/tracks';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessages({
   btnDashboard: {

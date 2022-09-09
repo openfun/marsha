@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
 
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessages({
   noTitle: {

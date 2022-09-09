@@ -13,7 +13,7 @@ import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState, Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { debounce } from 'utils/widgets/widgets';
 
 const messages = defineMessages({

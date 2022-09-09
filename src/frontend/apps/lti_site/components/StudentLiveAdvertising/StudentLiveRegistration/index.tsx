@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Maybe } from 'utils/types';
 
 import { RegistrationForm } from './RegistrationForm';

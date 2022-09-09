@@ -4,7 +4,7 @@ import React from 'react';
 import renderer from 'react-test-renderer';
 
 import render from 'utils/tests/render';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 import { ViewersListItemContainer } from '.';
 

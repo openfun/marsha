@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ChatAvatar } from 'components/Chat/ChatAvatar';
-import { chatFonts } from 'utils/theme/theme';
+import { chatFonts } from 'lib-common';
 
 interface ChatMessageMetadatasProps {
   msgDatetime: DateTime;

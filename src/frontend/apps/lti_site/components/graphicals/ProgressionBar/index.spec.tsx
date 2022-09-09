@@ -3,7 +3,7 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 
 import render from 'utils/tests/render';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { ProgressionBar } from '.';
 
 describe('<ProgressionBar />', () => {

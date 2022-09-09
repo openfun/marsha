@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 import { StudentJoinDiscussionButton } from './StudentJoinDiscussionButton';
 import { StudentLeaveDiscussionButton } from './StudentLeaveDiscussionButton';

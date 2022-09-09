@@ -11,7 +11,7 @@ import {
   useCurrentUser,
 } from '../../data/stores/useCurrentUser';
 import { OrganizationAccessRole } from '../../types/User';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { Icon } from '../Icon';
 import { Loader } from '../Loader';
 import { SidebarUploadsIndicator } from '../SidebarUploadsIndicator';

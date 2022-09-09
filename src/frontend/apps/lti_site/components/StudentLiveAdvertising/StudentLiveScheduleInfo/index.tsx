@@ -13,7 +13,7 @@ import React, {
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { liveState } from 'types/tracks';
 
 const Header = ({ title }: { title: ReactNode }) => (

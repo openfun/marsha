@@ -9,7 +9,7 @@ import { stopLive } from 'data/sideEffects/stopLive';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessages({
   title: {

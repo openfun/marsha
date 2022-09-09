@@ -9,7 +9,7 @@ import { useIntl } from 'react-intl';
 import { formatSecToTimeStamp } from 'components/TeacherLiveRecordingActions/utils';
 import { useStartLiveRecording } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessage({
   title: {

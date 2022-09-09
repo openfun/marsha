@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ChatMessageType } from 'data/stores/useChatItemsStore/index';
-import { chatFonts } from 'utils/theme/theme';
+import { chatFonts } from 'lib-common';
 
 const messages = defineMessages({
   sentAt: {

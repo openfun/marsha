@@ -12,7 +12,7 @@ import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedText
 import { modelName } from '../../types/models';
 import { timedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { Maybe, Nullable } from '../../utils/types';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';

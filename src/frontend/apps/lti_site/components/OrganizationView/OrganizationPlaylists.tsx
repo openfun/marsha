@@ -15,7 +15,7 @@ import { Link, useHistory, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { usePlaylists } from '../../data/queries';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { ErrorMessage } from '../ErrorComponents';
 import { Loader } from '../Loader';
 

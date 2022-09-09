@@ -7,7 +7,7 @@ import { Form, FormField } from 'components/Form';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Maybe } from 'utils/types';
 import { LiveSession } from 'types/tracks';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';

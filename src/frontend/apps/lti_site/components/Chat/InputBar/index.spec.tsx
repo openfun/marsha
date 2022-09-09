@@ -4,7 +4,7 @@ import userEvent from '@testing-library/user-event';
 
 import { imageSnapshot, renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 import { InputBar } from '.';
 

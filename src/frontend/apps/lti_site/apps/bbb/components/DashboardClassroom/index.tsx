@@ -6,7 +6,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { useJwt } from 'data/stores/useJwt';
 import { Loader } from 'components/Loader';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Maybe } from 'utils/types';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';

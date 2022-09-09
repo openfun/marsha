@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { Icon } from '../Icon';
 import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';

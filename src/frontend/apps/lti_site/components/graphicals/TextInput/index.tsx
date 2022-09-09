@@ -3,7 +3,7 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const StyledGrommetTextInput = styled(GrommetTextInput)`
   border: 1px solid ${normalizeColor('blue-active', theme)};

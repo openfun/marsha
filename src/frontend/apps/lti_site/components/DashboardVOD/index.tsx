@@ -11,7 +11,7 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};

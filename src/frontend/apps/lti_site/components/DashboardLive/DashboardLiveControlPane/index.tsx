@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 import { DashboardLiveTabAttendance } from './DashboardLiveTabAttendance';
 

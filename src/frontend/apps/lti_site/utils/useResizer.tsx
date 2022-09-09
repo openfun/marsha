@@ -10,7 +10,7 @@ import React, {
 } from 'react';
 import styled from 'styled-components';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Nullable } from 'utils/types';
 
 const HALF_SLIDER_WIDTH_PX = 14;

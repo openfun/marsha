@@ -25,7 +25,7 @@ import {
 import VideoPlayer from 'components/VideoPlayer';
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessages({
   defaultTitle: {

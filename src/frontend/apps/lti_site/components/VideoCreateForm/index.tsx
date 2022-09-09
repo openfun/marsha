@@ -8,7 +8,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useCreateVideo } from '../../data/queries';
 import { modelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { Nullable } from '../../utils/types';
 import { Spinner } from '../Loader';
 import { MutationFieldError } from '../MutationFieldError';

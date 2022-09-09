@@ -2,7 +2,7 @@ import { Box, Meter, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 interface ProgressionBarProps {
   progressPercentage: number;

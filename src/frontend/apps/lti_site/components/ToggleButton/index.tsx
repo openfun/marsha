@@ -2,7 +2,7 @@ import { CheckBox, Grommet } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
 import React from 'react';
 
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const customToggleTheme = {
   checkBox: {

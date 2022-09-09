@@ -15,7 +15,7 @@ import {
 } from 'data/stores/useParticipantsStore';
 import { JoinMode } from 'types/tracks';
 import { isAnonymous } from 'utils/chat/chat';
-import { colors } from 'utils/theme/theme';
+import { colors } from 'lib-common';
 import { converse } from 'utils/window';
 
 import {

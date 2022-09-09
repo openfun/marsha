@@ -12,7 +12,7 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { Nullable } from 'utils/types';
 
 import { ThumbnailManager } from './ThumbnailManager';

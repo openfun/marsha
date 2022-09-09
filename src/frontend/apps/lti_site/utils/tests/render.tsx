@@ -6,14 +6,13 @@ import {
 } from '@testing-library/react';
 import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import { BreadCrumbsProvider } from 'lib-common';
+import { BreadCrumbsProvider, GlobalStyles } from 'lib-common';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { wrapInRouter } from 'utils/tests/router';
-import { GlobalStyles } from 'utils/theme/baseStyles';
 
 //  ------- interfaces -------
 interface IntlOptions {

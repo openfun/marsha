@@ -192,6 +192,9 @@ export const theme: ThemeType = {
     },
   },
   formField: {
+    checkBox: {
+      pad: 'medium',
+    },
     label: {
       requiredIndicator: true,
       size: '1.5rem',

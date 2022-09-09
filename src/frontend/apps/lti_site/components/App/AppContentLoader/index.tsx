@@ -16,8 +16,7 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { useJwt } from 'data/stores/useJwt';
 import { appNames } from 'types/AppData';
 import { report } from 'utils/errors/report';
-import { GlobalStyles } from 'utils/theme/baseStyles';
-import { colors, theme } from 'utils/theme/theme';
+import { colors, theme, GlobalStyles } from 'lib-common';
 
 import { decodeJwt } from './utils';
 

@@ -6,7 +6,7 @@ import { useDropzone } from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { BigDashedBox } from 'components/VideoWizard/CreateVOD/UploadVideoForm/BigDashedBox';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const messages = defineMessages({
   uploadVideoDropzoneLabel: {

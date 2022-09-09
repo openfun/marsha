@@ -3,7 +3,7 @@ import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
 
-import { theme, colors } from 'utils/theme/theme';
+import { theme, colors } from 'lib-common';
 
 interface Props {
   color: keyof typeof colors;

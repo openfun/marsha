@@ -4,7 +4,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const StyledTitleText = styled(Text)`
   font-family: 'Roboto-Medium';

@@ -15,7 +15,7 @@ import styled from 'styled-components';
 
 import { useVideos } from '../../data/queries';
 import { Video } from '../../types/tracks';
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { ErrorMessage } from '../ErrorComponents';
 import { Spinner } from '../Loader';
 import { UploadableObjectStatusBadge } from '../UploadableObjectStatusBadge';

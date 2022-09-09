@@ -5,7 +5,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { Offscreen } from 'components/Styled/Offscreen';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 
 const Preloader = styled(Box)`
   width: 100%;

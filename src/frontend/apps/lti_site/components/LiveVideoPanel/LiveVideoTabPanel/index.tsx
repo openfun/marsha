@@ -7,7 +7,7 @@ import styled from 'styled-components';
 
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { LivePanelItem } from 'data/stores/useLivePanelState';
-import { colors as themeColors, theme } from 'utils/theme/theme';
+import { colors as themeColors, theme } from 'lib-common';
 import { useJwt } from 'data/stores/useJwt';
 
 interface StyledTabProps {

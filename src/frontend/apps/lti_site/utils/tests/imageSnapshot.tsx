@@ -3,11 +3,11 @@ import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
 import { Grommet } from 'grommet';
 import React from 'react';
 import path from 'path';
+import { defaultArgs } from 'puppeteer';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';
-import { theme } from '../theme/theme';
-import { GlobalStyles } from '../theme/baseStyles';
+import { theme, GlobalStyles } from 'lib-common';
 
 const checkSnapshot = () => {
   // check if test name contains '[screenshot]'
@@ -29,9 +29,7 @@ export const imageSnapshot = async (width?: number, height?: number) => {
     viewport: { width, height },
   };
   if (disableSandbox) {
-    generateImageOptions.launch = {
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    };
+    defaultArgs({ args: ['--no-sandbox', '--disable-setuid-sandbox'] });
   }
   const screenshot = await generateImage(generateImageOptions);
   expect(screenshot).toMatchImageSnapshot({

@@ -4,7 +4,7 @@ import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { theme } from '../../utils/theme/theme';
+import { theme } from 'lib-common';
 import { DropzoneIcon } from './DropzoneIcon';
 
 const messages = defineMessages({
