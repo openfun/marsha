@@ -1,8 +1,9 @@
 import { within } from '@testing-library/dom';
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
+import xhrMock, { MockResponse } from 'xhr-mock';
 
 import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
@@ -10,10 +11,14 @@ import render from 'utils/tests/render';
 
 import {
   markdownDocumentMockFactory,
+  markdownImageMockFactory,
   markdownTranslationMockFactory,
 } from 'apps/markdown/utils/tests/factories';
 
 import MarkdownEditor from '.';
+import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
+import { uploadState } from 'types/tracks';
+import { UploadManager } from 'components/UploadManager';
 
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({
@@ -478,5 +483,120 @@ describe('<MarkdownEditor />', () => {
     expect(
       screen.getByRole('checkbox', { name: 'Mathjax enabled' }),
     ).toBeChecked();
+  });
+
+  it('updates document when uploading an image', async () => {
+    xhrMock.setup();
+
+    const markdownDocument = markdownDocumentMockFactory({
+      id: '1',
+      is_draft: true,
+      translations: [
+        markdownTranslationMockFactory({
+          language_code: 'en',
+          content: '# Heading',
+        }),
+      ],
+    });
+    fetchMock.get('/api/markdown-documents/1/', markdownDocument);
+
+    const { container } = render(
+      <UploadManager>
+        <MarkdownEditor />
+      </UploadManager>,
+    );
+
+    // Wait for rendered content
+    await waitFor(() =>
+      expect(
+        screen.getByRole('heading', { level: 1, name: 'Heading' }),
+      ).toBeInTheDocument(),
+    );
+
+    const dropzoneInput = container.querySelector('input[type="file"]')!;
+
+    // Drop an image
+    const markdownImageId = '5459a5b2-2f81-11ed-ab8f-47c92ec0ac16';
+    fetchMock.postOnce(
+      `/api/markdown-images/`,
+      markdownImageMockFactory({
+        id: markdownImageId,
+        active_stamp: null,
+        filename: null,
+        is_ready_to_show: false,
+        upload_state: uploadState.PENDING,
+        url: null,
+      }),
+    );
+    fetchMock.postOnce(
+      `/api/markdown-images/${markdownImageId}/initiate-upload/`,
+      {
+        fields: {
+          key: 'foo',
+        },
+        url: 'https://s3.aws.example.com/',
+      },
+    );
+    const fileUploadDeferred = new Deferred<MockResponse>();
+    xhrMock.post(
+      'https://s3.aws.example.com/',
+      () => fileUploadDeferred.promise,
+    );
+
+    const catFile = createFile('cats.gif', 1234, 'image/gif');
+    act(() => {
+      fireEvent.drop(dropzoneInput, createDtWithFiles([catFile]));
+    });
+
+    await waitFor(() =>
+      expect(
+        container.querySelector('div[class="cm-line"]')!,
+      ).toHaveTextContent(`[//]: # (${markdownImageId})`),
+    );
+
+    expect(screen.getByRole('status')).toHaveTextContent('cats.gif0%');
+
+    // Image is uploaded
+    fetchMock.get(
+      `/api/markdown-images/${markdownImageId}/`,
+      markdownImageMockFactory({
+        id: markdownImageId,
+        is_ready_to_show: true,
+        url: `https://s3.aws.example.com/markdown-image/${markdownImageId}`,
+      }),
+    );
+
+    await act(() => {
+      fileUploadDeferred.resolve(
+        new MockResponse().body('form data body').status(204),
+      );
+    });
+
+    await waitFor(() =>
+      expect(screen.getByRole('status')).toHaveTextContent(
+        'Processing cats.gif',
+      ),
+    );
+
+    // Image is processed
+    await waitFor(() => {
+      expect(screen.getByRole('status')).toHaveTextContent('Uploaded cats.gif');
+    });
+    await waitFor(() =>
+      expect(
+        container.querySelector('div[class="cm-line"]')!,
+      ).toHaveTextContent(`![cats.gif](/uploaded/image/${markdownImageId})`),
+    );
+
+    await waitFor(() =>
+      expect(
+        within(screen.getByTestId('renderer_container')).getByRole('img'),
+      ).toHaveAttribute(
+        'src',
+        `https://s3.aws.example.com/markdown-image/${markdownImageId}`,
+      ),
+    );
+
+    xhrMock.teardown();
   });
 });
