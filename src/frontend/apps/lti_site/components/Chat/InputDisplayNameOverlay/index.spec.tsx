@@ -152,10 +152,11 @@ describe('<InputDisplayNameOverlay />', () => {
     const validateButton = screen.getByRole('button');
     userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    act(() => userEvent.click(validateButton));
+    await act(async () => await userEvent.click(validateButton));
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
+
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
@@ -245,12 +246,14 @@ describe('<InputDisplayNameOverlay />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+
     userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    act(() => userEvent.click(validateButton));
+    await act(async () => await userEvent.click(validateButton));
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
+
     expect(converse.claimNewNicknameInChatRoom).toHaveBeenCalledTimes(1);
     // When waiting prosody answer, svg button is replaced by a waiting spinner
     expect(validateButton.querySelector('svg')).toBeNull();
@@ -294,9 +297,11 @@ describe('<InputDisplayNameOverlay />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
+
     userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    act(() => userEvent.click(validateButton));
+    await act(async () => await userEvent.click(validateButton));
+
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
@@ -335,10 +340,11 @@ describe('<InputDisplayNameOverlay />', () => {
 
     render(<InputDisplayNameOverlay />);
 
-    const inputTextbox = screen.getByRole('textbox');
-    const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
-    act(() => userEvent.click(validateButton));
+    userEvent.type(screen.getByRole('textbox'), 'John_Doe');
+    await act(async () => {
+      await userEvent.click(screen.getByRole('button'));
+    });
+
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
