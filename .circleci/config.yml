@@ -30,6 +30,16 @@ generate-version-file: &generate-version-file
         "$CIRCLE_BUILD_URL" > src/backend/marsha/version.json
 
 version: 2.1
+commands:
+  get_last_packages_commit:
+    description: "Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key."
+    parameters:
+      filename:
+        type: string
+    steps:
+      - run:
+          name: Get last commit that modified packages
+          command: git log -n 1 --pretty=format:%H -- packages > << parameters.filename >>
 jobs:
   # Git jobs
   # Check that the git history is clean and complies with our expectations
@@ -379,9 +389,14 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - get_last_packages_commit:
+          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -408,12 +423,15 @@ jobs:
             - ./node_modules
             - ./apps/lti_site/node_modules
             - ./packages/lib_common/node_modules
-            - ./packages/lib_common/lib
             - ./packages/lib_tests/node_modules
-            - ./packages/lib_tests/lib
             - ./packages/lib_components/node_modules
-            - ./packages/lib_components/lib
           key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - save_cache:
+          paths:
+            - ./packages/lib_common/lib
+            - ./packages/lib_tests/lib
+            - ./packages/lib_components/lib
+          key: front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
 
   # ---- mail jobs ----
   build-mails:
@@ -456,9 +474,14 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - get_last_packages_commit:
+          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Lint code with tslint
           command: yarn lint
@@ -478,9 +501,14 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
+      - get_last_packages_commit:
+          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Install Puppeteer dependencies for visual regression testing
           command: |
