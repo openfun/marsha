@@ -249,7 +249,7 @@ describe('<VideoCreateForm />', () => {
       }),
     );
 
-    screen.getByText('Some title related error.');
+    await screen.findByText('Some title related error.');
     screen.getByText('Another title error.');
   });
 
@@ -298,7 +298,7 @@ describe('<VideoCreateForm />', () => {
       }),
     );
 
-    screen.getByText('Some playlist related error.');
+    await screen.findByText('Some playlist related error.');
     screen.getByText('Another playlist error.');
   });
 });

@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -80,15 +80,15 @@ describe('<UploadsView />', () => {
     expect(screen.getAllByRole('listitem').length).toEqual(3);
 
     await act(async () => video0Deferred.resolve(video0));
-    expect(screen.queryByText('video0.mp4')).toBeNull();
+    await waitFor(() => expect(screen.queryByText('video0.mp4')).toBeNull());
     screen.getByText(video0.title!);
 
     await act(async () => video1Deferred.resolve(video1));
-    expect(screen.queryByText('video1.mp4')).toBeNull();
+    await waitFor(() => expect(screen.queryByText('video1.mp4')).toBeNull());
     screen.getByText(video1.title!);
 
     await act(async () => video2Deferred.resolve(video2));
-    expect(screen.queryByText('video2.mp4')).toBeNull();
+    await waitFor(() => expect(screen.queryByText('video2.mp4')).toBeNull());
     screen.getByText(video2.title!);
   });
 

@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Route } from 'react-router-dom';
@@ -40,9 +40,11 @@ describe('<PlaylistView />', () => {
 
     await act(async () => playlistDeferred.resolve(playlist));
 
-    expect(
-      screen.queryByRole('heading', { name: 'Playlist', level: 1 }),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'Playlist', level: 1 }),
+      ).toBeNull(),
+    );
     screen.getByRole('heading', { name: playlist.title, level: 1 });
     screen.getByRole('heading', { name: 'Videos', level: 2 });
     screen.getByRole('status', { name: 'Loading videos...' });
@@ -58,9 +60,11 @@ describe('<PlaylistView />', () => {
     );
 
     screen.getByRole('heading', { name: 'Videos', level: 2 });
-    expect(
-      screen.queryByRole('status', { name: 'Loading videos...' }),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('status', { name: 'Loading videos...' }),
+      ).toBeNull(),
+    );
     screen.getByRole('rowheader', { name: video.title! });
   });
 });

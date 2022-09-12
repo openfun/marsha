@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { Route } from 'react-router-dom';
@@ -56,9 +56,11 @@ describe('<OrganizationView />', () => {
 
     await act(async () => organizationDeferred.resolve(org));
 
-    expect(
-      screen.queryByRole('heading', { name: 'Organization', level: 1 }),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('heading', { name: 'Organization', level: 1 }),
+      ).toBeNull(),
+    );
     screen.getByRole('heading', { name: org.name, level: 1 });
     screen.getByRole('heading', { name: 'Videos', level: 2 });
     screen.getByRole('status', { name: 'Loading videos...' });
@@ -76,9 +78,11 @@ describe('<OrganizationView />', () => {
     );
 
     screen.getByRole('heading', { name: 'Videos', level: 2 });
-    expect(
-      screen.queryByRole('status', { name: 'Loading videos...' }),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('status', { name: 'Loading videos...' }),
+      ).toBeNull(),
+    );
     expect(screen.getAllByRole('table').length).toEqual(1);
     screen.getByRole('rowheader', { name: video.title! });
     screen.getByRole('heading', { name: 'Playlists', level: 2 });
@@ -94,9 +98,11 @@ describe('<OrganizationView />', () => {
       }),
     );
 
-    expect(
-      screen.queryByRole('status', { name: 'Loading playlists...' }),
-    ).toBeNull();
+    await waitFor(() =>
+      expect(
+        screen.queryByRole('status', { name: 'Loading playlists...' }),
+      ).toBeNull(),
+    );
     expect(screen.getAllByRole('table').length).toEqual(2);
     screen.getByRole('rowheader', { name: playlist.title });
   });

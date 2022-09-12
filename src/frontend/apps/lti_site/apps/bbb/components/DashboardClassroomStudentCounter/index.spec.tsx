@@ -1,4 +1,4 @@
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
@@ -61,14 +61,17 @@ describe('<DashboardClassroomStudentCounter />', () => {
       expect(container).toHaveTextContent(`${seconds}seconds`);
     };
 
-    expectCountdown(2, 1, 37, 45);
+    await waitFor(async () => await expectCountdown(2, 1, 37, 45));
 
-    act(() => {
-      jest.advanceTimersByTime(
-        Duration.fromObject({ hours: 1, minutes: 20 }).toMillis(),
+    await act(async () => {
+      await jest.advanceTimersByTime(
+        Duration.fromObject({
+          hours: 1,
+          minutes: 20,
+        }).toMillis(),
       );
     });
 
-    expectCountdown(2, 0, 17, 45);
+    await waitFor(async () => await expectCountdown(2, 0, 17, 45));
   });
 });

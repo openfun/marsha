@@ -47,7 +47,7 @@ describe('<OrganizationPlaylists />', () => {
     );
 
     screen.getByRole('heading', { name: 'Playlists' });
-    screen.getByRole('table');
+    await screen.findByRole('table');
     screen.getByRole('columnheader', { name: 'Title' });
     screen.getByRole('columnheader', { name: 'LTI ID' });
     screen.getByRole('columnheader', { name: 'Consumer site' });
@@ -80,7 +80,7 @@ describe('<OrganizationPlaylists />', () => {
     );
 
     screen.getByRole('heading', { name: 'Playlists' });
-    screen.getByRole('table');
+    await screen.findByRole('table');
     screen.getByText('There are no playlists for this organization yet.');
   });
 
@@ -111,7 +111,9 @@ describe('<OrganizationPlaylists />', () => {
     await act(async () => deferred.resolve(500));
 
     screen.getByRole('heading', { name: 'Playlists' });
-    screen.getByRole('heading', { name: 'There was an unexpected error' });
+    await screen.findByRole('heading', {
+      name: 'There was an unexpected error',
+    });
     screen.getByText(
       'We could not access the appropriate resources. You can try reloading the page or come back again at a later time.',
     );

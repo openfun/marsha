@@ -50,7 +50,7 @@ describe('<VideosList />', () => {
     screen.getByRole('columnheader', { name: 'Playlist' });
     screen.getByRole('columnheader', { name: 'Upload state' });
 
-    screen.getByRole('rowheader', { name: video1.title! });
+    await screen.findByRole('rowheader', { name: video1.title! });
     screen.getByRole('cell', { name: video1.playlist.title });
     screen.getByRole('rowheader', { name: video2.title! });
     screen.getByRole('cell', { name: video2.playlist.title });
@@ -74,7 +74,7 @@ describe('<VideosList />', () => {
     );
 
     screen.getByRole('table');
-    screen.getByText('There are no videos for this list yet.');
+    await screen.findByText('There are no videos for this list yet.');
   });
 
   it('shows an error message when it fails to load the list of videos', async () => {
@@ -104,6 +104,6 @@ describe('<VideosList />', () => {
 
     await act(async () => deferred.resolve(500));
 
-    screen.getByText('There was an unexpected error');
+    await screen.findByText('There was an unexpected error');
   });
 });

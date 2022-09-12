@@ -102,10 +102,10 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title! });
+    await screen.findByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
-    act(() =>
+    await act(() =>
       getTimedTextTracksDeferred.resolve({
         count: 0,
         next: null,
@@ -161,7 +161,7 @@ describe('<VideoView />', () => {
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    act(() => getVideoDeferred.resolve(video));
+    await act(() => getVideoDeferred.resolve(video));
 
     await screen.findByRole('heading', { name: video.title! });
     screen.getByText(
@@ -182,7 +182,7 @@ describe('<VideoView />', () => {
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    act(() => getVideoDeferred.resolve(video));
+    await act(() => getVideoDeferred.resolve(video));
 
     await screen.findByRole('heading', { name: video.title! });
     screen.getByText(
@@ -223,10 +223,10 @@ describe('<VideoView />', () => {
 
     await act(async () => getVideoDeferred.resolve(video));
 
-    screen.getByRole('heading', { name: video.title! });
+    await screen.findByRole('heading', { name: video.title! });
     screen.getByRole('status', { name: 'Loading subtitles & transcripts...' });
 
-    act(() => getTimedTextTracksDeferred.resolve(500));
+    await act(() => getTimedTextTracksDeferred.resolve(500));
 
     await screen.findByRole('heading', {
       name: 'There was an unexpected error',
@@ -249,7 +249,7 @@ describe('<VideoView />', () => {
     screen.getByRole('heading', { name: 'Video' });
     screen.getByRole('status', { name: 'Loading video...' });
 
-    act(() => getVideoDeferred.resolve(video));
+    await act(() => getVideoDeferred.resolve(video));
 
     await screen.findByRole('heading', { name: video.title! });
     screen.getByText(

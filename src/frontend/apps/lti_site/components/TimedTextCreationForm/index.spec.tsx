@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -10,6 +10,7 @@ import { report } from 'utils/errors/report';
 import render from 'utils/tests/render';
 
 import { TimedTextCreationForm } from '.';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
 
@@ -41,12 +42,14 @@ describe('<TimedTextCreationForm />', () => {
   afterEach(jest.resetAllMocks);
 
   it('renders and loads the language choices', async () => {
-    render(
-      <TimedTextCreationForm
-        excludedLanguages={['en']}
-        mode={timedTextMode.SUBTITLE}
-      />,
-    );
+    await act(() => {
+      render(
+        <TimedTextCreationForm
+          excludedLanguages={['en']}
+          mode={timedTextMode.SUBTITLE}
+        />,
+      );
+    });
     await screen.findByText('Add a language');
 
     screen.getByText('Select...');
@@ -93,9 +96,13 @@ describe('<TimedTextCreationForm />', () => {
 
     screen.getByText('Select...');
     const input = screen.getByRole('combobox');
-    fireEvent.change(input!, { target: { value: 'French' } });
-    fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
-    fireEvent.click(screen.getByText('French'));
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'French' } });
+    });
+    await act(async () => {
+      fireEvent.keyDown(input, { keyCode: 9, key: 'Tab' });
+    });
+    await act(async () => await userEvent.click(screen.getByText('French')));
 
     const button = screen.getByRole('button', { name: /Upload the file/i });
     fireEvent.click(button);
@@ -140,12 +147,16 @@ describe('<TimedTextCreationForm />', () => {
     await screen.findByText('Add a language');
 
     const input = screen.getByRole('combobox');
-    fireEvent.change(input!, { target: { value: 'French' } });
-    fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
-    fireEvent.click(screen.getByText('French'));
+    await act(async () => {
+      fireEvent.change(input, { target: { value: 'French' } });
+    });
+    await act(async () => {
+      fireEvent.keyDown(input!, { keyCode: 9, key: 'Tab' });
+    });
+    await act(async () => await userEvent.click(screen.getByText('French')));
 
     const button = screen.getByRole('button', { name: /Upload the file/i });
-    fireEvent.click(button);
+    await act(async () => await userEvent.click(button));
 
     await screen.findByText('There was an error during track creation.');
 
