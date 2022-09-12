@@ -1,5 +1,5 @@
 import { within } from '@testing-library/dom';
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React, { PropsWithChildren } from 'react';
 
@@ -9,6 +9,7 @@ import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { DownloadVideo } from '.';
+import fetchMock from 'fetch-mock';
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('data/stores/useInfoWidgetModal', () => ({
@@ -17,6 +18,10 @@ jest.mock('data/stores/useInfoWidgetModal', () => ({
     mockSetInfoWidgetModal,
   ],
   InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
+}));
+
+jest.mock('utils/errors/report', () => ({
+  report: jest.fn(),
 }));
 
 describe('<InstructorDownloadVideo />', () => {
@@ -122,5 +127,143 @@ describe('<InstructorDownloadVideo />', () => {
     screen.getByText('No resolutions available');
     const downloadButton = screen.getByRole('button', { name: 'Download' });
     expect(downloadButton).toBeDisabled();
+  });
+
+  it('check toggle allow download disable attribute', async () => {
+    const mockedVideo = videoMockFactory();
+    const allowDownloadToggleLabel = 'Allow video download';
+    const allowDownloadToggleFail = 'Update failed, try again.';
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DownloadVideo />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const allowDownloadToggle = screen.getByRole('checkbox', {
+      name: allowDownloadToggleLabel,
+    });
+
+    userEvent.click(allowDownloadToggle);
+
+    await waitFor(() => {
+      expect(allowDownloadToggle).toBeDisabled();
+    });
+
+    await screen.findByText(allowDownloadToggleFail);
+
+    expect(allowDownloadToggle).not.toBeDisabled();
+  });
+
+  it('check toggle allow download with failed update', async () => {
+    const mockedVideo = videoMockFactory();
+    const allowDownloadToggleLabel = 'Allow video download';
+    const allowDownloadToggleFail = 'Update failed, try again.';
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DownloadVideo />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const allowDownloadToggle = screen.getByRole('checkbox', {
+      name: allowDownloadToggleLabel,
+    });
+
+    expect(screen.queryByText(allowDownloadToggleFail)).not.toBeInTheDocument();
+
+    userEvent.click(allowDownloadToggle);
+
+    await screen.findByText(allowDownloadToggleFail);
+  });
+
+  it('check toggle allow download with succeded update and allowed download', async () => {
+    const mockedVideo = videoMockFactory({
+      show_download: false,
+    });
+    const allowDownloadToggleLabel = 'Allow video download';
+    const allowDownloadToggleSuccess = 'Video download allowed.';
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DownloadVideo />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      show_download: true,
+    });
+
+    const allowDownloadToggle = screen.getByRole('checkbox', {
+      name: allowDownloadToggleLabel,
+    });
+
+    expect(
+      screen.queryByText(allowDownloadToggleSuccess),
+    ).not.toBeInTheDocument();
+
+    userEvent.click(allowDownloadToggle);
+
+    await screen.findByText(allowDownloadToggleSuccess);
+
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer json web token',
+      },
+      method: 'PATCH',
+      body: '{"show_download":true}',
+    });
+  });
+
+  it('check toggle allow download with succeded update and disallowed download', async () => {
+    const mockedVideo = videoMockFactory();
+    const allowDownloadToggleLabel = 'Allow video download';
+    const disallowDownloadToggleSuccess = 'Video download disallowed.';
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DownloadVideo />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      show_download: false,
+    });
+
+    const allowDownloadToggle = screen.getByRole('checkbox', {
+      name: allowDownloadToggleLabel,
+    });
+
+    expect(
+      screen.queryByText(disallowDownloadToggleSuccess),
+    ).not.toBeInTheDocument();
+
+    userEvent.click(allowDownloadToggle);
+
+    await screen.findByText(disallowDownloadToggleSuccess);
+
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer json web token',
+      },
+      method: 'PATCH',
+      body: '{"show_download":false}',
+    });
   });
 });

@@ -1,11 +1,16 @@
 import { Box, Button, Select, Text } from 'grommet';
-import React, { useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
+import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { videoSize } from 'types/tracks';
+import { useUpdateVideo } from 'data/queries';
+import { report } from 'utils/errors/report';
+import { Video } from 'types/tracks';
 
 const messages = defineMessages({
   info: {
@@ -36,6 +41,26 @@ const messages = defineMessages({
     description:
       'Label of the button used to download the video in the selected quality.',
     id: 'components.DownloadVideo.downloadButtonLabel',
+  },
+  allowDownloadToggleLabel: {
+    defaultMessage: 'Allow video download',
+    description: 'Label of the toggle used to allowed the video download.',
+    id: 'components.DownloadVideo.enableDownloadToggleLabel',
+  },
+  allowDownloadToggleSuccess: {
+    defaultMessage: 'Video download allowed.',
+    description: 'Message displayed when allowing download video succeded.',
+    id: 'components.DownloadVideo.enableDownloadToggleSuccess',
+  },
+  disallowDownloadToggleSuccess: {
+    defaultMessage: 'Video download disallowed.',
+    description: 'Message displayed when disallowing download video succeded.',
+    id: 'components.DownloadVideo.disallowDownloadToggleSuccess',
+  },
+  allowDownloadToggleFail: {
+    defaultMessage: 'Update failed, try again.',
+    description: 'Message displayed when allowing download video has failed.',
+    id: 'components.DownloadVideo.allowDownloadToggleFail',
   },
 });
 
@@ -78,13 +103,63 @@ export const DownloadVideo = () => {
     value: string;
   }>(options[options.length - 1]);
 
+  const [toggleAllowDownload, setToggleAllowDownload] = useState(
+    video.show_download,
+  );
+
+  useEffect(() => {
+    setToggleAllowDownload(video.show_download);
+  }, [video.show_download]);
+
+  const [disabledToggle, setDisabledToggle] = useState(false);
+
+  const videoMutation = useUpdateVideo(video.id, {
+    onSuccess: (videoUpdated: Video) => {
+      setToggleAllowDownload(videoUpdated.show_download);
+      toast.success(
+        intl.formatMessage(
+          videoUpdated.show_download
+            ? messages.allowDownloadToggleSuccess
+            : messages.disallowDownloadToggleSuccess,
+        ),
+        {
+          position: 'bottom-center',
+        },
+      );
+    },
+    onError: (err) => {
+      report(err);
+      toast.error(intl.formatMessage(messages.allowDownloadToggleFail), {
+        position: 'bottom-center',
+      });
+    },
+    onMutate: () => {
+      setDisabledToggle(true);
+    },
+    onSettled: () => {
+      setDisabledToggle(false);
+    },
+  });
+
+  const onToggleChange = useCallback(() => {
+    videoMutation.mutate({
+      show_download: !video.show_download,
+    });
+  }, [video.show_download, videoMutation]);
+
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Box direction="column" gap="small">
+      <ToggleInput
+        disabled={disabledToggle}
+        checked={toggleAllowDownload}
+        onChange={onToggleChange}
+        label={intl.formatMessage(messages.allowDownloadToggleLabel)}
+      />
+      <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
         <Select
           aria-label={intl.formatMessage(messages.selectQualityLabel)}
           options={options}
