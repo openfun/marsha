@@ -1,7 +1,6 @@
+import { Maybe } from 'lib-common';
 import React from 'react';
 import { MemoryRouter, Route, Switch } from 'react-router-dom';
-
-import { Maybe } from 'lib-common';
 
 export const wrapInRouter = (
   Component: JSX.Element,

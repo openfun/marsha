@@ -15,6 +15,7 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
+  plugins: ['import'],
   rules: {
     '@typescript-eslint/no-explicit-any': 0,
     '@typescript-eslint/no-empty-function': 0,
@@ -29,6 +30,14 @@ module.exports = {
     curly: 2,
     'default-case': 'error',
     eqeqeq: 2,
+    'import/order': [
+      'error',
+      {
+        alphabetize: {
+          order: 'asc',
+        },
+      },
+    ],
     'no-alert': 1,
     'react/prop-types': 0,
   },

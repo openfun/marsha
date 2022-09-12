@@ -1,8 +1,7 @@
-import React, { useContext } from 'react';
 import { Box, Text, ResponsiveContext } from 'grommet';
-import styled from 'styled-components';
-
+import React, { useContext } from 'react';
 import { SvgProps } from 'src/common/SVGIcons';
+import styled from 'styled-components';
 
 import { Badge } from './Badge';
 
