@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add toggle to allow download or not on the VOD dashboard.
 - Display total amount of participants in the title panel
 - Display amount of participants in the viewers panel
 - Add missing ended webinar screens when live is stopped 
