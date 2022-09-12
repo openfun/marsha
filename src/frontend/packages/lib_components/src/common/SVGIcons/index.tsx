@@ -1,8 +1,7 @@
+import { ThemeContext } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React, { useContext } from 'react';
 import styled, { CSSProperties } from 'styled-components';
-import { normalizeColor } from 'grommet/utils';
-
-import { ThemeContext } from 'grommet';
 
 interface ComponentWithTheme {
   grommetTheme: object;
