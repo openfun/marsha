@@ -1,7 +1,6 @@
 import { screen, fireEvent } from '@testing-library/react';
-import React from 'react';
-
 import { render } from 'lib-tests';
+import React from 'react';
 
 import { Button } from '.';
 

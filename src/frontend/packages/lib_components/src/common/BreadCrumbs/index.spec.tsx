@@ -1,8 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
+import { render } from 'lib-tests';
 import React, { Fragment } from 'react';
 import { Link, Route, Switch } from 'react-router-dom';
-
-import { render } from 'lib-tests';
 
 import { BreadCrumbs, Crumb } from '.';
 

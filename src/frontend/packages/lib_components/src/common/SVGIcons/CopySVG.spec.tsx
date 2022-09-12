@@ -1,5 +1,5 @@
-import React from 'react';
 import { renderIconSnapshot } from 'lib-tests';
+import React from 'react';
 
 import { CopySVG } from './CopySVG';
 

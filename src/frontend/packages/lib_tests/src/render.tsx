@@ -7,11 +7,10 @@ import {
 } from '@testing-library/react';
 import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
+import { BreadCrumbsProvider, GlobalStyles, theme } from 'lib-common';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
-import { BreadCrumbsProvider, GlobalStyles, theme } from 'lib-common';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';

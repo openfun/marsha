@@ -1,10 +1,9 @@
-import { cleanup, render } from '@testing-library/react';
-import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
-import { Grommet } from 'grommet';
-import React from 'react';
 import path from 'path';
-
+import { cleanup, render } from '@testing-library/react';
+import { Grommet } from 'grommet';
+import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
 import { GlobalStyles, theme } from 'lib-common';
+import React from 'react';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';
