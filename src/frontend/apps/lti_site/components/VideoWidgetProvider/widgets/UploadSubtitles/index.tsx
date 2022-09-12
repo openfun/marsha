@@ -4,6 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { LocalizedTimedTextTrackUpload } from 'components/LocalizedTimedTextTrackUpload';
 import { timedTextMode } from 'types/tracks';
+import { ToggleSubtitlesAsTranscript } from './ToggleSubtitlesAsTranscript';
 
 const messages = defineMessages({
   info: {
@@ -27,6 +28,7 @@ export const UploadSubtitles = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
+      <ToggleSubtitlesAsTranscript />
       <LocalizedTimedTextTrackUpload
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />
