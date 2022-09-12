@@ -2,11 +2,13 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
+import { UploadSubtitles } from '.';
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal';
 import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
+import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
-import { UploadSubtitles } from '.';
+import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: jest.fn(),
@@ -35,12 +37,13 @@ describe('<UploadSubtitles />', () => {
       null,
       mockSetInfoWidgetModalProvider,
     ]);
+    const mockedVideo = videoMockFactory();
 
     useTimedTextTrackLanguageChoices.setState({
       choices: languageChoices,
     });
 
-    render(<UploadSubtitles />);
+    render(wrapInVideo(<UploadSubtitles />, mockedVideo));
 
     screen.getByText('Subtitles');
 

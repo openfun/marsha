@@ -99,7 +99,7 @@ export const LocalizedTimedTextTrackUpload = ({
   };
 
   return (
-    <Box direction="column" gap="small">
+    <Box direction="column" gap="small" margin={{ top: 'small' }}>
       <LanguageSelect
         onChange={(option) => setSelectedLanguage(option)}
         timedTextModeWidget={timedTextModeWidget}
