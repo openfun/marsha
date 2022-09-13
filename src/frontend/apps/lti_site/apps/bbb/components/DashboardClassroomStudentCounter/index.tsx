@@ -19,34 +19,25 @@ export const DashboardClassroomStudentCounter = ({
       ),
     [classroom.starting_at],
   );
-  const [counter, setCounter] = React.useState<
-    DurationObjectUnits | undefined
-  >();
-
-  const updateCounter = useCallback(() => {
-    setCounter(
-      startingAt
-        .diffNow(['days', 'hours', 'minutes', 'seconds'])
-        .mapUnits((x, u) => (u === 'seconds' ? Math.floor(x) : x))
-        .toObject(),
-    );
+  const computeCounter = useCallback(() => {
+    return startingAt
+      .diffNow(['days', 'hours', 'minutes', 'seconds'])
+      .mapUnits((x, u) => (u === 'seconds' ? Math.floor(x) : x))
+      .toObject();
   }, [startingAt]);
-
-  useEffect(() => {
-    if (!counter) {
-      updateCounter();
-    }
-  }, [counter, updateCounter]);
+  const [counter, setCounter] = React.useState<DurationObjectUnits>(() =>
+    computeCounter(),
+  );
 
   useEffect(() => {
     let timeout: number | undefined;
-    if (classroom.starting_at && counter) {
-      timeout = window.setTimeout(updateCounter, 1000);
+    if (startingAt) {
+      timeout = window.setTimeout(() => setCounter(computeCounter()), 1000);
     }
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [classroom, counter, updateCounter]);
+  }, [startingAt, computeCounter]);
 
   if (counter) {
     return (
@@ -71,5 +62,6 @@ export const DashboardClassroomStudentCounter = ({
       </Box>
     );
   }
+
   return null;
 };

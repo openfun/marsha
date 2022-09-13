@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
@@ -61,8 +61,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+    });
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -102,8 +110,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+    });
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -143,8 +159,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByTitle(`Select ${classroom.title}`));
+
+    await act(() => {
+      userEvent.click(screen.getByTitle(`Select ${classroom.title}`));
+    });
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -190,8 +214,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(screen.getByText('Add a classroom'));
+    });
 
     await waitFor(() => {
       expect(
@@ -250,8 +282,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(screen.getByText('Add a classroom'));
+    });
 
     await waitFor(() => {
       expect(
@@ -314,8 +354,16 @@ describe('<SelectContent />', () => {
     const classroomTab = await screen.findByRole('tab', {
       name: 'Classrooms',
     });
-    userEvent.click(classroomTab);
-    userEvent.click(screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(classroomTab);
+    });
+
+    await waitFor(() => screen.getByText('Add a classroom'));
+
+    await act(() => {
+      userEvent.click(screen.getByText('Add a classroom'));
+    });
 
     await waitFor(() => {
       expect(

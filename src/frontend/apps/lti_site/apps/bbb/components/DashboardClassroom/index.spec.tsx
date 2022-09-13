@@ -1,4 +1,4 @@
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from '@tanstack/react-query';
@@ -63,11 +63,13 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { getByText } = render(<DashboardClassroom />);
+    render(<DashboardClassroom />);
 
-    getByText('Loading classroom...');
-    await act(async () => classroomDeferred.resolve(classroom));
-    getByText('Classroom not started yet.');
+    screen.getByText('Loading classroom...');
+
+    await act(() => classroomDeferred.resolve(classroom));
+
+    await waitFor(() => screen.getByText('Classroom not started yet.'));
   });
 
   it('shows instructor dashboard', async () => {
@@ -80,10 +82,13 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText, getByText } = render(<DashboardClassroom />);
-    getByText('Loading classroom...');
-    await act(async () => classroomDeferred.resolve(classroom));
-    await findByText('Launch the classroom now in BBB');
+    render(<DashboardClassroom />);
+
+    screen.getByText('Loading classroom...');
+
+    await act(() => classroomDeferred.resolve(classroom));
+
+    await waitFor(() => screen.getByText('Launch the classroom now in BBB'));
   });
 
   it('asks for fullname when joining a classroom, cancellable for instructor', async () => {
@@ -96,8 +101,11 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText } = render(<DashboardClassroom />);
+    render(<DashboardClassroom />);
+
     await act(async () => classroomDeferred.resolve(classroom));
+
+    await waitFor(() => screen.getByText('Launch the classroom now in BBB'));
 
     const createdClassroom = {
       ...classroom,
@@ -109,11 +117,20 @@ describe('<DashboardClassroom />', () => {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    fireEvent.click(await findByText('Join classroom'));
+    await act(() => {
+      fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
+    });
 
-    await findByText('Please enter your name to join the classroom');
-    await findByText('Cancel');
+    await waitFor(() => screen.getByText('Join classroom'));
+
+    await act(() => {
+      fireEvent.click(screen.getByText('Join classroom'));
+    });
+
+    await waitFor(() =>
+      screen.getByText('Please enter your name to join the classroom'),
+    );
+    screen.getByText('Cancel');
   });
 
   it('asks for fullname when joining a classroom, not cancellable for student', async () => {
@@ -129,10 +146,17 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { findByText } = render(<DashboardClassroom />);
-    await act(async () => classroomDeferred.resolve(classroom));
-    fireEvent.click(screen.getByText('Click here to access classroom'));
-    await findByText('Please enter your name to join the classroom');
+    render(<DashboardClassroom />);
+
+    await act(() => classroomDeferred.resolve(classroom));
+
+    await act(() => {
+      fireEvent.click(screen.getByText('Click here to access classroom'));
+    });
+
+    await waitFor(() =>
+      screen.getByText('Please enter your name to join the classroom'),
+    );
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 
     const inputUsername = screen.getByRole('textbox');
@@ -140,11 +164,13 @@ describe('<DashboardClassroom />', () => {
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
-    fireEvent.click(screen.getByText('Join'));
-    await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
-    );
-    expect(window.open).toHaveBeenCalledTimes(1);
+
+    await act(() => {
+      fireEvent.click(screen.getByText('Join'));
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
+    });
+
+    await waitFor(() => expect(window.open).toHaveBeenCalledTimes(1));
   });
 
   it('uses appdata fullname when joining a classroom', async () => {
@@ -160,12 +186,19 @@ describe('<DashboardClassroom />', () => {
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
     render(<DashboardClassroom />);
-    await act(async () => classroomDeferred.resolve(classroom));
-    fireEvent.click(screen.getByText('Join classroom'));
-    await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
-    );
 
+    await act(() => {
+      classroomDeferred.resolve(classroom);
+    });
+
+    await screen.findByText('Join classroom');
+
+    await act(() => {
+      fireEvent.click(screen.getByText('Join classroom'));
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
+    });
+
+    await waitFor(() => expect(fetchMock.calls().length).toBe(2));
     expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/');
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
@@ -177,6 +210,7 @@ describe('<DashboardClassroom />', () => {
         fullname: token.user?.user_fullname,
       }),
     });
+
     expect(window.open).toHaveBeenCalledTimes(1);
     expect(window.open).toHaveBeenCalledWith(
       'server.bbb/classroom/url',
@@ -188,7 +222,10 @@ describe('<DashboardClassroom />', () => {
     expect(urlMessage).not.toBeInTheDocument();
 
     // multiple joining must be avoided
-    fireEvent.click(screen.getByText('Join classroom'));
+    await act(() => {
+      fireEvent.click(screen.getByText('Join classroom'));
+    });
+
     expect(window.open).toHaveBeenCalledTimes(1);
   });
 
@@ -209,20 +246,27 @@ describe('<DashboardClassroom />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    const { getByText } = render(<DashboardClassroom />);
-    await act(async () => classroomDeferred.resolve(classroom));
-    await act(async () =>
-      deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
-    );
+    render(<DashboardClassroom />);
+    await act(() => {
+      classroomDeferred.resolve(classroom);
+      deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
+    });
 
     const updatedClassroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', updatedClassroomDeferred.promise, {
       overwriteRoutes: true,
     });
 
-    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
+    await screen.findByText('Launch the classroom now in BBB');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
+    await act(() => {
+      fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
+    });
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/'),
+    );
+
     const updatedClassroom = {
       ...classroom,
       started: true,
@@ -238,20 +282,24 @@ describe('<DashboardClassroom />', () => {
         ],
       },
     };
-    await act(async () => updatedClassroomDeferred.resolve(updatedClassroom));
+    await act(() => updatedClassroomDeferred.resolve(updatedClassroom));
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
-    getByText(`You have joined the classroom as ${token.user?.user_fullname}.`);
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/'),
+    );
+    screen.getByText(
+      `You have joined the classroom as ${token.user?.user_fullname}.`,
+    );
   });
 
   it('display error when no jwt exists', async () => {
     mockGetDecodedJwt.mockImplementation(() => {
       throw new Error('No jwt');
     });
-    const { getByText } = render(<DashboardClassroom />);
+    render(<DashboardClassroom />);
 
-    getByText('The classroom you are looking for could not be found');
-    getByText(
+    screen.getByText('The classroom you are looking for could not be found');
+    screen.getByText(
       'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
     );
   });
@@ -272,13 +320,18 @@ describe('<DashboardClassroom />', () => {
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    const { getByText } = render(<DashboardClassroom />, {
+    render(<DashboardClassroom />, {
       queryOptions: { client: queryClient },
     });
-    getByText('Loading classroom...');
-    await act(async () => classroomDeferred.resolve(500));
-    getByText('The classroom you are looking for could not be found');
-    getByText(
+
+    screen.getByText('Loading classroom...');
+
+    await act(() => classroomDeferred.resolve(500));
+
+    await screen.findByText(
+      'The classroom you are looking for could not be found',
+    );
+    screen.getByText(
       'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
     );
   });

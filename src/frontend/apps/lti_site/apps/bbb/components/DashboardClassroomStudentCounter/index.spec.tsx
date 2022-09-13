@@ -28,8 +28,6 @@ describe('<DashboardClassroomStudentCounter />', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-  });
-  afterAll(() => {
     jest.useRealTimers();
   });
 
@@ -49,29 +47,31 @@ describe('<DashboardClassroomStudentCounter />', () => {
       <DashboardClassroomStudentCounter classroom={classroom} />,
     );
 
-    const expectCountdown = (
+    const expectCountdown = async (
       days: number,
       hours: number,
       minutes: number,
       seconds: number,
     ) => {
-      expect(container).toHaveTextContent(`${days}days`);
-      expect(container).toHaveTextContent(`${hours}hours`);
-      expect(container).toHaveTextContent(`${minutes}minutes`);
-      expect(container).toHaveTextContent(`${seconds}seconds`);
+      await waitFor(() => expect(container).toHaveTextContent(`${days}days`));
+      await waitFor(() => expect(container).toHaveTextContent(`${hours}hours`));
+      await waitFor(() =>
+        expect(container).toHaveTextContent(`${minutes}minutes`),
+      );
+      await waitFor(() =>
+        expect(container).toHaveTextContent(`${seconds}seconds`),
+      );
     };
 
-    await waitFor(async () => await expectCountdown(2, 1, 37, 45));
+    await expectCountdown(2, 1, 37, 45);
 
-    await act(async () => {
-      await jest.advanceTimersByTime(
-        Duration.fromObject({
-          hours: 1,
-          minutes: 20,
-        }).toMillis(),
-      );
+    act(() => {
+      const t = currentDate.plus({ hours: 1, minutes: 20 });
+      jest.setSystemTime(t.toJSDate());
+
+      jest.runAllTimers();
     });
 
-    await waitFor(async () => await expectCountdown(2, 0, 17, 45));
+    await expectCountdown(2, 0, 17, 44);
   });
 });

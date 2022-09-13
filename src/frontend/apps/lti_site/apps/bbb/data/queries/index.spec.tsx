@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 
 import { useJwt } from 'data/stores/useJwt';
 
@@ -20,7 +20,7 @@ jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
+let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
 describe('queries', () => {
   beforeEach(() => {
@@ -38,7 +38,7 @@ describe('queries', () => {
       },
     });
 
-    Wrapper = ({ children }: Element) => (
+    Wrapper = ({ children }: React.PropsWithChildren<{}>) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
@@ -53,13 +53,13 @@ describe('queries', () => {
       const classrooms = Array(4).fill(classroomMockFactory());
       fetchMock.mock('/api/classrooms/?organization=1&limit=999', classrooms);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useClassrooms({ organization: '1' }),
         {
           wrapper: Wrapper,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/classrooms/?organization=1&limit=999',
@@ -71,18 +71,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(classrooms);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/classrooms/?organization=1&limit=999', 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useClassrooms({ organization: '1' }),
         { wrapper: Wrapper },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/classrooms/?organization=1&limit=999',
@@ -94,7 +93,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -103,10 +101,11 @@ describe('queries', () => {
       const classroom = classroomMockFactory();
       fetchMock.mock(`/api/classrooms/${classroom.id}/`, classroom);
 
-      const { result, waitFor } = renderHook(() => useClassroom(classroom.id), {
+      const { result } = renderHook(() => useClassroom(classroom.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/`,
@@ -118,18 +117,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(classroom);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const classroom = classroomMockFactory();
       fetchMock.mock(`/api/classrooms/${classroom.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => useClassroom(classroom.id), {
+      const { result } = renderHook(() => useClassroom(classroom.id), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/`,
@@ -141,7 +139,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -150,14 +147,15 @@ describe('queries', () => {
       const classroom = classroomMockFactory();
       fetchMock.post('/api/classrooms/', classroom);
 
-      const { result, waitFor } = renderHook(() => useCreateClassroom(), {
+      const { result } = renderHook(() => useCreateClassroom(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         playlist: classroom.playlist.id,
         title: classroom.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -172,14 +170,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(classroom);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to create the resource', async () => {
       const classroom = classroomMockFactory();
       fetchMock.post('/api/classrooms/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateClassroom(), {
+      const { result } = renderHook(() => useCreateClassroom(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
@@ -187,7 +184,7 @@ describe('queries', () => {
         title: classroom.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -202,7 +199,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -211,16 +207,14 @@ describe('queries', () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/`, classroom);
 
-      const { result, waitFor } = renderHook(
-        () => useUpdateClassroom(classroom.id),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useUpdateClassroom(classroom.id), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/`,
@@ -236,23 +230,20 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(classroom);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
-        () => useUpdateClassroom(classroom.id),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useUpdateClassroom(classroom.id), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/`,
@@ -268,7 +259,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -277,7 +267,7 @@ describe('queries', () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/create/`, classroom);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCreateClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
@@ -286,7 +276,8 @@ describe('queries', () => {
       result.current.mutate({
         welcome_text: 'Welcome text',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/create/`,
@@ -302,14 +293,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(classroom);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/create/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCreateClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
@@ -318,7 +308,8 @@ describe('queries', () => {
       result.current.mutate({
         welcome_text: 'Welcome text',
       });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/create/`,
@@ -334,7 +325,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -343,7 +333,7 @@ describe('queries', () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/join/`, classroom);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useJoinClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
@@ -352,7 +342,8 @@ describe('queries', () => {
       result.current.mutate({
         fullname: 'John Doe',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/join/`,
@@ -368,14 +359,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(classroom);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const classroom = classroomMockFactory();
       fetchMock.patch(`/api/classrooms/${classroom.id}/join/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useJoinClassroomAction(classroom.id),
         {
           wrapper: Wrapper,
@@ -384,7 +374,8 @@ describe('queries', () => {
       result.current.mutate({
         fullname: 'John Doe',
       });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classrooms/${classroom.id}/join/`,
@@ -400,7 +391,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 });

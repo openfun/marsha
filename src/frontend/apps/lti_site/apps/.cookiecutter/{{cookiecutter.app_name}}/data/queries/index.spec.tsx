@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 
 import { useJwt } from 'data/stores/useJwt';
 
@@ -18,7 +18,7 @@ jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
+let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
 describe('queries', () => {
   beforeEach(() => {
@@ -36,7 +36,7 @@ describe('queries', () => {
       },
     });
 
-    Wrapper = ({ children }: Element) => (
+    Wrapper = ({ children }: React.PropsWithChildren<{}>) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
@@ -51,13 +51,14 @@ describe('queries', () => {
       const {{cookiecutter.model_plural_lower}} = Array(4).fill({{cookiecutter.model_lower}}MockFactory());
       fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999', {{cookiecutter.model_plural_lower}});
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => use{{cookiecutter.model_plural}}({ organization: '1' }),
         {
           wrapper: Wrapper,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999',
@@ -69,18 +70,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual({{cookiecutter.model_plural_lower}});
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999', 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => use{{cookiecutter.model_plural}}({ organization: '1' }),
         { wrapper: Wrapper },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/{{cookiecutter.model_url_part}}/?organization=1&limit=999',
@@ -92,7 +92,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -101,10 +100,11 @@ describe('queries', () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.mock(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`, {{cookiecutter.model_lower}});
 
-      const { result, waitFor } = renderHook(() => use{{cookiecutter.model}}({{cookiecutter.model_lower}}.id), {
+      const { result } = renderHook(() => use{{cookiecutter.model}}({{cookiecutter.model_lower}}.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -114,18 +114,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual({{cookiecutter.model_lower}});
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.mock(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => use{{cookiecutter.model}}({{cookiecutter.model_lower}}.id), {
+      const { result } = renderHook(() => use{{cookiecutter.model}}({{cookiecutter.model_lower}}.id), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -135,7 +134,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -144,14 +142,15 @@ describe('queries', () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.post('/api/{{cookiecutter.model_url_part}}/', {{cookiecutter.model_lower}});
 
-      const { result, waitFor } = renderHook(() => useCreate{{cookiecutter.model}}(), {
+      const { result } = renderHook(() => useCreate{{cookiecutter.model}}(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         playlist: {{cookiecutter.model_lower}}.playlist.id,
         title: {{cookiecutter.model_lower}}.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -166,14 +165,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual({{cookiecutter.model_lower}});
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to create the resource', async () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.post('/api/{{cookiecutter.model_url_part}}/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreate{{cookiecutter.model}}(), {
+      const { result } = renderHook(() => useCreate{{cookiecutter.model}}(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
@@ -181,7 +179,7 @@ describe('queries', () => {
         title: {{cookiecutter.model_lower}}.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -196,7 +194,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -205,7 +202,7 @@ describe('queries', () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.patch(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`, {{cookiecutter.model_lower}});
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdate{{cookiecutter.model}}({{cookiecutter.model_lower}}.id),
         {
           wrapper: Wrapper,
@@ -214,7 +211,7 @@ describe('queries', () => {
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -228,14 +225,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual({{cookiecutter.model_lower}});
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const {{cookiecutter.model_lower}} = {{cookiecutter.model_lower}}MockFactory();
       fetchMock.patch(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdate{{cookiecutter.model}}({{cookiecutter.model_lower}}.id),
         {
           wrapper: Wrapper,
@@ -244,7 +240,8 @@ describe('queries', () => {
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+      
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/{{cookiecutter.model_url_part}}/${{'{'}}{{cookiecutter.model_lower}}.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -258,7 +255,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 });

@@ -33,11 +33,10 @@ describe('<DashboardClassroomForm />', () => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
   });
+
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-  });
-  afterAll(() => {
     jest.useRealTimers();
   });
 
@@ -47,19 +46,15 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, findByText } = render(
-      <DashboardClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    render(<DashboardClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
-    fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom created.' }),
-    );
-    await findByText('Classroom created.');
+    await act(() => {
+      fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
+    });
 
-    expect(fetchMock.calls()).toHaveLength(1);
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/create/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
@@ -68,6 +63,12 @@ describe('<DashboardClassroomForm />', () => {
       method: 'PATCH',
       body: JSON.stringify(classroom),
     });
+
+    await act(async () =>
+      deferredPatch.resolve({ message: 'Classroom created.' }),
+    );
+
+    await screen.findByText('Classroom created.');
   });
 
   it('creates a classroom with updated values', async () => {
@@ -76,18 +77,40 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    // wait for debounce to update the classroom
+    fetchMock.patch('/api/classrooms/1/', {
+      ...classroom,
+      title: 'updated title',
+      welcomeText: 'updated welcome text',
+    });
+
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
     });
-    userEvent.clear(inputTitle);
-    userEvent.type(inputTitle, 'updated title');
-    fireEvent.blur(inputTitle);
+    await act(() => {
+      userEvent.clear(inputTitle);
+      userEvent.type(inputTitle, 'updated title');
+      fireEvent.blur(inputTitle);
+    });
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0]![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: 'updated title',
+      }),
+    });
 
     // simulate updated classroom
     rerender(
@@ -102,18 +125,25 @@ describe('<DashboardClassroomForm />', () => {
     const inputWelcomeText = screen.getByRole('textbox', {
       name: /welcome text/i,
     });
-    userEvent.type(inputWelcomeText, 'updated welcome text', {
-      initialSelectionStart: 0,
-      initialSelectionEnd: classroom.welcome_text.length,
+    await act(() => {
+      userEvent.type(inputWelcomeText, 'updated welcome text', {
+        initialSelectionStart: 0,
+        initialSelectionEnd: classroom.welcome_text.length,
+      });
     });
 
-    // wait for debounce to update the classroom
-    fetchMock.patch('/api/classrooms/1/', {
-      ...classroom,
-      title: 'updated title',
-      welcomeText: 'updated welcome text',
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
+
+    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[1]![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        welcome_text: 'updated welcome text',
+      }),
     });
-    jest.runAllTimers();
 
     // simulate updated classroom
     rerender(
@@ -127,33 +157,8 @@ describe('<DashboardClassroomForm />', () => {
     );
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom created.' }),
-    );
 
-    expect(fetchMock.calls()).toHaveLength(3);
-
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: 'updated title',
-      }),
-    });
-
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[1]![1]).toEqual({
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        welcome_text: 'updated welcome text',
-      }),
-    });
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/create/');
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -167,6 +172,12 @@ describe('<DashboardClassroomForm />', () => {
         welcome_text: 'updated welcome text',
       }),
     });
+
+    await act(async () =>
+      deferredPatch.resolve({ message: 'Classroom created.' }),
+    );
+
+    await waitFor(() => screen.getByText('Classroom created.'));
   });
 
   it('schedules a classroom', async () => {
@@ -177,18 +188,29 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
     });
     userEvent.clear(inputTitle);
     userEvent.type(inputTitle, 'updated title');
-    fireEvent.blur(inputTitle);
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0][1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: 'updated title',
+      }),
+    });
 
     // simulate classroom update
     rerender(
@@ -204,25 +226,8 @@ describe('<DashboardClassroomForm />', () => {
       initialSelectionStart: 0,
       initialSelectionEnd: classroom.welcome_text.length,
     });
-    fireEvent.blur(inputWelcomeText);
 
-    jest.runAllTimers();
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
-
-    expect(fetchMock.calls()).toHaveLength(2);
-
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: 'updated title',
-      }),
-    });
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
 
     expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1]![1]).toEqual({
@@ -234,6 +239,16 @@ describe('<DashboardClassroomForm />', () => {
         welcome_text: 'updated welcome text',
       }),
     });
+
+    expect(screen.queryByText('Classroom updated.')).not.toBeInTheDocument();
+
+    await act(async () =>
+      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
+    );
+
+    await waitFor(() =>
+      expect(screen.getAllByText('Classroom updated.').length).toEqual(2),
+    );
 
     // simulate classroom update
     rerender(
@@ -249,16 +264,29 @@ describe('<DashboardClassroomForm />', () => {
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     userEvent.type(inputStartingAtDate, startingAt.toFormat('yyyy/MM/dd'));
     fireEvent.blur(inputStartingAtDate);
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
 
     // using userEvent.type with following input doesn't work
     const inputStartingAtTime = screen.getByLabelText(/starting time/i);
-    fireEvent.change(inputStartingAtTime, {
-      target: { value: startingAt.toLocaleString(DateTime.TIME_24_SIMPLE) },
+
+    await act(() => {
+      fireEvent.change(inputStartingAtTime, {
+        target: { value: startingAt.toLocaleString(DateTime.TIME_24_SIMPLE) },
+      });
+      fireEvent.blur(inputStartingAtTime);
     });
-    fireEvent.blur(inputStartingAtTime);
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
+
+    expect(fetchMock.calls()[2]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[2]![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        starting_at: startingAt.toISO(),
+      }),
+    });
 
     // simulate classroom update
     rerender(
@@ -272,37 +300,15 @@ describe('<DashboardClassroomForm />', () => {
     );
 
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
-    userEvent.type(inputEstimatedDuration, estimatedDuration.toFormat('h:mm'));
-    fireEvent.blur(inputEstimatedDuration);
-
-    // simulate classroom update
-    rerender(
-      <DashboardClassroomForm
-        classroom={{
-          ...classroom,
-          title: 'updated title',
-          starting_at: startingAt.toISO(),
-          estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
-        }}
-      />,
-    );
-
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
-
-    expect(fetchMock.calls()).toHaveLength(4);
-
-    expect(fetchMock.calls()[2]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[2]![1]).toEqual({
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        starting_at: startingAt.toISO(),
-      }),
+    await act(() => {
+      userEvent.type(
+        inputEstimatedDuration,
+        estimatedDuration.toFormat('h:mm'),
+      );
+      fireEvent.blur(inputEstimatedDuration);
     });
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(4));
 
     expect(fetchMock.calls()[3]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[3]![1]).toEqual({
@@ -329,11 +335,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -341,9 +347,24 @@ describe('<DashboardClassroomForm />', () => {
     userEvent.clear(inputTitle);
     userEvent.type(inputTitle, 'updated title');
 
-    // Blur event should trigger update
-    fireEvent.blur(inputTitle);
-    act(() => deferredPatch.resolve({ message: 'Classroom scheduled.' }));
+    await act(() => {
+      // Blur event should trigger update
+      fireEvent.blur(inputTitle);
+      deferredPatch.resolve({ message: 'Classroom scheduled.' });
+    });
+
+    await waitFor(() => screen.getByText('Classroom updated.'));
+    expect(fetchMock.calls()).toHaveLength(1);
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0]![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        title: 'updated title',
+      }),
+    });
 
     // simulate classroom update
     rerender(
@@ -360,24 +381,11 @@ describe('<DashboardClassroomForm />', () => {
       initialSelectionEnd: classroom.welcome_text?.length,
     });
 
-    jest.runAllTimers();
-
-    act(() => {
+    await act(() => {
       deferredPatch.resolve({ message: 'Classroom scheduled.' });
     });
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
-
-    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    expect(fetchMock.calls()[0]![1]).toEqual({
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: 'updated title',
-      }),
-    });
 
     expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1]![1]).toEqual({
@@ -404,33 +412,18 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    userEvent.clear(inputStartingAtDate);
-    fireEvent.blur(inputStartingAtDate);
+    await act(() => {
+      userEvent.clear(inputStartingAtDate);
+    });
 
-    // simulate classroom update
-    rerender(
-      <DashboardClassroomForm
-        classroom={{ ...classroom, starting_at: null }}
-      />,
-    );
-
-    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
-    userEvent.clear(inputEstimatedDuration);
-
-    jest.runAllTimers();
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
-
-    expect(fetchMock.calls()).toHaveLength(2);
-
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
@@ -442,6 +435,17 @@ describe('<DashboardClassroomForm />', () => {
       }),
     });
 
+    // simulate classroom update
+    rerender(
+      <DashboardClassroomForm
+        classroom={{ ...classroom, starting_at: null }}
+      />,
+    );
+
+    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
+    await act(() => userEvent.clear(inputEstimatedDuration));
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
     expect(fetchMock.calls()[1][0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[1][1]).toEqual({
       headers: {
@@ -452,6 +456,16 @@ describe('<DashboardClassroomForm />', () => {
         estimated_duration: null,
       }),
     });
+
+    expect(screen.queryByText('Classroom updated.')).not.toBeInTheDocument();
+
+    await act(async () => {
+      deferredPatch.resolve({ message: 'Classroom scheduled.' });
+    });
+
+    await waitFor(() =>
+      expect(screen.getAllByText('Classroom updated.').length).toEqual(2),
+    );
   });
 
   it('shows an error when classroom title is missing', async () => {

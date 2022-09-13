@@ -61,6 +61,7 @@ const messages = defineMessages({
   },
 });
 
+type DeboundeCallback = (updatedClassroom: Partial<Classroom>) => void;
 interface DashboardClassroomFormProps {
   classroom: Classroom;
 }
@@ -90,18 +91,15 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
 
   const timeoutId = useRef<Maybe<number>>();
 
-  const debounce = (
-    fn: (updatedClassroom: Partial<Classroom>) => void,
-    ms = 500,
-  ) => {
-    return (updatedClassroom: Partial<Classroom>) => {
+  const debounce =
+    (fn: DeboundeCallback, ms = 500) =>
+    (updatedClassroom: Partial<Classroom>) => {
       window.clearTimeout(timeoutId.current);
       timeoutId.current = window.setTimeout(() => fn(updatedClassroom), ms);
     };
-  };
 
   const debouncedUpdateClassroom = React.useRef(
-    debounce(async (updatedClassroom: Partial<Classroom>) => {
+    debounce((updatedClassroom: Partial<Classroom>) => {
       if (JSON.stringify(updatedClassroom) !== '{}') {
         updateClassroomMutation.mutate(updatedClassroom);
       }
@@ -116,7 +114,6 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
       ...updatedClassroomAttribute,
     };
     setUpdatedClassroomState(updatedClassroom);
-    window.clearTimeout(timeoutId.current);
     debouncedUpdateClassroom(updatedClassroom);
   };
 

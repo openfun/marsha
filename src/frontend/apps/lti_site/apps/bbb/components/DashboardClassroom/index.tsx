@@ -237,7 +237,7 @@ const DashboardClassroom = () => {
         // Student dashboard
         content = (
           <DashboardClassroomStudent
-            classroom={classroom!}
+            classroom={classroom}
             joinedAs={classroomJoined && userFullname}
             joinClassroomAction={joinClassroomAction}
             classroomEnded={classroomEnded}
@@ -247,7 +247,7 @@ const DashboardClassroom = () => {
         // Instructor dashboard
         content = (
           <DashboardClassroomInstructor
-            classroom={classroom!}
+            classroom={classroom}
             joinedAs={classroomJoined && userFullname}
             joinClassroomAction={joinClassroomAction}
             classroomEnded={classroomEnded}
@@ -255,7 +255,7 @@ const DashboardClassroom = () => {
         );
       }
 
-      if (!classroomJoined && classroomUrl && classroom?.started) {
+      if (!classroomJoined && classroomUrl && classroom.started) {
         // When user is not in the classroom,
         // classroom url is appended to current dashboard
         content = (

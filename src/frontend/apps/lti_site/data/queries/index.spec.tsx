@@ -1,7 +1,7 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useJwt } from 'data/stores/useJwt';
@@ -49,7 +49,7 @@ jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
+let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
 describe('queries', () => {
   beforeEach(() => {
@@ -67,7 +67,7 @@ describe('queries', () => {
       },
     });
 
-    Wrapper = ({ children }: Element) => (
+    Wrapper = ({ children }: React.PropsWithChildren<{}>) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
@@ -91,10 +91,10 @@ describe('queries', () => {
         liveAttendances,
       );
 
-      const { result, waitFor } = renderHook(() => useLiveAttendances(), {
+      const { result } = renderHook(() => useLiveAttendances(), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/livesessions/list_attendances/?limit=999',
@@ -106,17 +106,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(liveAttendances);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/livesessions/list_attendances/?limit=999', 404);
 
-      const { result, waitFor } = renderHook(() => useLiveAttendances(), {
+      const { result } = renderHook(() => useLiveAttendances(), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/livesessions/list_attendances/?limit=999',
@@ -128,7 +127,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -137,11 +135,10 @@ describe('queries', () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, organization);
 
-      const { result, waitFor } = renderHook(
-        () => useOrganization(organization.id),
-        { wrapper: Wrapper },
-      );
-      await waitFor(() => result.current.isSuccess);
+      const { result } = renderHook(() => useOrganization(organization.id), {
+        wrapper: Wrapper,
+      });
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -154,19 +151,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(organization);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, 404);
 
-      const { result, waitFor } = renderHook(
-        () => useOrganization(organization.id),
-        { wrapper: Wrapper },
-      );
+      const { result } = renderHook(() => useOrganization(organization.id), {
+        wrapper: Wrapper,
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/organizations/${organization.id}/`,
@@ -178,7 +173,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toBeUndefined();
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -187,10 +181,10 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.mock(`/api/playlists/${playlist.id}/`, playlist);
 
-      const { result, waitFor } = renderHook(() => usePlaylist(playlist.id), {
+      const { result } = renderHook(() => usePlaylist(playlist.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -202,18 +196,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(playlist);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const playlist = playlistMockFactory();
       fetchMock.mock(`/api/playlists/${playlist.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => usePlaylist(playlist.id), {
+      const { result } = renderHook(() => usePlaylist(playlist.id), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -225,7 +218,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -234,16 +226,14 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, playlist);
 
-      const { result, waitFor } = renderHook(
-        () => useUpdatePlaylist(playlist.id),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useUpdatePlaylist(playlist.id), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -259,23 +249,19 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(playlist);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
-        () => useUpdatePlaylist(playlist.id),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useUpdatePlaylist(playlist.id), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -291,7 +277,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -300,13 +285,11 @@ describe('queries', () => {
       const playlists = Array(4).fill(playlistMockFactory());
       fetchMock.mock('/api/playlists/?organization=1&limit=999', playlists);
 
-      const { result, waitFor } = renderHook(
-        () => usePlaylists({ organization: '1' }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      await waitFor(() => result.current.isSuccess);
+      const { result } = renderHook(() => usePlaylists({ organization: '1' }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/playlists/?organization=1&limit=999',
@@ -318,18 +301,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(playlists);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/playlists/?organization=1&limit=999', 404);
 
-      const { result, waitFor } = renderHook(
-        () => usePlaylists({ organization: '1' }),
-        { wrapper: Wrapper },
-      );
+      const { result } = renderHook(() => usePlaylists({ organization: '1' }), {
+        wrapper: Wrapper,
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/playlists/?organization=1&limit=999',
@@ -341,7 +322,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -350,10 +330,10 @@ describe('queries', () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, thumbnail);
 
-      const { result, waitFor } = renderHook(() => useThumbnail(thumbnail.id), {
+      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -366,18 +346,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(thumbnail);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => useThumbnail(thumbnail.id), {
+      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/thumbnails/${thumbnail.id}/`,
@@ -389,7 +368,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -398,11 +376,11 @@ describe('queries', () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.delete(`/api/thumbnails/${thumbnail.id}/`, 204);
 
-      const { result, waitFor } = renderHook(() => useDeleteThumbnail(), {
+      const { result } = renderHook(() => useDeleteThumbnail(), {
         wrapper: Wrapper,
       });
       result.current.mutate(thumbnail.id);
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/thumbnails/${thumbnail.id}/`,
@@ -415,18 +393,17 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to delete the resource', async () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.delete(`/api/thumbnails/${thumbnail.id}/`, 400);
 
-      const { result, waitFor } = renderHook(() => useDeleteThumbnail(), {
+      const { result } = renderHook(() => useDeleteThumbnail(), {
         wrapper: Wrapper,
       });
       result.current.mutate(thumbnail.id);
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/thumbnails/${thumbnail.id}/`,
@@ -439,7 +416,6 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -451,13 +427,10 @@ describe('queries', () => {
         timedTextTracks,
       );
 
-      const { result, waitFor } = renderHook(
-        () => useTimedTextTracks({ video: '1' }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      await waitFor(() => result.current.isSuccess);
+      const { result } = renderHook(() => useTimedTextTracks({ video: '1' }), {
+        wrapper: Wrapper,
+      });
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/timedtexttracks/?video=1&limit=999',
@@ -469,18 +442,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(timedTextTracks);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/timedtexttracks/?video=1&limit=999', 404);
 
-      const { result, waitFor } = renderHook(
-        () => useTimedTextTracks({ video: '1' }),
-        { wrapper: Wrapper },
-      );
+      const { result } = renderHook(() => useTimedTextTracks({ video: '1' }), {
+        wrapper: Wrapper,
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/timedtexttracks/?video=1&limit=999',
@@ -492,7 +463,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -501,11 +471,11 @@ describe('queries', () => {
       const timedTextTracks = timedTextMockFactory();
       fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 204);
 
-      const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
+      const { result } = renderHook(() => useDeleteTimedTextTrack(), {
         wrapper: Wrapper,
       });
       result.current.mutate(timedTextTracks.id);
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/timedtexttracks/${timedTextTracks.id}/`,
@@ -518,18 +488,18 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to delete the resource', async () => {
       const timedTextTracks = timedTextMockFactory();
       fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 400);
 
-      const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
+      const { result } = renderHook(() => useDeleteTimedTextTrack(), {
         wrapper: Wrapper,
       });
       result.current.mutate(timedTextTracks.id);
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/timedtexttracks/${timedTextTracks.id}/`,
@@ -542,7 +512,6 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -551,14 +520,15 @@ describe('queries', () => {
       const video = videoMockFactory();
       fetchMock.post('/api/videos/', video);
 
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
+      const { result } = renderHook(() => useCreateVideo(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         playlist: video.playlist.id,
         title: video.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -573,14 +543,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
     });
 
     it('creates the resource with description', async () => {
       const video = videoMockFactory();
       fetchMock.post('/api/videos/', video);
 
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
+      const { result } = renderHook(() => useCreateVideo(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
@@ -588,7 +557,8 @@ describe('queries', () => {
         title: video.title!,
         description: video.description!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -604,7 +574,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
     });
 
     it('creates the resource with live_type and custom success callback', async () => {
@@ -612,7 +581,7 @@ describe('queries', () => {
       fetchMock.post('/api/videos/', video);
       const successCallback = jest.fn();
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           useCreateVideo({
             onSuccess: async (createdVideo, variables) => {
@@ -628,7 +597,8 @@ describe('queries', () => {
         title: video.title!,
         live_type: LiveModeType.JITSI,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -644,7 +614,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
       expect(successCallback).toHaveBeenCalledWith(video, {
         playlist: video.playlist.id,
         title: video.title!,
@@ -656,7 +625,7 @@ describe('queries', () => {
       const video = videoMockFactory();
       fetchMock.post('/api/videos/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
+      const { result } = renderHook(() => useCreateVideo(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
@@ -664,7 +633,7 @@ describe('queries', () => {
         title: video.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -679,7 +648,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -688,13 +656,14 @@ describe('queries', () => {
       const video = videoMockFactory();
       fetchMock.patch(`/api/videos/${video.id}/`, video);
 
-      const { result, waitFor } = renderHook(() => useUpdateVideo(video.id), {
+      const { result } = renderHook(() => useUpdateVideo(video.id), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -708,20 +677,19 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const video = videoMockFactory();
       fetchMock.patch(`/api/videos/${video.id}/`, 400);
 
-      const { result, waitFor } = renderHook(() => useUpdateVideo(video.id), {
+      const { result } = renderHook(() => useUpdateVideo(video.id), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -735,7 +703,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -744,10 +711,10 @@ describe('queries', () => {
       const video = videoMockFactory();
       fetchMock.mock(`/api/videos/${video.id}/`, video);
 
-      const { result, waitFor } = renderHook(() => useVideo(video.id), {
+      const { result } = renderHook(() => useVideo(video.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -757,18 +724,17 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const video = videoMockFactory();
       fetchMock.mock(`/api/videos/${video.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => useVideo(video.id), {
+      const { result } = renderHook(() => useVideo(video.id), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -778,7 +744,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -799,10 +764,11 @@ describe('queries', () => {
       };
       fetchMock.mock(`/api/videos/`, videoMetadata);
 
-      const { result, waitFor } = renderHook(() => useVideoMetadata('fr'), {
+      const { result } = renderHook(() => useVideoMetadata('fr'), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -814,17 +780,16 @@ describe('queries', () => {
         method: 'OPTIONS',
       });
       expect(result.current.data).toEqual(videoMetadata);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the video metadata', async () => {
       fetchMock.mock(`/api/videos/`, 404);
 
-      const { result, waitFor } = renderHook(() => useVideoMetadata('en'), {
+      const { result } = renderHook(() => useVideoMetadata('en'), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -836,7 +801,6 @@ describe('queries', () => {
         method: 'OPTIONS',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -845,13 +809,11 @@ describe('queries', () => {
       const videos = Array(4).fill(videoMockFactory());
       fetchMock.mock('/api/videos/?organization=1&limit=999', videos);
 
-      const { result, waitFor } = renderHook(
-        () => useVideos({ organization: '1' }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      await waitFor(() => result.current.isSuccess);
+      const { result } = renderHook(() => useVideos({ organization: '1' }), {
+        wrapper: Wrapper,
+      });
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/videos/?organization=1&limit=999',
@@ -863,18 +825,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(videos);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/videos/?organization=1&limit=999', 404);
 
-      const { result, waitFor } = renderHook(
-        () => useVideos({ organization: '1' }),
-        { wrapper: Wrapper },
-      );
+      const { result } = renderHook(() => useVideos({ organization: '1' }), {
+        wrapper: Wrapper,
+      });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/videos/?organization=1&limit=999',
@@ -886,7 +846,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -897,11 +856,12 @@ describe('queries', () => {
         secret: '12345',
       });
 
-      const { result, waitFor } = renderHook(() => usePairingVideo(video.id), {
+      const { result } = renderHook(() => usePairingVideo(video.id), {
         wrapper: Wrapper,
       });
       result.current.mutate();
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/pairing-secret/`,
@@ -914,18 +874,18 @@ describe('queries', () => {
         method: 'GET',
       });
       expect(result.current.data).toEqual({ secret: '12345' });
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const video = videoMockFactory();
       fetchMock.get(`/api/videos/${video.id}/pairing-secret/`, 400);
 
-      const { result, waitFor } = renderHook(() => usePairingVideo(video.id), {
+      const { result } = renderHook(() => usePairingVideo(video.id), {
         wrapper: Wrapper,
       });
       result.current.mutate();
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/pairing-secret/`,
@@ -938,7 +898,6 @@ describe('queries', () => {
         method: 'GET',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -948,14 +907,15 @@ describe('queries', () => {
       fetchMock.patch(`/api/videos/${video.id}/start-recording/`, video);
 
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStartLiveRecording(video.id, onError),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/start-recording/`,
@@ -968,8 +928,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-
       expect(onError).not.toHaveBeenCalled();
     });
 
@@ -978,14 +936,15 @@ describe('queries', () => {
       fetchMock.patch(`/api/videos/${video.id}/start-recording/`, 400);
 
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStartLiveRecording(video.id, onError),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/start-recording/`,
@@ -998,8 +957,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-
       expect(onError).toHaveBeenCalled();
     });
   });
@@ -1010,14 +967,15 @@ describe('queries', () => {
       fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, video);
 
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStopLiveRecording(video.id, onError),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/stop-recording/`,
@@ -1030,8 +988,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-
       expect(onError).not.toHaveBeenCalled();
     });
 
@@ -1040,14 +996,15 @@ describe('queries', () => {
       fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, 400);
 
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStopLiveRecording(video.id, onError),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/stop-recording/`,
@@ -1060,8 +1017,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-
       expect(onError).toHaveBeenCalled();
     });
   });
@@ -1071,14 +1026,15 @@ describe('queries', () => {
       const document = documentMockFactory();
       fetchMock.post('/api/documents/', document);
 
-      const { result, waitFor } = renderHook(() => useCreateDocument(), {
+      const { result } = renderHook(() => useCreateDocument(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
         playlist: document.playlist.id,
         title: document.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -1093,14 +1049,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(document);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to create the resource', async () => {
       const document = documentMockFactory();
       fetchMock.post('/api/documents/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateDocument(), {
+      const { result } = renderHook(() => useCreateDocument(), {
         wrapper: Wrapper,
       });
       result.current.mutate({
@@ -1108,7 +1063,7 @@ describe('queries', () => {
         title: document.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
 
@@ -1124,7 +1079,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -1135,10 +1089,11 @@ describe('queries', () => {
         nb_views: 123,
       });
 
-      const { result, waitFor } = renderHook(() => useStatsVideo(video.id), {
+      const { result } = renderHook(() => useStatsVideo(video.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/stats/`,
@@ -1150,17 +1105,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual({ nb_views: 123 });
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const video = videoMockFactory();
       fetchMock.get(`/api/videos/${video.id}/stats/`, 400);
 
-      const { result, waitFor } = renderHook(() => useStatsVideo(video.id), {
+      const { result } = renderHook(() => useStatsVideo(video.id), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/stats/`,
@@ -1172,7 +1126,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -1184,7 +1137,7 @@ describe('queries', () => {
         sharedLiveMedia,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
         {
           wrapper: Wrapper,
@@ -1193,7 +1146,8 @@ describe('queries', () => {
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
@@ -1209,14 +1163,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(sharedLiveMedia);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const sharedLiveMedia = sharedLiveMediaMockFactory();
       fetchMock.patch(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
         {
           wrapper: Wrapper,
@@ -1225,7 +1178,8 @@ describe('queries', () => {
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
@@ -1241,7 +1195,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -1250,11 +1203,11 @@ describe('queries', () => {
       const sharedLiveMedia = sharedLiveMediaMockFactory();
       fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 204);
 
-      const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
+      const { result } = renderHook(() => useDeleteSharedLiveMedia(), {
         wrapper: Wrapper,
       });
       result.current.mutate(sharedLiveMedia.id);
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
@@ -1267,18 +1220,18 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to delete the resource', async () => {
       const sharedLiveMedia = sharedLiveMediaMockFactory();
       fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
 
-      const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
+      const { result } = renderHook(() => useDeleteSharedLiveMedia(), {
         wrapper: Wrapper,
       });
       result.current.mutate(sharedLiveMedia.id);
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
@@ -1291,7 +1244,6 @@ describe('queries', () => {
         method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -1315,14 +1267,15 @@ describe('queries', () => {
 
       const onSuccess = jest.fn();
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStartSharingMedia(video.id, { onSuccess, onError }),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate({ sharedlivemedia: sharedLiveMedia.id });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/start-sharing/`,
@@ -1336,8 +1289,6 @@ describe('queries', () => {
         body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-
       expect(onSuccess).toHaveBeenCalled();
       expect(onError).not.toHaveBeenCalled();
     });
@@ -1355,14 +1306,15 @@ describe('queries', () => {
 
       const onSuccess = jest.fn();
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStartSharingMedia(video.id, { onSuccess, onError }),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate({ sharedlivemedia: sharedLiveMedia.id });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/start-sharing/`,
@@ -1376,8 +1328,6 @@ describe('queries', () => {
         body: JSON.stringify({ sharedlivemedia: sharedLiveMedia.id }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-
       expect(onSuccess).not.toHaveBeenCalled();
       expect(onError).toHaveBeenCalled();
     });
@@ -1403,14 +1353,15 @@ describe('queries', () => {
 
       const onSuccess = jest.fn();
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStopSharingMedia(video.id, { onSuccess, onError }),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/end-sharing/`,
@@ -1423,8 +1374,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-
       expect(onSuccess).toHaveBeenCalled();
       expect(onError).not.toHaveBeenCalled();
     });
@@ -1442,14 +1391,15 @@ describe('queries', () => {
 
       const onSuccess = jest.fn();
       const onError = jest.fn();
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useStopSharingMedia(video.id, { onSuccess, onError }),
         {
           wrapper: Wrapper,
         },
       );
       result.current.mutate();
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/videos/${video.id}/end-sharing/`,
@@ -1462,8 +1412,6 @@ describe('queries', () => {
         method: 'PATCH',
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-
       expect(onSuccess).not.toHaveBeenCalled();
       expect(onError).toHaveBeenCalled();
     });
@@ -1474,10 +1422,11 @@ describe('queries', () => {
       const liveSessions = Array(4).fill(liveSessionFactory());
       fetchMock.mock('/api/livesessions/?limit=999', liveSessions);
 
-      const { result, waitFor } = renderHook(() => useLiveSessionsQuery({}), {
+      const { result } = renderHook(() => useLiveSessionsQuery({}), {
         wrapper: Wrapper,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual('/api/livesessions/?limit=999');
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -1487,7 +1436,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(liveSessions);
-      expect(result.current.status).toEqual('success');
     });
 
     it('requests live sessions with an anonymous_id', async () => {
@@ -1498,13 +1446,14 @@ describe('queries', () => {
         liveSessions,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useLiveSessionsQuery({ anonymous_id: anonymousId }),
         {
           wrapper: Wrapper,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/livesessions/?anonymous_id=${anonymousId}&limit=999`,
@@ -1516,17 +1465,16 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(liveSessions);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/livesessions/?limit=999', 404);
 
-      const { result, waitFor } = renderHook(() => useLiveSessionsQuery({}), {
+      const { result } = renderHook(() => useLiveSessionsQuery({}), {
         wrapper: Wrapper,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual('/api/livesessions/?limit=999');
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -1536,7 +1484,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 });

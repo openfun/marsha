@@ -1,7 +1,7 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { renderHook, waitFor } from '@testing-library/react';
 
 import { useJwt } from 'data/stores/useJwt';
 
@@ -19,7 +19,7 @@ jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
+let Wrapper: React.ComponentType<React.PropsWithChildren<{}>>;
 
 describe('queries', () => {
   beforeEach(() => {
@@ -37,7 +37,7 @@ describe('queries', () => {
       },
     });
 
-    Wrapper = ({ children }: Element) => (
+    Wrapper = ({ children }: React.PropsWithChildren<{}>) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
   });
@@ -55,13 +55,14 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useMarkdownDocument(markdownDocument.id),
         {
           wrapper: Wrapper,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -73,21 +74,20 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(markdownDocument);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to get the resource', async () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.mock(`/api/markdown-documents/${markdownDocument.id}/`, 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useMarkdownDocument(markdownDocument.id),
         {
           wrapper: Wrapper,
         },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -99,7 +99,6 @@ describe('queries', () => {
         },
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -108,17 +107,15 @@ describe('queries', () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.post('/api/markdown-documents/', markdownDocument);
 
-      const { result, waitFor } = renderHook(
-        () => useCreateMarkdownDocument(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateMarkdownDocument(), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
         title: markdownDocument.translations[0].title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -133,25 +130,21 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(markdownDocument);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to create the resource', async () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.post('/api/markdown-documents/', 400);
 
-      const { result, waitFor } = renderHook(
-        () => useCreateMarkdownDocument(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateMarkdownDocument(), {
+        wrapper: Wrapper,
+      });
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
         title: markdownDocument.translations[0].title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -166,7 +159,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -178,7 +170,7 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateMarkdownDocument(markdownDocument.id),
         {
           wrapper: Wrapper,
@@ -187,7 +179,8 @@ describe('queries', () => {
       result.current.mutate({
         is_draft: false,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -203,14 +196,13 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(markdownDocument);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.patch(`/api/markdown-documents/${markdownDocument.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateMarkdownDocument(markdownDocument.id),
         {
           wrapper: Wrapper,
@@ -219,7 +211,7 @@ describe('queries', () => {
       result.current.mutate({
         is_draft: false,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -235,7 +227,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 
@@ -247,7 +238,7 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useSaveTranslations(markdownDocument.id),
         {
           wrapper: Wrapper,
@@ -259,7 +250,8 @@ describe('queries', () => {
         content: 'Contenu',
         rendered_content: '<p>Contenu</p>',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => expect(result.current.status).toEqual('success'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/save-translations/`,
@@ -278,7 +270,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(markdownDocument);
-      expect(result.current.status).toEqual('success');
     });
 
     it('fails to update the resource', async () => {
@@ -288,7 +279,7 @@ describe('queries', () => {
         400,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useSaveTranslations(markdownDocument.id),
         {
           wrapper: Wrapper,
@@ -300,7 +291,8 @@ describe('queries', () => {
         content: 'Contenu',
         rendered_content: '<p>Contenu</p>',
       });
-      await waitFor(() => result.current.isError);
+
+      await waitFor(() => expect(result.current.status).toEqual('error'));
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/save-translations/`,
@@ -319,7 +311,6 @@ describe('queries', () => {
         }),
       });
       expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
     });
   });
 

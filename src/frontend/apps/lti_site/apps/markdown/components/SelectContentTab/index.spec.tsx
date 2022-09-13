@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React, { Suspense } from 'react';
@@ -59,7 +59,7 @@ fetchMock.get('/api/markdown-documents/lti-select/', selectMarkdownResponse);
 describe('<SelectContent />', () => {
   afterEach(jest.resetAllMocks);
 
-  it('selects content', async () => {
+  it.only('selects content', async () => {
     const { container } = render(
       <Suspense fallback={<div>Loading...</div>}>
         <SelectContent
@@ -75,10 +75,20 @@ describe('<SelectContent />', () => {
     const markdownTab = await screen.findByRole('tab', {
       name: 'Markdown',
     });
-    userEvent.click(markdownTab);
-    userEvent.click(screen.getByTitle('Select Easy to find title'));
 
-    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
+    act(() => {
+      userEvent.click(markdownTab);
+    });
+
+    await screen.findByTitle('Select Easy to find title');
+
+    act(() => {
+      userEvent.click(screen.getByTitle('Select Easy to find title'));
+    });
+
+    await waitFor(() =>
+      expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1),
+    );
 
     expect(container.querySelector('form')).toHaveFormValues({
       lti_response_url: 'https://example.com/lti',
