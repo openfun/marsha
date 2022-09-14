@@ -1,28 +1,12 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`<MdxRenderer /> renders empty document 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 />
 `;
 
 exports[`<MdxRenderer /> renders markdown with LaTeX content 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -42,14 +26,6 @@ exports[`<MdxRenderer /> renders markdown with LaTeX content 1`] = `
 `;
 
 exports[`<MdxRenderer /> renders markdown with MDX 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -89,14 +65,6 @@ exports[`<MdxRenderer /> renders markdown with MDX 1`] = `
 `;
 
 exports[`<MdxRenderer /> renders markdown with math to KaTeX 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -448,14 +416,6 @@ exports[`<MdxRenderer /> renders markdown with math to KaTeX 1`] = `
 `;
 
 exports[`<MdxRenderer /> renders markdown with math to Mathjax 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -881,14 +841,6 @@ mjx-container[jax="SVG"] path[data-c], mjx-container[jax="SVG"] use[data-c] {
 `;
 
 exports[`<MdxRenderer /> renders markdown without XSS 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -1095,14 +1047,6 @@ return (
 `;
 
 exports[`<MdxRenderer /> renders markdown without XSS 2`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >
@@ -1300,14 +1244,6 @@ exports[`<MdxRenderer /> renders markdown without XSS 2`] = `
 `;
 
 exports[`<MdxRenderer /> renders simple markdown 1`] = `
-@media only screen and (max-width:768px) {
-
-}
-
-@media only screen and (max-width:768px) {
-
-}
-
 <div
   class="markdown-body"
 >

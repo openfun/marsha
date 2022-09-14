@@ -75,7 +75,7 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.31.8",
     "faker": "5.5.3",
-    "grommet": "2.25.1",
+    "grommet": "*",
     "jest": "29.0.3",
     "jest-environment-jsdom": "29.0.3",
     "jest-image-snapshot": "5.2.0",

@@ -384,7 +384,7 @@ describe('queries', () => {
     });
   });
 
-  describe.only('useUpdateDepositedFile', () => {
+  describe('useUpdateDepositedFile', () => {
     it('updates the resource', async () => {
       const depositedFile = depositedFileMockFactory();
       fetchMock.patch(
