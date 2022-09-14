@@ -2,10 +2,20 @@
   "name": "common",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "apps/*",
-    "packages/*"
-  ],
+  "workspaces": {
+    "nohoist": [
+      "**/@typescript-eslint/eslint-plugin",
+      "**/@typescript-eslint/parser",
+      "**/babel-core",
+      "**/babel-jest",
+      "**/babel-loader",
+      "**/jest"
+    ],
+    "packages": [
+      "apps/*",
+      "packages/*"
+    ]
+  },
   "scripts": {
     "lint": "yarn workspace lib-common run build; yarn workspace lib-tests run build; yarn workspaces run lint",
     "test": "yarn workspace lib-common run build; yarn workspace lib-tests run build; yarn workspaces run test",
@@ -14,14 +24,12 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
-    "@types/react": "17.0.43",
-    "@types/react-dom": "17.0.14",
-    "@types/mdast": "3.0.10",
-    "@types/estree-jsx": "1.0.0",
-    "unist-util-visit": "4.1.1",
     "@codemirror/view": "6.2.4",
     "@codemirror/state": "6.1.1",
-    "**/@typescript-eslint/eslint-plugin": "5.37.0",
-    "**/@typescript-eslint/parser": "5.37.0"
+    "@types/mdast": "3.0.10",
+    "@types/react": "17.0.43",
+    "@types/react-dom": "17.0.14",
+    "grommet": "2.25.1",
+    "unist-util-visit": "4.1.1"
   }
 }
