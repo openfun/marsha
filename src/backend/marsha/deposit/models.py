@@ -26,7 +26,7 @@ class FileDepository(BaseModel):
         to=Playlist,
         related_name="%(class)ss",
         verbose_name=_("playlist"),
-        help_text=_("playlist to which this file_depository belongs"),
+        help_text=_("playlist to which this file depository belongs"),
         # don't allow hard deleting a playlist if it still contains file_depository
         on_delete=models.PROTECT,
     )
@@ -40,19 +40,19 @@ class FileDepository(BaseModel):
     title = models.CharField(
         max_length=255,
         verbose_name=_("title"),
-        help_text=_("title of the file_depository"),
+        help_text=_("title of the file depository"),
         null=True,
         blank=True,
     )
     description = models.TextField(
         verbose_name=_("description"),
-        help_text=_("description of the file_depository"),
+        help_text=_("description of the file depository"),
         null=True,
         blank=True,
     )
     position = models.PositiveIntegerField(
         verbose_name=_("position"),
-        help_text=_("position of this file_depository in the playlist"),
+        help_text=_("position of this file depository in the playlist"),
         default=0,
     )
 

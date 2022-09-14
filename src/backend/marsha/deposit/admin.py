@@ -20,7 +20,7 @@ class DepositedFilesInline(admin.TabularInline):
 class FileDepositoryAdmin(admin.ModelAdmin):
     """Admin class for the FileDepository model."""
 
-    verbose_name = _("FileDepository")
+    verbose_name = _("File depository")
     list_display = (
         "id",
         "title",
@@ -58,7 +58,7 @@ class FileDepositoryAdmin(admin.ModelAdmin):
 class DepositedFileAdmin(admin.ModelAdmin):
     """Admin class for the DepositedFile model."""
 
-    verbose_name = _("DepositedFile")
+    verbose_name = _("Deposited file")
     list_display = (
         "id",
         "filename",

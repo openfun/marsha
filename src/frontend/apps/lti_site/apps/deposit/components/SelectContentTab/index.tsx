@@ -20,19 +20,19 @@ import { FileDepository } from 'apps/deposit/types/models';
 
 const messages = defineMessages({
   loadingFileDepositories: {
-    defaultMessage: 'Loading fileDepositories...',
+    defaultMessage: 'Loading file depositories...',
     description:
-      'Accessible message for the spinner while loading the fileDepositories in lti select view.',
+      'Accessible message for the spinner while loading the file depositories in lti select view.',
     id: 'apps.deposit.SelectContent.loadingFileDepositories',
   },
   addFileDepository: {
     defaultMessage: 'Add a fileDepository',
-    description: `Text displayed on a button to add a new fileDepository.`,
+    description: `Text displayed on a button to add a new file depository.`,
     id: 'apps.deposit.SelectContent.addFileDepository',
   },
   select: {
     defaultMessage: 'Select {title}',
-    description: 'Accessible message for selecting a fileDepository.',
+    description: 'Accessible message for selecting a file depository.',
     id: 'apps.deposit.SelectContent.select',
   },
 });
