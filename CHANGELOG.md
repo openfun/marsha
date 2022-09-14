@@ -9,15 +9,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.8] - 2022-09-15
+
 ### Added
 
-- Add toggle to use subtitle as transcript
-- Add toggle to allow download or not on the VOD dashboard.
-- Display total amount of participants in the title panel
-- Display amount of participants in the viewers panel
-- Add missing ended webinar screens when live is stopped 
-  and not scheduled
-- Add missing ended webinar screens when live is stopped
+- Display total amount of participants for a webinar
+- Add missing ended webinar screens
   and scheduled is in the past
 - Allow to disable chrome sandboxing in puppeteer.
   To disable it set DISABLE_PUPPETEER_SANDBOX=1
@@ -29,16 +26,15 @@ react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
 - Manage tags on video resource
 - Manage license on video resource
-- Add a new instructor dashboard VOD with a widget for 
-modifying video's title & description.
--  Add a widget for uploading a new video in the VOD
-dashboard
--  Add a widget for uploading a new thumbnail in the 
-VOD dashboard
-- Add a widget for downloading the video in the desired 
-quality in the VOD dashboard
-- Add 3 widgets to upload timed text tracks to the video
-in the VOD dashboard
+- Add a new instructor dashboard VOD composed with widgets:
+  - Widget for modifying video's title & description. 
+  - Widget for uploading a new video
+  - Widget for uploading a new thumbnail
+  - Widget for downloading the video in the desired 
+quality
+  - Widgets to upload timed text tracks
+- Add toggle to use subtitle as transcript
+- Add toggle to allow download or not on the VOD dashboard.  
 - Notify students when a recording is started
 - Avoid record length lower than a video segment length
 - Add a video creation wizard to help instructor through 
@@ -1235,7 +1231,8 @@ the video to the ViewersList in the right panel
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.7...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.8...master
+[4.0.0-beta.8]: https://github.com/openfun/marsha/compare/v4.0.0-beta.7...v4.0.0-beta.8
 [4.0.0-beta.7]: https://github.com/openfun/marsha/compare/v4.0.0-beta.6...v4.0.0-beta.7
 [4.0.0-beta.6]: https://github.com/openfun/marsha/compare/v4.0.0-beta.5...v4.0.0-beta.6
 [4.0.0-beta.5]: https://github.com/openfun/marsha/compare/v4.0.0-beta.4...v4.0.0-beta.5
