@@ -38,7 +38,7 @@ jest.mock('apps/deposit/data/depositAppData', () => ({
 jest.mock('./DashboardStudent', () => ({
   DashboardStudent: () => (
     <div>
-      <p>FileDepository loaded.</p>
+      <p>File depository loaded.</p>
       <p>Student view</p>
     </div>
   ),
@@ -47,7 +47,7 @@ jest.mock('./DashboardStudent', () => ({
 jest.mock('./DashboardInstructor', () => ({
   DashboardInstructor: () => (
     <div>
-      <p>FileDepository loaded.</p>
+      <p>File depository loaded.</p>
       <p>Instructor view</p>
     </div>
   ),
@@ -75,9 +75,9 @@ describe('<DashboardFileDepository />', () => {
     fetchMock.get('/api/filedepositories/1/', fileDepositoryDeferred.promise);
 
     render(<DashboardFileDepository />);
-    screen.getByText('Loading fileDepository...');
+    screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
-    await screen.findByText('FileDepository loaded.');
+    await screen.findByText('File depository loaded.');
     screen.getByText('Student view');
   });
 
@@ -90,9 +90,9 @@ describe('<DashboardFileDepository />', () => {
     fetchMock.get('/api/filedepositories/1/', fileDepositoryDeferred.promise);
 
     render(<DashboardFileDepository />);
-    screen.getByText('Loading fileDepository...');
+    screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(fileDepository);
-    await screen.findByText('FileDepository loaded.');
+    await screen.findByText('File depository loaded.');
     screen.getByText('Instructor view');
   });
 
@@ -122,8 +122,8 @@ describe('<DashboardFileDepository />', () => {
     render(<DashboardFileDepository />, {
       queryOptions: { client: queryClient },
     });
-    screen.getByText('Loading fileDepository...');
+    screen.getByText('Loading file depository...');
     fileDepositoryDeferred.resolve(500);
-    await screen.findByText('FileDepository not loaded!');
+    await screen.findByText('File depository not loaded!');
   });
 });

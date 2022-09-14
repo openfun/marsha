@@ -15,19 +15,19 @@ import { DashboardInstructor } from './DashboardInstructor';
 
 const messages = defineMessages({
   loadingFileDepository: {
-    defaultMessage: 'Loading fileDepository...',
+    defaultMessage: 'Loading file depository...',
     description:
-      'Accessible message for the spinner while loading the fileDepository in dashboard view.',
+      'Accessible message for the spinner while loading the file depository in dashboard view.',
     id: 'apps.deposit.components.Dashboard.loadingFileDepository',
   },
   loadFileDepositorySuccess: {
-    defaultMessage: 'FileDepository loaded.',
-    description: 'Message when fileDepository is loaded.',
+    defaultMessage: 'File depository loaded.',
+    description: 'Message when file depository is loaded.',
     id: 'apps.deposit.components.Dashboard.loadFileDepositorySuccess',
   },
   loadFileDepositoryError: {
-    defaultMessage: 'FileDepository not loaded!',
-    description: 'Message when fileDepository failed to load.',
+    defaultMessage: 'File depository not loaded!',
+    description: 'Message when file depository failed to load.',
     id: 'apps.deposit.components.Dashboard.loadFileDepositoryError',
   },
   tokenError: {
