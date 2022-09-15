@@ -100,6 +100,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -165,6 +166,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -284,6 +286,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -425,6 +428,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -490,6 +494,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -609,6 +614,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",

@@ -119,6 +119,7 @@ class MarshaViewMixin:
                     "liveErrorBackground": static("img/liveErrorBackground.jpg"),
                     "marshaWhiteLogo": static("img/marshaWhiteLogo.png"),
                     "videoWizardBackground": static("img/videoWizardBackground.png"),
+                    "errorMain": static("img/errorTelescope.png"),
                 },
             },
         }
