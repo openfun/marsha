@@ -73,17 +73,22 @@ const intl = createIntl(
   cache,
 );
 
-const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {};
+const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {
+  LTI: lazy(() => import('components/LTIRoutes')),
+  Site: lazy(() => import('components/SiteRoutes')),
+};
 Object.values(appNames).forEach((app) => {
   appsContent[app] = lazy(() => import(`apps/${app}/components/Routes`));
 });
-const ltiSite = lazy(() => import('components/LTIRoutes'));
 
 const AppContentLoader = () => {
   const appConfig = useAppConfig();
   const queryClient = useMemo(() => new QueryClient(), []);
 
-  const Content = appConfig.appName ? appsContent[appConfig.appName] : ltiSite;
+  let Content: LazyExoticComponent<ComponentType<any>>;
+  if (appConfig.appName) Content = appsContent[appConfig.appName];
+  else if (appConfig.frontend) Content = appsContent[appConfig.frontend];
+  else throw new Error('application and frontend are not properly set');
 
   return (
     <QueryClientProvider client={queryClient}>
