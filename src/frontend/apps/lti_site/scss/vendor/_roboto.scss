@@ -1,6 +1,11 @@
 $roboto-font-path: '../fonts/roboto' !default;
 
 @font-face {
+  font-family: 'Roboto-Light';
+  src: url('#{$roboto-font-path}/roboto-light.ttf') format('truetype');
+}
+
+@font-face {
   font-family: 'Roboto-Regular';
   src: url('#{$roboto-font-path}/roboto-regular.ttf') format('truetype');
 }
