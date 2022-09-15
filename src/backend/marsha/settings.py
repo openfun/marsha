@@ -789,6 +789,7 @@ class Development(Base):
             # Metadata is fetched from inside the docker, hence the 8000 port
             "http://localhost:8000/account/saml/idp/metadata/"
         )
+        cls.SOCIAL_AUTH_SAML_FER_IDP_FAKER_DOCKER_PORT = 8060
 
         # Call setup afterward
         super().setup()
