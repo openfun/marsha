@@ -108,6 +108,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -259,6 +260,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -436,6 +438,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -604,6 +607,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
@@ -1582,6 +1586,7 @@ class VideoLTIViewTestCase(TestCase):
             context.get("static"),
             {
                 "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
                     "liveBackground": "/static/img/liveBackground.jpg",
                     "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
