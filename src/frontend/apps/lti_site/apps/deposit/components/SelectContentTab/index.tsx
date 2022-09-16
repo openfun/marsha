@@ -26,7 +26,7 @@ const messages = defineMessages({
     id: 'apps.deposit.SelectContent.loadingFileDepositories',
   },
   addFileDepository: {
-    defaultMessage: 'Add a fileDepository',
+    defaultMessage: 'Add a file depository',
     description: `Text displayed on a button to add a new file depository.`,
     id: 'apps.deposit.SelectContent.addFileDepository',
   },
