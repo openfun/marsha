@@ -75,8 +75,7 @@ describe('harvest', () => {
       detail: {
         harvest_job: {
           id: 'harvest_job_id',
-          arn:
-            'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/harvest_job_id',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/harvest_job_id',
           status: 'STARTING',
           origin_endpoint_id: 'endpoint_id',
           start_time: '2019-06-26T20:30:00-08:00',
@@ -110,8 +109,7 @@ describe('harvest', () => {
       detail: {
         harvest_job: {
           id: 'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
-          arn:
-            'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271',
           status: 'SUCCEEDED',
           origin_endpoint_id:
             'test_a3e213a7-9c56-4bd3-b71c-fe567b0cfe22_1610546271_hls',

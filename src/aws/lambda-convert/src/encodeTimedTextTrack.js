@@ -1,12 +1,12 @@
-const AWS = require("aws-sdk");
+const AWS = require('aws-sdk');
 const s3 = new AWS.S3();
 
-const subsrt = require("@openfun/subsrt");
-const he = require("he");
+const subsrt = require('@openfun/subsrt');
+const he = require('he');
 const updateState = require('update-state');
 
-const READY = "ready";
-const ERROR = "error";
+const READY = 'ready';
+const ERROR = 'error';
 
 /**
  * Convert any uploaded timed text track to `.vtt`.
@@ -29,8 +29,8 @@ module.exports = async (objectKey, sourceBucket, filename) => {
   let encodedVttTimedText;
   try {
     switch (mode) {
-      case "st":
-      case "cc":
+      case 'st':
+      case 'cc':
         encodedVttTimedText = convertTimedTextTrack(timedTextFile, objectKey);
         break;
       default:
@@ -45,12 +45,12 @@ module.exports = async (objectKey, sourceBucket, filename) => {
     .putObject({
       Body: encodedVttTimedText,
       Bucket: destinationBucket,
-      ContentType: "text/vtt",
+      ContentType: 'text/vtt',
       // Transform the source key to the format expected for destination keys:
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr
       // 👆 becomes 👇
       // 630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtext/1542967735_fr.vtt
-      Key: `${objectKey.replace(/\/timedtexttrack\/.*\//, "/timedtext/")}.vtt`,
+      Key: `${objectKey.replace(/\/timedtexttrack\/.*\//, '/timedtext/')}.vtt`,
     })
     .promise();
 
@@ -59,7 +59,7 @@ module.exports = async (objectKey, sourceBucket, filename) => {
       Bucket: destinationBucket,
       Key: `${objectKey.replace(
         /\/timedtexttrack\/.*\//,
-        "/timedtext/source/"
+        '/timedtext/source/',
       )}`,
       CopySource: `${sourceBucket}/${objectKey}`,
     })
@@ -73,7 +73,7 @@ module.exports = async (objectKey, sourceBucket, filename) => {
 const convertTimedTextTrack = (timedTextFile, objectKey) => {
   try {
     return subsrt.convert(timedTextFile.Body.toString(), {
-      format: "vtt",
+      format: 'vtt',
     });
   } catch (e) {
     // Log the file as read from S3 to ease debugging
@@ -87,7 +87,7 @@ const encodeTranscript = (timedTextFile, objectKey) => {
   let captions;
   try {
     captions = subsrt.parse(timedTextFile.Body.toString(), {
-      format: "vtt",
+      format: 'vtt',
     });
   } catch (e) {
     // Log the file as read from S3 to ease debugging
@@ -97,7 +97,7 @@ const encodeTranscript = (timedTextFile, objectKey) => {
 
   const encodedCaptions = captions.map((caption) => {
     // meta caption does not have data, nothing to encode here we directly return it
-    if (caption.type == "meta") {
+    if (caption.type == 'meta') {
       return caption;
     }
 
@@ -113,5 +113,5 @@ const encodeTranscript = (timedTextFile, objectKey) => {
     return caption;
   });
 
-  return subsrt.build(encodedCaptions, { format: "vtt" });
+  return subsrt.build(encodedCaptions, { format: 'vtt' });
 };

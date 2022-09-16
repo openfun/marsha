@@ -1,12 +1,12 @@
-process.env.S3_DESTINATION_BUCKET = "destination bucket";
+process.env.S3_DESTINATION_BUCKET = 'destination bucket';
 
 // Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, "log");
+jest.spyOn(console, 'log');
 
 // Mock the AWS SDK calls used in encodeTimedTextTrack
 const mockGetObject = jest.fn();
 const mockPutObject = jest.fn();
-jest.mock("aws-sdk", () => ({
+jest.mock('aws-sdk', () => ({
   S3: function () {
     this.getObject = mockGetObject;
     this.putObject = mockPutObject;
@@ -17,21 +17,21 @@ const mockGetBufferAsync = jest.fn();
 const mockResize = jest.fn();
 const mockRead = jest.fn();
 
-jest.mock("jimp", () => ({
+jest.mock('jimp', () => ({
   read: mockRead,
 }));
 
-const resizeThumbnails = require("./resizeThumbnails");
+const resizeThumbnails = require('./resizeThumbnails');
 
-describe("lambda-convert/src/resizeThumbnails", () => {
+describe('lambda-convert/src/resizeThumbnails', () => {
   beforeEach(() => {
     console.log.mockReset();
     jest.resetAllMocks();
   });
-  it("resizes uploaded image", async () => {
+  it('resizes uploaded image', async () => {
     mockGetObject.mockReturnValue({
       promise: () =>
-        new Promise((resolve) => resolve({ Body: "input timed text" })),
+        new Promise((resolve) => resolve({ Body: 'input timed text' })),
     });
     mockPutObject.mockReturnValue({
       promise: () => new Promise((resolve) => resolve()),
@@ -39,14 +39,14 @@ describe("lambda-convert/src/resizeThumbnails", () => {
     mockRead.mockReturnValue(
       Promise.resolve({
         resize: mockResize,
-      })
+      }),
     );
-    mockGetBufferAsync.mockReturnValue(Promise.resolve("resized_image"));
+    mockGetBufferAsync.mockReturnValue(Promise.resolve('resized_image'));
     mockResize.mockReturnValue({
       getBufferAsync: mockGetBufferAsync,
     });
 
-    await resizeThumbnails("foo/thumbnail/bar/baz", "source bucket");
+    await resizeThumbnails('foo/thumbnail/bar/baz', 'source bucket');
 
     expect(mockResize).toHaveBeenCalledTimes(5);
     expect(mockGetBufferAsync).toHaveBeenCalledTimes(5);

@@ -1,6 +1,6 @@
-const AWS = require("aws-sdk");
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
-const Jimp = require("jimp");
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+const Jimp = require('jimp');
 
 module.exports = async (objectKey, sourceBucket) => {
   const destinationBucket = process.env.S3_DESTINATION_BUCKET;
@@ -16,7 +16,7 @@ module.exports = async (objectKey, sourceBucket) => {
     const jimpInstance = await Jimp.read(sourceImage.Body);
     const resizedImage = jimpInstance.resize(Jimp.AUTO, size);
 
-    const parts = objectKey.split("/");
+    const parts = objectKey.split('/');
     await s3
       .putObject({
         Body: await resizedImage.getBufferAsync(Jimp.MIME_JPEG),

@@ -119,6 +119,7 @@ services:
     volumes:
       - "./src/aws/lambda-convert:/var/task/lambda-convert"
       - "./src/aws/utils:/var/task/utils"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 
@@ -133,7 +134,7 @@ services:
     volumes:
       - "./src/aws/lambda-complete:/var/task/lambda-complete"
       - "./src/aws/utils:/var/task/utils"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 
@@ -147,7 +148,7 @@ services:
       - env.d/lambda
     volumes:
       - "./src/aws/lambda-configure:/var/task/lambda-configure"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 
@@ -162,7 +163,7 @@ services:
     volumes:
       - "./src/aws/lambda-medialive:/var/task/lambda-medialive"
       - "./src/aws/utils:/var/task/utils"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 
@@ -177,7 +178,7 @@ services:
     volumes:
       - "./src/aws/lambda-mediapackage:/var/task/lambda-mediapackage"
       - "./src/aws/utils:/var/task/utils"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
       - "./transmuxed_video:/mnt/transmuxed_video"
     depends_on:
       - lambda_base
@@ -195,7 +196,7 @@ services:
     volumes:
       - "./src/aws/lambda-elemental-routing:/var/task/lambda-elemental-routing"
       - "./src/aws/utils:/var/task/utils"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 
@@ -210,7 +211,7 @@ services:
     volumes:
       - "./src/aws/lambda-migrate:/var/task/lambda-migrate"
       - "./src/aws/utils:/var/task/utils"
-      - "./src/.prettierrc:/var/task/.prettierrc"
+      - "./src/.prettierrc.js:/var/task/.prettierrc.js"
     depends_on:
       - lambda_base
 

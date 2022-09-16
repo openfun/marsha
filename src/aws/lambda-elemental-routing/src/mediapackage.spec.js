@@ -32,8 +32,7 @@ describe('mediapackage', () => {
       detail: {
         harvest_job: {
           id: 'test_762f3681-43dd-446c-81a0-29a6fb6edfe1_1609943219',
-          arn:
-            'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_762f3681-43dd-446c-81a0-29a6fb6edfe1_1609943219',
+          arn: 'arn:aws:mediapackage-vod:eu-west-1:aws_account_id:harvest_jobs/test_762f3681-43dd-446c-81a0-29a6fb6edfe1_1609943219',
           status: 'COMPLETED',
           origin_endpoint_id: 'endpoint_id',
           start_time: '2019-06-26T20:30:00-08:00',

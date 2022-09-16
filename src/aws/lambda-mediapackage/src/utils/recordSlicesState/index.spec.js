@@ -77,9 +77,9 @@ describe('lambda/mediapackage/src/utils/recordSlicesState()', () => {
       () => new Promise((resolve, reject) => reject('Failed!')),
     );
 
-    await expect(
-      recordSlicesState('failed object key'),
-    ).rejects.toEqual('Failed!');
+    await expect(recordSlicesState('failed object key')).rejects.toEqual(
+      'Failed!',
+    );
 
     expect(requestStub).toHaveBeenCalledWith({
       body: {

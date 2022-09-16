@@ -1,31 +1,31 @@
-const framerateConverter = require("./framerateConverter");
+const framerateConverter = require('./framerateConverter');
 
-describe("src/utils/framerateConverter", () => {
-  it("converts fps to denominator and numerator", () => {
+describe('src/utils/framerateConverter', () => {
+  it('converts fps to denominator and numerator', () => {
     const fpsMapping = [
       {
-        fps: "24",
+        fps: '24',
         expectedConverted: {
           numerator: 24000,
           denominator: 1000,
         },
       },
       {
-        fps: "25",
+        fps: '25',
         expectedConverted: {
           numerator: 25000,
           denominator: 1000,
         },
       },
       {
-        fps: "23.976",
+        fps: '23.976',
         expectedConverted: {
           numerator: 24000,
           denominator: 1001,
         },
       },
       {
-        fps: "29.970",
+        fps: '29.970',
         expectedConverted: {
           numerator: 30000,
           denominator: 1001,
