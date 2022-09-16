@@ -8,7 +8,7 @@ const resizeThumbnails = require('./src/resizeThumbnails');
 const convertSharedLiveMedia = require('./src/convertSharedLiveMedia');
 const copyDocument = require('./src/copyDocument');
 const copyMarkdownImage = require('./src/copyMarkdownImage');
-const scanDepositedFile = require("./src/scanDepositedFile");
+const scanDepositedFile = require('./src/scanDepositedFile');
 
 const READY = 'ready';
 const PROCESSING = 'processing';
@@ -37,7 +37,7 @@ exports.handler = async (event, context, callback) => {
     switch (kind) {
       case ResourceKindEnum.DEPOSITED_FILE_KIND:
         error =
-          "Source depositedfile should be uploaded to a folder of the form " +
+          'Source depositedfile should be uploaded to a folder of the form ' +
           '"{file-deposit_id}/depositedfile/{depositedfile_id}/{stamp}".';
         break;
       case ResourceKindEnum.DOCUMENT_KIND:
@@ -88,7 +88,7 @@ exports.handler = async (event, context, callback) => {
         return callback(error);
       }
       console.log(
-        `Successfully received and copy deposited file ${objectKey} from ${sourceBucket}.`
+        `Successfully received and copy deposited file ${objectKey} from ${sourceBucket}.`,
       );
       break;
     case ResourceKindEnum.DOCUMENT_KIND:
@@ -145,11 +145,7 @@ exports.handler = async (event, context, callback) => {
 
     case ResourceKindEnum.TIMED_TEXT_TRACK_KIND:
       try {
-        await encodeTimedTextTrack(
-          objectKey,
-          sourceBucket,
-          extendedStamp,
-        );
+        await encodeTimedTextTrack(objectKey, sourceBucket, extendedStamp);
       } catch (error) {
         return callback(error);
       }

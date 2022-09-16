@@ -74,8 +74,7 @@ describe('check', () => {
 
     expect(mockHeadObject).toHaveBeenCalledWith({
       Bucket: 'test-marsha-destination',
-      Key:
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.mp4',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.mp4',
     });
 
     expect(mockSendRequest).not.toHaveBeenCalled();
@@ -127,23 +126,19 @@ describe('check', () => {
 
     expect(mockHeadObject).toHaveBeenCalledWith({
       Bucket: 'test-marsha-destination',
-      Key:
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.mp4',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.mp4',
     });
     expect(mockHeadObject).toHaveBeenCalledWith({
       Bucket: 'test-marsha-destination',
-      Key:
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.0000000.jpg',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_540.0000000.jpg',
     });
     expect(mockHeadObject).toHaveBeenCalledWith({
       Bucket: 'test-marsha-destination',
-      Key:
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_720.mp4',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/mp4/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_720.mp4',
     });
     expect(mockHeadObject).toHaveBeenCalledWith({
       Bucket: 'test-marsha-destination',
-      Key:
-        'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_720.0000000.jpg',
+      Key: 'a3e213a7-9c56-4bd3-b71c-fe567b0cfe19/thumbnails/a3e213a7-9c56-4bd3-b71c-fe567b0cfe19_720.0000000.jpg',
     });
 
     const expectedBody = {

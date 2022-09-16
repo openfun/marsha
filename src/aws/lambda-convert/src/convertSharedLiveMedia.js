@@ -1,7 +1,7 @@
 // Convert a sharedlivemedia from a source to a destination bucket
-const AWS = require("aws-sdk");
-const s3 = new AWS.S3({ apiVersion: "2006-03-01" });
-const { Poppler } = require("node-poppler");
+const AWS = require('aws-sdk');
+const s3 = new AWS.S3({ apiVersion: '2006-03-01' });
+const { Poppler } = require('node-poppler');
 
 module.exports = async (objectKey, sourceBucket) => {
   const destinationBucket = process.env.S3_DESTINATION_BUCKET;
@@ -12,15 +12,15 @@ module.exports = async (objectKey, sourceBucket) => {
     .getObject({ Bucket: sourceBucket, Key: objectKey })
     .promise();
 
-  const poppler = new Poppler("/usr/local/bin");
+  const poppler = new Poppler('/usr/local/bin');
   const pdfInfos = await poppler.pdfInfo(sourceSharedliveMedia.Body, {
     printAsJson: true,
   });
   const nbPages = parseInt(pdfInfos.pages);
-  const parts = objectKey.split("/");
+  const parts = objectKey.split('/');
   const videoId = parts[0];
   const sharedliveMediaId = parts[2];
-  const [stamp, extension] = parts[3].split(".");
+  const [stamp, extension] = parts[3].split('.');
 
   return Promise.all(
     Array.from({ length: nbPages }, (_, i) => i + 1).map(async (page) => {
@@ -33,7 +33,7 @@ module.exports = async (objectKey, sourceBucket) => {
       const outputBuffer = await poppler.pdfToCairo(
         sourceSharedliveMedia.Body,
         undefined,
-        options
+        options,
       );
       await s3
         .putObject({
@@ -43,7 +43,7 @@ module.exports = async (objectKey, sourceBucket) => {
           Key: `${videoId}/sharedlivemedia/${sharedliveMediaId}/${stamp}_${page}.svg`,
         })
         .promise();
-    })
+    }),
   )
     .then(() => {
       return s3

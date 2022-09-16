@@ -60,8 +60,7 @@ describe('lambda mediapackage', () => {
       detail: {
         harvest_job: {
           id: 'harvest_job_id',
-          arn:
-            'arn:aws:mediapackage-vod:us-east-1:aws_account_id:harvest_jobs/harvest_job_id',
+          arn: 'arn:aws:mediapackage-vod:us-east-1:aws_account_id:harvest_jobs/harvest_job_id',
           status: 'SUCCEEDED',
           origin_endpoint_id: 'endpoint_id',
           start_time: '2019-06-26T20:30:00-08:00',

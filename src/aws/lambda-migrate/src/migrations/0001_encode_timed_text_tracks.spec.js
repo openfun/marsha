@@ -55,8 +55,7 @@ describe('0001_encode_timed_text_tracks', () => {
           {
             s3: {
               object: {
-                key:
-                  '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr',
+                key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr',
               },
               bucket: {
                 name: 'test-marsha-source',
@@ -73,8 +72,7 @@ describe('0001_encode_timed_text_tracks', () => {
           {
             s3: {
               object: {
-                key:
-                  '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en',
+                key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en',
               },
               bucket: {
                 name: 'test-marsha-source',
@@ -137,8 +135,7 @@ describe('0001_encode_timed_text_tracks', () => {
           {
             s3: {
               object: {
-                key:
-                  '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr',
+                key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/1_st_fr',
               },
               bucket: {
                 name: 'test-marsha-source',
@@ -155,8 +152,7 @@ describe('0001_encode_timed_text_tracks', () => {
           {
             s3: {
               object: {
-                key:
-                  '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en',
+                key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/2_st_en',
               },
               bucket: {
                 name: 'test-marsha-source',
@@ -173,8 +169,7 @@ describe('0001_encode_timed_text_tracks', () => {
           {
             s3: {
               object: {
-                key:
-                  '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/3_ts_fr',
+                key: '80c43d43-4ed0-4695-ac64-8318f59d04ec/timedtexttrack/3_ts_fr',
               },
               bucket: {
                 name: 'test-marsha-source',
