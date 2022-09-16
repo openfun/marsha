@@ -112,6 +112,7 @@ export const ToggleSubtitlesAsTranscript = () => {
       checked={toggleUseTranscript}
       onChange={onToggleChange}
       label={intl.formatMessage(messages.useTranscriptToggleLabel)}
+      truncateLabel={false}
     />
   );
 };

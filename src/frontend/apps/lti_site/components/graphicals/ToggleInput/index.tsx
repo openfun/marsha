@@ -13,6 +13,7 @@ interface ToggleInputProps extends CheckBoxExtendedProps {
   disabled?: boolean;
   label: string;
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
+  truncateLabel?: boolean;
 }
 
 export const ToggleInput = ({
@@ -20,6 +21,7 @@ export const ToggleInput = ({
   disabled,
   label,
   onChange,
+  truncateLabel = true,
   ...props
 }: ToggleInputProps) => {
   return (
@@ -39,7 +41,7 @@ export const ToggleInput = ({
         title={label}
         {...props}
       />
-      <StyledText color="blue-active" size="1rem" truncate>
+      <StyledText color="blue-active" size="1rem" truncate={truncateLabel}>
         {label}
       </StyledText>
     </Box>
