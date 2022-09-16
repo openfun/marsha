@@ -34,6 +34,7 @@ export default {
     'lib-tests',
     'uuid',
     /jest/,
+    'zustand',
   ],
   plugins: [
     external([
@@ -43,6 +44,7 @@ export default {
       'react-router-dom',
       'styled-components',
       /@babel\/runtime/,
+      'zustand',
     ]),
     json(),
     commonjs({
