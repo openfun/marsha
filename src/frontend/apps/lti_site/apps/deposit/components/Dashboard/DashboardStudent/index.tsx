@@ -1,6 +1,6 @@
 import { Box, Grid, Heading, Paragraph, ResponsiveContext } from 'grommet';
 import React, { useContext } from 'react';
-import { FormattedMessage } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { Loader } from 'components/Loader';
 
@@ -10,7 +10,7 @@ import { FileDepository } from 'apps/deposit/types/models';
 
 import { UploadFiles } from './UploadFiles';
 
-const messages = {
+const messages = defineMessages({
   fetchFilesError: {
     defaultMessage: 'Error fetching files',
     description: 'Error message when fetching files.',
@@ -21,7 +21,7 @@ const messages = {
     description: 'Header for student files list.',
     id: 'apps.deposit.components.DashboardStudent.filesListHeader',
   },
-};
+});
 
 interface DashboardStudentProps {
   fileDepository: FileDepository;

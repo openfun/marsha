@@ -9,6 +9,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- Fix deposit app translations
+
 ## [4.0.0-beta.8] - 2022-09-15
 
 ### Added

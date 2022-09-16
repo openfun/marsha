@@ -1,7 +1,7 @@
 import { Box, Button, Grid, Paragraph, Text } from 'grommet';
 import Dropzone from 'react-dropzone';
 import React, { useEffect, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
 
 import { PlusSVG } from 'lib-components';
@@ -18,7 +18,7 @@ import { modelName } from 'apps/deposit/types/models';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 
-const messages = {
+const messages = defineMessages({
   dropzonePlaceholder: {
     defaultMessage: "Drag 'n' drop some files here, or click to select files",
     description: 'Placeholder for dropzone.',
@@ -36,7 +36,7 @@ const messages = {
       'Help text to warn user not to navigate away during file upload.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadingFile',
   },
-};
+});
 
 export const UploadFiles = () => {
   const intl = useIntl();
