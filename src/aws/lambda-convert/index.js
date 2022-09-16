@@ -145,12 +145,11 @@ exports.handler = async (event, context, callback) => {
 
     case ResourceKindEnum.TIMED_TEXT_TRACK_KIND:
       try {
-        const extension = await encodeTimedTextTrack(
+        await encodeTimedTextTrack(
           objectKey,
           sourceBucket,
           extendedStamp,
         );
-        await updateState(objectKey, READY, { extension });
       } catch (error) {
         return callback(error);
       }

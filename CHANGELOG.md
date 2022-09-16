@@ -9,6 +9,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- call api update-state with an error when the
+  timed text track format is not supported by
+  @openfun/subsrt
+
 ### Fixed
 
 - Fix deposit app translations
