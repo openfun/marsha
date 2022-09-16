@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import { defineMessages, MessageDescriptor } from 'react-intl';
 
 import {
@@ -5,7 +6,6 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { Thumbnail, uploadState } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   thumbnailError: {

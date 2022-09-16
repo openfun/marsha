@@ -1,4 +1,4 @@
-import { Nullable } from 'utils/types';
+import { Nullable } from 'lib-common';
 
 import { Document } from './file';
 import { modelName } from './models';

@@ -1,4 +1,4 @@
-import { Maybe } from 'utils/types';
+import { Maybe } from 'lib-common';
 
 const formatDigits = (value: number, locale: string) => {
   return value.toLocaleString(locale, {

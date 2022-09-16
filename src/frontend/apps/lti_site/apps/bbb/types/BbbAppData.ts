@@ -1,4 +1,5 @@
-import { Nullable } from 'utils/types';
+import { Nullable } from 'lib-common';
+
 import { AppData } from 'types/AppData';
 import { Classroom, modelName } from './models';
 

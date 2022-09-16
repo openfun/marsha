@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -7,7 +8,7 @@ import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
-import { Nullable } from 'utils/types';
+
 import { converse } from 'utils/window';
 
 import { ChatLayout } from '.';

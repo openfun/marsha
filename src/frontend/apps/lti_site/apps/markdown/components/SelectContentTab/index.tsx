@@ -1,6 +1,7 @@
 import { Box, Card, CardBody, Grid, Spinner, Tab, Text, Tip } from 'grommet';
 import { DocumentMissing, DocumentVerified } from 'grommet-icons';
 import { DocumentPerformance, Icon } from 'grommet-icons/icons';
+import { Nullable } from 'lib-common';
 import React from 'react';
 import {
   defineMessages,
@@ -11,7 +12,6 @@ import {
 
 import { ErrorMessage } from 'components/ErrorComponents';
 import { SelectContentTabProps } from 'components/SelectContent';
-import { Nullable } from 'utils/types';
 
 import {
   useCreateMarkdownDocument,

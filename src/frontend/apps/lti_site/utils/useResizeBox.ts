@@ -1,6 +1,5 @@
+import { Nullable } from 'lib-common';
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-
-import { Nullable } from './types';
 
 export const useResizeBox = (
   initialWidthRatio: number,

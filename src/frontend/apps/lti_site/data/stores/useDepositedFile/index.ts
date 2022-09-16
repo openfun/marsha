@@ -8,7 +8,7 @@ import {
 import { modelName as depositModelName } from 'apps/deposit/types/models';
 import { StoreState } from 'types/stores';
 import { DepositedFile } from 'apps/deposit/types/models';
-import { Nullable } from 'utils/types';
+import { Nullable } from 'lib-common';
 
 type DepositedFileStateResource = {
   [depositModelName.DepositedFiles]: {

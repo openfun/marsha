@@ -1,7 +1,8 @@
+import { Nullable } from 'lib-common';
+
 import { MarkdownImage } from 'apps/markdown/types/models';
 import { DepositedFile } from 'apps/deposit/types/models';
 import { ClassroomDocument } from 'apps/bbb/types/models';
-import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';

@@ -1,5 +1,6 @@
 import { Button, Grommet, Paragraph, TextInput, ThemeType } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
+import { Maybe } from 'lib-common';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -8,7 +9,6 @@ import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
-import { Maybe } from 'utils/types';
 import { LiveSession } from 'types/tracks';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 import { useJwt } from 'data/stores/useJwt';

@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import create from 'zustand';
 
 import {
@@ -8,7 +9,6 @@ import {
 import { modelName } from 'types/models';
 import { StoreState } from 'types/stores';
 import { Thumbnail } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 type ThumbnailStateResource = {
   [modelName.THUMBNAILS]: {

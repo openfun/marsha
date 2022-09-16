@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import create from 'zustand';
 
 import {
@@ -8,7 +9,6 @@ import {
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { StoreState } from 'types/stores';
 import { MarkdownImage } from 'apps/markdown/types/models';
-import { Nullable } from 'utils/types';
 
 type MarkdownImageStateResource = {
   [markdownModelName.MARKDOWN_IMAGES]: {

@@ -1,4 +1,5 @@
 import { Box, Text, Tip } from 'grommet';
+import { Maybe, Nullable } from 'lib-common';
 import { QuestionMarkSVG } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -16,7 +17,6 @@ import { LiveSession } from 'types/tracks';
 import { isAnonymous } from 'utils/chat/chat';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
-import { Maybe, Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert';

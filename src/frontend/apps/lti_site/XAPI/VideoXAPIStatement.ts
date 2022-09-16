@@ -1,5 +1,7 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
+import { Nullable } from 'lib-common';
 import { DateTime, Interval } from 'luxon';
+
 import {
   CompletedDataPlayload,
   ContextExtensionsDefinition,
@@ -16,7 +18,7 @@ import {
   XapiResourceType,
 } from '../types/XAPI';
 import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
-import { Nullable } from '../utils/types';
+
 import { sendXAPIStatement, VideoXAPIStatementInterface } from '.';
 
 export class VideoXAPIStatement implements VideoXAPIStatementInterface {

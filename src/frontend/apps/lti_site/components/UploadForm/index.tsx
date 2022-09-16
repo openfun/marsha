@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
@@ -16,7 +17,7 @@ import {
 import { getResource } from 'data/stores/generics';
 import { modelName, uploadableModelName } from 'types/models';
 import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
-import { Maybe } from 'utils/types';
+
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';

@@ -1,10 +1,10 @@
 import { Anchor, Box, Text } from 'grommet';
+import { Maybe } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { SharedLiveMedia, uploadState } from 'types/tracks';
-import { Maybe } from 'utils/types';
 
 const messages = defineMessages({
   noFilenameUploadFailed: {

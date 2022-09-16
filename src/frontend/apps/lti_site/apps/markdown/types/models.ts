@@ -1,5 +1,6 @@
+import { Nullable } from 'lib-common';
+
 import { Playlist, Resource, uploadState } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 export enum modelName {
   MARKDOWN_DOCUMENTS = 'markdown-documents',

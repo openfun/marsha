@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -9,7 +10,6 @@ import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackL
 import { modelName } from 'types/models';
 import { LanguageChoice } from 'types/SelectOptions';
 import { TimedText, uploadState } from 'types/tracks';
-import { Maybe } from 'utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';

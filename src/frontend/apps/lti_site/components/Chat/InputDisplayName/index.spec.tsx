@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Nullable } from 'lib-common';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -13,7 +14,6 @@ import {
 import { DecodedJwt } from 'types/jwt';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
-import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { InputDisplayName } from '.';

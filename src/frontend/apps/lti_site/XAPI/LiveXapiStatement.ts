@@ -1,3 +1,5 @@
+import { Nullable } from 'lib-common';
+
 import {
   ContextExtensionsDefinition,
   DataPayload,
@@ -13,7 +15,6 @@ import {
   XapiResourceType,
 } from '../types/XAPI';
 import { truncateDecimalDigits } from '../utils/truncateDecimalDigits';
-import { Nullable } from '../utils/types';
 import { sendXAPIStatement, VideoXAPIStatementInterface } from '.';
 
 export class LiveXAPIStatement implements VideoXAPIStatementInterface {

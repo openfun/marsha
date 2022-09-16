@@ -1,3 +1,4 @@
+import { Maybe, Nullable } from 'lib-common';
 import {
   useMutation,
   UseMutationOptions,
@@ -21,7 +22,6 @@ import {
   VideoStats,
   uploadState,
 } from 'types/tracks';
-import { Maybe, Nullable } from 'utils/types';
 
 import { Organization } from 'types/Organization';
 import { actionOne } from './actionOne';

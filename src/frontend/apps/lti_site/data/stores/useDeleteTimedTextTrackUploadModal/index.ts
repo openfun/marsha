@@ -1,6 +1,7 @@
+import { Nullable } from 'lib-common';
+
 import { TimedText } from 'types/tracks';
 import { createStore } from 'utils/createContext';
-import { Nullable } from 'utils/types';
 
 const store = createStore<Nullable<TimedText>>(
   'DeleteTimedTextTrackUploadModalProvider',

@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { Maybe, Nullable } from 'lib-common';
 import React, { useRef, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
@@ -10,7 +11,6 @@ import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
 import { TimedText, timedTextMode, Video, videoSize } from 'types/tracks';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
-import { Maybe, Nullable } from 'utils/types';
 
 interface BaseVideoPlayerProps {
   video: Nullable<Video>;

@@ -1,5 +1,6 @@
+import { Nullable } from 'lib-common';
+
 import { Playlist, Resource, uploadState } from './tracks';
-import { Nullable } from '../utils/types';
 
 export interface Document extends Resource {
   description: string;

@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import {
   useMutation,
   UseMutationOptions,
@@ -11,7 +12,6 @@ import { fetchList, FetchListQueryKey } from 'data/queries/fetchList';
 import { fetchOne } from 'data/queries/fetchOne';
 import { updateOne } from 'data/queries/updateOne';
 import { APIList } from 'types/api';
-import { Maybe } from 'utils/types';
 
 import {
   DepositedFile,

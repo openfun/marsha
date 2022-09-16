@@ -1,8 +1,9 @@
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
 import { Box, Heading, Paragraph } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { Fragment, useMemo } from 'react';
 import { DateTime } from 'luxon';
-import { Nullable } from 'utils/types';
+
 import { useIntl } from 'react-intl';
 
 interface LiveInfoBarProps {

@@ -1,4 +1,4 @@
-import { Nullable } from '../utils/types';
+import { Nullable } from 'lib-common';
 
 /* XMPP representation */
 export interface XMPP {
