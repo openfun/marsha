@@ -13,25 +13,25 @@ const messages = defineMessages({
   useTranscriptToggleLabel: {
     defaultMessage: 'Use subtitles as transcripts',
     description: 'Label of the toggle used to use subtitles as transcripts.',
-    id: 'component.DashboardVideoPaneTranscriptOption.useTranscript',
+    id: 'component.ToggleSubtitlesAsTranscript.useTranscriptToggleLabel',
   },
   useTranscriptToggleSuccess: {
     defaultMessage: 'Use subtitles as transcripts activated.',
     description:
       'Message displayed when use subtitles as transcripts succeded.',
-    id: 'components.DownloadVideo.enableDownloadToggleSuccess',
+    id: 'components.ToggleSubtitlesAsTranscript.useTranscriptToggleSuccess',
   },
   unuseTranscriptToggleSuccess: {
     defaultMessage: 'Use subtitles as transcripts deactivated.',
     description:
       'Message displayed when unuse subtitles as transcripts succeded.',
-    id: 'components.DownloadVideo.disallowDownloadToggleSuccess',
+    id: 'components.ToggleSubtitlesAsTranscript.unuseTranscriptToggleSuccess',
   },
   useTranscriptoggleFail: {
     defaultMessage: 'Update failed, try again.',
     description:
       'Message displayed when use subtitles as transcripts has failed.',
-    id: 'components.DownloadVideo.allowDownloadToggleFail',
+    id: 'components.ToggleSubtitlesAsTranscript.useTranscriptoggleFail',
   },
 });
 
