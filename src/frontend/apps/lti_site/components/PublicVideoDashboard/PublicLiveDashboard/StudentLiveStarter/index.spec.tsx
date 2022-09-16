@@ -1,4 +1,5 @@
 import { act, cleanup, waitFor, screen } from '@testing-library/react';
+import { Nullable } from 'lib-common';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -15,7 +16,6 @@ import { Deferred } from 'utils/tests/Deferred';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
-import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { StudentLiveStarter } from '.';

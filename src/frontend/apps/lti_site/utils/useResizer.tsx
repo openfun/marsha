@@ -1,5 +1,6 @@
 import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Nullable } from 'lib-common';
 import React, {
   CSSProperties,
   PropsWithChildren,
@@ -11,7 +12,6 @@ import React, {
 import styled from 'styled-components';
 
 import { theme } from 'utils/theme/theme';
-import { Nullable } from 'utils/types';
 
 const HALF_SLIDER_WIDTH_PX = 14;
 

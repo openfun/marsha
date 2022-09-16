@@ -1,5 +1,6 @@
 import { Box, Button, Form, Text, TextInput } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Nullable } from 'lib-common';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -9,7 +10,7 @@ import { useCreateVideo } from '../../data/queries';
 import { modelName } from '../../types/models';
 import { UploadableObject } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
-import { Nullable } from '../../utils/types';
+
 import { Spinner } from '../Loader';
 import { MutationFieldError } from '../MutationFieldError';
 import { UploadField } from '../UploadField';

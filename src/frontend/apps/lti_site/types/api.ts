@@ -1,4 +1,5 @@
-import { Nullable } from '../utils/types';
+import { Nullable } from 'lib-common';
+
 import { Resource } from './tracks';
 
 /** Possible states for any API request. */

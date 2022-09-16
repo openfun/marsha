@@ -1,4 +1,5 @@
 import { Button } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
@@ -10,7 +11,6 @@ import { initiateLive } from 'data/sideEffects/initiateLive';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 import { LiveModeType, Video } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   startLiveButtonLabel: {

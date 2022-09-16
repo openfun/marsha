@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Nullable } from 'lib-common';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -8,7 +9,6 @@ import { liveState } from 'types/tracks';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
-import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { StudentLiveWaitingRoom } from '.';

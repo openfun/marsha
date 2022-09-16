@@ -1,6 +1,5 @@
+import { Maybe } from 'lib-common';
 import create from 'zustand';
-
-import { Maybe } from '../../../utils/types';
 
 export interface ObjectProgress {
   [uploadableObjectId: string]: Maybe<number>;

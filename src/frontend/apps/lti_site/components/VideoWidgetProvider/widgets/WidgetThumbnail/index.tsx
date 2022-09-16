@@ -1,5 +1,6 @@
 import { Box, Button, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Nullable } from 'lib-common';
 import { PictureSVG } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -13,7 +14,6 @@ import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { theme } from 'utils/theme/theme';
-import { Nullable } from 'utils/types';
 
 import { ThumbnailManager } from './ThumbnailManager';
 import { ThumbnailRemoveButton } from './ThumbnailRemoveButton';

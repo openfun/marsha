@@ -1,8 +1,8 @@
+import { Nullable } from 'lib-common';
 import create from 'zustand';
 
 import { getCurrentUser } from '../../sideEffects/getCurrentUser';
 import { User } from '../../../types/User';
-import { Nullable } from '../../../utils/types';
 
 export enum AnonymousUser {
   ANONYMOUS = 'AnonymousUser',

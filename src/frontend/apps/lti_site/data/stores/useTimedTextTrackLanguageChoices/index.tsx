@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import create from 'zustand';
 
 import { useJwt } from 'data/stores/useJwt';
@@ -8,7 +9,6 @@ import { RouteOptions } from 'types/RouteOptions';
 import { LanguageChoice } from 'types/SelectOptions';
 import { TimedText } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import { Maybe } from 'utils/types';
 
 type State = {
   choices: Maybe<LanguageChoice[]>;

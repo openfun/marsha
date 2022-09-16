@@ -1,11 +1,11 @@
 import { Button, Form, FormField, Text, TextArea, TextInput } from 'grommet';
+import { Maybe } from 'lib-common';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { SchedulingFields } from 'components/SchedulingFields';
 import { UploadManager } from 'components/UploadManager';
-import { Maybe } from 'utils/types';
 
 import { DashboardClassroomLayout } from 'apps/bbb/components/DashboardClassroomLayout';
 import { UploadDocuments } from 'apps/bbb/components/UploadDocuments';

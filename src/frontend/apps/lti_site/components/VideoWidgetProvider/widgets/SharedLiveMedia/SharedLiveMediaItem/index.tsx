@@ -1,4 +1,5 @@
 import { Box, Text } from 'grommet';
+import { Nullable } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -6,7 +7,6 @@ import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { RetryUploadButton } from 'components/RetryUploadButton';
 import { UploadingObject } from 'components/UploadManager';
 import { SharedLiveMedia, uploadState } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DisallowedDownloadButton } from './DisallowedDownloadButton';

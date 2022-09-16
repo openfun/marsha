@@ -13,6 +13,7 @@ import {
 } from 'grommet';
 import { Copy, DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
 import { Icon } from 'grommet-icons/icons';
+import { Nullable } from 'lib-common';
 import React, { lazy, useEffect, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import {
@@ -38,7 +39,6 @@ import {
   Video,
   videoSize,
 } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   playlistTitle: {

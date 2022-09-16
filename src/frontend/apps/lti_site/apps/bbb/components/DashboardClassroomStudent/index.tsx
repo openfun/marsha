@@ -1,9 +1,8 @@
 import { Box, Button, Text } from 'grommet';
+import { Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Nullable } from 'utils/types';
 
 import {
   DashboardClassroomLayout,

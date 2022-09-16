@@ -1,4 +1,5 @@
 import { Box, Button, Text, ResponsiveContext } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -14,7 +15,6 @@ import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 import { Video } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import { Nullable } from 'utils/types';
 
 import { LicenseSelect } from './LicenseSelect';
 import { UploadVideoForm } from './UploadVideoForm';

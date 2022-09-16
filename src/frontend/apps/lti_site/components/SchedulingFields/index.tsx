@@ -1,10 +1,9 @@
 import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
+import { Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Nullable } from 'utils/types';
 
 import { mergeDateTime, splitDateTime } from './utils';
 

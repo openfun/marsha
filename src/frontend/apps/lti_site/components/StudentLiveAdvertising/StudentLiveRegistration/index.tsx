@@ -1,5 +1,6 @@
 import { Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Maybe } from 'lib-common';
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -7,7 +8,6 @@ import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
-import { Maybe } from 'utils/types';
 
 import { RegistrationForm } from './RegistrationForm';
 import { useLiveSessionsQuery } from 'data/queries';

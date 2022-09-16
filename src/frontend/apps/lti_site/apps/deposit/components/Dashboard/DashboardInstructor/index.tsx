@@ -1,10 +1,9 @@
 import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
+import { Maybe } from 'lib-common';
 import React, { FocusEvent, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { Loader } from 'components/Loader';
-
-import { Maybe } from 'utils/types';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import {

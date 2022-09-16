@@ -1,4 +1,5 @@
 import { Box, Button } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -10,7 +11,6 @@ import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackL
 import { modelName } from 'types/models';
 import { LanguageChoice } from 'types/SelectOptions';
 import { timedTextMode, uploadState } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 import { LanguageSelect } from './LanguageSelect';
 import { TimedTextTrackItem } from './TimedTextTrackItem';

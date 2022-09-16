@@ -1,8 +1,8 @@
 import { Box, Grid, ResponsiveContext, Text } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useContext } from 'react';
 
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { Nullable } from 'utils/types';
 
 interface DashboardClassroomMessageProps {
   message: string;

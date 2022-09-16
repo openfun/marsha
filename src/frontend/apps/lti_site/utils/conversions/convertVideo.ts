@@ -1,5 +1,6 @@
+import { Maybe } from 'lib-common';
+
 import { Live, LiveJitsi, LiveModeType, liveState, Video } from 'types/tracks';
-import { Maybe } from 'utils/types';
 
 export const convertVideoToLive = (video: Video): Maybe<Live> => {
   if (video.live_state !== null && video.live_state !== liveState.ENDED) {
