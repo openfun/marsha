@@ -1,6 +1,7 @@
 import { Anchor, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
 import { Logout } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
+import { OrganizationAccessRole } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -10,7 +11,6 @@ import {
   AnonymousUser,
   useCurrentUser,
 } from '../../data/stores/useCurrentUser';
-import { OrganizationAccessRole } from '../../types/User';
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
 import { Loader } from '../Loader';

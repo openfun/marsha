@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
-import { useJwt } from 'data/stores/useJwt';
+import { OrganizationAccessRole } from 'lib-components';
 import React from 'react';
 
-import { OrganizationAccessRole } from 'types/User';
+import { useJwt } from 'data/stores/useJwt';
 import render from 'utils/tests/render';
 
 import MarkdownView from '.';
