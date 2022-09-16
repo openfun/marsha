@@ -5,6 +5,7 @@ import {
   FormFieldProps as GrommetFormFieldProps,
   FormProps as GrommetFormProps,
 } from 'grommet';
+import { Maybe } from 'lib-common';
 import React, {
   createContext,
   PropsWithChildren,
@@ -12,8 +13,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
-import { Maybe } from 'utils/types';
 
 type ErrorStateType<T> = Partial<Record<keyof T, string>>;
 

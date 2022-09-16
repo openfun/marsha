@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import React, {
   CSSProperties,
   ReactNode,
@@ -12,7 +13,6 @@ import {
   MAX_PICTURE_WIDTH_RATIO,
   MIN_PICTURE_WIDTH_RATIO,
 } from 'default/pictureInPicture';
-import { Nullable } from 'utils/types';
 import { useResizeBox } from 'utils/useResizeBox';
 
 import { PictureInPictureElement } from './PictureInPictureElement';

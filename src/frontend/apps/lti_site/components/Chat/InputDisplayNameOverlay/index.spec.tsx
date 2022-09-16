@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { Nullable } from 'lib-common';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -14,7 +15,6 @@ import { liveSessionFactory } from 'utils/tests/factories';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';
-import { Nullable } from 'utils/types';
 import { converse } from 'utils/window';
 
 import { InputDisplayNameOverlay } from '.';

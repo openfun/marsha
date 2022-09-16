@@ -1,9 +1,9 @@
 import './entry.js';
+import { Nullable } from 'lib-common';
 
 import { Video } from 'types/tracks.js';
 import { XMPP } from 'types/XMPP';
 import { generateAnonymousNickname } from 'utils/chat/chat';
-import { Nullable } from 'utils/types.js';
 import { converse } from 'utils/window';
 
 import { chatPlugin } from './converse-plugins/chatPlugin';

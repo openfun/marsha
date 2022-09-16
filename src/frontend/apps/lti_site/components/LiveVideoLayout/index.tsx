@@ -1,5 +1,6 @@
 import { Box, Button, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Nullable } from 'lib-common';
 import { OpenClosePanelSVG } from 'lib-components';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
@@ -14,7 +15,7 @@ import {
   MIN_PANEL_WIDTH_RATIO,
 } from 'default/livePanel';
 import { theme } from 'utils/theme/theme';
-import { Nullable } from 'utils/types';
+
 import { useResizer } from 'utils/useResizer';
 
 import { DisplayNameForm } from './DisplayNameForm';

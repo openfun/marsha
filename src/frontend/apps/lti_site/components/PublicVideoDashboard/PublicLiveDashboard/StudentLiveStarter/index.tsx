@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -17,7 +18,6 @@ import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { modelName } from 'types/models';
 import { JoinMode, liveState } from 'types/tracks';
-import { Maybe } from 'utils/types';
 import { converse } from 'utils/window';
 
 interface StudentLiveStarterProps {

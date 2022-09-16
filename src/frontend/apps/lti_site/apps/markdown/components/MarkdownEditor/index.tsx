@@ -1,11 +1,11 @@
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
 import { Loader } from 'components/Loader';
-import { Nullable } from 'utils/types';
 
 import {
   CodeMirrorEditor,

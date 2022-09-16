@@ -4,8 +4,8 @@ import { languages } from '@codemirror/language-data';
 import { EditorState, Text } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
+import { Nullable } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
-import { Nullable } from 'utils/types';
 import { RegExpCursor } from '@codemirror/search';
 
 type CodeMirrorRef = {

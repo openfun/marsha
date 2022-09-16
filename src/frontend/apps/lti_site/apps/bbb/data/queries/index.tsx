@@ -1,3 +1,4 @@
+import { Maybe } from 'lib-common';
 import {
   useMutation,
   UseMutationOptions,
@@ -24,7 +25,6 @@ import {
   ClassroomDocument,
   modelName,
 } from 'apps/bbb/types/models';
-import { Maybe } from 'utils/types';
 
 type ClassroomsResponse = APIList<Classroom>;
 type UseClassroomsParams = { organization: Maybe<string> };

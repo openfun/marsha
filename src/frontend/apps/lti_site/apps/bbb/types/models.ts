@@ -1,5 +1,6 @@
+import { Nullable } from 'lib-common';
+
 import { Playlist, Resource, uploadState } from 'types/tracks';
-import { Nullable } from 'utils/types';
 
 export interface Classroom extends Resource {
   playlist: Playlist;

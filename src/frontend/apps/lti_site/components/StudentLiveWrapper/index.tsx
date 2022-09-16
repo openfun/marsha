@@ -1,4 +1,5 @@
 import { Box, Layer } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
@@ -26,7 +27,6 @@ import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { convertLiveToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { Nullable } from 'utils/types';
 
 import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
 

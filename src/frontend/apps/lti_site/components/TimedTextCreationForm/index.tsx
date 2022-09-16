@@ -1,5 +1,6 @@
 import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Maybe, Nullable } from 'lib-common';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
@@ -13,7 +14,6 @@ import { modelName } from '../../types/models';
 import { timedTextMode } from '../../types/tracks';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';
-import { Maybe, Nullable } from '../../utils/types';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 

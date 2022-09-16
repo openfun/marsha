@@ -1,3 +1,4 @@
+import { Maybe, Nullable } from 'lib-common';
 import React, {
   MutableRefObject,
   useCallback,
@@ -5,8 +6,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-
-import { Maybe, Nullable } from 'utils/types';
 
 import { computePicturePosition, defaultmarginSize, Point } from './utils';
 

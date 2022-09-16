@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, {
   useCallback,
   useEffect,
@@ -15,7 +16,6 @@ import { LiveJitsi, liveState } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
-import { Nullable } from 'utils/types';
 
 import { initializeJitsi } from './utils';
 

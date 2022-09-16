@@ -1,7 +1,7 @@
-import React from 'react';
 import { Box } from 'grommet';
+import { Nullable } from 'lib-common';
+import React from 'react';
 
-import { Nullable } from 'utils/types';
 import { LiveInfoBar } from 'components/LiveInfoBar';
 
 interface StudentLiveInfoBarProps {

@@ -7,6 +7,7 @@ import videojs, {
 import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
+import { Maybe, Nullable } from 'lib-common';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useJwt } from 'data/stores/useJwt';
@@ -24,7 +25,6 @@ import {
 import { report } from 'utils/errors/report';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
-import { Maybe, Nullable } from 'utils/types';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
 
 import { Events } from './videojs/qualitySelectorPlugin/types';

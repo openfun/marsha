@@ -1,4 +1,5 @@
 import { Box, Button } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -9,7 +10,6 @@ import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { modelName } from 'types/models';
-import { Nullable } from 'utils/types';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 

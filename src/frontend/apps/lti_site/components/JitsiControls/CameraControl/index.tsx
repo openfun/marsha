@@ -1,11 +1,11 @@
 import { Box, Button } from 'grommet';
+import { Nullable } from 'lib-common';
 import { CameraOffSVG, CameraOnSVG } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useJitsiApi } from 'data/stores/useJitsiApi';
-import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   disableTitle: {

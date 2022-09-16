@@ -1,3 +1,4 @@
+import { Nullable } from 'lib-common';
 import create from 'zustand';
 
 import {
@@ -8,7 +9,6 @@ import {
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
 import { StoreState } from 'types/stores';
-import { Nullable } from 'utils/types';
 
 type DocumentStateResource = {
   [modelName.DOCUMENTS]: {

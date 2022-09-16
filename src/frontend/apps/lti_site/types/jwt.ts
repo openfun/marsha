@@ -1,4 +1,4 @@
-import { Nullable } from '../utils/types';
+import { Nullable } from 'lib-common';
 
 export interface DecodedJwtPermission {
   can_access_dashboard: boolean;

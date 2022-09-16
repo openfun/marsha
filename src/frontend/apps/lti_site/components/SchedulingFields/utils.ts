@@ -1,6 +1,5 @@
+import { Nullable } from 'lib-common';
 import { DateTime, Duration } from 'luxon';
-
-import { Nullable } from 'utils/types';
 
 export const splitDateTime = (
   dateTimeISO: Nullable<string>,

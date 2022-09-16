@@ -1,6 +1,7 @@
 import { evaluate } from '@mdx-js/mdx2';
 import DOMPurify from 'dompurify';
 import langLatex from 'highlight.js/lib/languages/latex'; // Support LaTeX code highlighting.
+import { Nullable } from 'lib-common';
 import { debounce } from 'lodash';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -13,7 +14,6 @@ import remarkMath from 'remark-math'; // Support math like `$so$`.
 import { PluggableList } from 'unified';
 
 import { Spinner } from 'components/Loader';
-import { Nullable } from 'utils/types';
 
 import {
   MarkdownImage,

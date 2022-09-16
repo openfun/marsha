@@ -1,8 +1,8 @@
 import { Box, BoxProps, Stack } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { CSSProperties, MutableRefObject, ReactNode } from 'react';
 
 import { startDraggingHandler } from 'components/PictureInPictureLayer/usePIPDragger';
-import { Nullable } from 'utils/types';
 
 import { ResizerCorner } from './ResizerCorner';
 

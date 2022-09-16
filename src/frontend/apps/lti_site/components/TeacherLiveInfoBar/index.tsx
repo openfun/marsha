@@ -1,9 +1,8 @@
 import { LiveInfoBar } from 'components/LiveInfoBar';
 import { Box, BoxProps } from 'grommet';
+import { Nullable } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
   noTitle: {

@@ -8,12 +8,12 @@
  and the viewer.
  */
 
+import { Nullable } from 'lib-common';
 import React from 'react';
 
 import { useJwt } from 'data/stores/useJwt';
 import { DecodedJwt } from 'types/jwt';
 import { OrganizationAccessRole } from 'types/User';
-import { Nullable } from 'utils/types';
 
 import MarkdownEditor from 'apps/markdown/components/MarkdownEditor';
 import MarkdownNotFoundView from 'apps/markdown/components/MarkdownNotFoundView';

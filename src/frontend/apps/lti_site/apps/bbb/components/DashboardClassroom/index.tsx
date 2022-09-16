@@ -1,5 +1,6 @@
 import { Box, Grommet, Spinner, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
+import { Maybe } from 'lib-common';
 import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -7,7 +8,6 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { useJwt } from 'data/stores/useJwt';
 import { Loader } from 'components/Loader';
 import { theme } from 'utils/theme/theme';
-import { Maybe } from 'utils/types';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
 import { useJoinClassroomAction, useClassroom } from 'apps/bbb/data/queries';

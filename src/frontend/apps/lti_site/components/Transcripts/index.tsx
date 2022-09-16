@@ -1,11 +1,11 @@
 import { Box } from 'grommet';
+import { Nullable } from 'lib-common';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { TimedTextTranscript } from '../../types/tracks';
-import { Nullable } from '../../utils/types';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { TranscriptReader } from '../TranscriptReader';
 

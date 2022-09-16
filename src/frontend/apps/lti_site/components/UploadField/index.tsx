@@ -1,9 +1,10 @@
+import { Maybe } from 'lib-common';
 import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import styled from 'styled-components';
 
 import { uploadableModelName } from '../../types/models';
-import { Maybe } from '../../utils/types';
+
 import { useUploadManager } from '../UploadManager';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
 
