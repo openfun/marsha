@@ -166,19 +166,14 @@ describe("lambda", () => {
       ],
     };
 
-    it("delegates to encodeTimedTextTrack and calls updateState when it succeeds", async () => {
-      mockEncodeTimedTextTrack.mockImplementation(() => Promise.resolve("srt"));
+    it("delegates to encodeTimedTextTrack", async () => {
+      mockEncodeTimedTextTrack.mockImplementation(() => Promise.resolve());
       await lambda(event, null, callback);
 
       expect(mockEncodeTimedTextTrack).toHaveBeenCalledWith(
         "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st",
         "source bucket",
         "1542967735_fr_st"
-      );
-      expect(mockUpdateState).toHaveBeenCalledWith(
-        "630dfaaa-8b1c-4d2e-b708-c9a2d715cf59/timedtexttrack/dba1512e-d0b3-40cc-ae44-722fbe8cba6a/1542967735_fr_st",
-        "ready",
-        { extension: "srt" }
       );
     });
 
@@ -379,7 +374,7 @@ describe("lambda", () => {
       );
       expect(mockUpdateState).toHaveBeenCalledWith(
         "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
-        "processing",
+        "processing"
       );
       expect(mockUpdateState).toHaveBeenCalledWith(
         "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf",
@@ -442,11 +437,10 @@ describe("lambda", () => {
     });
 
     it("delegates to copyDepositFile and reports an error when thrown", async () => {
-      const error = new Error("Something went wrong")
+      const error = new Error("Something went wrong");
       mockScanDepositedFile.mockImplementation(() => {
-          throw error;
-        }
-      );
+        throw error;
+      });
 
       await lambda(
         {

@@ -1,7 +1,12 @@
 const AWS = require("aws-sdk");
 const s3 = new AWS.S3();
+
 const subsrt = require("@openfun/subsrt");
 const he = require("he");
+const updateState = require('update-state');
+
+const READY = "ready";
+const ERROR = "error";
 
 /**
  * Convert any uploaded timed text track to `.vtt`.
@@ -22,14 +27,18 @@ module.exports = async (objectKey, sourceBucket, filename) => {
   const mode = (matches && matches[1]) || null;
 
   let encodedVttTimedText;
-  switch (mode) {
-    case "st":
-    case "cc":
-      encodedVttTimedText = convertTimedTextTrack(timedTextFile, objectKey);
-      break;
-    default:
-      encodedVttTimedText = encodeTranscript(timedTextFile, objectKey);
-      break;
+  try {
+    switch (mode) {
+      case "st":
+      case "cc":
+        encodedVttTimedText = convertTimedTextTrack(timedTextFile, objectKey);
+        break;
+      default:
+        encodedVttTimedText = encodeTranscript(timedTextFile, objectKey);
+        break;
+    }
+  } catch (e) {
+    return updateState(objectKey, ERROR);
   }
 
   await s3
@@ -56,7 +65,9 @@ module.exports = async (objectKey, sourceBucket, filename) => {
     })
     .promise();
 
-  return Promise.resolve(subsrt.detect(timedTextFile.Body.toString()));
+  return updateState(objectKey, READY, {
+    extension: subsrt.detect(timedTextFile.Body.toString()),
+  });
 };
 
 const convertTimedTextTrack = (timedTextFile, objectKey) => {
