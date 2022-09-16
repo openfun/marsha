@@ -1,0 +1,59 @@
+{
+  "name": "standalone_site",
+  "version": "0.1.0",
+  "private": true,
+  "devDependencies": {
+    "eslint-plugin-import": "2.26.0",
+    "@types/jest": "29.0.0",
+    "@types/node": "16.11.59",
+    "@types/react": "17.0.43",
+    "@types/react-dom": "17.0.14",
+    "@typescript-eslint/eslint-plugin": "4.33.0",
+    "@typescript-eslint/parser": "4.33.0",
+    "babel-jest": "26.6.3",
+    "eslint": "7.32.0",
+    "eslint-config-prettier": "8.5.0",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.31.6",
+    "typescript": "4.8.2"
+  },
+  "dependencies": {
+    "grommet": "*",
+    "react": "17.0.2",
+    "react-dom": "17.0.2",
+    "react-scripts": "4.0.3",
+    "web-vitals": "2.1.4"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "CI=true react-scripts test",
+    "eject": "react-scripts eject",
+    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint:fix": "yarn run lint -- --fix",
+    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "workspaces": {
+    "nohoist": [
+      "typescript"
+    ]
+  }
+}

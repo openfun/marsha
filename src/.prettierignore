@@ -5,3 +5,4 @@ frontend/apps/lti_site/translations/*.json
 frontend/apps/lti_site/public-path.js
 frontend/apps/lti_site/apps/.cookiecutter
 lib
+build

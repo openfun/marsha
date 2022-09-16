@@ -409,8 +409,11 @@ jobs:
           name: Build lib_tests
           command: yarn build-tests
       - run:
-          name: Build front-end application
+          name: Build front-end lti application
           command: yarn build-lti
+      - run:
+          name: Build front-end standalone application
+          command: yarn build-site
       - run:
           name: Use formatjs cli to generate frontend.json file
           command: yarn workspace marsha run extract-translations
@@ -422,6 +425,7 @@ jobs:
           paths:
             - ./node_modules
             - ./apps/lti_site/node_modules
+            - ./apps/standalone_site/node_modules
             - ./packages/lib_common/node_modules
             - ./packages/lib_tests/node_modules
             - ./packages/lib_components/node_modules
@@ -552,8 +556,14 @@ jobs:
               wget \
               xdg-utils
       - run:
-          name: Run tests
-          command: yarn test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          name: Run tests on libs
+          command: yarn test-libs -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
+          name: Run tests on lti site
+          command: yarn test-lti -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
+          name: Run test on standalone site
+          command: yarn test-site
       - store_artifacts:
           path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
       - store_artifacts:
