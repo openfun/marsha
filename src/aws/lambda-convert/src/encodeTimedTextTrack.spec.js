@@ -12,6 +12,9 @@ jest.mock("aws-sdk", () => ({
   },
 }));
 
+const mockUpdateState = jest.fn();
+jest.doMock("update-state", () => mockUpdateState);
+
 const encodeTimedTextTrack = require("./encodeTimedTextTrack");
 
 describe("lambda-convert/src/encodeTimedTextTrack", () => {
@@ -40,13 +43,11 @@ describe("lambda-convert/src/encodeTimedTextTrack", () => {
       promise: () => new Promise((resolve) => resolve()),
     });
 
-    const extension = await encodeTimedTextTrack(
+    await encodeTimedTextTrack(
       "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts",
       "source_bucket",
       "1605887889_fr_ts"
     );
-
-    expect(extension).toEqual("srt");
 
     expect(mockGetObject).toHaveBeenCalledWith({
       Bucket: "source_bucket",
@@ -64,6 +65,12 @@ describe("lambda-convert/src/encodeTimedTextTrack", () => {
       CopySource:
         "source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts",
     });
+
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_ts",
+      "ready",
+      { extension: "srt" }
+    );
   });
 
   it("timed text tracks without known mode should be encoded", async () => {
@@ -104,6 +111,12 @@ describe("lambda-convert/src/encodeTimedTextTrack", () => {
       CopySource:
         "source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr",
     });
+
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr",
+      "ready",
+      { extension: "srt" }
+    );
   });
 
   it("reads the source timed text, converts it without escaping to VTT and writes it to destination", async () => {
@@ -144,6 +157,12 @@ describe("lambda-convert/src/encodeTimedTextTrack", () => {
       CopySource:
         "source_bucket/a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st",
     });
+
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr",
+      "ready",
+      { extension: "srt" }
+    );
   });
 
   it("throws when it fails to convert the source timed text to VTT", async () => {
@@ -155,16 +174,15 @@ describe("lambda-convert/src/encodeTimedTextTrack", () => {
         ),
     });
 
-    await expect(
-      encodeTimedTextTrack(
-        "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st",
-        "source_bucket",
-        "1605887889_fr_st"
-      )
-    ).rejects.toEqual(
-      new Error(
-        "Invalid timed text format for a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st."
-      )
+    await encodeTimedTextTrack(
+      "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st",
+      "source_bucket",
+      "1605887889_fr_st"
+    );
+
+    expect(mockUpdateState).toHaveBeenCalledWith(
+      "a3e213a7-9c56-4bd3-b71c-fe567b0cfeb9/timedtexttrack/91d397b2-ea37-451c-8d76-8d2f1dd20e4b/1605887889_fr_st",
+      "error",
     );
   });
 
