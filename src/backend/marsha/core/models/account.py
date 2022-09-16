@@ -513,3 +513,49 @@ class OrganizationAccess(BaseModel):
             return _("{user} was {role} of {organization}").format(**kwargs)
 
         return _("{user} is {role} of {organization}").format(**kwargs)
+
+
+class LtiUserAssociation(BaseModel):
+    """Model linking an LTI authenticated user to a marsha user."""
+
+    lti_user_id = models.CharField(
+        max_length=255,
+        verbose_name=_("LTI user ID"),
+        help_text=_("LMS user ID"),
+        db_index=True,
+    )
+    consumer_site = models.ForeignKey(
+        to=ConsumerSite,
+        related_name="lti_user_associations",
+        verbose_name=_("consumer site"),
+        help_text=_("consumer site related to this user association"),
+        on_delete=models.CASCADE,
+    )
+    user = models.ForeignKey(
+        to=User,
+        related_name="lti_user_associations",
+        verbose_name=_("user"),
+        help_text=_("user related to this user association"),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``LtiUserAssociation`` model."""
+
+        db_table = "lti_user_association"
+        verbose_name = _("LTI user association")
+        verbose_name_plural = _("LTI user associations")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["lti_user_id", "consumer_site"],
+                condition=models.Q(deleted=None),
+                name="lti_user_association_unique_per_consumer_site_idx",
+            )
+        ]
+
+    def __str__(self):
+        """Get the string representation of an instance."""
+        result = f"{self.consumer_site_id}_{self.lti_user_id} -> {self.user_id}"
+        if self.deleted:
+            result += _(" [deleted]")
+        return result
