@@ -1,8 +1,8 @@
 import { Nullable } from 'lib-common';
+import { User } from 'lib-components';
 import create from 'zustand';
 
 import { getCurrentUser } from '../../sideEffects/getCurrentUser';
-import { User } from '../../../types/User';
 
 export enum AnonymousUser {
   ANONYMOUS = 'AnonymousUser',
