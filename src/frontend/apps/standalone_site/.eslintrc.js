@@ -40,7 +40,9 @@ module.exports = {
       },
     ],
     'no-alert': 1,
+    'react/jsx-uses-react': 0,
     'react/prop-types': 0,
+    'react/react-in-jsx-scope': 0,
   },
   ignorePatterns: ['node_modules/'],
   settings: {
