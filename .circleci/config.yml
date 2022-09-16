@@ -821,7 +821,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   lint-lambda-convert:
     docker:
@@ -840,7 +840,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   lint-lambda-complete:
     docker:
@@ -862,7 +862,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   lint-lambda-medialive:
     docker:
@@ -884,7 +884,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   lint-lambda-mediapackage:
     docker:
@@ -906,7 +906,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   lint-lambda-elemental-routing:
     docker:
@@ -928,7 +928,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: lint code
-          command: yarn prettier --write --list-different '**/*.+(json|js)'
+          command: yarn prettier --list-different '**/*.+(json|js)'
 
   # Restore django and front POT files containing strings to translate and upload them to our
   # translation management tool
