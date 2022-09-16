@@ -1,6 +1,6 @@
 import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
 import React, { FocusEvent, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { Loader } from 'components/Loader';
 
@@ -15,21 +15,21 @@ import { FileDepository } from 'apps/deposit/types/models';
 
 const PAGE_SIZE = 10;
 
-const messages = {
+const messages = defineMessages({
   currentPaginatedItems: {
     defaultMessage: 'Showing {firstIndex} - {lastIndex} of {total}',
     description: 'Message to inform the user of the current displayed files.',
-    id: 'components.DashboardInstructor.currentPaginatedItems',
+    id: 'apps.deposit.components.DashboardInstructor.currentPaginatedItems',
   },
   noTitle: {
     defaultMessage: 'Click here to add a title',
     description: 'Instruction message to set a title for a file deposit',
-    id: 'components.DashboardInstructor.noTitle',
+    id: 'apps.deposit.components.DashboardInstructor.noTitle',
   },
   noDescription: {
     defaultMessage: 'Click here to add a description',
     description: 'Instruction message to set a description for a file deposit',
-    id: 'components.DashboardInstructor.noDescription',
+    id: 'apps.deposit.components.DashboardInstructor.noDescription',
   },
   fetchFilesError: {
     defaultMessage: 'Error fetching files',
@@ -66,7 +66,7 @@ const messages = {
     description: 'Header for student files list.',
     id: 'apps.deposit.components.DashboardInstructor.filesListHeader',
   },
-};
+});
 
 interface DashboardInstructorProps {
   fileDepository: FileDepository;

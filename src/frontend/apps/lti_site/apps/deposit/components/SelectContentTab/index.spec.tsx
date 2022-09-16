@@ -195,7 +195,7 @@ describe('<SelectContent />', () => {
       name: 'FileDepositories',
     });
     userEvent.click(fileDepositoryTab);
-    userEvent.click(screen.getByText('Add a fileDepository'));
+    userEvent.click(screen.getByText('Add a file depository'));
 
     await waitFor(() => {
       expect(
@@ -255,7 +255,7 @@ describe('<SelectContent />', () => {
       name: 'FileDepositories',
     });
     userEvent.click(fileDepositoryTab);
-    userEvent.click(screen.getByText('Add a fileDepository'));
+    userEvent.click(screen.getByText('Add a file depository'));
 
     await waitFor(() => {
       expect(
@@ -319,7 +319,7 @@ describe('<SelectContent />', () => {
       name: 'FileDepositories',
     });
     userEvent.click(fileDepositoryTab);
-    userEvent.click(screen.getByText('Add a fileDepository'));
+    userEvent.click(screen.getByText('Add a file depository'));
 
     await waitFor(() => {
       expect(
