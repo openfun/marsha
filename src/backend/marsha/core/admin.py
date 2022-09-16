@@ -14,6 +14,7 @@ from marsha.core.models import (
     ConsumerSitePortability,
     Document,
     LTIPassport,
+    LtiUserAssociation,
     Organization,
     OrganizationAccess,
     Playlist,
@@ -443,3 +444,17 @@ class LTIPassportAdmin(admin.ModelAdmin):
         "playlist__title",
     )
     verbose_name = _("LTI passport")
+
+
+@admin.register(LtiUserAssociation)
+class LtiUserAssociationAdmin(admin.ModelAdmin):
+    """Admin class for the LTI user association model."""
+
+    fields = ("lti_user_id", "consumer_site", "user", "created_on")
+    list_display = (
+        "lti_user_id",
+        "consumer_site",
+        "user",
+        "created_on",
+    )
+    verbose_name = _("LTI user association")

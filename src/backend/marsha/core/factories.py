@@ -224,3 +224,14 @@ class SharedLiveMediaFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.SharedLiveMedia
+
+
+class LtiUserAssociationFactory(DjangoModelFactory):
+    """Factory for the LtiUserAssociation model."""
+
+    user = factory.SubFactory(UserFactory)
+    consumer_site = factory.SubFactory(ConsumerSiteFactory)
+    lti_user_id = factory.Sequence("LTI-USER#{:d}".format)  # must be stripped uppercase
+
+    class Meta:  # noqa
+        model = models.LtiUserAssociation
