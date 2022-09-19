@@ -3,6 +3,7 @@ import { Logout } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
 import {
   AnonymousUser,
+  Loader,
   OrganizationAccessRole,
   useCurrentUser,
 } from 'lib-components';
@@ -13,7 +14,6 @@ import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
-import { Loader } from '../Loader';
 import { SidebarUploadsIndicator } from '../SidebarUploadsIndicator';
 import { withLink } from '../withLink/withLink';
 import { getCurrentUser } from 'data/sideEffects/getCurrentUser';

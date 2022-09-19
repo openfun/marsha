@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { Spinner } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -8,7 +9,6 @@ import {
   uploadState,
   Video,
 } from '../../types/tracks';
-import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;

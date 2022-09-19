@@ -1,3 +1,4 @@
+import { Loader } from 'lib-components';
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
@@ -6,7 +7,6 @@ import { FullScreenError } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { ErrorComponentsProps } from 'components/ErrorComponents';
 import { InstructorWrapper } from 'components/InstructorWrapper';
-import { Loader } from 'components/Loader';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';

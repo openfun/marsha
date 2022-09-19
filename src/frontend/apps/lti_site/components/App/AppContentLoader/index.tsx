@@ -13,7 +13,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { BoundaryScreenError } from 'components/ErrorComponents';
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useJwt } from 'data/stores/useJwt';
 import { appNames } from 'types/AppData';

@@ -8,6 +8,7 @@ import {
   Text,
 } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Spinner } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, useHistory } from 'react-router-dom';
@@ -17,7 +18,6 @@ import { useVideos } from '../../data/queries';
 import { Video } from '../../types/tracks';
 import { theme } from '../../utils/theme/theme';
 import { ErrorMessage } from '../ErrorComponents';
-import { Spinner } from '../Loader';
 import { UploadableObjectStatusBadge } from '../UploadableObjectStatusBadge';
 
 const messages = defineMessages({

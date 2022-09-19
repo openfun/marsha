@@ -1,7 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route } from 'react-router-dom';
 
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
 import { UploadManager } from 'components/UploadManager';

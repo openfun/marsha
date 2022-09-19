@@ -1,9 +1,8 @@
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Loader } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Loader } from 'components/Loader';
 
 import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';

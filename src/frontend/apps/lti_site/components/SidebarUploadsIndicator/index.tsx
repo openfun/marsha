@@ -1,5 +1,6 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { Spinner } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
@@ -7,7 +8,6 @@ import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
-import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({

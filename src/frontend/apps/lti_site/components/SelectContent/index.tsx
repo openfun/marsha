@@ -14,6 +14,7 @@ import {
 import { Copy, DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
 import { Icon } from 'grommet-icons/icons';
 import { Nullable } from 'lib-common';
+import { Loader } from 'lib-components';
 import React, { lazy, useEffect, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import {
@@ -24,7 +25,6 @@ import {
 } from 'react-intl';
 import styled from 'styled-components';
 
-import { Loader } from 'components/Loader';
 import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';

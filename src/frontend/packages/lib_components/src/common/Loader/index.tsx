@@ -1,11 +1,26 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
-import { Offscreen } from 'components/Styled/Offscreen';
-import { theme } from 'utils/theme/theme';
+/**
+ * Visually move an element offscreen, so it is not visible while still present in the
+ * accessibility tree and for screen reader users.
+ */
+const Offscreen = styled.div`
+  border: 0;
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+`;
 
 const Preloader = styled(Box)`
   width: 100%;
@@ -88,16 +103,13 @@ export const Spinner: React.FC<SpinnerProps> = (props) => {
   );
 };
 
-// tslint:disable:no-empty-interface
-interface LoaderProps extends SpinnerProps {}
-
 /**
  * Displays a full-page, fixed transparent gray overlay with a rotating CSS loader.
  * @param aria-hidden Passthrough to remove the whole spinner from accessible tree.
  * @param role The role of the aria region. Informs aria-live. Defaults to "status".
  * @param size Set of available sizes for the spinner. Defaults to "medium".
  */
-export const Loader: React.FC<LoaderProps> = (props) => {
+export const Loader: React.FC<SpinnerProps> = (props) => {
   const ariaHidden = props['aria-hidden'] || false;
 
   return (
