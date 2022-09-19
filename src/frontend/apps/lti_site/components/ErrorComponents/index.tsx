@@ -6,6 +6,8 @@ import styled from 'styled-components';
 import { H2 } from '../Headings';
 import { LayoutMainArea } from '../LayoutMainArea';
 
+export * from './BoundaryScreenError';
+
 export interface ErrorComponentsProps {
   code:
     | 'generic'

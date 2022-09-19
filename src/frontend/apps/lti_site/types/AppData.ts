@@ -59,6 +59,7 @@ export interface AppConfig {
       liveErrorBackground: string;
       marshaWhiteLogo: string;
       videoWizardBackground: string;
+      errorMain: string;
     };
   };
   player?: string;

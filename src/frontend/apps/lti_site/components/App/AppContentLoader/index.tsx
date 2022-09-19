@@ -7,10 +7,12 @@ import React, {
   useMemo,
 } from 'react';
 import { Toaster } from 'react-hot-toast';
+import { ErrorBoundary } from 'react-error-boundary';
 import { createIntlCache, createIntl, RawIntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
+import { BoundaryScreenError } from 'components/ErrorComponents';
 import { Loader } from 'components/Loader';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useJwt } from 'data/stores/useJwt';
@@ -95,26 +97,32 @@ const AppContentLoader = () => {
       <ReactQueryDevtools />
       <RawIntlProvider value={intl}>
         <Grommet theme={theme} style={{ height: '100%' }}>
-          <Toaster
-            toastOptions={{
-              duration: 5000,
-              success: {
-                style: {
-                  background: colors['status-ok'],
+          <ErrorBoundary
+            fallbackRender={({ error }) => (
+              <BoundaryScreenError code={500} message={error.message} />
+            )}
+          >
+            <Toaster
+              toastOptions={{
+                duration: 5000,
+                success: {
+                  style: {
+                    background: colors['status-ok'],
+                  },
                 },
-              },
-              error: {
-                style: {
-                  color: colors.white,
-                  background: colors['accent-2'],
+                error: {
+                  style: {
+                    color: colors.white,
+                    background: colors['accent-2'],
+                  },
                 },
-              },
-            }}
-          />
-          <Suspense fallback={<Loader />}>
-            <Content />
-          </Suspense>
-          <GlobalStyles />
+              }}
+            />
+            <Suspense fallback={<Loader />}>
+              <Content />
+            </Suspense>
+            <GlobalStyles />
+          </ErrorBoundary>
         </Grommet>
       </RawIntlProvider>
     </QueryClientProvider>
