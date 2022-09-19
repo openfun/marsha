@@ -79,7 +79,7 @@ const CreateVOD = ({ video }: CreateVODProps) => {
   const intl = useIntl();
   const size = useContext(ResponsiveContext);
   const [wizardedVideo, setWizardedVideo] = useState<WizardedVideo>({
-    title: null,
+    title: currentVideo.title,
     videoFile: null,
     license: null,
   });
