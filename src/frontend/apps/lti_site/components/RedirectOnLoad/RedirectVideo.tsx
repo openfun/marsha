@@ -3,7 +3,11 @@ import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
+import {
+  PLAYER_ROUTE,
+  VideoWizzardSubPage,
+  VIDEO_WIZARD_ROUTE,
+} from 'components/routes';
 import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
@@ -27,7 +31,16 @@ export const RedirectVideo = ({ video }: RedirectVideoProps) => {
 
   if (getDecodedJwt().permissions.can_update) {
     //  teacher access video wizzard
-    return <Redirect push to={VIDEO_WIZARD_ROUTE()} />;
+    return (
+      <Redirect
+        push
+        to={VIDEO_WIZARD_ROUTE(
+          video.upload_state === uploadState.INITIALIZED
+            ? VideoWizzardSubPage.createVideo
+            : undefined,
+        )}
+      />
+    );
   }
 
   if (video.is_ready_to_show) {

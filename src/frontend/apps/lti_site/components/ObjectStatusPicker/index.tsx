@@ -11,7 +11,7 @@ import {
 import { Spinner } from '../Loader';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
-const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
+const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {
   IDLE,
   RUNNING,
@@ -43,6 +43,11 @@ const messages = defineMessages({
     defaultMessage: 'Transforming live in VOD',
     description: 'Status information for a video/audio/timed text track',
     id: 'components.ObjectStatusPicker.HARVESTING',
+  },
+  [INITIALIZED]: {
+    defaultMessage: 'Initialized',
+    description: 'Status information for a video/audio/timed text track',
+    id: 'components.ObjectStatusPicker.INITIALIZED',
   },
   [PENDING]: {
     defaultMessage: 'Missing',

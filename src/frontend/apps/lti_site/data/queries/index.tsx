@@ -19,6 +19,7 @@ import {
   TimedText,
   Video,
   VideoStats,
+  uploadState,
 } from 'types/tracks';
 import { Maybe, Nullable } from 'utils/types';
 
@@ -278,6 +279,7 @@ type UseCreateVideoData = {
   description?: string;
   lti_id?: string;
   live_type?: Nullable<LiveModeType>;
+  upload_state?: uploadState;
 };
 type UseCreateVideoError =
   | { code: 'exception' }
