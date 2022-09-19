@@ -42,7 +42,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.31.8",
-    "grommet": "2.25.3",
+    "grommet": "2.25.1",
     "prettier": "2.7.1",
     "rollup": "2.79.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
