@@ -93,6 +93,7 @@ const liveWidgets: WidgetType[] = [
 const vodWidgets: WidgetType[] = [
   WidgetType.TITLE_AND_DESCRIPTION,
   WidgetType.UPLOAD_VIDEO,
+  WidgetType.VISIBILITY_AND_INTERACTION,
   WidgetType.THUMBNAIL_VOD,
   WidgetType.DOWNLOAD_VOD,
   WidgetType.UPLOAD_SUBTITLES,
