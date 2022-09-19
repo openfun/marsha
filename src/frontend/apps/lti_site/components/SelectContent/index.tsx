@@ -30,7 +30,14 @@ import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { appNames } from 'types/AppData';
 import { Document } from 'types/file';
-import { Live, LiveModeType, Playlist, Video, videoSize } from 'types/tracks';
+import {
+  Live,
+  LiveModeType,
+  Playlist,
+  uploadState,
+  Video,
+  videoSize,
+} from 'types/tracks';
 import { Nullable } from 'utils/types';
 
 const messages = defineMessages({
@@ -460,6 +467,7 @@ export const SelectContent = ({
                 playlist: playlist!.id,
                 title: lti_select_form_data?.activity_title,
                 description: lti_select_form_data?.activity_description,
+                upload_state: uploadState.INITIALIZED,
               });
             }}
             newLtiUrl={new_video_url!}

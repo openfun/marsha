@@ -16,7 +16,7 @@ jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({}),
 }));
 
-const { DELETED, ERROR, PENDING, PROCESSING, READY } = uploadState;
+const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {
   IDLE,
   RUNNING,
@@ -107,6 +107,28 @@ describe('<ObjectStatusPicker />', () => {
       );
 
       screen.getByText('Processing');
+    });
+
+    it('renders status info for an object INITILIAZING', () => {
+      // Here the object is not an upload that has just finished. However as we got it from the API,
+      // the state on the object itself was "PROCESSING".
+      const object = {
+        id: uuidv4(),
+        upload_state: INITIALIZED,
+      } as UploadableObject;
+
+      render(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <ObjectStatusPicker object={object} />
+        </UploadManagerContext.Provider>,
+      );
+
+      screen.getByText('Initialized ✔️');
     });
 
     it('renders status info for an object undergoing PROCESSING', () => {
