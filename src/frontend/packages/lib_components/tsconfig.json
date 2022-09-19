@@ -10,7 +10,8 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "declaration": true,
-    "rootDir": "src",
-    "baseUrl": "."
+    "declarationDir": "lib/",
+    "rootDir": "./src",
+    "baseUrl": "./src"
   }
 }

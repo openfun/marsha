@@ -56,6 +56,8 @@ export default {
       tsconfigOverride: {
         exclude: ['**/*.spec.*'],
       },
+      clean: true,
+      useTsconfigDeclarationDir: true,
     }),
     babel({
       babelrc: false,
