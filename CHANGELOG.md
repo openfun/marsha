@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Enable visibility widget in VOD dashboard
 - introduce initialized upload state
 - Add BBB presentation upload
+- Authenticate the user in the standalone site
 
 ### Changed
 

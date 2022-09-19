@@ -1,18 +1,23 @@
+import { Authenticator } from 'features/Authentication';
 import { Grommet, Main, Page } from 'grommet';
-import React from 'react';
+import { BrowserRouter } from 'react-router-dom';
+import { AppRoutes } from 'routes';
 import { themeExtend } from 'style/theme.extend';
 
 import './App.css';
-import { AppRoutes } from './routes';
 
 const App = () => {
   return (
     <Grommet theme={themeExtend}>
-      <Main>
-        <Page kind="full">
-          <AppRoutes />
-        </Page>
-      </Main>
+      <BrowserRouter>
+        <Authenticator>
+          <Main>
+            <Page kind="full">
+              <AppRoutes />
+            </Page>
+          </Main>
+        </Authenticator>
+      </BrowserRouter>
     </Grommet>
   );
 };
