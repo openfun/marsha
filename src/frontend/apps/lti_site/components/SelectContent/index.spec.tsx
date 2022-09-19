@@ -629,6 +629,7 @@ describe('<SelectContent />', () => {
     const video = videoMockFactory({
       title: null,
       description: null,
+      upload_state: uploadState.INITIALIZED,
     });
     fetchMock.post('/api/videos/', video);
 
@@ -653,6 +654,7 @@ describe('<SelectContent />', () => {
         fetchMock.called('/api/videos/', {
           body: {
             playlist: playlist.id,
+            upload_state: uploadState.INITIALIZED,
           },
           method: 'POST',
         }),
@@ -682,6 +684,7 @@ describe('<SelectContent />', () => {
     const video = videoMockFactory({
       title: 'Activity title',
       description: 'Activity description',
+      upload_state: uploadState.INITIALIZED,
     });
 
     fetchMock.post('/api/videos/', video);
@@ -713,6 +716,7 @@ describe('<SelectContent />', () => {
             playlist: playlist.id,
             title: 'Activity title',
             description: 'Activity description',
+            upload_state: uploadState.INITIALIZED,
           },
           method: 'POST',
         }),
@@ -744,6 +748,7 @@ describe('<SelectContent />', () => {
     const video = videoMockFactory({
       title: '',
       description: '',
+      upload_state: uploadState.INITIALIZED,
     });
 
     fetchMock.post('/api/videos/', video);
@@ -775,6 +780,7 @@ describe('<SelectContent />', () => {
             playlist: playlist.id,
             title: '',
             description: '',
+            upload_state: uploadState.INITIALIZED,
           },
           method: 'POST',
         }),

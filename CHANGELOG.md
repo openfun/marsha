@@ -26,6 +26,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix video dashboard translations
 - Fix deposit app UI
 - Use video title in creation wizard if it exists
+- Skip screen choice between live and vod when coming back from 
+  LTI select
 
 ## [4.0.0-beta.8] - 2022-09-15
 

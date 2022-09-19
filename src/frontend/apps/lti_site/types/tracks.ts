@@ -26,6 +26,7 @@ export interface Resource {
  */
 export enum uploadState {
   DELETED = 'deleted',
+  INITIALIZED = 'initialized',
   ERROR = 'error',
   PENDING = 'pending',
   PROCESSING = 'processing',

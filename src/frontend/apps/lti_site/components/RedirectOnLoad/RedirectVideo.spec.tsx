@@ -3,10 +3,14 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
+import {
+  PLAYER_ROUTE,
+  VideoWizzardSubPage,
+  VIDEO_WIZARD_ROUTE,
+} from 'components/routes';
 import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
-import { LiveModeType } from 'types/tracks';
+import { LiveModeType, uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
@@ -103,6 +107,7 @@ describe('RedirectVideo', () => {
     });
     const video = videoMockFactory({
       is_ready_to_show: false,
+      title: null,
     });
 
     render(<RedirectVideo video={video} />, {
@@ -123,11 +128,59 @@ describe('RedirectVideo', () => {
             render: () => <span>video player</span>,
           },
           { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo),
+            render: () => <span> VOD creation</span>,
+          },
         ],
       },
     });
 
     screen.getByText('wizard');
+  });
+
+  it('redirects to the wizard VOD creation when the video update state is initialized', () => {
+    useJwt.setState({
+      getDecodedJwt: () =>
+        ({
+          permissions: {
+            can_update: true,
+          },
+        } as any),
+    });
+    const video = videoMockFactory({
+      is_ready_to_show: false,
+      title: 'Not blank title',
+      upload_state: uploadState.INITIALIZED,
+    });
+
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo),
+            render: () => <span>VOD creation</span>,
+          },
+        ],
+      },
+    });
+
+    screen.getByText('VOD creation');
   });
 
   it('redirects to the error view when the user has no update permission and the video is not ready to show', () => {
