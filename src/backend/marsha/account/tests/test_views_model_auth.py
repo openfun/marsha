@@ -98,7 +98,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.post(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "http://localhost:8060/")
+        self.assertEqual(response.url, "http://localhost:3000/")
         self.assertUserIsNotAuthenticated()
 
     def test_logout_get_success(self):
@@ -108,7 +108,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.get(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "http://localhost:8060/")
+        self.assertEqual(response.url, "http://localhost:3000/")
         self.assertUserIsNotAuthenticated()
 
     def test_logout_get_success_if_not_logged_in(self):
@@ -117,7 +117,7 @@ class AccountViewTestCase(BaseAuthenticationTestCase):
         response = self.client.get(reverse("account:logout"))
 
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "http://localhost:8060/")
+        self.assertEqual(response.url, "http://localhost:3000/")
         self.assertUserIsNotAuthenticated()
 
     def test_password_reset_get(self):
@@ -260,7 +260,7 @@ class RedirectToFrontendViewTestCase(BaseAuthenticationTestCase):
 
         # Assert frontend redirection
         parsed_response_url = urlparse(response.url)
-        self.assertEqual(parsed_response_url.netloc, "localhost:8060")
+        self.assertEqual(parsed_response_url.netloc, "localhost:3000")
         self.assertEqual(parsed_response_url.path, "/")
 
         # Assert token presence
