@@ -199,5 +199,8 @@ describe('<VideoWidgetProvider />', () => {
 
     //  Closed captions
     screen.getByText('Closed captions');
+
+    // visibility
+    screen.getByText('Visibility and interaction parameters');
   });
 });
