@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Catch and design error with react-error-boundary
 - Enable visibility widget in VOD dashboard
 - introduce initialized upload state
 
