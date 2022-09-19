@@ -20,6 +20,7 @@ import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import CreateVOD from '.';
+import { AppConfig } from 'types/AppData';
 
 jest.mock('utils/errors/report', () => ({
   report: jest.fn(),
@@ -123,6 +124,74 @@ describe('<CreateVOD />', () => {
 
     screen.getByRole('textbox', { name: 'Enter title of your video here' });
     screen.getByText('Add a video or drag & drop it');
+    screen.getByTestId('input-video-test-id');
+    await waitFor(() =>
+      expect(
+        screen.getByRole('textbox', {
+          name: 'Select the license under which you want to publish your video, CC_BY',
+        }),
+      ).toHaveValue('Creative Common By Attribution'),
+    );
+
+    const goBackButton = screen.getByRole('button', { name: 'Go back' });
+    const createVideoButton = screen.getByRole('button', {
+      name: 'Create a video',
+    });
+    expect(goBackButton).not.toBeDisabled();
+    expect(createVideoButton).toBeDisabled();
+  });
+
+  it('renders CreateVOD with video title already set', async () => {
+    const mockedVideo = videoMockFactory({
+      id: 'videoId',
+      title: 'Video title already set',
+      description: null,
+      upload_state: uploadState.PENDING,
+      is_ready_to_show: false,
+    });
+
+    mockedUseVideo.mockReturnValue(mockedVideo);
+
+    mockedUseAppConfig.mockReturnValue({
+      static: {
+        img: {
+          videoWizardBackground: 'img/path/videoWizardBackground',
+        },
+      },
+    } as AppConfig);
+
+    fetchMock.mock(
+      `/api/videos/`,
+      {
+        actions: { POST: { license: { choices: licenseChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(<CreateVOD video={mockedVideo} />);
+
+    expect(screen.getByText('Video creation')).toBeInTheDocument();
+
+    expect(
+      screen.getByText(
+        'Use this wizard to create a new video, that you will be able to share with your students.',
+      ),
+    ).toBeInTheDocument();
+
+    const titleInput: HTMLInputElement = screen.getByRole('textbox', {
+      name: 'Enter title of your video here',
+    });
+    expect(titleInput.value).toEqual(mockedVideo.title);
+    expect(
+      screen.getByText('Add a video or drag & drop it'),
+    ).toBeInTheDocument();
+
     screen.getByTestId('input-video-test-id');
     await waitFor(() =>
       expect(
