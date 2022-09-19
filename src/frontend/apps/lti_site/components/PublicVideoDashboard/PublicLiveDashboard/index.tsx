@@ -1,9 +1,10 @@
+import { Loader } from 'lib-components';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
-import { Loader } from 'components/Loader';
+
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveError } from 'components/StudentLiveError';
 import { useLiveSessionsQuery } from 'data/queries';

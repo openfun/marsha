@@ -1,4 +1,5 @@
 import { Maybe } from 'lib-common';
+import { Loader } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
@@ -8,7 +9,6 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { IframeHeading } from 'components/Headings';
 import { LayoutMainArea } from 'components/LayoutMainArea';
-import { Loader } from 'components/Loader';
 import { UploadField } from 'components/UploadField';
 import {
   UploadManagerStatus,

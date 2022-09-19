@@ -29,7 +29,8 @@ jest.mock('data/stores/useAppConfig', () => ({
   useAppconfig: () => mockAppData,
 }));
 
-jest.mock('components/Loader', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   Loader: () => <span>Loader</span>,
 }));
 

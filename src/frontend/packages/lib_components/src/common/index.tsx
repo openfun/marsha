@@ -1,6 +1,8 @@
 export * from './Button';
 export * from './Button/ButtonLayout';
 
+export * from './Loader';
+
 export * from './SVGIcons';
 export * from './SVGIcons/AppsSVG';
 export * from './SVGIcons/BinSVG';

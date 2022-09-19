@@ -1,12 +1,12 @@
 import { Button } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Loader } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { Loader } from 'components/Loader';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';

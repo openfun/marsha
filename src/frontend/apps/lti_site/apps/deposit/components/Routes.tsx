@@ -6,7 +6,7 @@ import {
   FullScreenError,
 } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
 

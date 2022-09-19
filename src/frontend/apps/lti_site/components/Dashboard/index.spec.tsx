@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
 
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useJwt } from 'data/stores/useJwt';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
