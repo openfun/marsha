@@ -2,7 +2,7 @@ import { Box, Grid, Heading, Paragraph, ResponsiveContext } from 'grommet';
 import React, { useContext } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import { useDepositedFiles } from 'apps/deposit/data/queries';

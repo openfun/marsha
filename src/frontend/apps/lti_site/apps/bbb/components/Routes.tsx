@@ -2,7 +2,7 @@ import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { Loader } from 'components/Loader';
+import { Loader } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { flags } from 'types/AppData';
 

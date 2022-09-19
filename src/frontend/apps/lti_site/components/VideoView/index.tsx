@@ -1,6 +1,6 @@
 import { Box, Heading, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Crumb } from 'lib-components';
+import { Crumb, Spinner } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import {
@@ -15,7 +15,6 @@ import styled from 'styled-components';
 
 import { useTimedTextTracks, useVideo } from 'data/queries';
 import { ErrorMessage } from 'components/ErrorComponents';
-import { Spinner } from 'components/Loader';
 import { UploadableObjectStatusBadge } from 'components/UploadableObjectStatusBadge';
 import { UploadField } from 'components/UploadField';
 import {

@@ -2,6 +2,7 @@ import { evaluate } from '@mdx-js/mdx2';
 import DOMPurify from 'dompurify';
 import langLatex from 'highlight.js/lib/languages/latex'; // Support LaTeX code highlighting.
 import { Nullable } from 'lib-common';
+import { Spinner } from 'lib-components';
 import { debounce } from 'lodash';
 import React from 'react';
 import ReactDOMServer from 'react-dom/server';
@@ -12,8 +13,6 @@ import rehypeMathjax from 'rehype-mathjax'; // Render math with Mathjax.
 import rehypeRaw from 'rehype-raw'; // Render HTML tags in simple Markdown.
 import remarkMath from 'remark-math'; // Support math like `$so$`.
 import { PluggableList } from 'unified';
-
-import { Spinner } from 'components/Loader';
 
 import {
   MarkdownImage,

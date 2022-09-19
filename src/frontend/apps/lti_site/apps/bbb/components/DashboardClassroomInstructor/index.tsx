@@ -1,10 +1,9 @@
 import { Box, Button, Grid, ResponsiveContext } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Loader } from 'lib-components';
 import React, { lazy, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Loader } from 'components/Loader';
 
 import { Classroom } from 'apps/bbb/types/models';
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
