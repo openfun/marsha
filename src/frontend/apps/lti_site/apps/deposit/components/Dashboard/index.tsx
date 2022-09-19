@@ -1,5 +1,5 @@
-import { Box, Grommet, Spinner, ThemeType } from 'grommet';
-import { deepMerge, normalizeColor } from 'grommet/utils';
+import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -38,15 +38,6 @@ const messages = defineMessages({
 });
 
 const extendedTheme: ThemeType = {
-  global: {
-    breakpoints: {
-      xsmall: { value: 840 },
-      small: { value: 1024 },
-      medium: { value: 1440 },
-      large: { value: 1800 },
-      xlarge: {},
-    },
-  },
   heading: {
     font: {
       family: 'Roboto-Bold',
@@ -119,7 +110,7 @@ const Dashboard = () => {
 
   return (
     <UploadManager>
-      <Grommet theme={deepMerge(theme, extendedTheme)}>
+      <ThemeContext.Extend value={extendedTheme}>
         <Box
           align="center"
           background={'linear-gradient(-180deg, #dce9fa 0%, #EDF5FA 100%);'}
@@ -127,7 +118,7 @@ const Dashboard = () => {
         >
           {content}
         </Box>
-      </Grommet>
+      </ThemeContext.Extend>
     </UploadManager>
   );
 };
