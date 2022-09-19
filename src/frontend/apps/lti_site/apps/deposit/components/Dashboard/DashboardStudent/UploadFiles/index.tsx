@@ -1,4 +1,4 @@
-import { Box, Button, Grid, Paragraph, Text } from 'grommet';
+import { Box, Button, Paragraph, Text } from 'grommet';
 import Dropzone from 'react-dropzone';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -127,26 +127,25 @@ export const UploadFiles = () => {
             {filesToUpload.map((file) => (
               <Box
                 key={file.name}
-                direction="row"
                 fill
                 background="#F9FBFD"
-                pad="large"
-                align="center"
+                pad="medium"
                 margin={{ bottom: 'xsmall' }}
+                round="small"
               >
-                <Grid columns={{ count: 3, size: 'small' }} fill>
-                  <Box justify="start">
-                    <Text weight="bold">{truncateFilename(file.name, 40)}</Text>
-                  </Box>
-                  <Box justify="center">
+                <Box justify="start" margin={{ bottom: 'xsmall' }}>
+                  <Text weight="bold">{truncateFilename(file.name, 40)}</Text>
+                </Box>
+                <Box direction="row">
+                  <Box justify="start" flex="shrink">
                     <Text alignSelf="center">{bytesToSize(file.size)}</Text>
                   </Box>
-                  <Box justify="end">
+                  <Box justify="end" flex>
                     <Text alignSelf="end">
                       {DateTime.now().toFormat('dd/MM/yyyy')}
                     </Text>
                   </Box>
-                </Grid>
+                </Box>
               </Box>
             ))}
           </Box>

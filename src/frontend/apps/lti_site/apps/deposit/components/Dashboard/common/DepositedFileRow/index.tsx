@@ -1,4 +1,4 @@
-import { Anchor, Box, Grid, ResponsiveContext, Text } from 'grommet';
+import { Anchor, Box, ResponsiveContext, Text } from 'grommet';
 import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
@@ -50,6 +50,7 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
 
   return (
     <Box
+      align="baseline"
       background={file.read ? '#F2F7FD' : 'white'}
       border={
         file.read
@@ -58,131 +59,68 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
       }
       fill
       margin={{ top: 'xxsmall' }}
-      pad="xsmall"
+      pad="medium"
       round="small"
     >
-      {size === 'small' || size === 'xsmall' ? (
-        <Box pad="small">
-          <Grid columns={['1fr', '1fr']}>
-            <Box align="start">
-              <Text size="medium">{file.author_name}</Text>
-            </Box>
-            <Box align="end" direction="row">
-              <Text
-                size="small"
-                wordBreak="keep-all"
-                margin={{ right: 'xxsmall' }}
-              >
-                {uploadedOnDate}&nbsp;{uploadedOnTime}
-              </Text>
-              <Text size="small">{bytesToSize(file.size)}</Text>
-            </Box>
-          </Grid>
-
-          <Grid columns={['1fr', '1fr']}>
-            <Box align="start">
-              <Text
-                title={file.filename}
-                weight={file.read ? 'normal' : 'bolder'}
-              >
-                {size === 'small'
-                  ? truncateFilename(file.filename, 70)
-                  : truncateFilename(file.filename, 40)}
-              </Text>
-            </Box>
-            {file.upload_state === 'ready' ? (
-              <Box align="center" justify="end" direction="row" gap="small">
-                <Box
-                  align="center"
-                  justify="center"
-                  background="blue-active"
-                  pad={{ horizontal: 'medium', vertical: 'xsmall' }}
-                  round="xsmall"
-                >
-                  <Anchor
-                    onClick={markFileAsRead}
-                    download
-                    color="white"
-                    a11yTitle={intl.formatMessage(messages.labelDownload)}
-                    label={intl.formatMessage(messages.labelDownload)}
-                    style={{ fontFamily: 'Roboto-Medium' }}
-                    title={intl.formatMessage(messages.labelDownload)}
-                    href={file.url}
-                  />
-                </Box>
-              </Box>
-            ) : (
-              <Box justify="end" direction="row" gap="small">
-                <Text>{file.upload_state}</Text>
-              </Box>
-            )}
-          </Grid>
+      <Box direction="row" fill>
+        <Box justify="start" gap="small" flex>
+          <Text size="medium">{file.author_name}</Text>
         </Box>
-      ) : (
-        <Grid
-          columns={{ count: 3, size: 'auto' }}
-          gap="xxsmall"
-          margin="xsmall"
-          align="center"
-        >
-          <Box justify="start" direction="row" gap="small">
-            <Text size="medium">{file.author_name}</Text>
-          </Box>
-          <Box justify="center" direction="row" gap="small">
-            <Grid
-              columns={['auto', 'xsmall', 'medium']}
-              gap="xxsmall"
-              align="center"
-              justify="start"
+        {uploadedOn && (
+          <Box justify="start" flex="shrink">
+            <Text
+              size="small"
+              wordBreak="keep-all"
+              margin={{ right: 'xxsmall' }}
             >
-              <Text
-                size="small"
-                wordBreak="keep-all"
-                margin={{ right: 'xxsmall' }}
-              >
-                {uploadedOnDate}&nbsp;{uploadedOnTime}
-              </Text>
-              <Text size="small">{bytesToSize(file.size)}</Text>
-              <Text
-                title={file.filename}
-                weight={file.read ? 'normal' : 'bolder'}
-              >
-                {size === 'medium'
-                  ? truncateFilename(file.filename, 40)
-                  : size === 'large'
-                  ? truncateFilename(file.filename, 60)
-                  : file.filename}
-              </Text>
-            </Grid>
+              {uploadedOnDate}&nbsp;{uploadedOnTime}
+            </Text>
           </Box>
-          {file.upload_state === 'ready' ? (
-            <Box align="center" justify="end" direction="row" gap="small">
-              <Box
-                align="center"
-                justify="center"
-                background="blue-active"
-                pad={{ horizontal: 'medium', vertical: 'xsmall' }}
-                round="xsmall"
-              >
-                <Anchor
-                  onClick={markFileAsRead}
-                  download
-                  color="white"
-                  a11yTitle={intl.formatMessage(messages.labelDownload)}
-                  label={intl.formatMessage(messages.labelDownload)}
-                  style={{ fontFamily: 'Roboto-Medium' }}
-                  title={intl.formatMessage(messages.labelDownload)}
-                  href={file.url}
-                />
-              </Box>
-            </Box>
-          ) : (
-            <Box justify="end" direction="row" gap="small">
+        )}
+        <Box align="end" justify="end" gap="small" flex>
+          <Box
+            justify="end"
+            background={
+              file.upload_state === 'ready' ? 'blue-active' : undefined
+            }
+            pad={{
+              horizontal: file.upload_state === 'ready' ? 'medium' : undefined,
+              vertical: 'xsmall',
+            }}
+            round="xsmall"
+          >
+            {file.upload_state === 'ready' ? (
+              <Anchor
+                onClick={markFileAsRead}
+                download
+                color="white"
+                a11yTitle={intl.formatMessage(messages.labelDownload)}
+                label={intl.formatMessage(messages.labelDownload)}
+                style={{ fontFamily: 'Roboto-Medium' }}
+                title={intl.formatMessage(messages.labelDownload)}
+                href={file.url}
+              />
+            ) : (
               <Text>{file.upload_state}</Text>
-            </Box>
-          )}
-        </Grid>
-      )}
+            )}
+          </Box>
+        </Box>
+      </Box>
+
+      <Box direction="row" fill>
+        <Box justify="start" flex>
+          <Text title={file.filename} weight={file.read ? 'normal' : 'bolder'}>
+            {size === 'medium'
+              ? truncateFilename(file.filename, 40)
+              : size === 'large'
+              ? truncateFilename(file.filename, 60)
+              : file.filename}
+          </Text>
+        </Box>
+        <Box align="end" justify="end" flex="shrink">
+          <Text size="small">{bytesToSize(file.size)}</Text>
+        </Box>
+      </Box>
     </Box>
   );
 };
