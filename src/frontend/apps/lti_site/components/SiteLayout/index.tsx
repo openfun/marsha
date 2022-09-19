@@ -1,21 +1,22 @@
 import { Anchor, Box, Button, Main, Nav, Sidebar, Text } from 'grommet';
 import { Logout } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
-import { OrganizationAccessRole } from 'lib-components';
-import React from 'react';
+import {
+  AnonymousUser,
+  OrganizationAccessRole,
+  useCurrentUser,
+} from 'lib-components';
+import React, { useEffect } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
-import {
-  AnonymousUser,
-  useCurrentUser,
-} from '../../data/stores/useCurrentUser';
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
 import { Loader } from '../Loader';
 import { SidebarUploadsIndicator } from '../SidebarUploadsIndicator';
 import { withLink } from '../withLink/withLink';
+import { getCurrentUser } from 'data/sideEffects/getCurrentUser';
 
 const messages = defineMessages({
   logInBtn: {
@@ -47,11 +48,17 @@ const SidebarLink = styled(Link)`
 
 export const SiteLayout: React.FC = ({ children }) => {
   const intl = useIntl();
-  const currentUser = useCurrentUser().getCurrentUser();
+  const currentUser = useCurrentUser((state) => state.currentUser);
 
   const redirectTo = (location: string) => () => {
     window.location.assign(location);
   };
+
+  useEffect(() => {
+    if (!currentUser) {
+      getCurrentUser();
+    }
+  }, [currentUser]);
 
   return (
     <Box direction="row" pad="none" height="full">
