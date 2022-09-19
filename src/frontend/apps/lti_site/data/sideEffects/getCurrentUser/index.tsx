@@ -1,5 +1,6 @@
+import { AnonymousUser } from 'lib-components';
+
 import { useJwt } from 'data/stores/useJwt';
-import { AnonymousUser } from 'data/stores/useCurrentUser';
 import { API_ENDPOINT } from 'settings';
 import { requestStatus } from 'types/api';
 import { report } from 'utils/errors/report';
@@ -10,7 +11,7 @@ import { report } from 'utils/errors/report';
  */
 export const getCurrentUser = async (): Promise<requestStatus> => {
   try {
-    const { useCurrentUser } = await import('data/stores/useCurrentUser');
+    const { useCurrentUser } = await import('lib-components');
 
     const response = await fetch(`${API_ENDPOINT}/users/whoami/`, {
       headers: {
