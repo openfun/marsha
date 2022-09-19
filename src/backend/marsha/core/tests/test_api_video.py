@@ -4439,11 +4439,11 @@ class VideoAPITest(TestCase):
                         "interface_config_overwrite": {},
                         "room_name": str(video.pk),
                         "token": (
-                            "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9."
+                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
                             "eyJleHAiOjE2NTE2MjMwMDAsImlhdCI6MTY1MTYyMjQwMCwibW9kZXJhdG9yIjp0cnVl"
                             "LCJhdWQiOiJqaXRzaSIsImlzcyI6ImppdHNpX2FwcF9pZCIsInN1YiI6Im1lZXQuaml0"
                             "LnNpIiwicm9vbSI6IjI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNyJ9"
-                            ".LpHprY_P63wuKiIasYNev_LJmQJsPAWEfo0qz6MwoGc"
+                            ".XHsCRoAAGC4jp-hj80LGE8tNOi3V3efgPcqcXuBKHJI"
                         ),
                     }
                 },
