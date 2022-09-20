@@ -11,7 +11,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from marsha.core.models import BaseModel, Playlist
+from marsha.core.models import BaseModel, Playlist, UploadableFileMixin
+from marsha.core.utils.time_utils import to_timestamp
 
 
 logger = logging.getLogger(__name__)
@@ -157,3 +158,73 @@ class Classroom(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
+
+
+class ClassroomDocument(UploadableFileMixin, BaseModel):
+    """Model representing a document in a classroom."""
+
+    RESOURCE_NAME = "classroomdocuments"
+    S3_IDENTIFIER = "classroomdocument"
+
+    classroom = models.ForeignKey(
+        to=Classroom,
+        related_name="classroom_documents",
+        verbose_name=_("classroom document"),
+        help_text=_("clasroom to which this document belongs"),
+        # don't allow hard deleting a classroom if it still contains a document
+        on_delete=models.PROTECT,
+    )
+
+    filename = models.CharField(
+        max_length=255,
+        verbose_name=_("filename"),
+        help_text=_("filename of the classroom document"),
+        null=True,
+        blank=True,
+    )
+
+    is_default = models.BooleanField(
+        default=False,
+        verbose_name=_("is default"),
+        help_text=_("is displayed by default in the classroom"),
+    )
+
+    class Meta:
+        """Options for the ``ClassroomDocument`` model."""
+
+        db_table = "classroom_document"
+        ordering = ["-uploaded_on"]
+        verbose_name = _("Classroom document")
+        verbose_name_plural = _("Classroom documents")
+
+    def get_source_s3_key(self, stamp=None, extension=None):
+        """Compute the S3 key in the source bucket.
+        It is built from the classroom ID + ID of the classroom document + version stamp.
+        Parameters
+        ----------
+        stamp: Type[string]
+            Passing a value for this argument will return the source S3 key for the classroom
+            document assuming its active stamp is set to this value. This is useful to create an
+            upload policy for this prospective version of the track, so that the client can
+            upload the file to S3 and the confirmation lambda can set the `uploaded_on` field
+            to this value only after the file upload and processing is successful.
+        extension: Type[string]
+            The extension used by the uploaded media. This extension is added at the end of the key
+            to keep a record of the extension. We will use it in the update-state endpoint to
+            record it in the database.
+        Returns
+        -------
+        string
+            The S3 key for the classroom document in the source bucket, where uploaded files are
+            stored before they are converted and copied to the destination bucket.
+        """
+        # We don't want to deal with None value, so we set it with an empty string
+        extension = extension or ""
+
+        # We check if the extension starts with a leading dot or not. If it's not the case we add
+        # it at the beginning of the string
+        if extension and not extension.startswith("."):
+            extension = "." + extension
+
+        stamp = stamp or to_timestamp(self.uploaded_on)
+        return f"{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}{extension}"

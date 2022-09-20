@@ -25,3 +25,13 @@ class ClassroomFactory(DjangoModelFactory):
     meeting_id = factory.Faker("uuid4")
     attendee_password = factory.Faker("word")
     moderator_password = factory.Faker("word")
+
+
+class ClassroomDocumentFactory(DjangoModelFactory):
+    """Factory for the ClassroomDocument model."""
+
+    class Meta:
+        model = models.ClassroomDocument
+
+    classroom = factory.SubFactory(ClassroomFactory)
+    filename = factory.Faker("file_name")
