@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Enable visibility widget in VOD dashboard
+- introduce initialized upload state
 
 ### Changed
 

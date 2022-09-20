@@ -150,7 +150,6 @@ class Video(BaseFile):
         verbose_name=_("is video public"),
         help_text=_("Is the video publicly accessible?"),
     )
-
     tags = ArrayField(
         models.CharField(max_length=200),
         blank=True,
