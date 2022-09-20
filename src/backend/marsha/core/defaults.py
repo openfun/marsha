@@ -23,6 +23,7 @@ from django.utils.translation import gettext_lazy as _
     SCANNING,
     INFECTED,
     COPYING,
+    INITIALIZED,
 ) = (
     "pending",
     "processing",
@@ -44,8 +45,10 @@ from django.utils.translation import gettext_lazy as _
     "scanning",
     "infected",
     "copying",
+    "initialized",
 )
 STATE_CHOICES = (
+    (INITIALIZED, _("initialized")),
     (PENDING, _("pending")),
     (PROCESSING, _("processing")),
     (ERROR, _("error")),
