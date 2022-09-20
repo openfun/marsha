@@ -1,7 +1,14 @@
 import * as faker from 'faker';
 
+import { uploadState } from 'types/tracks';
 import { playlistMockFactory } from 'utils/tests/factories';
-import { Classroom, ClassroomInfos } from 'apps/bbb/types/models';
+import {
+  Classroom,
+  ClassroomDocument,
+  ClassroomInfos,
+} from 'apps/bbb/types/models';
+
+const { READY } = uploadState;
 
 export const classroomMockFactory = (
   classroom: Partial<Classroom> = {},
@@ -54,5 +61,19 @@ export const classroomInfosMockFactory = (
     metadata: faker.datatype.string(),
     isBreakout: 'false',
     ...classroomInfos,
+  };
+};
+
+export const classroomDocumentMockFactory = (
+  classroomDocument: Partial<ClassroomDocument> = {},
+): ClassroomDocument => {
+  return {
+    classroom: classroomMockFactory(),
+    filename: faker.system.fileName(),
+    id: faker.datatype.uuid(),
+    upload_state: READY,
+    uploaded_on: faker.date.recent().toISOString(),
+    url: faker.internet.url(),
+    ...classroomDocument,
   };
 };

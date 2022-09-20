@@ -5,7 +5,10 @@ import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import { useJwt } from 'data/stores/useJwt';
 
-import { classroomMockFactory } from 'apps/bbb/utils/tests/factories';
+import {
+  classroomMockFactory,
+  classroomDocumentMockFactory,
+} from 'apps/bbb/utils/tests/factories';
 
 import {
   useClassroom,
@@ -14,6 +17,7 @@ import {
   useUpdateClassroom,
   useCreateClassroomAction,
   useJoinClassroomAction,
+  useClassroomDocuments,
 } from '.';
 
 jest.mock('utils/errors/report', () => ({
@@ -396,6 +400,69 @@ describe('queries', () => {
         body: JSON.stringify({
           fullname: 'John Doe',
         }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useClassroomDocuments', () => {
+    it('requests the resource list', async () => {
+      const classroom = classroomMockFactory();
+      const classroomDocuments = Array(4).fill(
+        classroomDocumentMockFactory({ classroom }),
+      );
+      fetchMock.mock(
+        `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
+        classroomDocuments,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useClassroomDocuments(classroom.id, {}),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+      });
+      expect(result.current.data).toEqual(classroomDocuments);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to get the resource list', async () => {
+      const classroom = classroomMockFactory();
+      Array(4).fill(classroomDocumentMockFactory({ classroom }));
+      fetchMock.mock(
+        `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
+        404,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useClassroomDocuments(classroom.id, {}),
+        {
+          wrapper: Wrapper,
+        },
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/classroomdocuments/?limit=999`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
