@@ -1,9 +1,9 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';

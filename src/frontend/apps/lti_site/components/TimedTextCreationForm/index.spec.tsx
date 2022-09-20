@@ -1,10 +1,10 @@
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
-import { useJwt } from 'data/stores/useJwt';
 import { timedTextMode, uploadState } from 'types/tracks';
 import { report } from 'utils/errors/report';
 import render from 'utils/tests/render';

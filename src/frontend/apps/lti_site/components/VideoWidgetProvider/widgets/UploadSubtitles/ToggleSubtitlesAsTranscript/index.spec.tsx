@@ -1,15 +1,16 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
-import { ToggleSubtitlesAsTranscript } from '.';
-import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { timedTextMode } from 'types/tracks';
 import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
+
+import { ToggleSubtitlesAsTranscript } from '.';
 
 const mockSetInfoWidgetModal = jest.fn();
 const mockedVideo = videoMockFactory();

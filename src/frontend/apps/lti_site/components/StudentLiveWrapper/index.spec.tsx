@@ -7,10 +7,10 @@ import {
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useJwt } from 'data/stores/useJwt';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import {
   LivePanelItem,

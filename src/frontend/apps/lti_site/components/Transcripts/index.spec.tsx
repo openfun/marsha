@@ -1,8 +1,8 @@
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { timedTextMode, uploadState } from 'types/tracks';
 import render from 'utils/tests/render';
 

@@ -1,9 +1,9 @@
 import { Nullable } from 'lib-common';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveSessionFactory } from 'utils/tests/factories';

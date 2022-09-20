@@ -1,6 +1,7 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import {
@@ -10,7 +11,6 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal/index';
-import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'types/models';

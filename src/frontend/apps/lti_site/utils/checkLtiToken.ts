@@ -1,4 +1,4 @@
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from 'lib-components';
 
 export const checkLtiToken = (jwt: DecodedJwt) => {
   return !!(

@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { EventType, MessageType } from 'types/XMPP';

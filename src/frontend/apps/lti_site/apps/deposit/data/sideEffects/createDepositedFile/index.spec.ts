@@ -1,6 +1,5 @@
 import fetchMock from 'fetch-mock';
-
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 
 import { createDepositedFile } from '.';
 

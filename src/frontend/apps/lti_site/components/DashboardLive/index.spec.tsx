@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';

@@ -1,6 +1,5 @@
+import { useJwt } from 'lib-components';
 import { QueryFunction } from 'react-query';
-
-import { useJwt } from 'data/stores/useJwt';
 
 /**
  * `react-query` fetcher for individual metadata model.

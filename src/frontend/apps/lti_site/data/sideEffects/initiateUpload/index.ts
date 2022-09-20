@@ -1,4 +1,5 @@
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
+
 import { API_ENDPOINT } from 'settings';
 import { uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';

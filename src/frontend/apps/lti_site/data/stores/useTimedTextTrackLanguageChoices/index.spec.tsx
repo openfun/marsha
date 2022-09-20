@@ -2,7 +2,7 @@ import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { requestStatus } from 'types/api';
 import { report } from 'utils/errors/report';
 

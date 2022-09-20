@@ -1,9 +1,8 @@
 import { screen } from '@testing-library/react';
-import { Loader } from 'lib-components';
+import { Loader, useJwt } from 'lib-components';
 import React, { Suspense } from 'react';
 
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import render from 'utils/tests/render';
 

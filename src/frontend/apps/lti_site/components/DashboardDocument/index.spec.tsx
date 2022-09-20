@@ -1,12 +1,12 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
-import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { Playlist, uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';

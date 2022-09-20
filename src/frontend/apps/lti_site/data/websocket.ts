@@ -1,4 +1,5 @@
 import RobustWebSocket from 'altamoon-robust-websocket';
+import { useJwt } from 'lib-components';
 
 import { addResource } from 'data/stores/generics';
 import { WS_ENPOINT } from 'settings';
@@ -8,7 +9,6 @@ import { checkLtiToken } from 'utils/checkLtiToken';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { getResource } from './sideEffects/getResource';
-import { useJwt } from './stores/useJwt';
 
 type WSMessageType = {
   resource: UploadableObject;

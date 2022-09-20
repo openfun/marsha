@@ -1,8 +1,7 @@
 import React, { lazy, Suspense } from 'react';
 
-import { Loader } from 'lib-components';
+import { Loader, useJwt } from 'lib-components';
 import { AppConfigProvider } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
 
 import { AppInitializer } from './AppInitializer';

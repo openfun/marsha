@@ -1,9 +1,9 @@
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { stopLive } from 'data/sideEffects/stopLive';
-import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';

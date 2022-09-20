@@ -2,10 +2,10 @@ import { within } from '@testing-library/dom';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
+import { useJwt } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useThumbnail } from 'data/stores/useThumbnail';

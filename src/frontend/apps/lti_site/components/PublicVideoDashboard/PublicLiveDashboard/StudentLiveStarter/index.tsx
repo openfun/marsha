@@ -1,4 +1,5 @@
 import { Maybe } from 'lib-common';
+import { useJwt } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -8,7 +9,6 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { StudentLiveAdvertising } from 'components/StudentLiveAdvertising';
 import { StudentLiveWaitingRoom } from 'components/StudentLiveWaitingRoom';
 import { StudentLiveWrapper } from 'components/StudentLiveWrapper';
-import { useJwt } from 'data/stores/useJwt';
 import { pollForLive } from 'data/sideEffects/pollForLive';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';

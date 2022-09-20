@@ -1,10 +1,10 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-import { useJwt } from 'data/stores/useJwt';
 import { LiveModeType } from 'types/tracks';
 import {
   documentMockFactory,

@@ -7,6 +7,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
@@ -14,8 +15,6 @@ import { APIList } from 'types/api';
 import { uploadState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import render from 'utils/tests/render';
-
-import { useJwt } from 'data/stores/useJwt';
 
 import { DepositedFile } from 'apps/deposit/types/models';
 import {

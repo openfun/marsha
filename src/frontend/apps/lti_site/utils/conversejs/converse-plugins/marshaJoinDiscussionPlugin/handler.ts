@@ -1,10 +1,11 @@
+import { useJwt } from 'lib-components';
+
 import {
   addParticipantAskingToJoin,
   moveParticipantToDiscussion,
   removeParticipantAskingToJoin,
   removeParticipantFromDiscussion,
 } from 'data/sideEffects/updateLiveParticipants';
-import { useJwt } from 'data/stores/useJwt';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'types/tracks';

@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { useJwt } from 'lib-components';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import React, { Fragment, useEffect, useRef } from 'react';
@@ -8,7 +9,6 @@ import videojs, { VideoJsPlayer } from 'video.js';
 
 import { videoSize, VideoUrls } from 'types/tracks';
 import { VideoXAPIStatement } from 'XAPI/VideoXAPIStatement';
-import { useJwt } from 'data/stores/useJwt';
 
 const messages = defineMessages({
   downloadVideo: {

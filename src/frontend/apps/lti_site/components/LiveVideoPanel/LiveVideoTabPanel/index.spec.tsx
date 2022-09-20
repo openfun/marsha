@@ -1,9 +1,9 @@
 import { cleanup, screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import renderer from 'react-test-renderer';
 
-import { useJwt } from 'data/stores/useJwt';
 import {
   LivePanelItem,
   useLivePanelState,

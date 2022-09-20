@@ -1,8 +1,8 @@
 import { Select } from 'grommet';
+import { useJwt } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { LanguageChoice } from 'types/SelectOptions';

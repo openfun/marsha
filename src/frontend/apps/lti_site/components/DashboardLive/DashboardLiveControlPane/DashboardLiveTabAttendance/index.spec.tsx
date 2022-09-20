@@ -1,5 +1,5 @@
 import { screen, waitFor } from '@testing-library/react';
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';

@@ -1,6 +1,5 @@
+import { useJwt } from 'lib-components';
 import { MutationFunction } from 'react-query';
-
-import { useJwt } from 'data/stores/useJwt';
 
 export const createOne: MutationFunction<
   any,

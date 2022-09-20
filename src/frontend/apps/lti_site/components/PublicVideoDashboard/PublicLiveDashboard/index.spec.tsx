@@ -4,6 +4,7 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
@@ -19,7 +20,6 @@ import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
-import { useJwt } from 'data/stores/useJwt';
 
 const mockedGetDecodedJwt = jest.fn();
 

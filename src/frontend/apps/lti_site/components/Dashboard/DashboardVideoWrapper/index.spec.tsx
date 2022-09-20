@@ -1,10 +1,10 @@
 import { cleanup, screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from 'lib-components';
 import { modelName } from 'types/models';
 import { LiveModeType, liveState, uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
