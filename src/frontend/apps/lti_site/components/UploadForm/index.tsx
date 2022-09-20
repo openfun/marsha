@@ -21,6 +21,7 @@ import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
+import { modelName as bbbModelName } from 'apps/bbb/types/models';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -61,6 +62,11 @@ const titleMessages = defineMessages({
     defaultMessage: 'Upload a new file',
     description: 'Title for the deposited file upload form',
     id: 'components.UploadForm.title-depositedfile',
+  },
+  [bbbModelName.CLASSROOM_DOCUMENTS]: {
+    defaultMessage: 'Upload a new file',
+    description: 'Title for the classroom document upload form',
+    id: 'components.UploadForm.title-classroomdocument',
   },
 });
 

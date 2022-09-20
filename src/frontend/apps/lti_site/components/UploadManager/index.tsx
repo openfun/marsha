@@ -13,6 +13,7 @@ import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
+import { modelName as bbbModelName } from 'apps/bbb/types/models';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',
@@ -93,6 +94,7 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
             modelName.SHAREDLIVEMEDIAS,
             markdownModelName.MARKDOWN_IMAGES,
             depositModelName.DepositedFiles,
+            bbbModelName.CLASSROOM_DOCUMENTS,
           ].includes(objectType)
         ) {
           formArguments.push(['Content-Type', file.type]);

@@ -24,6 +24,19 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
+jest.mock('apps/bbb/data/bbbAppData', () => ({
+  bbbAppData: {
+    modelName: 'classrooms',
+    classroom: {
+      id: '1',
+    },
+  },
+}));
+
+jest.mock('apps/bbb/components/UploadDocuments', () => ({
+  UploadDocuments: () => <p>Upload Documents.</p>,
+}));
+
 Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);

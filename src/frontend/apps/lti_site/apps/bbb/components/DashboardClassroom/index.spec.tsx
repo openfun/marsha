@@ -79,6 +79,12 @@ describe('<DashboardClassroom />', () => {
     });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
 
     const { findByText, getByText } = render(<DashboardClassroom />);
     getByText('Loading classroom...');
@@ -95,6 +101,12 @@ describe('<DashboardClassroom />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
 
     const { findByText } = render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
@@ -128,6 +140,12 @@ describe('<DashboardClassroom />', () => {
     });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
 
     const { findByText } = render(<DashboardClassroom />);
     await act(async () => classroomDeferred.resolve(classroom));
@@ -155,6 +173,12 @@ describe('<DashboardClassroom />', () => {
     const classroom = classroomMockFactory({ id: '1', started: true });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
@@ -200,6 +224,12 @@ describe('<DashboardClassroom />', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
 
     fetchMock.patch('/api/classrooms/1/create/', {
       ...classroom,
@@ -222,7 +252,7 @@ describe('<DashboardClassroom />', () => {
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     const updatedClassroom = {
       ...classroom,
       started: true,
@@ -240,7 +270,7 @@ describe('<DashboardClassroom />', () => {
     };
     await act(async () => updatedClassroomDeferred.resolve(updatedClassroom));
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/classrooms/1/');
+    expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     getByText(`You have joined the classroom as ${token.user?.user_fullname}.`);
   });
 
