@@ -1,7 +1,6 @@
 import { Maybe } from 'lib-common';
+import { useJwt } from 'lib-components';
 import { QueryFunction } from 'react-query';
-
-import { useJwt } from 'data/stores/useJwt';
 
 export type FetchListQueryKey =
   | [string, Maybe<{ [key in string]: Maybe<string> }>]

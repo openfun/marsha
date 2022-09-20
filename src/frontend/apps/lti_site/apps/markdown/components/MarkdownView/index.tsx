@@ -12,8 +12,7 @@ import { Nullable } from 'lib-common';
 import { OrganizationAccessRole } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt, useJwt } from 'lib-components';
 
 import MarkdownEditor from 'apps/markdown/components/MarkdownEditor';
 import MarkdownNotFoundView from 'apps/markdown/components/MarkdownNotFoundView';

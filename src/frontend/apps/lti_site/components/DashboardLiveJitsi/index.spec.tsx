@@ -1,10 +1,10 @@
 import { act, cleanup, screen, waitFor } from '@testing-library/react';
+import { DecodedJwt, useJwt } from 'lib-components';
 import React from 'react';
 
 import { PLAYER_ROUTE } from 'components/routes';
-import { useJwt } from 'data/stores/useJwt';
+
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
-import { DecodedJwt } from 'types/jwt';
 import { LiveModeType, liveState } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { videoMockFactory } from 'utils/tests/factories';

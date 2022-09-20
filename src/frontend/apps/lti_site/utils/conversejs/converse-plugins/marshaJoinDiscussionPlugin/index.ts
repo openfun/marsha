@@ -1,4 +1,5 @@
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
+
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { Participant } from 'types/Participant';
 import { Video } from 'types/tracks';

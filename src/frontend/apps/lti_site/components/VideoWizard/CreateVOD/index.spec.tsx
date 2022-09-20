@@ -1,6 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -11,7 +12,6 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';

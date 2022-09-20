@@ -1,7 +1,7 @@
 import { act, screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';

@@ -1,7 +1,11 @@
 import * as faker from 'faker';
+import {
+  DecodedJwt,
+  DecodedJwtPermission,
+  DecodedJwtUser,
+} from 'lib-components';
 
 import { Document } from 'types/file';
-import { DecodedJwt, DecodedJwtPermission, DecodedJwtUser } from 'types/jwt';
 import { Organization } from 'types/Organization';
 import { Participant } from 'types/Participant';
 import {

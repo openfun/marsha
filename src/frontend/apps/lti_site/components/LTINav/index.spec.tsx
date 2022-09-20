@@ -1,11 +1,13 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { Router } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
+import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -13,8 +15,6 @@ import { documentMockFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { LTINav } from '.';
-import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: jest.fn(),

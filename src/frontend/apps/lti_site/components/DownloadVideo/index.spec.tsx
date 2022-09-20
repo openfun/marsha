@@ -1,8 +1,8 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { XAPI_ENDPOINT } from 'settings';
 import { uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';

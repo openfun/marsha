@@ -8,9 +8,9 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import { Maybe, Nullable } from 'lib-common';
+import { useJwt } from 'lib-components';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useJwt } from 'data/stores/useJwt';
 import { useAttendance } from 'data/stores/useAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import {

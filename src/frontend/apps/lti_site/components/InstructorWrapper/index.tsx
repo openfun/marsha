@@ -1,6 +1,6 @@
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { Document } from 'types/file';
 import { Video } from 'types/tracks';
 

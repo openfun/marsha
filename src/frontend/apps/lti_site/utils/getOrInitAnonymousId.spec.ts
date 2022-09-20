@@ -1,4 +1,4 @@
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getOrInitAnonymousId } from './getOrInitAnonymousId';

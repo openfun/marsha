@@ -1,9 +1,8 @@
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
-
-import { useJwt } from 'data/stores/useJwt';
 
 import {
   classroomMockFactory,

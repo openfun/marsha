@@ -1,4 +1,5 @@
 import { Box, Spinner } from 'grommet';
+import { useJwt } from 'lib-components';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -7,7 +8,6 @@ import React, {
   useState,
 } from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveState } from 'types/tracks';

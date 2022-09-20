@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';

@@ -1,12 +1,11 @@
 import { Box, Text, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
-import { QuestionMarkSVG } from 'lib-components';
+import { QuestionMarkSVG, useJwt } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { InputBar } from 'components/Chat/InputBar';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
-import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,

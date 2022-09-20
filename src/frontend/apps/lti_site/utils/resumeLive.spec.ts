@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 
-import { useJwt } from 'data/stores/useJwt';
 import { getResource } from 'data/sideEffects/getResource';
 import { modelName } from 'types/models';
 

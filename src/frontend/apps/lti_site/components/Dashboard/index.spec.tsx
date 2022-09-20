@@ -1,12 +1,10 @@
 import { screen } from '@testing-library/react';
+import { DecodedJwt, Loader, useJwt } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { Loader } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Document } from 'types/file';
-import { DecodedJwt } from 'types/jwt';
 import { modelName } from 'types/models';
 import { liveState, uploadState } from 'types/tracks';
 import render from 'utils/tests/render';

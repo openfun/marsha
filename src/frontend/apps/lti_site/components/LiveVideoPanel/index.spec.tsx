@@ -1,14 +1,13 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
+import { DecodedJwt, useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
-import { DecodedJwt } from 'types/jwt';
 import {
   participantMockFactory,
   videoMockFactory,

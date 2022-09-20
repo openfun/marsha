@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
 import { LiveModeType } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';

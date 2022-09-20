@@ -1,7 +1,7 @@
 import create from 'zustand';
 
-import { decodeJwt } from 'components/App/AppContentLoader/utils';
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from '../../../types/jwt';
+import { decodeJwt } from '../../../utils/decodeJwt';
 
 interface JwtStoreInterface {
   jwt?: string;

@@ -1,6 +1,6 @@
 import { Box, Stack, Tab, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { RingingBellSVG } from 'lib-components';
+import { RingingBellSVG, useJwt } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -8,7 +8,6 @@ import styled from 'styled-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { LivePanelItem } from 'data/stores/useLivePanelState';
 import { colors as themeColors, theme } from 'utils/theme/theme';
-import { useJwt } from 'data/stores/useJwt';
 
 interface StyledTabProps {
   selected?: boolean;

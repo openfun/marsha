@@ -3,7 +3,7 @@ import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{cookiecutter.app_name}}/utils/tests/factories';
 
