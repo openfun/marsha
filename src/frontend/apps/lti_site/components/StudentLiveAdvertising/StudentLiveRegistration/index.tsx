@@ -1,6 +1,7 @@
 import { Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
+import { useJwt } from 'lib-components';
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -12,7 +13,6 @@ import { theme } from 'utils/theme/theme';
 import { RegistrationForm } from './RegistrationForm';
 import { useLiveSessionsQuery } from 'data/queries';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { useJwt } from 'data/stores/useJwt';
 
 const messages = defineMessages({
   formTitle: {

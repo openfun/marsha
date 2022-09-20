@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -8,7 +9,6 @@ import {
   VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
-import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { LiveModeType, uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';

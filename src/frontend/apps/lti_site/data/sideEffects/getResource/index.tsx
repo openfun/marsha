@@ -1,5 +1,6 @@
+import { useJwt } from 'lib-components';
+
 import { addResource } from 'data/stores/generics';
-import { useJwt } from 'data/stores/useJwt';
 import { requestStatus } from 'types/api';
 import { uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';

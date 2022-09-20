@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { OrganizationAccessRole } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import render from 'utils/tests/render';
 
 import MarkdownView from '.';

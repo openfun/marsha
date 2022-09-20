@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { SharedLiveMediaModalWrapper } from 'components/VideoWidgetProvider/wrappers/SharedLiveMediaModalWrapper';
@@ -9,7 +10,6 @@ import {
   UploadManagerContext,
   useUploadManager,
 } from 'components/UploadManager';
-import { useJwt } from 'data/stores/useJwt';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';

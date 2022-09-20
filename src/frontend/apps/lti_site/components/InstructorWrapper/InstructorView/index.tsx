@@ -1,10 +1,11 @@
 import { normalizeColor } from 'grommet/utils';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { LTINav } from 'components/LTINav';
-import { useJwt } from 'data/stores/useJwt';
+
 import { Document } from 'types/file';
 import { Video } from 'types/tracks';
 import { theme } from 'utils/theme/theme';

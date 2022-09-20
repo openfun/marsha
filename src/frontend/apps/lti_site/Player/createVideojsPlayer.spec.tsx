@@ -1,10 +1,10 @@
 import { render, waitFor } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import videojs from 'video.js';
 
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useJwt } from 'data/stores/useJwt';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
 import { liveState, timedTextMode, uploadState } from 'types/tracks';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';

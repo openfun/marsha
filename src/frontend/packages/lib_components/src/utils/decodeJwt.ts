@@ -1,9 +1,14 @@
 import jwt_decode from 'jwt-decode';
 
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from '../types/jwt';
 
 const isDecodedJwt = (jwt: unknown): jwt is DecodedJwt => {
-  return (jwt as DecodedJwt).resource_id !== undefined;
+  if (jwt && typeof jwt === 'object') {
+    const resourceId = (jwt as DecodedJwt).resource_id;
+    return !!resourceId && typeof resourceId === 'string';
+  }
+
+  return false;
 };
 
 export const decodeJwt = (jwtToDecode?: string): DecodedJwt => {

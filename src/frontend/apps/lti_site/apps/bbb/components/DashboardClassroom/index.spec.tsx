@@ -1,9 +1,9 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { useJwt } from 'data/stores/useJwt';
 import { Deferred } from 'utils/tests/Deferred';
 import {
   ltiInstructorTokenMockFactory,

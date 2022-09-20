@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { liveState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';

@@ -1,10 +1,10 @@
 import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { liveState } from 'types/tracks';
 import { Deferred } from 'utils/tests/Deferred';
 import {

@@ -1,15 +1,16 @@
 import { within } from '@testing-library/dom';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { useJwt } from 'data/stores/useJwt';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
+
 import { DownloadVideo } from '.';
-import fetchMock from 'fetch-mock';
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('data/stores/useInfoWidgetModal', () => ({

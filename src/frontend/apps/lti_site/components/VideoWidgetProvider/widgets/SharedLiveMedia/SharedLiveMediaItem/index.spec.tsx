@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import {
@@ -8,7 +9,6 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
-import { useJwt } from 'data/stores/useJwt';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import {
   videoMockFactory,

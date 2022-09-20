@@ -1,5 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
+import { useJwt } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import {
@@ -8,12 +9,12 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
+
 import { UploadVideo } from '.';
 
 jest.mock('components/UploadManager', () => ({

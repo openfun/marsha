@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { useJwt } from 'data/stores/useJwt';
 import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';

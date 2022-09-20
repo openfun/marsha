@@ -17,7 +17,8 @@ const mockGetOrInitAnonymousId = getOrInitAnonymousId as jest.MockedFunction<
 >;
 
 const mockedGetDecodedJwt = jest.fn();
-jest.mock('./stores/useJwt', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useJwt: {
     getState: () => ({
       jwt: 'cool_token_m8',

@@ -1,11 +1,12 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal';
-import { useJwt } from 'data/stores/useJwt';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
+
 import { UploadTranscripts } from '.';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({

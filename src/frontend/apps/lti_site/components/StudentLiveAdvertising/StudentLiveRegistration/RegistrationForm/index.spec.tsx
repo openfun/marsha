@@ -1,11 +1,12 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { useJwt } from 'lib-components';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
-import { useJwt } from 'data/stores/useJwt';
+
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 

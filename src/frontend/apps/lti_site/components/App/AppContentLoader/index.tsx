@@ -1,4 +1,5 @@
 import { Grommet } from 'grommet';
+import { decodeJwt, useJwt } from 'lib-components';
 import React, {
   ComponentType,
   lazy,
@@ -15,13 +16,10 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BoundaryScreenError } from 'components/ErrorComponents';
 import { Loader } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
 import { appNames } from 'types/AppData';
 import { report } from 'utils/errors/report';
 import { GlobalStyles } from 'utils/theme/baseStyles';
 import { colors, theme } from 'utils/theme/theme';
-
-import { decodeJwt } from './utils';
 
 const jwt = useJwt.getState().jwt;
 

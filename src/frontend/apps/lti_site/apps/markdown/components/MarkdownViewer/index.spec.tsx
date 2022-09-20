@@ -7,7 +7,7 @@ import {
   markdownTranslationMockFactory,
   markdownImageMockFactory,
 } from 'apps/markdown/utils/tests/factories';
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import render from 'utils/tests/render';
 
 import MarkdownViewer from '.';

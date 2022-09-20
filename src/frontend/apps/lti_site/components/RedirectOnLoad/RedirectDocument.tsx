@@ -1,10 +1,11 @@
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { useJwt } from 'data/stores/useJwt';
+
 import { modelName } from 'types/models';
 import { Document } from 'types/file';
 

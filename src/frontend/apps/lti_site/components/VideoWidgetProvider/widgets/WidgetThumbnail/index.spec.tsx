@@ -9,7 +9,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';

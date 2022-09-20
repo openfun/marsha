@@ -1,7 +1,7 @@
 import { Maybe } from 'lib-common';
 import create from 'zustand';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { API_ENDPOINT } from 'settings';
 import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';

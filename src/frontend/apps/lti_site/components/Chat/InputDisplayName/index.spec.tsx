@@ -1,17 +1,16 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
+import { DecodedJwt, useJwt } from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
-import { useJwt } from 'data/stores/useJwt';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MAX_LENGTH,
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
-import { DecodedJwt } from 'types/jwt';
 import { liveSessionFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { converse } from 'utils/window';

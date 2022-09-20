@@ -1,10 +1,11 @@
-import React, { useEffect, useContext, Fragment } from 'react';
 import { Tabs, Box, ResponsiveContext, ThemeType, ThemeContext } from 'grommet';
+import { useJwt } from 'lib-components';
+import React, { useEffect, useContext, Fragment } from 'react';
 import styled from 'styled-components';
 
 import { Chat } from 'components/Chat';
 import { ViewersList } from 'components/ViewersList';
-import { useJwt } from 'data/stores/useJwt';
+
 import {
   LivePanelItem,
   useLivePanelState,

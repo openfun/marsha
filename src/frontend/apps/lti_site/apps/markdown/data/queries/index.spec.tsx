@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 
 import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
 

@@ -1,5 +1,6 @@
 import { act, cleanup, waitFor, screen } from '@testing-library/react';
 import { Nullable } from 'lib-common';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -19,7 +20,6 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';
 
 import { StudentLiveStarter } from '.';
-import { useJwt } from 'data/stores/useJwt';
 
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({

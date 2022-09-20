@@ -1,12 +1,13 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { useJwt } from 'data/stores/useJwt';
+
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import {
   useLivePanelState,

@@ -8,7 +8,7 @@ import React from 'react';
 import render from 'utils/tests/render';
 
 import MdxRenderer from '.';
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 
 jest.mock('data/stores/useAppConfig', () => ({

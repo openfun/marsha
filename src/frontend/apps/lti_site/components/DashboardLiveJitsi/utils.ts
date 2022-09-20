@@ -1,4 +1,5 @@
-import { useJwt } from 'data/stores/useJwt';
+import { useJwt } from 'lib-components';
+
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveJitsi } from 'types/tracks';
 

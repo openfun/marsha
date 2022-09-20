@@ -1,4 +1,5 @@
 import { Box, Nav } from 'grommet';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
@@ -8,7 +9,7 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useJwt } from 'data/stores/useJwt';
+
 import { useDocument } from 'data/stores/useDocument';
 import { useVideo } from 'data/stores/useVideo';
 import { Document } from 'types/file';

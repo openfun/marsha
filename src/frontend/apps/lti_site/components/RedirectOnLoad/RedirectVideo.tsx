@@ -1,3 +1,4 @@
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
@@ -8,7 +9,6 @@ import {
   VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
-import { useJwt } from 'data/stores/useJwt';
 import { modelName } from 'types/models';
 import { uploadState, Video } from 'types/tracks';
 
