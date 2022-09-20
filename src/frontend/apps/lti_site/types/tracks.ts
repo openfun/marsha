@@ -1,5 +1,6 @@
 import { MarkdownImage } from 'apps/markdown/types/models';
 import { DepositedFile } from 'apps/deposit/types/models';
+import { ClassroomDocument } from 'apps/bbb/types/models';
 import { Nullable } from 'utils/types';
 import { Document } from './file';
 import { Participant } from './Participant';
@@ -264,4 +265,5 @@ export type UploadableObject =
   | Document
   | SharedLiveMedia
   | MarkdownImage
-  | DepositedFile;
+  | DepositedFile
+  | ClassroomDocument;

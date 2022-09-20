@@ -4,9 +4,11 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { SchedulingFields } from 'components/SchedulingFields';
+import { UploadManager } from 'components/UploadManager';
 import { Maybe } from 'utils/types';
 
 import { DashboardClassroomLayout } from 'apps/bbb/components/DashboardClassroomLayout';
+import { UploadDocuments } from 'apps/bbb/components/UploadDocuments';
 import {
   useCreateClassroomAction,
   useUpdateClassroom,
@@ -138,74 +140,81 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
   );
 
   const left = (
-    <Form
-      value={{ ...classroom, ...updatedClassroomState }}
-      onBlur={handleBlur}
-    >
-      <FormField
-        label={intl.formatMessage(messages.titleLabel)}
-        htmlFor="title"
-        required={true}
-        error={titleError}
-        background={titleError ? 'status-error-off' : 'white'}
-        margin={{ bottom: 'medium' }}
+    <UploadManager>
+      <Form
+        value={{ ...classroom, ...updatedClassroomState }}
+        onBlur={handleBlur}
       >
-        <TextInput
-          name="title"
-          id="title"
-          value={{ ...classroom, ...updatedClassroomState }.title || ''}
-          onChange={(e) => {
-            handleChange({ title: e.target.value });
+        <FormField
+          label={intl.formatMessage(messages.titleLabel)}
+          htmlFor="title"
+          required={true}
+          error={titleError}
+          background={titleError ? 'status-error-off' : 'white'}
+          margin={{ bottom: 'medium' }}
+        >
+          <TextInput
+            name="title"
+            id="title"
+            value={{ ...classroom, ...updatedClassroomState }.title || ''}
+            onChange={(e) => {
+              handleChange({ title: e.target.value });
+            }}
+          />
+        </FormField>
+        <FormField
+          label={intl.formatMessage(messages.descriptionLabel)}
+          htmlFor="description"
+          margin={{ bottom: 'medium' }}
+        >
+          <TextArea
+            name="description"
+            id="description"
+            value={{ ...classroom, ...updatedClassroomState }.description || ''}
+            onChange={(e) => {
+              handleChange({ description: e.target.value });
+            }}
+          />
+        </FormField>
+        <FormField
+          label={intl.formatMessage(messages.welcomeTextLabel)}
+          htmlFor="welcome_text"
+          margin={{ bottom: 'medium' }}
+        >
+          <TextArea
+            name="welcome_text"
+            id="welcome_text"
+            value={
+              { ...classroom, ...updatedClassroomState }.welcome_text || ''
+            }
+            onChange={(e) => {
+              handleChange({ welcome_text: e.target.value });
+            }}
+          />
+        </FormField>
+        <SchedulingFields
+          margin="none"
+          startingAt={
+            updatedClassroomState.starting_at || classroom.starting_at
+          }
+          estimatedDuration={
+            updatedClassroomState.estimated_duration ||
+            classroom.estimated_duration
+          }
+          onStartingAtChange={(startingAt) => {
+            return handleChange({
+              starting_at: startingAt,
+            });
+          }}
+          onEstimatedDurationChange={(estimatedDuration) => {
+            return handleChange({
+              estimated_duration: estimatedDuration,
+            });
           }}
         />
-      </FormField>
-      <FormField
-        label={intl.formatMessage(messages.descriptionLabel)}
-        htmlFor="description"
-        margin={{ bottom: 'medium' }}
-      >
-        <TextArea
-          name="description"
-          id="description"
-          value={{ ...classroom, ...updatedClassroomState }.description || ''}
-          onChange={(e) => {
-            handleChange({ description: e.target.value });
-          }}
-        />
-      </FormField>
-      <FormField
-        label={intl.formatMessage(messages.welcomeTextLabel)}
-        htmlFor="welcome_text"
-        margin={{ bottom: 'medium' }}
-      >
-        <TextArea
-          name="welcome_text"
-          id="welcome_text"
-          value={{ ...classroom, ...updatedClassroomState }.welcome_text || ''}
-          onChange={(e) => {
-            handleChange({ welcome_text: e.target.value });
-          }}
-        />
-      </FormField>
-      <SchedulingFields
-        margin="none"
-        startingAt={updatedClassroomState.starting_at || classroom.starting_at}
-        estimatedDuration={
-          updatedClassroomState.estimated_duration ||
-          classroom.estimated_duration
-        }
-        onStartingAtChange={(startingAt) => {
-          return handleChange({
-            starting_at: startingAt,
-          });
-        }}
-        onEstimatedDurationChange={(estimatedDuration) => {
-          return handleChange({
-            estimated_duration: estimatedDuration,
-          });
-        }}
-      />
-    </Form>
+      </Form>
+      <UploadDocuments />
+    </UploadManager>
   );
   const right = (
     <Button

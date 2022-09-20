@@ -1,4 +1,4 @@
-import { Playlist, Resource } from 'types/tracks';
+import { Playlist, Resource, uploadState } from 'types/tracks';
 import { Nullable } from 'utils/types';
 
 export interface Classroom extends Resource {
@@ -57,6 +57,7 @@ export interface Attendee {
 
 export enum modelName {
   CLASSROOMS = 'classrooms',
+  CLASSROOM_DOCUMENTS = 'classroomdocuments',
 }
 
 export interface CreateClassroomActionRequest {
@@ -104,4 +105,12 @@ export interface EndClassroomActionResponse {
   message: string;
   messageKey: string;
   returncode: string;
+}
+
+export interface ClassroomDocument extends Resource {
+  classroom: Classroom;
+  filename: string;
+  upload_state: uploadState;
+  uploaded_on: string;
+  url: string;
 }

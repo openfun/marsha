@@ -21,6 +21,8 @@ import {
   Classroom,
   CreateClassroomActionRequest,
   CreateClassroomActionResponse,
+  ClassroomDocument,
+  modelName,
 } from 'apps/bbb/types/models';
 import { Maybe } from 'utils/types';
 
@@ -147,6 +149,30 @@ export const useUpdateClassroom = (
       },
     },
   );
+};
+
+type ClassroomDocumentsResponse = APIList<ClassroomDocument>;
+type UseClassroomDocumentParams = {};
+export const useClassroomDocuments = (
+  classroomId: string,
+  params: UseClassroomDocumentParams,
+  queryConfig?: UseQueryOptions<
+    ClassroomDocumentsResponse,
+    modelName.CLASSROOM_DOCUMENTS,
+    ClassroomDocumentsResponse,
+    FetchListQueryKey
+  >,
+) => {
+  const key: FetchListQueryKey = [
+    `${modelName.CLASSROOMS}/${classroomId}/${modelName.CLASSROOM_DOCUMENTS}`,
+    params,
+  ];
+  return useQuery<
+    ClassroomDocumentsResponse,
+    modelName.CLASSROOM_DOCUMENTS,
+    ClassroomDocumentsResponse,
+    FetchListQueryKey
+  >(key, fetchList, queryConfig);
 };
 
 type MutationClassroomData<ClassroomRequest> = Partial<ClassroomRequest>;
