@@ -380,6 +380,7 @@ class Base(Configuration):
     SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE = values.Value(300 * (2**20))  # 300MB
     MARKDOWN_IMAGE_SOURCE_MAX_SIZE = values.Value(10 * (2**20))  # 10MB
     DEPOSITED_FILE_SOURCE_MAX_SIZE = values.Value(2**30)  # 1GB
+    CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE = values.Value(300 * (2**20))  # 300MB
 
     EXTERNAL_JAVASCRIPT_SCRIPTS = values.ListValue([])
 

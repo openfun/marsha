@@ -1,18 +1,22 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+from django.conf import settings
+from django.utils import timezone
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
-from marsha.core import permissions as core_permissions
-from marsha.core.api import APIViewMixin, ObjectPkMixin
+from marsha.core import defaults, permissions as core_permissions
+from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
-from . import serializers
+from . import permissions, serializers
 from ..core.permissions import ResourceIsAuthenticated
+from ..core.utils.s3_utils import create_presigned_post
+from ..core.utils.time_utils import to_timestamp
 from .forms import ClassroomForm
-from .models import Classroom
+from .models import Classroom, ClassroomDocument
 
 
 class ClassroomViewSet(
@@ -101,6 +105,43 @@ class ClassroomViewSet(
                 "classrooms": classrooms,
             }
         )
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="classroomdocuments",
+        permission_classes=[
+            core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+        ],
+    )
+    # pylint: disable=unused-argument
+    def classroomdocuments(self, request, pk=None):
+        """Get documents from a classroom.
+
+        Calling the endpoint returns a list of classroom documents.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk : int
+            The primary key of the classroom
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying deposited files as a JSON object.
+
+        """
+        classroom = self.get_object()
+        queryset = classroom.classroom_documents.all()
+        page = self.paginate_queryset(self.filter_queryset(queryset))
+        serializer = serializers.ClassroomDocumentSerializer(
+            page,
+            many=True,
+            context={"request": self.request},
+        )
+        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["patch"],
@@ -204,3 +245,88 @@ class ClassroomViewSet(
             response = {"message": str(exception)}
             status = 400
         return Response(response, status=status)
+
+
+class ClassroomDocumentViewSet(
+    APIViewMixin,
+    ObjectPkMixin,
+    ObjectRelatedMixin,
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    Viewset for the API of the ClassroomDocument object.
+    """
+
+    queryset = ClassroomDocument.objects.all()
+    serializer_class = serializers.ClassroomDocumentSerializer
+
+    permission_classes = [permissions.IsTokenResourceRouteObjectRelatedClassroom]
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action in ["create", "list", "update", "partial_update"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+            ]
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
+    # pylint: disable=unused-argument
+    def initiate_upload(self, request, pk=None):
+        """Get an upload policy for a classroom document.
+
+        Calling the endpoint resets the upload state to `pending` and returns an upload policy to
+        our AWS S3 source bucket.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the shared live media
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse carrying the AWS S3 upload policy as a JSON object.
+
+        """
+        serializer = serializers.ClassroomDocumentInitiateUploadSerializer(
+            data=request.data
+        )
+
+        if serializer.is_valid() is not True:
+            return Response(serializer.errors, status=400)
+
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        classroom = self.get_object()
+        key = classroom.get_source_s3_key(
+            stamp=stamp, extension=serializer.validated_data["extension"]
+        )
+
+        presigned_post = create_presigned_post(
+            [
+                ["eq", "$Content-Type", serializer.validated_data["mimetype"]],
+                [
+                    "content-length-range",
+                    0,
+                    settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE,
+                ],
+            ],
+            {},
+            key,
+        )
+
+        # Reset the upload state of the classroom document
+        ClassroomDocument.objects.filter(pk=pk).update(
+            filename=serializer.validated_data["filename"],
+            upload_state=defaults.PENDING,
+        )
+
+        return Response(presigned_post)

@@ -4,7 +4,7 @@ from django.urls import include, path
 
 from rest_framework.routers import DefaultRouter
 
-from .api import ClassroomViewSet
+from .api import ClassroomDocumentViewSet, ClassroomViewSet
 from .views import ClassroomLTIView
 
 
@@ -12,6 +12,9 @@ app_name = "bbb"
 
 router = DefaultRouter()
 router.register("classrooms", ClassroomViewSet, basename="classrooms")
+router.register(
+    "classroomdocuments", ClassroomDocumentViewSet, basename="classroom_documents"
+)
 
 # The following URL patterns are used to support legacy model name.
 # They must be removed in the future.
