@@ -1,6 +1,7 @@
 """Tests for the classroom API."""
 from datetime import datetime, timedelta
 import json
+import random
 from unittest import mock
 from urllib.parse import quote_plus
 import zoneinfo
@@ -15,10 +16,11 @@ from marsha.core.simple_jwt.factories import (
     PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
 )
+from marsha.core.tests.test_api_video import RSA_KEY_MOCK
 from marsha.core.tests.utils import reload_urlconf
 
-from ..factories import ClassroomFactory
-from ..models import Classroom
+from ..factories import ClassroomDocumentFactory, ClassroomFactory
+from ..models import Classroom, ClassroomDocument
 from ..utils.bbb_utils import ApiMeetingException
 
 
@@ -660,6 +662,182 @@ class ClassroomAPITest(TestCase):
             response.json(),
         )
 
+    def test_api_list_classroom_documents_anonymous(self):
+        """An anonymous should not be able to fetch a list of classroom documents."""
+        classroom = ClassroomFactory()
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/"
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_api_list_classroom_documents_student(self):
+        """A student should not be able to fetch a list of classroom documents."""
+        classroom = ClassroomFactory()
+        ClassroomDocumentFactory.create_batch(3, classroom=classroom)
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_list_classroom_documents_instructor(self):
+        """An instructor should be able to fetch list of classroom documents."""
+        classroom = ClassroomFactory()
+        classroom_documents = ClassroomDocumentFactory.create_batch(3, classroom=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/classrooms/{classroom.id}"
+                "/classroomdocuments/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[2].filename,
+                        "id": str(classroom_documents[2].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[1].filename,
+                        "id": str(classroom_documents[1].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                ],
+            },
+        )
+
+    @override_settings(
+        CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
+        CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
+    )
+    def test_api_list_classroom_documents_instructor_signed_urls(self):
+        """All classroom documents should have the same signature."""
+        classroom = ClassroomFactory(id="4e126eac-9ca8-47b1-8dcd-157686b43c60")
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        classroom_documents = ClassroomDocumentFactory.create_batch(
+            3, classroom=classroom, uploaded_on=now
+        )
+        classroom_documents.append(
+            ClassroomDocumentFactory(
+                classroom=classroom,
+                filename="no_extension_file",
+                uploaded_on=now,
+            )
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
+        ):
+            response = self.client.get(
+                f"/api/classrooms/{classroom.id}/classroomdocuments/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+
+        expected_cloudfront_signature = (
+            "Policy=eyJTdGF0ZW1lbnQiOlt7IlJlc291cmNlIjoiaHR0cHM6Ly9hYmMuY2xvdWRmcm9udC5uZXQvNGUxM"
+            "jZlYWMtOWNhOC00N2IxLThkY2QtMTU3Njg2YjQzYzYwLyoiLCJDb25kaXRpb24iOnsiRGF0ZUxlc3NUaGFuI"
+            "jp7IkFXUzpFcG9jaFRpbWUiOjE2MzgyMzc2MDB9fX1dfQ__&Signature=BGMvqnlKwJW~PwkL1Om4Pp7Pk5"
+            "ZLlJGgS~q5c02NIL5--QBssu6C-gbhBgfGVQOY8~YwEqkJVSFfsqX54jOvzjVi-0t4mDANocv0hD5CQAy103"
+            "79gj14UQ5-4i2lcPoDdEcpsTekrtC9W1oRzZlyKSygNnL5NJKSjLy7St3TN8AK7sHbOMYTiFEpnxvuz8CaIh"
+            "DLf0xG~IbILgw83w9D1xlmAFu9Mxe5KXXQZa6Z60dXcXf67AS9vO1YRTK4CxtfF5EkDI31DeOm-Fm78VZzFE"
+            "j4MtdzMRQV1ag~4SruE7RMS10nIgHLN7CxpdHpybqAK4V-OWXlMsx8vSxC1bLHcQ__"
+            "&Key-Pair-Id=cloudfront-access-key-id"
+        )
+
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 4,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[3].filename,
+                        "id": str(classroom_documents[3].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[3].id}/1533686400"
+                            f"?response-content-disposition"
+                            f"=attachment%3B+filename%3D{classroom_documents[3].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[2].filename,
+                        "id": str(classroom_documents[2].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[2].id}/1533686400"
+                            f".{classroom_documents[2].filename.split('.')[-1]}"
+                            f"?response-content-disposition"
+                            f"=attachment%3B+filename%3D{classroom_documents[2].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[1].filename,
+                        "id": str(classroom_documents[1].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[1].id}/1533686400"
+                            f".{classroom_documents[1].filename.split('.')[-1]}"
+                            f"?response-content-disposition"
+                            f"=attachment%3B+filename%3D{classroom_documents[1].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[0].filename,
+                        "id": str(classroom_documents[0].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": "2018-08-08T00:00:00Z",
+                        "url": (
+                            f"https://abc.cloudfront.net/{classroom.id}/classroomdocument/"
+                            f"{classroom_documents[0].id}/1533686400"
+                            f".{classroom_documents[0].filename.split('.')[-1]}"
+                            f"?response-content-disposition"
+                            f"=attachment%3B+filename%3D{classroom_documents[0].filename}"
+                            f"&{expected_cloudfront_signature}"
+                        ),
+                    },
+                ],
+            },
+        )
+
     @mock.patch.object(api, "create")
     def test_api_bbb_create_anonymous(self, mock_create_request):
         """An anonymous should not be able to create a classroom."""
@@ -939,4 +1117,176 @@ class ClassroomAPITest(TestCase):
                 "messageKey": "sentEndClassroomRequest",
             },
             response.data,
+        )
+
+
+@override_settings(BBB_ENABLED=True)
+class ClassroomDocumentAPITest(TestCase):
+    """Test for the ClassroomDocument API."""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use BBB_ENABLED
+        reload_urlconf()
+
+    def test_api_classroom_document_create_student(self):
+        """
+        A student should not be able to create a document
+        for an existing classroom.
+        """
+
+        classroom = ClassroomFactory()
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
+        self.assertEqual(classroom.classroom_documents.count(), 0)
+
+    def test_api_classroom_document_create_instructor(self):
+        """
+        An instructor should be able to create a document
+        for an existing classroom.
+        """
+        classroom = ClassroomFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ClassroomDocument.objects.count(), 1)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(classroom.id),
+                "filename": "test.pdf",
+                "id": str(ClassroomDocument.objects.first().id),
+                "is_default": False,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
+        )
+
+    def test_api_classroom_document_initiate_upload_instructor(self):
+        """
+        An instructor should be able to initiate an upload for a deposited file.
+
+        Pdf extension should be guessed.
+        """
+        classroom_document = ClassroomDocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom_document.classroom)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
+                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
+                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
+                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
+                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                    ),
+                    "x-amz-signature": (
+                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                    ),
+                },
+            },
+        )
+        classroom_document.refresh_from_db()
+        self.assertEqual(classroom_document.filename, "foo.pdf")
+        self.assertEqual(classroom_document.upload_state, "pending")
+
+    def test_api_classroom_document_update_student(self):
+        """A student user should not be able to update a classroom_document."""
+        classroom_document = ClassroomDocumentFactory()
+        jwt_token = StudentLtiTokenFactory(resource=classroom_document.classroom)
+        data = {"filename": "updated_name.pdf"}
+
+        response = self.client.patch(
+            f"/api/classroomdocuments/{classroom_document.id}/",
+            json.dumps(data),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_classroom_document_update_instructor(self):
+        """An instructor should be able to update a classroom_document."""
+        classroom_document = ClassroomDocumentFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom_document.classroom)
+        data = {"filename": "updated_name.pdf"}
+
+        response = self.client.patch(
+            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(classroom_document.classroom.id),
+                "filename": "updated_name.pdf",
+                "id": str(classroom_document.id),
+                "is_default": False,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
         )

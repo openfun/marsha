@@ -5,7 +5,15 @@ from django.utils.translation import gettext_lazy as _
 
 from marsha.core.admin import link_field
 
-from .models import Classroom
+from .models import Classroom, ClassroomDocument
+
+
+class ClassroomDocumentInline(admin.TabularInline):
+    """Inline to display lassroom documents from a classroom."""
+
+    model = ClassroomDocument
+    verbose_name = _("classroom document")
+    verbose_name_plural = _("classroom documents")
 
 
 @admin.register(Classroom)
@@ -33,6 +41,7 @@ class ClassroomAdmin(admin.ModelAdmin):
         "starting_at",
         "estimated_duration",
     )
+    inlines = (ClassroomDocumentInline,)
     readonly_fields = [
         "id",
     ]
@@ -47,4 +56,40 @@ class ClassroomAdmin(admin.ModelAdmin):
         "playlist__title",
         "playlist__organization__name",
         "title",
+    )
+
+
+@admin.register(ClassroomDocument)
+class ClassroomDocumentAdmin(admin.ModelAdmin):
+    """Admin class for the ClassroomDocument model."""
+
+    verbose_name = _("Classroom document")
+    list_display = (
+        "id",
+        "filename",
+        link_field("classroom"),
+    )
+    list_select_related = ("classroom__playlist__consumer_site",)
+    fields = (
+        "id",
+        "filename",
+        "classroom",
+        "extension",
+    )
+    readonly_fields = [
+        "id",
+    ]
+    list_filter = ("classroom__playlist__consumer_site__domain",)
+    search_fields = (
+        "id",
+        "classroom__id",
+        "classroom__lti_id",
+        "classroom__title",
+        "classroom__playlist__consumer_site__domain",
+        "classroom__playlist__consumer_site__name",
+        "classroom__playlist__id",
+        "classroom__playlist__lti_id",
+        "classroom__playlist__title",
+        "classroom__playlist__organization__name",
+        "filename",
     )

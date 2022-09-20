@@ -12,6 +12,7 @@ from channels.layers import get_channel_layer
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
 from marsha.websocket.utils import channel_layers_utils
 
+from ...bbb.factories import ClassroomDocumentFactory
 from ...deposit.factories import DepositedFileFactory
 from ..defaults import COPYING, ERROR, INFECTED, READY, SCANNING
 from ..factories import (
@@ -437,3 +438,37 @@ class UpdateStateAPITest(TestCase):
                     datetime(2018, 8, 8, tzinfo=timezone.utc),
                 )
                 self.assertEqual(deposited_file.extension, "pdf")
+
+    @override_settings(UPDATE_STATE_SHARED_SECRETS=["shared secret"])
+    def test_api_update_state_classroom_document(self):
+        """Confirming the successful upload of a classroom document."""
+        classroom_document = ClassroomDocumentFactory(
+            id="d60d7971-5929-4f10-8e9c-06c5d15818ce",
+            classroom__pk="a1a2224b-f7b0-48c2-b6f2-57fd7f863638",
+        )
+
+        for state in (READY, ERROR):
+            data = {
+                "extraParameters": {},
+                "key": f"{classroom_document.classroom.pk}/classroomdocument/"
+                f"{classroom_document.pk}/1533686400.pdf",
+                "state": state,
+            }
+            signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
+            response = self.client.post(
+                "/api/update-state",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
+
+            self.assertEqual(response.status_code, 200)
+
+            classroom_document.refresh_from_db()
+            self.assertEqual(classroom_document.upload_state, state)
+
+            if state == READY:
+                self.assertEqual(
+                    classroom_document.uploaded_on,
+                    datetime(2018, 8, 8, tzinfo=timezone.utc),
+                )
