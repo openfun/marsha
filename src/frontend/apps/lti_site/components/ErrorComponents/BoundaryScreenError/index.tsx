@@ -1,75 +1,43 @@
-import { Box, Paragraph, Image, Text } from 'grommet';
+import {
+  Box,
+  Paragraph,
+  Image,
+  Text,
+  ResponsiveContext,
+  Stack,
+  Heading,
+} from 'grommet';
+import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import React from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from 'components/Headings';
-import { LayoutMainArea } from 'components/LayoutMainArea';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { colors } from 'utils/theme/theme';
 
-const BoundaryLayoutMainArea = styled(LayoutMainArea)`
-  display: flex;
-  justify-content: center;
-`;
+interface PropsExtended {
+  breakpoint?: string;
+}
 
-const LeftLayout = styled.div`
-  flex: 1;
-  display: block;
-  text-align: center;
-  position: relative;
-  overflow: auto;
-  background: linear-gradient(
-    45deg,
-    rgba(255, 11, 57, 0.3) 0%,
-    rgba(3, 92, 205, 0.9) 100%
-  );
-`;
-
-const LeftCircle = styled.div`
-  background: rgb(255, 255, 255);
+const LeftCircle = styled(Box)`
   box-shadow: 0px 0px 7px 0px rgba(0, 0, 0, 0.1);
-  height: 18vh;
-  width: 18vh;
-  border-radius: 100%;
-  transform: translate(-68%, 0px);
-  position: absolute;
-  top: 53%;
+  transform: translate(-60%);
 `;
-const Onomatopoeia = styled.div`
+
+const Onomatopoeia = styled(Paragraph)<PropsExtended>`
   font-family: 'Roboto-Light';
-  font-size: 4.375rem;
-  letter-spacing: -0.183rem;
-  margin: 0;
+  letter-spacing: ${(props) =>
+    props.breakpoint === 'small' ? `-0.104rem;` : '-0.183rem'};
 `;
 
-const ImageLogo = styled(Image)`
-  max-height: 27vh;
-`;
-
-const ImageErrorDrawing = styled(Image)`
-  max-height: 66vh;
-  display: flex;
-  margin: auto;
-  max-width: inherit;
-`;
-
-const RightLayout = styled(Box)`
-  flex: 1;
-  color: ${colors['blue-active']};
-`;
-
-const H2Code = styled(H2)`
-  font-size: 9.375rem;
-  line-height: normal;
-  margin-bottom: 2.5rem;
+const H2Code = styled(Heading)<PropsExtended>`
   font-family: 'Roboto-Bold';
-  letter-spacing: -6.27px;
-  margin: 0;
+  letter-spacing: ${(props) =>
+    props.breakpoint === 'small' ? `-0.157rem` : '-0.392rem'};
 `;
 
-const ErrorMessage = styled(Paragraph)`
-  max-width: 338px;
+const ErrorMessage = styled(Paragraph)<PropsExtended>`
+  max-width: ${(props) => (props.breakpoint === 'small' ? `90%;` : '338px')};
 `;
 
 const messages = {
@@ -98,52 +66,111 @@ const messages = {
     id: 'components.ErrorComponents.BoundaryScreenError.probleme',
   },
 };
+
 interface BoundaryScreenErrorProps {
   code: number;
   message: string;
 }
+
 export const BoundaryScreenError = ({
   code,
   message,
 }: BoundaryScreenErrorProps) => {
   const appData = useAppConfig();
   const intl = useIntl();
+  const breakpoint = React.useContext(ResponsiveContext);
+  const isSmall = breakpoint === 'small';
 
   return (
-    <BoundaryLayoutMainArea>
+    <Stack>
       <Box
-        direction="row"
-        height="100vh"
-        width="100vw"
-        background="#f8fafe"
-        gap="1rem"
+        height={isSmall ? '100%' : undefined}
+        margin={{ right: isSmall ? undefined : '50%' }}
+        pad={{ bottom: '2rem' }}
+        style={{
+          background:
+            'linear-gradient(45deg,rgba(255, 11, 57, 0.3) 0%,rgba(3, 92, 205, 0.9) 100%)',
+        }}
       >
-        <LeftLayout>
-          <LeftCircle />
-          <ImageLogo
+        <Box
+          width={{ max: isSmall ? '200px' : '50%' }}
+          margin={{ horizontal: isSmall ? 'none' : 'auto' }}
+        >
+          <Image
             alt={intl.formatMessage(messages.altLogo)}
+            margin={isSmall ? undefined : { horizontal: 'auto' }}
             src={appData.static.img.marshaWhiteLogo}
+            fit="contain"
+            fill={true}
           />
-          <ImageErrorDrawing
-            alt={intl.formatMessage(messages.altErrorDrawing)}
-            fit={'contain'}
-            src={appData.static.img.errorMain}
-          />
-        </LeftLayout>
-        <RightLayout className="flex-vh-center">
-          <Onomatopoeia>
+        </Box>
+
+        <Stack guidingChild="first" anchor="left">
+          <Box margin="auto" width="90%">
+            <Image
+              alt={intl.formatMessage(messages.altErrorDrawing)}
+              fit={'contain'}
+              src={appData.static.img.errorMain}
+            />
+          </Box>
+          {!isSmall && (
+            <LeftCircle
+              background="white"
+              round="full"
+              width="80px"
+              height="80px"
+            />
+          )}
+        </Stack>
+      </Box>
+
+      <Box
+        margin={isSmall ? undefined : { left: '50%' }}
+        height="100%"
+        width={isSmall ? '100%' : undefined}
+        pad={isSmall ? { bottom: 'small' } : undefined}
+        background={isSmall ? undefined : '#f8fafe'}
+      >
+        <Box
+          margin={
+            isSmall ? { horizontal: 'auto', top: 'auto' } : { vertical: 'auto' }
+          }
+          align="center"
+          background={isSmall ? 'white' : undefined}
+          round="8px"
+          width={isSmall ? '95%' : undefined}
+          pad={isSmall ? 'medium' : undefined}
+          style={{ color: normalizeColor('blue-active', theme) }}
+        >
+          <Onomatopoeia
+            breakpoint={breakpoint}
+            size={isSmall ? '2.5rem' : '4.375rem'}
+            margin="none"
+          >
             <FormattedMessage {...messages.onomatopoeia} />
           </Onomatopoeia>
-          <H2Code>{code}</H2Code>
-          <ErrorMessage size="0.875rem" textAlign="center" margin="none">
+          <H2Code
+            margin="none"
+            level={2}
+            size={isSmall ? '3.75rem' : '9.375rem'}
+            breakpoint={breakpoint}
+          >
+            {code}
+          </H2Code>
+          <ErrorMessage
+            maxLines={3}
+            size="0.875rem"
+            textAlign="center"
+            margin="none"
+          >
             {intl.formatMessage(messages.introduceProblem)}
             &nbsp;
             <Text size="0.875rem" weight="bold">
               {message}
             </Text>
           </ErrorMessage>
-        </RightLayout>
+        </Box>
       </Box>
-    </BoundaryLayoutMainArea>
+    </Stack>
   );
 };
