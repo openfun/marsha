@@ -7,6 +7,6 @@ test('renders learn react link', () => {
   expect(
     screen.getByRole(/menuitem/i, { name: /Favorites/i }),
   ).toBeInTheDocument();
-  expect(screen.getByText(/My first header/i)).toBeInTheDocument();
+  expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
   expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
 });
