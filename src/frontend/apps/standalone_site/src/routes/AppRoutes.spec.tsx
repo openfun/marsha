@@ -8,7 +8,7 @@ describe('<AppRoutes />', () => {
     expect(
       screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/My first header/i)).toBeInTheDocument();
+    expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
   });
 });

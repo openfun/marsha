@@ -1,13 +1,13 @@
 import { Grommet, Main, Page } from 'grommet';
-import { theme } from 'lib-common';
 import React from 'react';
+import { themeExtend } from 'style/theme.extend';
 
 import './App.css';
 import { AppRoutes } from './routes';
 
 const App = () => {
   return (
-    <Grommet theme={theme}>
+    <Grommet theme={themeExtend}>
       <Main>
         <Page kind="full">
           <AppRoutes />
