@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="24px" height="24px" viewBox="0 0 24 24" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <title>191BD02D-43EE-4E38-A35A-F5985AE80FF0@1x</title>
+    <g id="Symbols" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="iko/star">
+            <polygon id="Path" points="0 0 24 0 24 24 0 24"></polygon>
+            <path d="M14.43,10 L12.96,5.16 C12.67,4.21 11.33,4.21 11.05,5.16 L9.57,10 L5.12,10 C4.15,10 3.75,11.25 4.54,11.81 L8.18,14.41 L6.75,19.02 C6.46,19.95 7.54,20.7 8.31,20.11 L12,17.31 L15.69,20.12 C16.46,20.71 17.54,19.96 17.25,19.03 L15.82,14.42 L19.46,11.82 C20.25,11.25 19.85,10.01 18.88,10.01 L14.43,10.01 L14.43,10 Z" id="Path" fill="currentColor" fill-rule="nonzero"></path>
+        </g>
+    </g>
+</svg>
