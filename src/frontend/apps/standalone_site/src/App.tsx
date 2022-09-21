@@ -1,6 +1,6 @@
-import React from 'react';
 import { Grommet, Main, Page } from 'grommet';
 import { theme } from 'lib-common';
+import React from 'react';
 
 import './App.css';
 import { AppRoutes } from './routes';
