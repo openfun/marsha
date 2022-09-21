@@ -4,6 +4,9 @@ import App from './App';
 
 test('renders learn react link', () => {
   render(<App />);
-  const linkElement = screen.getByText(/HomePage/i);
-  expect(linkElement).toBeInTheDocument();
+  expect(
+    screen.getByRole(/menuitem/i, { name: /Favorites/i }),
+  ).toBeInTheDocument();
+  expect(screen.getByText(/My first header/i)).toBeInTheDocument();
+  expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
 });
