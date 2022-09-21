@@ -25,6 +25,9 @@ jest.doMock('./src/convertSharedLiveMedia', () => mockConvertSharedLiveMedia);
 const mockScanDepositedFile = jest.fn();
 jest.doMock('./src/scanDepositedFile', () => mockScanDepositedFile);
 
+const mockCopyClassroomDocument = jest.fn();
+jest.doMock('./src/copyClassroomDocument', () => mockCopyClassroomDocument);
+
 const lambda = require('./index.js').handler;
 
 const callback = jest.fn();
@@ -464,6 +467,60 @@ describe('lambda', () => {
         'source bucket',
       );
       expect(callback).toHaveBeenCalledWith(error);
+    });
+  });
+
+  describe('called with a classroomdocument object', () => {
+    it('reports an error when a classroomdocument has an unexpected format', () => {
+      lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: 'source bucket' },
+                object: {
+                  key: 'ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/c5cad053-111a-4e0e-8f78-fe43dec11512',
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback,
+      );
+      expect(callback).toHaveBeenCalledWith(
+        'Source classroomdocument should be uploaded to a folder of the form ' +
+          '"{classroom_id}/classroomdocument/{classroomdocument_id}/{stamp}".',
+      );
+    });
+
+    it('delegates to copyClassroomdocument and call updateState', async () => {
+      mockCopyClassroomDocument.mockImplementation(() => Promise.resolve());
+      await lambda(
+        {
+          Records: [
+            {
+              s3: {
+                bucket: { name: 'source bucket' },
+                object: {
+                  key: 'ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf',
+                },
+              },
+            },
+          ],
+        },
+        null,
+        callback,
+      );
+
+      expect(mockCopyClassroomDocument).toHaveBeenCalledWith(
+        'ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf',
+        'source bucket',
+      );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        'ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf',
+        'ready',
+      );
     });
   });
 });

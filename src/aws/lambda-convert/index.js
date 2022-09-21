@@ -9,11 +9,13 @@ const convertSharedLiveMedia = require('./src/convertSharedLiveMedia');
 const copyDocument = require('./src/copyDocument');
 const copyMarkdownImage = require('./src/copyMarkdownImage');
 const scanDepositedFile = require('./src/scanDepositedFile');
+const copyClassroomDocument = require('./src/copyClassroomDocument');
 
 const READY = 'ready';
 const PROCESSING = 'processing';
 
 const ResourceKindEnum = {
+  CLASSROOM_DOCUMENT_KIND: 'classroomdocument',
   DEPOSITED_FILE_KIND: 'depositedfile',
   DOCUMENT_KIND: 'document',
   MARKDOWN_IMAGE_KIND: 'markdown-image',
@@ -35,6 +37,11 @@ exports.handler = async (event, context, callback) => {
   if (parts.length !== 4 || !Object.values(ResourceKindEnum).includes(kind)) {
     let error;
     switch (kind) {
+      case ResourceKindEnum.CLASSROOM_DOCUMENT_KIND:
+        error =
+          'Source classroomdocument should be uploaded to a folder of the form ' +
+          '"{classroom_id}/classroomdocument/{classroomdocument_id}/{stamp}".';
+        break;
       case ResourceKindEnum.DEPOSITED_FILE_KIND:
         error =
           'Source depositedfile should be uploaded to a folder of the form ' +
@@ -81,6 +88,17 @@ exports.handler = async (event, context, callback) => {
   }
 
   switch (kind) {
+    case ResourceKindEnum.CLASSROOM_DOCUMENT_KIND:
+      try {
+        await copyClassroomDocument(objectKey, sourceBucket);
+        await updateState(objectKey, READY);
+      } catch (error) {
+        return callback(error);
+      }
+      console.log(
+        `Successfully received and copy classroom document ${objectKey} from ${sourceBucket}.`,
+      );
+      break;
     case ResourceKindEnum.DEPOSITED_FILE_KIND:
       try {
         await scanDepositedFile(objectKey, sourceBucket);
