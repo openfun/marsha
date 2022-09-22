@@ -238,7 +238,7 @@ const SelectContentTab = ({
   const {
     data: selectMarkdownDocument,
     status: useSelectMarkdownDocumentStatus,
-  } = useSelectMarkdownDocument({ refetchInterval: 10000 }); // refresh every 10 s
+  } = useSelectMarkdownDocument();
 
   const useCreateMarkdownDocumentMutation = useCreateMarkdownDocument({
     onSuccess: (markdownDocument) =>
