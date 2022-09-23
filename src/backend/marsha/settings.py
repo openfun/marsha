@@ -432,7 +432,7 @@ class Base(Configuration):
     CORS_ALLOW_ALL_ORIGINS = values.BooleanValue(False)
     CORS_ALLOWED_ORIGINS = values.ListValue([])
     CORS_ALLOWED_ORIGIN_REGEXES = values.ListValue([])
-    CORS_URLS_REGEX = values.Value(r"^/api/pairing-challenge$")
+    CORS_URLS_REGEX = values.Value(r"^/api/.*$")
     CORS_ALLOW_METHODS = values.ListValue(["POST", "OPTIONS"])
     CORS_ALLOW_HEADERS = values.ListValue(list(default_headers))
 
@@ -740,6 +740,7 @@ class Development(Base):
     """
 
     ALLOWED_HOSTS = ["*"]
+    CORS_ALLOWED_ORIGINS = values.ListValue(["http://localhost:3000"])
     AWS_BASE_NAME = values.Value("development")
     DEBUG = values.BooleanValue(True)
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
