@@ -2,6 +2,7 @@
   "name": "standalone_site",
   "version": "0.1.0",
   "private": true,
+  "proxy": "http://localhost:8060",
   "devDependencies": {
     "eslint-plugin-import": "2.26.0",
     "@types/fetch-mock": "7.3.5",
