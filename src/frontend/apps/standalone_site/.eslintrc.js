@@ -24,6 +24,10 @@ module.exports = {
     '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_' }],
     'array-callback-return': 'error',
     'block-scoped-var': 'error',
+    'react/jsx-curly-brace-presence': [
+      'error',
+      { props: 'never', children: 'never', propElementValues: 'always' },
+    ],
     curly: 2,
     'default-case': 'error',
     eqeqeq: 2,
