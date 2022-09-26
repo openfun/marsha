@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from marsha.core import defaults, permissions as core_permissions
-from marsha.core.api import APIViewMixin, ObjectPkMixin
+from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
@@ -195,6 +195,7 @@ class MarkdownDocumentViewSet(
 class MarkdownImageViewSet(
     APIViewMixin,
     ObjectPkMixin,
+    ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,

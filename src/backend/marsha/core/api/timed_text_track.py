@@ -10,10 +10,12 @@ from .. import defaults, permissions, serializers
 from ..models import TimedTextTrack
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import APIViewMixin, ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 
-class TimedTextTrackViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
+class TimedTextTrackViewSet(
+    APIViewMixin, ObjectPkMixin, ObjectRelatedMixin, viewsets.ModelViewSet
+):
     """Viewset for the API of the TimedTextTrack object."""
 
     permission_classes = [permissions.NotAllowed]
