@@ -110,6 +110,7 @@ export interface EndClassroomActionResponse {
 export interface ClassroomDocument extends Resource {
   classroom: Classroom;
   filename: string;
+  is_default: boolean;
   upload_state: uploadState;
   uploaded_on: string;
   url: string;

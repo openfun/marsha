@@ -3,7 +3,7 @@ import Dropzone from 'react-dropzone';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { PlusSVG } from 'lib-components';
+import { PlusSVG, ValidSVG } from 'lib-components';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
 import {
   UploadManagerStatus,
@@ -11,7 +11,10 @@ import {
 } from 'components/UploadManager';
 
 import { bbbAppData } from 'apps/bbb/data/bbbAppData';
-import { useClassroomDocuments } from 'apps/bbb/data/queries';
+import {
+  useClassroomDocuments,
+  useUpdateClassroomDocument,
+} from 'apps/bbb/data/queries';
 import { createClassroomDocument } from 'apps/bbb/data/sideEffects/createClassroomDocument';
 import { modelName } from 'apps/bbb/types/models';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
@@ -34,6 +37,16 @@ const messages = {
       'Help text to warn user not to navigate away during file upload.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadingFile',
   },
+  isDefaultDocument: {
+    defaultMessage: 'Default document',
+    description: 'Helper message for default document.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.isDefaultDocument',
+  },
+  setDefaultDocument: {
+    defaultMessage: 'Click to set as default document',
+    description: 'Button helper message for setting a document as default.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.setDefaultDocument',
+  },
   downloadButtonLabel: {
     defaultMessage: 'Download',
     description: 'Label for download button.',
@@ -43,6 +56,8 @@ const messages = {
 
 type UploadDocumentsRowProps = {
   filename: string;
+  isDefault?: boolean;
+  documentId?: string;
   uploadingObjectId?: string;
   uploadState?: string;
   url?: string;
@@ -50,11 +65,29 @@ type UploadDocumentsRowProps = {
 
 const UploadDocumentsRow = ({
   filename,
+  isDefault,
+  documentId,
   uploadingObjectId,
   uploadState,
   url,
 }: UploadDocumentsRowProps) => {
   const intl = useIntl();
+
+  const updateClassroomMutation = useUpdateClassroomDocument(documentId);
+  let setDefaultDocument = () => {};
+  if (uploadState === 'ready' && updateClassroomMutation) {
+    setDefaultDocument = () => {
+      updateClassroomMutation.mutate(
+        { is_default: true },
+        {
+          onSuccess: () => {
+            window.dispatchEvent(new CustomEvent('classroomDocumentUpdated'));
+          },
+        },
+      );
+    };
+  }
+
   return (
     <Box fill background="#F9FBFD" pad="small" round="small" direction="row">
       <Box justify="start" flex>
@@ -67,16 +100,29 @@ const UploadDocumentsRow = ({
         </React.Fragment>
       )}
       {uploadState && (
-        <Box justify="end" flex="shrink">
+        <Box justify="end" flex="shrink" direction="row">
           {uploadState === 'ready' ? (
-            <Anchor
-              download
-              a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
-              label={intl.formatMessage(messages.downloadButtonLabel)}
-              style={{ fontFamily: 'Roboto-Medium' }}
-              title={intl.formatMessage(messages.downloadButtonLabel)}
-              href={url}
-            />
+            <Box direction="row" align="center" gap="small">
+              {isDefault ? (
+                <ValidSVG iconColor="brand" height="20px" width="20px" />
+              ) : (
+                <Button
+                  alignSelf="start"
+                  onClick={setDefaultDocument}
+                  title={intl.formatMessage(messages.setDefaultDocument)}
+                >
+                  <ValidSVG iconColor="light-5" height="20px" width="20px" />
+                </Button>
+              )}
+              <Anchor
+                download
+                a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
+                label={intl.formatMessage(messages.downloadButtonLabel)}
+                style={{ fontFamily: 'Roboto-Medium' }}
+                title={intl.formatMessage(messages.downloadButtonLabel)}
+                href={url}
+              />
+            </Box>
           ) : (
             <Text>{uploadState}</Text>
           )}
@@ -134,6 +180,23 @@ export const UploadDocuments = () => {
     }
   }, [uploadsSucceeded.length]);
 
+  useEffect(() => {
+    const handleClassroomDocumentUpdated = () => {
+      refreshClassroomDocuments();
+    };
+
+    window.addEventListener(
+      'classroomDocumentUpdated',
+      handleClassroomDocumentUpdated,
+    );
+    return () => {
+      window.removeEventListener(
+        'classroomDocumentUpdated',
+        handleClassroomDocumentUpdated,
+      );
+    };
+  }, []);
+
   return (
     <Box>
       <Box
@@ -152,6 +215,8 @@ export const UploadDocuments = () => {
           <UploadDocumentsRow
             key={classroomDocument.id}
             filename={classroomDocument.filename}
+            isDefault={classroomDocument.is_default}
+            documentId={classroomDocument.id}
             uploadState={classroomDocument.upload_state}
             url={classroomDocument.url}
           />
