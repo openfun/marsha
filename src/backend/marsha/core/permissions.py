@@ -1,8 +1,8 @@
 """Custom permission classes for the Marsha project."""
 import uuid
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db.models import Q
-from django.http.response import Http404
 
 from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
@@ -190,9 +190,9 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
         try:
             return (
                 request.resource
-                and str(view.get_object().video.id) == request.resource.id
+                and str(view.get_related_object().video.id) == request.resource.id
             )
-        except (AssertionError, Http404):
+        except ObjectDoesNotExist:
             return False
 
 
@@ -460,13 +460,13 @@ class IsRelatedVideoPlaylistAdmin(permissions.BasePermission):
         this video is a part of.
         """
         try:
-            video_related_object = view.get_object()
-        except (Http404, AssertionError):
+            video_related_object = view.get_related_object().video
+        except ObjectDoesNotExist:
             return False
 
         return models.PlaylistAccess.objects.filter(
             role=ADMINISTRATOR,
-            playlist__videos=video_related_object.video,
+            playlist__videos=video_related_object,
             user__id=request.user.id,
         ).exists()
 
@@ -488,13 +488,13 @@ class IsRelatedVideoOrganizationAdmin(permissions.BasePermission):
         this video is a part of.
         """
         try:
-            video_related_object = view.get_object()
-        except (Http404, AssertionError):
+            video_related_object = view.get_related_object().video
+        except ObjectDoesNotExist:
             return False
 
         return models.OrganizationAccess.objects.filter(
             role=ADMINISTRATOR,
-            organization__playlists__videos=video_related_object.video,
+            organization__playlists__videos=video_related_object,
             user__id=request.user.id,
         ).exists()
 

@@ -25,6 +25,20 @@ class ObjectPkMixin:
         return self.kwargs.get(lookup_url_kwarg)
 
 
+class ObjectRelatedMixin:
+    """
+    Get the related video belonging to the current object.
+
+    Using view.get_object is permissions is not possible anymore due to
+    infinite recursion between has_permission and has_object_permission call.
+    """
+
+    def get_related_object(self):
+        """Get the video related to the current object."""
+        queryset = self.filter_queryset(self.get_queryset())
+        return queryset.get(pk=self.get_object_pk())
+
+
 @api_view(["POST"])
 def update_state(request):
     """View handling AWS POST request to update the state of an object by key.

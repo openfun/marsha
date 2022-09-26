@@ -10,12 +10,13 @@ from .. import defaults, permissions, serializers
 from ..models import Thumbnail
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import APIViewMixin, ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 
 class ThumbnailViewSet(
     APIViewMixin,
     ObjectPkMixin,
+    ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
