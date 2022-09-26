@@ -684,7 +684,9 @@ class ClassroomAPITest(TestCase):
     def test_api_list_classroom_documents_instructor(self):
         """An instructor should be able to fetch list of classroom documents."""
         classroom = ClassroomFactory()
-        classroom_documents = ClassroomDocumentFactory.create_batch(3, classroom=classroom)
+        classroom_documents = ClassroomDocumentFactory.create_batch(
+            3, classroom=classroom
+        )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
 
         response = self.client.get(
@@ -1174,15 +1176,15 @@ class ClassroomDocumentAPITest(TestCase):
     def test_api_classroom_document_initiate_upload_instructor(self):
         """
         An instructor should be able to initiate an upload for a deposited file.
-
-        Pdf extension should be guessed.
         """
         classroom_document = ClassroomDocumentFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
             upload_state=random.choice(["ready", "error"]),
             classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
         )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom_document.classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
 
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
@@ -1231,6 +1233,124 @@ class ClassroomDocumentAPITest(TestCase):
         self.assertEqual(classroom_document.filename, "foo.pdf")
         self.assertEqual(classroom_document.upload_state, "pending")
 
+    def test_api_classroom_document_initiate_upload_instructor_without_extension(self):
+        """An extension should be guessed from the mimetype."""
+        classroom_document = ClassroomDocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                {"filename": "foo", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/"
+                        "27a23f52-3379-46a2-94fa-697b59cfe3c7/1533686400.pdf"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L2NsYXNzcm9vbWRvY3VtZW50LzI3YTIzZjUyLTMzNzkt"
+                        "NDZhMi05NGZhLTY5N2I1OWNmZTNjNy8xNTMzNjg2NDAwLnBkZiJ9LCB7IngtYW16LWFsZ29y"
+                        "aXRobSI6ICJBV1M0LUhNQUMtU0hBMjU2In0sIHsieC1hbXotY3JlZGVudGlhbCI6ICJhd3Mt"
+                        "YWNjZXNzLWtleS1pZC8yMDE4MDgwOC9ldS13ZXN0LTEvczMvYXdzNF9yZXF1ZXN0In0sIHsi"
+                        "eC1hbXotZGF0ZSI6ICIyMDE4MDgwOFQwMDAwMDBaIn1dfQ=="
+                    ),
+                    "x-amz-signature": (
+                        "c34ed8fa1461564740c402c32bed7e8b579eeac71756c3dd505397c14ffac412"
+                    ),
+                },
+            },
+        )
+        classroom_document.refresh_from_db()
+        self.assertEqual(classroom_document.filename, "foo")
+        self.assertEqual(classroom_document.upload_state, "pending")
+
+    def test_api_classroom_document_initiate_upload_instructor_without_mimetype(self):
+        """With no mimetype the request should fail."""
+        classroom_document = ClassroomDocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                {"filename": "foo", "mimetype": ""},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"mimetype": ["mimetype not guessable"]},
+        )
+
+    def test_api_classroom_document_initiate_upload_instructor_wrong_mimetype(self):
+        """With a wrong mimetype the request should fail."""
+        classroom_document = ClassroomDocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                {"filename": "foo", "mimetype": "application/wrong-type"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"mimetype": ["application/wrong-type is not a supported mimetype"]},
+        )
+
     def test_api_classroom_document_update_student(self):
         """A student user should not be able to update a classroom_document."""
         classroom_document = ClassroomDocumentFactory()
@@ -1248,7 +1368,9 @@ class ClassroomDocumentAPITest(TestCase):
     def test_api_classroom_document_update_instructor(self):
         """An instructor should be able to update a classroom_document."""
         classroom_document = ClassroomDocumentFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom_document.classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
         data = {"filename": "updated_name.pdf"}
 
         response = self.client.patch(

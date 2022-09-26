@@ -4,6 +4,7 @@ import mimetypes
 from os.path import splitext
 from urllib.parse import quote_plus
 
+from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
@@ -204,6 +205,10 @@ class ClassroomDocumentInitiateUploadSerializer(InitiateUploadSerializer):
         """Validate if the mimetype is allowed or not."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
+            if attrs["mimetype"] not in settings.ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES:
+                raise serializers.ValidationError(
+                    {"mimetype": f"{attrs['mimetype']} is not a supported mimetype"}
+                )
             attrs["extension"] = mimetypes.guess_extension(attrs["mimetype"])
 
         # mimetype is not provided, we have to guess it from the extension
@@ -211,6 +216,10 @@ class ClassroomDocumentInitiateUploadSerializer(InitiateUploadSerializer):
             mimetypes.init()
             extension = splitext(attrs["filename"])[1]
             mimetype = mimetypes.types_map.get(extension)
+            if mimetype not in settings.ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES:
+                raise serializers.ValidationError(
+                    {"mimetype": "mimetype not guessable"}
+                )
             # extension is added to the data in order to be used later
             attrs["extension"] = extension
             attrs["mimetype"] = mimetype
