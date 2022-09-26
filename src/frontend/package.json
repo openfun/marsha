@@ -26,6 +26,7 @@
     "build-libs": "yarn workspace lib-common run build; yarn workspace lib-components run build",
     "build-lti": "yarn build-libs; yarn workspace marsha run build",
     "build-site": "yarn build-libs; yarn workspace standalone_site run build",
+    "start-site": "yarn build-libs; yarn workspace standalone_site run start",
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
