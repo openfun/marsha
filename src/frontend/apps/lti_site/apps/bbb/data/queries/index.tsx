@@ -175,6 +175,55 @@ export const useClassroomDocuments = (
   >(key, fetchList, queryConfig);
 };
 
+type UseUpdateClassroomDocumentData = Partial<ClassroomDocument>;
+type UseUpdateClassroomDocumentError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseUpdateClassroomDocumentData]?: string[] }[];
+    };
+type UseUpdateClassroomDocumentOptions = UseMutationOptions<
+  ClassroomDocument,
+  UseUpdateClassroomDocumentError,
+  UseUpdateClassroomDocumentData
+>;
+export const useUpdateClassroomDocument = (
+  id?: string,
+  options?: UseUpdateClassroomDocumentOptions,
+) => {
+  if (!id) {
+    return undefined;
+  }
+  const queryClient = useQueryClient();
+  return useMutation<
+    ClassroomDocument,
+    UseUpdateClassroomDocumentError,
+    UseUpdateClassroomDocumentData
+  >(
+    (updatedClassroomDocument) =>
+      updateOne({
+        name: 'classroomdocuments',
+        id,
+        object: updatedClassroomDocument,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('classroomdocuments');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('classroomdocuments');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
 type MutationClassroomData<ClassroomRequest> = Partial<ClassroomRequest>;
 type MutationClassroomError<ClassroomRequest> =
   | { code: 'exception' }

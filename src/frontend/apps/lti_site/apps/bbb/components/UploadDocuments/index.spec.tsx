@@ -15,6 +15,7 @@ import { ClassroomDocument, modelName } from 'apps/bbb/types/models';
 import { classroomDocumentMockFactory } from 'apps/bbb/utils/tests/factories';
 
 import { UploadDocuments } from '.';
+import userEvent from '@testing-library/user-event';
 
 jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
@@ -175,6 +176,46 @@ describe('<UploadDocuments />', () => {
     expect(downloadButton).toHaveAttribute(
       'href',
       'https://example.com/file.txt',
+    );
+  });
+
+  it('updates classroom documents defaults', async () => {
+    const classroomDocument = classroomDocumentMockFactory({
+      filename: 'file.txt',
+      is_default: false,
+      upload_state: READY,
+      uploaded_on: '2020-01-01T00:00:00Z',
+      url: 'https://example.com/file.txt',
+    });
+    const classroomDocument2 = classroomDocumentMockFactory({
+      filename: 'file2.txt',
+      is_default: true,
+      upload_state: READY,
+      uploaded_on: '2020-01-01T00:00:00Z',
+      url: 'https://example.com/file2.txt',
+    });
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 2,
+      next: null,
+      previous: null,
+      results: [classroomDocument, classroomDocument2],
+    });
+
+    fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, {
+      status: 200,
+    });
+
+    render(<UploadDocuments />);
+
+    await screen.findByText('file.txt');
+    const downloadButton = screen.getByRole('button', {
+      name: 'Click to set as default document',
+    });
+    await act(async () => {
+      userEvent.click(downloadButton);
+    });
+    expect(fetchMock.lastCall()![1]!.body).toEqual(
+      JSON.stringify({ is_default: true }),
     );
   });
 });
