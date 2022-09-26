@@ -1,5 +1,5 @@
 """Custom permission classes for the Deposit app."""
-from django.http import Http404
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions
 
@@ -30,6 +30,8 @@ class IsTokenResourceRouteObjectRelatedFileDepository(permissions.BasePermission
             True if the request is authorized, False otherwise
         """
         try:
-            return str(view.get_object().file_depository.id) == request.resource.id
-        except (AssertionError, Http404):
+            return (
+                str(view.get_related_object().file_depository.id) == request.resource.id
+            )
+        except ObjectDoesNotExist:
             return False

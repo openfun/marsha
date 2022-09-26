@@ -1,5 +1,5 @@
 """Custom permission classes for the "markdown" app in Marsha project."""
-from django.http.response import Http404
+from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions
 
@@ -38,13 +38,13 @@ class IsTokenResourceRouteObjectRelatedResource(permissions.BasePermission):
             return (
                 str(
                     getattr(
-                        view.get_object(),
+                        view.get_related_object(),
                         self.linked_resource_attribute,
                     ).id
                 )
                 == request.resource.id
             )
-        except (AssertionError, Http404):
+        except ObjectDoesNotExist:
             return False
 
 

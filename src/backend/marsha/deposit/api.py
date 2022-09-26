@@ -9,7 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.core import defaults, permissions as core_permissions
-from marsha.core.api import APIViewMixin, ObjectPkMixin
+from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
@@ -165,6 +165,7 @@ class FileDepositoryViewSet(
 class DepositedFileViewSet(
     APIViewMixin,
     ObjectPkMixin,
+    ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     viewsets.GenericViewSet,
