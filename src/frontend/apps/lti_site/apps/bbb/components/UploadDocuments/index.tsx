@@ -173,7 +173,7 @@ export const UploadDocuments = () => {
         ))}
 
         <Box fill align="center" pad="small">
-          <Dropzone onDrop={onDrop}>
+          <Dropzone onDrop={onDrop} accept={{ 'application/pdf': ['.pdf'] }}>
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()}>
                 <input {...getInputProps()} />
