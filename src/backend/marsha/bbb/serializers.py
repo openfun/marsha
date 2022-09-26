@@ -4,23 +4,23 @@ import mimetypes
 from os.path import splitext
 from urllib.parse import quote_plus
 
-from django.conf import settings
 from django.urls import reverse
 from django.utils import timezone
 
 from rest_framework import serializers
 
-from marsha.bbb.utils.bbb_utils import ApiMeetingException, get_meeting_infos
-from marsha.core.serializers.playlist import PlaylistLiteSerializer
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
-
-from ..core.serializers import (
+from marsha.bbb.models import Classroom, ClassroomDocument
+from marsha.bbb.utils.bbb_utils import (
+    ApiMeetingException,
+    get_meeting_infos,
+    get_url as get_document_url,
+)
+from marsha.core.serializers import (
     InitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
-    get_resource_cloudfront_url_params,
 )
-from ..core.utils import cloudfront_utils, time_utils
-from .models import Classroom, ClassroomDocument
+from marsha.core.serializers.playlist import PlaylistLiteSerializer
+from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -174,25 +174,6 @@ class ClassroomDocumentSerializer(
 
         return super().create(validated_data)
 
-    def _get_extension_string(self, obj):
-        """Classroom document extension with the leading dot.
-
-        Parameters
-        ----------
-        obj : Type[models.DepositedFile]
-            The classroom document that we want to serialize
-
-        Returns
-        -------
-        String
-            The extension with the leading dot if the classroom document has an extension
-            An empty string otherwise
-
-        """
-        if "." not in obj.filename:
-            return ""
-        return splitext(obj.filename)[1]
-
     def get_url(self, obj):
         """Url of the ClassroomDocument.
 
@@ -208,22 +189,12 @@ class ClassroomDocumentSerializer(
             None if the classroom document is still not uploaded to S3 with success
 
         """
-        if obj.uploaded_on is None:
-            return None
-
-        url = (
-            f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
-            f"{obj.classroom.pk}/classroomdocument/{obj.pk}/"
-            f"{time_utils.to_timestamp(obj.uploaded_on)}{self._get_extension_string(obj)}?"
-            f"response-content-disposition={quote_plus('attachment; filename=' + obj.filename)}"
-        )
-
-        if settings.CLOUDFRONT_SIGNED_URLS_ACTIVE:
-            params = get_resource_cloudfront_url_params(
-                "classroomdocument", obj.classroom_id
+        if url := get_document_url(obj):
+            return (
+                f"{url}?response-content-disposition="
+                f"{quote_plus('attachment; filename=' + obj.filename)}"
             )
-            url = cloudfront_utils.build_signed_url(url, params)
-        return url
+        return None
 
 
 class ClassroomDocumentInitiateUploadSerializer(InitiateUploadSerializer):
