@@ -71,6 +71,7 @@ export const classroomDocumentMockFactory = (
     classroom: classroomMockFactory(),
     filename: faker.system.fileName(),
     id: faker.datatype.uuid(),
+    is_default: false,
     upload_state: READY,
     uploaded_on: faker.date.recent().toISOString(),
     url: faker.internet.url(),

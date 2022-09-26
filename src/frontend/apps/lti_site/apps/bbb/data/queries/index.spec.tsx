@@ -18,6 +18,7 @@ import {
   useCreateClassroomAction,
   useJoinClassroomAction,
   useClassroomDocuments,
+  useUpdateClassroomDocument,
 } from '.';
 
 jest.mock('utils/errors/report', () => ({
@@ -466,6 +467,82 @@ describe('queries', () => {
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useUpdateClassroomDocument', () => {
+    it('updates the resource', async () => {
+      const classroomDocument = classroomDocumentMockFactory();
+      fetchMock.patch(
+        `/api/classroomdocuments/${classroomDocument.id}/`,
+        classroomDocument,
+      );
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateClassroomDocument(classroomDocument.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current!.mutate({
+        is_default: true,
+      });
+      await waitFor(() => result.current!.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classroomdocuments/${classroomDocument.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          is_default: true,
+        }),
+      });
+      expect(result.current!.data).toEqual(classroomDocument);
+      expect(result.current!.status).toEqual('success');
+    });
+
+    it('returns undefined if no id provided', async () => {
+      const { result } = renderHook(() => useUpdateClassroomDocument(), {
+        wrapper: Wrapper,
+      });
+      expect(result.current).not.toBeDefined();
+    });
+
+    it('fails to update the resource', async () => {
+      const classroomDocument = classroomDocumentMockFactory();
+      fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, 400);
+
+      const { result, waitFor } = renderHook(
+        () => useUpdateClassroomDocument(classroomDocument.id),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current!.mutate({
+        is_default: true,
+      });
+      await waitFor(() => result.current!.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classroomdocuments/${classroomDocument.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'PATCH',
+        body: JSON.stringify({
+          is_default: true,
+        }),
+      });
+      expect(result.current!.data).toEqual(undefined);
+      expect(result.current!.status).toEqual('error');
     });
   });
 });
