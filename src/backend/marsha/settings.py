@@ -334,6 +334,7 @@ class Base(Configuration):
     BBB_API_ENDPOINT = values.Value()
     BBB_API_SECRET = values.Value(None)
     BBB_API_TIMEOUT = values.PositiveIntegerValue(10)
+    ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES = values.ListValue(["application/pdf"])
 
     # deposit application
     DEPOSIT_ENABLED = values.BooleanValue(False)
