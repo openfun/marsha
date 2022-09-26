@@ -5,6 +5,7 @@ from os.path import splitext
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
 
@@ -173,7 +174,38 @@ class ClassroomDocumentSerializer(
         if not validated_data.get("classroom_id") and resource:
             validated_data["classroom_id"] = resource.id
 
+        if not ClassroomDocument.objects.filter(
+            classroom_id=validated_data["classroom_id"]
+        ).exists():
+            validated_data["is_default"] = True
+
         return super().create(validated_data)
+
+    def update(self, instance, validated_data):
+        """Set the default attribute of the others classroom documents to false if
+        set to true for this one.
+
+        Parameters
+        ----------
+        instance : Type[models.ClassroomDocument]
+            The document that we want to update
+
+        validated_data : dictionary
+            Dictionary of the deserialized values of each field after validation.
+
+        Returns
+        -------
+        Type[models.ClassroomDocument]
+            The updated document
+
+        """
+        with transaction.atomic():
+            instance = super().update(instance, validated_data)
+            if validated_data.get("is_default"):
+                ClassroomDocument.objects.exclude(id=instance.id).filter(
+                    classroom=instance.classroom, is_default=True
+                ).update(is_default=False)
+            return instance
 
     def get_url(self, obj):
         """Url of the ClassroomDocument.

@@ -116,16 +116,16 @@ def create(classroom: Classroom):
     documents = classroom.classroom_documents.filter(upload_state="ready")
     xml = ""
     if documents:
-        xml += "<modules>"
+        xml += '<modules><module name="presentation">'
         for document in documents:
             if "pdf" not in document.filename:
                 continue
             xml += (
-                '<module name="presentation">'
-                f'<document url="{get_url(document)}" filename="{document.filename}" />'
-                "</module>"
+                f'<document url="{get_url(document)}" filename="{document.filename}" '
+                f'current="{document.is_default and "true" or "false"}" '
+                "/>"
             )
-        xml += "</modules>"
+        xml += "</module></modules>"
 
     api_response = request_api("create", parameters, data=xml)
     if not api_response.get("message"):
