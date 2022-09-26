@@ -79,7 +79,9 @@ describe('<UploadDocuments />', () => {
 
     const { container } = render(<UploadDocuments />);
 
-    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+    const file = new File(['(⌐□_□)'], 'course.pdf', {
+      type: 'application/pdf',
+    });
     await act(async () => {
       fireEvent.change(container.querySelector('input[type="file"]')!, {
         target: {
@@ -87,6 +89,7 @@ describe('<UploadDocuments />', () => {
         },
       });
     });
+    expect(screen.queryByText('course.pdf')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     const classroomDocument = classroomDocumentMockFactory();
@@ -98,6 +101,31 @@ describe('<UploadDocuments />', () => {
       classroomDocument.id,
       file,
     );
+  });
+
+  it('rejects files other than pdf', async () => {
+    const createDeferred = new Deferred<ClassroomDocument>();
+    mockCreateClassroomDocument.mockReturnValue(createDeferred.promise);
+
+    const mockAddUpload = jest.fn();
+    mockUseUploadManager.mockReturnValue({
+      addUpload: mockAddUpload,
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    const { container } = render(<UploadDocuments />);
+
+    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+    await act(async () => {
+      fireEvent.change(container.querySelector('input[type="file"]')!, {
+        target: {
+          files: [file],
+        },
+      });
+    });
+    expect(screen.queryByText('course.mp4')).not.toBeInTheDocument();
+    expect(screen.queryByText('Upload')).not.toBeInTheDocument();
   });
 
   it('shows the upload progress when the file is uploading', async () => {
