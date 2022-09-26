@@ -200,13 +200,12 @@ resource "aws_cloudfront_distribution" "marsha_cloudfront_distribution" {
     viewer_protocol_policy = "redirect-to-https"
   }
 
+  # Classroom document bucket: public access to allow BBB download
   ordered_cache_behavior {
     path_pattern     = "*/classroomdocument/*"
     allowed_methods  = ["GET", "HEAD", "OPTIONS"]
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = local.s3_destination_origin_id
-    trusted_signers  = []
-    trusted_key_groups = [aws_cloudfront_key_group.marsha_cloudfront_signer_key_group.id]
 
     forwarded_values {
       query_string = true

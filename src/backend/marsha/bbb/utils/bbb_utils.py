@@ -1,7 +1,7 @@
 """Utils for requesting BBB API"""
-
 import hashlib
 import logging
+from os.path import splitext
 
 from django.conf import settings
 
@@ -9,6 +9,7 @@ import requests
 import xmltodict
 
 from marsha.bbb.models import Classroom
+from marsha.core.utils import time_utils
 
 
 logger = logging.getLogger(__name__)
@@ -47,30 +48,59 @@ def sign_parameters(action, parameters):
     return parameters
 
 
-def request_api(action, parameters, prepare=False):
-    """Perform generic get request to BBB API."""
+def request_api(action, parameters, prepare=False, data=None):
+    """Perform generic request to BBB API."""
     url = f"{settings.BBB_API_ENDPOINT}/{action}"
     signed_parameters = sign_parameters(action, parameters)
-    logger.debug(">>>bbb api request action %s", action)
-    logger.debug(signed_parameters)
     if prepare:
-        request = requests.Request("GET", url, params=signed_parameters).prepare()
+        request = requests.Request(
+            "GET", url, params=signed_parameters, data=data
+        ).prepare()
         return {"url": request.url}
 
-    request = requests.get(
+    request = requests.request(
+        "post" if data else "get",
         url,
         params=signed_parameters,
-        # bypass cert verification if debug is enabled
+        data=bytes(data, "utf8") if data else None,
         verify=not settings.DEBUG,
         timeout=settings.BBB_API_TIMEOUT,
+        headers={"Content-Type": "application/xml"} if data else None,
     )
-    logger.debug(request.content)
     api_response = xmltodict.parse(request.content).get("response")
-    logger.debug(api_response)
     if api_response.get("returncode") == "SUCCESS":
         return api_response
 
     raise ApiMeetingException(api_response)
+
+
+def get_url(obj):
+    """Url of the ClassroomDocument.
+
+    Parameters
+    ----------
+    obj : Type[models.DepositedFile]
+        The classroom document that we want to serialize
+
+    Returns
+    -------
+    String or None
+        the url to fetch the classroom document on CloudFront
+        None if the classroom document is still not uploaded to S3 with success
+
+    """
+    if obj.uploaded_on is None:
+        return None
+
+    extension = ""
+    if "." in obj.filename:
+        extension = splitext(obj.filename)[1]
+
+    return (
+        f"{settings.AWS_S3_URL_PROTOCOL}://{settings.CLOUDFRONT_DOMAIN}/"
+        f"{obj.classroom.pk}/classroomdocument/{obj.pk}/"
+        f"{time_utils.to_timestamp(obj.uploaded_on)}{extension}"
+    )
 
 
 def create(classroom: Classroom):
@@ -83,7 +113,21 @@ def create(classroom: Classroom):
         "welcome": classroom.welcome_text,
     }
 
-    api_response = request_api("create", parameters)
+    documents = classroom.classroom_documents.filter(upload_state="ready")
+    xml = ""
+    if documents:
+        xml += "<modules>"
+        for document in documents:
+            if "pdf" not in document.filename:
+                continue
+            xml += (
+                '<module name="presentation">'
+                f'<document url="{get_url(document)}" filename="{document.filename}" />'
+                "</module>"
+            )
+        xml += "</modules>"
+
+    api_response = request_api("create", parameters, data=xml)
     if not api_response.get("message"):
         api_response["message"] = "Meeting created."
     classroom.started = True
