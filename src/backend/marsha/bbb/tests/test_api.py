@@ -1139,10 +1139,12 @@ class ClassroomDocumentAPITest(TestCase):
         self.assertEqual(ClassroomDocument.objects.count(), 0)
         self.assertEqual(classroom.classroom_documents.count(), 0)
 
-    def test_api_classroom_document_create_instructor(self):
+    def test_api_classroom_document_create_instructor_first_document(self):
         """
         An instructor should be able to create a document
         for an existing classroom.
+
+        First created document should be the default one.
         """
         classroom = ClassroomFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
@@ -1166,12 +1168,53 @@ class ClassroomDocumentAPITest(TestCase):
                 "classroom": str(classroom.id),
                 "filename": "test.pdf",
                 "id": str(ClassroomDocument.objects.first().id),
+                "is_default": True,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
+        )
+
+    def test_api_classroom_document_create_instructor_second_document(self):
+        """
+        An instructor should be able to create a document
+        for an existing classroom.
+
+        Second created document should not be the default one.
+        """
+        classroom = ClassroomFactory()
+        first_document = ClassroomDocumentFactory(
+            classroom=classroom,
+            is_default=True,
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test2.pdf",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ClassroomDocument.objects.count(), 2)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(classroom.id),
+                "filename": "test2.pdf",
+                "id": str(ClassroomDocument.objects.last().id),
                 "is_default": False,
                 "upload_state": "pending",
                 "uploaded_on": None,
                 "url": None,
             },
         )
+        first_document.refresh_from_db()
+        self.assertTrue(first_document.is_default)
 
     def test_api_classroom_document_initiate_upload_instructor(self):
         """
@@ -1392,3 +1435,38 @@ class ClassroomDocumentAPITest(TestCase):
                 "url": None,
             },
         )
+
+    def test_api_classroom_document_update_instructor_default(self):
+        """A document set to be the default one should set others to false"""
+        classroom = ClassroomFactory()
+        first_document = ClassroomDocumentFactory(
+            classroom=classroom,
+            is_default=True,
+        )
+        second_document = ClassroomDocumentFactory(classroom=classroom)
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+        data = {"is_default": True}
+
+        response = self.client.patch(
+            f"/api/classroomdocuments/{second_document.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(second_document.classroom.id),
+                "filename": second_document.filename,
+                "id": str(second_document.id),
+                "is_default": True,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
+        )
+        self.assertEqual(ClassroomDocument.objects.count(), 2)
+        self.assertEqual(ClassroomDocument.objects.filter(is_default=True).count(), 1)
+        first_document.refresh_from_db()
+        self.assertFalse(first_document.is_default)
