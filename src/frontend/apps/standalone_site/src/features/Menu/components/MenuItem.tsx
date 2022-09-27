@@ -1,34 +1,40 @@
-import { Box, Text } from 'grommet';
-import React, { Fragment, PropsWithChildren } from 'react';
+import { Text } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
+import React, { PropsWithChildren, Fragment } from 'react';
+import { NavLink } from 'react-router-dom';
+import styled from 'styled-components';
+
+import { Route } from 'routes';
+import { themeExtend } from 'styles/theme.extend';
+
+const NavLinkStyled = styled(NavLink)`
+  text-decoration: none;
+  color: ${normalizeColor('blue-active', themeExtend)};
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  padding: 6px 12px;
+  border-radius: 6px;
+  transition: background-color 0.2s ease-in-out;
+  &:active,
+  &.active {
+    background-color: ${normalizeColor('bg-menu-hover', themeExtend)};
+  }
+`;
 
 interface MenuItemProps {
-  icon: React.ReactNode;
-  routeLabel: string;
-  isActive?: boolean;
+  route: Route;
 }
 
-function MenuItem({
-  icon,
-  routeLabel,
-  isActive,
-  children,
-}: PropsWithChildren<MenuItemProps>) {
+function MenuItem({ route, children }: PropsWithChildren<MenuItemProps>) {
   return (
     <Fragment>
-      <Box
-        pad={{ horizontal: 'small', vertical: 'xsmall' }}
-        gap="small"
-        round="xsmall"
-        align="center"
-        role="menuitem"
-        direction="row"
-        background={isActive ? { color: 'bg-menu-hover' } : undefined}
-      >
-        {icon}
+      <NavLinkStyled exact to={route.path} role="menuitem">
+        {route.menuIcon}
         <Text size="0.938rem" weight="bold">
-          {routeLabel}
+          {route.label}
         </Text>
-      </Box>
+      </NavLinkStyled>
       <div>{children}</div>
     </Fragment>
   );

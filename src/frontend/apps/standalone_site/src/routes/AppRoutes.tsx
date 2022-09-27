@@ -16,7 +16,7 @@ const { Favorites } = lazyImport(
 );
 
 const RouteSpinner = () => (
-  <Box height="full" justify="center" align="center">
+  <Box height="full" justify="center" align="center" role="alert">
     <Spinner size="medium" />
   </Box>
 );
