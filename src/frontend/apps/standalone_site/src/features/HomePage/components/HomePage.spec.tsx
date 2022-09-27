@@ -5,6 +5,6 @@ import HomePage from './HomePage';
 describe('<HomePage />', () => {
   test('renders HomePage', () => {
     render(<HomePage />);
-    expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
+    expect(screen.getByText(/Accueil/i)).toBeInTheDocument();
   });
 });
