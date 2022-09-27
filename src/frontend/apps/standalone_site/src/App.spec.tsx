@@ -8,5 +8,5 @@ test('renders learn react link', () => {
     screen.getByRole(/menuitem/i, { name: /Favorites/i }),
   ).toBeInTheDocument();
   expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
-  expect(screen.getByText(/HomePage/i)).toBeInTheDocument();
+  expect(screen.getByText(/Accueil/i)).toBeInTheDocument();
 });
