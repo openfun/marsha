@@ -5,12 +5,8 @@ import React from 'react';
 import styled from 'styled-components';
 
 import logo from 'assets/img/marshaBlueLogo.png';
-import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 import { ReactComponent as BurgerIcon } from 'assets/svg/iko_burgersvg.svg';
-import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
-import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
-import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
-import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import { Route, routes } from 'routes';
 
 import MenuItem from './MenuItem';
 
@@ -21,65 +17,18 @@ const MenuBox = styled(Box)`
   z-index: 1;
 `;
 
-const routes = [
-  {
-    icon: <HomeIcon width={30} height={30} />,
-    label: 'Dashboard',
-    isActive: true,
-  },
-  {
-    icon: <StarIcon width={30} height={30} />,
-    label: 'Favorites',
-    isActive: false,
-  },
-  {
-    icon: <AvatarIcon width={30} height={30} />,
-    label: 'My Profile',
-    isActive: false,
-  },
-];
-
-const contents = [
-  {
-    icon: <VueListIcon width={30} height={30} />,
-    label: 'My playlists',
-    isActive: false,
-  },
-  {
-    icon: <VueListIcon width={30} height={30} />,
-    label: 'My Organizations',
-    isActive: false,
-  },
-  {
-    icon: <VueListIcon width={30} height={30} />,
-    label: 'My Contents',
-    isActive: false,
-    subContent: [
-      {
-        icon: <CheckListIcon width={30} height={30} />,
-        label: 'Vidéos',
-        isActive: false,
-      },
-      {
-        icon: <CheckListIcon width={30} height={30} />,
-        label: 'Lives',
-        isActive: false,
-      },
-      {
-        icon: <CheckListIcon width={30} height={30} />,
-        label: 'Classes virtuelles',
-        isActive: false,
-      },
-      {
-        icon: <CheckListIcon width={30} height={30} />,
-        label: 'Leçons',
-        isActive: false,
-      },
-    ],
-  },
-];
-
 function Menu() {
+  const topRoutes: Route[] = [
+    routes.HomePage,
+    routes.Favorites,
+    routes.MyProfile,
+  ];
+  const contents: Route[] = [
+    routes.MyPlaylist,
+    routes.MyOrganizations,
+    routes.MyContents,
+  ];
+
   return (
     <MenuBox
       role="menu"
@@ -98,13 +47,8 @@ function Menu() {
         />
       </Box>
       <Box role="group">
-        {routes.map((route) => (
-          <MenuItem
-            key={`menuItemRoute-${route.label}`}
-            icon={route.icon}
-            routeLabel={route.label}
-            isActive={route.isActive}
-          />
+        {topRoutes.map((route) => (
+          <MenuItem key={`menuItemRoute-${route.label}`} route={route} />
         ))}
       </Box>
       <Box
@@ -117,20 +61,13 @@ function Menu() {
           TYPES DE CONTENUS
         </Text>
         {contents.map((content) => (
-          <MenuItem
-            key={`menuItemContent-${content.label}`}
-            icon={content.icon}
-            routeLabel={content.label}
-            isActive={content.isActive}
-          >
-            {content.subContent && (
+          <MenuItem key={`menuItemContent-${content.label}`} route={content}>
+            {content.subRoutes && (
               <Box margin={{ left: '2.6rem' }}>
-                {content.subContent.map((subContent) => (
+                {content.subRoutes.map((subRoutes) => (
                   <MenuItem
-                    key={`menuItemSubContent-${subContent.label}`}
-                    icon={subContent.icon}
-                    routeLabel={subContent.label}
-                    isActive={subContent.isActive}
+                    key={`menuItemSubContent-${subRoutes.label}`}
+                    route={subRoutes}
                   />
                 ))}
               </Box>
