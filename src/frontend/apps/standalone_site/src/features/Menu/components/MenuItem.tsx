@@ -1,5 +1,5 @@
 import { Box, Text } from 'grommet';
-import React, { PropsWithChildren } from 'react';
+import React, { Fragment, PropsWithChildren } from 'react';
 
 interface MenuItemProps {
   icon: React.ReactNode;
@@ -14,7 +14,7 @@ function MenuItem({
   children,
 }: PropsWithChildren<MenuItemProps>) {
   return (
-    <>
+    <Fragment>
       <Box
         pad={{ horizontal: 'small', vertical: 'xsmall' }}
         gap="small"
@@ -30,7 +30,7 @@ function MenuItem({
         </Text>
       </Box>
       <div>{children}</div>
-    </>
+    </Fragment>
   );
 }
 
