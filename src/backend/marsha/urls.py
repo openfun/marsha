@@ -26,6 +26,7 @@ from marsha.core.api import (
     recording_slices_state,
     update_state,
 )
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 from marsha.core.views import (
     DocumentLTIView,
     DocumentView,
@@ -39,6 +40,10 @@ from marsha.core.views import (
 )
 from marsha.development.api import local_document_upload, local_video_upload
 
+
+LTI_SELECT_ROUTE_PATTERN = (
+    rf"lti/select/((?P<resource_kind>{'|'.join(get_lti_select_resources().keys())})/)?$"
+)
 
 router = DefaultRouter()
 router.register(models.Video.RESOURCE_NAME, VideoViewSet, basename="videos")
@@ -70,7 +75,11 @@ urlpatterns = [
     path("admin/", admin.site.urls),
     # LTI
     path("lti/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
-    path("lti/select/", LTISelectView.as_view(), name="select_lti_view"),
+    re_path(
+        LTI_SELECT_ROUTE_PATTERN,
+        LTISelectView.as_view(),
+        name="select_lti_view",
+    ),
     path("lti/respond/", LTIRespondView.as_view(), name="respond_lti_view"),
     path("lti/videos/<uuid:uuid>", VideoLTIView.as_view(), name="video_lti_view"),
     path(

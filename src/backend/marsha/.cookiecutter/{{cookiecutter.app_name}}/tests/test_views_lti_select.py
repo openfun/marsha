@@ -6,7 +6,11 @@ import re
 
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
+
+from ..factories import {{cookiecutter.model}}Factory
 
 
 # We don't enforce arguments documentation in tests
@@ -18,6 +22,10 @@ class SelectLTIViewTestCase(TestCase):
 
     maxDiff = None
 
+    def setUp(self):
+        super().setUp()
+        get_lti_select_resources.cache_clear()
+
     @override_settings({{cookiecutter.setting_name}}=True)
     def test_views_lti_select_{{cookiecutter.app_name}}_enabled(self):
         """Frontend context flag should be enabled when flag is enabled."""
@@ -26,9 +34,16 @@ class SelectLTIViewTestCase(TestCase):
             "content_item_return_url": "https://lti-consumer.site/lti",
             "context_id": "sent_lti_context_id",
         }
-        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters=lti_consumer_parameters,
+        )
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory(
+            playlist=playlist
         )
 
         response = self.client.post(
@@ -46,6 +61,10 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertTrue(context.get("flags").get("{{ cookiecutter.app_name }}"))
+        self.assertEqual(
+            context.get("{{cookiecutter.app_name}}s")[0].get("lti_url"),
+            f"http://testserver/lti/{{cookiecutter.model_url_part}}/{{{cookiecutter.model_lower}}.id}",
+        )
 
     @override_settings({{cookiecutter.setting_name}}=False)
     def test_views_lti_select_{{cookiecutter.app_name}}_disabled(self):
@@ -75,3 +94,4 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertFalse(context.get("flags").get("{{ cookiecutter.app_name }}"))
+        self.assertIsNone(context.get("{{cookiecutter.app_name}}s"))

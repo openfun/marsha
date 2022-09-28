@@ -17,6 +17,7 @@ from ..core.models import ADMINISTRATOR
 from ..core.permissions import ResourceIsAuthenticated
 from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
+from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .models import Classroom, ClassroomDocument
 from .permissions import IsClassroomPlaylistOrOrganizationAdmin
@@ -136,7 +137,7 @@ class ClassroomViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(self.request, "/lti/classrooms/")
+        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
 
         classrooms = serializers.ClassroomSelectLTISerializer(
             Classroom.objects.filter(playlist__id=request.resource.playlist_id),

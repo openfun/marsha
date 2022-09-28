@@ -112,3 +112,6 @@ LICENCES_CHOICES = (
     (CC0, _("Public Domain Dedication ")),
     (NO_CC, _("All rights reserved")),
 )
+
+LTI_DOCUMENT_ROUTE = "/lti/documents/"
+LTI_VIDEO_ROUTE = "/lti/videos/"

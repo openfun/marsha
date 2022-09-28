@@ -12,7 +12,6 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError as DjangoValidationError,
 )
-from django.db.models import Q
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
 from django.templatetags.static import static
@@ -36,8 +35,9 @@ from marsha.core.simple_jwt.tokens import (
     ResourceAccessToken,
     UserAccessToken,
 )
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
-from .defaults import BBB, DEPOSIT, ENDED, LIVE_RAW, MARKDOWN, SENTRY
+from .defaults import BBB, DEPOSIT, LIVE_RAW, MARKDOWN, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -46,13 +46,7 @@ from .lti.utils import (
 )
 from .models import Document, LiveSession, Playlist, Video
 from .models.account import LTIPassport
-from .serializers import (
-    DocumentSelectLTISerializer,
-    DocumentSerializer,
-    PlaylistLiteSerializer,
-    VideoSelectLTISerializer,
-    VideoSerializer,
-)
+from .serializers import DocumentSerializer, PlaylistLiteSerializer, VideoSerializer
 from .utils.url_utils import build_absolute_uri_behind_proxy
 
 
@@ -699,33 +693,49 @@ class LTISelectView(BaseResourceView):
             - videos: Videos list with their LTI URLs.
 
         """
+        targeted_resource = self.request.resolver_match.kwargs.get("resource_kind")
+        lti_select_resources_config = get_lti_select_resources()
+        lti_select_resources_kind = (
+            [targeted_resource]
+            if targeted_resource
+            else lti_select_resources_config.keys()
+        )
+
+        app_data = super()._get_app_data()
+
+        if targeted_resource:
+            app_data.update(
+                {
+                    "targeted_resource": targeted_resource,
+                }
+            )
+
         playlist, _ = Playlist.objects.get_or_create(
             lti_id=self.lti.context_id,
             consumer_site=self.lti.get_consumer_site(),
             defaults={"title": self.lti.context_title},
         )
 
-        documents = DocumentSelectLTISerializer(
-            get_selectable_resources(Document, self.lti),
-            many=True,
-            context={"request": self.request},
-        ).data
+        for resource_kind in lti_select_resources_kind:
+            resource_config = lti_select_resources_config[resource_kind]
+            resources = get_selectable_resources(resource_config["model"], self.lti)
+            if resource_config.get("extra_filter"):
+                resources = resource_config["extra_filter"](resources)
 
-        all_videos = get_selectable_resources(Video, self.lti)
+            serialized_data = resource_config["serializer"](
+                resources,
+                many=True,
+                context={"request": self.request},
+            ).data
 
-        videos = VideoSelectLTISerializer(
-            all_videos.filter(Q(live_type__isnull=True) | Q(live_state=ENDED)),
-            many=True,
-            context={"request": self.request},
-        ).data
-
-        webinars = VideoSelectLTISerializer(
-            all_videos.filter(live_type__isnull=False).exclude(live_state=ENDED),
-            many=True,
-            context={"request": self.request},
-        ).data
-
-        app_data = super()._get_app_data()
+            app_data.update(
+                {
+                    f"{resource_kind}s": serialized_data,
+                    f"new_{resource_kind}_url": build_absolute_uri_behind_proxy(
+                        self.request, resource_config["route"]
+                    ),
+                }
+            )
 
         lti_select_form_data = self.request.POST.copy()
         lti_select_form_data["lti_message_type"] = "ContentItemSelection"
@@ -738,12 +748,6 @@ class LTISelectView(BaseResourceView):
         if self.request.POST.get("title") != settings.LTI_CONFIG_TITLE:
             activity_title = self.request.POST.get("title")
 
-        new_document_url = build_absolute_uri_behind_proxy(
-            self.request, "/lti/documents/"
-        )
-
-        new_video_url = build_absolute_uri_behind_proxy(self.request, "/lti/videos/")
-
         app_data.update(
             {
                 "lti_select_form_action_url": reverse("respond_lti_view"),
@@ -752,11 +756,6 @@ class LTISelectView(BaseResourceView):
                     "activity_title": activity_title,
                     "activity_description": self.request.POST.get("text"),
                 },
-                "new_document_url": new_document_url,
-                "new_video_url": new_video_url,
-                "documents": documents,
-                "videos": videos,
-                "webinars": webinars,
                 "playlist": PlaylistLiteSerializer(playlist).data,
             }
         )
