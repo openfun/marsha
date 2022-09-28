@@ -6,16 +6,26 @@ import styled from 'styled-components';
 
 import { Route, routes } from 'routes';
 
+import { useMenu } from '../store/menuStore';
+
 import MenuItem from './MenuItem';
 
 const colorMenu = normalizeColor('blue-active', theme);
+const sizeMenu = '18.75rem';
 
-const MenuBox = styled(Box)`
+interface PropsExtended {
+  isMenuOpen: boolean;
+}
+
+const MenuBox = styled(Box)<PropsExtended>`
   box-shadow: 0px 0px 4px 0px rgba(104, 111, 122, 0.3);
   z-index: 1;
+  transition: margin-left 0.6s;
+  ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
 `;
 
 function Menu() {
+  const { isMenuOpen } = useMenu();
   const topRoutes: Route[] = [
     routes.HomePage,
     routes.Favorites,
@@ -30,13 +40,14 @@ function Menu() {
   return (
     <MenuBox
       role="menu"
-      width="18.75rem"
+      width={`${sizeMenu}`}
       pad={{
         vertical: '0.625rem',
         left: '0.825rem',
         right: '3.75rem',
         top: '6.75rem',
       }}
+      isMenuOpen={isMenuOpen}
     >
       <Box role="group">
         {topRoutes.map((route) => (
