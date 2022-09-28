@@ -15,6 +15,7 @@ from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
 from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
+from .defaults import LTI_ROUTE
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
 from .permissions import IsFileDepositoryPlaylistOrOrganizationAdmin
@@ -155,9 +156,7 @@ class FileDepositoryViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(
-            self.request, "/lti/filedepositories/"
-        )
+        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
 
         file_depositories = serializers.FileDepositorySelectLTISerializer(
             FileDepository.objects.filter(playlist__id=request.resource.playlist_id),

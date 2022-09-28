@@ -6,7 +6,10 @@ import re
 
 from django.test import TestCase, override_settings
 
+from marsha.bbb.factories import ClassroomFactory
+from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 
 # We don't enforce arguments documentation in tests
@@ -18,6 +21,10 @@ class SelectLTIViewTestCase(TestCase):
 
     maxDiff = None
 
+    def setUp(self):
+        super().setUp()
+        get_lti_select_resources.cache_clear()
+
     @override_settings(BBB_ENABLED=True)
     def test_views_lti_select_bbb_enabled(self):
         """Frontend context flag should be enabled when flag is enabled."""
@@ -26,10 +33,15 @@ class SelectLTIViewTestCase(TestCase):
             "content_item_return_url": "https://lti-consumer.site/lti",
             "context_id": "sent_lti_context_id",
         }
-        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters=lti_consumer_parameters,
         )
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        classroom = ClassroomFactory(playlist=playlist)
 
         response = self.client.post(
             "/lti/select/",
@@ -46,6 +58,10 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertTrue(context.get("flags").get("BBB"))
+        self.assertEqual(
+            context.get("classrooms")[0].get("lti_url"),
+            f"http://testserver/lti/classrooms/{classroom.id}",
+        )
 
     @override_settings(BBB_ENABLED=False)
     def test_views_lti_select_bbb_disabled(self):
@@ -75,3 +91,4 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertFalse(context.get("flags").get("BBB"))
+        self.assertIsNone(context.get("classrooms"))
