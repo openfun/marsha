@@ -5,8 +5,8 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-import { ReactComponent as BurgerIcon } from 'assets/svg/iko_burgersvg.svg';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
+import { Burger } from 'features/Menu';
 
 const colorMenu = normalizeColor('blue-active', theme);
 
@@ -48,11 +48,9 @@ function Header() {
         justify="between"
         margin={{ bottom: 'small' }}
         pad={{ right: 'medium' }}
-        gap="large"
+        gap="medium"
       >
-        <Box margin={{ top: 'small' }}>
-          <BurgerIcon width={30} height={30} aria-controls="menu" />
-        </Box>
+        <Burger width={60} height={60} aria-controls="menu" />
         <LogoIcon width={117} height={80} />
       </Box>
       <Box direction="row" align="center" gap="small" justify="end">
