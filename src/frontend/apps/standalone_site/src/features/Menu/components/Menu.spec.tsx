@@ -1,7 +1,8 @@
-import { render, screen } from '@testing-library/react';
-import React from 'react';
+import { render, screen, fireEvent } from '@testing-library/react';
+import React, { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import Burger from './Burger/Burger';
 import Menu from './Menu';
 
 describe('<Menu />', () => {
@@ -18,5 +19,22 @@ describe('<Menu />', () => {
     expect(
       screen.getByRole(/menuitem/i, { name: /Vidéos/i }),
     ).toBeInTheDocument();
+  });
+
+  test('test menu opening state', () => {
+    render(
+      <Fragment>
+        <Burger />
+        <Menu />
+      </Fragment>,
+      {
+        wrapper: BrowserRouter,
+      },
+    );
+
+    const menu = screen.getByRole('menu');
+    expect(menu).not.toHaveStyle('margin-left: -18.75rem;');
+    fireEvent.click(screen.getByRole(/button/i));
+    expect(menu).toHaveStyle('margin-left: -18.75rem;');
   });
 });
