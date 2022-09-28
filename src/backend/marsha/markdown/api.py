@@ -16,6 +16,7 @@ from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 from . import permissions as markdown_permissions, serializers
 from ..core.models import ADMINISTRATOR
 from ..core.utils.s3_utils import create_presigned_post
+from .defaults import LTI_ROUTE
 from .forms import MarkdownDocumentForm
 from .models import MarkdownDocument, MarkdownImage
 from .utils.converter import LatexConversionException, render_latex_to_image
@@ -129,9 +130,7 @@ class MarkdownDocumentViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(
-            self.request, "/lti/markdown-documents/"
-        )
+        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(
             MarkdownDocument.objects.filter(

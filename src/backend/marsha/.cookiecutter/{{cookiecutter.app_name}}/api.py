@@ -9,6 +9,7 @@ from marsha.core.api import APIViewMixin, ObjectPkMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import serializers
+from .defaults import LTI_ROUTE
 from .forms import {{cookiecutter.model}}Form
 from .models import {{cookiecutter.model}}
 
@@ -84,7 +85,7 @@ class {{cookiecutter.model}}ViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(self.request, "/lti/{{cookiecutter.model_url_part}}/")
+        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
 
         {{cookiecutter.model_plural_lower}} = serializers.{{cookiecutter.model}}SelectLTISerializer(
             {{cookiecutter.model}}.objects.filter(

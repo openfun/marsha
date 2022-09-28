@@ -94,7 +94,6 @@
         id="lti_select"
         method="post"
         target="lti_select"
-        action={% url "select_lti_view" %}
       >
         <div class="input-group">
           <label>lti_message_type</label>
@@ -110,6 +109,18 @@
             <option value="instructor"selected>Instructor</option>
             <option value="administrator">Administrator</option>
             <option value="student">Student</option>
+          </select>
+        </div>
+        <div class="input-group">
+          <label>resource</label>
+          <select id="lti_select_resource">
+            <option selected></option>
+            <option value="video">video</option>
+            <option value="webinar">webinar</option>
+            <option value="document">document</option>
+            <option value="classroom">classroom</option>
+            <option value="markdown">Markdown document</option>
+            <option value="deposit">File depository</option>
           </select>
         </div>
         <div class="input-group">
@@ -408,6 +419,20 @@
       }
       form.submit();
     };
+
+    document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('lti_select');
+      form.addEventListener('submit', function (event) {
+        event.preventDefault();
+        let action = '{% url "select_lti_view" %}';
+        const selectedResourceValue = form.querySelector('#lti_select_resource').value
+        if (selectedResourceValue) {
+          action = action + selectedResourceValue + '/'
+        }
+        form.action = action;
+        form.submit();
+      });
+    });
 
   </script>
   </body>

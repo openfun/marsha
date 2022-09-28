@@ -6,13 +6,21 @@ import re
 
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
+
+from ..factories import MarkdownDocumentFactory
 
 
 class SelectLTIViewTestCase(TestCase):
     """Test the select LTI view in the ``core`` app of the Marsha project."""
 
     maxDiff = None
+
+    def setUp(self):
+        super().setUp()
+        get_lti_select_resources.cache_clear()
 
     @override_settings(MARKDOWN_ENABLED=True)
     def test_views_lti_select_markdown_enabled(self):
@@ -22,10 +30,15 @@ class SelectLTIViewTestCase(TestCase):
             "content_item_return_url": "https://lti-consumer.site/lti",
             "context_id": "sent_lti_context_id",
         }
-        lti_parameters, _ = generate_passport_and_signed_lti_parameters(
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
             url="http://testserver/lti/select/",
             lti_parameters=lti_consumer_parameters,
         )
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        markdown_document = MarkdownDocumentFactory(playlist=playlist)
 
         response = self.client.post(
             "/lti/select/",
@@ -42,6 +55,10 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertTrue(context.get("flags").get("markdown"))
+        self.assertEqual(
+            context.get("markdowns")[0].get("lti_url"),
+            f"http://testserver/lti/markdown-documents/{markdown_document.id}",
+        )
 
     @override_settings(MARKDOWN_ENABLED=False)
     def test_views_lti_select_markdown_disabled(self):
@@ -71,3 +88,4 @@ class SelectLTIViewTestCase(TestCase):
         context = json.loads(unescape(match.group(1)))
 
         self.assertFalse(context.get("flags").get("markdown"))
+        self.assertIsNone(context.get("markdowns"))

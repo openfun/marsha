@@ -133,6 +133,100 @@ class SelectLTIViewTestCase(TestCase):
             context.get("lti_select_form_data").get("activity_description"),
             "Sent LMS activity text",
         )
+        self.assertIsNone(context.get("targeted_resource"))
+
+        form_data = context.get("lti_select_form_data")
+        initial_jwt_token = LTISelectFormAccessToken(form_data.get("jwt"))
+        lti_parameters.update({"lti_message_type": "ContentItemSelection"})
+        self.assertEqual(initial_jwt_token.get("lti_select_form_data"), lti_parameters)
+
+        jwt_token = ResourceAccessToken(context.get("jwt"))
+        self.assertEqual(
+            jwt_token.get("permissions"),
+            {"can_access_dashboard": False, "can_update": True},
+        )
+
+    def test_views_lti_select_video(self):
+        """
+        Validate the context passed to the frontend app for a LTI Content selection targeting
+        video resources."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/video/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        resolutions = [144]
+        playlist = PlaylistFactory(
+            lti_id=lti_parameters.get("context_id"),
+            consumer_site=passport.consumer_site,
+        )
+        video = VideoFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+            resolutions=resolutions,
+            position=1,
+        )
+        DocumentFactory(
+            playlist=playlist,
+            uploaded_on=timezone.now(),
+        )
+        VideoFactory(
+            playlist=playlist,
+            live_state=IDLE,
+            live_type=JITSI,
+            position=2,
+        )
+        vod_webinar = VideoFactory(
+            playlist=playlist,
+            live_state=ENDED,
+            live_type=JITSI,
+            position=3,
+        )
+
+        response = self.client.post(
+            "/lti/select/video/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+
+        self.assertEqual(
+            context.get("videos")[0].get("lti_url"),
+            f"http://testserver/lti/videos/{video.id}",
+        )
+        self.assertEqual(
+            context.get("videos")[1].get("lti_url"),
+            f"http://testserver/lti/videos/{vod_webinar.id}",
+        )
+        self.assertEqual(len(context.get("videos")), 2)
+
+        self.assertIsNone(context.get("documents"))
+        self.assertIsNone(context.get("webinars"))
+        self.assertIsNone(context.get("new_document_url"))
+        self.assertEqual(context.get("new_video_url"), "http://testserver/lti/videos/")
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_title"),
+            "Sent LMS activity title",
+        )
+        self.assertEqual(
+            context.get("lti_select_form_data").get("activity_description"),
+            "Sent LMS activity text",
+        )
+        self.assertEqual(context.get("targeted_resource"), "video")
 
         form_data = context.get("lti_select_form_data")
         initial_jwt_token = LTISelectFormAccessToken(form_data.get("jwt"))
