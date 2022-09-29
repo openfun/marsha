@@ -4,7 +4,7 @@ import json
 from logging import getLogger
 import os
 import re
-from urllib.parse import unquote
+from urllib.parse import unquote, urljoin
 import uuid
 
 from django.conf import settings
@@ -34,14 +34,30 @@ from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.exceptions import TokenError
 from waffle import mixins, switch_is_active
 
-from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, ResourceAccessToken
+from marsha.core.lti.user_association import get_user_from_lti
+from marsha.core.simple_jwt.tokens import (
+    LTISelectFormAccessToken,
+    LTIUserToken,
+    ResourceAccessToken,
+)
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
-from .defaults import BBB, CLASSROOM, DEPOSIT, LIVE_RAW, MARKDOWN, SENTRY
+from .defaults import (
+    APP_DATA_STATE_ERROR,
+    APP_DATA_STATE_PORTABILITY,
+    APP_DATA_STATE_SUCCESS,
+    BBB,
+    CLASSROOM,
+    DEPOSIT,
+    LIVE_RAW,
+    MARKDOWN,
+    SENTRY,
+)
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
     get_or_create_resource,
+    get_resource_closest_owners_and_playlist,
     get_selectable_resources,
 )
 from .models import Document, LiveSession, Playlist, PortabilityRequest, Video
@@ -224,7 +240,7 @@ class BaseResourceView(TemplateResponseMixin, MarshaViewMixin, View):
         """
         logger.warning(str(error))
         app_data = self._get_base_app_data()
-        app_data["state"] = "error"
+        app_data["state"] = APP_DATA_STATE_ERROR
         return app_data
 
     def _build_context_exception(self, error: BaseException):
@@ -322,7 +338,7 @@ class BaseModelResourceView(ABC, BaseResourceView):
         app_data.update(
             {
                 "modelName": self.model.RESOURCE_NAME,
-                "state": "success",
+                "state": APP_DATA_STATE_SUCCESS,
                 "player": settings.VIDEO_PLAYER,
                 "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
                 # front is expecting duration in milliseconds
@@ -413,7 +429,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
         dictionary
             Configuration data to bootstrap the frontend:
 
-            - state: state of the LTI launch request. Can be one of `success` or `error`.
+            - state: state of the LTI launch request. Can be one of `defaults.APP_DATA_STATE_*`.
             - modelName: the type of resource (video, document,...)
             - resource: representation of the targeted resource including urls for the resource
                 file (e.g. for a video: all resolutions, thumbnails and timed text tracks).
@@ -428,8 +444,61 @@ class BaseLTIView(BaseModelResourceView, ABC):
         session_id = str(uuid.uuid4())
 
         if app_data is None:
-            resource = self._get_resource()
             is_instructor_or_admin = self.lti.is_instructor or self.lti.is_admin
+
+            try:
+                resource = self._get_resource()
+            except ResourceException:
+                # Try to determine whether the resource is available for portability
+                if not is_instructor_or_admin:
+                    raise
+
+                resource_owners, playlist_id = get_resource_closest_owners_and_playlist(
+                    self.model, self.lti.resource_id
+                )
+                if not resource_owners:
+                    raise
+
+                # Currently, the playlist will already be created along with the first resource
+                # when the user "adds" a resource to the playlist/course on the LMS side.
+                # We keep the creation possibility here in case we want to change this behavior
+                # later (ie. do not create a resource each time a user wants to only copy/paste
+                # the RMS URL to an existing resource).
+                destination_playlist, _ = Playlist.objects.get_or_create(
+                    lti_id=self.lti.context_id,
+                    consumer_site=self.lti.get_consumer_site(),
+                    defaults={"title": self.lti.context_title},
+                )
+
+                app_data = self._get_base_app_data()
+                app_data["state"] = APP_DATA_STATE_PORTABILITY
+
+                portability_request_exists = PortabilityRequest.objects.filter(
+                    for_playlist=playlist_id,
+                    from_playlist=destination_playlist,
+                ).exists()
+
+                redirect_to = urljoin(
+                    settings.FRONTEND_HOME_URL,
+                    "/portability-requests/pending/",
+                )
+                if not get_user_from_lti(self.lti):
+                    lti_user_jwt = str(LTIUserToken.for_lti(self.lti))
+                    redirect_to = f"{redirect_to}?association_jwt={lti_user_jwt}"
+                app_data["portability"] = {
+                    "for_playlist_id": str(playlist_id),
+                    "redirect_to": redirect_to,
+                    "portability_request_exists": portability_request_exists,
+                }
+                app_data["jwt"] = str(
+                    ResourceAccessToken.for_lti_portability_request(
+                        lti=self.lti,
+                        session_id=session_id,
+                        playlist_id=str(destination_playlist.pk),
+                    )
+                )
+                return app_data
+
             permissions = {
                 "can_access_dashboard": is_instructor_or_admin,
                 "can_update": (
