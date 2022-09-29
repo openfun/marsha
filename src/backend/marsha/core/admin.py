@@ -20,6 +20,7 @@ from marsha.core.models import (
     Playlist,
     PlaylistAccess,
     PlaylistPortability,
+    PortabilityRequest,
     SignTrack,
     TimedTextTrack,
     User,
@@ -458,3 +459,41 @@ class LtiUserAssociationAdmin(admin.ModelAdmin):
         "created_on",
     )
     verbose_name = _("LTI user association")
+
+
+@admin.register(PortabilityRequest)
+class PortabilityRequestAdmin(admin.ModelAdmin):
+    """Admin class for the PortabilityRequest model."""
+
+    list_display = (
+        "id",
+        "for_playlist",
+        "from_playlist",
+        "from_lti_consumer_site",
+        "from_lti_user_id",
+        "from_user",
+        "state",
+    )
+    search_fields = (
+        "id",
+        "for_playlist",
+        "from_lti_consumer_site",
+        "from_lti_user_id",
+        "from_user",
+    )
+    list_filter = ("from_lti_consumer_site", "state")
+
+    fields = (
+        "for_playlist",
+        "for_resource_id",
+        "for_resource_model",
+        "from_playlist",
+        "from_lti_consumer_site",
+        "from_lti_user_id",
+        "from_user",
+        "state",
+        "updated_by_user",
+    )
+    readonly_fields = [
+        "id",
+    ]
