@@ -277,6 +277,66 @@ class ResourceAccessToken(AccessToken):
         return token
 
 
+class LTIUserToken(AccessToken):
+    """
+    JWT dedicated to authenticate an LTI user.
+    This token use does not pass through the authentication middleware because its use is
+    limited to below cases:
+     - Authenticate a portability request creation
+     - Provide this JWT to the frontend to create an LTI/marsha site association
+
+    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
+    setting).
+    """
+
+    token_type = "lti_user_access"  # nosec
+
+    def verify(self):
+        """Performs additional validation steps to test payload content."""
+        super().verify()
+
+        if not all(
+            self.payload.get(key)
+            for key in (
+                "lti_consumer_site_id",
+                "lti_user_id",
+            )
+        ):
+            raise TokenError(_("Malformed LTI user token"))
+
+    @classmethod
+    def for_lti(cls, lti):
+        """
+        Generates token from lti context.
+
+        Parameters
+        ----------
+        lti: Type[LTI]
+            LTI request.
+
+        Returns
+        -------
+        LTIUserToken
+            JWT containing:
+            - lti_consumer_site
+            - lti_user_id
+
+        Raises
+        ------
+        TokenError
+            If JWT cannot be properly created.
+        """
+        token = cls()
+
+        token.payload.update(
+            {
+                "lti_consumer_site_id": str(lti.get_consumer_site().id),
+                "lti_user_id": str(lti.user_id),
+            }
+        )
+        return token
+
+
 class UserAccessToken(AccessToken):
     """
     User access JWT.
