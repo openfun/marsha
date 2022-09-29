@@ -3,7 +3,13 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 
 from ..defaults import PENDING
-from ..models import Playlist
+from ..models import (
+    ADMINISTRATOR,
+    ConsumerSiteAccess,
+    OrganizationAccess,
+    Playlist,
+    PlaylistAccess,
+)
 
 
 class PortabilityError(Exception):
@@ -146,3 +152,56 @@ def get_or_create_resource(model, lti):
 
     # Create resource
     return model.objects.create(**default_attributes)
+
+
+def get_resource_closest_owners_and_playlist(model, resource_id):
+    """
+    Determines the most likely owner of the playlist resource to answer to a portability request.
+
+    Parameters
+    ----------
+    model:
+        The model we want to request portability to.
+
+    resource_id: str
+        The id of the resource we want to request portability to.
+
+    Returns
+    -------
+    tuple(list[str], str), the list of owners PK and the playlist ID.
+    """
+    try:
+        playlist_id, playlist_owner = model.objects.filter(pk=resource_id).values_list(
+            "playlist_id",
+            "playlist__created_by_id",
+        )[0]
+        if playlist_owner:
+            return [playlist_owner], playlist_id
+    except IndexError:
+        return [], None
+
+    playlist_admins = PlaylistAccess.objects.filter(
+        playlist_id=playlist_id,
+        role__in=[ADMINISTRATOR],
+    ).values_list("user_id", flat=True)
+    if playlist_admins:
+        return playlist_admins, playlist_id
+
+    organization_admins = OrganizationAccess.objects.filter(
+        organization__playlists__id=playlist_id,
+        role__in=[ADMINISTRATOR],
+    ).values_list("user_id", flat=True)
+    if organization_admins:
+        return organization_admins, playlist_id
+
+    consumer_site_admins = ConsumerSiteAccess.objects.filter(
+        consumer_site__playlists__id=playlist_id,
+        role__in=[ADMINISTRATOR],
+    ).values_list("user_id", flat=True)
+    if consumer_site_admins:
+        return consumer_site_admins, playlist_id
+
+    # We don't go through:
+    # `playlist__organization__consumer_sites__users`
+    # nor `playlist__consumer_site__organizations__users`
+    return [], playlist_id
