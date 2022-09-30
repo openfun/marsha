@@ -123,6 +123,7 @@ class Classroom(BaseModel):
         """Options for the ``Classroom`` model."""
 
         db_table = "classroom"
+        ordering = ["-created_on", "id"]
         verbose_name = _("classroom")
         verbose_name_plural = _("classrooms")
         constraints = [
