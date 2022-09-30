@@ -1,33 +1,59 @@
 import React, { lazy, Suspense } from 'react';
-import { MemoryRouter, Redirect, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 import { Loader } from 'lib-components';
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { flags } from 'types/AppData';
+
+import {
+  ErrorComponentsProps,
+  FullScreenError,
+} from 'components/ErrorComponents';
+import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UploadManager } from 'components/UploadManager';
 
-const MarkdownNotFoundView = lazy(() => import('./MarkdownNotFoundView'));
-const MarkdownView = lazy(() => import('./MarkdownView'));
+import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
+import { MARKDOWN_NOT_FOUND_ROUTE } from './MarkdownNotFoundView/route';
+import { MARKDOWN_VIEWER_ROUTE } from './MarkdownViewer/route';
+import { RedirectOnLoad } from './RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
-const notFoundPath = '/errors/not-found';
+const MarkdownNotFoundView = lazy(() => import('./MarkdownNotFoundView'));
+const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
+const MarkdownViewer = lazy(() => import('./MarkdownViewer'));
 
 const Routes = () => {
-  const isFeatureEnabled = useIsFeatureEnabled();
-
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
         <UploadManager>
-          {isFeatureEnabled(flags.MARKDOWN) ? (
-            <Route path="/" render={() => <MarkdownView />} />
-          ) : (
-            <Redirect push to={notFoundPath} />
-          )}
           <Route
             exact
-            path={notFoundPath}
+            path={MARKDOWN_EDITOR_ROUTE()}
+            render={() => <MarkdownEditor />}
+          />
+
+          <Route
+            exact
+            path={MARKDOWN_VIEWER_ROUTE()}
+            render={() => <MarkdownViewer />}
+          />
+
+          <Route
+            exact
+            path={MARKDOWN_NOT_FOUND_ROUTE()}
             render={() => <MarkdownNotFoundView />}
           />
+
+          <Route
+            exact
+            path={FULL_SCREEN_ERROR_ROUTE()}
+            render={({ match }) => (
+              <FullScreenError
+                code={match.params.code as ErrorComponentsProps['code']}
+              />
+            )}
+          />
+
+          <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
         </UploadManager>
       </MemoryRouter>
     </Suspense>
