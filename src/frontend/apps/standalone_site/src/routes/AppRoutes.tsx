@@ -23,8 +23,7 @@ const RouteSpinner = () => (
 
 function AppRoutes() {
   return (
-    <MainLayout menu={<Menu />}>
-      <Header />
+    <MainLayout header={<Header />} menu={<Menu />}>
       <Switch>
         <Route path={routes.HomePage.path} exact>
           <Suspense fallback={<RouteSpinner />}>

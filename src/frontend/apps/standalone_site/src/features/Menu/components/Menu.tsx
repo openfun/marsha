@@ -1,11 +1,9 @@
-import { Box, Image, Text } from 'grommet';
+import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
 import styled from 'styled-components';
 
-import logo from 'assets/img/marshaBlueLogo.png';
-import { ReactComponent as BurgerIcon } from 'assets/svg/iko_burgersvg.svg';
 import { Route, routes } from 'routes';
 
 import MenuItem from './MenuItem';
@@ -33,19 +31,13 @@ function Menu() {
     <MenuBox
       role="menu"
       width="18.75rem"
-      pad={{ vertical: '0.625rem', left: '0.825rem', right: '3.75rem' }}
+      pad={{
+        vertical: '0.625rem',
+        left: '0.825rem',
+        right: '3.75rem',
+        top: '6.75rem',
+      }}
     >
-      <Box direction="row" justify="between" margin={{ bottom: 'small' }}>
-        <Box margin={{ top: 'small', left: '1rem' }}>
-          <BurgerIcon width={30} height={30} aria-controls="menu" />
-        </Box>
-        <Image
-          margin={{ right: 'medium' }}
-          src={logo}
-          width={117}
-          alt="Marsha Blue Logo"
-        />
-      </Box>
       <Box role="group">
         {topRoutes.map((route) => (
           <MenuItem key={`menuItemRoute-${route.label}`} route={route} />

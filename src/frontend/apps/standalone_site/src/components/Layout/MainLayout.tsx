@@ -8,16 +8,19 @@ const colorMenu = normalizeColor('blue-active', theme);
 
 const MainLayoutBox = styled(Box)`
   color: ${colorMenu};
+  min-height: 100vh;
 `;
 
 interface MainLayoutProps {
   children: React.ReactNode;
+  header: React.ReactNode;
   menu: React.ReactNode;
 }
 
-function MainLayout({ children, menu }: MainLayoutProps) {
+function MainLayout({ children, header, menu }: MainLayoutProps) {
   return (
-    <MainLayoutBox direction="row" height={{ min: '100vh' }}>
+    <MainLayoutBox direction="row">
+      {header}
       {menu}
       <Box
         flex
