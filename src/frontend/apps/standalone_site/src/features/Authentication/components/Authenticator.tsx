@@ -67,5 +67,5 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     return <Loader />;
   }
 
-  return <>{children}</>;
+  return <Fragment>{children}</Fragment>;
 };
