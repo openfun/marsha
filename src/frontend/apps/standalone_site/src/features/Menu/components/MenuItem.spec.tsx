@@ -2,9 +2,10 @@ import { screen } from '@testing-library/react';
 import { Grommet } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { render } from 'lib-tests';
-
 import React from 'react';
-import { themeExtend } from 'style/theme.extend';
+
+import { themeExtend } from 'styles/theme.extend';
+
 import MenuItem from './MenuItem';
 
 describe('<MenuItem />', () => {

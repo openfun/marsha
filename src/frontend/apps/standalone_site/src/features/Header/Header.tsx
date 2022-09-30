@@ -1,6 +1,7 @@
-import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 import { Box, Text } from 'grommet';
 import React from 'react';
+
+import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 
 function Header() {
   return (

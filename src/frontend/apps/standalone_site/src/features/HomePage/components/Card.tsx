@@ -1,5 +1,3 @@
-import { ReactComponent as BarreCodeIcon } from 'assets/svg/iko_boot_code_barresvg.svg';
-import { ReactComponent as UniversityIcon } from 'assets/svg/iko_boot_universitesvg.svg';
 import {
   Image,
   Box,
@@ -11,6 +9,9 @@ import {
 } from 'grommet';
 import React from 'react';
 import styled from 'styled-components';
+
+import { ReactComponent as BarreCodeIcon } from 'assets/svg/iko_boot_code_barresvg.svg';
+import { ReactComponent as UniversityIcon } from 'assets/svg/iko_boot_universitesvg.svg';
 
 const CardLayout = styled(GrommetCard)`
   box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.2);

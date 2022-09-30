@@ -1,8 +1,9 @@
+import React from 'react';
+
 import { MainLayout } from 'components/Layout';
 import { Header } from 'features/Header';
 import { HomePage } from 'features/HomePage';
 import { Menu } from 'features/Menu';
-import React from 'react';
 
 function AppRoutes() {
   return (

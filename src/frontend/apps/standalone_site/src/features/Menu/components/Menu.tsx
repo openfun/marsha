@@ -1,3 +1,9 @@
+import { Box, Image, Text } from 'grommet';
+import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
+import React from 'react';
+import styled from 'styled-components';
+
 import logo from 'assets/img/marshaBlueLogo.png';
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 import { ReactComponent as BurgerIcon } from 'assets/svg/iko_burgersvg.svg';
@@ -5,11 +11,7 @@ import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
-import { Box, Image, Text } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import React from 'react';
-import styled from 'styled-components';
+
 import MenuItem from './MenuItem';
 
 const colorMenu = normalizeColor('blue-active', theme);
