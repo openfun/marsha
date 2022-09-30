@@ -1,8 +1,9 @@
-import { Authenticator } from 'features/Authentication';
 import { Grommet, Main, Page } from 'grommet';
 import { BrowserRouter } from 'react-router-dom';
+
+import { Authenticator } from 'features/Authentication';
 import { AppRoutes } from 'routes';
-import { themeExtend } from 'style/theme.extend';
+import { themeExtend } from 'styles/theme.extend';
 
 import './App.css';
 

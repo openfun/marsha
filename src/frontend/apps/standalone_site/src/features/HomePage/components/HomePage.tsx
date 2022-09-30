@@ -1,10 +1,12 @@
+import { Image, Box, Text } from 'grommet';
+import React from 'react';
+import styled from 'styled-components';
+
 import card1 from 'assets/img/card-1.png';
 import card2 from 'assets/img/card-2.png';
 import card3 from 'assets/img/card-3.png';
 import banner from 'assets/img/homepage-banner.png';
-import { Image, Box, Text } from 'grommet';
-import React from 'react';
-import styled from 'styled-components';
+
 import Card from './Card';
 
 const HomePageBox = styled(Box)`
