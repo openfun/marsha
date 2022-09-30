@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.utils import timezone
 
+import django_filters
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -12,11 +13,23 @@ from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
+from ..core.models import ADMINISTRATOR
 from ..core.permissions import ResourceIsAuthenticated
 from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .forms import ClassroomForm
 from .models import Classroom, ClassroomDocument
+from .permissions import IsClassroomOrganizationAdmin
+
+
+class ClassroomFilter(django_filters.FilterSet):
+    """Filter for Classroom."""
+
+    organization = django_filters.UUIDFilter(field_name="playlist__organization__id")
+
+    class Meta:
+        model = Classroom
+        fields = ["playlist"]
 
 
 class ClassroomViewSet(
@@ -52,6 +65,8 @@ class ClassroomViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [ResourceIsAuthenticated]
+        elif self.action in ["list"]:
+            permission_classes = [core_permissions.UserIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
@@ -67,6 +82,25 @@ class ClassroomViewSet(
         serializer = self.get_serializer(classroom)
 
         return Response(serializer.data, status=201)
+
+    def list(self, request, *args, **kwargs):
+        """List classrooms belonging to user organizations."""
+        queryset = self.get_queryset().filter(
+            playlist__organization__users__id=request.user.id,
+            playlist__organization__user_accesses__role=ADMINISTRATOR,
+        )
+        filter_set = ClassroomFilter(request.query_params, queryset=queryset)
+        page = self.paginate_queryset(
+            self.filter_queryset(
+                filter_set.qs.order_by(
+                    "-created_on",
+                    "-playlist__created_on",
+                    "-playlist__organization__created_on",
+                )
+            )
+        )
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],
@@ -111,7 +145,9 @@ class ClassroomViewSet(
         detail=True,
         url_path="classroomdocuments",
         permission_classes=[
-            core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+            core_permissions.IsTokenInstructor
+            | core_permissions.IsTokenAdmin
+            | IsClassroomOrganizationAdmin
         ],
     )
     # pylint: disable=unused-argument

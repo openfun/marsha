@@ -15,9 +15,17 @@ from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.utils import reload_urlconf
 
+from ...core.factories import (
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistFactory,
+    UserFactory,
+)
+from ...core.models import ADMINISTRATOR
 from ..factories import ClassroomDocumentFactory, ClassroomFactory
 from ..models import Classroom, ClassroomDocument
 from ..utils.bbb_utils import ApiMeetingException
@@ -157,6 +165,257 @@ class ClassroomAPITest(TestCase):
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_fetch_list_user_access_token(self, mock_get_meeting_infos):
+        """A user with UserAccessToken should be able to fetch a classroom list."""
+        user = UserFactory()
+        organization_1 = OrganizationFactory()
+        organization_2 = OrganizationFactory()
+        OrganizationAccessFactory(
+            organization=organization_1, user=user, role=ADMINISTRATOR
+        )
+        OrganizationAccessFactory(organization=organization_2, user=user)
+        playlist_1_a = PlaylistFactory(organization=organization_1)
+        playlist_1_b = PlaylistFactory(organization=organization_1)
+        playlist_2_a = PlaylistFactory(organization=organization_2)
+        playlist_2_b = PlaylistFactory(organization=organization_2)
+        ClassroomFactory.create_batch(3, playlist=playlist_1_a)
+        classrooms_1_b = ClassroomFactory.create_batch(3, playlist=playlist_1_b)
+        ClassroomFactory.create_batch(3, playlist=playlist_2_a)
+        ClassroomFactory.create_batch(3, playlist=playlist_2_b)
+        ClassroomFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/classrooms/?limit=2", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 6,
+                "next": "http://testserver/api/classrooms/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "description": classrooms_1_b[2].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_1_b[2].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_1_b[2].lti_id),
+                        "meeting_id": str(classrooms_1_b[2].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_1_b[2].title,
+                        "welcome_text": classrooms_1_b[2].welcome_text,
+                    },
+                    {
+                        "description": classrooms_1_b[1].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_1_b[1].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_1_b[1].lti_id),
+                        "meeting_id": str(classrooms_1_b[1].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_1_b[1].title,
+                        "welcome_text": classrooms_1_b[1].welcome_text,
+                    },
+                ],
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_fetch_list_user_access_token_filter_organization(
+        self, mock_get_meeting_infos
+    ):
+        """A user with UserAccessToken should be able to filter classroom list by organization."""
+        user = UserFactory()
+        organization_1 = OrganizationFactory()
+        organization_2 = OrganizationFactory()
+        OrganizationAccessFactory(
+            organization=organization_1, user=user, role=ADMINISTRATOR
+        )
+        OrganizationAccessFactory(
+            organization=organization_2, user=user, role=ADMINISTRATOR
+        )
+        playlist_1_a = PlaylistFactory(organization=organization_1)
+        playlist_1_b = PlaylistFactory(organization=organization_1)
+        playlist_2_a = PlaylistFactory(organization=organization_2)
+        playlist_2_b = PlaylistFactory(organization=organization_2)
+        ClassroomFactory.create_batch(3, playlist=playlist_1_a)
+        ClassroomFactory.create_batch(3, playlist=playlist_1_b)
+        ClassroomFactory.create_batch(3, playlist=playlist_2_a)
+        classrooms_2_b = ClassroomFactory.create_batch(3, playlist=playlist_2_b)
+        ClassroomFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/classrooms/?limit=2&organization={organization_2.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 6,
+                "next": (
+                    "http://testserver/api/classrooms/"
+                    f"?limit=2&offset=2&organization={organization_2.id}"
+                ),
+                "previous": None,
+                "results": [
+                    {
+                        "description": classrooms_2_b[2].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_2_b[2].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_2_b[2].lti_id),
+                        "meeting_id": str(classrooms_2_b[2].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": playlist_2_b.lti_id,
+                            "title": playlist_2_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_2_b[2].title,
+                        "welcome_text": classrooms_2_b[2].welcome_text,
+                    },
+                    {
+                        "description": classrooms_2_b[1].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_2_b[1].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_2_b[1].lti_id),
+                        "meeting_id": str(classrooms_2_b[1].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": playlist_2_b.lti_id,
+                            "title": playlist_2_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_2_b[1].title,
+                        "welcome_text": classrooms_2_b[1].welcome_text,
+                    },
+                ],
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_fetch_list_user_access_token_filter_playlist(
+        self, mock_get_meeting_infos
+    ):
+        """A user with UserAccessToken should be able to filter classroom list by playlist."""
+        user = UserFactory()
+        organization_1 = OrganizationFactory()
+        organization_2 = OrganizationFactory()
+        OrganizationAccessFactory(
+            organization=organization_1, user=user, role=ADMINISTRATOR
+        )
+        OrganizationAccessFactory(
+            organization=organization_2, user=user, role=ADMINISTRATOR
+        )
+        playlist_1_a = PlaylistFactory(organization=organization_1)
+        playlist_1_b = PlaylistFactory(organization=organization_1)
+        playlist_2_a = PlaylistFactory(organization=organization_2)
+        playlist_2_b = PlaylistFactory(organization=organization_2)
+        ClassroomFactory.create_batch(3, playlist=playlist_1_a)
+        classrooms_1_b = ClassroomFactory.create_batch(3, playlist=playlist_1_b)
+        ClassroomFactory.create_batch(3, playlist=playlist_2_a)
+        ClassroomFactory.create_batch(3, playlist=playlist_2_b)
+        ClassroomFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/classrooms/?limit=2&playlist={playlist_1_b.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": (
+                    "http://testserver/api/classrooms/"
+                    f"?limit=2&offset=2&playlist={playlist_1_b.id}"
+                ),
+                "previous": None,
+                "results": [
+                    {
+                        "description": classrooms_1_b[2].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_1_b[2].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_1_b[2].lti_id),
+                        "meeting_id": str(classrooms_1_b[2].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_1_b[2].title,
+                        "welcome_text": classrooms_1_b[2].welcome_text,
+                    },
+                    {
+                        "description": classrooms_1_b[1].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms_1_b[1].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms_1_b[1].lti_id),
+                        "meeting_id": str(classrooms_1_b[1].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms_1_b[1].title,
+                        "welcome_text": classrooms_1_b[1].welcome_text,
+                    },
+                ],
+            },
+        )
 
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_classroom_fetch_instructor(self, mock_get_meeting_infos):
@@ -815,6 +1074,56 @@ class ClassroomAPITest(TestCase):
                             f"?response-content-disposition"
                             f"=attachment%3B+filename%3D{classroom_documents[0].filename}"
                         ),
+                    },
+                ],
+            },
+        )
+
+    def test_api_list_classroom_documents_user_access_token(self):
+        """A user with UserAccessToken should be able to fetch list of classroom documents."""
+        organization = OrganizationFactory()
+        user = UserFactory()
+        OrganizationAccessFactory(
+            organization=organization, user=user, role=ADMINISTRATOR
+        )
+        playlist = PlaylistFactory(organization=organization)
+        classroom = ClassroomFactory(playlist=playlist)
+        classroom_documents = ClassroomDocumentFactory.create_batch(
+            3, classroom=classroom
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/classrooms/{classroom.id}"
+                "/classroomdocuments/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[2].filename,
+                        "id": str(classroom_documents[2].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[1].filename,
+                        "id": str(classroom_documents[1].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
                     },
                 ],
             },
