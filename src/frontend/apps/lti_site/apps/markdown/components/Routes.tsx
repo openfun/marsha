@@ -7,7 +7,11 @@ import {
   FullScreenError,
   FULL_SCREEN_ERROR_ROUTE,
   UploadManager,
+  useAppConfig,
 } from 'lib-components';
+
+import { PortabilityRequest } from 'components/PortabilityRequest';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
 import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
 import { MARKDOWN_NOT_FOUND_ROUTE } from './MarkdownNotFoundView/route';
@@ -20,6 +24,8 @@ const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
 const MarkdownViewer = lazy(() => import('./MarkdownViewer'));
 
 const Routes = () => {
+  const appData = useAppConfig();
+
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
@@ -40,6 +46,14 @@ const Routes = () => {
             exact
             path={MARKDOWN_NOT_FOUND_ROUTE()}
             render={() => <MarkdownNotFoundView />}
+          />
+
+          <Route
+            exact
+            path={RESOURCE_PORTABILITY_REQUEST_ROUTE()}
+            render={() => (
+              <PortabilityRequest portability={appData.portability!} />
+            )}
           />
 
           <Route

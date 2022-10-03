@@ -10,6 +10,7 @@ import {
   flags,
 } from 'lib-components';
 
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 import { MARKDOWN_NOT_FOUND_ROUTE } from '../MarkdownNotFoundView/route';
@@ -29,6 +30,10 @@ export const RedirectOnLoad = () => {
 
   if (!isFeatureEnabled(flags.MARKDOWN)) {
     return <Redirect push to={MARKDOWN_NOT_FOUND_ROUTE()} />;
+  }
+
+  if (appData.state === appState.PORTABILITY) {
+    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
   }
 
   // Deal with missing JWT (the resource may be not available yet)
