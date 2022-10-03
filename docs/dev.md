@@ -420,7 +420,7 @@ flag [ASSIGNMENTS]:
 
 Don't forget to configure assignments in core:
 
-src/frontend/types/AppData.ts
+src/frontend/apps/lti_site/types/AppData.ts
     export enum appNames {
       […]
 +     ASSIGNMENTS = 'assignments',
@@ -433,7 +433,7 @@ src/frontend/types/AppData.ts
       […]
     }
 
-src/frontend/data/appConfigs.ts
+src/frontend/apps/lti_site/data/appConfigs.ts
     export const appConfigs: { [key in appNames]?: { flag?: flags } } = {
       […]
 +     [appNames.ASSIGNMENTS]: { flag: flags.ASSIGNMENTS },
@@ -445,7 +445,7 @@ src/frontend/data/appConfigs.ts
 The generated app will be available in the `src/frontend/apps` directory. 
 
 ```
-src/frontend/apps/assignments/
+src/frontend/apps/lti_site/apps/assignments/
 ├── DashboardSubmission
 │   ├── index.spec.tsx
 │   └── index.tsx
