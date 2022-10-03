@@ -1,5 +1,5 @@
 import React, { lazy, Suspense } from 'react';
-import { MemoryRouter, Redirect, Route } from 'react-router-dom';
+import { MemoryRouter, Route } from 'react-router-dom';
 
 import {
   ErrorComponentsProps,
@@ -7,21 +7,19 @@ import {
 } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { Loader } from 'lib-components';
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { flags } from 'types/AppData';
+
+import { DASHBOARD_ROUTE } from './Dashboard/route';
+import { RedirectOnLoad } from './RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 
 const Routes = () => {
-  const isFeatureEnabled = useIsFeatureEnabled();
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
-        {isFeatureEnabled(flags.DEPOSIT) ? (
-          <Route path="/" render={() => <Dashboard />} />
-        ) : (
-          <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />
-        )}
+        <Route exact path={DASHBOARD_ROUTE()} render={() => <Dashboard />} />
+
         <Route
           exact
           path={FULL_SCREEN_ERROR_ROUTE()}
@@ -31,6 +29,8 @@ const Routes = () => {
             />
           )}
         />
+
+        <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
       </MemoryRouter>
     </Suspense>
   );
