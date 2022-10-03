@@ -10,11 +10,11 @@ from django.test import TestCase, override_settings
 
 import responses
 
+from marsha.bbb.factories import ClassroomFactory
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
 from marsha.core.lti import LTI
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-
-from ..factories import ClassroomFactory
+from marsha.core.tests.utils import reload_urlconf
 
 
 # We don't enforce arguments classroomation in tests
@@ -28,6 +28,13 @@ class ClassroomLTIViewTestCase(TestCase):
     """Test case for the classroom LTI view."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use BBB_ENABLED
+        reload_urlconf()
 
     @responses.activate
     @mock.patch.object(LTI, "verify")
@@ -356,6 +363,13 @@ class MeetingLTIViewTestCase(TestCase):
     """Test case for the legacy classroom (meeting) LTI view."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use BBB_ENABLED
+        reload_urlconf()
 
     @responses.activate
     @mock.patch.object(LTI, "verify")
