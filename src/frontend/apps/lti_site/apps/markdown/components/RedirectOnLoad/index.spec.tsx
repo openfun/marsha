@@ -10,6 +10,7 @@ import {
   appState,
 } from 'lib-components';
 
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
@@ -159,5 +160,28 @@ describe('<RedirectOnLoad />', () => {
     });
 
     screen.getByText('Markdown not found');
+  });
+
+  it('redirects to portability if app state requires it', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      flags: { markdown: true },
+      state: appState.PORTABILITY,
+    } as any);
+    useJwt.setState({
+      jwt: undefined,
+    });
+
+    const { getByText } = render(<RedirectOnLoad />, {
+      routerOptions: {
+        routes: [
+          {
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
+            render: () => <span>Portability request</span>,
+          },
+        ],
+      },
+    });
+
+    getByText('Portability request');
   });
 });
