@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
+- Allow LTI users to request for a playlist portability
 
 ### Changed
 

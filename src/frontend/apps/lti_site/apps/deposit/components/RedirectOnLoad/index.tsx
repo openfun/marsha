@@ -7,6 +7,8 @@ import {
   appState,
   flags,
 } from 'lib-components';
+
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -24,6 +26,10 @@ export const RedirectOnLoad = () => {
 
   if (!isFeatureEnabled(flags.DEPOSIT)) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+  }
+
+  if (appData.state === appState.PORTABILITY) {
+    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
   }
 
   return <Redirect push to={DASHBOARD_ROUTE()} />;

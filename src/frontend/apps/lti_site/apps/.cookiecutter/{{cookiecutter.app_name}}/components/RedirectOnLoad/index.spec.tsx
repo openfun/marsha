@@ -3,6 +3,8 @@ import React from 'react';
 import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
+
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
@@ -81,5 +83,25 @@ describe('<RedirectOnLoad />', () => {
     });
 
     getByText('Dashboard');
+  });
+
+  it('redirects to portability if app state requires it', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      flags: { {{ cookiecutter.app_name }}: true },
+      state: appState.PORTABILITY,
+    } as any);
+
+    const { getByText } = render(<RedirectOnLoad />, {
+      routerOptions: {
+        routes: [
+          {
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
+            render: () => <span>Portability request</span>,
+          },
+        ],
+      },
+    });
+
+    getByText('Portability request');
   });
 });

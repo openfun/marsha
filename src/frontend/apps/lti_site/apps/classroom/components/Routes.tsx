@@ -5,9 +5,13 @@ import {
   FullScreenError,
   FULL_SCREEN_ERROR_ROUTE,
   Loader,
+  useAppConfig,
 } from 'lib-components';
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import { lazyImport } from 'lib-common';
+
+import { PortabilityRequest } from 'components/PortabilityRequest';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
@@ -22,6 +26,8 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
 );
 
 const Routes = () => {
+  const appData = useAppConfig();
+
   return (
     <Wrappers>
       <Suspense fallback={<Loader />}>
@@ -43,6 +49,14 @@ const Routes = () => {
               <FullScreenError
                 code={match.params.code as ErrorComponentsProps['code']}
               />
+            )}
+          />
+
+          <Route
+            exact
+            path={RESOURCE_PORTABILITY_REQUEST_ROUTE()}
+            render={() => (
+              <PortabilityRequest portability={appData.portability!} />
             )}
           />
 
