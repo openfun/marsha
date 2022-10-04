@@ -10,7 +10,7 @@
     "build": "rollup -c",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
-    "test": "TZ=UTC jest --passWithNoTests",
+    "test": "cross-env TZ=UTC jest --passWithNoTests",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
   },
   "peerDependencies": {
@@ -65,6 +65,7 @@
     "babel-loader": "8.2.5",
     "babel-plugin-react-intl": "8.2.25",
     "babel-preset-react": "7.0.0-beta.3",
+    "cross-env": "7.0.3",
     "css-loader": "6.7.1",
     "eslint": "8.24.0",
     "eslint-config-prettier": "8.5.0",
