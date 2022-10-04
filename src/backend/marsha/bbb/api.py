@@ -69,6 +69,18 @@ class ClassroomViewSet(
                 | IsClassroomOrganizationAdmin
                 | IsClassroomPlaylistAdmin
             ]
+        elif self.action in ["update", "partial_update"]:
+            permission_classes = [
+                (
+                    core_permissions.IsTokenResourceRouteObject
+                    & (
+                        core_permissions.IsTokenInstructor
+                        | core_permissions.IsTokenAdmin
+                    )
+                )
+                | IsClassroomOrganizationAdmin
+                | IsClassroomPlaylistAdmin
+            ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
         else:
