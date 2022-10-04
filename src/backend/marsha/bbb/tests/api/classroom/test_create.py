@@ -7,10 +7,17 @@ from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.models import Classroom
 from marsha.core import factories as core_factories
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     PlaylistLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.utils import reload_urlconf
 
@@ -124,6 +131,124 @@ class ClassroomCreateAPITest(TestCase):
                     "id": str(playlist.id),
                     "lti_id": playlist.lti_id,
                     "title": playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "Some classroom",
+                "welcome_text": "Welcome!",
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_create_user_access_token(self, mock_get_meeting_infos):
+        """A user with UserAccessToken should not be able to create a classroom."""
+        organization_access = OrganizationAccessFactory()
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.post(
+            "/api/classrooms/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_create_user_access_token_organization_admin(
+        self, mock_get_meeting_infos
+    ):
+        """An organization administrator should be able to create a classroom."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_one",
+                "playlist": str(playlist.id),
+                "title": "Some classroom",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(Classroom.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        classroom = Classroom.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_one",
+                "meeting_id": str(classroom.meeting_id),
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "Some classroom",
+                "welcome_text": "Welcome!",
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_create_user_access_token_playlist_admin(
+        self, mock_get_meeting_infos
+    ):
+        """A playlist administrator should be able to create a classroom."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_one",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "Some classroom",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(Classroom.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        classroom = Classroom.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_one",
+                "meeting_id": str(classroom.meeting_id),
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
                 },
                 "started": False,
                 "starting_at": None,
