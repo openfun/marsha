@@ -101,6 +101,9 @@ class PlaylistFactory(DjangoModelFactory):
 class PlaylistAccessFactory(DjangoModelFactory):
     """Factory for the PlaylistAccess model."""
 
+    playlist = factory.SubFactory(PlaylistFactory)
+    user = factory.SubFactory(UserFactory)
+
     class Meta:  # noqa
         model = models.PlaylistAccess
 
