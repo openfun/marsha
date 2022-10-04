@@ -58,3 +58,25 @@ class IsClassroomOrganizationAdmin(permissions.BasePermission):
             organization__playlists__classrooms__id=view.get_object_pk(),
             user__id=request.user.id,
         ).exists()
+
+
+class IsClassroomPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the classroom is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a classroom id in the path of the request, which exists,
+        and if the current user is an admin for the playlist this video is a part of.
+        """
+        return models.PlaylistAccess.objects.filter(
+            role=models.ADMINISTRATOR,
+            playlist__classrooms__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()

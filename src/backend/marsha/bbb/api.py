@@ -19,7 +19,7 @@ from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .forms import ClassroomForm
 from .models import Classroom, ClassroomDocument
-from .permissions import IsClassroomOrganizationAdmin
+from .permissions import IsClassroomOrganizationAdmin, IsClassroomPlaylistAdmin
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -65,7 +65,9 @@ class ClassroomViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                ResourceIsAuthenticated | IsClassroomOrganizationAdmin
+                ResourceIsAuthenticated
+                | IsClassroomOrganizationAdmin
+                | IsClassroomPlaylistAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
