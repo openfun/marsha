@@ -8,9 +8,17 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistFactory,
+    UserFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.utils import reload_urlconf
 
@@ -157,4 +165,69 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
             },
             content,
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_user_access_token(self, mock_get_meeting_infos):
+        """A user with UserAccessToken should not be able to fetch a classroom."""
+        organization = OrganizationFactory()
+        user = UserFactory()
+        OrganizationAccessFactory(organization=organization, user=user)
+        playlist = PlaylistFactory(organization=organization)
+        classroom = ClassroomFactory(playlist=playlist)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_user_access_token_admin(self, mock_get_meeting_infos):
+        """An organization administrator should be able to fetch a classroom."""
+        organization = OrganizationFactory()
+        user = UserFactory()
+        OrganizationAccessFactory(
+            organization=organization, user=user, role=ADMINISTRATOR
+        )
+        playlist = PlaylistFactory(organization=organization)
+        classroom = ClassroomFactory(playlist=playlist)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+            },
         )
