@@ -64,7 +64,9 @@ class ClassroomViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [ResourceIsAuthenticated]
+            permission_classes = [
+                ResourceIsAuthenticated | IsClassroomOrganizationAdmin
+            ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
         else:
