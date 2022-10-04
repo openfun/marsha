@@ -63,11 +63,10 @@ export interface PlaylistLite extends Resource {
   lti_id?: string | Nullable<Extract<Playlist, 'lti_id'>>;
 }
 
-export interface Playlist {
+export interface Playlist extends Resource {
   consumer_site: string;
   created_by: Nullable<string>;
   duplicated_from: Nullable<string>;
-  id: string;
   is_portable_to_playlist: boolean;
   is_portable_to_consumer_site: boolean;
   is_public: boolean;
