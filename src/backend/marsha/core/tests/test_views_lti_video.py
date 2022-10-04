@@ -27,19 +27,27 @@ from ..defaults import (
     STATE_CHOICES,
 )
 from ..factories import (
+    ConsumerSiteAccessFactory,
     ConsumerSiteLTIPassportFactory,
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
     SharedLiveMediaFactory,
     TimedTextTrackFactory,
+    UploadedVideoFactory,
+    UserFactory,
     VideoFactory,
 )
 from ..lti import LTI
+from ..models import ADMINISTRATOR
+from .test_views_lti_base import BaseLTIViewForPortabilityTestCase
 
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument,too-many-lines
 
 
-class VideoLTIViewTestCase(TestCase):
+class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     """Test the video view in the ``core`` app of the Marsha project."""
 
     maxDiff = None
@@ -1926,3 +1934,91 @@ class VideoLTIViewTestCase(TestCase):
             context.get("resource").get("shared_live_medias")[0].get("video"),
             str(video.id),
         )
+
+
+class VideoLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
+    """Test the video LTI view for portability."""
+
+    expected_context_model_name = "videos"  # resource.RESOURCE_NAME
+
+    def _get_lti_view_url(self, resource):
+        """Return the LTI view URL for the provided video."""
+        return f"/lti/videos/{resource.pk}"
+
+    def test_views_lti_video_portability_for_playlist_without_owner(
+        self,
+    ):
+        """
+        Assert the application data does not provide portability information
+        when playlist has no known owner
+        and the authenticated user is an administrator or a teacher or a student.
+        """
+        video = UploadedVideoFactory()
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsErrorForAdminOrInstructor(video)
+
+    def test_views_lti_video_portability_for_playlist_with_owner(self):
+        """
+        Assert the application data provides portability information
+        when playlist has a creator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_with_owner = PlaylistFactory(
+            created_by=UserFactory(),
+        )
+        video = UploadedVideoFactory(playlist=playlist_with_owner)
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(video)
+
+    def test_views_lti_video_portability_for_playlist_with_admin(self):
+        """
+        Assert the application data provides portability information
+        when playlist has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_access_admin = PlaylistAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_admin = playlist_access_admin.playlist
+        video = UploadedVideoFactory(playlist=playlist_with_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(video)
+
+    def test_views_lti_video_portability_for_playlist_with_organization_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's organization has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist_with_organization_admin = PlaylistFactory(
+            organization=organization_access_admin.organization,
+        )
+        video = UploadedVideoFactory(playlist=playlist_with_organization_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(video)
+
+    def test_views_lti_video_portability_for_playlist_with_consumer_site_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's consumer site has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        consumer_site_access_admin = ConsumerSiteAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_consumer_site_admin = PlaylistFactory(
+            consumer_site=consumer_site_access_admin.consumer_site,
+        )
+        video = UploadedVideoFactory(playlist=playlist_with_consumer_site_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(video)

@@ -1,14 +1,17 @@
 """Factories for the ``core`` app of the Marsha project."""
+import datetime
 import uuid
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
+from django.utils import timezone
 
 import factory
 from factory import fuzzy
 from factory.django import DjangoModelFactory
 
 from marsha.core import models
+from marsha.core.defaults import ENDED, RAW
 
 
 # usage of format function here is wanted in this file
@@ -124,6 +127,17 @@ class VideoFactory(DjangoModelFactory):
     lti_id = factory.Sequence("video#{:d}".format)
 
 
+class UploadedVideoFactory(VideoFactory):
+    """Factory for the Video model with an uploaded video."""
+
+    uploaded_on = factory.LazyAttribute(
+        lambda o: timezone.now() - datetime.timedelta(days=1)
+    )
+    live_state = ENDED
+    live_type = RAW
+    resolutions = [144, 240, 480, 720]
+
+
 class BaseTrackFactory(DjangoModelFactory):
     """Base factory to factorize code between all tracks models."""
 
@@ -172,6 +186,14 @@ class DocumentFactory(DjangoModelFactory):
     title = factory.Sequence("Document {:03d}".format)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("document#{:d}".format)
+
+
+class UploadedDocumentFactory(DocumentFactory):
+    """Factory for the Document model with an uploaded document."""
+
+    uploaded_on = factory.LazyAttribute(
+        lambda o: timezone.now() - datetime.timedelta(days=1)
+    )
 
 
 class LiveSessionFactory(DjangoModelFactory):
