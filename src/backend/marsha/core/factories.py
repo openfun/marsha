@@ -80,6 +80,9 @@ class ConsumerSiteOrganizationFactory(DjangoModelFactory):
 class OrganizationAccessFactory(DjangoModelFactory):
     """Factory for the OrganizationAccess model."""
 
+    organization = factory.SubFactory(OrganizationFactory)
+    user = factory.SubFactory(UserFactory)
+
     class Meta:  # noqa
         model = models.OrganizationAccess
 
