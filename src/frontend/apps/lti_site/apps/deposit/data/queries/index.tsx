@@ -8,12 +8,12 @@ import {
 } from 'react-query';
 
 import {
+  APIList,
   createOne,
   fetchList,
   FetchListQueryKey,
   fetchOne,
   updateOne,
-  APIList,
   DepositedFile,
   FileDepository,
   FileDepositoryModelName as modelName,
