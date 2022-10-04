@@ -5,12 +5,7 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from marsha.bbb.factories import ClassroomDocumentFactory, ClassroomFactory
-from marsha.core.factories import (
-    OrganizationAccessFactory,
-    OrganizationFactory,
-    PlaylistFactory,
-    UserFactory,
-)
+from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -198,20 +193,16 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
             },
         )
 
-    def test_api_list_classroom_documents_user_access_token(self):
+    def test_api_list_classroom_documents_user_access_token_organization_admin(self):
         """A user with UserAccessToken should be able to fetch list of classroom documents."""
-        organization = OrganizationFactory()
-        user = UserFactory()
-        OrganizationAccessFactory(
-            organization=organization, user=user, role=ADMINISTRATOR
-        )
-        playlist = PlaylistFactory(organization=organization)
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
         classroom_documents = ClassroomDocumentFactory.create_batch(
             3, classroom=classroom
         )
 
-        jwt_token = UserAccessTokenFactory(user=user)
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",

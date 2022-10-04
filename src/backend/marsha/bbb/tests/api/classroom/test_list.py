@@ -5,12 +5,7 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
-from marsha.core.factories import (
-    OrganizationAccessFactory,
-    OrganizationFactory,
-    PlaylistFactory,
-    UserFactory,
-)
+from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -70,19 +65,22 @@ class ClassroomListAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token(self, mock_get_meeting_infos):
+    def test_api_fetch_list_user_access_token_organization_admin(
+        self, mock_get_meeting_infos
+    ):
         """A user with UserAccessToken should be able to fetch a classroom list."""
-        user = UserFactory()
-        organization_1 = OrganizationFactory()
-        organization_2 = OrganizationFactory()
-        OrganizationAccessFactory(
-            organization=organization_1, user=user, role=ADMINISTRATOR
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access = OrganizationAccessFactory(
+            user=organization_access_admin.user
         )
-        OrganizationAccessFactory(organization=organization_2, user=user)
-        playlist_1_a = PlaylistFactory(organization=organization_1)
-        playlist_1_b = PlaylistFactory(organization=organization_1)
-        playlist_2_a = PlaylistFactory(organization=organization_2)
-        playlist_2_b = PlaylistFactory(organization=organization_2)
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_2_a = PlaylistFactory(organization=organization_access.organization)
+        playlist_2_b = PlaylistFactory(organization=organization_access.organization)
         ClassroomFactory.create_batch(3, playlist=playlist_1_a)
         classrooms_1_b = ClassroomFactory.create_batch(3, playlist=playlist_1_b)
         ClassroomFactory.create_batch(3, playlist=playlist_2_a)
@@ -94,7 +92,7 @@ class ClassroomListAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = UserAccessTokenFactory(user=user)
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
 
         response = self.client.get(
             "/api/classrooms/?limit=2", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
@@ -153,19 +151,22 @@ class ClassroomListAPITest(TestCase):
         self, mock_get_meeting_infos
     ):
         """A user with UserAccessToken should be able to filter classroom list by organization."""
-        user = UserFactory()
-        organization_1 = OrganizationFactory()
-        organization_2 = OrganizationFactory()
-        OrganizationAccessFactory(
-            organization=organization_1, user=user, role=ADMINISTRATOR
+        organization_access_admin_1 = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access_admin_2 = OrganizationAccessFactory(
+            user=organization_access_admin_1.user, role=ADMINISTRATOR
         )
-        OrganizationAccessFactory(
-            organization=organization_2, user=user, role=ADMINISTRATOR
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin_1.organization
         )
-        playlist_1_a = PlaylistFactory(organization=organization_1)
-        playlist_1_b = PlaylistFactory(organization=organization_1)
-        playlist_2_a = PlaylistFactory(organization=organization_2)
-        playlist_2_b = PlaylistFactory(organization=organization_2)
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin_1.organization
+        )
+        playlist_2_a = PlaylistFactory(
+            organization=organization_access_admin_2.organization
+        )
+        playlist_2_b = PlaylistFactory(
+            organization=organization_access_admin_2.organization
+        )
         ClassroomFactory.create_batch(3, playlist=playlist_1_a)
         ClassroomFactory.create_batch(3, playlist=playlist_1_b)
         ClassroomFactory.create_batch(3, playlist=playlist_2_a)
@@ -177,10 +178,10 @@ class ClassroomListAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = UserAccessTokenFactory(user=user)
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin_1.user)
 
         response = self.client.get(
-            f"/api/classrooms/?limit=2&organization={organization_2.id}",
+            f"/api/classrooms/?limit=2&organization={organization_access_admin_2.organization.id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -190,7 +191,7 @@ class ClassroomListAPITest(TestCase):
                 "count": 6,
                 "next": (
                     "http://testserver/api/classrooms/"
-                    f"?limit=2&offset=2&organization={organization_2.id}"
+                    f"?limit=2&offset=2&organization={organization_access_admin_2.organization.id}"
                 ),
                 "previous": None,
                 "results": [
@@ -239,19 +240,18 @@ class ClassroomListAPITest(TestCase):
         self, mock_get_meeting_infos
     ):
         """A user with UserAccessToken should be able to filter classroom list by playlist."""
-        user = UserFactory()
-        organization_1 = OrganizationFactory()
-        organization_2 = OrganizationFactory()
-        OrganizationAccessFactory(
-            organization=organization_1, user=user, role=ADMINISTRATOR
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access = OrganizationAccessFactory(
+            user=organization_access_admin.user
         )
-        OrganizationAccessFactory(
-            organization=organization_2, user=user, role=ADMINISTRATOR
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin.organization
         )
-        playlist_1_a = PlaylistFactory(organization=organization_1)
-        playlist_1_b = PlaylistFactory(organization=organization_1)
-        playlist_2_a = PlaylistFactory(organization=organization_2)
-        playlist_2_b = PlaylistFactory(organization=organization_2)
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_2_a = PlaylistFactory(organization=organization_access.organization)
+        playlist_2_b = PlaylistFactory(organization=organization_access.organization)
         ClassroomFactory.create_batch(3, playlist=playlist_1_a)
         classrooms_1_b = ClassroomFactory.create_batch(3, playlist=playlist_1_b)
         ClassroomFactory.create_batch(3, playlist=playlist_2_a)
@@ -263,7 +263,7 @@ class ClassroomListAPITest(TestCase):
             "running": "true",
         }
 
-        jwt_token = UserAccessTokenFactory(user=user)
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
 
         response = self.client.get(
             f"/api/classrooms/?limit=2&playlist={playlist_1_b.id}",
