@@ -6,9 +6,9 @@ import {
   addResource,
   removeResource,
 } from 'data/stores/actions';
-import { modelName as bbbModelName } from 'apps/bbb/types/models';
+import { modelName as bbbModelName } from 'apps/classroom/types/models';
 import { StoreState } from 'types/stores';
-import { ClassroomDocument } from 'apps/bbb/types/models';
+import { ClassroomDocument } from 'apps/classroom/types/models';
 
 type ClassroomDocumentStateResource = {
   [bbbModelName.CLASSROOM_DOCUMENTS]: {

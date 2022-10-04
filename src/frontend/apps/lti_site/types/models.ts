@@ -1,6 +1,6 @@
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
-import { modelName as bbbModelName } from 'apps/bbb/types/models';
+import { modelName as classroomModelName } from 'apps/classroom/types/models';
 
 export enum modelName {
   TIMEDTEXTTRACKS = 'timedtexttracks',
@@ -14,4 +14,4 @@ export type uploadableModelName =
   | modelName
   | Extract<markdownModelName, markdownModelName.MARKDOWN_IMAGES>
   | Extract<depositModelName, depositModelName.DepositedFiles>
-  | Extract<bbbModelName, bbbModelName.CLASSROOM_DOCUMENTS>;
+  | Extract<classroomModelName, classroomModelName.CLASSROOM_DOCUMENTS>;
