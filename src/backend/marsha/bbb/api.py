@@ -47,8 +47,12 @@ class ClassroomViewSet(
     serializer_class = serializers.ClassroomSerializer
 
     permission_classes = [
-        core_permissions.IsTokenResourceRouteObject
-        & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+        (
+            core_permissions.IsTokenResourceRouteObject
+            & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+        )
+        | IsClassroomOrganizationAdmin
+        | IsClassroomPlaylistAdmin
     ]
 
     def get_permissions(self):
@@ -237,7 +241,11 @@ class ClassroomViewSet(
         methods=["patch"],
         detail=True,
         url_path="join",
-        permission_classes=[ResourceIsAuthenticated],
+        permission_classes=[
+            ResourceIsAuthenticated
+            | IsClassroomOrganizationAdmin
+            | IsClassroomPlaylistAdmin
+        ],
     )
     def service_join(self, request, *args, **kwargs):
         """Join a Big Blue Button classroom.
@@ -257,12 +265,20 @@ class ClassroomViewSet(
         if not request.data.get("fullname"):
             return Response({"message": "missing fullname parameter"}, status=400)
         try:
-            roles = request.resource.roles
-            moderator = "administrator" in roles or "instructor" in roles
-            consumer_site_user_id = (
-                f"{request.resource.consumer_site}_"
-                f"{request.resource.user.get('id')}"
-            )
+            if request.resource:
+                roles = request.resource.roles
+                moderator = "administrator" in roles or "instructor" in roles
+                consumer_site_user_id = (
+                    f"{request.resource.consumer_site}_"
+                    f"{request.resource.user.get('id')}"
+                )
+            else:
+                # Assume that the user is a moderator
+                # as he is an admin of the organization or the playlist
+                moderator = True
+
+                # Use the user id as consumer_site_user_id
+                consumer_site_user_id = request.user.id
             response = join(
                 classroom=self.get_object(),
                 consumer_site_user_id=consumer_site_user_id,
@@ -296,8 +312,13 @@ class ClassroomViewSet(
             HttpResponse with the serialized classroom.
         """
         try:
-            roles = request.resource.roles
-            moderator = "administrator" in roles or "instructor" in roles
+            if request.resource:
+                roles = request.resource.roles
+                moderator = "administrator" in roles or "instructor" in roles
+            else:
+                # Assume that the user is a moderator
+                # as he is an admin of the organization or the playlist
+                moderator = True
             response = end(classroom=self.get_object(), moderator=moderator)
             status = 200
         except ApiMeetingException as exception:
