@@ -5,7 +5,11 @@ from django.test import TestCase, override_settings
 from django.utils import timezone
 
 from marsha.bbb.factories import ClassroomDocumentFactory, ClassroomFactory
-from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -193,6 +197,21 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
             },
         )
 
+    def test_api_list_classroom_documents_user_access(self):
+        """A user with UserAccessToken should be able to fetch list of classroom documents."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        classroom = ClassroomFactory(playlist=playlist)
+        ClassroomDocumentFactory.create_batch(3, classroom=classroom)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_list_classroom_documents_user_access_token_organization_admin(self):
         """A user with UserAccessToken should be able to fetch list of classroom documents."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
@@ -203,6 +222,51 @@ class ClassroomClassroomdocumentsAPITest(TestCase):
         )
 
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/classrooms/{classroom.id}"
+                "/classroomdocuments/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[2].filename,
+                        "id": str(classroom_documents[2].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "filename": classroom_documents[1].filename,
+                        "id": str(classroom_documents[1].id),
+                        "is_default": False,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                ],
+            },
+        )
+
+    def test_api_list_classroom_documents_user_access_token_playlist_admin(self):
+        """A user with UserAccessToken should be able to fetch list of classroom documents."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        classroom = ClassroomFactory(playlist=playlist_access.playlist)
+        classroom_documents = ClassroomDocumentFactory.create_batch(
+            3, classroom=classroom
+        )
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.get(
             f"/api/classrooms/{classroom.id}/classroomdocuments/?limit=2",
