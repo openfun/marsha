@@ -17,11 +17,10 @@
     "lint-all": "yarn lint-fix && yarn prettier-write",
     "build-sass": "sass scss/_main.scss ../../../backend/marsha/static/css/main.css --load-path=../../node_modules",
     "build-sass-production": "sass scss/_main.scss ../../../backend/marsha/static/css/main.css --style=compressed --load-path=../../node_modules",
-    "test": "TZ=UTC jest",
-    "test:windows": "SET TZ=UTC && jest",
-    "test-summary": "TZ=UTC jest 2>&1 | grep 'FAIL' | sort -t: -u -k1,1",
-    "test-coverage": "sh -c 'TZ=UTC jest $0 --coverage --collectCoverageFrom=\"$0/**\"'",
-    "test-screenshots": "TZ=UTC jest --testNamePattern='\\[screenshot\\]'"
+    "test": "cross-env TZ=UTC jest",
+    "test-summary": "cross-env TZ=UTC jest 2>&1 | grep 'FAIL' | sort -t: -u -k1,1",
+    "test-coverage": "sh -c ' cross-env TZ=UTC jest $0 --coverage --collectCoverageFrom=\"$0/**\"'",
+    "test-screenshots": "cross-env TZ=UTC jest --testNamePattern='\\[screenshot\\]'"
   },
   "repository": "git@github.com:openfun/marsha.git",
   "author": "France Université Numérique",
@@ -62,6 +61,7 @@
     "babel-loader": "8.2.5",
     "babel-plugin-react-intl": "8.2.25",
     "babel-preset-react": "7.0.0-beta.3",
+    "cross-env": "7.0.3",
     "css-loader": "6.7.1",
     "faker": "5.5.3",
     "fetch-mock": "9.11.0",
