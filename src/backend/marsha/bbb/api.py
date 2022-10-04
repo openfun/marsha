@@ -19,7 +19,7 @@ from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .forms import ClassroomForm
 from .models import Classroom, ClassroomDocument
-from .permissions import IsClassroomOrganizationAdmin, IsClassroomPlaylistAdmin
+from .permissions import IsClassroomPlaylistOrOrganizationAdmin
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -51,8 +51,7 @@ class ClassroomViewSet(
             core_permissions.IsTokenResourceRouteObject
             & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
         )
-        | IsClassroomOrganizationAdmin
-        | IsClassroomPlaylistAdmin
+        | IsClassroomPlaylistOrOrganizationAdmin
     ]
 
     def get_permissions(self):
@@ -71,26 +70,11 @@ class ClassroomViewSet(
                         | core_permissions.IsTokenAdmin
                     )
                 )
-                | IsClassroomOrganizationAdmin
-                | IsClassroomPlaylistAdmin
+                | IsClassroomPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                ResourceIsAuthenticated
-                | IsClassroomOrganizationAdmin
-                | IsClassroomPlaylistAdmin
-            ]
-        elif self.action in ["update", "partial_update"]:
-            permission_classes = [
-                (
-                    core_permissions.IsTokenResourceRouteObject
-                    & (
-                        core_permissions.IsTokenInstructor
-                        | core_permissions.IsTokenAdmin
-                    )
-                )
-                | IsClassroomOrganizationAdmin
-                | IsClassroomPlaylistAdmin
+                ResourceIsAuthenticated | IsClassroomPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
@@ -174,7 +158,7 @@ class ClassroomViewSet(
         permission_classes=[
             core_permissions.IsTokenInstructor
             | core_permissions.IsTokenAdmin
-            | IsClassroomOrganizationAdmin
+            | IsClassroomPlaylistOrOrganizationAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -242,9 +226,7 @@ class ClassroomViewSet(
         detail=True,
         url_path="join",
         permission_classes=[
-            ResourceIsAuthenticated
-            | IsClassroomOrganizationAdmin
-            | IsClassroomPlaylistAdmin
+            ResourceIsAuthenticated | IsClassroomPlaylistOrOrganizationAdmin
         ],
     )
     def service_join(self, request, *args, **kwargs):
