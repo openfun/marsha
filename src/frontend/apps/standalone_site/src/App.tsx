@@ -40,7 +40,7 @@ const App = () => {
       <Grommet theme={themeExtend}>
         <BrowserRouter>
           <Authenticator>
-            <Main>
+            <Main height={{ min: '100vh' }}>
               <Page kind="full">
                 <AppRoutes />
               </Page>
