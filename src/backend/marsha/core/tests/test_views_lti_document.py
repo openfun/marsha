@@ -14,8 +14,19 @@ from pylti.common import LTIException
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 from ..defaults import STATE_CHOICES
-from ..factories import ConsumerSiteLTIPassportFactory, DocumentFactory, PlaylistFactory
+from ..factories import (
+    ConsumerSiteAccessFactory,
+    ConsumerSiteLTIPassportFactory,
+    DocumentFactory,
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+    UploadedDocumentFactory,
+    UserFactory,
+)
 from ..lti import LTI
+from ..models import ADMINISTRATOR
+from .test_views_lti_base import BaseLTIViewForPortabilityTestCase
 
 
 # We don't enforce arguments documentation in tests
@@ -300,3 +311,91 @@ class DocumentLTIViewTestCase(TestCase):
         context = json.loads(html.unescape(match.group(1)))
         self.assertEqual(context.get("state"), "error")
         self.assertIsNone(context.get("resource"))
+
+
+class DocumentLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
+    """Test the document LTI view for portability."""
+
+    expected_context_model_name = "documents"  # resource.RESOURCE_NAME
+
+    def _get_lti_view_url(self, resource):
+        """Return the LTI view URL for the provided document."""
+        return f"/lti/documents/{resource.pk}"
+
+    def test_views_lti_document_portability_for_playlist_without_owner(
+        self,
+    ):
+        """
+        Assert the application data does not provide portability information
+        when playlist has no known owner
+        and the authenticated user is an administrator or a teacher or a student.
+        """
+        document = UploadedDocumentFactory()
+
+        self.assertLTIViewReturnsNoResourceForStudent(document)
+        self.assertLTIViewReturnsErrorForAdminOrInstructor(document)
+
+    def test_views_lti_document_portability_for_playlist_with_owner(self):
+        """
+        Assert the application data provides portability information
+        when playlist has a creator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_with_owner = PlaylistFactory(
+            created_by=UserFactory(),
+        )
+        document = UploadedDocumentFactory(playlist=playlist_with_owner)
+
+        self.assertLTIViewReturnsNoResourceForStudent(document)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(document)
+
+    def test_views_lti_document_portability_for_playlist_with_admin(self):
+        """
+        Assert the application data provides portability information
+        when playlist has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_access_admin = PlaylistAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_admin = playlist_access_admin.playlist
+        document = UploadedDocumentFactory(playlist=playlist_with_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(document)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(document)
+
+    def test_views_lti_document_portability_for_playlist_with_organization_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's organization has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist_with_organization_admin = PlaylistFactory(
+            organization=organization_access_admin.organization,
+        )
+        document = UploadedDocumentFactory(playlist=playlist_with_organization_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(document)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(document)
+
+    def test_views_lti_document_portability_for_playlist_with_consumer_site_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's consumer site has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        consumer_site_access_admin = ConsumerSiteAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_consumer_site_admin = PlaylistFactory(
+            consumer_site=consumer_site_access_admin.consumer_site,
+        )
+        document = UploadedDocumentFactory(playlist=playlist_with_consumer_site_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(document)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(document)

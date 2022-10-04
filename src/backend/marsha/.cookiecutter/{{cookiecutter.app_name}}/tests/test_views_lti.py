@@ -8,9 +8,18 @@ import uuid
 
 from django.test import TestCase, override_settings
 
-from marsha.core.factories import ConsumerSiteLTIPassportFactory
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    ConsumerSiteLTIPassportFactory,
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+    UserFactory,
+)
 from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
 
 from ..factories import {{cookiecutter.model}}Factory
 
@@ -197,3 +206,91 @@ class {{cookiecutter.model}}LTIViewTestCase(TestCase):
         response = self.client.get(f"/lti/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id}")
 
         self.assertEqual(response.status_code, 405)
+
+
+class {{cookiecutter.model}}LTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
+    """Test the {{cookiecutter.model_lower}} LTI view for portability."""
+
+    expected_context_model_name = "{{cookiecutter.model_plural_lower}}"  # resource.RESOURCE_NAME
+
+    def _get_lti_view_url(self, resource):
+        """Return the LTI view URL for the provided {{cookiecutter.model_lower}}."""
+        return f"/lti/{{cookiecutter.model_plural_lower}}/{resource.pk}"
+
+    def test_views_lti_{{cookiecutter.model_lower}}_portability_for_playlist_without_owner(
+        self,
+    ):
+        """
+        Assert the application data does not provide portability information
+        when playlist has no known owner
+        and the authenticated user is an administrator or a teacher or a student.
+        """
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
+
+        self.assertLTIViewReturnsNoResourceForStudent({{cookiecutter.model_lower}})
+        self.assertLTIViewReturnsErrorForAdminOrInstructor({{cookiecutter.model_lower}})
+
+    def test_views_lti_{{cookiecutter.model_lower}}_portability_for_playlist_with_owner(self):
+        """
+        Assert the application data provides portability information
+        when playlist has a creator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_with_owner = PlaylistFactory(
+            created_by=UserFactory(),
+        )
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory(playlist=playlist_with_owner)
+
+        self.assertLTIViewReturnsNoResourceForStudent({{cookiecutter.model_lower}})
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor({{cookiecutter.model_lower}})
+
+    def test_views_lti_{{cookiecutter.model_lower}}_portability_for_playlist_with_admin(self):
+        """
+        Assert the application data provides portability information
+        when playlist has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_access_admin = PlaylistAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_admin = playlist_access_admin.playlist
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory(playlist=playlist_with_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent({{cookiecutter.model_lower}})
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor({{cookiecutter.model_lower}})
+
+    def test_views_lti_{{cookiecutter.model_lower}}_portability_for_playlist_with_organization_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's organization has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist_with_organization_admin = PlaylistFactory(
+            organization=organization_access_admin.organization,
+        )
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory(playlist=playlist_with_organization_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent({{cookiecutter.model_lower}})
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor({{cookiecutter.model_lower}})
+
+    def test_views_lti_{{cookiecutter.model_lower}}_portability_for_playlist_with_consumer_site_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's consumer site has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        consumer_site_access_admin = ConsumerSiteAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_consumer_site_admin = PlaylistFactory(
+            consumer_site=consumer_site_access_admin.consumer_site,
+        )
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory(playlist=playlist_with_consumer_site_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent({{cookiecutter.model_lower}})
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor({{cookiecutter.model_lower}})

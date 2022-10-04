@@ -15,6 +15,7 @@ from ..lti import LTI
 from ..lti.utils import (
     PortabilityError,
     get_or_create_resource,
+    get_resource_closest_owners_and_playlist,
     get_selectable_resources,
 )
 
@@ -4303,3 +4304,120 @@ class LTISelectTestCase(TestCase):
                 "uploaded_on": "2019-09-24 07:24:40+00",
             },
         )
+
+
+class GetResourceClosestOwnersAndPlaylist(TestCase):
+    """Test the get_resource_closest_owners_and_playlist function."""
+
+    def _create_resource(self, playlist=None):
+        return factories.VideoFactory(playlist=playlist)
+
+    def assertResultsExpected(self, resource, playlist, expected_users):
+        """Assert the result of get_resource_closest_owners_and_playlist is as expected."""
+        closest_owners, playlist_id = get_resource_closest_owners_and_playlist(
+            resource.__class__,
+            resource.pk,
+        )
+
+        self.assertEqual(playlist_id, playlist.pk)
+        # Owners are not sorted so we compare sets
+        self.assertSetEqual(
+            set(closest_owners), set(user.pk for user in expected_users)
+        )
+
+    def test_playlist_has_no_owners(self):
+        """A playlist without owners should return no owners."""
+        playlist = factories.PlaylistFactory()
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(resource, playlist, [])
+
+    def test_playlist_has_a_creator(self):
+        """A playlist with a creator has this creator as its closest owner."""
+        playlist_creator = factories.UserFactory()
+        playlist = factories.PlaylistFactory(created_by=playlist_creator)
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(resource, playlist, [playlist_creator])
+
+    def test_playlist_has_administrators(self):
+        """A playlist with administrators has these administrators as its closest owners."""
+        playlist = factories.PlaylistFactory()
+        playlist_accesses = factories.PlaylistAccessFactory.create_batch(
+            3, playlist=playlist, role=models.ADMINISTRATOR
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist,
+            role=models.INSTRUCTOR,
+        )
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(
+            resource, playlist, [access.user for access in playlist_accesses]
+        )
+
+    def test_playlist_has_organization_administrators(self):
+        """
+        A playlist with organization administrators has these administrators as its closest owners.
+        """
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        organization_accesses = factories.OrganizationAccessFactory.create_batch(
+            3, organization=organization, role=models.ADMINISTRATOR
+        )
+        factories.OrganizationAccessFactory(
+            organization=organization,
+            role=models.INSTRUCTOR,
+        )
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(
+            resource, playlist, [access.user for access in organization_accesses]
+        )
+
+    def test_playlist_has_consumer_site_administrators(self):
+        """
+        A playlist with consumer site administrators has these administrators
+        as its closest owners.
+        """
+        consumer_site = factories.ConsumerSiteFactory()
+        playlist = factories.PlaylistFactory(consumer_site=consumer_site)
+        consumer_site_accesses = factories.ConsumerSiteAccessFactory.create_batch(
+            3, consumer_site=consumer_site, role=models.ADMINISTRATOR
+        )
+        factories.ConsumerSiteAccessFactory(
+            consumer_site=consumer_site,
+            role=models.INSTRUCTOR,
+        )
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(
+            resource, playlist, [access.user for access in consumer_site_accesses]
+        )
+
+    def test_playlist_has_administrators_and_organization_administrators(self):
+        """
+        A playlist with administrators and organization administrators has the first ones
+        as its closest owners.
+        """
+        organization = factories.OrganizationFactory()
+        playlist = factories.PlaylistFactory(organization=organization)
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=playlist,
+            role=models.ADMINISTRATOR,
+        )
+        factories.OrganizationAccessFactory(
+            organization=organization,
+            role=models.ADMINISTRATOR,
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist,
+            role=models.INSTRUCTOR,
+        )
+        factories.OrganizationAccessFactory(
+            organization=organization,
+            role=models.INSTRUCTOR,
+        )
+        resource = self._create_resource(playlist=playlist)
+
+        self.assertResultsExpected(resource, playlist, [playlist_access.user])

@@ -11,9 +11,18 @@ from django.test import TestCase, override_settings
 import responses
 
 from marsha.bbb.factories import ClassroomFactory
-from marsha.core.factories import ConsumerSiteLTIPassportFactory
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    ConsumerSiteLTIPassportFactory,
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+    UserFactory,
+)
 from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.core.tests.utils import reload_urlconf
 
 
@@ -689,3 +698,112 @@ class MeetingLTIViewTestCase(TestCase):
         response = self.client.get(f"/lti/meetings/{classroom.id}")
 
         self.assertEqual(response.status_code, 405)
+
+
+class ClassroomLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
+    """Test the classroom LTI view for portability."""
+
+    expected_context_model_name = "classrooms"  # resource.RESOURCE_NAME
+
+    def _get_lti_view_url(self, resource):
+        """Return the LTI view URL for the provided document."""
+        return f"/lti/classrooms/{resource.pk}"
+
+    def assertContextContainsStatic(self, context):
+        """
+        Assert the context contains the static URLs.
+        This is overridden because the classroom view does not return the same "static".
+        """
+        self.assertEqual(
+            context.get("static"),
+            {
+                "img": {
+                    "errorMain": "/static/img/errorTelescope.png",
+                    "liveBackground": "/static/img/liveBackground.jpg",
+                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
+                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
+                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
+                    "bbbBackground": "/static/img/bbbBackground.png",
+                    "bbbLogo": "/static/img/bbbLogo.png",
+                },
+                "svg": {"icons": "/static/svg/icons.svg"},
+            },
+        )
+
+    def test_views_lti_classroom_portability_for_playlist_without_owner(
+        self,
+    ):
+        """
+        Assert the application data does not provide portability information
+        when playlist has no known owner
+        and the authenticated user is an administrator or a teacher or a student.
+        """
+        classroom = ClassroomFactory()
+
+        self.assertLTIViewReturnsNoResourceForStudent(classroom)
+        self.assertLTIViewReturnsErrorForAdminOrInstructor(classroom)
+
+    def test_views_lti_classroom_portability_for_playlist_with_owner(self):
+        """
+        Assert the application data provides portability information
+        when playlist has a creator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_with_owner = PlaylistFactory(
+            created_by=UserFactory(),
+        )
+        classroom = ClassroomFactory(playlist=playlist_with_owner)
+
+        self.assertLTIViewReturnsNoResourceForStudent(classroom)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(classroom)
+
+    def test_views_lti_classroom_portability_for_playlist_with_admin(self):
+        """
+        Assert the application data provides portability information
+        when playlist has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        playlist_access_admin = PlaylistAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_admin = playlist_access_admin.playlist
+        classroom = ClassroomFactory(playlist=playlist_with_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(classroom)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(classroom)
+
+    def test_views_lti_classroom_portability_for_playlist_with_organization_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's organization has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist_with_organization_admin = PlaylistFactory(
+            organization=organization_access_admin.organization,
+        )
+        classroom = ClassroomFactory(playlist=playlist_with_organization_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(classroom)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(classroom)
+
+    def test_views_lti_classroom_portability_for_playlist_with_consumer_site_admin(
+        self,
+    ):
+        """
+        Assert the application data provides portability information
+        when playlist's consumer site has an administrator
+        and the authenticated user is an administrator or a teacher but not a student.
+        """
+        consumer_site_access_admin = ConsumerSiteAccessFactory(
+            role=ADMINISTRATOR,
+        )
+        playlist_with_consumer_site_admin = PlaylistFactory(
+            consumer_site=consumer_site_access_admin.consumer_site,
+        )
+        classroom = ClassroomFactory(playlist=playlist_with_consumer_site_admin)
+
+        self.assertLTIViewReturnsNoResourceForStudent(classroom)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(classroom)
