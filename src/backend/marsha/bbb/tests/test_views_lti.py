@@ -288,7 +288,7 @@ class ClassroomLTIViewTestCase(TestCase):
             context.get("resource"),
         )
         self.assertEqual(context.get("modelName"), "classrooms")
-        self.assertEqual(context.get("appName"), "bbb")
+        self.assertEqual(context.get("appName"), "classroom")
         self.assertEqual(
             context.get("static"),
             {
@@ -623,7 +623,7 @@ class MeetingLTIViewTestCase(TestCase):
             context.get("resource"),
         )
         self.assertEqual(context.get("modelName"), "classrooms")
-        self.assertEqual(context.get("appName"), "bbb")
+        self.assertEqual(context.get("appName"), "classroom")
         self.assertEqual(
             context.get("static"),
             {

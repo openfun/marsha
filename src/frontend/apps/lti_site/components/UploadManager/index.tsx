@@ -13,7 +13,7 @@ import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
-import { modelName as bbbModelName } from 'apps/bbb/types/models';
+import { modelName as bbbModelName } from 'apps/classroom/types/models';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',

@@ -1,7 +1,7 @@
 import { modelName, uploadableModelName } from 'types/models';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
-import { modelName as bbbModelName } from 'apps/bbb/types/models';
+import { modelName as classroomModelName } from 'apps/classroom/types/models';
 import { UploadableObject } from 'types/tracks';
 
 const getStore = async (objectType: uploadableModelName) => {
@@ -27,7 +27,7 @@ const getStore = async (objectType: uploadableModelName) => {
     case depositModelName.DepositedFiles:
       const { useDepositedFile } = await import('./useDepositedFile');
       return useDepositedFile;
-    case bbbModelName.CLASSROOM_DOCUMENTS:
+    case classroomModelName.CLASSROOM_DOCUMENTS:
       const { useClassroomDocument } = await import('./useClassroomDocument');
       return useClassroomDocument;
   }

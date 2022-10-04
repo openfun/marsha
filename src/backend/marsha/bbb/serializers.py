@@ -121,7 +121,7 @@ class ClassroomSelectLTISerializer(ClassroomSerializer):
         """
         return build_absolute_uri_behind_proxy(
             self.context["request"],
-            reverse("bbb:classroom_lti_view", args=[obj.id]),
+            reverse("classroom:classroom_lti_view", args=[obj.id]),
         )
 
 

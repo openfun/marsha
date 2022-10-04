@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - call api update-state with an error when the
   timed text track format is not supported by
   @openfun/subsrt
+- rename front application bbb in classroom
 
 ### Fixed
 

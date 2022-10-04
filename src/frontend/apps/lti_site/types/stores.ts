@@ -19,8 +19,8 @@ import {
 
 import {
   ClassroomDocument,
-  modelName as bbbModelName,
-} from 'apps/bbb/types/models';
+  modelName as classroomModelName,
+} from 'apps/classroom/types/models';
 
 export type StoreState<R extends Resource> = {
   addResource: (Resource: R) => void;
@@ -47,7 +47,7 @@ export type StoreState<R extends Resource> = {
   [depositModelName.DepositedFiles]?: {
     [id: string]: DepositedFile;
   };
-  [bbbModelName.CLASSROOM_DOCUMENTS]?: {
+  [classroomModelName.CLASSROOM_DOCUMENTS]?: {
     [id: string]: ClassroomDocument;
   };
 };

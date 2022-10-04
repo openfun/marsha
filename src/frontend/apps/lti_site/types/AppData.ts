@@ -22,7 +22,7 @@ export enum flags {
  * App name needs to match the folder containing the app in `apps/{myAppName}/`
  */
 export enum appNames {
-  BBB = 'bbb',
+  CLASSROOM = 'classroom',
   DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
 }
