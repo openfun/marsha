@@ -22,7 +22,7 @@ import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName as markdownModelName } from 'apps/markdown/types/models';
 import { modelName as depositModelName } from 'apps/deposit/types/models';
-import { modelName as bbbModelName } from 'apps/bbb/types/models';
+import { modelName as bbbModelName } from 'apps/classroom/types/models';
 
 const messages = defineMessages({
   linkToDashboard: {

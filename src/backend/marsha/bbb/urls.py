@@ -8,7 +8,7 @@ from .api import ClassroomDocumentViewSet, ClassroomViewSet
 from .views import ClassroomLTIView
 
 
-app_name = "bbb"
+app_name = "classroom"
 
 router = DefaultRouter()
 router.register("classrooms", ClassroomViewSet, basename="classrooms")
