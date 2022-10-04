@@ -30,7 +30,7 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
-    "@codemirror/view": "6.2.5",
+    "@codemirror/view": "6.3.0",
     "@codemirror/state": "6.1.2",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
