@@ -8,6 +8,7 @@
   "jsnext:main": "lib/index.es.js",
   "scripts": {
     "build": "rollup -c",
+    "build:no-fail": "yarn lint && yarn test && yarn build",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
