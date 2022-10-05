@@ -42,6 +42,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Use video title in creation wizard if it exists
 - Skip screen choice between live and vod when coming back from 
   LTI select
+- Fix subtitles upload
 
 ## [4.0.0-beta.8] - 2022-09-15
 
