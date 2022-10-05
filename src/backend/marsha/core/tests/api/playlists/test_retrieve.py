@@ -580,3 +580,4 @@ class PlaylistAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         video.playlist.refresh_from_db()
         self.assertEqual(video.playlist.title, "new playlist title")
+ 
