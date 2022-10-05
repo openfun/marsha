@@ -72,6 +72,7 @@ export const LocalizedTimedTextTrackUpload = ({
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let timedTextTrackId;
+    const nativeEvent = event.nativeEvent.target as HTMLInputElement;
     if (event.target.files && event.target.files[0] && selectedLanguage) {
       if (!retryUploadIdRef.current) {
         const response = await createTimedTextTrack(
@@ -89,6 +90,10 @@ export const LocalizedTimedTextTrackUpload = ({
         event.target.files[0],
       );
     }
+    // We reset this value to allow handleChange to be triggered again on a new file upload
+    // if it has the same name. More on this issue :
+    // https://stackoverflow.com/questions/39484895/how-to-allow-input-type-file-to-select-the-same-file-in-react-component
+    nativeEvent.value = '';
   };
 
   const onRetryFailedUpload = (timedTextTrackId: string) => {
