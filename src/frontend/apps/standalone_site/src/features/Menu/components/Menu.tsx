@@ -50,8 +50,8 @@ function Menu() {
       isMenuOpen={isMenuOpen}
     >
       <Box role="group">
-        {topRoutes.map((route) => (
-          <MenuItem key={`menuItemRoute-${route.label}`} route={route} />
+        {topRoutes.map((route, index) => (
+          <MenuItem key={`menuItemRoute-${index}`} route={route} />
         ))}
       </Box>
       <Box
@@ -63,13 +63,13 @@ function Menu() {
         <Text size="small" weight="bold" margin={{ left: '1rem' }}>
           TYPES DE CONTENUS
         </Text>
-        {contents.map((content) => (
-          <MenuItem key={`menuItemContent-${content.label}`} route={content}>
+        {contents.map((content, index) => (
+          <MenuItem key={`menuItemContent-${index}`} route={content}>
             {content.subRoutes && (
               <Box margin={{ left: '2.6rem' }}>
-                {content.subRoutes.map((subRoutes) => (
+                {content.subRoutes.map((subRoutes, subIndex) => (
                   <MenuItem
-                    key={`menuItemSubContent-${subRoutes.label}`}
+                    key={`menuItemSubContent-${subIndex}`}
                     route={subRoutes}
                   />
                 ))}

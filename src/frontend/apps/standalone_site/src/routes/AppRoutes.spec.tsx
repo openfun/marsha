@@ -13,7 +13,7 @@ describe('<AppRoutes />', () => {
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(screen.getByRole(/alert/i)).toBeInTheDocument();
     await waitFor(() => {
-      expect(screen.getByText(/Accueil/i)).toBeInTheDocument();
+      expect(screen.getByText(/Homepage/i)).toBeInTheDocument();
     });
   });
 
@@ -21,7 +21,7 @@ describe('<AppRoutes />', () => {
     render(<AppRoutes />);
 
     await waitFor(() => {
-      expect(screen.getByText(/Accueil/i)).toBeInTheDocument();
+      expect(screen.getByText(/Homepage/i)).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole(/menuitem/i, { name: /Favorites/i }));

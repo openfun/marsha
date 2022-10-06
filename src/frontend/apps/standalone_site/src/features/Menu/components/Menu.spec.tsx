@@ -1,4 +1,5 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
+import { render } from 'lib-tests';
 import React, { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
@@ -7,9 +8,7 @@ import Menu from './Menu';
 
 describe('<Menu />', () => {
   test('renders Menu', () => {
-    render(<Menu />, {
-      wrapper: BrowserRouter,
-    });
+    render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
       screen.getByRole(/menuitem/i, { name: /Favorites/i }),
     ).toBeInTheDocument();
@@ -17,7 +16,7 @@ describe('<Menu />', () => {
       screen.getByRole(/menuitem/i, { name: /My Contents/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Vidéos/i }),
+      screen.getByRole(/menuitem/i, { name: /Videos/i }),
     ).toBeInTheDocument();
   });
 
@@ -27,9 +26,7 @@ describe('<Menu />', () => {
         <Burger />
         <Menu />
       </Fragment>,
-      {
-        wrapper: BrowserRouter,
-      },
+      { testingLibraryOptions: { wrapper: BrowserRouter } },
     );
 
     const menu = screen.getByRole('menu');
