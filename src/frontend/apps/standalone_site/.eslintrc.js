@@ -47,7 +47,8 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(features|components|utils|routes|styles|assets)/**',
+            pattern:
+              '+(features|components|utils|routes|styles|assets|conf)/**',
             group: 'internal',
           },
           {
