@@ -7,10 +7,13 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { createOne } from 'data/queries/createOne';
-import { fetchList, FetchListQueryKey } from 'data/queries/fetchList';
-import { fetchOne } from 'data/queries/fetchOne';
-import { updateOne } from 'data/queries/updateOne';
+import {
+  createOne,
+  fetchList,
+  FetchListQueryKey,
+  fetchOne,
+  updateOne,
+} from 'lib-components';
 import { APIList } from 'types/api';
 
 import {

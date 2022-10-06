@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- move the lti data queries to the lib_components package
 - call api update-state with an error when the
   timed text track format is not supported by
   @openfun/subsrt
