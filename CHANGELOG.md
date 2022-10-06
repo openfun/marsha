@@ -11,6 +11,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- standalone website:
+  - Add router to the layout
+  - Add menu interaction
+  - Integrate internationalisation library (react-intl)
+  - ESLint Fragment mandatory rule 
+  - ESlint better import order rule
 - Integrate design Homepage in the standalone website:
   - Menu
   - Header

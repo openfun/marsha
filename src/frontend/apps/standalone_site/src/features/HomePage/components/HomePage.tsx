@@ -1,5 +1,6 @@
 import { Image, Box, Text } from 'grommet';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import card1 from 'assets/img/card-1.png';
@@ -8,6 +9,19 @@ import card3 from 'assets/img/card-3.png';
 import banner from 'assets/img/homepage-banner.png';
 
 import Card from './Card';
+
+const messages = defineMessages({
+  HomePage: {
+    defaultMessage: 'Homepage',
+    description: 'HomePage title',
+    id: 'HomePage.HomePage.HomePage',
+  },
+  SeeEverything: {
+    defaultMessage: 'See Everything',
+    description: 'Label to see all the cards',
+    id: 'HomePage.HomePage.SeeEverything',
+  },
+});
 
 const HomePageBox = styled(Box)`
   color: #002c84;
@@ -73,6 +87,8 @@ const cards = [
 ];
 
 function HomePage() {
+  const intl = useIntl();
+
   return (
     <HomePageBox>
       <BlockBox margin={{ top: 'large', horizontal: 'auto' }}>
@@ -80,8 +96,10 @@ function HomePage() {
       </BlockBox>
       <Box margin={{ top: 'medium' }}>
         <Box direction="row" justify="between" margin={{ bottom: 'small' }}>
-          <Text weight="bolder">Accueil</Text>
-          <Text weight="bolder">› Tout voir</Text>
+          <Text weight="bolder">{intl.formatMessage(messages.HomePage)}</Text>
+          <Text weight="bolder">
+            › {intl.formatMessage(messages.SeeEverything)}
+          </Text>
         </Box>
         <CardBox direction="row" wrap={true} justify="evenly">
           {cards.map((card, index) => (
