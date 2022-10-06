@@ -15,6 +15,8 @@ import {
 } from 'apps/classroom/data/queries';
 import { Classroom } from 'apps/classroom/types/models';
 
+const DEBOUNCE_TIME_MS = 1500;
+
 const messages = defineMessages({
   createClassroomFail: {
     defaultMessage: 'Classroom not created!',
@@ -94,7 +96,7 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
 
   const debounce = (
     fn: (updatedClassroom: Partial<Classroom>) => void,
-    ms = 500,
+    ms = DEBOUNCE_TIME_MS,
   ) => {
     return (updatedClassroom: Partial<Classroom>) => {
       window.clearTimeout(timeoutId.current);
