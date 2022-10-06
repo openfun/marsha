@@ -44,6 +44,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Skip screen choice between live and vod when coming back from 
   LTI select
 - Fix subtitles upload
+- Fix debounce time too low in the classroom creation form
 
 ## [4.0.0-beta.8] - 2022-09-15
 
