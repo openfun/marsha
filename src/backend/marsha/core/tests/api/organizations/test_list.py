@@ -215,3 +215,4 @@ class OrganizationAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         organization.refresh_from_db()
         self.assertEqual(organization.name, "existing name")
+ 
