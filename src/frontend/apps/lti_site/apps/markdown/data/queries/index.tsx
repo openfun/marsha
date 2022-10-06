@@ -6,10 +6,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { actionOne } from 'data/queries/actionOne';
-import { createOne } from 'data/queries/createOne';
-import { fetchOne } from 'data/queries/fetchOne';
-import { updateOne } from 'data/queries/updateOne';
+import { actionOne, createOne, fetchOne, updateOne } from 'lib-components';
 
 import {
   MarkdownDocument,
@@ -203,7 +200,10 @@ export const useSaveTranslations = markdownDocumentActionMutation<
 >(MutationMarkdownAction.SAVE_TRANSLATIONS);
 
 // Don't use the ActionMutation here because it has to be called outside hook context
-export const markdownRenderLatex = (id: string, rawLatexContent: string) => {
+export const markdownRenderLatex = (
+  id: string,
+  rawLatexContent: string,
+): any => {
   return actionOne({
     name: 'markdown-documents',
     id,
@@ -214,7 +214,7 @@ export const markdownRenderLatex = (id: string, rawLatexContent: string) => {
 };
 
 // It has to be called outside hook context
-export const fetchOneMarkdownImage = (markdownImageId: string) => {
+export const fetchOneMarkdownImage = (markdownImageId: string): any => {
   return fetchOne({
     meta: undefined,
     pageParam: undefined,

@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
-import { useJwt } from 'lib-components';
-import { QueryFunction } from 'react-query';
+import { QueryFunctionContext } from 'react-query';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 export type FetchListQueryKey =
   | [string, Maybe<{ [key in string]: Maybe<string> }>]
@@ -9,9 +9,9 @@ export type FetchListQueryKey =
 /**
  * `react-query` fetcher for lists of items from the Marsha API.
  */
-export const fetchList: QueryFunction<any, FetchListQueryKey> = async ({
+export const fetchList = async <T,>({
   queryKey,
-}) => {
+}: QueryFunctionContext<FetchListQueryKey>): Promise<T> => {
   const name = queryKey[0];
   const queryParams = queryKey[1] || {};
 
@@ -39,5 +39,5 @@ export const fetchList: QueryFunction<any, FetchListQueryKey> = async ({
     throw new Error(`Failed to get list of ${name}.`);
   }
 
-  return await response.json();
+  return (await response.json()) as T;
 };

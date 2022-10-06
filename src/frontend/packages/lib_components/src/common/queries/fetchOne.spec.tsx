@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 import { fetchOne } from './fetchOne';
 
@@ -18,8 +18,8 @@ describe('queries/fetchOne', () => {
       queryKey: ['model-name', 1],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -40,8 +40,8 @@ describe('queries/fetchOne', () => {
       queryKey: ['model-name', 1],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -66,8 +66,8 @@ describe('queries/fetchOne', () => {
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -87,10 +87,10 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1],
       }),
-    ).rejects.toThrowError('Failed to get /model-name/1/.');
+    ).rejects.toThrowError('Failed to get /api/model-name/1/.');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -110,8 +110,8 @@ describe('queries/fetchOne', () => {
       queryKey: ['model-name', 1, 'action'],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -132,8 +132,8 @@ describe('queries/fetchOne', () => {
       queryKey: ['model-name', 1, 'action'],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -158,8 +158,8 @@ describe('queries/fetchOne', () => {
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -179,10 +179,10 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1, 'action'],
       }),
-    ).rejects.toThrowError('Failed to get /model-name/1/action/.');
+    ).rejects.toThrowError('Failed to get /api/model-name/1/action/.');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',

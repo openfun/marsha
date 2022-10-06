@@ -86,11 +86,11 @@ describe('apps/markdown/sideEffects/pollForMarkdownImage', () => {
     await expect(async () => {
       await pollForMarkdownImage('c43f0c8f-4d3b-4219-86c3-86367b2b88cc');
     }).rejects.toThrow(
-      'Failed to get /markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
+      'Failed to get /api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
     );
     expect(report).toHaveBeenCalledWith(
       Error(
-        'Failed to get /markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
+        'Failed to get /api/markdown-images/c43f0c8f-4d3b-4219-86c3-86367b2b88cc/.',
       ),
     );
   });

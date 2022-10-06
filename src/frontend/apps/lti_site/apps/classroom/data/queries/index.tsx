@@ -1,4 +1,3 @@
-import { Maybe } from 'lib-common';
 import {
   useMutation,
   UseMutationOptions,
@@ -8,11 +7,15 @@ import {
 } from 'react-query';
 
 import { APIList } from 'types/api';
-import { actionOne } from 'data/queries/actionOne';
-import { createOne } from 'data/queries/createOne';
-import { fetchList, FetchListQueryKey } from 'data/queries/fetchList';
-import { fetchOne } from 'data/queries/fetchOne';
-import { updateOne } from 'data/queries/updateOne';
+import { Maybe } from 'lib-common';
+import {
+  actionOne,
+  createOne,
+  fetchList,
+  FetchListQueryKey,
+  fetchOne,
+  updateOne,
+} from 'lib-components';
 
 import {
   EndClassroomActionRequest,

@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 import { actionOne } from './actionOne';
 
@@ -20,8 +20,8 @@ describe('queries/actionOne', () => {
       object: objectToUpdate,
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -44,8 +44,8 @@ describe('queries/actionOne', () => {
       action: 'action',
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -70,8 +70,8 @@ describe('queries/actionOne', () => {
       object: objectToUpdate,
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -96,8 +96,8 @@ describe('queries/actionOne', () => {
       object: objectToUpdate,
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -126,8 +126,8 @@ describe('queries/actionOne', () => {
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -159,8 +159,8 @@ describe('queries/actionOne', () => {
 
     expect(thrownError).toEqual({ code: 'exception' });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/1/action/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
