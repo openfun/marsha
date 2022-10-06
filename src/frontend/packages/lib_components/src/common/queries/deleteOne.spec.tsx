@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 import { deleteOne } from './deleteOne';
 
@@ -17,8 +17,8 @@ describe('queries/deleteOne', () => {
       id: '123',
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/123/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -45,8 +45,8 @@ describe('queries/deleteOne', () => {
 
     expect(thrownError).toEqual({ code: 'exception' });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/123/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -70,8 +70,8 @@ describe('queries/deleteOne', () => {
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/123/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -105,8 +105,8 @@ describe('queries/deleteOne', () => {
       error: 'An error occured!',
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/123/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',

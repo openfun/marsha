@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 import { metadata } from './metadata';
 
@@ -18,8 +18,8 @@ describe('metadata', () => {
       queryKey: ['model-name', 'fr'],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -42,8 +42,8 @@ describe('metadata', () => {
       queryKey: ['model-name', 'en'],
     });
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
         'Accept-Language': 'en',
@@ -70,8 +70,8 @@ describe('metadata', () => {
       }),
     ).rejects.toThrowError('Failed to perform the request');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',
@@ -95,8 +95,8 @@ describe('metadata', () => {
       }),
     ).rejects.toThrowError('Failed to get metadata for /model-name/.');
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/model-name/');
-    expect(fetchMock.lastCall()![1]).toEqual({
+    expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
+    expect(fetchMock.lastCall()?.[1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
         'Content-Type': 'application/json',

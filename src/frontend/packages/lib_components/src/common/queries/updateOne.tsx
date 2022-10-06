@@ -1,17 +1,24 @@
-import { useJwt } from 'lib-components';
-import { MutationFunction } from 'react-query';
+import { useJwt } from '../../hooks/stores/useJwt';
 
-export const deleteOne: MutationFunction<
-  any,
-  { name: string; id: string }
-> = async ({ name, id }) => {
+interface Variables<K> {
+  name: string;
+  id: string;
+  object?: K;
+}
+
+export const updateOne = async <T, K>({
+  name,
+  id,
+  object,
+}: Variables<K>): Promise<T> => {
   const jwt = useJwt.getState().jwt;
   const response = await fetch(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',
       ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),
     },
-    method: 'DELETE',
+    method: 'PATCH',
+    body: JSON.stringify(object),
   });
 
   if (!response.ok) {
@@ -21,4 +28,6 @@ export const deleteOne: MutationFunction<
 
     throw { code: 'exception' };
   }
+
+  return (await response.json()) as T;
 };

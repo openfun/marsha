@@ -1,10 +1,14 @@
-import { useJwt } from 'lib-components';
-import { MutationFunction } from 'react-query';
+import { useJwt } from '../../hooks/stores/useJwt';
 
-export const createOne: MutationFunction<
-  any,
-  { name: string; object: any }
-> = async ({ name, object }) => {
+interface Variables<K> {
+  name: string;
+  object: K;
+}
+
+export const createOne = async <T, K>({
+  name,
+  object,
+}: Variables<K>): Promise<T> => {
   const jwt = useJwt.getState().jwt;
   const response = await fetch(`/api/${name}/`, {
     headers: {
@@ -23,5 +27,5 @@ export const createOne: MutationFunction<
     throw { code: 'exception' };
   }
 
-  return await response.json();
+  return (await response.json()) as T;
 };

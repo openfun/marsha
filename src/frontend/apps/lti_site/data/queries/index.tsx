@@ -1,4 +1,3 @@
-import { Maybe, Nullable } from 'lib-common';
 import {
   useMutation,
   UseMutationOptions,
@@ -8,6 +7,17 @@ import {
 } from 'react-query';
 
 import { useVideo as useVideoStore } from 'data/stores/useVideo';
+import { Maybe, Nullable } from 'lib-common';
+import {
+  actionOne,
+  createOne,
+  deleteOne,
+  fetchList,
+  FetchListQueryKey,
+  fetchOne,
+  metadata,
+  updateOne,
+} from 'lib-components';
 import { APIList } from 'types/api';
 import { Document } from 'types/file';
 import {
@@ -24,13 +34,6 @@ import {
 } from 'types/tracks';
 
 import { Organization } from 'types/Organization';
-import { actionOne } from './actionOne';
-import { createOne } from './createOne';
-import { deleteOne } from './deleteOne';
-import { fetchList, FetchListQueryKey } from './fetchList';
-import { fetchOne } from './fetchOne';
-import { updateOne } from './updateOne';
-import { metadata } from './metadata';
 import { VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (
@@ -145,7 +148,7 @@ type UseDeleteTimedTextTrackError =
       errors: { [key in keyof UseDeleteTimedTextTrackData]?: string[] }[];
     };
 type UseDeleteTimedTextTrackOptions = UseMutationOptions<
-  TimedText,
+  Maybe<TimedText>,
   UseDeleteTimedTextTrackError,
   UseDeleteTimedTextTrackData
 >;
@@ -154,7 +157,7 @@ export const useDeleteTimedTextTrack = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation<
-    TimedText,
+    Maybe<TimedText>,
     UseDeleteTimedTextTrackError,
     UseDeleteTimedTextTrackData
   >(
@@ -189,14 +192,14 @@ type UseDeleteThumbnailError =
       errors: { [key in keyof UseDeleteThumbnailData]?: string[] }[];
     };
 type UseDeleteThumbnailOptions = UseMutationOptions<
-  Thumbnail,
+  Maybe<Thumbnail>,
   UseDeleteThumbnailError,
   UseDeleteThumbnailData
 >;
 export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
   const queryClient = useQueryClient();
   return useMutation<
-    Thumbnail,
+    Maybe<Thumbnail>,
     UseDeleteThumbnailError,
     UseDeleteThumbnailData
   >(
@@ -540,7 +543,7 @@ type UseDeleteSharedLiveMediaError =
       errors: { [key in keyof UseUpdateSharedLiveMediaData]?: string[] }[];
     };
 type UseDeleteSharedLiveMediaOptions = UseMutationOptions<
-  SharedLiveMedia,
+  Maybe<SharedLiveMedia>,
   UseUpdateSharedLiveMediaError,
   UseDeleteSharedLiveMediaData
 >;
@@ -549,7 +552,7 @@ export const useDeleteSharedLiveMedia = (
 ) => {
   const queryClient = useQueryClient();
   return useMutation<
-    SharedLiveMedia,
+    Maybe<SharedLiveMedia>,
     UseDeleteSharedLiveMediaError,
     UseDeleteSharedLiveMediaData
   >(

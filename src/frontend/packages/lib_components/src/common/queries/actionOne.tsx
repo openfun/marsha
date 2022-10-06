@@ -1,13 +1,23 @@
-import { useJwt } from 'lib-components';
-import { MutationFunction } from 'react-query';
+import { useJwt } from '../../hooks/stores/useJwt';
 
 /**
  * `react-query` call action on individual item from the Marsha API.
  */
-export const actionOne: MutationFunction<
-  any,
-  { name: string; id: string; action: string; method?: string; object?: any }
-> = async ({ name, id, action, method, object }) => {
+interface Variables<K> {
+  name: string;
+  id: string;
+  action: string;
+  method?: string;
+  object?: K;
+}
+
+export const actionOne = async <T, K>({
+  name,
+  id,
+  action,
+  method,
+  object,
+}: Variables<K>): Promise<T> => {
   const jwt = useJwt.getState().jwt;
   const init: RequestInit = {
     headers: {
@@ -29,5 +39,5 @@ export const actionOne: MutationFunction<
     throw { code: 'exception' };
   }
 
-  return await response.json();
+  return (await response.json()) as T;
 };
