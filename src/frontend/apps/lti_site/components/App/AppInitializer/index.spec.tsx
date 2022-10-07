@@ -1,16 +1,17 @@
 import { screen } from '@testing-library/react';
+import { useMaintenance } from 'lib-components';
 import React from 'react';
 
+import { useAttendance } from 'data/stores/useAttendance';
+import { useDocument } from 'data/stores/useDocument';
 import { useSentry } from 'data/stores/useSentry';
+import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useThumbnail } from 'data/stores/useThumbnail';
+import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useVideo } from 'data/stores/useVideo';
 import render from 'utils/tests/render';
 
 import { AppInitializer } from '.';
-import { useVideo } from 'data/stores/useVideo';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { useThumbnail } from 'data/stores/useThumbnail';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
-import { useDocument } from 'data/stores/useDocument';
-import { useAttendance } from 'data/stores/useAttendance';
 
 jest.mock('@sentry/browser', () => ({
   init: jest.fn(),
@@ -34,6 +35,12 @@ jest.mock('data/stores/useAppConfig', () => ({
     attendanceDelay: 6,
   }),
 }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: () => ({
+    maintenance: true,
+  }),
+}));
 
 describe('<AppInitializer />', () => {
   it('initializes stores before render content', async () => {
@@ -44,6 +51,7 @@ describe('<AppInitializer />', () => {
     expect(useSharedLiveMedia.getState().sharedlivemedias).toEqual({});
     expect(useDocument.getState().documents).toEqual({});
     expect(useAttendance.getState().delay).toEqual(10000);
+    expect(useMaintenance.getState().isActive).toEqual(false);
 
     render(
       <AppInitializer>
@@ -70,5 +78,6 @@ describe('<AppInitializer />', () => {
       ['my-document-id']: { id: 'my-document-id' },
     });
     expect(useAttendance.getState().delay).toEqual(6);
+    expect(useMaintenance.getState().isActive).toEqual(true);
   });
 });

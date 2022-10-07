@@ -20,7 +20,6 @@ describe('<PlaylistPage />', () => {
     useJwt.setState({
       getDecodedJwt: () =>
         ({
-          maintenance: false,
           permissions: {
             can_update: true,
           },
