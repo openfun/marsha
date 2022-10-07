@@ -1,5 +1,5 @@
 import { Box, Nav } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useJwt, useMaintenance } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
@@ -64,6 +64,7 @@ interface LTINavProps {
 
 export const LTINav = ({ object: baseObject }: LTINavProps) => {
   const appData = useAppConfig();
+  const isMaintenanceOn = useMaintenance((state) => state.isActive);
   const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
   const videoState = useVideo();
   const documentState = useDocument();
@@ -73,7 +74,7 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
       : documentState.getDocument(baseObject as Document);
 
   const canAccessDashboard =
-    getDecodedJwt().permissions.can_update && !getDecodedJwt().maintenance;
+    getDecodedJwt().permissions.can_update && !isMaintenanceOn;
   const canAccessPreview = object.upload_state === uploadState.READY;
 
   return (

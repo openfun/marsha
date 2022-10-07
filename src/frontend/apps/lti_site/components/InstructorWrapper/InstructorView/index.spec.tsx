@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useJwt, useMaintenance } from 'lib-components';
 import React from 'react';
 
 import { videoMockFactory } from 'utils/tests/factories';
@@ -21,7 +21,6 @@ describe('<InstructorView />', () => {
     useJwt.setState({
       getDecodedJwt: () =>
         ({
-          maintenance: false,
           permissions: {
             can_update: true,
           },
@@ -42,7 +41,6 @@ describe('<InstructorView />', () => {
     useJwt.setState({
       getDecodedJwt: () =>
         ({
-          maintenance: false,
           permissions: {
             can_update: false,
           },
@@ -62,10 +60,12 @@ describe('<InstructorView />', () => {
   });
 
   it('removes the button when permissions.maintenance is set to true', () => {
+    useMaintenance.setState(() => ({
+      isActive: true,
+    }));
     useJwt.setState({
       getDecodedJwt: () =>
         ({
-          maintenance: true,
           permissions: {
             can_update: true,
           },

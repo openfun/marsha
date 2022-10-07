@@ -77,7 +77,6 @@ describe('StudentLiveStarter', () => {
   beforeEach(() => {
     mockedGetDecodedJwt.mockReturnValue({
       locale: 'en',
-      maintenance: false,
       resource_id: 'id',
       permissions: { can_update: false, can_access_dashboard: false },
       roles: [],
@@ -150,7 +149,6 @@ describe('StudentLiveStarter', () => {
   it('redirects to dashboard if user has right and live is stopping or stopped', async () => {
     mockedGetDecodedJwt.mockReturnValue({
       locale: 'en',
-      maintenance: false,
       resource_id: 'id',
       permissions: { can_update: true, can_access_dashboard: false },
       roles: [],
