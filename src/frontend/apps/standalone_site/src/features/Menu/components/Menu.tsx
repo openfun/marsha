@@ -26,15 +26,11 @@ const MenuBox = styled(Box)<PropsExtended>`
 
 function Menu() {
   const { isMenuOpen } = useMenu();
-  const topRoutes: Route[] = [
-    routes.HomePage,
-    routes.Favorites,
-    routes.MyProfile,
-  ];
+  const topRoutes: Route[] = [routes.HOMEPAGE, routes.FAVORITE, routes.PROFILE];
   const contents: Route[] = [
-    routes.MyPlaylist,
-    routes.MyOrganizations,
-    routes.MyContents,
+    routes.PLAYLIST,
+    routes.ORGANIZATION,
+    routes.CONTENTS,
   ];
 
   return (
@@ -67,7 +63,7 @@ function Menu() {
           <MenuItem key={`menuItemContent-${index}`} route={content}>
             {content.subRoutes && (
               <Box margin={{ left: '2.6rem' }}>
-                {content.subRoutes.map((subRoutes, subIndex) => (
+                {Object.values(content.subRoutes).map((subRoutes, subIndex) => (
                   <MenuItem
                     key={`menuItemSubContent-${subIndex}`}
                     route={subRoutes}

@@ -1,9 +1,9 @@
-import { Box, Spinner } from 'grommet';
 import { lazyImport } from 'lib-common';
 import { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
+import { ContentSpinner } from 'components/Spinner';
 import { Header } from 'features/Header';
 import { Menu } from 'features/Menu';
 
@@ -15,29 +15,28 @@ const { PlaylistPage } = lazyImport(
   () => import('features/Playlist/components/PlaylistPage'),
 );
 
-const RouteSpinner = () => (
-  <Box height="full" justify="center" align="center" role="alert">
-    <Spinner size="medium" />
-  </Box>
-);
-
 function AppRoutes() {
   return (
     <MainLayout Header={Header} menu={<Menu />}>
       <Switch>
-        <Route path={routes.HomePage.path} exact>
-          <Suspense fallback={<RouteSpinner />}>
+        <Route path={routes.HOMEPAGE.path} exact>
+          <Suspense fallback={<ContentSpinner />}>
             <HomePage />
           </Suspense>
         </Route>
-        <Route path={routes.Favorites.path} exact>
-          <Suspense fallback={<RouteSpinner />}>
+        <Route path={routes.FAVORITE.path} exact>
+          <Suspense fallback={<ContentSpinner />}>
             <Favorites />
           </Suspense>
         </Route>
-        <Route path={routes.MyPlaylist.path} exact>
-          <Suspense fallback={<RouteSpinner />}>
+        <Route path={routes.PLAYLIST.path} exact>
+          <Suspense fallback={<ContentSpinner />}>
             <PlaylistPage />
+          </Suspense>
+        </Route>
+        <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path} exact>
+          <Suspense fallback={<ContentSpinner />}>
+            <HomePage />
           </Suspense>
         </Route>
       </Switch>

@@ -38,7 +38,6 @@ const messages = defineMessages({
     description: 'Label for the MyContents link in the main navigation menu',
     id: 'routes.routes.menuMyContentsLabel',
   },
-
   menuContentsVideosLabel: {
     defaultMessage: 'Videos',
     description: 'Label for the video link in the content navigation menu',
@@ -49,11 +48,10 @@ const messages = defineMessages({
     description: 'Label for the lives link in the content navigation menu',
     id: 'routes.routes.menuContentsLivesLabel',
   },
-  menuContentsVirtualClassesLabel: {
-    defaultMessage: 'Virtual Classes',
-    description:
-      'Label for the Virtual Classes link in the content navigation menu',
-    id: 'routes.routes.menuContentsVirtualClassesLabel',
+  menuContentsClassroomsLabel: {
+    defaultMessage: 'Classrooms',
+    description: 'Label for the Classrooms link in the content navigation menu',
+    id: 'routes.routes.menuContentsClassroomsLabel',
   },
   menuContentsLessonsLabel: {
     defaultMessage: 'Lessons',
@@ -62,80 +60,92 @@ const messages = defineMessages({
   },
 });
 
+enum ERouteNames {
+  HOMEPAGE = 'HOMEPAGE',
+  FAVORITE = 'FAVORITE',
+  PROFILE = 'PROFILE',
+  PLAYLIST = 'PLAYLIST',
+  ORGANIZATION = 'ORGANIZATION',
+  CONTENTS = 'CONTENTS',
+}
+enum EMyContentsSubRouteNames {
+  VIDEO = 'VIDEO',
+  LIVE = 'LIVE',
+  CLASSROOM = 'CLASSROOM',
+  LESSON = 'LESSON',
+}
+
+type BasicRoute = Omit<Route, 'subRoutes'>;
+
 export interface Route {
   label: React.ReactNode;
   path: string;
   alias?: string[];
-  subRoutes?: Route[];
   menuIcon?: React.ReactNode;
-}
-
-enum ERouteNames {
-  HomePage = 'HomePage',
-  Favorites = 'Favorites',
-  MyProfile = 'MyProfile',
-  MyPlaylist = 'MyPlaylist',
-  MyOrganizations = 'MyOrganizations',
-  MyContents = 'MyContents',
+  subRoutes?: { [key in string]: BasicRoute };
 }
 
 type Routes = {
-  [key in ERouteNames]: Route;
+  [key in ERouteNames as Exclude<ERouteNames, 'CONTENTS'>]: BasicRoute;
+} & {
+  [ERouteNames.CONTENTS]: Route & {
+    subRoutes: {
+      [key in EMyContentsSubRouteNames]: BasicRoute;
+    };
+  };
 };
 
 export const routes: Routes = {
-  HomePage: {
+  HOMEPAGE: {
     label: <FormattedMessage {...messages.menuHomePageLabel} />,
     path: `/`,
     menuIcon: <HomeIcon width={30} height={30} />,
   },
-  Favorites: {
+  FAVORITE: {
     label: <FormattedMessage {...messages.menuFavoritesLabel} />,
     path: `/favorites`,
     menuIcon: <StarIcon width={30} height={30} />,
   },
-  MyProfile: {
+  PROFILE: {
     label: <FormattedMessage {...messages.menuMyProfileLabel} />,
     path: `/my-profile`,
     menuIcon: <AvatarIcon width={30} height={30} />,
   },
-  MyPlaylist: {
+  PLAYLIST: {
     label: <FormattedMessage {...messages.menuPlaylistLabel} />,
     path: `/my-playlists`,
     menuIcon: <VueListIcon width={30} height={30} />,
   },
-  MyOrganizations: {
+  ORGANIZATION: {
     label: <FormattedMessage {...messages.menuMyOrganizationsLabel} />,
     path: `/my-organizations`,
     menuIcon: <VueListIcon width={30} height={30} />,
   },
-  MyContents: {
+  CONTENTS: {
     label: <FormattedMessage {...messages.menuMyContentsLabel} />,
     path: `/my-contents`,
     menuIcon: <VueListIcon width={30} height={30} />,
-    subRoutes: [
-      {
+    subRoutes: {
+      VIDEO: {
         label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
         path: `/my-contents/videos`,
         menuIcon: <CheckListIcon width={30} height={30} />,
       },
-      {
+      LIVE: {
         label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
         path: `/my-contents/lives`,
         menuIcon: <CheckListIcon width={30} height={30} />,
       },
-      {
-        label: (
-          <FormattedMessage {...messages.menuContentsVirtualClassesLabel} />
-        ),
+      CLASSROOM: {
+        label: <FormattedMessage {...messages.menuContentsClassroomsLabel} />,
         path: `/my-contents/virtual-classes`,
         menuIcon: <CheckListIcon width={30} height={30} />,
       },
-      {
+      LESSON: {
         label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
         path: `/my-contents/lessons`,
         menuIcon: <CheckListIcon width={30} height={30} />,
       },
-    ],
+    },
   },
 };
