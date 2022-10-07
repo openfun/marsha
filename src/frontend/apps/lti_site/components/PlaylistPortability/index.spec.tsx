@@ -22,7 +22,6 @@ describe('<PlaylistPortability />', () => {
           permissions: {
             can_update: true,
           },
-          maintenance: false,
         } as any),
     });
   });

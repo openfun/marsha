@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { useJwt } from 'lib-components';
+import { useJwt, useMaintenance } from 'lib-components';
 import React from 'react';
 import { Router } from 'react-router-dom';
 
@@ -24,6 +24,12 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
 >;
 
 describe('<LTINav />', () => {
+  beforeEach(() => {
+    useMaintenance.setState(() => ({
+      isActive: false,
+    }));
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
   });
@@ -43,7 +49,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: false,
           } as any),
       });
 
@@ -76,7 +81,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: false,
             },
-            maintenance: false,
           } as any),
       });
 
@@ -88,6 +92,9 @@ describe('<LTINav />', () => {
     });
 
     it('hides dashboard link when system is under maintenance', () => {
+      useMaintenance.setState(() => ({
+        isActive: true,
+      }));
       const video = videoMockFactory({
         upload_state: uploadState.READY,
       });
@@ -100,7 +107,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: true,
           } as any),
       });
 
@@ -124,7 +130,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: false,
           } as any),
       });
 
@@ -151,7 +156,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: false,
           } as any),
       });
 
@@ -190,7 +194,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: false,
             },
-            maintenance: false,
           } as any),
       });
 
@@ -202,6 +205,9 @@ describe('<LTINav />', () => {
     });
 
     it('hides dashboard link when system is under maintenance', () => {
+      useMaintenance.setState(() => ({
+        isActive: true,
+      }));
       const document = documentMockFactory({
         upload_state: uploadState.READY,
       });
@@ -214,7 +220,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: true,
           } as any),
       });
 
@@ -238,7 +243,6 @@ describe('<LTINav />', () => {
             permissions: {
               can_update: true,
             },
-            maintenance: false,
           } as any),
       });
 

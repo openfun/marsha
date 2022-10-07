@@ -1,5 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
-import { useJwt } from 'lib-components';
+import { useJwt, useMaintenance } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -69,13 +69,13 @@ interface InstructorViewProps {
 
 export const InstructorView = ({ children, resource }: InstructorViewProps) => {
   const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const isMaintenanceOn = useMaintenance((state) => state.isActive);
 
   const canAccessDashboard =
-    getDecodedJwt().permissions.can_update &&
-    false === getDecodedJwt().maintenance;
+    getDecodedJwt().permissions.can_update && !isMaintenanceOn;
   const message = canAccessDashboard
     ? messages.title
-    : getDecodedJwt().maintenance
+    : isMaintenanceOn
     ? messages.maintenance
     : messages.disabledDashboard;
   const messagePlaceholder = canAccessDashboard

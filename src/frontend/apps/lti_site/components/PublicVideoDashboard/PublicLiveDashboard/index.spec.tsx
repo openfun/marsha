@@ -58,7 +58,6 @@ describe('PublicLiveDashboard', () => {
   beforeEach(() => {
     mockedGetDecodedJwt.mockReturnValue({
       locale: 'en',
-      maintenance: false,
       resource_id: 'id',
       permissions: { can_update: false, can_access_dashboard: false },
       roles: [],

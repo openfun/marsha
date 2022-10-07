@@ -1,5 +1,12 @@
 import * as Sentry from '@sentry/browser';
-import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
+import { decodeJwt, useJwt, useMaintenance } from 'lib-components';
+import React, {
+  Fragment,
+  PropsWithChildren,
+  useEffect,
+  useMemo,
+  useState,
+} from 'react';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'data/stores/useAppConfig';
@@ -16,6 +23,7 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);
 
   const appConfig = useAppConfig();
+  const jwt = useJwt((state) => state.jwt);
   const setIsSentryReady = useSentry((state) => state.setIsSentryReady);
   const addVideo = useVideo((state) => state.addResource);
   const addMultipleTimedTextTrack = useTimedTextTrack(
@@ -29,6 +37,8 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
 
   const isFeatureEnabled = useIsFeatureEnabled();
+
+  const decodedJwt = useMemo(() => decodeJwt(jwt), [jwt]);
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
@@ -86,6 +96,12 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   useEffect(() => {
     setAttendanceDelay(appConfig.attendanceDelay);
   }, [appConfig, setAttendanceDelay]);
+
+  useEffect(() => {
+    useMaintenance.setState({
+      isActive: decodedJwt.maintenance,
+    });
+  }, [decodedJwt]);
 
   //  call this effect last to configure all stores first
   useEffect(() => {
