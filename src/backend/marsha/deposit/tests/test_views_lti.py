@@ -11,6 +11,7 @@ from django.test import TestCase, override_settings
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
 from marsha.core.lti import LTI
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.tests.utils import reload_urlconf
 
 from ..factories import FileDepositoryFactory
 
@@ -24,6 +25,13 @@ class FileDepositoryLTIViewTestCase(TestCase):
     """Test case for the file LTI view."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use DEPOSIT_ENABLED
+        reload_urlconf()
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
