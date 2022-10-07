@@ -13,7 +13,7 @@ import MenuItem from './MenuItem';
 describe('<MenuItem />', () => {
   test('renders MenuItem', () => {
     const { container } = render(
-      <MenuItem route={routes.HomePage}>My Content</MenuItem>,
+      <MenuItem route={routes.HOMEPAGE}>My Content</MenuItem>,
       { testingLibraryOptions: { wrapper: BrowserRouter } },
     );
     expect(container.querySelector('svg')).toBeInTheDocument();
@@ -25,11 +25,11 @@ describe('<MenuItem />', () => {
 
   test('test active link', () => {
     const history = createMemoryHistory();
-    history.push(routes.HomePage.path);
+    history.push(routes.HOMEPAGE.path);
     const { rerender } = render(
       <Router history={history}>
-        <MenuItem route={routes.HomePage} />
-        <MenuItem route={routes.Favorites} />
+        <MenuItem route={routes.HOMEPAGE} />
+        <MenuItem route={routes.FAVORITE} />
       </Router>,
     );
 
@@ -42,11 +42,11 @@ describe('<MenuItem />', () => {
       backgroundColor: normalizeColor('bg-menu-hover', themeExtend),
     });
 
-    history.push(routes.Favorites.path);
+    history.push(routes.FAVORITE.path);
     rerender(
       <Router history={history}>
-        <MenuItem route={routes.HomePage} />
-        <MenuItem route={routes.Favorites} />
+        <MenuItem route={routes.HOMEPAGE} />
+        <MenuItem route={routes.FAVORITE} />
       </Router>,
     );
 
