@@ -857,3 +857,4 @@ class DepositedFileAPITest(TestCase):
 
         deposited_file.refresh_from_db()
         self.assertTrue(deposited_file.read)
+ 
