@@ -132,7 +132,16 @@ describe('<UploadDocuments />', () => {
   it('shows the upload progress when the file is uploading', async () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const classroomDocument = classroomDocumentMockFactory({
+      filename: file.name,
       upload_state: PENDING,
+      uploaded_on: '2020-01-01T00:00:00Z',
+      url: 'https://example.com/file.txt',
+    });
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [classroomDocument],
     });
 
     mockUseUploadManager.mockReturnValue({
@@ -150,6 +159,10 @@ describe('<UploadDocuments />', () => {
     });
     render(<UploadDocuments />);
 
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    // file exist in both uploadmanager and classrooms.classroomdocuments,
+    // but only the uploadmanager one is rendered.
+    await screen.findByText(file.name);
     await screen.findByText('20%');
     await screen.findByText(
       'Upload in progress... Please do not close or reload this page.',

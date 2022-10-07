@@ -1,4 +1,4 @@
-import { Anchor, Box, Button, Paragraph, Text } from 'grommet';
+import { Anchor, Box, Button, Grid, Paragraph, Text } from 'grommet';
 import Dropzone from 'react-dropzone';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
@@ -89,46 +89,61 @@ const UploadDocumentsRow = ({
   }
 
   return (
-    <Box fill background="#F9FBFD" pad="small" round="small" direction="row">
-      <Box justify="start" flex>
-        <Text weight="bold">{truncateFilename(filename, 40)}</Text>
-      </Box>
-      {uploadingObjectId && (
-        <React.Fragment>
-          <UploadableObjectProgress objectId={uploadingObjectId} />
-          {intl.formatMessage(messages.uploadingFile)}
-        </React.Fragment>
-      )}
-      {uploadState && (
-        <Box justify="end" flex="shrink" direction="row">
-          {uploadState === 'ready' ? (
-            <Box direction="row" align="center" gap="small">
-              {isDefault ? (
-                <ValidSVG iconColor="brand" height="20px" width="20px" />
-              ) : (
-                <Button
-                  alignSelf="start"
-                  onClick={setDefaultDocument}
-                  title={intl.formatMessage(messages.setDefaultDocument)}
-                >
-                  <ValidSVG iconColor="light-5" height="20px" width="20px" />
-                </Button>
-              )}
-              <Anchor
-                download
-                a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
-                label={intl.formatMessage(messages.downloadButtonLabel)}
-                style={{ fontFamily: 'Roboto-Medium' }}
-                title={intl.formatMessage(messages.downloadButtonLabel)}
-                href={url}
-              />
-            </Box>
-          ) : (
-            <Text>{uploadState}</Text>
-          )}
+    <Grid fill>
+      <Box
+        fill
+        background="#F9FBFD"
+        pad="small"
+        round="small"
+        direction={uploadingObjectId ? 'column' : 'row'}
+      >
+        <Box
+          justify={uploadingObjectId ? 'center' : 'start'}
+          flex={!uploadingObjectId}
+        >
+          <Text as="div" weight="bold">
+            {truncateFilename(filename, 40)}
+          </Text>
         </Box>
-      )}
-    </Box>
+        {uploadingObjectId && (
+          <React.Fragment>
+            <UploadableObjectProgress objectId={uploadingObjectId} />
+            <Text alignSelf="center">
+              {intl.formatMessage(messages.uploadingFile)}
+            </Text>
+          </React.Fragment>
+        )}
+        {uploadState && (
+          <Box justify="end" flex="shrink" direction="row">
+            {uploadState === 'ready' ? (
+              <Box direction="row" align="center" gap="small">
+                {isDefault ? (
+                  <ValidSVG iconColor="brand" height="20px" width="20px" />
+                ) : (
+                  <Button
+                    alignSelf="start"
+                    onClick={setDefaultDocument}
+                    title={intl.formatMessage(messages.setDefaultDocument)}
+                  >
+                    <ValidSVG iconColor="light-5" height="20px" width="20px" />
+                  </Button>
+                )}
+                <Anchor
+                  download
+                  a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
+                  label={intl.formatMessage(messages.downloadButtonLabel)}
+                  style={{ fontFamily: 'Roboto-Medium' }}
+                  title={intl.formatMessage(messages.downloadButtonLabel)}
+                  href={url}
+                />
+              </Box>
+            ) : (
+              <Text>{uploadState}</Text>
+            )}
+          </Box>
+        )}
+      </Box>
+    </Grid>
   );
 };
 
@@ -211,16 +226,23 @@ export const UploadDocuments = () => {
         margin={{ top: 'medium' }}
         round="xsmall"
       >
-        {classroomDocuments?.results.map((classroomDocument) => (
-          <UploadDocumentsRow
-            key={classroomDocument.id}
-            filename={classroomDocument.filename}
-            isDefault={classroomDocument.is_default}
-            documentId={classroomDocument.id}
-            uploadState={classroomDocument.upload_state}
-            url={classroomDocument.url}
-          />
-        ))}
+        {classroomDocuments?.results
+          .filter(
+            (classroomDocument) =>
+              uploadsInProgress.find(
+                (upload) => upload.objectId === classroomDocument.id,
+              ) === undefined,
+          )
+          .map((classroomDocument) => (
+            <UploadDocumentsRow
+              key={classroomDocument.id}
+              filename={classroomDocument.filename}
+              isDefault={classroomDocument.is_default}
+              documentId={classroomDocument.id}
+              uploadState={classroomDocument.upload_state}
+              url={classroomDocument.url}
+            />
+          ))}
 
         {uploadsInProgress.map((state, index) => (
           <UploadDocumentsRow
