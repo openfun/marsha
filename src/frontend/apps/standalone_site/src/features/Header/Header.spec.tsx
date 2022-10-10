@@ -10,7 +10,7 @@ describe('<Header />', () => {
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
   });
 
-  test('test scroll and update background', () => {
+  test('scroll and update background', () => {
     render(<Header />);
 
     const menuBar = screen.getByRole(/menubar/i);
