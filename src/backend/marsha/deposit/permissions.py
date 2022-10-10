@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions
 
+from marsha.core import models
+
 
 class IsTokenResourceRouteObjectRelatedFileDepository(permissions.BasePermission):
     """
@@ -35,3 +37,70 @@ class IsTokenResourceRouteObjectRelatedFileDepository(permissions.BasePermission
             )
         except ObjectDoesNotExist:
             return False
+
+
+class IsFileDepositoryOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the organization
+    linked to the playlist the file depository is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a file depository id in the path of the request,
+        which exists, and if the current user is an admin for the organization linked to
+        the playlist this file depository is a part of.
+        """
+        return models.OrganizationAccess.objects.filter(
+            role=models.ADMINISTRATOR,
+            organization__playlists__filedepositories__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsFileDepositoryPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the file depository is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a file depository id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this file depository
+        is a part of.
+        """
+        return models.PlaylistAccess.objects.filter(
+            role=models.ADMINISTRATOR,
+            playlist__filedepositories__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsFileDepositoryPlaylistOrOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the file depository is a part of or admin of the linked organization.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a file depository id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this file depository
+        is a part of or admin of the linked organization.
+        """
+        return IsFileDepositoryPlaylistAdmin().has_permission(
+            request, view
+        ) or IsFileDepositoryOrganizationAdmin().has_permission(request, view)

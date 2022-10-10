@@ -24,7 +24,7 @@ class FileDepository(BaseModel):
 
     playlist = models.ForeignKey(
         to=Playlist,
-        related_name="%(class)ss",
+        related_name="filedepositories",
         verbose_name=_("playlist"),
         help_text=_("playlist to which this file depository belongs"),
         # don't allow hard deleting a playlist if it still contains file_depository
