@@ -3,9 +3,16 @@ import json
 
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.utils import reload_urlconf
 from marsha.deposit.factories import FileDepositoryFactory
@@ -78,4 +85,73 @@ class FileDepositoryRetrieveAPITest(TestCase):
                 },
             },
             content,
+        )
+
+    def test_api_file_depository_fetch_user_access_token(self):
+        """A user with UserAccessToken should not be able to fetch a file depository."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        file_depository = FileDepositoryFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_file_depository_fetch_user_access_token_organization_admin(self):
+        """An organization administrator should be able to fetch a file depository."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        file_depository = FileDepositoryFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "id": str(file_depository.id),
+                "lti_id": str(file_depository.lti_id),
+                "title": file_depository.title,
+                "description": file_depository.description,
+                "playlist": {
+                    "id": str(file_depository.playlist.id),
+                    "title": file_depository.playlist.title,
+                    "lti_id": file_depository.playlist.lti_id,
+                },
+            },
+        )
+
+    def test_api_file_depository_fetch_user_access_token_playlist_admin(self):
+        """A playlist administrator should be able to fetch a file depository."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        file_depository = FileDepositoryFactory(playlist=playlist_access.playlist)
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "id": str(file_depository.id),
+                "lti_id": str(file_depository.lti_id),
+                "title": file_depository.title,
+                "description": file_depository.description,
+                "playlist": {
+                    "id": str(file_depository.playlist.id),
+                    "title": file_depository.playlist.title,
+                    "lti_id": file_depository.playlist.lti_id,
+                },
+            },
         )

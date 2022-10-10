@@ -5,7 +5,6 @@ from django.utils import timezone
 import django_filters
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from marsha.core import defaults, permissions as core_permissions
@@ -18,6 +17,7 @@ from . import permissions, serializers
 from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
+from .permissions import IsFileDepositoryPlaylistOrOrganizationAdmin
 
 
 class FileDepositoryFilter(django_filters.FilterSet):
@@ -72,7 +72,12 @@ class FileDepositoryViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [IsAuthenticated]
+            permission_classes = [
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | core_permissions.IsTokenStudent
+                | IsFileDepositoryPlaylistOrOrganizationAdmin
+            ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
         else:
