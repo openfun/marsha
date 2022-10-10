@@ -5,9 +5,16 @@ from unittest import mock
 from django.test import TestCase, override_settings
 
 from marsha.core.api import timezone
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.test_api_video import RSA_KEY_MOCK
 from marsha.core.tests.utils import reload_urlconf
@@ -362,6 +369,123 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
                             f"=attachment%3B+filename%3D{deposited_files[0].filename}"
                             f"&{expected_cloudfront_signature}"
                         ),
+                    },
+                ],
+            },
+        )
+
+    def test_api_file_depository_list_deposited_files_user_access_token(self):
+        """A user with UserAccessToken should not be able to fetch a list of deposited files."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        file_depository = FileDepositoryFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_file_depository_list_deposited_files_user_access_token_organization_admin(
+        self,
+    ):
+        """An organization administrator should be able to fetch a list of deposited files."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        file_depository = FileDepositoryFactory(playlist=playlist)
+        deposited_files = DepositedFileFactory.create_batch(
+            3, file_depository=file_depository
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/filedepositories/{file_depository.id}"
+                "/depositedfiles/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "author_name": deposited_files[2].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[2].filename,
+                        "id": str(deposited_files[2].id),
+                        "read": False,
+                        "size": deposited_files[2].size,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                    {
+                        "author_name": deposited_files[1].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[1].filename,
+                        "id": str(deposited_files[1].id),
+                        "read": False,
+                        "size": deposited_files[1].size,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                ],
+            },
+        )
+
+    def test_api_file_depository_list_deposited_files_user_access_token_playlist_admin(
+        self,
+    ):
+        """A playlist administrator should be able to fetch a list of deposited files."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        file_depository = FileDepositoryFactory(playlist=playlist_access.playlist)
+        deposited_files = DepositedFileFactory.create_batch(
+            3, file_depository=file_depository
+        )
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id}/depositedfiles/?limit=2",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": f"http://testserver/api/filedepositories/{file_depository.id}"
+                "/depositedfiles/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "author_name": deposited_files[2].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[2].filename,
+                        "id": str(deposited_files[2].id),
+                        "read": False,
+                        "size": deposited_files[2].size,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
+                    },
+                    {
+                        "author_name": deposited_files[1].author_name,
+                        "file_depository": str(file_depository.id),
+                        "filename": deposited_files[1].filename,
+                        "id": str(deposited_files[1].id),
+                        "read": False,
+                        "size": deposited_files[1].size,
+                        "upload_state": "pending",
+                        "uploaded_on": None,
+                        "url": None,
                     },
                 ],
             },
