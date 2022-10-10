@@ -17,7 +17,7 @@ describe('<AppRoutes />', () => {
     });
   });
 
-  test('test router', async () => {
+  test('check router', async () => {
     render(<AppRoutes />);
 
     await waitFor(() => {

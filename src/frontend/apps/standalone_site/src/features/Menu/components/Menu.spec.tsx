@@ -20,7 +20,7 @@ describe('<Menu />', () => {
     ).toBeInTheDocument();
   });
 
-  test('test menu opening state', () => {
+  test('menu opening state', () => {
     render(
       <Fragment>
         <Burger />

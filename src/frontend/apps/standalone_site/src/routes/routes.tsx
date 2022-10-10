@@ -99,52 +99,122 @@ export const routes: Routes = {
   HOMEPAGE: {
     label: <FormattedMessage {...messages.menuHomePageLabel} />,
     path: `/`,
-    menuIcon: <HomeIcon width={30} height={30} />,
+    menuIcon: (
+      <HomeIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-homepage"
+      />
+    ),
   },
   FAVORITE: {
     label: <FormattedMessage {...messages.menuFavoritesLabel} />,
     path: `/favorites`,
-    menuIcon: <StarIcon width={30} height={30} />,
+    menuIcon: (
+      <StarIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-favorites"
+      />
+    ),
   },
   PROFILE: {
     label: <FormattedMessage {...messages.menuMyProfileLabel} />,
     path: `/my-profile`,
-    menuIcon: <AvatarIcon width={30} height={30} />,
+    menuIcon: (
+      <AvatarIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-my-profile"
+      />
+    ),
   },
   PLAYLIST: {
     label: <FormattedMessage {...messages.menuPlaylistLabel} />,
     path: `/my-playlists`,
-    menuIcon: <VueListIcon width={30} height={30} />,
+    menuIcon: (
+      <VueListIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-my-playlists"
+      />
+    ),
   },
   ORGANIZATION: {
     label: <FormattedMessage {...messages.menuMyOrganizationsLabel} />,
     path: `/my-organizations`,
-    menuIcon: <VueListIcon width={30} height={30} />,
+    menuIcon: (
+      <VueListIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-my-organizations"
+      />
+    ),
   },
   CONTENTS: {
     label: <FormattedMessage {...messages.menuMyContentsLabel} />,
     path: `/my-contents`,
-    menuIcon: <VueListIcon width={30} height={30} />,
+    menuIcon: (
+      <VueListIcon
+        width={30}
+        height={30}
+        role="img"
+        aria-label="svg-menu-my-contents"
+      />
+    ),
     subRoutes: {
       VIDEO: {
         label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
         path: `/my-contents/videos`,
-        menuIcon: <CheckListIcon width={30} height={30} />,
+        menuIcon: (
+          <CheckListIcon
+            width={30}
+            height={30}
+            role="img"
+            aria-label="svg-menu-my-contents-videos"
+          />
+        ),
       },
       LIVE: {
         label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
         path: `/my-contents/lives`,
-        menuIcon: <CheckListIcon width={30} height={30} />,
+        menuIcon: (
+          <CheckListIcon
+            width={30}
+            height={30}
+            role="img"
+            aria-label="svg-menu-my-contents-live"
+          />
+        ),
       },
       CLASSROOM: {
         label: <FormattedMessage {...messages.menuContentsClassroomsLabel} />,
         path: `/my-contents/virtual-classes`,
-        menuIcon: <CheckListIcon width={30} height={30} />,
+        menuIcon: (
+          <CheckListIcon
+            width={30}
+            height={30}
+            role="img"
+            aria-label="svg-menu-my-contents-virtual-classes"
+          />
+        ),
       },
       LESSON: {
         label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
         path: `/my-contents/lessons`,
-        menuIcon: <CheckListIcon width={30} height={30} />,
+        menuIcon: (
+          <CheckListIcon
+            width={30}
+            height={30}
+            role="img"
+            aria-label="svg-menu-my-contents-lessons"
+          />
+        ),
       },
     },
   },

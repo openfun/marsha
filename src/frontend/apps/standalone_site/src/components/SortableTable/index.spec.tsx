@@ -208,7 +208,7 @@ describe('<SortableTable />', () => {
 
     deferred.resolve([{ label: 'some label' }, { label: 'some other label' }]);
 
-    await waitForElementToBeRemoved(() => screen.getByRole('status'));
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
     screen.getByText('some label');
     screen.getByText('some other label');
@@ -253,7 +253,7 @@ describe('<SortableTable />', () => {
       { label: 'and an other one just for fun' },
     ]);
 
-    await waitForElementToBeRemoved(() => screen.getByRole('status'));
+    await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
     screen.getByText('a new label');
     screen.getByText('and an other one just for fun');

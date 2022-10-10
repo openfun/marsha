@@ -9,7 +9,7 @@ describe('<Burger />', () => {
     expect(screen.getByRole(/button/i)).toBeInTheDocument();
   });
 
-  test('test Burger interaction', () => {
+  test('Burger interaction', () => {
     render(<Burger />);
 
     const burger = screen.getByRole(/button/i);
