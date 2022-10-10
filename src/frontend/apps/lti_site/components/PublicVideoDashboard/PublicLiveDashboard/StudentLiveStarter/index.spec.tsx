@@ -1,6 +1,6 @@
 import { act, cleanup, waitFor, screen } from '@testing-library/react';
 import { Nullable } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext, useJwt } from 'lib-components';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -30,8 +30,6 @@ jest.mock('data/stores/useAppConfig', () => ({
     },
   }),
 }));
-
-const mockedGetDecodedJwt = jest.fn();
 
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),
@@ -73,17 +71,27 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+  decodeJwt: () => ({}),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('StudentLiveStarter', () => {
   beforeEach(() => {
-    mockedGetDecodedJwt.mockReturnValue({
-      locale: 'en',
-      resource_id: 'id',
-      permissions: { can_update: false, can_access_dashboard: false },
-      roles: [],
-      session_id: 'session-id',
-    });
-
-    useJwt.setState({ getDecodedJwt: mockedGetDecodedJwt });
+    useJwt.setState({ jwt: 'some token' });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        resource_id: 'id',
+        permissions: { can_update: false, can_access_dashboard: false },
+        roles: [],
+        session_id: 'session-id',
+      },
+    ] as any);
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -147,13 +155,14 @@ describe('StudentLiveStarter', () => {
   });
 
   it('redirects to dashboard if user has right and live is stopping or stopped', async () => {
-    mockedGetDecodedJwt.mockReturnValue({
-      locale: 'en',
-      resource_id: 'id',
-      permissions: { can_update: true, can_access_dashboard: false },
-      roles: [],
-      session_id: 'session-id',
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        resource_id: 'id',
+        permissions: { can_update: true, can_access_dashboard: false },
+        roles: [],
+        session_id: 'session-id',
+      },
+    ] as any);
 
     const values: (liveState.STOPPING | liveState.STOPPED)[] = [
       liveState.STOPPING,

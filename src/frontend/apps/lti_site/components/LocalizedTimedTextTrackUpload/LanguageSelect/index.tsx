@@ -1,5 +1,4 @@
 import { Select } from 'grommet';
-import { useJwt } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -34,7 +33,6 @@ export const LanguageSelect = ({
   timedTextModeWidget,
 }: LanguageSelectProps) => {
   const intl = useIntl();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
 
   const errorLanguageChoice = useMemo(
     () => ({
@@ -68,14 +66,14 @@ export const LanguageSelect = ({
   }, [choices, timedTextTracks, timedTextModeWidget]);
 
   const userLocalAvailableLanguage = useMemo(() => {
-    const userLocalLanguage = getDecodedJwt().locale;
+    const userLocalLanguage = intl.locale;
 
     return availableSelectableLanguages
       ? availableSelectableLanguages.find((availableLanguage) =>
           userLocalLanguage.startsWith(availableLanguage.value),
         )
       : errorLanguageChoice;
-  }, [availableSelectableLanguages, getDecodedJwt]);
+  }, [availableSelectableLanguages, intl]);
 
   const [selectedLanguage, setSelectedLanguage] = useState<{
     label: string;

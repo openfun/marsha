@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { Loader, useJwt } from 'lib-components';
+import { Loader } from 'lib-components';
 import React, { Suspense } from 'react';
 
 import { useAppConfig } from 'data/stores/useAppConfig';
@@ -11,24 +11,22 @@ import PlaylistPage from '.';
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: jest.fn(),
 }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => [
+    {
+      permissions: {
+        can_update: true,
+      },
+    },
+  ],
+}));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
 describe('<PlaylistPage />', () => {
-  beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
-  });
-
   afterEach(() => {
-    jest.resetAllMocks();
     jest.clearAllMocks();
   });
 

@@ -1,9 +1,5 @@
 import { Nullable } from 'lib-common';
-
-export interface DecodedJwtPermission {
-  can_access_dashboard: boolean;
-  can_update: boolean;
-}
+import { ResourceContext } from './ResourceContext';
 
 export interface DecodedJwtUser {
   anonymous_id?: string;
@@ -13,15 +9,9 @@ export interface DecodedJwtUser {
   user_fullname?: Nullable<string>;
 }
 
-export interface DecodedJwt {
-  context_id?: string;
-  consumer_site?: string;
+export interface DecodedJwt extends ResourceContext {
   locale: string;
   maintenance: boolean;
-  permissions: DecodedJwtPermission;
-  playlist_id?: string;
-  resource_id: string;
-  roles: string[];
   session_id: string;
   user?: DecodedJwtUser;
 }

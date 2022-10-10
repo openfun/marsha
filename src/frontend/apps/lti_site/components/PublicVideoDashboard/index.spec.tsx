@@ -85,6 +85,18 @@ jest.mock('data/stores/useAppConfig', () => ({
   }),
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => [
+    {
+      permissions: {
+        can_update: false,
+      },
+    },
+  ],
+  decodeJwt: () => ({}),
+}));
+
 describe('PublicVideoDashboard', () => {
   beforeAll(() => {
     jest.useFakeTimers();
@@ -95,12 +107,6 @@ describe('PublicVideoDashboard', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some jwt',
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
     });
 
     fetchMock.mock(

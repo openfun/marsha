@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { Document } from 'types/file';
@@ -15,9 +15,9 @@ export const InstructorWrapper = ({
   children,
   resource,
 }: InstructorWrapperProps) => {
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
 
-  if (getDecodedJwt().permissions.can_access_dashboard) {
+  if (context.permissions.can_access_dashboard) {
     return <InstructorView resource={resource}>{children}</InstructorView>;
   } else {
     return <React.Fragment>{children}</React.Fragment>;

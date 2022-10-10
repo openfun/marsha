@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { DecodedJwt, useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import {
@@ -26,22 +26,29 @@ const mockVideo = videoMockFactory({
   participants_in_discussion: [mockParticipant],
 });
 
-const mockGetDecodedJwt = jest.fn();
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 describe('<LiveVideoPanel />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   it('closes the panel if no item is selected', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
     const mockSetPanelVisibility = jest.fn();
     useLivePanelState.setState({
       currentItem: undefined,
@@ -65,12 +72,14 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('renders the content with selection', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
     useLivePanelState.setState({
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [
@@ -91,11 +100,13 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('renders the correct viewers list if the user is not an instructor', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
 
     useParticipantsStore.setState({
       participants: [
@@ -130,11 +141,13 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('renders the correct viewers list if the user is an instructor', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: true,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
 
     useParticipantsStore.setState({
       participants: [
@@ -170,12 +183,14 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('does not render tabs with only one item available', () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
     useLivePanelState.setState({
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [LivePanelItem.APPLICATION],
@@ -196,12 +211,14 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('renders with appropriate style on large screen [screenshot]', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
     useLivePanelState.setState({
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [
@@ -215,12 +232,14 @@ describe('<LiveVideoPanel />', () => {
   });
 
   it('renders with appropriate style on small screen [screenshot]', async () => {
-    mockGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
       },
-    } as DecodedJwt);
+    ] as any);
     useLivePanelState.setState({
       currentItem: LivePanelItem.APPLICATION,
       availableItems: [

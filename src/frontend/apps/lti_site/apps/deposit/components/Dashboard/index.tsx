@@ -1,6 +1,6 @@
 import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
@@ -68,13 +68,8 @@ const extendedTheme: ThemeType = {
 };
 
 const Dashboard = () => {
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
-  let canUpdate: boolean;
-  try {
-    canUpdate = getDecodedJwt().permissions.can_update;
-  } catch (e) {
-    return <FormattedMessage {...messages.tokenError} />;
-  }
+  const [context] = useCurrentResourceContext();
+  const canUpdate = context.permissions.can_update;
 
   const { data: fileDepository, status: useFileDepositoryStatus } =
     useFileDepository(depositAppData.fileDepository!.id, {

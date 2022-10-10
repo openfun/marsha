@@ -28,6 +28,11 @@ jest.mock('components/VideoWidgetProvider', () => ({
   VideoWidgetProvider: () => <p>VideoWidgetProvider</p>,
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: () => ({}),
+}));
+
 const languageChoices = [
   { label: 'English', value: 'en' },
   { label: 'French', value: 'fr' },
@@ -37,7 +42,6 @@ describe('<DashboardVOD />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
-      getDecodedJwt: () => ({ locale: 'en_US' } as any),
     });
   });
 
@@ -46,7 +50,9 @@ describe('<DashboardVOD />', () => {
       choices: languageChoices,
     });
 
-    const { container } = render(wrapInVideo(<DashboardVOD />, mockedVideo));
+    const { container } = render(wrapInVideo(<DashboardVOD />, mockedVideo), {
+      intlOptions: { locale: 'en-US' },
+    });
 
     // Video
     const videoElement = container.getElementsByTagName('video')[0]!;

@@ -19,16 +19,12 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LiveVideoTabPanel } from '.';
 
-describe('<LiveVideoTabPanel /> titles', () => {
-  beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: { can_update: true },
-        } as any),
-    });
-  });
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => [{ permissions: { can_update: true } }],
+}));
 
+describe('<LiveVideoTabPanel /> titles', () => {
   it('renders for item in LivePanelItem', () => {
     const tabTitles = {
       [LivePanelItem.APPLICATION]: 'application',

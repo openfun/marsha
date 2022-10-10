@@ -1,5 +1,14 @@
 import { Grommet } from 'grommet';
-import { decodeJwt, useJwt } from 'lib-components';
+import {
+  CurrentResourceContextProvider,
+  DecodedJwt,
+  decodeJwt,
+  useJwt,
+  useCurrentSession,
+  useCurrentUser,
+  ResourceContext,
+  User,
+} from 'lib-components';
 import React, {
   ComponentType,
   lazy,
@@ -23,10 +32,11 @@ import { colors, theme } from 'utils/theme/theme';
 
 const jwt = useJwt.getState().jwt;
 
+const decodedJwt: DecodedJwt = decodeJwt(jwt);
 let localeCode: string;
 let locale: string;
 try {
-  locale = localeCode = decodeJwt(jwt).locale;
+  locale = localeCode = decodedJwt.locale;
   if (localeCode.match(/^.*_.*$/)) {
     localeCode = localeCode.split('_')[0];
   }
@@ -34,6 +44,26 @@ try {
   localeCode = 'en';
   locale = 'en_US';
 }
+
+useCurrentSession.setState({
+  sessionId: decodedJwt.session_id,
+});
+
+const currentUser: User = {
+  anonymous_id: decodedJwt.user?.anonymous_id,
+  email: decodedJwt.user?.email || undefined,
+  id: decodedJwt.user?.id,
+  username: decodedJwt.user?.username || undefined,
+  user_fullname: decodedJwt.user?.user_fullname,
+  is_staff: false,
+  is_superuser: false,
+  organization_accesses: [],
+};
+useCurrentUser.setState({
+  currentUser,
+});
+
+const resourceContext: ResourceContext = { ...decodedJwt };
 
 try {
   if (!window.Intl) {
@@ -91,39 +121,41 @@ const AppContentLoader = () => {
   else throw new Error('application and frontend are not properly set');
 
   return (
-    <QueryClientProvider client={queryClient}>
-      <ReactQueryDevtools />
-      <RawIntlProvider value={intl}>
-        <Grommet theme={theme} style={{ height: '100%' }}>
-          <ErrorBoundary
-            fallbackRender={({ error }) => (
-              <BoundaryScreenError code={500} message={error.message} />
-            )}
-          >
-            <Toaster
-              toastOptions={{
-                duration: 5000,
-                success: {
-                  style: {
-                    background: colors['status-ok'],
+    <CurrentResourceContextProvider value={resourceContext}>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
+        <RawIntlProvider value={intl}>
+          <Grommet theme={theme} style={{ height: '100%' }}>
+            <ErrorBoundary
+              fallbackRender={({ error }) => (
+                <BoundaryScreenError code={500} message={error.message} />
+              )}
+            >
+              <Toaster
+                toastOptions={{
+                  duration: 5000,
+                  success: {
+                    style: {
+                      background: colors['status-ok'],
+                    },
                   },
-                },
-                error: {
-                  style: {
-                    color: colors.white,
-                    background: colors['accent-2'],
+                  error: {
+                    style: {
+                      color: colors.white,
+                      background: colors['accent-2'],
+                    },
                   },
-                },
-              }}
-            />
-            <Suspense fallback={<Loader />}>
-              <Content />
-            </Suspense>
-            <GlobalStyles />
-          </ErrorBoundary>
-        </Grommet>
-      </RawIntlProvider>
-    </QueryClientProvider>
+                }}
+              />
+              <Suspense fallback={<Loader />}>
+                <Content />
+              </Suspense>
+              <GlobalStyles />
+            </ErrorBoundary>
+          </Grommet>
+        </RawIntlProvider>
+      </QueryClientProvider>
+    </CurrentResourceContextProvider>
   );
 };
 

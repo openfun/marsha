@@ -1,6 +1,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { useJwt, useMaintenance } from 'lib-components';
+import { useCurrentResourceContext, useMaintenance } from 'lib-components';
 import React from 'react';
 import { Router } from 'react-router-dom';
 
@@ -23,6 +23,15 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('<LTINav />', () => {
   beforeEach(() => {
     useMaintenance.setState(() => ({
@@ -43,14 +52,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.VIDEOS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(
         <Router history={history}>
@@ -75,14 +83,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.VIDEOS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: false,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: false,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={video} />);
 
@@ -101,14 +108,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.VIDEOS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={video} />);
 
@@ -124,14 +130,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.VIDEOS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={video} />);
 
@@ -150,14 +155,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.DOCUMENTS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(
         wrapInIntlProvider(
@@ -188,14 +192,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.DOCUMENTS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: false,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: false,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={document} />);
 
@@ -214,14 +217,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.DOCUMENTS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={document} />);
 
@@ -237,14 +239,13 @@ describe('<LTINav />', () => {
       mockedUseAppConfig.mockReturnValue({
         modelName: modelName.DOCUMENTS,
       } as any);
-      useJwt.setState({
-        getDecodedJwt: () =>
-          ({
-            permissions: {
-              can_update: true,
-            },
-          } as any),
-      });
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_update: true,
+          },
+        },
+      ] as any);
 
       render(<LTINav object={document} />);
 

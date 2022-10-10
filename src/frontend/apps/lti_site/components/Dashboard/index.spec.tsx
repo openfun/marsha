@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { DecodedJwt, Loader, useJwt } from 'lib-components';
+import { decodeJwt, Loader } from 'lib-components';
 import React, { Suspense } from 'react';
 
 import { useAppConfig } from 'data/stores/useAppConfig';
@@ -23,6 +23,18 @@ jest.mock(
   'components/DashboardDocument',
   () => (props: { document: Document }) => <span title={props.document.id} />,
 );
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => [
+    {
+      permissions: {
+        can_update: true,
+      },
+    },
+  ],
+  decodeJwt: jest.fn(),
+}));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: jest.fn(),
@@ -33,14 +45,7 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
 
 describe('<Dashboard />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
   });
 
   it('renders with video', async () => {

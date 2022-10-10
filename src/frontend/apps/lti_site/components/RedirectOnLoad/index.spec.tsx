@@ -1,5 +1,5 @@
 import { cleanup } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -22,15 +22,18 @@ const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
-const mockedGetDecodedJwt = jest.fn();
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResource =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 describe('<RedirectOnLoad />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useJwt.setState({
-      getDecodedJwt: mockedGetDecodedJwt,
-    });
   });
 
   it('redirects users to the error view on LTI error', () => {
@@ -40,11 +43,9 @@ describe('<RedirectOnLoad />', () => {
       document: null,
       modelName: modelName.VIDEOS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: undefined,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: undefined } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -69,11 +70,9 @@ describe('<RedirectOnLoad />', () => {
       document: null,
       modelName: modelName.VIDEOS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: undefined,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: undefined } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -99,11 +98,9 @@ describe('<RedirectOnLoad />', () => {
         document: null,
         modelName: modelName.VIDEOS,
       } as any);
-      mockedGetDecodedJwt.mockReturnValue({
-        permissions: {
-          can_update: false,
-        },
-      } as any);
+      mockedUseCurrentResource.mockReturnValue([
+        { permissions: { can_update: false } },
+      ] as any);
 
       const { getByText } = render(<RedirectOnLoad />, {
         routerOptions: {
@@ -129,11 +126,9 @@ describe('<RedirectOnLoad />', () => {
         document: { is_ready_to_show: true, upload_state: state },
         modelName: modelName.DOCUMENTS,
       } as any);
-      mockedGetDecodedJwt.mockReturnValue({
-        permissions: {
-          can_update: false,
-        },
-      } as any);
+      mockedUseCurrentResource.mockReturnValue([
+        { permissions: { can_update: false } },
+      ] as any);
 
       const { getByText } = render(<RedirectOnLoad />, {
         routerOptions: {
@@ -161,11 +156,9 @@ describe('<RedirectOnLoad />', () => {
       document: null,
       modelName: modelName.VIDEOS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: true,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: true } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -193,11 +186,9 @@ describe('<RedirectOnLoad />', () => {
       },
       modelName: modelName.DOCUMENTS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: true,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: true } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -225,11 +216,9 @@ describe('<RedirectOnLoad />', () => {
       document: null,
       modelName: modelName.VIDEOS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: false,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: false } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -257,11 +246,9 @@ describe('<RedirectOnLoad />', () => {
       },
       modelName: modelName.DOCUMENTS,
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: false,
-      },
-    } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: false } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {
@@ -283,6 +270,9 @@ describe('<RedirectOnLoad />', () => {
     mockedUseAppConfig.mockReturnValue({
       lti_select_form_data: { key: 'value' },
     } as any);
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: undefined } },
+    ] as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
       routerOptions: {

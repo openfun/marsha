@@ -1,10 +1,8 @@
 import { cleanup, screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
 import React, { Suspense } from 'react';
 
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
-import { DecodedJwt } from 'lib-components';
 import { modelName } from 'types/models';
 import { LiveModeType, liveState, uploadState } from 'types/tracks';
 import { videoMockFactory } from 'utils/tests/factories';
@@ -40,18 +38,17 @@ jest.mock('components/DashboardVOD', () => ({
 
 const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
 
-describe('<DashboardVideoWrapper />', () => {
-  beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as DecodedJwt),
-    });
-  });
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => ({
+    permissions: {
+      can_update: true,
+    },
+  }),
+  decodeJwt: () => ({}),
+}));
 
+describe('<DashboardVideoWrapper />', () => {
   afterEach(() => {
     jest.clearAllMocks();
   });

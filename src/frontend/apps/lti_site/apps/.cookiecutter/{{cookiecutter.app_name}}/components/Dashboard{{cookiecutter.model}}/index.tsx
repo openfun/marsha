@@ -2,7 +2,7 @@ import { Box, Spinner, Text, ThemeContext, ThemeType } from 'grommet';
 import React, { Suspense, useRef } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { Loader, useJwt } from 'lib-components';
+import { Loader, useCurrentResourceContext } from 'lib-components';
 
 import { {{cookiecutter.app_name}}AppData } from 'apps/{{cookiecutter.app_name}}/data/{{cookiecutter.app_name}}AppData';
 import { use{{cookiecutter.model}} } from 'apps/{{cookiecutter.app_name}}/data/queries';
@@ -30,14 +30,9 @@ const messages = defineMessages({
 const extendedTheme: ThemeType = {};
 
 const Dashboard{{cookiecutter.model}} = () => {
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
 
-  let canUpdate: boolean;
-  try {
-    canUpdate = getDecodedJwt().permissions.can_update;
-  } catch (e) {
-    return <Text>Token Error</Text>;
-  }
+  let canUpdate = context.permissions.can_update;
 
   const {{cookiecutter.model_lower}}RefetchInterval = useRef(5000);
   const { data: {{cookiecutter.model_lower}}, status: use{{cookiecutter.model}}Status } = use{{cookiecutter.model}}(

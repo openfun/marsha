@@ -8,6 +8,7 @@ import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { videoMockFactory } from 'utils/tests/factories';
 
 import { useVideo } from './stores/useVideo';
+import { decodeJwt, useCurrentUser } from 'lib-components';
 
 jest.mock('utils/getOrInitAnonymousId', () => ({
   getOrInitAnonymousId: jest.fn(),
@@ -16,16 +17,16 @@ const mockGetOrInitAnonymousId = getOrInitAnonymousId as jest.MockedFunction<
   typeof getOrInitAnonymousId
 >;
 
-const mockedGetDecodedJwt = jest.fn();
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useJwt: {
     getState: () => ({
       jwt: 'cool_token_m8',
-      getDecodedJwt: mockedGetDecodedJwt,
     }),
   },
+  decodeJwt: jest.fn(),
 }));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
 const publicToken = {
   locale: 'en',
@@ -73,7 +74,9 @@ describe('initVideoWebsocket', () => {
     initVideoWebsocket = require('./websocket').initVideoWebsocket;
   });
   it('connects to the websocket and updates video zustand store when message is received', async () => {
-    mockedGetDecodedJwt.mockReturnValue(ltiToken);
+    useCurrentUser.setState({ currentUser: ltiToken as any });
+    mockedDecodeJwt.mockReturnValue(ltiToken);
+
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
@@ -117,7 +120,9 @@ describe('initVideoWebsocket', () => {
     connectUsingAnonymousId = require('./websocket').initVideoWebsocket;
   });
   it('connects to the websocket using an anonymous id', async () => {
-    mockedGetDecodedJwt.mockReturnValue(publicToken);
+    useCurrentUser.setState({ currentUser: publicToken as any });
+    mockedDecodeJwt.mockReturnValue(publicToken);
+
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`ws://localhost:1234/ws/video/${video.id}/`);
@@ -163,7 +168,9 @@ describe('initVideoWebsocket', () => {
     connectUsingHttp = require('./websocket').initVideoWebsocket;
   });
   it('connects to the websocket using https protocol', async () => {
-    mockedGetDecodedJwt.mockReturnValue(ltiToken);
+    useCurrentUser.setState({ currentUser: ltiToken as any });
+    mockedDecodeJwt.mockReturnValue(ltiToken);
+
     const video = videoMockFactory();
     useVideo.getState().addResource(video);
     const server = new WS(`wss://localhost:4321/ws/video/${video.id}/`);
@@ -207,7 +214,9 @@ describe('initVideoWebsocket', () => {
     reconnectSocket = require('./websocket').initVideoWebsocket;
   });
   it('reconnects to the server after a disconnection and fetch the video data.', async () => {
-    mockedGetDecodedJwt.mockReturnValue(ltiToken);
+    useCurrentUser.setState({ currentUser: ltiToken as any });
+    mockedDecodeJwt.mockReturnValue(ltiToken);
+
     const video = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${video.id}/`,
@@ -279,7 +288,9 @@ describe('initVideoWebsocket', () => {
     stopReconnectingSocket = require('./websocket').initVideoWebsocket;
   });
   it('stops reconnecting when websocket close code is 4003.', async () => {
-    mockedGetDecodedJwt.mockReturnValue(ltiToken);
+    useCurrentUser.setState({ currentUser: ltiToken as any });
+    mockedDecodeJwt.mockReturnValue(ltiToken);
+
     const video = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${video.id}/`,

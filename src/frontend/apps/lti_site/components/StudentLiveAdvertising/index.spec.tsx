@@ -1,7 +1,7 @@
 import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentUser } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
@@ -63,6 +63,30 @@ jest.mock(
     },
 );
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: () => ({
+    context_id: 'context_id',
+    consumer_site: 'a.site.fr',
+    email: 'an.email@openfun.fr',
+    locale: 'en',
+    maintenance: false,
+    permissions: {
+      can_access_dashboard: false,
+      can_update: false,
+    },
+    resource_id: 'ressource_id',
+    roles: [],
+    session_id: 'session_id',
+    user: {
+      id: 'user_id',
+      username: 'username',
+      user_fullname: 'hisName',
+      email: 'test@openfun.fr',
+    },
+  }),
+}));
+
 describe('<StudentLiveAdvertising />', () => {
   const nextYear = new Date().getFullYear() + 1;
 
@@ -71,27 +95,10 @@ describe('<StudentLiveAdvertising />', () => {
     //    set system date to 2022-01-27T14:00:00
     jest.setSystemTime(new Date(2022, 1, 27, 14, 0, 0));
 
-    useJwt.setState({
-      getDecodedJwt: () => ({
-        context_id: 'context_id',
-        consumer_site: 'a.site.fr',
+    useCurrentUser.setState({
+      currentUser: {
         email: 'an.email@openfun.fr',
-        locale: 'en',
-        maintenance: false,
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-        resource_id: 'ressource_id',
-        roles: [],
-        session_id: 'session_id',
-        user: {
-          id: 'user_id',
-          username: 'username',
-          user_fullname: 'hisName',
-          email: 'test@openfun.fr',
-        },
-      }),
+      } as any,
     });
   });
 

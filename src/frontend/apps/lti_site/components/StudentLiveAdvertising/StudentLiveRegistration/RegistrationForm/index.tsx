@@ -1,7 +1,7 @@
 import { Button, Grommet, Paragraph, TextInput, ThemeType } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { decodeJwt, useJwt } from 'lib-components';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -139,12 +139,12 @@ export const RegistrationForm = ({
   const trimedEmail = defaultEmail && defaultEmail.trim();
 
   const intl = useIntl();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const jwt = useJwt((state) => state.jwt);
   const [values, setValues] = useState({ email: trimedEmail });
   const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
   const isLtiToken = useMemo(() => {
-    return checkLtiToken(getDecodedJwt());
-  }, [getDecodedJwt]);
+    return checkLtiToken(decodeJwt(jwt));
+  }, [jwt]);
 
   const displayEmailInput = !(isLtiToken && trimedEmail && trimedEmail !== '');
 

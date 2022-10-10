@@ -1,5 +1,5 @@
 import { act, screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
@@ -29,6 +29,15 @@ jest.mock('utils/conversejs/converse', () => ({
   converseMounter: () => mockInitConverse,
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 const mockVideo = videoMockFactory();
 
 describe('<ConverseInitializer />', () => {
@@ -38,15 +47,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse without liveRegistration if user can not access dashboard', async () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -89,15 +97,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse for a video without xmpp', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -111,15 +118,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse for a video without live state', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       xmpp: {
@@ -141,15 +147,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('does not initialize converse for a video with a live state idle', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       live_state: liveState.IDLE,
@@ -172,15 +177,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse with the displayname', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,
@@ -223,15 +227,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('renders children if converse is initialized in the window', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     mockConverse = {};
 
     render(
@@ -248,15 +251,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse in the window if not define yet', async () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const liveSession = liveSessionFactory();
     useLiveSession.getState().setLiveSession(liveSession);
 
@@ -283,15 +285,14 @@ describe('<ConverseInitializer />', () => {
   });
 
   it('initializes converse plugins if video has xmpp and live_state not idle', async () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = {
       ...mockVideo,
       live_state: liveState.RUNNING,

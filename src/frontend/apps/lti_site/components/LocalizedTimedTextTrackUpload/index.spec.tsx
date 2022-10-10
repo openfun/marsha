@@ -47,7 +47,6 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'jsonWebToken',
-      getDecodedJwt: () => ({ locale: 'fr-FR' } as any),
     });
   });
 
@@ -65,6 +64,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       <LocalizedTimedTextTrackUpload
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     screen.getByRole('button', {
@@ -116,6 +116,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
           timedTextModeWidget={timedTextMode.SUBTITLE}
         />
       </UploadManagerContext.Provider>,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     const uploadButton = screen.getByRole('button', { name: 'Upload file' });
@@ -190,6 +191,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
         />
         ,
       </DeleteTimedTextTrackUploadModalProvider>,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     screen.getByText('French');

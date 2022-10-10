@@ -1,5 +1,5 @@
 import { Tabs, Box, ResponsiveContext, ThemeType, ThemeContext } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React, { useEffect, useContext, Fragment } from 'react';
 import styled from 'styled-components';
 
@@ -28,7 +28,7 @@ const RelativeBox = styled(Box)`
 
 export const LiveVideoPanel = () => {
   const size = useContext(ResponsiveContext);
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
     (state) => ({
       currentItem: state.currentItem,
@@ -48,7 +48,7 @@ export const LiveVideoPanel = () => {
       gap: 'none',
     },
   };
-  const canUpdate = getDecodedJwt().permissions.can_update;
+  const canUpdate = context.permissions.can_update;
 
   //  close panel if there is nothing to display
   useEffect(() => {
