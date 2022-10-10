@@ -1,7 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
@@ -10,8 +9,6 @@ import { timedTextMode } from 'types/tracks';
 import { timedTextMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { LanguageSelect } from '.';
-
-let mockDecodedJwtToken = {};
 
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
 
@@ -26,17 +23,7 @@ const languageChoices = [
 ];
 
 describe('<LanguageSelect />', () => {
-  beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-      getDecodedJwt: () => mockDecodedJwtToken as any,
-    });
-  });
-
   it('renders the component with instructor local language available', () => {
-    mockDecodedJwtToken = {
-      locale: 'fr-FR',
-    };
     useTimedTextTrackLanguageChoices.setState({
       choices: languageChoices,
     });
@@ -46,6 +33,7 @@ describe('<LanguageSelect />', () => {
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });
@@ -61,9 +49,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with instructor local language unavailable', () => {
-    mockDecodedJwtToken = {
-      locale: 'pg-PG',
-    };
     useTimedTextTrackLanguageChoices.setState({
       choices: languageChoices,
     });
@@ -73,6 +58,7 @@ describe('<LanguageSelect />', () => {
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'pg-PG' } },
     );
 
     expect(onChangeMock).toHaveBeenCalledWith({
@@ -91,9 +77,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with some languages already having some subtitles uploaded', () => {
-    mockDecodedJwtToken = {
-      locale: 'fr-FR',
-    };
     useTimedTextTrackLanguageChoices.setState({
       choices: languageChoices,
     });
@@ -113,6 +96,7 @@ describe('<LanguageSelect />', () => {
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });
@@ -139,10 +123,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with no languages', () => {
-    mockDecodedJwtToken = {
-      locale: 'fr-FR',
-    };
-
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'OPTIONS' });
 
     render(
@@ -150,6 +130,7 @@ describe('<LanguageSelect />', () => {
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     expect(onChangeMock).toHaveBeenCalledWith({
@@ -179,9 +160,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('changes the selected language', () => {
-    mockDecodedJwtToken = {
-      locale: 'fr-FR',
-    };
     useTimedTextTrackLanguageChoices.setState({
       choices: languageChoices,
     });
@@ -191,6 +169,7 @@ describe('<LanguageSelect />', () => {
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
       />,
+      { intlOptions: { locale: 'fr-FR' } },
     );
 
     expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });

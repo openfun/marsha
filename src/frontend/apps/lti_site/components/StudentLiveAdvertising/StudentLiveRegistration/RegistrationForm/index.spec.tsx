@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useJwt } from 'lib-components';
+import { decodeJwt } from 'lib-components';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
@@ -16,8 +16,6 @@ const setRegistrationCompleted = jest.fn();
 
 let matchMedia: MatchMediaMock;
 
-const mockGetDecodedJwt = jest.fn();
-
 jest.mock('data/sideEffects/createLiveSession', () => ({
   createLiveSession: jest.fn(),
 }));
@@ -32,12 +30,18 @@ const mockUpdateLiveSession = updateLiveSession as jest.MockedFunction<
   typeof updateLiveSession
 >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: jest.fn(),
+}));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
 describe('<RegistrationForm />', () => {
   beforeEach(() => {
     matchMedia = new MatchMediaMock();
     jest.clearAllMocks();
 
-    mockGetDecodedJwt.mockReturnValue({
+    mockedDecodeJwt.mockReturnValue({
       consumer_site: 'consumer_site',
       locale: 'en',
       maintenance: false,
@@ -55,8 +59,6 @@ describe('<RegistrationForm />', () => {
         user_fullname: 'user full name',
       },
     });
-
-    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   afterEach(() => {
@@ -102,7 +104,7 @@ describe('<RegistrationForm />', () => {
   });
 
   it('hides the field for lti user with email', async () => {
-    mockGetDecodedJwt.mockReturnValue({
+    mockedDecodeJwt.mockReturnValue({
       consumer_site: 'consumer site',
       context_id: 'context id',
       locale: 'en',

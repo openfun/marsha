@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { AnonymousUser, useCurrentUser } from 'lib-components';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveJitsi } from 'types/tracks';
@@ -46,7 +46,7 @@ export const initializeJitsi = async (
   isInstructor: boolean,
   jitsiNode: HTMLDivElement,
 ): Promise<JitsiMeetExternalAPI> => {
-  const getDecodedJwt = useJwt.getState().getDecodedJwt;
+  const user = useCurrentUser.getState().currentUser;
 
   if (!window.JitsiMeetExternalAPI) {
     await loadScript(live.live_info.jitsi.external_api_url);
@@ -119,7 +119,7 @@ export const initializeJitsi = async (
     userInfo: {
       displayName:
         useLiveSession.getState().liveSession?.display_name ||
-        getDecodedJwt().user?.username,
+        (user !== AnonymousUser.ANONYMOUS && user?.username),
     },
   });
 };

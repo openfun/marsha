@@ -1,5 +1,5 @@
 import RobustWebSocket from 'altamoon-robust-websocket';
-import { useJwt } from 'lib-components';
+import { decodeJwt, useJwt } from 'lib-components';
 
 import { addResource } from 'data/stores/generics';
 import { WS_ENPOINT } from 'settings';
@@ -26,12 +26,12 @@ export const initVideoWebsocket = (video: Video) => {
     return;
   }
 
-  const { jwt, getDecodedJwt } = useJwt.getState();
+  const { jwt } = useJwt.getState();
 
   const location = window.location;
   const wsProto = location.protocol.startsWith('https') ? 'wss' : 'ws';
   let url = `${wsProto}://${location.host}${WS_ENPOINT}/video/${video.id}/?jwt=${jwt}`;
-  if (!checkLtiToken(getDecodedJwt())) {
+  if (!checkLtiToken(decodeJwt(jwt))) {
     const anonymousId = getOrInitAnonymousId();
     url = `${url}&anonymous_id=${anonymousId}`;
   }

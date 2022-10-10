@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useCurrentUser } from 'lib-components';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveModeType, liveState } from 'types/tracks';
@@ -13,10 +13,6 @@ const mockJitsi = jest.fn();
 
 describe('DashboardLiveJitsi/utils', () => {
   beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as any),
-    });
-
     global.JitsiMeetExternalAPI = mockJitsi;
   });
 
@@ -308,13 +304,10 @@ describe('DashboardLiveJitsi/utils', () => {
         video: video.id,
       },
     });
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            username: 'user name',
-          },
-        } as any),
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'user name',
+      } as any,
     });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
@@ -399,13 +392,10 @@ describe('DashboardLiveJitsi/utils', () => {
       },
       live_state: liveState.RUNNING,
     });
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            username: 'user name',
-          },
-        } as any),
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'user name',
+      } as any,
     });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
@@ -495,13 +485,10 @@ describe('DashboardLiveJitsi/utils', () => {
       live_state: liveState.RUNNING,
       join_mode: JoinMode.FORCED,
     });
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            username: 'user name',
-          },
-        } as any),
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'user name',
+      } as any,
     });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, false, node);
@@ -591,13 +578,10 @@ describe('DashboardLiveJitsi/utils', () => {
       live_state: liveState.RUNNING,
       join_mode: JoinMode.FORCED,
     });
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            username: 'user name',
-          },
-        } as any),
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'user name',
+      } as any,
     });
 
     initializeJitsi(convertVideoToJitsiLive(video)!, true, node);

@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
@@ -14,13 +14,13 @@ interface RedirectDocumentProps {
 }
 
 export const RedirectDocument = ({ document }: RedirectDocumentProps) => {
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
 
   if (document.is_ready_to_show) {
     return <Redirect push to={PLAYER_ROUTE(modelName.DOCUMENTS)} />;
   }
 
-  if (getDecodedJwt().permissions.can_update) {
+  if (context.permissions.can_update) {
     return <Redirect push to={DASHBOARD_ROUTE(modelName.DOCUMENTS)} />;
   }
 

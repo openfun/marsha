@@ -4,7 +4,7 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
@@ -21,8 +21,6 @@ import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
 
-const mockedGetDecodedJwt = jest.fn();
-
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({
     static: {
@@ -33,6 +31,16 @@ jest.mock('data/stores/useAppConfig', () => ({
     },
   }),
 }));
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+  decodeJwt: () => ({}),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 jest.mock('utils/getOrInitAnonymousId', () => ({
   getOrInitAnonymousId: jest.fn(),
@@ -56,18 +64,14 @@ const mockedStudentLiveStarter = StudentLiveStarter as jest.MockedFunction<
 
 describe('PublicLiveDashboard', () => {
   beforeEach(() => {
-    mockedGetDecodedJwt.mockReturnValue({
-      locale: 'en',
-      resource_id: 'id',
-      permissions: { can_update: false, can_access_dashboard: false },
-      roles: [],
-      session_id: 'session-id',
-    });
-
-    useJwt.setState({
-      jwt: 'some token',
-      getDecodedJwt: mockedGetDecodedJwt,
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        resource_id: 'id',
+        permissions: { can_update: false, can_access_dashboard: false },
+        roles: [],
+        session_id: 'session-id',
+      },
+    ] as any);
   });
   afterEach(() => {
     jest.clearAllMocks();

@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
@@ -17,19 +17,19 @@ interface RedirectVideoProps {
 }
 
 export const RedirectVideo = ({ video }: RedirectVideoProps) => {
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
 
   if (
     (video.live_type ||
       video.is_ready_to_show ||
       video.upload_state === uploadState.PROCESSING) &&
-    getDecodedJwt().permissions.can_update
+    context.permissions.can_update
   ) {
     //  teacher can access live dashboard
     return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
   }
 
-  if (getDecodedJwt().permissions.can_update) {
+  if (context.permissions.can_update) {
     //  teacher access video wizzard
     return (
       <Redirect

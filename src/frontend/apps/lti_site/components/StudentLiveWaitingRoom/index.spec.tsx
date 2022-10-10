@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { useCurrentUser, useMaintenance } from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -45,29 +45,37 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: () => [
+    {
+      context_id: 'context_id',
+      consumer_site: 'a.site.fr',
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'ressource_id',
+      roles: [],
+      session_id: 'session_id',
+    },
+  ],
+  decodeJwt: () => ({}),
+}));
+
 describe('<StudentLiveWaitingRoom />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () => ({
-        context_id: 'context_id',
-        consumer_site: 'a.site.fr',
-        email: 'an.email@openfun.fr',
-        locale: 'en',
-        maintenance: false,
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-        resource_id: 'ressource_id',
-        roles: [],
-        session_id: 'session_id',
-        user: {
-          id: 'user_id',
-          username: 'username',
-          user_fullname: 'hisName',
-          email: 'test@openfun.fr',
-        },
-      }),
+    useMaintenance.setState({
+      isActive: false,
+    });
+
+    useCurrentUser.setState({
+      currentUser: {
+        id: 'user_id',
+        username: 'username',
+        user_fullname: 'hisName',
+        email: 'test@openfun.fr',
+      } as any,
     });
   });
 

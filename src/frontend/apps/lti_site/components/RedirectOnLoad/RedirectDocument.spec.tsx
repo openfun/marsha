@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -11,10 +11,22 @@ import render from 'utils/tests/render';
 
 import { RedirectDocument } from './RedirectDocument';
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResource =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('RedirectDocument', () => {
   beforeEach(() => jest.resetAllMocks());
 
   it('redirects to the player when the document is ready to show', () => {
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: undefined } },
+    ] as any);
     const document = documentMockFactory({
       is_ready_to_show: true,
     });
@@ -44,14 +56,9 @@ describe('RedirectDocument', () => {
   });
 
   it('redirects to the dashboard when the user has update permission and the document is not ready to show', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: true } },
+    ] as any);
     const document = documentMockFactory({
       is_ready_to_show: false,
     });
@@ -81,14 +88,9 @@ describe('RedirectDocument', () => {
   });
 
   it('redirects to the error view when the user has no update permission and the document is not ready to show', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResource.mockReturnValue([
+      { permissions: { can_update: false } },
+    ] as any);
     const document = documentMockFactory({
       is_ready_to_show: false,
     });

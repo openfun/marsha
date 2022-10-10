@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { useCurrentUser, useJwt } from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -38,6 +38,11 @@ jest.mock('utils/checkLtiToken', () => ({
   checkLtiToken: jest.fn(),
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: jest.fn(),
+}));
+
 const mockConverse = converse.claimNewNicknameInChatRoom as jest.MockedFunction<
   typeof converse.claimNewNicknameInChatRoom
 >;
@@ -54,7 +59,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   afterEach(() => {
     jest.useRealTimers();
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, async () => {
@@ -127,10 +132,6 @@ describe('<InputDisplayNameOverlay />', () => {
   });
 
   it('enters a valid nickname but the server takes too long to answer.', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as any),
-    });
-
     mockConverse.mockImplementation(
       async (
         _displayName: string,
@@ -313,7 +314,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('enters a valid nickname and validates it.', async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      jwt: 'some_jwt',
     });
 
     mockConverse.mockImplementation(
@@ -358,13 +359,13 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('closes the window.', () => {
     useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-            username: 'jane_doe',
-          },
-        } as any),
+      jwt: 'some_jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      } as any,
     });
 
     render(<InputDisplayNameOverlay />);
@@ -381,13 +382,13 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('displays the component and use liveragistration username as default value', () => {
     useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-            username: 'jane_doe',
-          },
-        } as any),
+      jwt: 'some_jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      } as any,
     });
 
     const liveSession = liveSessionFactory({ username: 'Foo' });
@@ -400,13 +401,13 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('displays the component and use jwt display_name as default value', () => {
     useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-            username: 'jane_doe',
-          },
-        } as any),
+      jwt: 'some_jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      } as any,
     });
 
     render(wrapInIntlProvider(<InputDisplayNameOverlay />));
@@ -416,7 +417,7 @@ describe('<InputDisplayNameOverlay />', () => {
 
   it('displays the component and compares it with previous render. [screenshot]', async () => {
     useJwt.setState({
-      getDecodedJwt: () => ({} as any),
+      jwt: 'some_jwt',
     });
 
     await renderImageSnapshot(<InputDisplayNameOverlay />);

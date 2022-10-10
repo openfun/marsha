@@ -7,7 +7,7 @@ import {
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { decodeJwt, useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
@@ -86,18 +86,27 @@ jest.mock('data/stores/useJitsiApi', () => ({
   useJitsiApi: () => [mockJitsiValue, mockSetJitsi],
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+  decodeJwt: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
     jest.useFakeTimers();
 
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: { can_update: false },
+      },
+    ] as any);
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     fetchMock.mock(
       '/api/timedtexttracks/',
@@ -602,14 +611,12 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
   }));
 
   beforeEach(() => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: { can_update: true },
+      },
+    ] as any);
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     useLiveStateStarted.setState({
       isStarted: true,

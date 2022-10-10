@@ -1,14 +1,21 @@
-import { useJwt } from 'lib-components';
+import {
+  AnonymousUser,
+  decodeJwt,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 
 import { checkLtiToken } from './checkLtiToken';
 import { getAnonymousId, setAnonymousId } from './localstorage';
 
 export const getOrInitAnonymousId = () => {
-  const decodedJwt = useJwt.getState().getDecodedJwt();
-  let anonymousId = decodedJwt.user?.anonymous_id;
+  const jwt = useJwt.getState().jwt;
+  const user = useCurrentUser.getState().currentUser;
+  let anonymousId =
+    user !== AnonymousUser.ANONYMOUS ? user?.anonymous_id : undefined;
   if (anonymousId) {
     setAnonymousId(anonymousId);
-  } else if (!checkLtiToken(decodedJwt)) {
+  } else if (!checkLtiToken(decodeJwt(jwt))) {
     anonymousId = getAnonymousId();
   }
 

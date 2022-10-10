@@ -1,6 +1,11 @@
+import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { OrganizationAccessRole, useJwt } from 'lib-components';
+import {
+  OrganizationAccessRole,
+  useCurrentResourceContext,
+  useJwt,
+} from 'lib-components';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useAppConfig } from 'data/stores/useAppConfig';
@@ -18,18 +23,25 @@ jest.mock('data/stores/useAppConfig', () => ({
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
-const mockedGetDecodedJwt = jest.fn();
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 describe('<RedirectOnLoad />', () => {
   beforeEach(() => {
     useJwt.setState({
-      jwt: 'some-jwt',
-      getDecodedJwt: mockedGetDecodedJwt,
+      jwt: 'some token',
     });
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
   });
 
   it('redirects users to the error view on LTI error', () => {
@@ -77,15 +89,17 @@ describe('<RedirectOnLoad />', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: true,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
+        roles: [OrganizationAccessRole.INSTRUCTOR],
+        consumer_site: 'consumer_site',
       },
-      roles: [OrganizationAccessRole.INSTRUCTOR],
-      consumer_site: 'consumer_site',
-    } as any);
+    ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -96,22 +110,24 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Markdown editor');
+    screen.getByText('Markdown editor');
   });
 
   it('shows viewer for student or instructor who cannot update', async () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: false,
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+        roles: [OrganizationAccessRole.STUDENT],
+        consumer_site: 'consumer_site',
       },
-      roles: [OrganizationAccessRole.STUDENT],
-      consumer_site: 'consumer_site',
-    } as any);
+    ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -122,7 +138,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Markdown viewer');
+    screen.getByText('Markdown viewer');
   });
 
   it('shows not found for student if still draft', async () => {
@@ -133,7 +149,7 @@ describe('<RedirectOnLoad />', () => {
       jwt: undefined,
     });
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -144,6 +160,6 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Markdown not found');
+    screen.getByText('Markdown not found');
   });
 });

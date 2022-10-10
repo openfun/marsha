@@ -1,6 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentSession, useJwt } from 'lib-components';
 import React from 'react';
 
 import { XAPI_ENDPOINT } from 'settings';
@@ -25,10 +25,10 @@ describe('<DocumentPlayer />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'foo',
-      getDecodedJwt: () =>
-        ({
-          session_id: 'abcd',
-        } as any),
+    });
+
+    useCurrentSession.setState({
+      sessionId: 'abcd',
     });
   });
 

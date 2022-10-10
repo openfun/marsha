@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useJwt, useCurrentSession } from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';
 
@@ -19,10 +19,7 @@ interface DocumentPlayerProps {
 
 const DocumentPlayer = (props: DocumentPlayerProps) => {
   const document = useDocument((state) => state.getDocument(props.document));
-  const { jwt, getDecodedJwt } = useJwt((state) => ({
-    jwt: state.jwt,
-    getDecodedJwt: state.getDecodedJwt,
-  }));
+  const jwt = useJwt((state) => state.jwt);
 
   if (!jwt) {
     throw new Error('Jwt is required.');
@@ -32,7 +29,7 @@ const DocumentPlayer = (props: DocumentPlayerProps) => {
     const callback = () => {
       const documentXapiStatement = new DocumentXapiStatement(
         jwt,
-        getDecodedJwt().session_id,
+        useCurrentSession.getState().sessionId,
       );
       documentXapiStatement.downloaded();
       window.removeEventListener('blur', callback);

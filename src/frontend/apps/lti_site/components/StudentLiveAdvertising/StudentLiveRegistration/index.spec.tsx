@@ -1,7 +1,7 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { decodeJwt, useCurrentUser, useJwt } from 'lib-components';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -32,29 +32,40 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: jest.fn(),
+}));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
 describe('<StudentLiveRegistration />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
-      getDecodedJwt: () => ({
-        consumer_site: 'a.site.fr',
-        context_id: 'course-v1:ufr+mathematics+0001',
-        locale: 'en',
-        maintenance: false,
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-        resource_id: 'ressource_id',
-        roles: [],
-        session_id: 'session_id',
-        user: {
-          id: 'user_id',
-          username: 'username',
-          user_fullname: 'hisName',
-          email: null,
-        },
-      }),
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        email: null,
+      } as any,
+    });
+    mockedDecodeJwt.mockReturnValue({
+      consumer_site: 'a.site.fr',
+      context_id: 'course-v1:ufr+mathematics+0001',
+      locale: 'en',
+      maintenance: false,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'ressource_id',
+      roles: [],
+      session_id: 'session_id',
+      user: {
+        id: 'user_id',
+        username: 'username',
+        user_fullname: 'hisName',
+        email: null,
+      },
     });
   });
 
@@ -217,22 +228,22 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form using an anonymousId', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-      getDecodedJwt: () => ({
-        consumer_site: 'a.site.fr',
-        context_id: 'course-v1:ufr+mathematics+0001',
-        locale: 'en',
-        maintenance: false,
-        permissions: {
-          can_access_dashboard: false,
-          can_update: false,
-        },
-        resource_id: 'ressource_id',
-        roles: [],
-        session_id: 'session_id',
-        user: undefined,
-      }),
+    mockedDecodeJwt.mockReturnValue({
+      consumer_site: 'a.site.fr',
+      context_id: 'course-v1:ufr+mathematics+0001',
+      locale: 'en',
+      maintenance: false,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'ressource_id',
+      roles: [],
+      session_id: 'session_id',
+      user: undefined,
+    });
+    useCurrentUser.setState({
+      currentUser: undefined,
     });
     const liveSession = liveSessionFactory({
       id: 'id',

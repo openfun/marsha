@@ -1,5 +1,5 @@
 import { Maybe } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -27,7 +27,7 @@ interface StudentLiveStarterProps {
 export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
   const intl = useIntl();
   const live = useCurrentLive();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
   const session = useLiveSession();
   const liveScheduleStartDate = useMemo(() => {
     if (!live.starting_at) {
@@ -166,7 +166,7 @@ export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
     !liveScheduleStartDate;
 
   if (
-    getDecodedJwt().permissions.can_update &&
+    context.permissions.can_update &&
     [liveState.STOPPING, liveState.STOPPED].includes(live.live_state)
   ) {
     // user has update permission, we redirect him to the dashboard

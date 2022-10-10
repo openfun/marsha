@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { decodeJwt, useCurrentUser, useJwt } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { getOrInitAnonymousId } from './getOrInitAnonymousId';
@@ -14,8 +14,6 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
 const mockSetAnonymousId = setAnonymousId as jest.MockedFunction<
   typeof setAnonymousId
 >;
-
-const mockGetDecodedJwt = jest.fn();
 
 const publicToken = {
   locale: 'en',
@@ -48,21 +46,24 @@ const ltiToken = {
   },
 };
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: jest.fn(),
+}));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
 describe('initAnonymousId', () => {
   beforeEach(() => {
     jest.resetAllMocks();
-
-    useJwt.setState({ getDecodedJwt: mockGetDecodedJwt });
   });
 
   it('set the anonymous_is when present in the token and return it', () => {
     const anonymousId = uuidv4();
-    mockGetDecodedJwt.mockReturnValue({
-      ...publicToken,
-      user: {
+    useJwt.setState({ jwt: publicToken } as any);
+    useCurrentUser.setState({
+      currentUser: {
         anonymous_id: anonymousId,
-        email: null,
-      },
+      } as any,
     });
 
     expect(getOrInitAnonymousId()).toEqual(anonymousId);
@@ -72,8 +73,12 @@ describe('initAnonymousId', () => {
 
   it('generates a new anonymous_id when the public token does not contains one', () => {
     const anonynousId = uuidv4();
-    mockGetDecodedJwt.mockReturnValue(publicToken);
+    useJwt.setState({ jwt: publicToken } as any);
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
     mockGetAnonymousId.mockReturnValue(anonynousId);
+    mockedDecodeJwt.mockReturnValue(publicToken);
 
     expect(getOrInitAnonymousId()).toEqual(anonynousId);
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
@@ -81,7 +86,11 @@ describe('initAnonymousId', () => {
   });
 
   it('does nothing when the token is not a public one', () => {
-    mockGetDecodedJwt.mockReturnValue(ltiToken);
+    useJwt.setState({ jwt: ltiToken } as any);
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
+    mockedDecodeJwt.mockReturnValue(ltiToken);
 
     expect(getOrInitAnonymousId()).toBeUndefined();
     expect(mockSetAnonymousId).not.toHaveBeenCalled();

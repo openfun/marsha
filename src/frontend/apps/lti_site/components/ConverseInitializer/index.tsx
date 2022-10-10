@@ -1,5 +1,5 @@
 import { Box, Spinner } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -16,7 +16,7 @@ import { converse } from 'utils/window';
 
 export const ConverseInitializer = ({ children }: PropsWithChildren<{}>) => {
   const video = useCurrentVideo();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
   const initConverse = useMemo(() => {
     return converseMounter();
   }, [converseMounter]);
@@ -53,13 +53,13 @@ export const ConverseInitializer = ({ children }: PropsWithChildren<{}>) => {
       return;
     }
 
-    const isAdmin = getDecodedJwt().permissions.can_access_dashboard;
+    const isAdmin = context.permissions.can_access_dashboard;
     if (!isAdmin && liveSession) {
       initConverse(video.xmpp, video, liveSession.display_name);
     } else if (isAdmin) {
       initConverse(video.xmpp, video);
     }
-  }, [initConverse, isConverseLoaded, liveSession, video, getDecodedJwt]);
+  }, [initConverse, isConverseLoaded, liveSession, video, context]);
 
   if (!isConverseLoaded) {
     return (

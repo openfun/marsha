@@ -7,13 +7,6 @@ import { videoMockFactory } from 'utils/tests/factories';
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
 
-jest.mock('jwt-decode', () => {
-  return jest.fn().mockImplementation(() => ({
-    locale: 'en',
-    session_id: 'abcd',
-  }));
-});
-
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({
     flags: {},
@@ -23,6 +16,11 @@ jest.mock('data/stores/useAppConfig', () => ({
 jest.mock('./createVideojsPlayer');
 
 jest.mock('utils/errors/report');
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: () => ({ locale: 'en', session_id: 'abcd' }),
+}));
 
 describe('createPlayer', () => {
   beforeEach(() => {
