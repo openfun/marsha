@@ -1,6 +1,10 @@
-import { act, fireEvent, screen } from '@testing-library/react';
+import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
@@ -28,8 +32,14 @@ jest.mock('data/stores/useAppConfig', () => ({
     },
   }),
 }));
-
-const mockGetDecodedJwt = jest.fn();
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResource =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 jest.mock('apps/classroom/data/classroomAppData', () => ({
   classroomAppData: {
@@ -44,7 +54,6 @@ describe('<DashboardClassroom />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'token',
-      getDecodedJwt: mockGetDecodedJwt,
     });
   });
 
@@ -54,7 +63,9 @@ describe('<DashboardClassroom />', () => {
   });
 
   it('shows student dashboard', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockedUseCurrentResource.mockReturnValue([
+      ltiStudentTokenMockFactory(),
+    ] as any);
     const classroom = classroomMockFactory({
       id: '1',
       started: false,
@@ -71,7 +82,9 @@ describe('<DashboardClassroom />', () => {
   });
 
   it('shows instructor dashboard', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
+    mockedUseCurrentResource.mockReturnValue([
+      ltiInstructorTokenMockFactory(),
+    ] as any);
     const classroom = classroomMockFactory({
       id: '1',
       started: false,
@@ -97,7 +110,7 @@ describe('<DashboardClassroom />', () => {
       {},
       { user_fullname: undefined },
     );
-    mockGetDecodedJwt.mockReturnValue(token);
+    mockedUseCurrentResource.mockReturnValue([token] as any);
     const classroom = classroomMockFactory({ id: '1', started: false });
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
@@ -130,7 +143,7 @@ describe('<DashboardClassroom />', () => {
 
   it('asks for fullname when joining a classroom, not cancellable for student', async () => {
     const token = ltiStudentTokenMockFactory({}, { user_fullname: undefined });
-    mockGetDecodedJwt.mockReturnValue(token);
+    mockedUseCurrentResource.mockReturnValue([token] as any);
     window.open = jest.fn(() => window);
 
     const classroom = classroomMockFactory({
@@ -167,7 +180,19 @@ describe('<DashboardClassroom />', () => {
 
   it('uses appdata fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory();
-    mockGetDecodedJwt.mockReturnValue(token);
+    useCurrentUser.setState({
+      currentUser: {
+        anonymous_id: token.user?.anonymous_id,
+        email: token.user?.email || undefined,
+        id: token.user?.id,
+        is_staff: false,
+        is_superuser: false,
+        organization_accesses: [],
+        username: token.user?.username || undefined,
+        user_fullname: token.user?.user_fullname,
+      },
+    });
+    mockedUseCurrentResource.mockReturnValue([token] as any);
     window.open = jest.fn(() => window);
 
     const classroom = classroomMockFactory({ id: '1', started: true });
@@ -190,7 +215,9 @@ describe('<DashboardClassroom />', () => {
       deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
     );
 
-    expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/');
+    await waitFor(() =>
+      expect(fetchMock.calls()[1]![0]).toEqual('/api/classrooms/1/join/'),
+    );
     expect(fetchMock.calls()[1]![1]).toEqual({
       headers: {
         Authorization: 'Bearer token',
@@ -218,7 +245,19 @@ describe('<DashboardClassroom />', () => {
 
   it('displays user fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory();
-    mockGetDecodedJwt.mockReturnValue(token);
+    useCurrentUser.setState({
+      currentUser: {
+        anonymous_id: token.user?.anonymous_id,
+        email: token.user?.email || undefined,
+        id: token.user?.id,
+        is_staff: false,
+        is_superuser: false,
+        organization_accesses: [],
+        username: token.user?.username || undefined,
+        user_fullname: token.user?.user_fullname,
+      },
+    });
+    mockedUseCurrentResource.mockReturnValue([token] as any);
     window.open = jest.fn(() => null);
 
     const classroom = classroomMockFactory({ id: '1', started: false });
@@ -274,20 +313,10 @@ describe('<DashboardClassroom />', () => {
     getByText(`You have joined the classroom as ${token.user?.user_fullname}.`);
   });
 
-  it('display error when no jwt exists', async () => {
-    mockGetDecodedJwt.mockImplementation(() => {
-      throw new Error('No jwt');
-    });
-    const { getByText } = render(<DashboardClassroom />);
-
-    getByText('The classroom you are looking for could not be found');
-    getByText(
-      'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
-    );
-  });
-
   it('shows an error message when it fails to get the classroom', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockedUseCurrentResource.mockReturnValue([
+      ltiStudentTokenMockFactory(),
+    ] as any);
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {

@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useCurrentSession, useJwt } from 'lib-components';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import React, { Fragment, useEffect, useRef } from 'react';
@@ -40,10 +40,8 @@ const StatusInfo = styled.span`
 type downloadableSize = Extract<videoSize, 1080 | 720 | 480>;
 
 export const DownloadVideo = ({ urls }: { urls: VideoUrls }) => {
-  const { jwt, getDecodedJwt } = useJwt((state) => ({
-    jwt: state.jwt,
-    getDecodedJwt: state.getDecodedJwt,
-  }));
+  const jwt = useJwt((state) => state.jwt);
+  const sessionId = useCurrentSession((state) => state.sessionId);
 
   if (!jwt) {
     throw new Error('Jwt is required.');
@@ -61,10 +59,7 @@ export const DownloadVideo = ({ urls }: { urls: VideoUrls }) => {
   const onDownload = (size: videoSize) => {
     if (player.current) {
       const callback = () => {
-        const videoXAPIStatement = new VideoXAPIStatement(
-          jwt,
-          getDecodedJwt().session_id,
-        );
+        const videoXAPIStatement = new VideoXAPIStatement(jwt, sessionId);
         videoXAPIStatement.setDuration(player.current!.duration());
         videoXAPIStatement.downloaded(size);
         window.removeEventListener('blur', callback);

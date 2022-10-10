@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -16,16 +16,27 @@ import render from 'utils/tests/render';
 
 import { RedirectVideo } from './RedirectVideo';
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('RedirectVideo', () => {
+  beforeEach(() => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
+      },
+    ] as any);
+  });
+
   it('redirects to the dashboard when the video is a live and user has update permission', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
     const video = videoMockFactory({
       is_ready_to_show: true,
       live_type: LiveModeType.JITSI,
@@ -57,14 +68,13 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the player when the video is ready to show', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+      },
+    ] as any);
     const liveTypes = [null, LiveModeType.JITSI];
     const video = videoMockFactory({
       is_ready_to_show: true,
@@ -97,14 +107,6 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the wizard when the user has update permission', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
     const video = videoMockFactory({
       is_ready_to_show: false,
       title: null,
@@ -140,14 +142,6 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the wizard VOD creation when the video update state is initialized', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: true,
-          },
-        } as any),
-    });
     const video = videoMockFactory({
       is_ready_to_show: false,
       title: 'Not blank title',
@@ -184,14 +178,13 @@ describe('RedirectVideo', () => {
   });
 
   it('redirects to the error view when the user has no update permission and the video is not ready to show', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = videoMockFactory({
       is_ready_to_show: false,
     });
@@ -224,14 +217,13 @@ describe('RedirectVideo', () => {
   it('redirects to the player view when the starting date is set to past', () => {
     const startingAtPast = new Date();
     startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = videoMockFactory({
       is_ready_to_show: false,
       starting_at: startingAtPast.toISOString(),
@@ -265,14 +257,13 @@ describe('RedirectVideo', () => {
   it('redirects to the player view when the starting date is set to future', () => {
     const startingAt = new Date();
     startingAt.setDate(startingAt.getDate() + 10);
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_update: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+      },
+    ] as any);
     const video = videoMockFactory({
       is_ready_to_show: false,
       starting_at: startingAt.toISOString(),

@@ -114,12 +114,20 @@ jest.mock('data/stores/useTimedTextTrackLanguageChoices', () => ({
   }),
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: () => ({}),
+}));
+
 describe('createVideoJsPlayer', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'foo',
       getDecodedJwt: mockGetDecodedJwt,
     });
+
+    jest.clearAllMocks();
+    jest.useFakeTimers();
   });
 
   afterEach(() => {
@@ -133,11 +141,6 @@ describe('createVideoJsPlayer', () => {
     useTranscriptTimeSelector.destroy();
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
-  });
-
-  beforeEach(() => {
-    jest.clearAllMocks();
-    jest.useFakeTimers();
   });
 
   it('creates videojs player and configures it', async () => {

@@ -1,6 +1,6 @@
 import { Box, Stack, Tab, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { RingingBellSVG, useJwt } from 'lib-components';
+import { RingingBellSVG, useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -95,9 +95,9 @@ export const LiveVideoTabPanel = ({
   selected,
 }: LiveVideoTabPanelProps) => {
   const video = useCurrentVideo();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const [context] = useCurrentResourceContext();
 
-  const canUpdate = getDecodedJwt().permissions.can_update;
+  const canUpdate = context.permissions.can_update;
 
   const displayRingingBell =
     item === LivePanelItem.VIEWERS_LIST &&

@@ -1,7 +1,12 @@
 import { Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { useJwt } from 'lib-components';
+import {
+  AnonymousUser,
+  decodeJwt,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -36,19 +41,21 @@ const messages = defineMessages({
 
 export const StudentLiveRegistration = () => {
   const intl = useIntl();
-  const decodedJWT = useJwt((state) => state.getDecodedJwt)();
+  const jwt = useJwt((state) => state.jwt);
+  const user = useCurrentUser((state) => state.currentUser);
+
   const userEmail = useMemo(() => {
-    return decodedJWT.user?.email ?? undefined;
-  }, [decodedJWT]);
+    return (user !== AnonymousUser.ANONYMOUS && user?.email) || undefined;
+  }, [user]);
 
   const anonymousId = useMemo(() => {
     let anonId: Maybe<string>;
-    if (!checkLtiToken(decodedJWT)) {
+    if (!checkLtiToken(decodeJwt(jwt))) {
       anonId = getAnonymousId();
     }
 
     return anonId;
-  }, [decodedJWT]);
+  }, [jwt]);
 
   const { liveSession, setLiveSession } = useLiveSession();
   const { isError, isLoading } = useLiveSessionsQuery(

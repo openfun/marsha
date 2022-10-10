@@ -1,7 +1,12 @@
 import { Box, Grommet, Spinner, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { Loader, useJwt } from 'lib-components';
+import {
+  AnonymousUser,
+  Loader,
+  useCurrentResourceContext,
+  useCurrentUser,
+} from 'lib-components';
 import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -111,20 +116,16 @@ const bbbTheme: ThemeType = deepMerge(theme, {
 
 const DashboardClassroom = () => {
   const intl = useIntl();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
-  let canUpdate: boolean;
-  try {
-    canUpdate = getDecodedJwt().permissions.can_update;
-  } catch (e) {
-    return <DashboardClassroomError />;
-  }
+  const [context] = useCurrentResourceContext();
+  const user = useCurrentUser((state) => state.currentUser);
+  const canUpdate = context.permissions.can_update;
 
   const classroomRefetchInterval = useRef(5000);
   const [classroomUrl, setClassroomUrl] = useState('');
   const [askUsername, setAskUsername] = useState(false);
   const [classroomJoined, setClassroomJoined] = useState(false);
   const [userFullname, setUserFullname] = useState(
-    getDecodedJwt().user?.user_fullname || '',
+    (user && user !== AnonymousUser.ANONYMOUS && user.user_fullname) || '',
   );
 
   const { data: classroom, status: useClassroomStatus } = useClassroom(
@@ -132,8 +133,8 @@ const DashboardClassroom = () => {
     { refetchInterval: classroomRefetchInterval.current },
   );
 
-  const consumerSiteUserId = `${getDecodedJwt().consumer_site}_${
-    getDecodedJwt().user?.id
+  const consumerSiteUserId = `${context.consumer_site}_${
+    user && user !== AnonymousUser.ANONYMOUS ? user.id : ''
   }`;
 
   useEffect(() => {

@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext, useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
@@ -22,8 +22,6 @@ jest.mock('data/stores/useAppConfig', () => ({
     },
   }),
 }));
-
-const mockGetDecodedJwt = jest.fn();
 
 jest.mock('apps/deposit/data/depositAppData', () => ({
   depositAppData: {
@@ -53,11 +51,19 @@ jest.mock('./DashboardInstructor', () => ({
   ),
 }));
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('<DashboardFileDepository />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'token',
-      getDecodedJwt: mockGetDecodedJwt,
     });
   });
 
@@ -67,7 +73,9 @@ describe('<DashboardFileDepository />', () => {
   });
 
   it('shows student dashboard', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockedUseCurrentResourceContext.mockReturnValue([
+      ltiStudentTokenMockFactory(),
+    ] as any);
     const fileDepository = fileDepositoryMockFactory({
       id: '1',
     });
@@ -82,7 +90,9 @@ describe('<DashboardFileDepository />', () => {
   });
 
   it('shows instructor dashboard', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
+    mockedUseCurrentResourceContext.mockReturnValue([
+      ltiInstructorTokenMockFactory(),
+    ] as any);
     const fileDepository = fileDepositoryMockFactory({
       id: '1',
     });
@@ -96,17 +106,10 @@ describe('<DashboardFileDepository />', () => {
     screen.getByText('Instructor view');
   });
 
-  it('display error when no jwt exists', async () => {
-    mockGetDecodedJwt.mockImplementation(() => {
-      throw new Error('No jwt');
-    });
-    render(<DashboardFileDepository />);
-
-    screen.getByText('Token Error');
-  });
-
   it('shows an error message when it fails to get the fileDepository', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
+    mockedUseCurrentResourceContext.mockReturnValue([
+      ltiStudentTokenMockFactory(),
+    ] as any);
     const queryClient = new QueryClient({
       defaultOptions: {
         queries: {

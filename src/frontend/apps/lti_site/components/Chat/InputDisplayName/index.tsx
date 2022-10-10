@@ -1,6 +1,12 @@
 import { Box, Text, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
-import { QuestionMarkSVG, useJwt } from 'lib-components';
+import {
+  AnonymousUser,
+  decodeJwt,
+  QuestionMarkSVG,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -87,7 +93,8 @@ interface InputDisplayNameProps {
 
 export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
   const intl = useIntl();
-  const getDecodedJwt = useJwt((state) => state.getDecodedJwt);
+  const jwt = useJwt((state) => state.jwt);
+  const user = useCurrentUser((state) => state.currentUser);
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const { liveSession, setLiveSession } = useLiveSession((state) => ({
@@ -184,7 +191,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
     }
     if (alerts.length === 0) {
       let anonymousId: Maybe<string>;
-      if (!checkLtiToken(getDecodedJwt())) {
+      if (!checkLtiToken(decodeJwt(jwt))) {
         anonymousId = getAnonymousId();
       }
       const response = await setLiveSessionDisplayName(
@@ -255,7 +262,9 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
         </Box>
         <InputBar
           defaultValue={
-            liveSession?.username || getDecodedJwt().user?.username || ''
+            liveSession?.username ||
+            (user !== AnonymousUser.ANONYMOUS && user?.username) ||
+            ''
           }
           handleUserInput={processDisplayName}
           isChatInput={false}

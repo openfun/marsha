@@ -1,11 +1,11 @@
-import React from 'react';
+import React, { createContext, useContext, useState } from 'react';
 
 type StoreContextType<TStore> = [
   TStore,
   React.Dispatch<React.SetStateAction<TStore>>,
 ];
 
-interface ProviderProps<TStore> {
+export interface ProviderProps<TStore> {
   value: TStore;
   children: React.ReactNode;
 }
@@ -18,12 +18,12 @@ interface StoreComponents<TStore> {
 export function createStore<TStore>(
   storeName: string,
 ): StoreComponents<TStore> {
-  const StoreContext = React.createContext<
-    StoreContextType<TStore> | undefined
-  >(undefined);
+  const StoreContext = createContext<StoreContextType<TStore> | undefined>(
+    undefined,
+  );
 
   const useStore: () => StoreContextType<TStore> = () => {
-    const globalStore = React.useContext(StoreContext);
+    const globalStore = useContext(StoreContext);
     if (!globalStore) {
       throw new Error(`Missing wrapping Provider for Store ${storeName}`);
     }
@@ -34,7 +34,7 @@ export function createStore<TStore>(
     children,
     value,
   }: ProviderProps<TStore>) => {
-    const storeState = React.useState<TStore>(value);
+    const storeState = useState<TStore>(value);
 
     return (
       <StoreContext.Provider value={storeState}>

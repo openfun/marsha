@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext, useJwt } from 'lib-components';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
@@ -70,6 +70,15 @@ const mockAcceptParticipantToJoin =
     typeof converse.acceptParticipantToJoin
   >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 let queryClient: QueryClient;
 
 jest.setTimeout(10000);
@@ -78,14 +87,15 @@ describe('components/DashboardLive', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'cool_token_m8',
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-            can_update: false,
-          },
-        } as any),
     });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+          can_update: false,
+        },
+      },
+    ] as any);
 
     queryClient = new QueryClient({
       defaultOptions: {

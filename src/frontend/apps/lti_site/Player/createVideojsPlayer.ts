@@ -8,7 +8,7 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import { Maybe, Nullable } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { useCurrentSession, useJwt } from 'lib-components';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useAttendance } from 'data/stores/useAttendance';
@@ -128,7 +128,11 @@ export const createVideojsPlayer = (
 
   let xapiStatement: VideoXAPIStatementInterface;
   try {
-    xapiStatement = XAPIStatement(jwt, getDecodedJwt().session_id, video);
+    xapiStatement = XAPIStatement(
+      jwt,
+      useCurrentSession.getState().sessionId,
+      video,
+    );
   } catch (error) {
     report(error);
     throw error;

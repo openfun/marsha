@@ -1,4 +1,4 @@
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { videoMockFactory } from 'utils/tests/factories';
@@ -17,18 +17,26 @@ jest.mock('components/InstructorWrapper/InstructorView', () => {
   };
 });
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useCurrentResourceContext: jest.fn(),
+}));
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
+
 describe('<InstructorWrapper />', () => {
   const video = videoMockFactory();
 
   it('wraps its children in an instructor view if the current user is an instructor', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: true,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+        },
+      },
+    ] as any);
 
     const { getByText, getByTitle } = render(
       <InstructorWrapper resource={video}>
@@ -41,14 +49,13 @@ describe('<InstructorWrapper />', () => {
   });
 
   it('just renders the children if the current user is not an instructor', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          permissions: {
-            can_access_dashboard: false,
-          },
-        } as any),
-    });
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: false,
+        },
+      },
+    ] as any);
 
     const { getByTitle, queryByText } = render(
       <InstructorWrapper resource={video}>

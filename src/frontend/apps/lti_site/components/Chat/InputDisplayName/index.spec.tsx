@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { DecodedJwt, useJwt } from 'lib-components';
+import { decodeJwt, useCurrentUser } from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -40,6 +40,12 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  decodeJwt: jest.fn(),
+}));
+const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
 describe('<InputDisplayName />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -51,9 +57,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     render(<InputDisplayName />);
 
@@ -74,9 +78,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     render(<InputDisplayName />);
 
@@ -97,9 +99,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     render(<InputDisplayName />);
 
@@ -120,9 +120,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it('enters a valid nickname but the server takes too long to answer.', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     mockConverse.mockImplementation(
       async (
@@ -160,9 +158,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it('enters a valid nickname but it is already used by a live registration', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     mockConverse.mockImplementation(
       async (
@@ -209,9 +205,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it('enters a valid nickname but it is already used in the chat', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     mockConverse.mockImplementation(
       async (
@@ -258,9 +252,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it('enters a valid nickname but the server returns an unknown response', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     mockConverse.mockImplementation(
       async (
@@ -305,9 +297,7 @@ describe('<InputDisplayName />', () => {
   });
 
   it('enters a valid nickname and validates it.', async () => {
-    useJwt.setState({
-      getDecodedJwt: () => ({} as DecodedJwt),
-    });
+    mockedDecodeJwt.mockReturnValue({} as any);
 
     mockConverse.mockImplementation(
       async (
@@ -347,14 +337,16 @@ describe('<InputDisplayName />', () => {
   });
 
   it('displays the component and use liveSession username as default value', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-            username: 'jane_doe',
-          },
-        } as DecodedJwt),
+    mockedDecodeJwt.mockReturnValue({
+      user: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      },
+    } as any);
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'jane_doe',
+      } as any,
     });
 
     const liveSession = liveSessionFactory({ username: 'Foo' });
@@ -366,14 +358,16 @@ describe('<InputDisplayName />', () => {
   });
 
   it('displays the component and use jwt display_name as default value', () => {
-    useJwt.setState({
-      getDecodedJwt: () =>
-        ({
-          user: {
-            id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
-            username: 'jane_doe',
-          },
-        } as DecodedJwt),
+    mockedDecodeJwt.mockReturnValue({
+      user: {
+        id: '7f93178b-e578-44a6-8c85-ef267b6bf431',
+        username: 'jane_doe',
+      },
+    } as any);
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'jane_doe',
+      } as any,
     });
 
     render(<InputDisplayName />);
