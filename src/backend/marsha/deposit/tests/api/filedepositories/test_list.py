@@ -1,9 +1,12 @@
 """Tests for the file_depositories list API."""
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.tests.utils import reload_urlconf
 from marsha.deposit.factories import FileDepositoryFactory
@@ -53,3 +56,206 @@ class FileDepositoryListAPITest(TestCase):
             "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_file_depository_fetch_list_user_access_token_organization_admin(self):
+        """A user with UserAccessToken should be able to fetch a file depository list."""
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access = OrganizationAccessFactory(
+            user=organization_access_admin.user
+        )
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_2_a = PlaylistFactory(organization=organization_access.organization)
+        playlist_2_b = PlaylistFactory(organization=organization_access.organization)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_1_a)
+        file_depository_1_b = FileDepositoryFactory.create_batch(
+            3, playlist=playlist_1_b
+        )
+        FileDepositoryFactory.create_batch(3, playlist=playlist_2_a)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_2_b)
+        FileDepositoryFactory()
+
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
+
+        response = self.client.get(
+            "/api/filedepositories/?limit=2", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 6,
+                "next": "http://testserver/api/filedepositories/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "description": file_depository_1_b[2].description,
+                        "id": str(file_depository_1_b[2].id),
+                        "lti_id": str(file_depository_1_b[2].lti_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "title": file_depository_1_b[2].title,
+                    },
+                    {
+                        "description": file_depository_1_b[1].description,
+                        "id": str(file_depository_1_b[1].id),
+                        "lti_id": str(file_depository_1_b[1].lti_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "title": file_depository_1_b[1].title,
+                    },
+                ],
+            },
+        )
+
+    def test_api_file_depository_fetch_list_user_access_token_filter_organization(self):
+        """
+        A user with UserAccessToken should be able to filter file depository list
+        by organization.
+        """
+        organization_access_admin_1 = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access_admin_2 = OrganizationAccessFactory(
+            user=organization_access_admin_1.user, role=ADMINISTRATOR
+        )
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin_1.organization
+        )
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin_1.organization
+        )
+        playlist_2_a = PlaylistFactory(
+            organization=organization_access_admin_2.organization
+        )
+        playlist_2_b = PlaylistFactory(
+            organization=organization_access_admin_2.organization
+        )
+        FileDepositoryFactory.create_batch(3, playlist=playlist_1_a)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_1_b)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_2_a)
+        file_depository_2_b = FileDepositoryFactory.create_batch(
+            3, playlist=playlist_2_b
+        )
+        FileDepositoryFactory()
+
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin_1.user)
+
+        response = self.client.get(
+            "/api/filedepositories/?limit=2"
+            f"&organization={organization_access_admin_2.organization.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 6,
+                "next": (
+                    "http://testserver/api/filedepositories/"
+                    f"?limit=2&offset=2&organization={organization_access_admin_2.organization.id}"
+                ),
+                "previous": None,
+                "results": [
+                    {
+                        "description": file_depository_2_b[2].description,
+                        "id": str(file_depository_2_b[2].id),
+                        "lti_id": str(file_depository_2_b[2].lti_id),
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": playlist_2_b.lti_id,
+                            "title": playlist_2_b.title,
+                        },
+                        "title": file_depository_2_b[2].title,
+                    },
+                    {
+                        "description": file_depository_2_b[1].description,
+                        "id": str(file_depository_2_b[1].id),
+                        "lti_id": str(file_depository_2_b[1].lti_id),
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": playlist_2_b.lti_id,
+                            "title": playlist_2_b.title,
+                        },
+                        "title": file_depository_2_b[1].title,
+                    },
+                ],
+            },
+        )
+
+    def test_api_file_depository_fetch_list_user_access_token_filter_playlist(self):
+        """
+        A user with UserAccessToken should be able to filter file depository list
+        by playlist.
+        """
+        organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
+        organization_access = OrganizationAccessFactory(
+            user=organization_access_admin.user
+        )
+        playlist_1_a = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_1_b = PlaylistFactory(
+            organization=organization_access_admin.organization
+        )
+        playlist_2_a = PlaylistFactory(organization=organization_access.organization)
+        playlist_2_b = PlaylistFactory(organization=organization_access.organization)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_1_a)
+        file_depository_1_b = FileDepositoryFactory.create_batch(
+            3, playlist=playlist_1_b
+        )
+        FileDepositoryFactory.create_batch(3, playlist=playlist_2_a)
+        FileDepositoryFactory.create_batch(3, playlist=playlist_2_b)
+        FileDepositoryFactory()
+
+        jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
+
+        response = self.client.get(
+            f"/api/filedepositories/?limit=2&playlist={playlist_1_b.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": (
+                    "http://testserver/api/filedepositories/"
+                    f"?limit=2&offset=2&playlist={playlist_1_b.id}"
+                ),
+                "previous": None,
+                "results": [
+                    {
+                        "description": file_depository_1_b[2].description,
+                        "id": str(file_depository_1_b[2].id),
+                        "lti_id": str(file_depository_1_b[2].lti_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "title": file_depository_1_b[2].title,
+                    },
+                    {
+                        "description": file_depository_1_b[1].description,
+                        "id": str(file_depository_1_b[1].id),
+                        "lti_id": str(file_depository_1_b[1].lti_id),
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": playlist_1_b.lti_id,
+                            "title": playlist_1_b.title,
+                        },
+                        "title": file_depository_1_b[1].title,
+                    },
+                ],
+            },
+        )

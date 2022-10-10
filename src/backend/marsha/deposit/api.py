@@ -15,9 +15,19 @@ from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
-from ..core.models import LTI_ROLES, STUDENT
+from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
+
+
+class FileDepositoryFilter(django_filters.FilterSet):
+    """Filter for file depository."""
+
+    organization = django_filters.UUIDFilter(field_name="playlist__organization__id")
+
+    class Meta:
+        model = FileDepository
+        fields = ["playlist"]
 
 
 class DepositedFileFilter(django_filters.FilterSet):
@@ -63,6 +73,8 @@ class FileDepositoryViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [IsAuthenticated]
+        elif self.action in ["list"]:
+            permission_classes = [core_permissions.UserIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
@@ -78,6 +90,25 @@ class FileDepositoryViewSet(
         serializer = self.get_serializer(file_depository)
 
         return Response(serializer.data, status=201)
+
+    def list(self, request, *args, **kwargs):
+        """List deposit files belonging to user organizations."""
+        queryset = self.get_queryset().filter(
+            playlist__organization__users__id=request.user.id,
+            playlist__organization__user_accesses__role=ADMINISTRATOR,
+        )
+        filter_set = FileDepositoryFilter(request.query_params, queryset=queryset)
+        page = self.paginate_queryset(
+            self.filter_queryset(
+                filter_set.qs.order_by(
+                    "-created_on",
+                    "-playlist__created_on",
+                    "-playlist__organization__created_on",
+                )
+            )
+        )
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],
