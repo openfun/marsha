@@ -1,6 +1,5 @@
 import { Maybe } from 'lib-common';
-
-import { createStore } from 'utils/createContext';
+import { createStore } from 'lib-components';
 
 const store = createStore<Maybe<JitsiMeetExternalAPI>>('JitsiApiProvider');
 
