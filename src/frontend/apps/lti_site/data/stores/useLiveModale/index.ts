@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
+import { createStore } from 'lib-components';
 
 import { LiveModaleProps } from 'components/LiveModale';
-import { createStore } from 'utils/createContext';
 
 const store = createStore<Nullable<LiveModaleProps>>('useLiveModale');
 

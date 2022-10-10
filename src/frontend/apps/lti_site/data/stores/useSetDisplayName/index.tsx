@@ -1,4 +1,4 @@
-import { createStore } from 'utils/createContext';
+import { createStore } from 'lib-components';
 
 const store = createStore<boolean>('useSetDisplayName');
 
