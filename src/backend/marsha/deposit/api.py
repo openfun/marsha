@@ -180,6 +180,7 @@ class FileDepositoryViewSet(
             core_permissions.IsTokenInstructor
             | core_permissions.IsTokenAdmin
             | core_permissions.IsTokenStudent
+            | IsFileDepositoryPlaylistOrOrganizationAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -203,7 +204,9 @@ class FileDepositoryViewSet(
         """
         file_depository = self.get_object()
         queryset = file_depository.deposited_files.all()
-        if any(x in LTI_ROLES.get(STUDENT) for x in request.resource.roles):
+        if request.resource and any(
+            x in LTI_ROLES.get(STUDENT) for x in request.resource.roles
+        ):
             queryset = queryset.filter(author_id=request.resource.user.get("id"))
         filter_set = DepositedFileFilter(request.query_params, queryset=queryset)
         page = self.paginate_queryset(self.filter_queryset(filter_set.qs))
