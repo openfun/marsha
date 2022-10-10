@@ -12,18 +12,19 @@ import MenuItem from './MenuItem';
 
 describe('<MenuItem />', () => {
   test('renders MenuItem', () => {
-    const { container } = render(
-      <MenuItem route={routes.HOMEPAGE}>My Content</MenuItem>,
-      { testingLibraryOptions: { wrapper: BrowserRouter } },
-    );
-    expect(container.querySelector('svg')).toBeInTheDocument();
+    render(<MenuItem route={routes.HOMEPAGE}>My Content</MenuItem>, {
+      testingLibraryOptions: { wrapper: BrowserRouter },
+    });
+    expect(
+      screen.getByRole(/img/i, { name: /svg-menu-homepage/i }),
+    ).toBeInTheDocument();
     expect(screen.getByText(/My Content/i)).toBeInTheDocument();
     expect(
       screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
     ).toBeInTheDocument();
   });
 
-  test('test active link', () => {
+  test('active link', () => {
     const history = createMemoryHistory();
     history.push(routes.HOMEPAGE.path);
     const { rerender } = render(
