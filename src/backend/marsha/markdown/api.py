@@ -1,8 +1,8 @@
 """Declare API endpoints with Django RestFramework viewsets."""
-
 from django.conf import settings
 from django.utils import timezone
 
+import django_filters
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -14,10 +14,21 @@ from marsha.core.utils.time_utils import to_timestamp
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions as markdown_permissions, serializers
+from ..core.models import ADMINISTRATOR
 from ..core.utils.s3_utils import create_presigned_post
 from .forms import MarkdownDocumentForm
 from .models import MarkdownDocument, MarkdownImage
 from .utils.converter import LatexConversionException, render_latex_to_image
+
+
+class MarkdownDocumentFilter(django_filters.FilterSet):
+    """Filter for file depository."""
+
+    organization = django_filters.UUIDFilter(field_name="playlist__organization__id")
+
+    class Meta:
+        model = MarkdownDocument
+        fields = ["playlist"]
 
 
 class MarkdownDocumentViewSet(
@@ -34,8 +45,11 @@ class MarkdownDocumentViewSet(
     serializer_class = serializers.MarkdownDocumentSerializer
 
     permission_classes = [
-        core_permissions.IsTokenResourceRouteObject
-        & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+        (
+            core_permissions.IsTokenResourceRouteObject
+            & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+        )
+        | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
     ]
 
     def get_permissions(self):
@@ -55,6 +69,8 @@ class MarkdownDocumentViewSet(
                 )
                 | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
+        elif self.action in ["list"]:
+            permission_classes = [core_permissions.UserIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
@@ -70,6 +86,25 @@ class MarkdownDocumentViewSet(
         serializer = self.get_serializer(document)
 
         return Response(serializer.data, status=201)
+
+    def list(self, request, *args, **kwargs):
+        """List markdown documents belonging to user organizations."""
+        queryset = self.get_queryset().filter(
+            playlist__organization__users__id=request.user.id,
+            playlist__organization__user_accesses__role=ADMINISTRATOR,
+        )
+        filter_set = MarkdownDocumentFilter(request.query_params, queryset=queryset)
+        page = self.paginate_queryset(
+            self.filter_queryset(
+                filter_set.qs.order_by(
+                    "-created_on",
+                    "-playlist__created_on",
+                    "-playlist__organization__created_on",
+                )
+            )
+        )
+        serializer = self.get_serializer(page, many=True)
+        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],

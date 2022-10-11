@@ -1,9 +1,16 @@
 """Tests for the Markdown application delete API."""
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.markdown.factories import MarkdownDocumentFactory
 
@@ -46,6 +53,47 @@ class MarkdownDeleteAPITest(TestCase):
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+
+        response = self.client.delete(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 405)
+
+    def test_api_document_delete_user_access_token(self):
+        """A user with UserAccessToken should not be able to delete a Markdown document."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.delete(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_api_document_delete_user_access_token_organization_admin(self):
+        """An organization administrator should not be able to delete a Markdown document."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.delete(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 405)
+
+    def test_api_document_delete_user_access_token_playlist_admin(self):
+        """An organization administrator should not be able to delete a Markdown document."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist_access.playlist)
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
