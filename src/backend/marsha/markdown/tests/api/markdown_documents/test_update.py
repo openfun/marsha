@@ -54,22 +54,6 @@ class MarkdownUpdateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-        response = self.client.patch(
-            f"/api/markdown-documents/{markdown_document.pk}/save-translations/",
-            data,  # Not important here, wrong data raises 400
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 403)
-
-        response = self.client.post(
-            f"/api/markdown-documents/{markdown_document.pk}/latex-rendering/",
-            data,  # Not important here, wrong data raises 400
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_api_document_update_instructor_read_only(self):
         """An instructor should not be able to update a Markdown document in read_only."""
         markdown_document = MarkdownDocumentFactory()

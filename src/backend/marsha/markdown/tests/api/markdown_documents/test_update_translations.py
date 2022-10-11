@@ -1,7 +1,10 @@
 """Tests for the Markdown application update-translations API."""
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 from marsha.markdown.factories import MarkdownDocumentFactory
 
 
@@ -14,6 +17,30 @@ class MarkdownUpdateTranslationsAPITest(TestCase):
     """Test for the Markdown document update-translations API."""
 
     maxDiff = None
+
+    def test_api_document_translation_update_student(self):
+        """A student user should not be able to update a Markdown document translated content."""
+        markdown_document = MarkdownDocumentFactory()
+
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
+
+        data = {
+            "language_code": "en",
+            "title": "A very specific title",
+            "content": "Some interesting content for sure",
+            "rendered_content": "<p>Some interesting content for sure</p>",
+        }
+
+        response = self.client.patch(
+            f"/api/markdown-documents/{markdown_document.pk}/save-translations/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_translation_update_instructor(self):
         """An instructor should be able to update a Markdown document translated content."""
