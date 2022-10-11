@@ -102,6 +102,7 @@ def _preview_classroom(page: Page, live_server: LiveServer):
 def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     """Test LTI select."""
     settings.BBB_ENABLED = True
+    settings.CLASSROOM_ENABLED = True
 
     responses.add(
         responses.GET,
