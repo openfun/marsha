@@ -3,6 +3,8 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions
 
+from marsha.core import models
+
 
 class IsTokenResourceRouteObjectRelatedResource(permissions.BasePermission):
     """
@@ -57,3 +59,70 @@ class IsTokenResourceRouteObjectRelatedMarkdownDocument(
     """
 
     linked_resource_attribute = "markdown_document"
+
+
+class IsMarkdownDocumentOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the organization
+    linked to the playlist the markdown document is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the organization linked
+        to the playlist this markdown document is a part of.
+        """
+        return models.OrganizationAccess.objects.filter(
+            role=models.ADMINISTRATOR,
+            organization__playlists__markdowndocuments__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsMarkdownDocumentPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the markdown document is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this
+        markdown document is a part of.
+        """
+        return models.PlaylistAccess.objects.filter(
+            role=models.ADMINISTRATOR,
+            playlist__markdowndocuments__id=view.get_object_pk(),
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsMarkdownDocumentPlaylistOrOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the markdown document is a part of or admin of the linked organization.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this markdown document
+        is a part of or admin of the linked organization.
+        """
+        return IsMarkdownDocumentPlaylistAdmin().has_permission(
+            request, view
+        ) or IsMarkdownDocumentOrganizationAdmin().has_permission(request, view)
