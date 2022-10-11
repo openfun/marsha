@@ -37,7 +37,7 @@ from marsha.core.simple_jwt.tokens import (
 )
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
-from .defaults import BBB, DEPOSIT, LIVE_RAW, MARKDOWN, SENTRY
+from .defaults import BBB, CLASSROOM, DEPOSIT, LIVE_RAW, MARKDOWN, SENTRY
 from .lti import LTI
 from .lti.utils import (
     PortabilityError,
@@ -98,6 +98,7 @@ class MarshaViewMixin:
             "flags": {
                 SENTRY: switch_is_active(SENTRY),
                 BBB: settings.BBB_ENABLED,
+                CLASSROOM: settings.BBB_ENABLED,
                 DEPOSIT: settings.DEPOSIT_ENABLED,
                 LIVE_RAW: settings.LIVE_RAW_ENABLED,
                 MARKDOWN: settings.MARKDOWN_ENABLED,

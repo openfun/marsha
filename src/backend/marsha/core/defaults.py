@@ -84,6 +84,7 @@ JOIN_MODE_CHOICES = (
 # FLAGS
 SENTRY = "sentry"
 BBB = "BBB"
+CLASSROOM = "classroom"
 DEPOSIT = "deposit"
 LIVE_RAW = "live_raw"
 MARKDOWN = "markdown"
