@@ -105,6 +105,7 @@ const Routes = () => {
                 new_video_url={appData.new_video_url}
                 lti_select_form_action_url={appData.lti_select_form_action_url!}
                 lti_select_form_data={appData.lti_select_form_data!}
+                targeted_resource={appData.targeted_resource}
               />
             )}
           />

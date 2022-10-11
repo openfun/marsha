@@ -276,7 +276,7 @@ export const useVideoMetadata = (
   );
 };
 
-type UseCreateVideoData = {
+export type UseCreateVideoData = {
   playlist: string;
   title: string;
   description?: string;

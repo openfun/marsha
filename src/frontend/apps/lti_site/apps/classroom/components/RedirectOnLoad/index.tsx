@@ -20,7 +20,7 @@ export const RedirectOnLoad = () => {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
   }
 
-  if (!isFeatureEnabled(flags.BBB)) {
+  if (!isFeatureEnabled(flags.CLASSROOM)) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
   }
 

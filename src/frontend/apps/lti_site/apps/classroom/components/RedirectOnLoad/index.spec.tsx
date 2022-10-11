@@ -23,7 +23,7 @@ describe('<RedirectOnLoad />', () => {
   it('redirects users to the error view on LTI error', () => {
     mockedUseAppConfig.mockReturnValue({
       state: appState.ERROR,
-      flags: { BBB: true },
+      flags: { classroom: true },
     } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
@@ -44,7 +44,7 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows not found error when feature is disabled', () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { BBB: false },
+      flags: { classroom: false },
     } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
@@ -65,7 +65,7 @@ describe('<RedirectOnLoad />', () => {
 
   it('shows dashboard', async () => {
     mockedUseAppConfig.mockReturnValue({
-      flags: { BBB: true },
+      flags: { classroom: true },
     } as any);
 
     const { getByText } = render(<RedirectOnLoad />, {
