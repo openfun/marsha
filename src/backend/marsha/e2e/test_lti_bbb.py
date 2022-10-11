@@ -150,7 +150,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     lti_select_iframe = page.frame("lti_select")
 
     # Select a classroom
-    lti_select_iframe.click('button[role="tab"]:has-text("Classrooms")')
+    lti_select_iframe.click('button[role="tab"]:has-text("classrooms")')
     classroom_content_items = (
         json.dumps(
             {

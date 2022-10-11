@@ -12,7 +12,7 @@ import { appNames, flags } from 'types/AppData';
  *  - if the associated flag is enabled, app will be loaded and displayed
  */
 export const appConfigs: { [key in appNames]?: { flag?: flags } } = {
-  [appNames.CLASSROOM]: { flag: flags.BBB },
+  [appNames.CLASSROOM]: { flag: flags.CLASSROOM },
   [appNames.DEPOSIT]: { flag: flags.DEPOSIT },
   [appNames.MARKDOWN]: { flag: flags.MARKDOWN },
 };

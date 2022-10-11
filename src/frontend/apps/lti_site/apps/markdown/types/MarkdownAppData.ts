@@ -5,4 +5,6 @@ import { MarkdownDocument, modelName } from './models';
 export interface MarkdownAppData extends Omit<AppData, 'modelName'> {
   modelName: modelName.MARKDOWN_DOCUMENTS;
   markdownDocument: MarkdownDocument;
+  markdowns?: MarkdownDocument[];
+  new_markdown_url?: string;
 }

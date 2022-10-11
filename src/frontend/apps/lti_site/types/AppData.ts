@@ -10,7 +10,7 @@ export enum appState {
 }
 
 export enum flags {
-  BBB = 'BBB',
+  CLASSROOM = 'classroom',
   DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
   SENTRY = 'sentry',
@@ -26,6 +26,14 @@ export enum appNames {
   DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
 }
+
+export enum selectableBaseResource {
+  DOCUMENT = 'document',
+  VIDEO = 'video',
+  WEBINAR = 'webinar',
+}
+
+export type LtiSelectResource = selectableBaseResource | appNames;
 
 export interface AppConfig {
   attendanceDelay: number;
@@ -64,6 +72,7 @@ export interface AppConfig {
   };
   player?: string;
   playlist?: Playlist;
+  targeted_resource?: LtiSelectResource;
   flags?: {
     [key in flags]?: boolean;
   };
