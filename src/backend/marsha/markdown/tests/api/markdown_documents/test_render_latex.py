@@ -3,7 +3,10 @@ import json
 
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+)
 from marsha.markdown.factories import MarkdownDocumentFactory
 
 
@@ -16,6 +19,23 @@ class MarkdownRenderLatexAPITest(TestCase):
     """Test for the Markdown document render-latex API."""
 
     maxDiff = None
+
+    def test_api_document_render_latex_student(self):
+        """A student user should not be able to render LaTeX content content."""
+        markdown_document = MarkdownDocumentFactory()
+
+        jwt_token = StudentLtiTokenFactory(
+            resource=markdown_document,
+            permissions__can_update=True,
+        )
+
+        response = self.client.post(
+            f"/api/markdown-documents/{markdown_document.pk}/latex-rendering/",
+            {"text": r"I = \int \rho R^{2} dV"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
 
     def test_api_document_render_latex_instructor(self):
         """An instructor should be able to render LaTeX content content."""
