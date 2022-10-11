@@ -3,9 +3,16 @@ import json
 
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.markdown.factories import MarkdownDocumentFactory
 
@@ -111,4 +118,94 @@ class MarkdownRetrieveAPITest(TestCase):
         content = json.loads(response.content)
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    def test_api_document_fetch_user_access_token(self):
+        """A user with UserAccessToken should not be able to fetch a Markdown document."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist)
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    def test_api_document_fetch_user_access_token_organization_admin(self):
+        """An organization administrator should be able to fetch a Markdown document."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist)
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        first_translation = markdown_document.translations.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(markdown_document.id),
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "images": [],
+                "is_draft": True,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "language_code": first_translation.language_code,
+                        "title": first_translation.title,
+                        "content": first_translation.content,
+                        "rendered_content": first_translation.rendered_content,
+                    }
+                ],
+                "position": 0,
+            },
+        )
+
+    def test_api_document_fetch_user_access_token_playlist_admin(self):
+        """A playlist administrator should be able to fetch a Markdown document."""
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        markdown_document = MarkdownDocumentFactory(playlist=playlist_access.playlist)
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        first_translation = markdown_document.translations.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(markdown_document.id),
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "images": [],
+                "is_draft": True,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "language_code": first_translation.language_code,
+                        "title": first_translation.title,
+                        "content": first_translation.content,
+                        "rendered_content": first_translation.rendered_content,
+                    }
+                ],
+                "position": 0,
+            },
         )
