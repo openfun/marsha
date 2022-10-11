@@ -1,33 +1,19 @@
-import { Box, Card, CardBody, Grid, Spinner, Tab, Text, Tip } from 'grommet';
+import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
 import { DocumentMissing, DocumentVerified } from 'grommet-icons';
 import { DocumentPerformance, Icon } from 'grommet-icons/icons';
 import { Nullable } from 'lib-common';
 import React from 'react';
-import {
-  defineMessages,
-  FormattedMessage,
-  MessageDescriptor,
-  useIntl,
-} from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
-import { ErrorMessage } from 'components/ErrorComponents';
-import { SelectContentTabProps } from 'components/SelectContent';
+import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import { buildContentItems } from 'components/SelectContent/utils';
 
-import {
-  useCreateMarkdownDocument,
-  useSelectMarkdownDocument,
-} from 'apps/markdown/data/queries';
 import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
 } from 'apps/markdown/types/models';
 
 const messages = defineMessages({
-  tabTitleMarkdown: {
-    defaultMessage: 'Markdown',
-    description: 'Tab label to display markdown documents list.',
-    id: 'apps.markdown.SelectContent.tabTitleMarkdown',
-  },
   loadingDocuments: {
     defaultMessage: 'Loading documents...',
     description:
@@ -171,24 +157,20 @@ const ContentCard = ({
 };
 
 interface SelectContentSectionProps {
-  addMessage: MessageDescriptor;
   addAndSelectContent: () => void;
   newLtiUrl: string;
   items: Nullable<MarkdownDocument[]>;
-  selectContent: (
-    url: string,
-    title: Nullable<string>,
-    description: Nullable<string>,
-  ) => void;
   language: string;
+  lti_select_form_data: SelectContentTabProps['lti_select_form_data'];
+  setContentItemsValue: SelectContentTabProps['setContentItemsValue'];
 }
 
 export const SelectContentSection = ({
-  addMessage,
   addAndSelectContent,
   items,
-  selectContent,
   language,
+  lti_select_form_data,
+  setContentItemsValue,
 }: SelectContentSectionProps) => {
   const intl = useIntl();
 
@@ -203,7 +185,7 @@ export const SelectContentSection = ({
           onClick={addAndSelectContent}
         >
           <Text alignSelf="center" textAlign="center">
-            <FormattedMessage {...addMessage} />
+            {intl.formatMessage(messages.addDocument)}
           </Text>
         </Card>
 
@@ -218,7 +200,15 @@ export const SelectContentSection = ({
             <ContentCard
               content={item!}
               key={item.id}
-              onClick={() => selectContent(item!.lti_url!, title, null)}
+              onClick={() =>
+                buildContentItems(
+                  item!.lti_url!,
+                  title,
+                  null,
+                  lti_select_form_data,
+                  setContentItemsValue,
+                )
+              }
               title={title}
             />
           );
@@ -227,68 +217,3 @@ export const SelectContentSection = ({
     </Box>
   );
 };
-
-const SelectContentTab = ({
-  playlist,
-  selectContent,
-  lti_select_form_data,
-}: SelectContentTabProps) => {
-  const intl = useIntl();
-
-  const {
-    data: selectMarkdownDocument,
-    status: useSelectMarkdownDocumentStatus,
-  } = useSelectMarkdownDocument();
-
-  const useCreateMarkdownDocumentMutation = useCreateMarkdownDocument({
-    onSuccess: (markdownDocument) =>
-      selectContent(
-        selectMarkdownDocument!.new_url! + markdownDocument.id,
-        markdownDocument.translations[0].title,
-        null,
-      ),
-  });
-
-  // for now, we automatically detect language, a switch may be added later
-  const browserLanguage = window.navigator.language.substring(0, 2);
-
-  let content: JSX.Element;
-  switch (useSelectMarkdownDocumentStatus) {
-    case 'idle':
-    case 'loading':
-      content = (
-        <Spinner size="large">
-          <FormattedMessage {...messages.loadingDocuments} />
-        </Spinner>
-      );
-      break;
-
-    case 'error':
-      content = <ErrorMessage code="generic" />;
-      break;
-
-    case 'success':
-      content = (
-        <SelectContentSection
-          addMessage={messages.addDocument}
-          addAndSelectContent={() => {
-            useCreateMarkdownDocumentMutation.mutate({
-              playlist: playlist!.id,
-              title: lti_select_form_data?.activity_title,
-            });
-          }}
-          newLtiUrl={selectMarkdownDocument!.new_url!}
-          items={selectMarkdownDocument!.markdown_documents!}
-          selectContent={selectContent}
-          language={browserLanguage}
-        />
-      );
-      break;
-  }
-
-  return (
-    <Tab title={intl.formatMessage(messages.tabTitleMarkdown)}>{content}</Tab>
-  );
-};
-
-export default SelectContentTab;

@@ -1,22 +1,13 @@
-import { Box, Card, CardBody, Grid, Spinner, Tab, Text, Tip } from 'grommet';
+import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
 import { DocumentMissing, DocumentUpload } from 'grommet-icons';
 import { Icon, Group } from 'grommet-icons/icons';
 import { Nullable } from 'lib-common';
 import React from 'react';
-import {
-  defineMessages,
-  FormattedMessage,
-  MessageDescriptor,
-  useIntl,
-} from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
-import { ErrorMessage } from 'components/ErrorComponents';
-import { SelectContentTabProps } from 'components/SelectContent';
+import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import { buildContentItems } from 'components/SelectContent/utils';
 
-import {
-  useCreateClassroom,
-  useSelectClassroom,
-} from 'apps/classroom/data/queries';
 import { Classroom } from 'apps/classroom/types/models';
 
 const messages = defineMessages({
@@ -24,27 +15,27 @@ const messages = defineMessages({
     defaultMessage: 'Loading classrooms...',
     description:
       'Accessible message for the spinner while loading the classrooms in lti select view.',
-    id: 'apps.bbb.SelectContent.loadingClassrooms',
+    id: 'apps.classroom.SelectContent.SelectContentSection.loadingClassrooms',
   },
   addClassroom: {
     defaultMessage: 'Add a classroom',
     description: `Text displayed on a button to add a new classroom.`,
-    id: 'apps.bbb.SelectContent.addClassroom',
+    id: 'apps.classroom.SelectContent.SelectContentSection.addClassroom',
   },
   select: {
     defaultMessage: 'Select {title}',
     description: 'Accessible message for selecting a classroom.',
-    id: 'apps.bbb.SelectContent.select',
+    id: 'apps.classroom.SelectContent.SelectContentSection.select',
   },
   started: {
     defaultMessage: 'Started',
     description: `Text helper displayed if a classroom is started.`,
-    id: 'apps.bbb.SelectContent.started',
+    id: 'apps.classroom.SelectContent.SelectContentSection.started',
   },
   notStarted: {
     defaultMessage: 'Not started',
     description: `Text helper displayed if a classroom is not started.`,
-    id: 'apps.bbb.SelectContent.notStarted',
+    id: 'apps.classroom.SelectContent.SelectContentSection.notStarted',
   },
 });
 
@@ -135,23 +126,20 @@ const ContentCard = ({
 };
 
 interface SelectContentSectionProps {
-  addMessage: MessageDescriptor;
   addAndSelectContent: () => void;
   newLtiUrl: string;
   items: Nullable<Classroom[]>;
-  selectContent: (
-    url: string,
-    title: Nullable<string>,
-    description: Nullable<string>,
-  ) => void;
+  lti_select_form_data: SelectContentTabProps['lti_select_form_data'];
+  setContentItemsValue: SelectContentTabProps['setContentItemsValue'];
 }
 
 export const SelectContentSection = ({
-  addMessage,
   addAndSelectContent,
   items,
-  selectContent,
+  lti_select_form_data,
+  setContentItemsValue,
 }: SelectContentSectionProps) => {
+  const intl = useIntl();
   return (
     <Box>
       <Grid columns="small" gap="small">
@@ -163,76 +151,28 @@ export const SelectContentSection = ({
           onClick={addAndSelectContent}
         >
           <Text alignSelf="center">
-            <FormattedMessage {...addMessage} />
+            {intl.formatMessage(messages.addClassroom)}
           </Text>
         </Card>
 
-        {items?.map((item: Classroom) => (
-          <ContentCard
-            content={item!}
-            key={item.id}
-            onClick={() =>
-              selectContent(item!.lti_url!, item!.title, item!.description)
-            }
-          />
-        ))}
+        {items?.map((item: Classroom) => {
+          return (
+            <ContentCard
+              content={item!}
+              key={item.id}
+              onClick={() =>
+                buildContentItems(
+                  item!.lti_url!,
+                  item!.title,
+                  item!.description,
+                  lti_select_form_data,
+                  setContentItemsValue,
+                )
+              }
+            />
+          );
+        })}
       </Grid>
     </Box>
   );
 };
-
-const SelectContentTab = ({
-  playlist,
-  selectContent,
-  lti_select_form_data,
-}: SelectContentTabProps) => {
-  const { data: selectClassroom, status: useSelectClassroomStatus } =
-    useSelectClassroom({});
-
-  const useCreateClassroomMutation = useCreateClassroom({
-    onSuccess: (classroom) =>
-      selectContent(
-        selectClassroom!.new_url! + classroom.id,
-        classroom.title,
-        classroom.description,
-      ),
-  });
-
-  let content: JSX.Element;
-  switch (useSelectClassroomStatus) {
-    case 'idle':
-    case 'loading':
-      content = (
-        <Spinner size="large">
-          <FormattedMessage {...messages.loadingClassrooms} />
-        </Spinner>
-      );
-      break;
-
-    case 'error':
-      content = <ErrorMessage code="generic" />;
-      break;
-
-    case 'success':
-      content = (
-        <SelectContentSection
-          addMessage={messages.addClassroom}
-          addAndSelectContent={() => {
-            useCreateClassroomMutation.mutate({
-              playlist: playlist!.id,
-              title: lti_select_form_data?.activity_title,
-              description: lti_select_form_data?.activity_description,
-            });
-          }}
-          newLtiUrl={selectClassroom!.new_url!}
-          items={selectClassroom!.classrooms!}
-          selectContent={selectContent}
-        />
-      );
-      break;
-  }
-
-  return <Tab title="Classrooms">{content}</Tab>;
-};
-
-export default SelectContentTab;

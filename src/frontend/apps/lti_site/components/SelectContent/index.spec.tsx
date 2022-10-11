@@ -2,9 +2,10 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
-import React, { Suspense } from 'react';
+import React from 'react';
 
 import { initiateLive } from 'data/sideEffects/initiateLive';
+import { selectableBaseResource } from 'types/AppData';
 import { LiveModeType, liveState, uploadState } from 'types/tracks';
 import {
   documentMockFactory,
@@ -14,7 +15,9 @@ import {
 } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
-import { SelectContent, SelectContentTabProps } from '.';
+import { SelectContentTabProps } from './SelectContentTabs';
+import { buildContentItems } from './utils';
+import { SelectContent } from '.';
 
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',
@@ -42,15 +45,18 @@ const mockedInitiateLive = initiateLive as jest.MockedFunction<
 >;
 
 const mockCustomSelectContentTab = ({
-  selectContent,
+  lti_select_form_data,
+  setContentItemsValue,
 }: SelectContentTabProps) => (
   <Tab title="Custom app tab">
     <p
       onClick={() =>
-        selectContent(
+        buildContentItems(
           'custom-select-content-url',
           'Custom select content title',
           'Custom select content description',
+          lti_select_form_data,
+          setContentItemsValue,
         )
       }
     >
@@ -60,7 +66,7 @@ const mockCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/custom_app/components/SelectContentTab',
+  'apps/custom_app/components/SelectContent/SelectContentTab',
   () => mockCustomSelectContentTab,
   {
     virtual: true,
@@ -68,15 +74,18 @@ jest.mock(
 );
 
 const mockOtherCustomSelectContentTab = ({
-  selectContent,
+  lti_select_form_data,
+  setContentItemsValue,
 }: SelectContentTabProps) => (
   <Tab title="Other custom app tab">
     <p
       onClick={() =>
-        selectContent(
+        buildContentItems(
           'other-custom-select-content-url',
           'Other custom select content title',
           'Other custom select content description',
+          lti_select_form_data,
+          setContentItemsValue,
         )
       }
     >
@@ -86,7 +95,7 @@ const mockOtherCustomSelectContentTab = ({
 );
 
 jest.mock(
-  'apps/other_custom_app/components/SelectContentTab',
+  'apps/other_custom_app/components/SelectContent/SelectContentTab',
   () => mockOtherCustomSelectContentTab,
   {
     virtual: true,
@@ -204,7 +213,7 @@ describe('<SelectContent />', () => {
 
     // Videos Tab
     const videoTab = screen.getByRole('tab', {
-      name: /videos/i,
+      name: 'Videos',
     });
     userEvent.click(videoTab);
 
@@ -806,52 +815,37 @@ describe('<SelectContent />', () => {
     expect(form).toHaveAttribute('action', '/lti/select/');
   });
 
-  it('loads app tab', async () => {
-    const { elementContainer: container } = render(
-      <Suspense fallback="Loading...">
-        <SelectContent
-          lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-          lti_select_form_data={{
-            lti_response_url: 'https://example.com/lti',
-            lti_message_type: 'ContentItemSelection',
-          }}
-        />
-      </Suspense>,
+  it('renders the SelectContentTargetedResource', () => {
+    render(
+      <SelectContent
+        videos={[
+          videoMockFactory({
+            id: '1',
+            title: 'Video 1',
+            upload_state: uploadState.PROCESSING,
+            is_ready_to_show: false,
+            urls: {
+              manifests: {
+                hls: '',
+              },
+              mp4: {},
+              thumbnails: {
+                480: 'https://example.com/default_thumbnail/480',
+                720: 'https://example.com/default_thumbnail/720',
+                1080: 'https://example.com/default_thumbnail/1080',
+              },
+            },
+          }),
+        ]}
+        new_document_url={mockAppData.new_document_url}
+        new_video_url={mockAppData.new_video_url}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_data={mockAppData.lti_select_form_data!}
+        targeted_resource={selectableBaseResource.VIDEO}
+      />,
     );
 
-    const otherCustomAppTab = await screen.findByRole('tab', {
-      name: 'Other custom app tab',
-    });
-    userEvent.click(otherCustomAppTab);
-    screen.getByText('Other select app content');
-    expect(screen.queryByText('Select app content')).not.toBeInTheDocument();
-
-    const customAppTab = await screen.findByRole('tab', {
-      name: 'Custom app tab',
-    });
-    userEvent.click(customAppTab);
-    expect(
-      screen.queryByText('Other select app content'),
-    ).not.toBeInTheDocument();
-    userEvent.click(screen.getByText('Select app content'));
-
-    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
-
-    expect(container!.querySelector('form')).toHaveFormValues({
-      lti_response_url: 'https://example.com/lti',
-      lti_message_type: 'ContentItemSelection',
-      content_items: JSON.stringify({
-        '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
-        '@graph': [
-          {
-            '@type': 'ContentItem',
-            url: 'custom-select-content-url',
-            frame: [],
-            title: 'Custom select content title',
-            text: 'Custom select content description',
-          },
-        ],
-      }),
-    });
+    expect(screen.queryByRole('tab')).not.toBeInTheDocument();
+    screen.getByRole('heading', { name: 'Videos' });
   });
 });
