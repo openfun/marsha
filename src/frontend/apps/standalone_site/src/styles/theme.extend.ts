@@ -7,6 +7,10 @@ export const themeExtend: ThemeType = deepMerge(theme, {
     extend: '',
   },
   global: {
+    size: {
+      xsmedium: '240px',
+      xlmedium: '480px',
+    },
     colors: {
       'content-background': '#E5EEFA',
       text: {
