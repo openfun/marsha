@@ -4,8 +4,8 @@ import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
+import { WhiteCard } from 'components/Cards';
 import { SortableTable } from 'components/SortableTable';
-import { WhiteCard } from 'components/WhiteCard/WhiteCard';
 
 import { PlaylistOrderType, usePlaylists } from '../api/usePlaylists';
 

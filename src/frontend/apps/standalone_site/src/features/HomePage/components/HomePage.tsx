@@ -1,5 +1,5 @@
 import { Image, Box, Text } from 'grommet';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
@@ -7,19 +7,20 @@ import card1 from 'assets/img/card-1.png';
 import card2 from 'assets/img/card-2.png';
 import card3 from 'assets/img/card-3.png';
 import banner from 'assets/img/homepage-banner.png';
-
-import Card from './Card';
+import { ReactComponent as BarreCodeIcon } from 'assets/svg/iko_boot_code_barresvg.svg';
+import { ReactComponent as UniversityIcon } from 'assets/svg/iko_boot_universitesvg.svg';
+import { ContentCards, ContentCard } from 'components/Cards';
 
 const messages = defineMessages({
   HomePage: {
     defaultMessage: 'Homepage',
     description: 'HomePage title',
-    id: 'HomePage.HomePage.HomePage',
+    id: 'features.HomePage.HomePage',
   },
   SeeEverything: {
     defaultMessage: 'See Everything',
     description: 'Label to see all the cards',
-    id: 'HomePage.HomePage.SeeEverything',
+    id: 'features.HomePage.SeeEverything',
   },
 });
 
@@ -29,10 +30,6 @@ const HomePageBox = styled(Box)`
 
 const BlockBox = styled(Box)`
   display: block;
-`;
-
-const CardBox = styled(Box)`
-  gap: 1.7rem;
 `;
 
 const cards = [
@@ -91,7 +88,7 @@ function HomePage() {
 
   return (
     <HomePageBox>
-      <BlockBox margin={{ top: 'large', horizontal: 'auto' }}>
+      <BlockBox margin={{ horizontal: 'auto' }}>
         <Image src={banner} alt="Homepage Banner" width="fit-content" />
       </BlockBox>
       <Box margin={{ top: 'medium' }}>
@@ -101,15 +98,37 @@ function HomePage() {
             › {intl.formatMessage(messages.SeeEverything)}
           </Text>
         </Box>
-        <CardBox direction="row" wrap={true} justify="evenly">
-          {cards.map((card, index) => (
-            <Card
+        <ContentCards>
+          {cards.map(({ title, image }, index) => (
+            <ContentCard
               key={`homepage-card-${index}`}
-              image={card.image}
-              title={card.title}
-            />
+              title={title}
+              header={
+                <Image src={image} alt={`Image about ${title}`} fit="contain" />
+              }
+              footer={
+                <Fragment>
+                  <Box gap="small" align="center" direction="row">
+                    <Box>
+                      <UniversityIcon width={20} height={20} />
+                    </Box>
+                    <Text size="0.688rem" weight="bold">
+                      Conservatoire nationale des Arts et Métiers (Cnam)
+                    </Text>
+                  </Box>
+                  <Box gap="small" align="center" direction="row">
+                    <Box>
+                      <BarreCodeIcon width={20} height={20} color="#093388" />
+                    </Box>
+                    <Text size="0.688rem" weight="bold" color="#093388">
+                      011042
+                    </Text>
+                  </Box>
+                </Fragment>
+              }
+            ></ContentCard>
           ))}
-        </CardBox>
+        </ContentCards>
       </Box>
     </HomePageBox>
   );

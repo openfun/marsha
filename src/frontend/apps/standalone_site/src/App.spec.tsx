@@ -50,7 +50,7 @@ describe('<App />', () => {
     jest.mock(
       'translations/fr.json',
       () => ({
-        'HomePage.HomePage.HomePage': 'Mon Accueil',
+        'features.HomePage.HomePage': 'Mon Accueil',
         'routes.routes.menuHomePageLabel': 'Mon Tableau de bord',
       }),
       { virtual: true },
