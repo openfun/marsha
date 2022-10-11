@@ -46,8 +46,14 @@ class MarkdownDocumentViewSet(
         """
         if self.action in ["create"]:
             permission_classes = [
-                core_permissions.HasPlaylistToken
-                & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
+                (
+                    core_permissions.HasPlaylistToken
+                    & (
+                        core_permissions.IsTokenInstructor
+                        | core_permissions.IsTokenAdmin
+                    )
+                )
+                | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = self.permission_classes
