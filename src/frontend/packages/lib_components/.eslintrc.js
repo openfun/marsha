@@ -32,6 +32,22 @@ module.exports = {
         alphabetize: {
           order: 'asc',
         },
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        pathGroups: [
+          {
+            pattern: '+(common|hooks|types|utils)/**',
+            group: 'internal',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
+        'newlines-between': 'always',
       },
     ],
     'no-alert': 1,

@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import styled from 'styled-components';
 
 import type { SvgProps } from '../../../common/SVGIcons';
+
 import { Badge } from './Badge';
 
 interface ResponsiveProps {

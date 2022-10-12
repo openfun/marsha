@@ -1,4 +1,5 @@
 import fetchMock from 'fetch-mock';
+
 import { useJwt } from '../../hooks/stores/useJwt';
 
 import { metadata } from './metadata';
