@@ -31,6 +31,8 @@ class IsTokenResourceRouteObjectRelatedClassroom(permissions.BasePermission):
         boolean
             True if the request is authorized, False otherwise
         """
+        if not request.resource:
+            return False
         try:
             return str(view.get_related_object().classroom.id) == request.resource.id
         except ObjectDoesNotExist:
@@ -101,3 +103,89 @@ class IsClassroomPlaylistOrOrganizationAdmin(permissions.BasePermission):
         return IsClassroomPlaylistAdmin().has_permission(
             request, view
         ) or IsClassroomOrganizationAdmin().has_permission(request, view)
+
+
+class IsRelatedClassroomOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the organization
+    linked to the playlist the classroom is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a classroom id in the path of the request, which exists,
+        and if the current user is an admin for the organization linked to the playlist this video
+        is a part of.
+        """
+        try:
+            if request.data.get("classroom"):
+                classroom_id = request.data.get("classroom")
+            else:
+                try:
+                    classroom_id = view.get_related_object().classroom.id
+                except AttributeError:
+                    return False
+            return models.OrganizationAccess.objects.filter(
+                role=models.ADMINISTRATOR,
+                organization__playlists__classrooms__id=classroom_id,
+                user__id=request.user.id,
+            ).exists()
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsRelatedClassroomPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the classroom is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a classroom id in the path of the request, which exists,
+        and if the current user is an admin for the playlist this video is a part of.
+        """
+        try:
+            if request.data.get("classroom"):
+                classroom_id = request.data.get("classroom")
+            else:
+                try:
+                    classroom_id = view.get_related_object().classroom.id
+                except AttributeError:
+                    return False
+            return models.PlaylistAccess.objects.filter(
+                role=models.ADMINISTRATOR,
+                playlist__classrooms__id=classroom_id,
+                user__id=request.user.id,
+            ).exists()
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsRelatedClassroomPlaylistOrOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the classroom is a part of or admin of the linked organization.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a classroom id in the path of the request, which exists,
+        and if the current user is an admin for the playlist this video is a part of or
+        admin of the linked organization.
+        """
+        return IsRelatedClassroomPlaylistAdmin().has_permission(
+            request, view
+        ) or IsRelatedClassroomOrganizationAdmin().has_permission(request, view)

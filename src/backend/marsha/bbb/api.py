@@ -20,7 +20,10 @@ from ..core.utils.time_utils import to_timestamp
 from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .models import Classroom, ClassroomDocument
-from .permissions import IsClassroomPlaylistOrOrganizationAdmin
+from .permissions import (
+    IsClassroomPlaylistOrOrganizationAdmin,
+    IsRelatedClassroomPlaylistOrOrganizationAdmin,
+)
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -325,17 +328,45 @@ class ClassroomDocumentViewSet(
     queryset = ClassroomDocument.objects.all()
     serializer_class = serializers.ClassroomDocumentSerializer
 
-    permission_classes = [permissions.IsTokenResourceRouteObjectRelatedClassroom]
+    permission_classes = [
+        permissions.IsTokenResourceRouteObjectRelatedClassroom
+        | IsRelatedClassroomPlaylistOrOrganizationAdmin
+    ]
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
         if self.action in ["create", "list", "update", "partial_update"]:
             permission_classes = [
-                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | IsRelatedClassroomPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
+
+    def create(self, request, *args, **kwargs):
+        """Create a ClassroomDocument.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the classroom
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized classroom.
+        """
+        data = request.data.copy()
+        if data.get("classroom"):
+            data["classroom_id"] = data.get("classroom")
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=201)
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
