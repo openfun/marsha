@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-
 import { imageSnapshot, render } from 'lib-tests';
 import React from 'react';
 
