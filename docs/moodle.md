@@ -61,7 +61,22 @@ Fill the form with following data:
 |--------------------------|------------------------------------------------------|
 | Tool configuration usage | Show in activity chooser and as a preconfigured tool |
 | Supports Deep Linking    | Checked                                              |
-| Content Selection URL    | https://marsha.education/lti/select/                 |
+| Content Selection URL    | https://marsha.education/lti/select/ (see after)     |
+
+:warning: About the Content Selection URL :warning:
+
+By default, using the Content Selection Url `https://marsha.education/lti/select/` allows you to 
+select all the available resources in Marsha. You can, if you want, work only on a specific resource
+by specifying it in the Content Selection Url. For this, you have to specify the targeted resource at the end of the url. Available
+resources are the following:
+- Video: https://marsha.education/lti/select/video/
+- Webinar: https://marsha.education/lti/select/webinar/
+- Document: https://marsha.education/lti/select/document/
+- Classroom: https://marsha.education/lti/select/classroom/
+- Markdown: https://marsha.education/lti/select/markdown/
+- File depository: https://marsha.education/lti/select/deposit/
+
+Once configured with this specific url, every request made will display content about this resource.
 
 Please follow the instructions in [Cookies configuration](#cookies-configuration) and [Iframe resizer](#iframe-resizer) sections below.
 
