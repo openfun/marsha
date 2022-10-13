@@ -19,6 +19,7 @@ from ..core.utils.s3_utils import create_presigned_post
 from .defaults import LTI_ROUTE
 from .forms import MarkdownDocumentForm
 from .models import MarkdownDocument, MarkdownImage
+from .permissions import IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
 from .utils.converter import LatexConversionException, render_latex_to_image
 
 
@@ -250,7 +251,9 @@ class MarkdownImageViewSet(
         """Instantiate and return the list of permissions that this view requires."""
         if self.action == "create":
             permission_classes = [
-                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = [
@@ -258,6 +261,7 @@ class MarkdownImageViewSet(
                 & core_permissions.IsTokenInstructor
                 | markdown_permissions.IsTokenResourceRouteObjectRelatedMarkdownDocument
                 & core_permissions.IsTokenAdmin
+                | IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
             ]
         return [permission() for permission in permission_classes]
 
@@ -269,7 +273,7 @@ class MarkdownImageViewSet(
             return MarkdownImage.objects.filter(
                 markdown_document__id=self.request.resource.id,
             )
-        return MarkdownImage.objects.none()
+        return MarkdownImage.objects.all()
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     def initiate_upload(self, request, *args, pk=None, **kwargs):

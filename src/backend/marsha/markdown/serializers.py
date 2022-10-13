@@ -67,8 +67,13 @@ class MarkdownImageSerializer(
         """
         # resource here is a Markdown document
         resource = self.context["request"].resource
-        if not validated_data.get("markdown_document_id") and resource:
-            validated_data["markdown_document_id"] = resource.id
+        markdown_document_id = self.context["request"].data.get("markdown_document")
+        if not validated_data.get("markdown_document_id"):
+            if resource:
+                validated_data["markdown_document_id"] = resource.id
+            elif markdown_document_id:
+                validated_data["markdown_document_id"] = markdown_document_id
+
         return super().create(validated_data)
 
     def get_filename(self, obj):
