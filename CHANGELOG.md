@@ -46,6 +46,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   LTI select
 - Fix subtitles upload
 - Fix debounce time too low in the classroom creation form
+- Fix icons urls in LTI xml configuration
 
 ## [4.0.0-beta.8] - 2022-09-15
 

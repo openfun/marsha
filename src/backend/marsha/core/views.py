@@ -637,6 +637,12 @@ class LTIConfigView(TemplateResponseMixin, View):
             generated from applying the data to the template
 
         """
+        icon_url = ""
+        if settings.LTI_CONFIG_ICON:
+            if settings.CLOUDFRONT_DOMAIN in settings.STATIC_URL:
+                icon_url = static(settings.LTI_CONFIG_ICON)
+            else:
+                icon_url = f"//{request.get_host()}{static(settings.LTI_CONFIG_ICON)}"
         return self.render_to_response(
             {
                 "code": settings.LTI_CONFIG_TITLE.lower()
@@ -645,7 +651,7 @@ class LTIConfigView(TemplateResponseMixin, View):
                 "contact_email": settings.LTI_CONFIG_CONTACT_EMAIL,
                 "description": settings.LTI_CONFIG_DESCRIPTION,
                 "host": request.get_host(),
-                "icon": settings.LTI_CONFIG_ICON,
+                "icon_url": icon_url,
                 "title": settings.LTI_CONFIG_TITLE,
                 "url": settings.LTI_CONFIG_URL,
             }
