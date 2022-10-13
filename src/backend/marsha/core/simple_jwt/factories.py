@@ -7,11 +7,17 @@ from django.conf import settings
 import factory
 from faker.utils.text import slugify
 
-from marsha.core.factories import LiveSessionFactory, PlaylistFactory, UserFactory
+from marsha.core.factories import (
+    ConsumerSiteFactory,
+    LiveSessionFactory,
+    PlaylistFactory,
+    UserFactory,
+)
 from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, NONE, STUDENT
 from marsha.core.simple_jwt.permissions import ResourceAccessPermissions
 from marsha.core.simple_jwt.tokens import (
     ChallengeToken,
+    LTIUserToken,
     ResourceAccessToken,
     UserAccessToken,
 )
@@ -265,4 +271,26 @@ class LiveSessionLtiTokenFactory(LTIResourceAccessTokenFactory):
                 [ADMINISTRATOR, INSTRUCTOR, STUDENT, NONE],
                 getter=lambda x: [x],
             )
+        )
+
+
+class LTIUserTokenFactory(BaseTokenFactory):
+    """
+    LTI User for LTI/Site association token.
+
+    This token's payload is forged to remove a heavy call to
+    `generate_passport_and_signed_lti_parameters` each time
+    we want to have an LTI token.
+    """
+
+    # for_lti payload
+    lti_consumer_site_id = factory.LazyAttribute(lambda o: str(o.consumer_site.id))
+    lti_user_id = factory.Faker("uuid4")
+
+    class Meta:  # pylint:disable=missing-class-docstring
+        model = LTIUserToken
+
+    class Params:  # pylint:disable=missing-class-docstring
+        consumer_site = factory.SubFactory(
+            ConsumerSiteFactory,
         )
