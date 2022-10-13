@@ -381,5 +381,5 @@ class UserAccessToken(AccessToken):
         """Performs additional validation steps to test payload content."""
         super().verify()
 
-        if "user_id" not in self.payload:
+        if not self.payload.get("user_id", None):
             raise TokenError(_("Malformed user token"))
