@@ -2,12 +2,13 @@
 from django.contrib.auth import get_user_model
 
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.serializers import TokenVerifySerializer
 from rest_framework_simplejwt.settings import api_settings
 
 from ..models import ConsumerSite, Organization, OrganizationAccess
-from ..simple_jwt.tokens import ChallengeToken, UserAccessToken
+from ..simple_jwt.tokens import ChallengeToken, LTIUserToken, UserAccessToken
 from .base import ReadOnlyModelSerializer
 
 
@@ -131,3 +132,25 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
             "organization_accesses",
         ]
+
+
+class LTIUserAssociationCreationSerializer(serializers.Serializer):
+    """Serializer to validate the creation of an LTI user association."""
+
+    association_jwt = serializers.CharField()
+
+    def validate(self, attrs):
+        """Validate the serialized data and return validated data from the payload."""
+        data = super().validate(attrs)
+
+        # May raise a TokenError which will be caught by DRF
+        try:
+            association_token = LTIUserToken(attrs["association_jwt"])
+        except TokenError as exc:
+            raise ValidationError(exc.args[0]) from exc
+
+        # May raise a KeyError which will be caught by DRF
+        data["lti_consumer_site_id"] = association_token.payload["lti_consumer_site_id"]
+        data["lti_user_id"] = association_token.payload["lti_user_id"]
+
+        return data
