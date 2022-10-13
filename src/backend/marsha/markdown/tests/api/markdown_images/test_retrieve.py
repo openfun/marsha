@@ -4,9 +4,16 @@ import json
 
 from django.test import TestCase, override_settings
 
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.markdown.api import timezone
 from marsha.markdown.factories import MarkdownDocumentFactory, MarkdownImageFactory
@@ -182,5 +189,87 @@ class MarkdownImageRetrieveApiTest(TestCase):
                     "9ddf9c1f-ec88-4a3a-bfa0-423c4fe89b15/1533686400.gif"
                 ),
                 "markdown_document": str(markdown_document.id),
+            },
+        )
+
+    def test_api_markdown_image_read_detail_user_access_token(self):
+        """A user with UserAccessToken should not be allowed to read a Markdown image detail."""
+        organization_access = OrganizationAccessFactory()
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_image = MarkdownImageFactory(markdown_document__playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-images/{markdown_image.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_markdown_image_read_detail_user_access_token_organization_admin(self):
+        """
+        An organization administrator should be able to read details of Markdown image
+        associated to their Markdown documents.
+        """
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        markdown_image = MarkdownImageFactory(markdown_document__playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-images/{markdown_image.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "id": str(markdown_image.id),
+                "filename": None,
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "upload_state": "pending",
+                "url": None,
+                "markdown_document": str(markdown_image.markdown_document.id),
+            },
+        )
+
+    @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
+    def test_api_markdown_image_read_detail_user_access_token_playlist_admin(self):
+        """
+        A playlist administrator should be able to read details of Markdown image
+        associated to their Markdown documents.
+        """
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        markdown_image = MarkdownImageFactory(
+            markdown_document__playlist=playlist_access.playlist
+        )
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            f"/api/markdown-images/{markdown_image.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(
+            content,
+            {
+                "id": str(markdown_image.id),
+                "filename": None,
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "upload_state": "pending",
+                "url": None,
+                "markdown_document": str(markdown_image.markdown_document.id),
             },
         )

@@ -126,3 +126,94 @@ class IsMarkdownDocumentPlaylistOrOrganizationAdmin(permissions.BasePermission):
         return IsMarkdownDocumentPlaylistAdmin().has_permission(
             request, view
         ) or IsMarkdownDocumentOrganizationAdmin().has_permission(request, view)
+
+
+class IsRelatedMarkdownDocumentOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the organization
+    linked to the playlist the markdown document is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the organization linked to
+        the playlist this markdown document is a part of.
+        """
+        try:
+            if request.data.get("markdown_document"):
+                markdown_document_id = request.data.get("markdown_document")
+            else:
+                try:
+                    markdown_document_id = (
+                        view.get_related_object().markdown_document.id
+                    )
+                except AttributeError:
+                    return False
+            return models.OrganizationAccess.objects.filter(
+                role=models.ADMINISTRATOR,
+                organization__playlists__markdowndocuments__id=markdown_document_id,
+                user__id=request.user.id,
+            ).exists()
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsRelatedMarkdownDocumentPlaylistAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the markdown document is a part of.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this markdown document
+        is a part of.
+        """
+        try:
+            if request.data.get("markdown_document"):
+                markdown_document_id = request.data.get("markdown_document")
+            else:
+                try:
+                    markdown_document_id = (
+                        view.get_related_object().markdown_document.id
+                    )
+                except AttributeError:
+                    return False
+            return models.PlaylistAccess.objects.filter(
+                role=models.ADMINISTRATOR,
+                playlist__markdowndocuments__id=markdown_document_id,
+                user__id=request.user.id,
+            ).exists()
+        except ObjectDoesNotExist:
+            return False
+
+
+class IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is an admin for the playlist
+    the markdown document is a part of or admin of the linked organization.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if there is a markdown document id in the path of the request,
+        which exists, and if the current user is an admin for the playlist this markdown document
+        is a part of or admin of the linked organization.
+        """
+        return IsRelatedMarkdownDocumentPlaylistAdmin().has_permission(
+            request, view
+        ) or IsRelatedMarkdownDocumentOrganizationAdmin().has_permission(request, view)
