@@ -26,6 +26,7 @@ from marsha.core.api import (
     recording_slices_state,
     update_state,
 )
+from marsha.core.api.lti_user_association import LtiUserAssociationViewSet
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 from marsha.core.views import (
     DocumentLTIView,
@@ -62,6 +63,9 @@ router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thum
 router.register("organizations", OrganizationViewSet, basename="organizations")
 router.register("playlists", PlaylistViewSet, basename="playlists")
 router.register("users", UserViewSet, basename="users")
+router.register(
+    "lti-user-associations", LtiUserAssociationViewSet, basename="lti_user_associations"
+)
 router.register(
     models.SharedLiveMedia.RESOURCE_NAME,
     SharedLiveMediaViewSet,
