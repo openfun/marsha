@@ -29,7 +29,7 @@ class LTIConfigViewTestCase(TestCase):
                 "contact_email": "contact@example.com",
                 "description": "Open source LTI resource provider",
                 "host": "testserver",
-                "icon": "marsha-icon.png",
+                "icon_url": "//testserver/static/marsha-icon.png",
                 "title": "Marsha",
                 "url": "https://example.com",
             },
@@ -86,7 +86,7 @@ class LTIConfigViewTestCase(TestCase):
                 "contact_email": "",
                 "description": "",
                 "host": "testserver",
-                "icon": "",
+                "icon_url": "",
                 "title": "",
                 "url": "",
             },
@@ -130,7 +130,7 @@ class LTIConfigViewTestCase(TestCase):
                 "contact_email": None,
                 "description": None,
                 "host": "testserver",
-                "icon": None,
+                "icon_url": "",
                 "title": None,
                 "url": None,
             },
@@ -174,7 +174,7 @@ class LTIConfigViewTestCase(TestCase):
                 "contact_email": None,
                 "description": None,
                 "host": "testserver",
-                "icon": None,
+                "icon_url": "",
                 "title": None,
                 "url": "https://example.com",
             },
@@ -217,7 +217,7 @@ class LTIConfigViewTestCase(TestCase):
                 "description": "An LTI first, opensource and extensible "
                 "Learning Content Management System",
                 "host": "testserver",
-                "icon": "marsha_32x32_blue.png",
+                "icon_url": "//testserver/static/marsha_32x32_blue.png",
                 "title": "Marsha",
                 "url": None,
             },
@@ -242,6 +242,57 @@ class LTIConfigViewTestCase(TestCase):
                 <blti:secure_launch_url>https://testserver</blti:secure_launch_url>
                 <blti:icon>http://testserver/static/marsha_32x32_blue.png</blti:icon>
                 <blti:secure_icon>https://testserver/static/marsha_32x32_blue.png</blti:secure_icon>
+                <blti:vendor>
+                    <lticp:code>marsha</lticp:code>
+                    <lticp:name>Marsha</lticp:name>
+                    <lticp:description>An LTI first, opensource and extensible Learning Content Management System</lticp:description>
+                </blti:vendor>
+                <cartridge_bundle identifierref="BLTI001_Bundle"/>
+                <cartridge_icon identifierref="BLTI001_Icon"/>
+            </cartridge_basiclti_link>
+                        """  # noqa: E501 pylint: disable=line-too-long
+            ),
+        )
+
+    @override_settings(CLOUDFRONT_DOMAIN="abc123.cloudfront")
+    @override_settings(STATIC_URL="//abc123.cloudfront/static/")
+    def test_views_lti_config_default_cloudfront(self):
+        """Validate that icons urls are correct when cloudfront is used."""
+        response = self.client.get("/lti/config.xml")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.context_data,
+            {
+                "code": "marsha",
+                "contact_email": None,
+                "description": "An LTI first, opensource and extensible "
+                "Learning Content Management System",
+                "host": "testserver",
+                "icon_url": "//abc123.cloudfront/static/marsha_32x32_blue.png",
+                "title": "Marsha",
+                "url": None,
+            },
+        )
+        self.assertEqual(response["Content-Type"], "text/xml; charset=utf-8")
+        self.assertEqual(
+            xmltodict.parse(response.content),
+            xmltodict.parse(
+                """<?xml version="1.0" encoding="UTF-8"?>
+            <cartridge_basiclti_link xmlns="http://www.imsglobal.org/xsd/imslticc_v1p0"
+                xmlns:blti = "http://www.imsglobal.org/xsd/imsbasiclti_v1p0"
+                xmlns:lticm ="http://www.imsglobal.org/xsd/imslticm_v1p0"
+                xmlns:lticp ="http://www.imsglobal.org/xsd/imslticp_v1p0"
+                xmlns:xsi = "http://www.w3.org/2001/XMLSchema-instance"
+                xsi:schemaLocation = "http://www.imsglobal.org/xsd/imslticc_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticc_v1p0.xsd
+    http://www.imsglobal.org/xsd/imsbasiclti_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imsbasiclti_v1p0.xsd
+    http://www.imsglobal.org/xsd/imslticm_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticm_v1p0.xsd
+    http://www.imsglobal.org/xsd/imslticp_v1p0 http://www.imsglobal.org/xsd/lti/ltiv1p0/imslticp_v1p0.xsd">
+                <blti:title>Marsha</blti:title>
+                <blti:description>An LTI first, opensource and extensible Learning Content Management System</blti:description>
+                <blti:launch_url>http://testserver</blti:launch_url>
+                <blti:secure_launch_url>https://testserver</blti:secure_launch_url>
+                <blti:icon>http://abc123.cloudfront/static/marsha_32x32_blue.png</blti:icon>
+                <blti:secure_icon>https://abc123.cloudfront/static/marsha_32x32_blue.png</blti:secure_icon>
                 <blti:vendor>
                     <lticp:code>marsha</lticp:code>
                     <lticp:name>Marsha</lticp:name>

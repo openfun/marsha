@@ -17,9 +17,9 @@
     <blti:launch_url>http://{{ host }}</blti:launch_url>
     <blti:secure_launch_url>https://{{ host }}</blti:secure_launch_url>
 
-    {% if icon %}
-        <blti:icon>http://{{ host }}{% static icon %}</blti:icon>
-        <blti:secure_icon>https://{{ host }}{% static icon %}</blti:secure_icon>
+    {% if icon_url %}
+        <blti:icon>http:{{ icon_url }}</blti:icon>
+        <blti:secure_icon>https:{{ icon_url }}</blti:secure_icon>
     {% endif %}
 
     {% if code or title or description or url or contact_email %}
