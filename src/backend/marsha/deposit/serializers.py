@@ -17,6 +17,7 @@ from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
 from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
+from ..core.models import User
 from .models import DepositedFile, FileDepository
 
 
@@ -70,18 +71,28 @@ class DepositedFileSerializer(
 
         """
         resource = self.context["request"].resource
+        user = self.context["request"].user
+        file_depository_id = self.context["request"].data.get("file_depository")
 
-        if not validated_data.get("file_depository_id") and resource:
-            validated_data["file_depository_id"] = resource.id
+        if not validated_data.get("file_depository_id"):
+            if resource:
+                validated_data["file_depository_id"] = resource.id
+            elif file_depository_id:
+                validated_data["file_depository_id"] = file_depository_id
 
-        validated_data["author_id"] = resource.user.get("id")
+        if resource:
+            validated_data["author_id"] = resource.user.get("id")
 
-        # try to get the most useful username from the token
-        if resource.user:
-            if author_name := (
-                resource.user.get("user_fullname") or resource.user.get("username")
-            ):
-                validated_data["author_name"] = author_name
+            # try to get the most useful username from the token
+            if resource.user:
+                if author_name := (
+                    resource.user.get("user_fullname") or resource.user.get("username")
+                ):
+                    validated_data["author_name"] = author_name
+        else:
+            validated_data["author_id"] = user.id
+            validated_data["author_name"] = User.objects.get(id=user.id).username
+
         return super().create(validated_data)
 
     def _get_extension_string(self, obj):

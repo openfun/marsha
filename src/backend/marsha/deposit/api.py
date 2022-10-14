@@ -18,7 +18,10 @@ from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from .defaults import LTI_ROUTE
 from .forms import FileDepositoryForm
 from .models import DepositedFile, FileDepository
-from .permissions import IsFileDepositoryPlaylistOrOrganizationAdmin
+from .permissions import (
+    IsFileDepositoryPlaylistOrOrganizationAdmin,
+    IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
+)
 
 
 class FileDepositoryFilter(django_filters.FilterSet):
@@ -232,19 +235,32 @@ class DepositedFileViewSet(
     queryset = DepositedFile.objects.all()
     serializer_class = serializers.DepositedFileSerializer
 
-    permission_classes = [permissions.IsTokenResourceRouteObjectRelatedFileDepository]
+    permission_classes = [
+        permissions.IsTokenResourceRouteObjectRelatedFileDepository
+        | core_permissions.UserIsAuthenticated
+    ]
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in ["create", "list"]:
+        if self.action in ["create"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
                 | core_permissions.IsTokenStudent
+                | core_permissions.UserIsAuthenticated
+            ]
+        elif self.action in ["create", "list"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | core_permissions.IsTokenStudent
+                | IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
             ]
         elif self.action in ["update", "partial_update"]:
             permission_classes = [
-                core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | IsRelatedFileDepositoryPlaylistOrOrganizationAdmin
             ]
         else:
             permission_classes = self.permission_classes
