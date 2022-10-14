@@ -192,10 +192,21 @@ Install all the dependencies:
 
     $ yarn install
 
+#### The LTI frontend
 Run the build and copy the `iframe-resizer` host-side JS into your local `Django` assets:
 
-    $ yarn build
+    $ yarn build-lti
     $ yarn copy-iframe-resizer
+
+#### The "Standalone" frontend
+Run the build for libraries and start the standalone frontend:
+
+    $ yarn build-tests
+    $ yarn start-site
+
+Now the standalone frontend is available at [localhost:3000](http://localhost:3000/).
+
+#### Testing frontend
 
 The front application is tested using [jest](https://jestjs.io/). Every js module has its corresponding spec file containing related tests:
 
@@ -205,7 +216,7 @@ The front application is tested using [jest](https://jestjs.io/). Every js modul
 │   ├── index.tsx
 ```
 
-Run the tests:
+Run the tests (this will run all tests: for both LTI and standalone frontends and libraries):
 
     $ yarn test
 
