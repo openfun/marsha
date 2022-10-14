@@ -9,6 +9,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Allow site users to manage classroom documents, deposited files,
+  and markdown images through API.
+
 ## [4.0.0-beta.10] - 2022-10-19
 
 ### Changed
