@@ -88,7 +88,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -171,7 +173,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -254,7 +258,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -360,7 +366,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -449,7 +457,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -474,7 +484,9 @@ describe('DashboardLiveJitsi/utils', () => {
           external_api_url: 'external api url',
           domain: 'domain',
           config_overwrite: {
-            prejoinPageEnabled: true,
+            prejoinConfig: {
+              enabled: true,
+            },
           },
           interface_config_overwrite: {},
           room_name: 'room name',
@@ -541,7 +553,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: false,
+        prejoinConfig: {
+          enabled: false,
+        },
         resolution: 720,
         toolbarButtons,
       },
@@ -566,7 +580,9 @@ describe('DashboardLiveJitsi/utils', () => {
           external_api_url: 'external api url',
           domain: 'domain',
           config_overwrite: {
-            prejoinPageEnabled: true,
+            prejoinConfig: {
+              enabled: true,
+            },
           },
           interface_config_overwrite: {},
           room_name: 'room name',
@@ -633,7 +649,9 @@ describe('DashboardLiveJitsi/utils', () => {
         doNotStoreRoom: true,
         hideConferenceSubject: true,
         hideConferenceTimer: true,
-        prejoinPageEnabled: true,
+        prejoinConfig: {
+          enabled: true,
+        },
         resolution: 720,
         toolbarButtons,
       },

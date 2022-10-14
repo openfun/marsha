@@ -91,14 +91,19 @@ export const initializeJitsi = async (
     hideConferenceSubject: true,
     // Hides the conference timer.
     hideConferenceTimer: true,
-    prejoinPageEnabled: false,
+    prejoinConfig: {
+      enabled: false,
+    },
     resolution: 720,
     toolbarButtons,
     ...live.live_info.jitsi.config_overwrite,
   };
 
   if (live.join_mode === JoinMode.FORCED && !isInstructor) {
-    configOverwrite.prejoinPageEnabled = false;
+    configOverwrite.prejoinConfig = {
+      ...(configOverwrite.prejoinConfig || {}),
+      enabled: false,
+    };
   }
 
   return new window.JitsiMeetExternalAPI(live.live_info.jitsi.domain, {
