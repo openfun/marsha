@@ -42,7 +42,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(common|hooks|types|utils)/**',
+            pattern: '+(common|hooks|types|utils|data)/**',
             group: 'internal',
           },
         ],
