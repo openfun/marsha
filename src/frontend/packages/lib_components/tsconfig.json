@@ -3,7 +3,7 @@
   "extends": "../../tsconfig.json",
   "compilerOptions": {
     "outDir": "lib",
-    "module": "ES2015",
+    "module": "esnext",
     "esModuleInterop": true,
     "moduleResolution": "node",
     "jsx": "react",
