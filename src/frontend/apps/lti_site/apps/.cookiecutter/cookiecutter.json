@@ -1,6 +1,8 @@
 {
   "app_name": null,
   "app_name_capitalized": "{{ cookiecutter.app_name|capitalize }}",
+  "app_name_lower": "{{ cookiecutter.app_name|lower }}",
+  "app_name_lower_plural": "{{ cookiecutter.app_name|lower }}s",
   "model": null,
   "model_name": "{{ cookiecutter.model|lower }}",
   "model_lower": "{{ cookiecutter.model|lower }}",

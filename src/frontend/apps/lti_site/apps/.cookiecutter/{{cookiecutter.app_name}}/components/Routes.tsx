@@ -8,9 +8,9 @@ import {
   FullScreenError,
 } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import {DASHBOARD_{{ cookiecutter.app_name|upper }}_ROUTE} from "./Dashboard{{cookiecutter.model}}/route";
-import {RedirectOnLoad} from "./RedirectOnLoad";
-import {REDIRECT_ON_LOAD_ROUTE} from "./RedirectOnLoad/route";
+import { DASHBOARD_{{ cookiecutter.app_name|upper }}_ROUTE } from './Dashboard{{cookiecutter.model}}/route';
+import { RedirectOnLoad } from './RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
 const Dashboard{{cookiecutter.model}} = lazy(() => import('./Dashboard{{cookiecutter.model}}'));
 
