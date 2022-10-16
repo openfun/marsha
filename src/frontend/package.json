@@ -31,12 +31,12 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
-    "@codemirror/view": "6.3.0",
+    "@codemirror/view": "6.3.1",
     "@codemirror/state": "6.1.2",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
-    "grommet": "2.26.0",
+    "grommet": "2.27.0",
     "unist-util-visit": "4.1.1"
   }
 }
