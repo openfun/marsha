@@ -96,10 +96,10 @@ class DevelopmentLTIView(TemplateView):
                 "videos": Video.objects.order_by("-updated_on")[:5],
                 "documents": Document.objects.order_by("-updated_on")[:5],
                 "classrooms": Classroom.objects.order_by("-updated_on")[:5],
-                "markdown_documents": MarkdownDocument.objects.order_by("-updated_on")[
+                "markdown-documents": MarkdownDocument.objects.order_by("-updated_on")[
                     :5
                 ],
-                "filedepositories": FileDepository.objects.order_by("-updated_on")[:5],
+                "deposits": FileDepository.objects.order_by("-updated_on")[:5],
             },
         }
 
