@@ -1,7 +1,7 @@
 """Process module to manage association between LTI users and Marsha users."""
 from django.db.transaction import atomic
 
-from marsha.core.models import LtiUserAssociation
+from marsha.core.models import LtiUserAssociation, PortabilityRequest
 
 
 def clean_lti_user_id(lti_user_id):
@@ -84,3 +84,9 @@ def create_user_association(lti_consumer_site_id, lti_user_id, user_id):
         consumer_site_id=lti_consumer_site_id,
         user_id=user_id,
     )
+
+    PortabilityRequest.objects.filter(
+        from_lti_consumer_site_id=lti_consumer_site_id,
+        from_lti_user_id__iexact=str(lti_user_id),
+        from_user__isnull=True,
+    ).update(from_user_id=user_id)
