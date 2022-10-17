@@ -9,6 +9,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Administrators and teachers can now have access to
+  a "not ready" resource which belongs to a playlist
+  with portability.
+
 ## [4.0.0-beta.9] - 2022-10-18
 
 ### Added
