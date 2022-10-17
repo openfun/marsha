@@ -76,6 +76,7 @@
     "eslint-plugin-import": "2.26.0",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.31.8",
+    "eslint-plugin-react-hooks": "4.6.0",
     "faker": "5.5.3",
     "grommet": "*",
     "jest": "29.1.2",
