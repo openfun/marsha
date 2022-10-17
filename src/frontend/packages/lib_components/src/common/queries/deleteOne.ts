@@ -1,4 +1,4 @@
-import { useJwt } from '../../hooks/stores/useJwt';
+import { useJwt } from 'hooks/stores/useJwt';
 
 export const deleteOne = async ({
   name,

@@ -46,3 +46,5 @@ export * from './BreadCrumbs';
 export * from './queries';
 
 export * from './SchedulingFields';
+export * from './UploadManager';
+export * from './UploadManager/LTIUploadHandlers';

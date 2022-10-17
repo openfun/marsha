@@ -1,6 +1,6 @@
 import { QueryKey, QueryFunctionContext } from 'react-query';
 
-import { useJwt } from '../../hooks/stores/useJwt';
+import { useJwt } from 'hooks/stores/useJwt';
 
 /**
  * `react-query` fetcher for individual metadata model.
