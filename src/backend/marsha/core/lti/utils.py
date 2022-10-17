@@ -94,21 +94,17 @@ def get_or_create_resource(model, lti):
             Q(playlist__lti_id=lti.context_id, playlist__consumer_site=consumer_site)
             # The resource exists in another playlist of the same consumer site and is portable
             | Q(
-                model.get_ready_clause(),
                 playlist__is_portable_to_playlist=True,
                 playlist__consumer_site=consumer_site,
             )
             # The resource exists in another consumer site to which it is portable because:
             # 1. its playlist is portable to all consumer sites
-            | Q(model.get_ready_clause(), playlist__is_portable_to_consumer_site=True)
+            | Q(playlist__is_portable_to_consumer_site=True)
             # 2. its playlist is portable to the requested playlist
-            | Q(model.get_ready_clause(), playlist__in=playlist_reachable_from)
+            | Q(playlist__in=playlist_reachable_from)
             # 3. all playlists in the consumer site of the resource are portable to the
             #    requesting consumer site
-            | Q(
-                model.get_ready_clause(),
-                playlist__consumer_site__in=consumer_site.reachable_from.all(),
-            ),
+            | Q(playlist__consumer_site__in=consumer_site.reachable_from.all()),
             pk=lti.resource_id,
         )
     except model.DoesNotExist:
