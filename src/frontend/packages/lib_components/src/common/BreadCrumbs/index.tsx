@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from 'grommet';
 import { BreadCrumbsContext, Crumb as CrumbType } from 'lib-common';
 import React, { useContext, useEffect } from 'react';
