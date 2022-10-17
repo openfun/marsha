@@ -1,4 +1,4 @@
-import { useJwt } from '../../hooks/stores/useJwt';
+import { useJwt } from 'hooks/stores/useJwt';
 
 interface Variables<K> {
   name: string;

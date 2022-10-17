@@ -1,4 +1,4 @@
-import { useJwt } from '../../hooks/stores/useJwt';
+import { useJwt } from 'hooks/stores/useJwt';
 
 /**
  * `react-query` call action on individual item from the Marsha API.

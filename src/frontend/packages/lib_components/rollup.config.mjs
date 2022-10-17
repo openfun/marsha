@@ -20,16 +20,18 @@ export default {
       sourcemap: true,
       esModule: true,
       generatedCode: {
-        reservedNamesAsProps: false
+        reservedNamesAsProps: false,
       },
       interop: 'compat',
-      systemNullSetters: false
+      systemNullSetters: false,
+      inlineDynamicImports: true,
     },
     {
       file: pkg.module,
       format: 'es',
       exports: 'named',
       sourcemap: true,
+      inlineDynamicImports: true,
     },
   ],
   makeAbsoluteExternalsRelative: true,
