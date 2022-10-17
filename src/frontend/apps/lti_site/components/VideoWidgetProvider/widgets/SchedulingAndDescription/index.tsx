@@ -8,7 +8,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { DashedBoxCustom } from 'components/graphicals/DashedBoxCustom';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { TextAreaInput } from 'components/graphicals/TextAreaInput';
-import { SchedulingFields } from 'components/SchedulingFields';
+import { SchedulingFields } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState, Video } from 'types/tracks';

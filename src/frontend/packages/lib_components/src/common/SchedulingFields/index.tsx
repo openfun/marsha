@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
@@ -46,7 +47,9 @@ const displayedDuration = (duration: Duration) => {
 };
 
 const returnedDuration = (durationString: string) => {
-  if (durationString.length === 4) durationString = '0' + durationString;
+  if (durationString.length === 4) {
+    durationString = '0' + durationString;
+  }
   return durationString
     ? Duration.fromISOTime(durationString).toFormat('hh:mm:ss')
     : null;
