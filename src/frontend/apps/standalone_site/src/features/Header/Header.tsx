@@ -1,7 +1,7 @@
 import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import React, { useEffect, useState } from 'react';
+import { Nullable, theme } from 'lib-common';
+import { forwardRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
@@ -23,7 +23,7 @@ const HeaderBox = styled(Box)<PropsExtended>`
   z-index: 2;
 `;
 
-function Header() {
+const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
   const [isScrollTop, setIsScrollTop] = useState(true);
 
   useEffect(() => {
@@ -36,6 +36,7 @@ function Header() {
 
   return (
     <HeaderBox
+      ref={ref}
       role="menubar"
       direction="row"
       width="100%"
@@ -59,6 +60,7 @@ function Header() {
       </Box>
     </HeaderBox>
   );
-}
+});
 
+Header.displayName = 'Header';
 export default Header;
