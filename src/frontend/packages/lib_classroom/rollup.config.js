@@ -31,6 +31,7 @@ export default {
     'styled-components',
     'styled-reboot',
     'lib-common',
+    'lib-components',
     'lib-tests',
     'uuid',
     /jest/,
