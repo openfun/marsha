@@ -1,6 +1,6 @@
 import { Loader, useCurrentUser, useJwt } from 'lib-components';
 import { Fragment, PropsWithChildren, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
@@ -9,6 +9,7 @@ const TARGET_URL_STORAGE_KEY = 'redirect_uri';
 
 export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
   const location = useLocation();
+  const history = useHistory();
   const code = new URLSearchParams(location.search).get('token');
   const { currentUser, setCurrentUser } = useCurrentUser((state) => ({
     currentUser: state.currentUser,
@@ -33,10 +34,7 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     } else {
       const targetedAddress =
         process.env.REACT_APP_BACKEND_API_BASE_URL || window.location.origin;
-      localStorage.setItem(
-        TARGET_URL_STORAGE_KEY,
-        window.location.origin + window.location.pathname,
-      );
+      localStorage.setItem(TARGET_URL_STORAGE_KEY, window.location.pathname);
       window.location.replace(targetedAddress + '/account/login/');
     }
   }, [code, jwt, setJwt]);
@@ -52,14 +50,10 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
       const targetUri = localStorage.getItem(TARGET_URL_STORAGE_KEY);
       localStorage.removeItem(TARGET_URL_STORAGE_KEY);
       //  remove token from url
-      window.history.replaceState(
-        null,
-        '',
-        targetUri || window.location.origin + window.location.pathname,
-      );
+      history.replace(targetUri || window.location.pathname);
     };
     fetchUserData();
-  }, [jwt, currentUser, setCurrentUser]);
+  }, [jwt, currentUser, setCurrentUser, history]);
 
   if (!jwt && !code) {
     return <Fragment />;
