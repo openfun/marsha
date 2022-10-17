@@ -16,6 +16,13 @@ router.register("depositedfiles", DepositedFileViewSet, basename="deposited_file
 
 urlpatterns = [
     path(
+        "lti/deposits/<uuid:uuid>",
+        FileDepositoryLTIView.as_view(),
+        name="file_depository_lti_view",
+    ),
+    # The following URL pattern is used to support legacy model name.
+    # It must be removed in the future.
+    path(
         "lti/filedepositories/<uuid:uuid>",
         FileDepositoryLTIView.as_view(),
         name="file_depository_lti_view",

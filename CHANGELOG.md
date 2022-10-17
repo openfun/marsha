@@ -35,6 +35,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   timed text track format is not supported by
   @openfun/subsrt
 - rename front application bbb in classroom
+- rename lti/filedepositories in lti/deposits
 
 ### Fixed
 
