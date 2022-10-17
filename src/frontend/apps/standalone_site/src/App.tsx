@@ -1,6 +1,8 @@
 import { Grommet, Main, Page } from 'grommet';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { IntlProvider } from 'react-intl';
+import { QueryClient, QueryClientProvider } from 'react-query';
+import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
 import { DEFAULT_LANGUAGE } from 'conf/global';
@@ -14,6 +16,7 @@ import './App.css';
 const App = () => {
   const [currentTranslation, setCurrentTranslation] =
     useState<Record<string, string>>();
+  const queryClient = useMemo(() => new QueryClient(), []);
 
   /**
    * Load the current language and translation
@@ -37,17 +40,20 @@ const App = () => {
         throw err;
       }}
     >
-      <Grommet theme={themeExtend}>
-        <BrowserRouter>
-          <Authenticator>
-            <Main height={{ min: '100vh' }}>
-              <Page kind="full">
-                <AppRoutes />
-              </Page>
-            </Main>
-          </Authenticator>
-        </BrowserRouter>
-      </Grommet>
+      <QueryClientProvider client={queryClient}>
+        <ReactQueryDevtools />
+        <Grommet theme={themeExtend}>
+          <BrowserRouter>
+            <Authenticator>
+              <Main height={{ min: '100vh' }}>
+                <Page kind="full">
+                  <AppRoutes />
+                </Page>
+              </Main>
+            </Authenticator>
+          </BrowserRouter>
+        </Grommet>
+      </QueryClientProvider>
     </IntlProvider>
   );
 };
