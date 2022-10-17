@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- create lib-classroom package
 - standalone website:
   - Add router to the layout
   - Add menu interaction

@@ -5,6 +5,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended', // Uses the recommended rules from the @typescript-eslint/eslint-plugin
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:prettier/recommended',
+    'plugin:react-hooks/recommended',
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -41,7 +42,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(common|hooks|types|utils)/**',
+            pattern: '+(components|data|types|utils)/**',
             group: 'internal',
           },
         ],
