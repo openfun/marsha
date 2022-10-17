@@ -73,7 +73,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('Feature disabled');
   });
 
-  it('shows editor for instructor', async () => {
+  it('shows editor for instructor who can update', async () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -99,39 +99,13 @@ describe('<RedirectOnLoad />', () => {
     getByText('Markdown editor');
   });
 
-  it('shows viewer for instructor without editing permission', async () => {
+  it('shows viewer for student or instructor who cannot update', async () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
     mockedGetDecodedJwt.mockReturnValue({
       permissions: {
         can_update: false,
-      },
-      roles: [OrganizationAccessRole.INSTRUCTOR],
-      consumer_site: 'consumer_site',
-    } as any);
-
-    const { getByText } = render(<RedirectOnLoad />, {
-      routerOptions: {
-        routes: [
-          {
-            path: MARKDOWN_VIEWER_ROUTE(),
-            render: () => <span>Markdown viewer</span>,
-          },
-        ],
-      },
-    });
-
-    getByText('Markdown viewer');
-  });
-
-  it('shows viewer for student', async () => {
-    mockedUseAppConfig.mockReturnValue({
-      flags: { markdown: true },
-    } as any);
-    mockedGetDecodedJwt.mockReturnValue({
-      permissions: {
-        can_update: true, // or false
       },
       roles: [OrganizationAccessRole.STUDENT],
       consumer_site: 'consumer_site',

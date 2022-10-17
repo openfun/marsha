@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { OrganizationAccessRole, useJwt } from 'lib-components';
+import { useJwt } from 'lib-components';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
@@ -34,12 +34,8 @@ export const RedirectOnLoad = () => {
   }
 
   const decodedJwt = useJwt.getState().getDecodedJwt();
-  const userHasEditionRole =
-    (decodedJwt.roles.includes(OrganizationAccessRole.ADMINISTRATOR) ||
-      decodedJwt.roles.includes(OrganizationAccessRole.INSTRUCTOR)) &&
-    decodedJwt.permissions.can_update;
 
-  if (userHasEditionRole) {
+  if (decodedJwt.permissions.can_update) {
     return <Redirect push to={MARKDOWN_EDITOR_ROUTE()} />;
   } else {
     return <Redirect push to={MARKDOWN_VIEWER_ROUTE()} />;
