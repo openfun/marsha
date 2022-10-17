@@ -23,29 +23,37 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Show document"
   },
-  "apps.bbb.SelectContent.addClassroom": {
+  "apps.classroom.SelectContent.SelectContentSection.addClassroom": {
     "description": "Text displayed on a button to add a new classroom.",
     "message": "Add a classroom"
   },
-  "apps.bbb.SelectContent.loadingClassrooms": {
+  "apps.classroom.SelectContent.SelectContentSection.loadingClassrooms": {
     "description": "Accessible message for the spinner while loading the classrooms in lti select view.",
     "message": "Loading classrooms..."
   },
-  "apps.bbb.SelectContent.notStarted": {
+  "apps.classroom.SelectContent.SelectContentSection.notStarted": {
     "description": "Text helper displayed if a classroom is not started.",
     "message": "Not started"
   },
-  "apps.bbb.SelectContent.select": {
+  "apps.classroom.SelectContent.SelectContentSection.select": {
     "description": "Accessible message for selecting a classroom.",
     "message": "Select {title}"
   },
-  "apps.bbb.SelectContent.started": {
+  "apps.classroom.SelectContent.SelectContentSection.started": {
     "description": "Text helper displayed if a classroom is started.",
     "message": "Started"
   },
+  "apps.classroom.SelectContent.commonMessages.titleClassroom": {
+    "description": "section title display for managing classroom resources",
+    "message": "classrooms"
+  },
   "apps.deposit.SelectContent.addFileDepository": {
     "description": "Text displayed on a button to add a new file depository.",
-    "message": "Add a fileDepository"
+    "message": "Add a file depository"
+  },
+  "apps.deposit.SelectContent.commonMessages.titleDeposit": {
+    "description": "section title display for managing file depository resources",
+    "message": "File Depositories"
   },
   "apps.deposit.SelectContent.loadingFileDepositories": {
     "description": "Accessible message for the spinner while loading the file depositories in lti select view.",
@@ -71,9 +79,73 @@
     "description": "Message when token is not valid.",
     "message": "Token Error"
   },
+  "apps.deposit.components.DashboardInstructor.currentPaginatedItems": {
+    "description": "Message to inform the user of the current displayed files.",
+    "message": "Showing {firstIndex} - {lastIndex} of {total}"
+  },
+  "apps.deposit.components.DashboardInstructor.fetchFilesError": {
+    "description": "Error message when fetching files.",
+    "message": "Error fetching files"
+  },
+  "apps.deposit.components.DashboardInstructor.filesListHeader": {
+    "description": "Header for student files list.",
+    "message": "Students files"
+  },
+  "apps.deposit.components.DashboardInstructor.noDescription": {
+    "description": "Instruction message to set a description for a file deposit",
+    "message": "Click here to add a description"
+  },
+  "apps.deposit.components.DashboardInstructor.noTitle": {
+    "description": "Instruction message to set a title for a file deposit",
+    "message": "Click here to add a title"
+  },
+  "apps.deposit.components.DashboardInstructor.readFilterOptionsAll": {
+    "description": "Filter option for all files.",
+    "message": "All"
+  },
+  "apps.deposit.components.DashboardInstructor.readFilterOptionsRead": {
+    "description": "Filter option for read files.",
+    "message": "Read"
+  },
+  "apps.deposit.components.DashboardInstructor.readFilterOptionsUnread": {
+    "description": "Filter option for unread files.",
+    "message": "Unread"
+  },
+  "apps.deposit.components.DashboardInstructor.readFilterPlaceholder": {
+    "description": "Placeholder for filter files select.",
+    "message": "Filter"
+  },
+  "apps.deposit.components.DashboardInstructor.readFilterTitle": {
+    "description": "Title for filter files select.",
+    "message": "Filter files"
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.dropzonePlaceholder": {
+    "description": "Placeholder for dropzone.",
+    "message": "Drag 'n' drop some files here, or click to select files"
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.uploadButtonLabel": {
+    "description": "Label for upload button.",
+    "message": "Upload"
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.uploadingFile": {
+    "description": "Help text to warn user not to navigate away during file upload.",
+    "message": "Upload in progress... Please do not close or reload this page."
+  },
+  "apps.deposit.components.DashboardStudent.fetchFilesError": {
+    "description": "Error message when fetching files.",
+    "message": "Error fetching files"
+  },
+  "apps.deposit.components.DashboardStudent.filesListHeader": {
+    "description": "Header for student files list.",
+    "message": "My files"
+  },
   "apps.markdown.SelectContent.addDocument": {
     "description": "Text displayed on a button to add a new markdown document.",
     "message": "Add a markdown document"
+  },
+  "apps.markdown.SelectContent.commonMessages.tabTitleMarkdown": {
+    "description": "Tab label to display markdown documents list.",
+    "message": "Markdown"
   },
   "apps.markdown.SelectContent.draft": {
     "description": "Text helper displayed if a markdown document is still a draft.",
@@ -98,10 +170,6 @@
   "apps.markdown.SelectContent.select": {
     "description": "Accessible message for selecting a markdown document.",
     "message": "Select {title}"
-  },
-  "apps.markdown.SelectContent.tabTitleMarkdown": {
-    "description": "Tab label to display markdown documents list.",
-    "message": "Markdown"
   },
   "component.AllowedDownloadButton.buttonLabel": {
     "description": "The label of the button for stopping to allow students to download the media.",
@@ -258,10 +326,6 @@
   "component.DashboardLive.manageRequestBtnLabel": {
     "description": "Label of the button used for opening the manage on-stage request tab.",
     "message": "Manage requests"
-  },
-  "component.DashboardVideoPaneTranscriptOption.useTranscript": {
-    "description": "Label of the toggle used to use subtitles as transcripts.",
-    "message": "Use subtitles as transcripts"
   },
   "component.DisallowedDownloadButton.buttonLabel": {
     "description": "The label of the button for allowing the students to download the media.",
@@ -455,6 +519,10 @@
     "description": "Navigation bar, icon to display both editor and rendering",
     "message": "Split screen"
   },
+  "component.SelectContent.SelectContentSection.playlistTitle": {
+    "description": "Title for the current playlist.",
+    "message": "Playlist {title} ({id})"
+  },
   "component.SelectContent.playlistTitle": {
     "description": "Title for the current playlist.",
     "message": "Playlist {title} ({id})"
@@ -602,6 +670,10 @@
   "component.TitleDisplayer.noFilenameUploadFailed": {
     "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
     "message": "Upload has failed"
+  },
+  "component.ToggleSubtitlesAsTranscript.useTranscriptToggleLabel": {
+    "description": "Label of the toggle used to use subtitles as transcripts.",
+    "message": "Use subtitles as transcripts"
   },
   "component.ToolsAndApplications.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
@@ -836,12 +908,12 @@
     "message": "720p: HD (estándar)"
   },
   "components.DownloadVideo.allowDownloadToggleFail": {
-    "description": "Message displayed when use subtitles as transcripts has failed.",
+    "description": "Message displayed when allowing download video has failed.",
     "message": "Update failed, try again."
   },
   "components.DownloadVideo.disallowDownloadToggleSuccess": {
-    "description": "Message displayed when unuse subtitles as transcripts succeded.",
-    "message": "Use subtitles as transcripts deactivated."
+    "description": "Message displayed when disallowing download video succeded.",
+    "message": "Video download disallowed."
   },
   "components.DownloadVideo.downloadButtonLabel": {
     "description": "Label of the button used to download the video in the selected quality.",
@@ -856,8 +928,8 @@
     "message": "Allow video download"
   },
   "components.DownloadVideo.enableDownloadToggleSuccess": {
-    "description": "Message displayed when use subtitles as transcripts succeded.",
-    "message": "Use subtitles as transcripts activated."
+    "description": "Message displayed when allowing download video succeded.",
+    "message": "Video download allowed."
   },
   "components.DownloadVideo.info": {
     "description": "Info of the widget used for downloading the video.",
@@ -1103,6 +1175,10 @@
     "description": "The video is in live state and ready to be start",
     "message": "Ready to start live"
   },
+  "components.ObjectStatusPicker.INITIALIZED": {
+    "description": "Status information for a video/audio/timed text track",
+    "message": "Initialized"
+  },
   "components.ObjectStatusPicker.PENDING": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Pendiente"
@@ -1223,53 +1299,65 @@
     "description": "Title of the widget used for setting live title and activate recording.",
     "message": "Description"
   },
-  "components.SelectContent.addDocument": {
+  "components.SelectContent.SelectContentSection.cancel": {
+    "description": "Text displayed on a button to cancel content selection.",
+    "message": "Cancel"
+  },
+  "components.SelectContent.SelectContentSection.confirm": {
+    "description": "Text displayed on a button to confirm content selection.",
+    "message": "Select"
+  },
+  "components.SelectContent.SelectContentSection.notReadyToShow": {
+    "description": "Text helper displayed if a video or a document is not ready to show to students.",
+    "message": "Not ready to show"
+  },
+  "components.SelectContent.SelectContentSection.notUploaded": {
+    "description": "Text helper displayed if a video or a document is not uploaded.",
+    "message": "Not uploaded"
+  },
+  "components.SelectContent.SelectContentSection.readyToShow": {
+    "description": "Text helper displayed if a video or a document is ready to show to students.",
+    "message": "Ready to show"
+  },
+  "components.SelectContent.SelectContentSection.select": {
+    "description": "Title used for a video or a document select.",
+    "message": "Select {content_title}"
+  },
+  "components.SelectContent.SelectContentSection.titleEdit": {
+    "description": "Label for LTI title content input.",
+    "message": "LTI Content title"
+  },
+  "components.SelectContent.SelectContentSection.uploaded": {
+    "description": "Text helper displayed if a video or a document is uploaded.",
+    "message": "Uploaded"
+  },
+  "components.SelectContent.commonMessages.addDocument": {
     "description": "Text displayed on a button to add a new document.",
-    "message": "Añadir un documento"
+    "message": "Add a document"
   },
-  "components.SelectContent.addVideo": {
+  "components.SelectContent.commonMessages.addVideo": {
     "description": "Text displayed on a button to add a new video.",
-    "message": "Añadir un vídeo"
+    "message": "Add a video"
   },
-  "components.SelectContent.addWebinar": {
+  "components.SelectContent.commonMessages.addWebinar": {
     "description": "Text displayed on a button to add a new webinar.",
     "message": "Add a webinar"
   },
-  "components.SelectContent.cancel": {
-    "description": "Text displayed on a button to cancel content selection.",
-    "message": "Cancelar"
+  "components.SelectContent.commonMessages.titleDocument": {
+    "description": "section title display for managing document resources",
+    "message": "Documents"
   },
-  "components.SelectContent.confirm": {
-    "description": "Text displayed on a button to confirm content selection.",
-    "message": "Seleccionar"
+  "components.SelectContent.commonMessages.titleVideo": {
+    "description": "section title display for managing video resources",
+    "message": "Videos"
+  },
+  "components.SelectContent.commonMessages.titleWebinar": {
+    "description": "section title display for managing webinar resources",
+    "message": "Webinars"
   },
   "components.SelectContent.copied": {
     "description": "Message displayed when playlist info are copied.",
     "message": "{text} copied!"
-  },
-  "components.SelectContent.notReadyToShow": {
-    "description": "Text helper displayed if a video or a document is not ready to show to students.",
-    "message": "Not ready to show"
-  },
-  "components.SelectContent.notUploaded": {
-    "description": "Text helper displayed if a video or a document is not uploaded.",
-    "message": "Not uploaded"
-  },
-  "components.SelectContent.readyToShow": {
-    "description": "Text helper displayed if a video or a document is ready to show to students.",
-    "message": "Ready to show"
-  },
-  "components.SelectContent.select": {
-    "description": "Title used for a video or a document select.",
-    "message": "Seleccionar {content_title}"
-  },
-  "components.SelectContent.titleEdit": {
-    "description": "Label for LTI title content input.",
-    "message": "LTI Content title"
-  },
-  "components.SelectContent.uploaded": {
-    "description": "Text helper displayed if a video or a document is uploaded.",
-    "message": "Uploaded"
   },
   "components.SharedLiveMedia.info": {
     "description": "Info of the widget used for managing and sharing supports.",
@@ -1583,6 +1671,18 @@
     "description": "Title of the widget used for setting live title and activate recording.",
     "message": "General"
   },
+  "components.ToggleSubtitlesAsTranscript.unuseTranscriptToggleSuccess": {
+    "description": "Message displayed when unuse subtitles as transcripts succeded.",
+    "message": "Use subtitles as transcripts deactivated."
+  },
+  "components.ToggleSubtitlesAsTranscript.useTranscriptToggleSuccess": {
+    "description": "Message displayed when use subtitles as transcripts succeded.",
+    "message": "Use subtitles as transcripts activated."
+  },
+  "components.ToggleSubtitlesAsTranscript.useTranscriptoggleFail": {
+    "description": "Message displayed when use subtitles as transcripts has failed.",
+    "message": "Update failed, try again."
+  },
   "components.ToolsAndApplications.chatActiveLabel": {
     "description": "The label associated to the toggle button reponsible of live chat activation / deactivation.",
     "message": "Activate chat"
@@ -1630,6 +1730,10 @@
   "components.UploadForm.preparingUpload": {
     "description": "Accessible message for the spinner while loading the uploadable object in the upload form.",
     "message": "Preparing for upload..."
+  },
+  "components.UploadForm.title-classroomdocument": {
+    "description": "Title for the classroom document upload form",
+    "message": "Upload a new file"
   },
   "components.UploadForm.title-depositedfile": {
     "description": "Title for the deposited file upload form",
