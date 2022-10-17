@@ -1,7 +1,13 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
-import React from 'react';
+import { Nullable, theme } from 'lib-common';
+import React, {
+  ForwardRefExoticComponent,
+  RefAttributes,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import styled from 'styled-components';
 
 const colorMenu = normalizeColor('blue-active', theme);
@@ -13,19 +19,46 @@ const MainLayoutBox = styled(Box)`
 
 interface MainLayoutProps {
   children: React.ReactNode;
-  header: React.ReactNode;
+  Header: ForwardRefExoticComponent<RefAttributes<Nullable<HTMLDivElement>>>;
   menu: React.ReactNode;
 }
 
-function MainLayout({ children, header, menu }: MainLayoutProps) {
+function MainLayout({ children, Header, menu }: MainLayoutProps) {
+  const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
+  const [headerHeight, setHeaderHeight] = useState(0);
+
+  useEffect(() => {
+    if (!headerBoxRef.current) {
+      return;
+    }
+    const headerBox = headerBoxRef.current;
+
+    const handleHeaderHeightChange = () => {
+      if (!headerBoxRef.current) {
+        return;
+      }
+
+      setHeaderHeight(headerBoxRef.current.offsetHeight);
+    };
+    const observer = new ResizeObserver(handleHeaderHeightChange);
+    observer.observe(headerBox);
+    return () => {
+      observer.unobserve(headerBox);
+    };
+  }, []);
+
   return (
     <MainLayoutBox direction="row">
-      {header}
+      <Header ref={headerBoxRef} />
       {menu}
       <Box
         flex
         background={{ color: 'bg-marsha' }}
-        pad={{ vertical: 'small', horizontal: 'medium' }}
+        pad={{
+          bottom: 'small',
+          top: `${headerHeight}px`,
+          horizontal: 'medium',
+        }}
       >
         {children}
       </Box>

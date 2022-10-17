@@ -1,14 +1,17 @@
 import { render, screen } from '@testing-library/react';
-import { Fragment } from 'react';
+import { Nullable } from 'lib-common';
+import { forwardRef, Fragment } from 'react';
 
 import MainLayout from './MainLayout';
 
 describe('<MainLayout />', () => {
   test('renders MainLayout', () => {
-    const Header = () => <Fragment>My Header</Fragment>;
+    const Header = forwardRef<Nullable<HTMLDivElement>>(() => (
+      <Fragment>My Header</Fragment>
+    ));
     const Menu = () => <Fragment>My menu</Fragment>;
     render(
-      <MainLayout header={<Header />} menu={<Menu />}>
+      <MainLayout Header={Header} menu={<Menu />}>
         Hello World
       </MainLayout>,
     );
