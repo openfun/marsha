@@ -56,6 +56,59 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = passport.consumer_site
 
+        response = self.client.post(f"/lti/deposits/{ file_depository.id}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(html.unescape(match.group(1)))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
+        self.assertEqual(context.get("state"), "success")
+        self.assertIsNotNone(context.get("resource"))
+        self.assertEqual(context.get("modelName"), "filedepositories")
+        self.assertEqual(
+            jwt_token.payload["user"],
+            {
+                "email": None,
+                "username": "jane_doe",
+                "user_fullname": None,
+                "id": "56255f3807599c377bf0e5bf072359fd",
+            },
+        )
+        self.assertTrue(context.get("flags").get("deposit"))
+
+        # Make sure we only go through LTI verification once as it is costly (getting passport +
+        # signature)
+        self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    def test_views_lti_file_depository_student_legacy(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Validate the response returned for a student request using the legacy
+        /lti/filedepositories"""
+        passport = ConsumerSiteLTIPassportFactory()
+        file_depository = FileDepositoryFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": file_depository.lti_id,
+            "context_id": file_depository.playlist.lti_id,
+            "roles": ["student"],
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "lis_person_sourcedid": "jane_doe",
+            "launch_presentation_locale": "fr",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+
         response = self.client.post(
             f"/lti/filedepositories/{ file_depository.id}", data
         )
@@ -104,7 +157,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
         }
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(f"/lti/filedepositories/{uuid.uuid4()}", data)
+        response = self.client.post(f"/lti/deposits/{uuid.uuid4()}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -146,9 +199,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(
-            f"/lti/filedepositories/{ file_depository.pk}", data
-        )
+        response = self.client.post(f"/lti/deposits/{ file_depository.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -208,6 +259,6 @@ class FileDepositoryLTIViewTestCase(TestCase):
             playlist__consumer_site=passport.consumer_site,
         )
 
-        response = self.client.get(f"/lti/filedepositories/{ file_depository.id}")
+        response = self.client.get(f"/lti/deposits/{ file_depository.id}")
 
         self.assertEqual(response.status_code, 405)
