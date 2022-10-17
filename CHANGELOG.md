@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Create lib-classroom package
 - Add new elements to the public VOD Dashboard :
   - Transcript reader
   - Video download

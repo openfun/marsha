@@ -32,7 +32,7 @@ generate-version-file: &generate-version-file
 version: 2.1
 commands:
   get_last_packages_commit:
-    description: "Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key."
+    description: 'Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key.'
     parameters:
       filename:
         type: string
@@ -429,12 +429,14 @@ jobs:
             - ./packages/lib_common/node_modules
             - ./packages/lib_tests/node_modules
             - ./packages/lib_components/node_modules
+            - ./packages/lib_classroom/node_modules
           key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - save_cache:
           paths:
             - ./packages/lib_common/lib
             - ./packages/lib_tests/lib
             - ./packages/lib_components/lib
+            - ./packages/lib_classroom/lib
           key: front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
 
   # ---- mail jobs ----
@@ -556,18 +558,23 @@ jobs:
               wget \
               xdg-utils
       - run:
-          name: Run tests on libs
-          command: yarn test-libs -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          name: Run tests on libs-components
+          command: yarn workspace lib-components run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
+          name: Run tests on lib-classroom
+          command: yarn workspace lib-classroom run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run tests on lti site
-          command: yarn test-lti -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+          command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
           name: Run test on standalone site
-          command: yarn test-site
+          command: yarn workspace standalone_site run test
       - store_artifacts:
           path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_components/__diff_output__
+      - store_artifacts:
+          path: ~/marsha/src/frontend/packages/lib_classroom/__diff_output__
 
   test-e2e:
     docker:
@@ -608,12 +615,12 @@ jobs:
     working_directory: ~/marsha/src/backend
     parameters:
       browser:
-        description: "Playwright browser"
-        default: "firefox"
+        description: 'Playwright browser'
+        default: 'firefox'
         type: string
       browser_channel:
-        description: "Playwright browser channel"
-        default: "firefox"
+        description: 'Playwright browser channel'
+        default: 'firefox'
         type: string
     steps:
       - checkout:
