@@ -160,6 +160,70 @@ class ResourceAccessToken(AccessToken):
         return token
 
     @classmethod
+    def for_lti_portability_request(
+        cls,
+        lti,
+        session_id,
+        playlist_id,
+    ):
+        """
+        Returns an authorization token without resource
+        to allow only portability requests creation.
+
+        Parameters
+        ----------
+        lti: Type[LTI]
+            LTI request.
+
+        session_id: Type[str]
+            session id to add to the token.
+
+        playlist_id: Type[str]
+            playlist id to give access to in addition to the resource.
+
+        Returns
+        -------
+        ResourceAccessToken
+            JWT containing:
+            - session_id
+            - resource_id
+            - roles
+            - locale
+            - permissions
+            - maintenance
+            - context_id
+            - consumer_site - mandatory
+            - playlist_id - mandatory
+            - user:
+                - email
+                - id - mandatory
+                - username
+                - user_fullname
+        """
+        if not (lti.is_instructor or lti.is_admin):
+            raise TokenError(
+                _("User has not enough rights to make a portability request")
+            )
+
+        if not getattr(lti, "user_id", None):  # is None or is empty
+            raise TokenError(
+                _(
+                    "LTI request does not provide enough data to make a portability request"
+                )
+            )
+
+        token = cls.for_lti(
+            lti,
+            None,  # not any permission provided
+            session_id,  # not mandatory
+            playlist_id=playlist_id,
+        )
+        # Important: this token must not provide any access to the resource
+        token.payload["resource_id"] = ""
+
+        return token
+
+    @classmethod
     def for_resource_id(  # pylint: disable=too-many-arguments
         cls,
         resource_id,
