@@ -44,3 +44,5 @@ export * from './SVGIcons/WaitingJoinDiscussionSVG';
 export * from './BreadCrumbs';
 
 export * from './queries';
+
+export * from './SchedulingFields';
