@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
-import { TimedText, timedTextMode, TimedTextTranscript } from 'types/tracks';
+import { TimedText, timedTextMode, TimedTextTranscript } from 'lib-components';
 import { Box, Button, Select, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';

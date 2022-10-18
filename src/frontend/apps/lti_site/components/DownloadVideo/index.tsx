@@ -7,7 +7,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import videojs, { VideoJsPlayer } from 'video.js';
 
-import { videoSize, VideoUrls } from 'types/tracks';
+import { videoSize, VideoUrls } from 'lib-components';
 import { VideoXAPIStatement } from 'XAPI/VideoXAPIStatement';
 
 const messages = defineMessages({

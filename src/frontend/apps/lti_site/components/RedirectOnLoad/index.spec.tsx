@@ -10,7 +10,7 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 
 import { appState } from 'types/AppData';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';

@@ -1,5 +1,5 @@
 import { defineMessages, IntlShape } from 'react-intl';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 
 const messages = defineMessages({
   onePersonAsking: {

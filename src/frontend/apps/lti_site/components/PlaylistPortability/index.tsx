@@ -17,7 +17,7 @@ import { toast } from 'react-hot-toast';
 import { ErrorMessage } from '../ErrorComponents';
 import { Document } from '../../types/file';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
-import { Playlist, Video } from '../../types/tracks';
+import { Playlist, Video } from 'lib-components';
 
 const messages = defineMessages({
   loadingPlaylist: {

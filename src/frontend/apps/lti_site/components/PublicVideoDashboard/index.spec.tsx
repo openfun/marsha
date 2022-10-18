@@ -22,7 +22,7 @@ import {
   liveState,
   timedTextMode,
   uploadState,
-} from 'types/tracks';
+} from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import { getAnonymousId } from 'utils/localstorage';
 import {

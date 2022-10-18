@@ -1,4 +1,4 @@
-import { liveState, Video } from 'types/tracks';
+import { liveState, Video } from 'lib-components';
 
 export const shouldDisplayDefaultMessage = (video: Video) => {
   return (

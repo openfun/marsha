@@ -15,7 +15,7 @@ import {
 
 import MarkdownEditor from '.';
 import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import { UploadManager } from 'components/UploadManager';
 
 jest.mock('data/stores/useAppConfig', () => ({

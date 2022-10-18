@@ -10,7 +10,7 @@ import {
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
 import { modelName } from 'types/models';
-import { uploadState, Video } from 'types/tracks';
+import { uploadState, Video } from 'lib-components';
 
 interface RedirectVideoProps {
   video: Video;

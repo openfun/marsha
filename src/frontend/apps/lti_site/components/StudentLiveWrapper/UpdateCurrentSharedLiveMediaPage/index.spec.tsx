@@ -3,7 +3,7 @@ import { sharedLiveMediaMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

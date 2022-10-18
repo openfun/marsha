@@ -3,7 +3,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { LocalizedTimedTextTrackUpload } from 'components/LocalizedTimedTextTrackUpload';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
-import { timedTextMode } from 'types/tracks';
+import { timedTextMode } from 'lib-components';
 
 const messages = defineMessages({
   info: {

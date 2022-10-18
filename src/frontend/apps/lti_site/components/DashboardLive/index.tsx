@@ -29,7 +29,7 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
-import { liveState, LiveModeType, JoinMode } from 'types/tracks';
+import { liveState, LiveModeType, JoinMode } from 'lib-components';
 import { converse } from 'utils/window';
 
 import { DashboardLiveControlPane } from './DashboardLiveControlPane';

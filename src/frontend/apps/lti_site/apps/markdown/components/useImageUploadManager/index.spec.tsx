@@ -13,7 +13,7 @@ import {
 } from 'components/UploadManager';
 import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 

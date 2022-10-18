@@ -1,6 +1,6 @@
 import { useJwt } from 'lib-components';
 
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { API_ENDPOINT } from 'settings';
 
 export const harvestLive = async (video: Video) => {

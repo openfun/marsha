@@ -11,7 +11,7 @@ import {
 } from 'components/UploadManager';
 import { createPlayer } from 'Player/createPlayer';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { VideoView } from '.';
 

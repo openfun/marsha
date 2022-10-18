@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
 import { createContext, useContext } from 'react';
 
-import { Live, Video } from 'types/tracks';
+import { Live, Video } from 'lib-components';
 
 const CurrentVideoContext = createContext<Nullable<Video>>(null);
 

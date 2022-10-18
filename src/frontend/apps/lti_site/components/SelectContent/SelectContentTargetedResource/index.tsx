@@ -12,7 +12,13 @@ import {
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { LtiSelectResource, selectableBaseResource } from 'types/AppData';
 import { Document } from 'types/file';
-import { Live, LiveModeType, Playlist, uploadState, Video } from 'types/tracks';
+import {
+  Live,
+  LiveModeType,
+  Playlist,
+  uploadState,
+  Video,
+} from 'lib-components';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';

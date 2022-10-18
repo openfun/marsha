@@ -2,7 +2,7 @@ import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
 import { modelName } from 'types/models';
-import { TimedText, timedTextMode } from 'types/tracks';
+import { TimedText, timedTextMode } from 'lib-components';
 
 /**
  * Create a new timedtexttrack record for a language-mode combination.

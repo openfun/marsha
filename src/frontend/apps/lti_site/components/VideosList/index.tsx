@@ -15,7 +15,7 @@ import { Link, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useVideos } from '../../data/queries';
-import { Video } from '../../types/tracks';
+import { Video } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 import { ErrorMessage } from '../ErrorComponents';
 import { UploadableObjectStatusBadge } from '../UploadableObjectStatusBadge';

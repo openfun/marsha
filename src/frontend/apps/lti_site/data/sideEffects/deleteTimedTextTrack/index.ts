@@ -2,7 +2,7 @@ import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
 import { modelName } from 'types/models';
-import { TimedText } from 'types/tracks';
+import { TimedText } from 'lib-components';
 
 /**
  * Delete one timedtexttrack record.

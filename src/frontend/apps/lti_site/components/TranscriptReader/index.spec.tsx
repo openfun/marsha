@@ -6,7 +6,7 @@ import { VTTCue } from 'vtt.js';
 import 'vtt.js/lib/vttcue';
 
 import { useVideoProgress } from 'data/stores/useVideoProgress';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 
 import { TranscriptReader } from '.';
 

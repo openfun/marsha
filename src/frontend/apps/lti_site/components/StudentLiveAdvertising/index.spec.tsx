@@ -6,7 +6,7 @@ import { render, Deferred } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import {
   liveSessionFactory,
   thumbnailMockFactory,

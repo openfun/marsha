@@ -7,7 +7,7 @@ import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';
 import { RouteOptions } from 'types/RouteOptions';
 import { LanguageChoice } from 'types/SelectOptions';
-import { TimedText } from 'types/tracks';
+import { TimedText } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 type State = {

@@ -5,7 +5,7 @@ import {
   UploadManagerState,
   UploadManagerStatus,
 } from 'components/UploadManager';
-import { Thumbnail, uploadState } from 'types/tracks';
+import { Thumbnail, uploadState } from 'lib-components';
 
 const messages = defineMessages({
   thumbnailError: {

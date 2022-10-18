@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { RetryUploadButton } from 'components/RetryUploadButton';
 import { UploadingObject } from 'components/UploadManager';
-import { SharedLiveMedia, uploadState } from 'types/tracks';
+import { SharedLiveMedia, uploadState } from 'lib-components';
 
 import { AllowedDownloadButton } from './AllowedDownloadButton';
 import { DisallowedDownloadButton } from './DisallowedDownloadButton';

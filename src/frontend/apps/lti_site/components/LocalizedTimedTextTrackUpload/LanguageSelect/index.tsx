@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { LanguageChoice } from 'types/SelectOptions';
-import { timedTextMode } from 'types/tracks';
+import { timedTextMode } from 'lib-components';
 
 const messages = defineMessages({
   selectLanguageLabel: {

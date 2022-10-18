@@ -8,7 +8,7 @@ import { ErrorMessage } from 'components/ErrorComponents';
 import { useLiveAttendances } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { POLL_FOR_ATTENDANCES } from 'default/sideEffects';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 const messages = defineMessages({
   loading: {

@@ -4,7 +4,7 @@ import { timedTextMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { createPlayer } from 'Player/createPlayer';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import VideoPlayer from '.';

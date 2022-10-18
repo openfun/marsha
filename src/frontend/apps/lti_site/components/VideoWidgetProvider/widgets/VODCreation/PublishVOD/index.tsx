@@ -6,7 +6,7 @@ import { DownloadSVG } from 'lib-components';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { videoSize } from 'types/tracks';
+import { videoSize } from 'lib-components';
 import { publishLiveToVod } from 'data/sideEffects/publishLiveToVod';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';

@@ -10,7 +10,7 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
-import { LiveModeType, liveState } from 'types/tracks';
+import { LiveModeType, liveState } from 'lib-components';
 
 import { LiveFeedbackWrapper } from './LiveFeedbackWrapper';
 

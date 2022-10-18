@@ -5,7 +5,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardLiveTabAttendance } from '.';

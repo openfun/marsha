@@ -9,7 +9,13 @@ import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { appNames } from 'types/AppData';
 import { Document } from 'types/file';
-import { Live, LiveModeType, Playlist, uploadState, Video } from 'types/tracks';
+import {
+  Live,
+  LiveModeType,
+  Playlist,
+  uploadState,
+  Video,
+} from 'lib-components';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';

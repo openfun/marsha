@@ -13,7 +13,7 @@ import {
   useParticipantsStore,
   ParticipantType,
 } from 'data/stores/useParticipantsStore';
-import { JoinMode } from 'types/tracks';
+import { JoinMode } from 'lib-components';
 import { isAnonymous } from 'utils/chat/chat';
 import { colors } from 'utils/theme/theme';
 import { converse } from 'utils/window';

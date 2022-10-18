@@ -17,7 +17,7 @@ import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
 import { modelName } from 'types/models';
-import { JoinMode, liveState } from 'types/tracks';
+import { JoinMode, liveState } from 'lib-components';
 import { converse } from 'utils/window';
 
 interface StudentLiveStarterProps {

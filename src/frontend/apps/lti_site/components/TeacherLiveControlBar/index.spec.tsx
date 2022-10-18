@@ -9,7 +9,7 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
-import { LiveModeType, liveState } from 'types/tracks';
+import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

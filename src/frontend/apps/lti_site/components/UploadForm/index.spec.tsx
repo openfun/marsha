@@ -9,7 +9,7 @@ import { UploadManager } from 'components/UploadManager';
 import { uploadFile } from 'data/sideEffects/uploadFile';
 import { getResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { UploadForm } from '.';

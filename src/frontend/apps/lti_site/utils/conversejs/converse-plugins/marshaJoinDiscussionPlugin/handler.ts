@@ -8,7 +8,7 @@ import {
 } from 'data/sideEffects/updateLiveParticipants';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { EventType, MessageType } from 'types/XMPP';
 
 export default async function marshaJoinDiscussionPluginHandler(

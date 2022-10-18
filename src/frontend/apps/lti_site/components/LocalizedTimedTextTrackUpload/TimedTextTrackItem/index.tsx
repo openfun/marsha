@@ -6,7 +6,7 @@ import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { RetryUploadButton } from 'components/RetryUploadButton';
 import { UploadingObject } from 'components/UploadManager';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { uploadState, TimedText } from 'types/tracks';
+import { uploadState, TimedText } from 'lib-components';
 
 import { DeleteTimedTextTrackItemUploadButton } from './DeleteTimedTextTrackItemUploadButton';
 

@@ -14,7 +14,7 @@ import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTi
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'types/models';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { LocalizedTimedTextTrackUpload } from '.';

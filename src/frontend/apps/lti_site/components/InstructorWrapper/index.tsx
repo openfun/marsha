@@ -2,7 +2,7 @@ import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { Document } from 'types/file';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 
 import { InstructorView } from './InstructorView';
 
