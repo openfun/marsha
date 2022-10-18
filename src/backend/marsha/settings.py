@@ -55,7 +55,8 @@ class Base(Configuration):
     DATA_DIR = values.Value(os.path.join("/", "data"))
 
     # Static files (CSS, JavaScript, Images)
-    STATICFILES_DIRS = (os.path.join(BASE_DIR, "static"),)
+    BASE_STATIC_DIR = os.path.join(BASE_DIR, "static")
+    STATICFILES_DIRS = (BASE_STATIC_DIR,)
     STATIC_URL = "/static/"
     MEDIA_URL = "/media/"
     # Allow to configure location of static/media files for non-Docker installation

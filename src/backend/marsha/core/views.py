@@ -2,6 +2,8 @@
 from abc import ABC, abstractmethod
 import json
 from logging import getLogger
+import os
+import re
 from urllib.parse import unquote
 import uuid
 
@@ -12,8 +14,10 @@ from django.core.exceptions import (
     SuspiciousOperation,
     ValidationError as DjangoValidationError,
 )
+from django.http import HttpResponse
 from django.http.response import Http404
 from django.shortcuts import get_object_or_404
+from django.template import Context, Engine
 from django.templatetags.static import static
 from django.urls import reverse
 from django.utils import translation
@@ -30,11 +34,7 @@ from rest_framework.views import exception_handler as drf_exception_handler
 from rest_framework_simplejwt.exceptions import TokenError
 from waffle import mixins, switch_is_active
 
-from marsha.core.simple_jwt.tokens import (
-    LTISelectFormAccessToken,
-    ResourceAccessToken,
-    UserAccessToken,
-)
+from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, ResourceAccessToken
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 from .defaults import BBB, CLASSROOM, DEPOSIT, LIVE_RAW, MARKDOWN, SENTRY
@@ -140,19 +140,56 @@ class SiteView(mixins.WaffleSwitchMixin, MarshaViewMixin, TemplateView):
     frontend loads, frontend navigation takes over.
     """
 
-    frontend_name = "Site"
-    template_name = "core/site.html"
     waffle_switch = "site"
 
-    def _get_app_data(self):
-        """Adds a user JWT to the default app data."""
-        app_data = super()._get_app_data()
-        app_data["jwt"] = str(UserAccessToken.for_user(self.request.user))
-        return app_data
+    """
+    Serves the compiled frontend entry point (only works if you have run `yarn
+    run build`).
+    """
 
-    def get_context_data(self, **kwargs):
-        """Build the context necessary to run the frontend app for the site."""
-        return self._build_context_data(self._get_app_data())
+    def get(self, request, *args, **kwargs):
+        try:
+            with open(
+                os.path.join(
+                    settings.BASE_STATIC_DIR,
+                    "js",
+                    "build",
+                    "site",
+                    "index.html",
+                ),
+                encoding="utf-8",
+            ) as file:
+                static_base_url = f"{settings.STATIC_URL}js/build/site/"
+                content = file.read()
+                content = re.sub(
+                    r"/(static/js/main\..*\.js)", rf"{static_base_url}\1", content
+                )
+                content = re.sub(
+                    r"/(static/css/main\..*\.css)", rf"{static_base_url}\1", content
+                )
+
+                engine = Engine.get_default()
+                template = engine.from_string(content)
+
+                return HttpResponse(
+                    template.render(
+                        Context(
+                            {
+                                "static_base_url": static_base_url,
+                            }
+                        )
+                    )
+                )
+        except FileNotFoundError:
+            logger.exception("Production build of app not found")
+            return HttpResponse(
+                """
+                This URL is only used when you have built the production
+                version of the app. Visit http://localhost:3000/ instead, or
+                run `yarn run build` to test the production version.
+                """,
+                status=501,
+            )
 
 
 class ResourceException(Exception):

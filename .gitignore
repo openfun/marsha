@@ -130,6 +130,7 @@ src/frontend/apps/**/translations/*.json
 src/frontend/apps/**/i18n/frontend.json
 src/backend/marsha/static/css
 src/backend/marsha/static/js
+src/backend/marsha/static/media
 storybook-static
 playwright-screenshots
 playwright-videos

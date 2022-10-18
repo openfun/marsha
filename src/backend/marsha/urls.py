@@ -3,6 +3,7 @@
 from django.conf import settings
 from django.contrib import admin
 from django.urls import include, path, re_path
+from django.views.decorators.cache import cache_page
 
 from rest_framework.renderers import CoreJSONRenderer
 from rest_framework.routers import DefaultRouter
@@ -151,5 +152,9 @@ if "dummy" in settings.STORAGE_BACKEND:
     ]
 
 urlpatterns += [
-    re_path(".*", SiteView.as_view(), name="site"),
+    re_path(
+        ".*",
+        cache_page(86400, key_prefix=settings.RELEASE)(SiteView.as_view()),
+        name="site",
+    ),
 ]
