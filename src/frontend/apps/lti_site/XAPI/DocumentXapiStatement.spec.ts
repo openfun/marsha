@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { XAPI_ENDPOINT } from '../settings';
+import { XAPI_ENDPOINT } from 'lib-components';
 import { VerbDefinition } from '../types/XAPI';
 import { DocumentXapiStatement } from './DocumentXapiStatement';
 
