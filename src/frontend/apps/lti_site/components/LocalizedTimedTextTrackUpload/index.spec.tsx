@@ -13,7 +13,7 @@ import {
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal/index';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 

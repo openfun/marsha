@@ -4,7 +4,7 @@ import WS from 'jest-websocket-mock';
 import { videoMockFactory } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { useVideo } from './stores/useVideo';

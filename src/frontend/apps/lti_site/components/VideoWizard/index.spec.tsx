@@ -5,7 +5,7 @@ import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 

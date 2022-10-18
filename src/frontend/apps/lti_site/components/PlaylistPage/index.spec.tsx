@@ -3,7 +3,7 @@ import { Loader } from 'lib-components';
 import React, { Suspense } from 'react';
 
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import render from 'utils/tests/render';
 
 import PlaylistPage from '.';

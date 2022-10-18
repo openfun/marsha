@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 
 import { getResource } from 'data/sideEffects/getResource';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 import { videoMockFactory } from 'lib-components';
 import { resumeLive } from './resumeLive';

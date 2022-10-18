@@ -5,7 +5,7 @@ import React, { Suspense } from 'react';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Document } from 'types/file';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { liveState, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 

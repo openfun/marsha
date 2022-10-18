@@ -17,7 +17,7 @@ import {
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { report } from 'utils/errors/report';
 import render from 'utils/tests/render';

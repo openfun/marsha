@@ -18,7 +18,7 @@ import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { UploadManager } from 'components/UploadManager';
 import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const VideoWizard = lazy(() => import('components/VideoWizard'));

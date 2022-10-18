@@ -3,7 +3,7 @@ import { useJwt, videoMockFactory } from 'lib-components';
 
 import { addMultipleResources } from 'data/stores/generics';
 import { requestStatus } from 'lib-components';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { report } from 'utils/errors/report';
 

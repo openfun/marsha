@@ -8,7 +8,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UploadManager } from 'components/UploadManager';
 import { uploadFile } from 'data/sideEffects/uploadFile';
 import { getResource } from 'data/stores/generics';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 

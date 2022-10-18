@@ -3,7 +3,7 @@
 import { Parser } from 'm3u8-parser';
 
 import { getResource } from 'data/sideEffects/getResource';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { Video } from 'lib-components';
 
 const regex = /^(https.*)\/.*\.m3u8$/;

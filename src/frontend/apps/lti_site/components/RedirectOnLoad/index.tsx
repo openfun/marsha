@@ -5,7 +5,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { appState } from 'types/AppData';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 import { RedirectVideo } from './RedirectVideo';
 import { RedirectDocument } from './RedirectDocument';

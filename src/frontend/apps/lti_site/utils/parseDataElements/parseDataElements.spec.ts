@@ -1,4 +1,4 @@
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 import { parseDataElements } from './parseDataElements';
 
 describe.only('utils/parseDataElements', () => {

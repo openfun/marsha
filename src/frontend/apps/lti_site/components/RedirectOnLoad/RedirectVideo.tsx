@@ -9,7 +9,7 @@ import {
   VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState, Video } from 'lib-components';
 
 interface RedirectVideoProps {

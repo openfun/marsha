@@ -8,7 +8,7 @@ import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useCreateVideo } from '../../data/queries';
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 import { UploadableObject } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 

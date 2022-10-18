@@ -12,7 +12,7 @@ import { pollForLive } from 'data/sideEffects/pollForLive';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { JoinMode, Live, liveState } from 'lib-components';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
