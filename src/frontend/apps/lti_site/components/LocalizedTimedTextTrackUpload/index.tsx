@@ -8,7 +8,7 @@ import { useUploadManager } from 'components/UploadManager';
 import { createTimedTextTrack } from 'data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
 import { timedTextMode, uploadState } from 'lib-components';
 

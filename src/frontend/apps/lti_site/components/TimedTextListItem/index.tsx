@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { deleteTimedTextTrack } from 'data/sideEffects/deleteTimedTextTrack';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
 import { TimedText, uploadState } from 'lib-components';
 import { ActionLink } from '../ActionLink/ActionLink';

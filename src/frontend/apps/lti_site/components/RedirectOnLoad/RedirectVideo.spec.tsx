@@ -9,7 +9,7 @@ import {
   VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LiveModeType, uploadState } from 'lib-components';
 import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';

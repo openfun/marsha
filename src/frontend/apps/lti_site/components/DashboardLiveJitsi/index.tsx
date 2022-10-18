@@ -11,7 +11,7 @@ import { Redirect } from 'react-router-dom';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LiveJitsi, liveState } from 'lib-components';
 import { report } from 'utils/errors/report';
 import { converse } from 'utils/window';

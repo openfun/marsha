@@ -1,5 +1,5 @@
 import { AppData } from '../../types/AppData';
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 
 export const parseDataElements = (element: Element): AppData => {
   const context = JSON.parse(element.getAttribute('data-context')!);

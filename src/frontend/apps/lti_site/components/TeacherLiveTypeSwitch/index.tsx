@@ -7,7 +7,7 @@ import { updateResource } from 'data/sideEffects/updateResource';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
 import { useVideo } from 'data/stores/useVideo';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { LiveModeType } from 'lib-components';
 
 const messages = defineMessages({

@@ -9,7 +9,7 @@ import { useUploadManager } from 'components/UploadManager';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 

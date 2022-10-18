@@ -22,7 +22,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import VideoPlayer from 'components/VideoPlayer';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState, Video } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 

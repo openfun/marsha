@@ -13,7 +13,7 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { useDocument } from 'data/stores/useDocument';
 import { useVideo } from 'data/stores/useVideo';
 import { Document } from 'types/file';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState, Video } from 'lib-components';
 
 const messages = defineMessages({

@@ -13,7 +13,7 @@ import {
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 import { useDocument } from 'data/stores/useDocument';
 import { Document } from 'types/file';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import { DashboardDocumentTitleForm } from './DashboardDocumentTitleForm';

@@ -8,7 +8,7 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { documentMockFactory, videoMockFactory } from 'lib-components';
