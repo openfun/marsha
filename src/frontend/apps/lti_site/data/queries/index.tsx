@@ -18,7 +18,7 @@ import {
   metadata,
   updateOne,
 } from 'lib-components';
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import { Document } from 'types/file';
 import {
   LiveModeType,

@@ -2,7 +2,7 @@ import { useJwt } from 'lib-components';
 
 import { addMultipleResources } from 'data/stores/generics';
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from 'settings';
-import { APIListCommonRequestParams, requestStatus } from 'types/api';
+import { APIListCommonRequestParams, requestStatus } from 'lib-components';
 import { modelName } from 'types/models';
 import { report } from 'utils/errors/report';
 

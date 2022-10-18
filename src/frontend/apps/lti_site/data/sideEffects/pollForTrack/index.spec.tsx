@@ -8,7 +8,7 @@ import {
 } from 'lib-components';
 
 import { addResource } from 'data/stores/generics';
-import { requestStatus } from 'types/api';
+import { requestStatus } from 'lib-components';
 import { modelName } from 'types/models';
 import { report } from 'utils/errors/report';
 

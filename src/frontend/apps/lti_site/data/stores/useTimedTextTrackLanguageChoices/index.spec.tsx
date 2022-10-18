@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { useJwt } from 'lib-components';
-import { requestStatus } from 'types/api';
+import { requestStatus } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 import { useTimedTextTrackLanguageChoices } from '.';
