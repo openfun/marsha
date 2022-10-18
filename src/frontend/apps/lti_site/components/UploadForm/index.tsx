@@ -1,5 +1,8 @@
 import { Maybe } from 'lib-common';
 import { Loader } from 'lib-components';
+import { modelName as markdownModelName } from 'lib-components/src/types/apps/markdown/models';
+import { modelName as depositModelName } from 'lib-components/src/types/apps/deposit/models';
+import { modelName as bbbModelName } from 'lib-components/src/types/apps/classroom/models';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
@@ -20,9 +23,6 @@ import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
 
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName as markdownModelName } from 'apps/markdown/types/models';
-import { modelName as depositModelName } from 'apps/deposit/types/models';
-import { modelName as bbbModelName } from 'apps/classroom/types/models';
 
 const messages = defineMessages({
   linkToDashboard: {

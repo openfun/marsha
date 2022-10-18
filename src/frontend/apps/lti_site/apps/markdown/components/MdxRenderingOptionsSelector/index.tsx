@@ -4,7 +4,7 @@ import { CheckBoxExtendedProps } from 'grommet/components/CheckBox';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
+import { MarkdownDocumentRenderingOptions } from 'lib-components';
 
 const messages = defineMessages({
   settings: {

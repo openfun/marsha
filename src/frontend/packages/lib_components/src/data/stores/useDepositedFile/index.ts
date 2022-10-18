@@ -8,11 +8,11 @@ import {
   removeResource,
 } from 'data/stores/actions';
 import { DepositedFile } from 'types/apps/deposit/models';
-import { modelName as depositModelName } from 'types/apps/deposit/models';
+import { FileDepositoryModelName } from 'types/apps/deposit/models';
 import { StoreState } from 'types/stores';
 
 type DepositedFileStateResource = {
-  [depositModelName.DepositedFiles]: {
+  [FileDepositoryModelName.DepositedFiles]: {
     [id: string]: DepositedFile;
   };
 };
@@ -28,7 +28,7 @@ export const useDepositedFile = create<DepositedFileState>((set, get) => {
       set(
         addMultipleResources(
           get(),
-          depositModelName.DepositedFiles,
+          FileDepositoryModelName.DepositedFiles,
           depositedFileToAdd,
         ) as DepositedFileStateResource,
       ),
@@ -36,16 +36,18 @@ export const useDepositedFile = create<DepositedFileState>((set, get) => {
       set(
         addResource<DepositedFile>(
           get(),
-          depositModelName.DepositedFiles,
+          FileDepositoryModelName.DepositedFiles,
           depositedFile,
         ) as DepositedFileStateResource,
       ),
     getDepositedFile: () => {
-      if (Object.keys(get()[depositModelName.DepositedFiles]).length > 0) {
+      if (
+        Object.keys(get()[FileDepositoryModelName.DepositedFiles]).length > 0
+      ) {
         const depositedFileId = Object.keys(
-          get()[depositModelName.DepositedFiles],
+          get()[FileDepositoryModelName.DepositedFiles],
         ).shift();
-        return get()[depositModelName.DepositedFiles][depositedFileId!];
+        return get()[FileDepositoryModelName.DepositedFiles][depositedFileId!];
       }
 
       return null;
@@ -54,10 +56,10 @@ export const useDepositedFile = create<DepositedFileState>((set, get) => {
       set(
         removeResource(
           get(),
-          depositModelName.DepositedFiles,
+          FileDepositoryModelName.DepositedFiles,
           depositedFile,
         ) as DepositedFileStateResource,
       ),
-    [depositModelName.DepositedFiles]: {},
+    [FileDepositoryModelName.DepositedFiles]: {},
   };
 });

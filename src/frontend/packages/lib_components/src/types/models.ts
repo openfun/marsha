@@ -1,6 +1,6 @@
-import { modelName as classroomModelName } from 'types/apps/classroom/models';
-import { modelName as depositModelName } from 'types/apps/deposit/models';
-import { modelName as markdownModelName } from 'types/apps/markdown/models';
+import { ClassroomModelName } from 'types/apps/classroom/models';
+import { FileDepositoryModelName } from 'types/apps/deposit/models';
+import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
 
 export enum modelName {
   TIMEDTEXTTRACKS = 'timedtexttracks',
@@ -12,6 +12,9 @@ export enum modelName {
 
 export type uploadableModelName =
   | modelName
-  | Extract<markdownModelName, markdownModelName.MARKDOWN_IMAGES>
-  | Extract<depositModelName, depositModelName.DepositedFiles>
-  | Extract<classroomModelName, classroomModelName.CLASSROOM_DOCUMENTS>;
+  | Extract<
+      MarkdownDocumentModelName,
+      MarkdownDocumentModelName.MARKDOWN_IMAGES
+    >
+  | Extract<FileDepositoryModelName, FileDepositoryModelName.DepositedFiles>
+  | Extract<ClassroomModelName, ClassroomModelName.CLASSROOM_DOCUMENTS>;

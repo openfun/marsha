@@ -1,6 +1,6 @@
 import { Nullable } from 'lib-common';
 
-import { Playlist, Resource, uploadState } from 'types/tracks';
+import { Playlist, Resource, uploadState } from '../../tracks';
 
 export interface Classroom extends Resource {
   playlist: Playlist;
@@ -56,7 +56,7 @@ export interface Attendee {
   userID: string;
 }
 
-export enum modelName {
+export enum ClassroomModelName {
   CLASSROOMS = 'classrooms',
   CLASSROOM_DOCUMENTS = 'classroomdocuments',
 }

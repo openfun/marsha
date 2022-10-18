@@ -6,9 +6,9 @@
 /* eslint-disable default-case */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { modelName as classroomModelName } from 'types/apps/classroom/models';
-import { modelName as depositModelName } from 'types/apps/deposit/models';
-import { modelName as markdownModelName } from 'types/apps/markdown/models';
+import { ClassroomModelName } from 'types/apps/classroom/models';
+import { FileDepositoryModelName } from 'types/apps/deposit/models';
+import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
 import { modelName, uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 
@@ -29,13 +29,13 @@ const getStore = async (objectType: uploadableModelName) => {
     case modelName.SHAREDLIVEMEDIAS:
       const { useSharedLiveMedia } = await import('./useSharedLiveMedia');
       return useSharedLiveMedia;
-    case markdownModelName.MARKDOWN_IMAGES:
+    case MarkdownDocumentModelName.MARKDOWN_IMAGES:
       const { useMarkdownImage } = await import('./useMarkdownImage');
       return useMarkdownImage;
-    case depositModelName.DepositedFiles:
+    case FileDepositoryModelName.DepositedFiles:
       const { useDepositedFile } = await import('./useDepositedFile');
       return useDepositedFile;
-    case classroomModelName.CLASSROOM_DOCUMENTS:
+    case ClassroomModelName.CLASSROOM_DOCUMENTS:
       const { useClassroomDocument } = await import('./useClassroomDocument');
       return useClassroomDocument;
   }

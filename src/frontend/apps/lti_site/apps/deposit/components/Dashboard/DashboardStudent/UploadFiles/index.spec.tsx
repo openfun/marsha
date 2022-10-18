@@ -9,7 +9,10 @@ import {
 import { uploadState } from 'types/tracks';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
-import { DepositedFile, modelName } from 'apps/deposit/types/models';
+import {
+  DepositedFile,
+  FileDepositoryModelName as modelName,
+} from 'lib-components';
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
 
 import { UploadFiles } from '.';

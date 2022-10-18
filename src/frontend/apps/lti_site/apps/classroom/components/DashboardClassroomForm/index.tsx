@@ -13,7 +13,7 @@ import {
   useCreateClassroomAction,
   useUpdateClassroom,
 } from 'apps/classroom/data/queries';
-import { Classroom } from 'apps/classroom/types/models';
+import { Classroom } from 'lib-components';
 
 const DEBOUNCE_TIME_MS = 1500;
 

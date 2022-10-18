@@ -2,7 +2,10 @@ import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
 
-import { ClassroomDocument, modelName } from 'apps/classroom/types/models';
+import {
+  ClassroomDocument,
+  ClassroomModelName as modelName,
+} from 'lib-components';
 
 export const createClassroomDocument = async (file: {
   filename: string;

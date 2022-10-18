@@ -10,7 +10,10 @@ import { render, Deferred } from 'lib-tests';
 import { uploadState } from 'types/tracks';
 
 import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
-import { ClassroomDocument, modelName } from 'apps/classroom/types/models';
+import {
+  ClassroomDocument,
+  ClassroomModelName as modelName,
+} from 'lib-components';
 import { classroomDocumentMockFactory } from 'apps/classroom/utils/tests/factories';
 
 import { UploadDocuments } from '.';

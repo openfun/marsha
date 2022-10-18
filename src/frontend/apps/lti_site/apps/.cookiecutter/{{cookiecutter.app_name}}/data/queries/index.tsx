@@ -10,7 +10,7 @@ import { createOne, fetchList, FetchListQueryKey, fetchOne, updateOne } from 'li
 import { APIList } from 'types/api';
 import { Maybe } from 'utils/types';
 
-import { {{cookiecutter.model}} } from 'apps/{{cookiecutter.app_name}}/types/models';
+import { {{cookiecutter.model}} } from 'lib-components';
 
 type {{cookiecutter.model_plural}}Response = APIList<{{cookiecutter.model}}>;
 type Use{{cookiecutter.model_plural}}Params = { organization: Maybe<string> };

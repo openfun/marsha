@@ -16,7 +16,7 @@ import {
   useUpdateClassroomDocument,
 } from 'apps/classroom/data/queries';
 import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
-import { modelName } from 'apps/classroom/types/models';
+import { ClassroomModelName as modelName } from 'lib-components';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 
 const messages = {

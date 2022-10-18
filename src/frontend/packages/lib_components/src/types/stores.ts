@@ -1,14 +1,14 @@
 import {
   ClassroomDocument,
-  modelName as classroomModelName,
+  ClassroomModelName,
 } from 'types/apps/classroom/models';
 import {
   DepositedFile,
-  modelName as depositModelName,
+  FileDepositoryModelName,
 } from 'types/apps/deposit/models';
 import {
   MarkdownImage,
-  modelName as markdownModelName,
+  MarkdownDocumentModelName,
 } from 'types/apps/markdown/models';
 
 import { Document } from './file';
@@ -40,13 +40,13 @@ export type StoreState<R extends Resource> = {
   [modelName.SHAREDLIVEMEDIAS]?: {
     [id: string]: SharedLiveMedia;
   };
-  [markdownModelName.MARKDOWN_IMAGES]?: {
+  [MarkdownDocumentModelName.MARKDOWN_IMAGES]?: {
     [id: string]: MarkdownImage;
   };
-  [depositModelName.DepositedFiles]?: {
+  [FileDepositoryModelName.DepositedFiles]?: {
     [id: string]: DepositedFile;
   };
-  [classroomModelName.CLASSROOM_DOCUMENTS]?: {
+  [ClassroomModelName.CLASSROOM_DOCUMENTS]?: {
     [id: string]: ClassroomDocument;
   };
 };

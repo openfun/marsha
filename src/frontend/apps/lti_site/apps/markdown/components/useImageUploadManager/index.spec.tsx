@@ -11,7 +11,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { modelName } from 'apps/markdown/types/models';
+import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 import { uploadState } from 'types/tracks';
 

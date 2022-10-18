@@ -8,11 +8,11 @@ import {
   removeResource,
 } from 'data/stores/actions';
 import { MarkdownImage } from 'types/apps/markdown/models';
-import { modelName as markdownModelName } from 'types/apps/markdown/models';
+import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
 import { StoreState } from 'types/stores';
 
 type MarkdownImageStateResource = {
-  [markdownModelName.MARKDOWN_IMAGES]: {
+  [MarkdownDocumentModelName.MARKDOWN_IMAGES]: {
     [id: string]: MarkdownImage;
   };
 };
@@ -28,7 +28,7 @@ export const useMarkdownImage = create<MarkdownImageState>((set, get) => {
       set(
         addMultipleResources(
           get(),
-          markdownModelName.MARKDOWN_IMAGES,
+          MarkdownDocumentModelName.MARKDOWN_IMAGES,
           markdownImagetoAdd,
         ) as MarkdownImageStateResource,
       ),
@@ -36,16 +36,20 @@ export const useMarkdownImage = create<MarkdownImageState>((set, get) => {
       set(
         addResource<MarkdownImage>(
           get(),
-          markdownModelName.MARKDOWN_IMAGES,
+          MarkdownDocumentModelName.MARKDOWN_IMAGES,
           markdownImage,
         ) as MarkdownImageStateResource,
       ),
     getMarkdownImage: () => {
-      if (Object.keys(get()[markdownModelName.MARKDOWN_IMAGES]).length > 0) {
+      if (
+        Object.keys(get()[MarkdownDocumentModelName.MARKDOWN_IMAGES]).length > 0
+      ) {
         const markdownImageId = Object.keys(
-          get()[markdownModelName.MARKDOWN_IMAGES],
+          get()[MarkdownDocumentModelName.MARKDOWN_IMAGES],
         ).shift();
-        return get()[markdownModelName.MARKDOWN_IMAGES][markdownImageId!];
+        return get()[MarkdownDocumentModelName.MARKDOWN_IMAGES][
+          markdownImageId!
+        ];
       }
 
       return null;
@@ -54,10 +58,10 @@ export const useMarkdownImage = create<MarkdownImageState>((set, get) => {
       set(
         removeResource(
           get(),
-          markdownModelName.MARKDOWN_IMAGES,
+          MarkdownDocumentModelName.MARKDOWN_IMAGES,
           markdownImage,
         ) as MarkdownImageStateResource,
       ),
-    [markdownModelName.MARKDOWN_IMAGES]: {},
+    [MarkdownDocumentModelName.MARKDOWN_IMAGES]: {},
   };
 });

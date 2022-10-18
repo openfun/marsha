@@ -22,7 +22,7 @@ import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOp
 import ScreenDispositionSelector, {
   ScreenDisposition,
 } from 'apps/markdown/components/ScreenDispositionSelector';
-import { MarkdownDocumentRenderingOptions } from 'apps/markdown/types/models';
+import { MarkdownDocumentRenderingOptions } from 'lib-components';
 import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
 import MarkdownImageDropzone from '../MarkdownImageDropzone';
 import { useImageUploadManager } from '../useImageUploadManager';

@@ -7,7 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
-import { {{cookiecutter.model}} } from 'apps/{{cookiecutter.app_name}}/types/models';
+import { {{cookiecutter.model}} } from 'lib-components';
 
 const messages = defineMessages({
   add{{cookiecutter.model}}: {

@@ -17,7 +17,7 @@ import { PluggableList } from 'unified';
 import {
   MarkdownImage,
   MarkdownDocumentRenderingOptions,
-} from 'apps/markdown/types/models';
+} from 'lib-components';
 
 import { debouncingTime } from './constants';
 import remarkLatexPlugin from './remarkLatexPlugin'; // Support backend LaTeX rendering

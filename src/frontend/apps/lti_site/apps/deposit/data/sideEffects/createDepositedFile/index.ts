@@ -2,7 +2,10 @@ import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
 
-import { DepositedFile, modelName } from 'apps/deposit/types/models';
+import {
+  DepositedFile,
+  FileDepositoryModelName as modelName,
+} from 'lib-components';
 
 export const createDepositedFile = async (file: {
   size: number;

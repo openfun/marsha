@@ -1,7 +1,7 @@
 import { Playlist, Resource } from 'types/tracks';
 import { Nullable } from 'utils/types';
 
-export enum modelName {
+export enum {{cookiecutter.model}}ModelName {
   {{cookiecutter.model_plural_capitalized}} = '{{cookiecutter.model_name}}',
 }
 

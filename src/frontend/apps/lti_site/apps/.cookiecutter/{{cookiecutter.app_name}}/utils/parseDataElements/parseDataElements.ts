@@ -1,5 +1,5 @@
 import { {{cookiecutter.app_name_capitalized}}AppData } from 'apps/{{cookiecutter.app_name}}/types/{{cookiecutter.app_name_capitalized}}AppData';
-import { modelName } from 'apps/{{cookiecutter.app_name}}/types/models';
+import { {{cookiecutter.model}}ModelName as modelName } from 'lib-components';
 
 export const parseDataElements = (element: Element): {{cookiecutter.app_name_capitalized}}AppData => {
   const context = JSON.parse(element.getAttribute('data-context')!);
