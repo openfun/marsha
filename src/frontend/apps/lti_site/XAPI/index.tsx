@@ -1,7 +1,7 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { Video } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
-import { XAPI_ENDPOINT } from '../settings';
+import { XAPI_ENDPOINT } from 'lib-components';
 import {
   DataPayload,
   InitializedContextExtensions,

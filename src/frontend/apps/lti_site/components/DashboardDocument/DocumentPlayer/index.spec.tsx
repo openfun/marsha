@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useCurrentSession, useJwt } from 'lib-components';
 import React from 'react';
 
-import { XAPI_ENDPOINT } from 'settings';
+import { XAPI_ENDPOINT } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { documentMockFactory } from 'lib-components';
 import render from 'utils/tests/render';

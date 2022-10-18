@@ -1,6 +1,6 @@
 import { useJwt } from 'lib-components';
 
-import { API_ENDPOINT } from 'settings';
+import { API_ENDPOINT } from 'lib-components';
 import { LiveSession } from 'lib-components';
 
 /**

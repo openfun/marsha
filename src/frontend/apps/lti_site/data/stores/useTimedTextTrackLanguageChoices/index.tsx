@@ -2,7 +2,7 @@ import { Maybe } from 'lib-common';
 import create from 'zustand';
 
 import { useJwt } from 'lib-components';
-import { API_ENDPOINT } from 'settings';
+import { API_ENDPOINT } from 'lib-components';
 import { requestStatus } from 'lib-components';
 import { modelName } from 'types/models';
 import { RouteOptions } from 'types/RouteOptions';
