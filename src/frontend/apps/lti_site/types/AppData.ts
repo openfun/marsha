@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
 
 import { Document } from './file';
-import { modelName } from './models';
+import { modelName } from 'lib-components';
 import { Live, Playlist, Video } from 'lib-components';
 
 export enum appState {

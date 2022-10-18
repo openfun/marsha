@@ -10,7 +10,7 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { createPlayer } from 'Player/createPlayer';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import { VideoView } from '.';

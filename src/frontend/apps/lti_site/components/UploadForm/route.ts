@@ -1,4 +1,4 @@
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 import { UploadableObject } from 'lib-components';
 
 /**

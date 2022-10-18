@@ -6,7 +6,7 @@ import { LTINav } from 'components/LTINav';
 import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 const PlaylistPage = () => {
   const appData = useAppConfig();

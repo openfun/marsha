@@ -8,7 +8,7 @@ import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { useUploadManager } from 'components/UploadManager';
 import { withLink } from 'components/withLink/withLink';
 import { Document } from 'types/file';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 const DashboardButtonWithLink = withLink(DashboardButton);

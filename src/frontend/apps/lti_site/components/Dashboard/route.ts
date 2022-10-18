@@ -1,4 +1,4 @@
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 
 /**
  * Route for the `<Dashboard />` component.

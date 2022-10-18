@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'lib-components';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { TimedText, timedTextMode } from 'lib-components';
 
 /**

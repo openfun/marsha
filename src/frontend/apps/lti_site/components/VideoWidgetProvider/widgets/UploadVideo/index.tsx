@@ -8,7 +8,7 @@ import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ProgressionBar } from 'components/graphicals/ProgressionBar';
 import { useUploadManager } from 'components/UploadManager';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 const messages = defineMessages({

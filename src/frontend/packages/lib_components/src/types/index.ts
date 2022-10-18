@@ -4,3 +4,4 @@ export * from './ResourceContext';
 export * from './apps/';
 export * from './tracks';
 export * from './api';
+export * from './models';

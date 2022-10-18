@@ -10,7 +10,7 @@ import styled from 'styled-components';
 import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from '../../types/models';
+import { modelName } from 'lib-components';
 import { timedTextMode } from 'lib-components';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';

@@ -12,7 +12,7 @@ import { useUploadManager } from 'components/UploadManager';
 import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { Video } from 'lib-components';
 import { report } from 'utils/errors/report';
 

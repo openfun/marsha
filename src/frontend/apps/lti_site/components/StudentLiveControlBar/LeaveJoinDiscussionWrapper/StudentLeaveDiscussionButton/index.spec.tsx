@@ -3,7 +3,7 @@ import React from 'react';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import * as mockWindow from 'utils/window';
 import render from 'utils/tests/render';
 

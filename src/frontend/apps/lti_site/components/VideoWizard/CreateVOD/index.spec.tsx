@@ -14,7 +14,7 @@ import {
 } from 'components/UploadManager';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useVideo } from 'data/stores/useVideo';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import CreateVOD from '.';

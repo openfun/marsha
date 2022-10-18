@@ -8,7 +8,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
 } from 'components/UploadManager';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 
 import { UploadsView } from '.';
 

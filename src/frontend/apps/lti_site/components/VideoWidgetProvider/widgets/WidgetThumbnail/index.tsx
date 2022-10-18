@@ -11,7 +11,7 @@ import { useUploadManager } from 'components/UploadManager';
 import { createThumbnail } from 'data/sideEffects/createThumbnail';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useThumbnail } from 'data/stores/useThumbnail';
-import { modelName } from 'types/models';
+import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
