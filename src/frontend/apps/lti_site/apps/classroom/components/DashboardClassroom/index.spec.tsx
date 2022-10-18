@@ -12,7 +12,7 @@ import { QueryClient } from 'react-query';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 
 import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
 

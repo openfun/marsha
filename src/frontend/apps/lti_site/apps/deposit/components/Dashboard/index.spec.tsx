@@ -8,7 +8,7 @@ import { QueryClient } from 'react-query';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
 import DashboardFileDepository from '.';

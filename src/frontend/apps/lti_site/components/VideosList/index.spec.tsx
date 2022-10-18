@@ -1,11 +1,9 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
-
-import * as factories from 'utils/tests/factories';
 
 import { VideosList } from '.';
 
@@ -33,8 +31,8 @@ describe('<VideosList />', () => {
       },
     });
 
-    const video1 = factories.videoMockFactory();
-    const video2 = factories.videoMockFactory();
+    const video1 = videoMockFactory();
+    const video2 = videoMockFactory();
 
     await act(async () =>
       deferred.resolve({

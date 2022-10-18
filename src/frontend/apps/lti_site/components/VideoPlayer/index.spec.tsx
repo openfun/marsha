@@ -1,10 +1,10 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { timedTextMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { createPlayer } from 'Player/createPlayer';
 import { timedTextMode, uploadState } from 'types/tracks';
-import { timedTextMockFactory, videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import VideoPlayer from '.';

@@ -1,10 +1,10 @@
 import { screen } from '@testing-library/react';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import DashboardLiveRaw from 'components/DashboardLiveRaw';
 import VideoPlayer from 'components/VideoPlayer';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import TeacherLiveRawWrapper from '.';

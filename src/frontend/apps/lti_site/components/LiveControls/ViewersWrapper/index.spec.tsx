@@ -1,15 +1,12 @@
-import React from 'react';
 import { screen } from '@testing-library/react';
+import { participantMockFactory, videoMockFactory } from 'lib-components';
+import React from 'react';
 
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { liveState } from 'types/tracks';
-import {
-  participantMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

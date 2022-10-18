@@ -1,11 +1,11 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { useVideo } from 'data/stores/useVideo';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

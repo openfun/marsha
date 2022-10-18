@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { liveState } from 'types/tracks';
 
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

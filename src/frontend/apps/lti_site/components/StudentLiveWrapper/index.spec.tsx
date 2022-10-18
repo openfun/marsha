@@ -24,10 +24,7 @@ import { createPlayer } from 'Player/createPlayer';
 import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import {
-  sharedLiveMediaMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
+import { sharedLiveMediaMockFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveWrapper } from '.';

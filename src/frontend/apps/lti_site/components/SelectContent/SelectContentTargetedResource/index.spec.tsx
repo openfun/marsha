@@ -8,7 +8,7 @@ import {
   documentMockFactory,
   liveMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 
 import render from 'utils/tests/render';
 

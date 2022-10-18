@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
+import { thumbnailMockFactory } from 'lib-components';
 import React from 'react';
 
-import { thumbnailMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { ThumbnailDisplayer } from '.';

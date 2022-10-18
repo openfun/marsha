@@ -1,8 +1,7 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 
 import { report } from 'utils/errors/report';
-import { videoMockFactory } from 'utils/tests/factories';
 
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';

@@ -3,12 +3,9 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { useJwt } from 'lib-components';
+import { useJwt, ltiInstructorTokenMockFactory, ltiStudentTokenMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
-import {
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
-} from 'utils/tests/factories';
+
 
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{cookiecutter.app_name}}/utils/tests/factories';
 import Dashboard{{cookiecutter.model}} from '.';

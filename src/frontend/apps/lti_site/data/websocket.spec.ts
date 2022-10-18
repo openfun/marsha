@@ -1,11 +1,11 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import WS from 'jest-websocket-mock';
+import { videoMockFactory } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { modelName } from 'types/models';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { videoMockFactory } from 'utils/tests/factories';
 
 import { useVideo } from './stores/useVideo';
 import { decodeJwt, useCurrentUser } from 'lib-components';

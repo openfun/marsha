@@ -9,7 +9,7 @@ import {
   liveMockFactory,
   playlistMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 import render from 'utils/tests/render';
 
 import { buildContentItems } from '../utils';

@@ -6,7 +6,7 @@ import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { liveState } from 'types/tracks';
-import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

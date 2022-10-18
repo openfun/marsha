@@ -5,7 +5,7 @@ import React from 'react';
 
 import { XAPI_ENDPOINT } from 'settings';
 import { uploadState } from 'types/tracks';
-import { documentMockFactory } from 'utils/tests/factories';
+import { documentMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import DocumentPlayer from '.';

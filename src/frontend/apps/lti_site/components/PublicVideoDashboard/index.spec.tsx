@@ -29,7 +29,7 @@ import {
   liveSessionFactory,
   timedTextMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 
 import PublicVideoDashboard from '.';
 

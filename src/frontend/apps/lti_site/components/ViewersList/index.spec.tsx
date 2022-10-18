@@ -1,14 +1,11 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { participantMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
 import { JoinMode } from 'types/tracks';
 import { generateAnonymousNickname } from 'utils/chat/chat';
-import {
-  participantMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

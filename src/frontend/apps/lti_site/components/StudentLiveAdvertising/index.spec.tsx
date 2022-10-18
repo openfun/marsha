@@ -11,7 +11,7 @@ import {
   liveSessionFactory,
   thumbnailMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveAdvertising } from '.';

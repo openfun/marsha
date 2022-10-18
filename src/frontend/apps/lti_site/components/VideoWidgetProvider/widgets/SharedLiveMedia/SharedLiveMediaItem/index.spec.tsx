@@ -1,7 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  sharedLiveMediaMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import {
@@ -10,10 +14,6 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
-import {
-  videoMockFactory,
-  sharedLiveMediaMockFactory,
-} from 'utils/tests/factories';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import render from 'utils/tests/render';
