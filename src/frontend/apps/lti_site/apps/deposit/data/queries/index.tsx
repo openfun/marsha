@@ -14,7 +14,7 @@ import {
   fetchOne,
   updateOne,
 } from 'lib-components';
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 
 import {
   DepositedFile,

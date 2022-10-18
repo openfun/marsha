@@ -12,7 +12,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import { DepositedFile } from 'lib-components';
