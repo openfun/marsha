@@ -19,7 +19,7 @@ import {
 } from 'components/UploadManager';
 import { getResource } from 'data/stores/generics';
 import { modelName, uploadableModelName } from 'types/models';
-import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
+import { TimedText, timedTextMode, UploadableObject } from 'lib-components';
 
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 import { useAppConfig } from 'data/stores/useAppConfig';

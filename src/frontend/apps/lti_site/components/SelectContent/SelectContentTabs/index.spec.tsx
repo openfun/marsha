@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
 import React, { Suspense } from 'react';
 
-import { LiveModeType, liveState, uploadState } from 'types/tracks';
+import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
   documentMockFactory,
   liveMockFactory,

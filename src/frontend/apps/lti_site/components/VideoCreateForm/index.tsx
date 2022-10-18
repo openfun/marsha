@@ -9,7 +9,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { useCreateVideo } from '../../data/queries';
 import { modelName } from '../../types/models';
-import { UploadableObject } from '../../types/tracks';
+import { UploadableObject } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 
 import { MutationFieldError } from '../MutationFieldError';

@@ -1,6 +1,6 @@
 import { videoMockFactory } from 'lib-components';
 
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 import { shouldDisplayDefaultMessage } from './utils';
 

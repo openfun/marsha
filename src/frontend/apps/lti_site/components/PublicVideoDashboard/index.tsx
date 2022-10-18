@@ -5,7 +5,7 @@ import {
   CurrentVideoProvider,
 } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { convertVideoToLive } from 'utils/conversions/convertVideo';
 
 import { PublicLiveDashboard } from './PublicLiveDashboard';

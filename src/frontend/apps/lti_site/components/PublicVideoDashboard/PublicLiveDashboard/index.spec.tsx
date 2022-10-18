@@ -11,7 +11,7 @@ import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
 import { APIList } from 'types/api';
-import { Live, LiveSession, liveState } from 'types/tracks';
+import { Live, LiveSession, liveState } from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

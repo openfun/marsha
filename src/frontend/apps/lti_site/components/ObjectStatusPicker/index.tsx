@@ -8,7 +8,7 @@ import {
   UploadableObject,
   uploadState,
   Video,
-} from '../../types/tracks';
+} from 'lib-components';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 
 const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;

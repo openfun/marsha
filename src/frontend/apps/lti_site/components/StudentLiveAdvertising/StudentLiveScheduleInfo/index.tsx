@@ -14,7 +14,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { theme } from 'utils/theme/theme';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 const Header = ({ title }: { title: ReactNode }) => (
   <Heading

@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { useStartSharingMedia } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { SharedLiveMedia } from 'types/tracks';
+import { SharedLiveMedia } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({

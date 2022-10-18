@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
-import { LiveSession } from 'types/tracks';
+import { LiveSession } from 'lib-components';
 
 export const getLiveSessions = async (
   anonymousId?: string,

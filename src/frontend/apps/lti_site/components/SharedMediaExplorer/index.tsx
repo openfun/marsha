@@ -2,7 +2,7 @@ import { Box, Stack } from 'grommet';
 import React, { PropsWithChildren } from 'react';
 
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
-import { SharedLiveMediaUrls } from 'types/tracks';
+import { SharedLiveMediaUrls } from 'lib-components';
 
 import { ImageViewer } from './ImageViewer';
 import { useLivePanelState } from 'data/stores/useLivePanelState';

@@ -9,7 +9,7 @@ import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { documentMockFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';

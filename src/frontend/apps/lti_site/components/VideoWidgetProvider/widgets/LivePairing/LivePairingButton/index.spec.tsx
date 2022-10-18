@@ -4,7 +4,7 @@ import { useJwt, videoMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LivePairingButton } from '.';

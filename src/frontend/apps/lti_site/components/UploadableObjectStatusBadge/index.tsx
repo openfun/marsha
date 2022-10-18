@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { UploadableObject, uploadState } from '../../types/tracks';
+import { UploadableObject, uploadState } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 import { UploadManagerStatus, useUploadManager } from '../UploadManager';
 

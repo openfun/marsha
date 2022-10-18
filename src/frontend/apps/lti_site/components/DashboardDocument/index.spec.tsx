@@ -10,7 +10,7 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { Playlist, uploadState } from 'types/tracks';
+import { Playlist, uploadState } from 'lib-components';
 
 import DashboardDocument from '.';
 

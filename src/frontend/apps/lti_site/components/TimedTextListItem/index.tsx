@@ -9,7 +9,7 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'types/models';
 import { LanguageChoice } from 'types/SelectOptions';
-import { TimedText, uploadState } from 'types/tracks';
+import { TimedText, uploadState } from 'lib-components';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';

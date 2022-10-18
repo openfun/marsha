@@ -13,7 +13,7 @@ import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDispla
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
-import { JoinMode, Live, liveState } from 'types/tracks';
+import { JoinMode, Live, liveState } from 'lib-components';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

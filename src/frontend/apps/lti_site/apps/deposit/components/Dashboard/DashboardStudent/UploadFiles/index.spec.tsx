@@ -6,7 +6,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import {

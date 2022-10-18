@@ -15,7 +15,7 @@ import {
 } from 'components/UploadManager';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

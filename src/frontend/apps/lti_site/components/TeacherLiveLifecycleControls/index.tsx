@@ -4,7 +4,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 import { StartLiveButton } from './StartLiveButton';
 import { StopLiveButton } from './StopLiveButton';

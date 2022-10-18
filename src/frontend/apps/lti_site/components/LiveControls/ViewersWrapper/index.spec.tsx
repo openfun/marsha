@@ -6,7 +6,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

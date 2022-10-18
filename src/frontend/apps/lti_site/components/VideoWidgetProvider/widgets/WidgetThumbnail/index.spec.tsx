@@ -13,7 +13,7 @@ import { useJwt, thumbnailMockFactory } from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { WidgetThumbnail } from '.';

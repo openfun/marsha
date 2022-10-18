@@ -10,7 +10,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
-import { LiveModeType, Video } from 'types/tracks';
+import { LiveModeType, Video } from 'lib-components';
 
 const messages = defineMessages({
   startLiveButtonLabel: {

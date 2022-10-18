@@ -3,7 +3,7 @@ import { defineMessages } from 'react-intl';
 
 import { UploadManagerStatus } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { determineMessage } from './utils';
 

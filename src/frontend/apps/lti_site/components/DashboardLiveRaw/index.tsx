@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import ReactTooltip from 'react-tooltip';
 import styled from 'styled-components';
 
-import { liveState, Video } from 'types/tracks';
+import { liveState, Video } from 'lib-components';
 
 const messages = defineMessages({
   copied: {

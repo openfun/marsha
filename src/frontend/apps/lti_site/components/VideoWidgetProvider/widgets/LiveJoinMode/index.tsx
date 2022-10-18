@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { JoinMode } from 'types/tracks';
+import { JoinMode } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 const { APPROVAL, DENIED, FORCED } = JoinMode;

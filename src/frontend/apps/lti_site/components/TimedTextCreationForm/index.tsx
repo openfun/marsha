@@ -11,7 +11,7 @@ import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrac
 import { useTimedTextTrack } from '../../data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from '../../types/models';
-import { timedTextMode } from '../../types/tracks';
+import { timedTextMode } from 'lib-components';
 import { report } from '../../utils/errors/report';
 import { theme } from '../../utils/theme/theme';
 import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';

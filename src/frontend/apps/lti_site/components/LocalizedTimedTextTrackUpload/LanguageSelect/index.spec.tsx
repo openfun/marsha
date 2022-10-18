@@ -5,7 +5,7 @@ import React from 'react';
 
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices/index';
-import { timedTextMode } from 'types/tracks';
+import { timedTextMode } from 'lib-components';
 import { timedTextMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { LanguageSelect } from '.';

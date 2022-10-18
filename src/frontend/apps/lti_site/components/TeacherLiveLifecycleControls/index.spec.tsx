@@ -4,7 +4,7 @@ import React from 'react';
 
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 import { TeacherLiveLifecycleControls } from '.';
 

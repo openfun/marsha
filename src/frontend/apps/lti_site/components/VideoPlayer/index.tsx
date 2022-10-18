@@ -9,7 +9,7 @@ import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
-import { TimedText, timedTextMode, Video, videoSize } from 'types/tracks';
+import { TimedText, timedTextMode, Video, videoSize } from 'lib-components';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
 
 interface BaseVideoPlayerProps {

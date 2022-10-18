@@ -7,7 +7,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { render, Deferred } from 'lib-tests';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
 import {

@@ -10,7 +10,7 @@ import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
-import { LiveSession } from 'types/tracks';
+import { LiveSession } from 'lib-components';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 
 const formTheme: ThemeType = deepMerge(theme, {

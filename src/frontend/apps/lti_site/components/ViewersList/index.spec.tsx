@@ -4,7 +4,7 @@ import { participantMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
-import { JoinMode } from 'types/tracks';
+import { JoinMode } from 'lib-components';
 import { generateAnonymousNickname } from 'utils/chat/chat';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

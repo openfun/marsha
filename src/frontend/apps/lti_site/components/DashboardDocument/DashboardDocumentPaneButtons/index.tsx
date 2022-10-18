@@ -9,7 +9,7 @@ import { useUploadManager } from 'components/UploadManager';
 import { withLink } from 'components/withLink/withLink';
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 const DashboardButtonWithLink = withLink(DashboardButton);
 

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { sharedLiveMediaMockFactory } from 'lib-components';
 import React from 'react';
 
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { TitleDisplayer } from '.';

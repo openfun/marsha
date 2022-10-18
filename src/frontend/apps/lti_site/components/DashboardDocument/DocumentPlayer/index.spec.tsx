@@ -4,7 +4,7 @@ import { useCurrentSession, useJwt } from 'lib-components';
 import React from 'react';
 
 import { XAPI_ENDPOINT } from 'settings';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import { documentMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 

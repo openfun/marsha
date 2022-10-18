@@ -5,7 +5,7 @@ import React from 'react';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 import { report } from 'utils/errors/report';
 import render from 'utils/tests/render';
 

@@ -8,7 +8,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { UploadVideoForm } from '.';

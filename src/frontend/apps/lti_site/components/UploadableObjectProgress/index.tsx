@@ -3,7 +3,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Resource } from '../../types/tracks';
+import { Resource } from 'lib-components';
 import { useUploadManager } from '../UploadManager';
 
 const messages = defineMessages({

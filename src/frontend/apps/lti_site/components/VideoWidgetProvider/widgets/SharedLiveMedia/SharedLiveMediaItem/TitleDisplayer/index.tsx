@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { SharedLiveMedia, uploadState } from 'types/tracks';
+import { SharedLiveMedia, uploadState } from 'lib-components';
 
 const messages = defineMessages({
   noFilenameUploadFailed: {

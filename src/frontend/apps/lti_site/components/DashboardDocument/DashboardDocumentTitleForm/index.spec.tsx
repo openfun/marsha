@@ -4,7 +4,7 @@ import { render, Deferred } from 'lib-tests';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { DashboardDocumentTitleForm } from '.';
 

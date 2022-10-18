@@ -6,7 +6,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
 
 interface PublicVODDashboardProps {

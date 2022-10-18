@@ -6,7 +6,7 @@ import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { timedTextMode, Video } from 'types/tracks';
+import { timedTextMode, Video } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({

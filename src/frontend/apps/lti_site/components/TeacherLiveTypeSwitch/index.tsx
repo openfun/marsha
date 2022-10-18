@@ -8,7 +8,7 @@ import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
-import { LiveModeType } from 'types/tracks';
+import { LiveModeType } from 'lib-components';
 
 const messages = defineMessages({
   RAW: {

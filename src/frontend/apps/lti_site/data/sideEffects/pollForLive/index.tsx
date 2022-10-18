@@ -1,5 +1,5 @@
 import { POLL_FOR_LIVE_TIMEOUT } from 'default/sideEffects';
-import { VideoUrls } from 'types/tracks';
+import { VideoUrls } from 'lib-components';
 
 export const pollForLive = async (
   urls: VideoUrls,

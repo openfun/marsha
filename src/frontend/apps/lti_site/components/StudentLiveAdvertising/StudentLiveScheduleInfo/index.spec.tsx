@@ -1,7 +1,7 @@
 import { act, screen } from '@testing-library/react';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 import render from 'utils/tests/render';
 

@@ -14,7 +14,7 @@ import { useDocument } from 'data/stores/useDocument';
 import { useVideo } from 'data/stores/useVideo';
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
-import { uploadState, Video } from 'types/tracks';
+import { uploadState, Video } from 'lib-components';
 
 const messages = defineMessages({
   linkDashboard: {

@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import { appNames, selectableBaseResource } from 'types/AppData';
-import { LiveModeType, liveState, uploadState } from 'types/tracks';
+import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
   documentMockFactory,
   liveMockFactory,

@@ -1,7 +1,7 @@
 import { useCurrentUser } from 'lib-components';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { JoinMode, LiveModeType, liveState } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState } from 'lib-components';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
 import { videoMockFactory } from 'lib-components';
 

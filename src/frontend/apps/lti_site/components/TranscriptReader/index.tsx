@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { TimedTextTranscript } from '../../types/tracks';
+import { TimedTextTranscript } from 'lib-components';
 import { useAsyncEffect } from '../../utils/useAsyncEffect';
 import { TranscriptSentence } from '../TranscriptSentence';
 

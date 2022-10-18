@@ -1,4 +1,4 @@
-import { TimedText, timedTextMode } from 'types/tracks';
+import { TimedText, timedTextMode } from 'lib-components';
 import { VideoPlayerCreator } from 'types/VideoPlayer';
 import { report } from 'utils/errors/report';
 import { createVideojsPlayer } from './createVideojsPlayer';

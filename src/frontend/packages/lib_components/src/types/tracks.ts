@@ -1,11 +1,10 @@
 import { Nullable } from 'lib-common';
 
-import { ClassroomDocument } from 'types/apps/classroom/models';
-import { DepositedFile } from 'types/apps/deposit/models';
-import { MarkdownImage } from 'types/apps/markdown/models';
-
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
+import { ClassroomDocument } from './apps/classroom/models';
+import { DepositedFile } from './apps/deposit/models';
+import { MarkdownImage } from './apps/markdown/models';
 import { Document } from './file';
 
 /** Base shape for all resources to extend. */
