@@ -2,11 +2,10 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, sharedLiveMediaMockFactory } from 'lib-components';
 import React from 'react';
 
 import { report } from 'utils/errors/report';
-import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { AllowedDownloadButton } from '.';

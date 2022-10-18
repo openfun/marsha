@@ -1,4 +1,5 @@
 import { cleanup, screen } from '@testing-library/react';
+import { documentMockFactory } from 'lib-components';
 import React from 'react';
 
 import {
@@ -7,7 +8,6 @@ import {
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { documentMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { DashboardDocumentPaneButtons } from '.';

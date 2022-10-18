@@ -1,5 +1,6 @@
+import { videoMockFactory } from 'lib-components';
+
 import { liveState } from '../types/tracks';
-import { videoMockFactory } from '../utils/tests/factories';
 import { LiveXAPIStatement } from './LiveXapiStatement';
 import { VideoXAPIStatement } from './VideoXAPIStatement';
 import { XAPIStatement } from './index';

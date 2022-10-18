@@ -8,10 +8,7 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
-import {
-  participantMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
+import { participantMockFactory, videoMockFactory } from 'lib-components';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

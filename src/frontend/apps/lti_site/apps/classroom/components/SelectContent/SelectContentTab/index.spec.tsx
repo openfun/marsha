@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
 import React from 'react';
 
-import { playlistMockFactory } from 'utils/tests/factories';
+import { playlistMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import SelectContentTab from '.';

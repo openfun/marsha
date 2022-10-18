@@ -1,4 +1,4 @@
-import { liveSessionFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'lib-components';
 import { useLiveSession } from '.';
 
 describe('useLiveSession', () => {

@@ -7,7 +7,7 @@ import React from 'react';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 
-import { liveSessionFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RegistrationForm } from '.';

@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
@@ -16,7 +16,6 @@ import { useAppConfig } from 'data/stores/useAppConfig';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 
 import CreateVOD from '.';
 import { AppConfig } from 'types/AppData';

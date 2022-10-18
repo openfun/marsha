@@ -11,7 +11,7 @@ import {
   NICKNAME_MAX_LENGTH,
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
-import { liveSessionFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { converse } from 'utils/window';
 

@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
+import { sharedLiveMediaMockFactory } from 'lib-components';
 import React from 'react';
 
-import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import { uploadState } from 'types/tracks';
 import render from 'utils/tests/render';
 

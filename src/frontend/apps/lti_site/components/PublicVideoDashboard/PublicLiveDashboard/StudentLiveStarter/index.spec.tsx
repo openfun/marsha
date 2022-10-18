@@ -14,7 +14,7 @@ import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
 import { JoinMode, Live, liveState } from 'types/tracks';
-import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';
 

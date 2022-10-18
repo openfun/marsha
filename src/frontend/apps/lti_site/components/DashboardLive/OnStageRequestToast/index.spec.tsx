@@ -1,5 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { participantMockFactory } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 
@@ -7,7 +8,6 @@ import {
   useLivePanelState,
   LivePanelItem,
 } from 'data/stores/useLivePanelState';
-import { participantMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { OnStageRequestToast } from '.';
 

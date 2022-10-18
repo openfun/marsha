@@ -1,5 +1,6 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
@@ -9,7 +10,6 @@ import { uploadFile } from 'data/sideEffects/uploadFile';
 import { getResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
 import { timedTextMode, uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { UploadForm } from '.';

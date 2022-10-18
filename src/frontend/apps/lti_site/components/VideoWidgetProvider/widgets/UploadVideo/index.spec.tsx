@@ -1,6 +1,6 @@
 import userEvent from '@testing-library/user-event';
 import { act, screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import {
@@ -11,7 +11,6 @@ import {
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

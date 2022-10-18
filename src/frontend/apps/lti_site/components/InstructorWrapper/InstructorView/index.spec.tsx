@@ -1,7 +1,7 @@
 import { useCurrentResourceContext, useMaintenance } from 'lib-components';
 import React from 'react';
 
-import { videoMockFactory } from 'utils/tests/factories';
+import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { InstructorView } from '.';

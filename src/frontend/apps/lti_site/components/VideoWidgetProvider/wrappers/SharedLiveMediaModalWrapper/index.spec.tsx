@@ -1,13 +1,12 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, sharedLiveMediaMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { report } from 'utils/errors/report';
-import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { SharedLiveMediaModalWrapper } from '.';
 

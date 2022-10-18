@@ -1,7 +1,7 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { videoMockFactory } from 'lib-components';
 
-import { videoMockFactory } from 'utils/tests/factories';
 import { pollForLive } from '.';
 
 describe('createPlayer', () => {

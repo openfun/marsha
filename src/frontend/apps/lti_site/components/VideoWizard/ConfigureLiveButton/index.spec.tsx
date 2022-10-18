@@ -1,11 +1,11 @@
 import { fireEvent, waitFor, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LiveModeType, liveState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { ConfigureLiveButton } from '.';

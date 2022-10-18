@@ -1,12 +1,11 @@
 import { screen, waitFor } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { liveState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardLiveTabAttendance } from '.';

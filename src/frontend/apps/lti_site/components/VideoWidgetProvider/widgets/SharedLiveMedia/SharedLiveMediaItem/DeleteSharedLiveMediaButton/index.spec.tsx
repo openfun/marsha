@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { sharedLiveMediaMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { sharedLiveMediaMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { DeleteSharedLiveMediaButton } from '.';
 

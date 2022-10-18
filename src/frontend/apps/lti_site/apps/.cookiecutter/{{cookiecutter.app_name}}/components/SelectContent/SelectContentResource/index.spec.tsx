@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{ cookiecutter.app_name }}/utils/tests/factories';
-import { playlistMockFactory } from 'utils/tests/factories';
+import { playlistMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import SelectContentResource from '.';

@@ -3,7 +3,7 @@ import { useCurrentUser } from 'lib-components';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { JoinMode, LiveModeType, liveState } from 'types/tracks';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
-import { videoMockFactory } from 'utils/tests/factories';
+import { videoMockFactory } from 'lib-components';
 
 import { initializeJitsi } from './utils';
 

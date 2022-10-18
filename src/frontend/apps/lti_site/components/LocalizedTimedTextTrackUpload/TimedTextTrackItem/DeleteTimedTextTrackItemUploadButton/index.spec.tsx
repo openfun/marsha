@@ -1,9 +1,9 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { timedTextMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { timedTextMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { DeleteTimedTextTrackItemUploadButton } from '.';
 

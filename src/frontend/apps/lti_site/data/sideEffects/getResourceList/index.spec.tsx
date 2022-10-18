@@ -1,12 +1,11 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 
 import { addMultipleResources } from 'data/stores/generics';
 import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import { videoMockFactory } from 'utils/tests/factories';
 
 import { getResourceList } from './';
 

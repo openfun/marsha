@@ -1,6 +1,6 @@
 import { createIntl, IntlShape } from 'react-intl';
 import { onStageRequestMessage } from './onStageRequestMessage';
-import { participantMockFactory } from './tests/factories';
+import { participantMockFactory } from 'lib-components';
 
 const participants = [
   participantMockFactory(),

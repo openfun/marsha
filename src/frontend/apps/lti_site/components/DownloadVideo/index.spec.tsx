@@ -5,7 +5,7 @@ import React from 'react';
 
 import { XAPI_ENDPOINT } from 'settings';
 import { uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
+import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { DownloadVideo } from '.';

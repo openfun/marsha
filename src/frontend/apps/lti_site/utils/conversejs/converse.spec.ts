@@ -1,7 +1,6 @@
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 
 import { PersistentStore } from 'types/XMPP';
-import { videoMockFactory } from 'utils/tests/factories';
 import * as mockWindow from 'utils/window';
 
 import { converseMounter } from './converse';
