@@ -18,7 +18,7 @@
   },
   "scripts": {
     "lint": "yarn build-tests && yarn workspaces run lint",
-    "test-libs": "yarn build-tests && yarn workspace lib-components run test",
+    "test-libs": "yarn build-tests && yarn workspace lib-components run test; yarn workspace lib-classroom run test",
     "test-lib-classroom": "yarn build-tests && yarn workspace lib-classroom run test",
     "test-lti": "yarn build-tests && yarn workspace marsha run test",
     "test-site": "yarn build-tests && yarn workspace standalone_site run test",

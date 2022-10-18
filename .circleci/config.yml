@@ -32,7 +32,7 @@ generate-version-file: &generate-version-file
 version: 2.1
 commands:
   get_last_packages_commit:
-    description: 'Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key.'
+    description: "Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key."
     parameters:
       filename:
         type: string
@@ -561,9 +561,6 @@ jobs:
           name: Run tests on libs
           command: yarn test-libs -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
-          name: Run tests on lib-classroom
-          command: yarn test-lib-classroom -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
-      - run:
           name: Run tests on lti site
           command: yarn test-lti -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
@@ -615,12 +612,12 @@ jobs:
     working_directory: ~/marsha/src/backend
     parameters:
       browser:
-        description: 'Playwright browser'
-        default: 'firefox'
+        description: "Playwright browser"
+        default: "firefox"
         type: string
       browser_channel:
-        description: 'Playwright browser channel'
-        default: 'firefox'
+        description: "Playwright browser channel"
+        default: "firefox"
         type: string
     steps:
       - checkout:
