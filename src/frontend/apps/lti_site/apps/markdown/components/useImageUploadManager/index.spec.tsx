@@ -1,11 +1,9 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import xhrMock, { MockResponse } from 'xhr-mock';
-
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import { useImageUploadManager } from '.';
 import {

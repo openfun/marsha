@@ -1,6 +1,7 @@
 import { act, cleanup, waitFor, screen } from '@testing-library/react';
 import { Nullable } from 'lib-common';
 import { useCurrentResourceContext, useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
 
@@ -13,9 +14,7 @@ import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { modelName } from 'types/models';
 import { JoinMode, Live, liveState } from 'types/tracks';
-import { Deferred } from 'utils/tests/Deferred';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';
 

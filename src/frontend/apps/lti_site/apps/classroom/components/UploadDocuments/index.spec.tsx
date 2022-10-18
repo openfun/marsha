@@ -6,8 +6,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
+import { render, Deferred } from 'lib-tests';
 import { uploadState } from 'types/tracks';
 
 import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';

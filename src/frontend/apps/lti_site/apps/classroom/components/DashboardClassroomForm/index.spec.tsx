@@ -2,11 +2,10 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { DateTime, Duration, Settings } from 'luxon';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import DashboardClassroomForm from './index';
 
