@@ -3,7 +3,7 @@ import { playlistMockFactory } from 'lib-components';
 
 import { uploadState } from 'types/tracks';
 
-import { DepositedFile, FileDepository } from 'apps/deposit/types/models';
+import { DepositedFile, FileDepository } from 'lib-components';
 
 const { READY } = uploadState;
 

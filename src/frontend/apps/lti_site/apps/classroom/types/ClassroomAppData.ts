@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
 
 import { AppData } from 'types/AppData';
-import { Classroom, modelName } from './models';
+import { Classroom, ClassroomModelName as modelName } from 'lib-components';
 
 export interface ClassroomAppData extends Omit<AppData, 'modelName'> {
   modelName: modelName.CLASSROOMS;

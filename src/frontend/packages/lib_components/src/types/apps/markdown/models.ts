@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-empty-interface */
 import { Nullable } from 'lib-common';
 
-import { Playlist, Resource, uploadState } from 'types/tracks';
+import { Playlist, Resource, uploadState } from '../../tracks';
 
-export enum modelName {
+export enum MarkdownDocumentModelName {
   MARKDOWN_DOCUMENTS = 'markdown-documents',
   MARKDOWN_IMAGES = 'markdown-images',
 }

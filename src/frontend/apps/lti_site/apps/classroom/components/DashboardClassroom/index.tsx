@@ -18,7 +18,7 @@ import {
   useJoinClassroomAction,
   useClassroom,
 } from 'apps/classroom/data/queries';
-import { Attendee } from 'apps/classroom/types/models';
+import { Attendee } from 'lib-components';
 import { DashboardClassroomError } from 'apps/classroom/components/DashboardClassroomError';
 
 const DashboardClassroomStudent = lazy(

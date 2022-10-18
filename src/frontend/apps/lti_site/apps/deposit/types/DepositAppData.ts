@@ -1,7 +1,10 @@
 import { Nullable } from 'lib-common';
 
 import { AppData } from 'types/AppData';
-import { FileDepository, modelName } from './models';
+import {
+  FileDepository,
+  FileDepositoryModelName as modelName,
+} from 'lib-components';
 
 export interface DepositAppData extends Omit<AppData, 'modelName'> {
   modelName: modelName.FileDepositories;

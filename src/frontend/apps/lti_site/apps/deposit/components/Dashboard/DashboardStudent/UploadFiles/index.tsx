@@ -14,7 +14,7 @@ import {
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
-import { modelName } from 'apps/deposit/types/models';
+import { FileDepositoryModelName as modelName } from 'lib-components';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 

@@ -7,7 +7,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 
-import { modelName } from 'apps/markdown/types/models';
+import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { createMarkdownImage } from 'apps/markdown/data/sideEffects/createMarkdownImage';
 import { pollForMarkdownImage } from 'apps/markdown/data/sideEffects/pollForMarkdownImage';
 import MarkdownImageProgressToast from '../MarkdownImageProgressToast';

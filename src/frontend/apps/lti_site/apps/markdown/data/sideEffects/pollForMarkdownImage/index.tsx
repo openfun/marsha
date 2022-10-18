@@ -1,4 +1,4 @@
-import { MarkdownImage } from 'apps/markdown/types/models';
+import { MarkdownImage } from 'lib-components';
 import { report } from 'utils/errors/report';
 import { fetchOneMarkdownImage } from 'apps/markdown/data/queries';
 

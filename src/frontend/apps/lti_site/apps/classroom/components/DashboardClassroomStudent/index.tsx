@@ -9,7 +9,7 @@ import {
   DashboardClassroomMessage,
 } from 'apps/classroom/components/DashboardClassroomLayout';
 import { DashboardClassroomStudentCounter } from 'apps/classroom/components/DashboardClassroomStudentCounter';
-import { Classroom } from 'apps/classroom/types/models';
+import { Classroom } from 'lib-components';
 
 const messages = defineMessages({
   joinedAs: {

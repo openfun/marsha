@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
 
 import { useUpdateDepositedFile } from 'apps/deposit/data/queries';
-import { DepositedFile } from 'apps/deposit/types/models';
+import { DepositedFile } from 'lib-components';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 

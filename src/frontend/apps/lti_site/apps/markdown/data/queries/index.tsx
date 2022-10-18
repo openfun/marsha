@@ -12,7 +12,7 @@ import {
   MarkdownDocument,
   MarkdownSaveTranslationsRequest,
   MarkdownSaveTranslationsResponse,
-} from 'apps/markdown/types/models';
+} from 'lib-components';
 
 interface MarkdownDocumentsSelectResponse {
   new_url: string;

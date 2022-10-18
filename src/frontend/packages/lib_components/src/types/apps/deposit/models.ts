@@ -1,8 +1,8 @@
 import { Nullable } from 'lib-common';
 
-import { Playlist, Resource, uploadState } from 'types/tracks';
+import { Playlist, Resource, uploadState } from '../../tracks';
 
-export enum modelName {
+export enum FileDepositoryModelName {
   FileDepositories = 'filedepositories',
   DepositedFiles = 'depositedfiles',
 }

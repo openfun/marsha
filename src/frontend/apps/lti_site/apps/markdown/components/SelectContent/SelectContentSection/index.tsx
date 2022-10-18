@@ -8,10 +8,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
-import {
-  MarkdownDocument,
-  MarkdownDocumentTranslation,
-} from 'apps/markdown/types/models';
+import { MarkdownDocument, MarkdownDocumentTranslation } from 'lib-components';
 
 const messages = defineMessages({
   loadingDocuments: {

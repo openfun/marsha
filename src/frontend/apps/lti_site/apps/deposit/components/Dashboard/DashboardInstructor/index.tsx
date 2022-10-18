@@ -9,7 +9,7 @@ import {
   useDepositedFiles,
   useUpdateFileDepository,
 } from 'apps/deposit/data/queries';
-import { FileDepository } from 'apps/deposit/types/models';
+import { FileDepository } from 'lib-components';
 
 const PAGE_SIZE = 10;
 

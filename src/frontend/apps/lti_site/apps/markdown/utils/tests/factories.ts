@@ -7,7 +7,7 @@ import {
   MarkdownDocument,
   MarkdownDocumentTranslation,
   MarkdownImage,
-} from 'apps/markdown/types/models';
+} from 'lib-components';
 
 export const markdownDocumentMockFactory = (
   markdownDocument: Partial<MarkdownDocument> = {},
