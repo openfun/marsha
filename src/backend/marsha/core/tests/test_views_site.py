@@ -1,76 +1,60 @@
 """Test the public marsha Site."""
-from html import unescape
-import json
-import re
+import os
 
-from django.test import Client, TestCase, override_settings
+from django.core.cache import cache
+from django.test import TestCase, override_settings
 
 from waffle.testutils import override_switch
-
-from marsha.core.simple_jwt.tokens import UserAccessToken
-
-from .. import factories
 
 
 # We don't enforce arguments documentation in tests
 # pylint: disable=unused-argument,too-many-lines
 
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+
 
 class SiteViewTestCase(TestCase):
     """Test the Site view."""
 
+    def setUp(self):
+        """
+        Reset the cache to always reach the site route.
+        """
+        cache.clear()
+
     @override_switch("site", active=True)
-    @override_switch("sentry", active=True)
-    @override_settings(SENTRY_DSN="https://sentry.dsn")
-    @override_settings(RELEASE="1.2.3")
+    @override_settings(BASE_STATIC_DIR=os.path.join(BASE_DIR, "stubs"))
     def test_site_publicly_accessible(self):
-        """Test site view publicly accessible with a connected user."""
-        user = factories.UserFactory(
-            first_name="Jane", last_name="Doe", email="jane.doe@example.com"
-        )
-        client = Client()
-        client.force_login(user)
-        response = client.get("/")
+        """Test site view publicly accessible"""
+        response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        content = response.content.decode("utf-8")
-
-        match = re.search(
-            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        self.assertContains(response, '<html lang="en">')
+        self.assertContains(
+            response, '<meta name="public-path" value="/static/js/build/site/" />'
+        )
+        self.assertContains(
+            response, '<link rel="icon" href="/static/js/build/site/favicon.ico" />'
+        )
+        self.assertContains(
+            response,
+            (
+                '<script defer="defer" src="/static/js/build/site/static/js/main.4b7d1848.js">'
+                "</script>"
+            ),
+        )
+        self.assertContains(
+            response,
+            '<link href="/static/js/build/site/static/css/main.18b5b4a5.css" rel="stylesheet">',
         )
 
-        context = json.loads(unescape(match.group(1)))
-        jwt_token = UserAccessToken(context.get("jwt"))
-        self.assertEqual(jwt_token.payload["user_id"], str(user.id))
-
-        self.assertEqual(context.get("sentry_dsn"), "https://sentry.dsn")
-        self.assertEqual(context.get("environment"), "test")
-        self.assertEqual(context.get("frontend"), "Site")
-        self.assertEqual(context.get("release"), "1.2.3")
-        self.assertFalse(context.get("flags").get("live_raw"))
-        self.assertTrue(context.get("flags").get("sentry"))
-        self.assertEqual(
-            context.get("static"),
-            {
-                "img": {
-                    "errorMain": "/static/img/errorTelescope.png",
-                    "liveBackground": "/static/img/liveBackground.jpg",
-                    "liveErrorBackground": "/static/img/liveErrorBackground.jpg",
-                    "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
-                    "videoWizardBackground": "/static/img/videoWizardBackground.png",
-                },
-                "svg": {"icons": "/static/svg/icons.svg"},
-            },
-        )
-        self.assertIsNone(context.get("context_id"))
-        self.assertIsNone(context.get("consumer_site"))
+    @override_switch("site", active=True)
+    def test_site_site_template_missing(self):
+        """Test site with missing index file should return a 501."""
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 501)
 
     @override_switch("site", active=False)
     def test_site_not_accessible(self):
         """Test site view not existing when site switch is disabled."""
-        user = factories.UserFactory(
-            first_name="Jane", last_name="Doe", email="jane.doe@example.com"
-        )
-        client = Client()
-        client.force_login(user)
-        response = client.get("/")
+        response = self.client.get("/")
         self.assertEqual(response.status_code, 404)

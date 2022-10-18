@@ -30,12 +30,17 @@ FROM node:16 as front-builder
 WORKDIR /app
 
 COPY ./src/frontend /app/
+COPY ./src/.prettierrc.js /app/
 
 RUN yarn install --frozen-lockfile && \
     yarn workspace marsha run compile-translations && \
     yarn workspace marsha run sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=../../node_modules  && \
     mkdir -p /app/marsha/static/css/fonts && cp node_modules/katex/dist/fonts/* /app/marsha/static/css/fonts && \
-    yarn build-lti --mode=production --output-path /app/marsha/static/js/build/lti_site/
+    yarn build-libs && \
+    yarn build-tests && \
+    BUILD_PATH=/app/marsha/static/js/build/site/ DJANGO_STATIC_DIR=/app/marsha/static yarn workspace standalone_site run build && \
+    yarn workspace marsha run build --mode=production --output-path /app/marsha/static/js/build/lti_site/
+    
 
 # ---- mails ----
 FROM node:16 as mail-builder

@@ -40,10 +40,13 @@ lib/gitlint
 Makefile
 readthedocs.yml
 renovate.json
+**/.env*
 
 # Assets
 data
+src/backend/marsha/static/css
 src/backend/marsha/static/js
+src/backend/marsha/static/media
 src/frontend/apps/**/i18n/frontend.json
 
 # Front-end
