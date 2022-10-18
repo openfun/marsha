@@ -8,7 +8,7 @@ import { QueryClient } from 'react-query';
 import { APIList } from 'types/api';
 import { uploadState } from 'types/tracks';
 
-import { DepositedFile } from 'apps/deposit/types/models';
+import { DepositedFile } from 'lib-components';
 import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,

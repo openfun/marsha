@@ -1,5 +1,5 @@
 import { MarkdownAppData } from 'apps/markdown/types/MarkdownAppData';
-import { modelName } from 'apps/markdown/types/models';
+import { MarkdownDocumentModelName as modelName } from 'lib-components';
 
 export const parseDataElements = (element: Element): MarkdownAppData => {
   const context = JSON.parse(element.getAttribute('data-context')!);

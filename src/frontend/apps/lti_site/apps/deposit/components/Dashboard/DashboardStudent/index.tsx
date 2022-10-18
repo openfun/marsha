@@ -6,7 +6,7 @@ import { Loader } from 'lib-components';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
-import { FileDepository } from 'apps/deposit/types/models';
+import { FileDepository } from 'lib-components';
 
 import { UploadFiles } from './UploadFiles';
 

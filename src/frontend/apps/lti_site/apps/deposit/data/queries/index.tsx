@@ -19,8 +19,8 @@ import { APIList } from 'types/api';
 import {
   DepositedFile,
   FileDepository,
-  modelName,
-} from 'apps/deposit/types/models';
+  FileDepositoryModelName as modelName,
+} from 'lib-components';
 
 type FileDepositoriesResponse = APIList<FileDepository>;
 type UseFileDepositoriesParams = { organization: Maybe<string> };

@@ -2,13 +2,12 @@ import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
 import { DocumentMissing, DocumentUpload } from 'grommet-icons';
 import { Icon, Group } from 'grommet-icons/icons';
 import { Nullable } from 'lib-common';
+import { Classroom } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
-
-import { Classroom } from 'apps/classroom/types/models';
 
 const messages = defineMessages({
   loadingClassrooms: {

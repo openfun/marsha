@@ -5,7 +5,7 @@ import React, { lazy, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Classroom } from 'apps/classroom/types/models';
+import { Classroom } from 'lib-components';
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { useEndClassroomAction } from 'apps/classroom/data/queries';
 import {

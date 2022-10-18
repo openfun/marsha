@@ -1,4 +1,4 @@
-import { MarkdownDocument, MarkdownDocumentTranslation } from '../types/models';
+import { MarkdownDocument, MarkdownDocumentTranslation } from 'lib-components';
 
 export const getMarkdownDocumentTranslatedContent = (
   markdownDocument: MarkdownDocument,

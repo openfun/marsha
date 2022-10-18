@@ -2,7 +2,7 @@ import { Box, Grid, Text } from 'grommet';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useEffect } from 'react';
 
-import { Classroom } from 'apps/classroom/types/models';
+import { Classroom } from 'lib-components';
 
 interface DashboardClassroomStudentCounterProps {
   classroom: Classroom;

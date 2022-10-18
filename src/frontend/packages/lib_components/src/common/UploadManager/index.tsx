@@ -15,9 +15,9 @@ import React, {
 import { initiateUpload } from 'data/sideEffects/initiateUpload';
 import { uploadFile } from 'data/sideEffects/uploadFile';
 import { AWSPresignedPost } from 'types/AWSPresignedPost';
-import { modelName as bbbModelName } from 'types/apps/classroom/models';
-import { modelName as depositModelName } from 'types/apps/deposit/models';
-import { modelName as markdownModelName } from 'types/apps/markdown/models';
+import { ClassroomModelName } from 'types/apps/classroom/models';
+import { FileDepositoryModelName } from 'types/apps/deposit/models';
+import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
 import { modelName, uploadableModelName } from 'types/models';
 import { makeFormData } from 'utils/makeFormData/makeFormData';
 
@@ -98,9 +98,9 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
             modelName.VIDEOS,
             modelName.THUMBNAILS,
             modelName.SHAREDLIVEMEDIAS,
-            markdownModelName.MARKDOWN_IMAGES,
-            depositModelName.DepositedFiles,
-            bbbModelName.CLASSROOM_DOCUMENTS,
+            MarkdownDocumentModelName.MARKDOWN_IMAGES,
+            FileDepositoryModelName.DepositedFiles,
+            ClassroomModelName.CLASSROOM_DOCUMENTS,
           ].includes(objectType)
         ) {
           formArguments.push(['Content-Type', file.type]);

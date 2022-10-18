@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 import { playlistMockFactory } from 'lib-components';
 
-import { {{cookiecutter.model}} } from 'apps/{{cookiecutter.app_name}}/types/models';
+import { {{cookiecutter.model}} } from 'lib-components';
 
 export const {{cookiecutter.model_lower}}MockFactory = ({{cookiecutter.model_lower}}: Partial<{{cookiecutter.model}}> = {}): {{cookiecutter.model}} => {
   return {

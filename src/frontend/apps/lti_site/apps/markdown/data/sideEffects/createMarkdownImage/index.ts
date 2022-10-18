@@ -1,7 +1,10 @@
 import { useJwt } from 'lib-components';
 import { API_ENDPOINT } from 'settings';
 
-import { MarkdownImage, modelName } from 'apps/markdown/types/models';
+import {
+  MarkdownImage,
+  MarkdownDocumentModelName as modelName,
+} from 'lib-components';
 
 export const createMarkdownImage = async () => {
   const response = await fetch(

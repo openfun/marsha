@@ -1,6 +1,9 @@
 import { AppData } from 'types/AppData';
 
-import { MarkdownDocument, modelName } from './models';
+import {
+  MarkdownDocument,
+  MarkdownDocumentModelName as modelName,
+} from 'lib-components';
 
 export interface MarkdownAppData extends Omit<AppData, 'modelName'> {
   modelName: modelName.MARKDOWN_DOCUMENTS;

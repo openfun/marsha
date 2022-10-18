@@ -26,8 +26,8 @@ import {
   CreateClassroomActionRequest,
   CreateClassroomActionResponse,
   ClassroomDocument,
-  modelName,
-} from 'apps/classroom/types/models';
+  ClassroomModelName as modelName,
+} from 'lib-components';
 
 type ClassroomsResponse = APIList<Classroom>;
 type UseClassroomsParams = { organization: Maybe<string> };
