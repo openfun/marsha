@@ -5,6 +5,7 @@ import {
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useCurrentResourceContext } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
@@ -12,9 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { APIList } from 'types/api';
 import { Live, LiveSession, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import { Deferred } from 'utils/tests/Deferred';
 import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 

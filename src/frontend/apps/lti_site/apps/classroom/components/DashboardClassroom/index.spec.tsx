@@ -5,15 +5,14 @@ import {
   useCurrentUser,
   useJwt,
 } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { Deferred } from 'utils/tests/Deferred';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
 } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
 

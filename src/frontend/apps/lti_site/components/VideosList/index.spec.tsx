@@ -1,12 +1,11 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { Deferred } from 'utils/tests/Deferred';
 import * as factories from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { VideosList } from '.';
 

@@ -2,12 +2,10 @@ import { within } from '@testing-library/dom';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import xhrMock, { MockResponse } from 'xhr-mock';
-
-import { useJwt } from 'lib-components';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import {
   markdownDocumentMockFactory,

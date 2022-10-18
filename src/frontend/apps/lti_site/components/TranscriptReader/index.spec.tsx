@@ -1,12 +1,11 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React, { Fragment } from 'react';
 import { VTTCue } from 'vtt.js';
 import 'vtt.js/lib/vttcue';
 
 import { useVideoProgress } from 'data/stores/useVideoProgress';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 import { timedTextMode, uploadState } from 'types/tracks';
 
 import { TranscriptReader } from '.';

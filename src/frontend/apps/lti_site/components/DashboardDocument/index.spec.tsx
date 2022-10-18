@@ -1,6 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import {
@@ -9,9 +10,8 @@ import {
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
 import { Playlist, uploadState } from 'types/tracks';
-import { Deferred } from 'utils/tests/Deferred';
+
 import { documentMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import DashboardDocument from '.';
 

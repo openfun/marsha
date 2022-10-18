@@ -1,10 +1,8 @@
 import { screen } from '@testing-library/react';
 import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import { DashboardLiveTabAttendanceWaiting } from '.';
 

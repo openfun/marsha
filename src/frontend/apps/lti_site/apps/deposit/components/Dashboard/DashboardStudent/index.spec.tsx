@@ -1,13 +1,12 @@
 import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { APIList } from 'types/api';
 import { uploadState } from 'types/tracks';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import { DepositedFile } from 'apps/deposit/types/models';
 import {

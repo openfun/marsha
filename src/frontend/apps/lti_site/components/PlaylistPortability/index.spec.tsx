@@ -1,15 +1,14 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { Deferred } from 'utils/tests/Deferred';
 import {
   playlistLiteMockFactory,
   playlistMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { PlaylistPortability } from '.';
 

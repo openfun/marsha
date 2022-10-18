@@ -19,16 +19,15 @@ import {
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture/index';
+import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
 import { LiveModeType, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { Deferred } from 'utils/tests/Deferred';
 import {
   sharedLiveMediaMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveWrapper } from '.';

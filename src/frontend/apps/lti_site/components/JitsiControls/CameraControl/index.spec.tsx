@@ -1,9 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
-
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import { CameraControl } from '.';
 

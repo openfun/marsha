@@ -1,5 +1,6 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import {
@@ -7,9 +8,7 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { UploadsView } from '.';
 
