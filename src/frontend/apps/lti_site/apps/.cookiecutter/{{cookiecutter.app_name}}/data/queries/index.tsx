@@ -7,7 +7,7 @@ import {
 } from 'react-query';
 
 import { createOne, fetchList, FetchListQueryKey, fetchOne, updateOne } from 'lib-components';
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import { Maybe } from 'utils/types';
 
 import { {{cookiecutter.model}} } from 'lib-components';

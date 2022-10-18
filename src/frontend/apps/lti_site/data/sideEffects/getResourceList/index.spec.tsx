@@ -2,7 +2,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
 
 import { addMultipleResources } from 'data/stores/generics';
-import { requestStatus } from 'types/api';
+import { requestStatus } from 'lib-components';
 import { modelName } from 'types/models';
 import { uploadState } from 'lib-components';
 import { report } from 'utils/errors/report';

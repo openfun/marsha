@@ -3,7 +3,7 @@ import create from 'zustand';
 
 import { useJwt } from 'lib-components';
 import { API_ENDPOINT } from 'settings';
-import { requestStatus } from 'types/api';
+import { requestStatus } from 'lib-components';
 import { modelName } from 'types/models';
 import { RouteOptions } from 'types/RouteOptions';
 import { LanguageChoice } from 'types/SelectOptions';

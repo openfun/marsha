@@ -16,7 +16,7 @@ import {
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import {
   LiveSession,
   liveState,

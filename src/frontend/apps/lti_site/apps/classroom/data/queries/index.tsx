@@ -6,7 +6,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import { Maybe } from 'lib-common';
 import {
   actionOne,

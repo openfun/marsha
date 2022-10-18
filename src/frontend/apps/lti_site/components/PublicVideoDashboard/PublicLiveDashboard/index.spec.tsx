@@ -10,7 +10,7 @@ import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-import { APIList } from 'types/api';
+import { APIList } from 'lib-components';
 import { Live, LiveSession, liveState } from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
