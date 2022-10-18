@@ -1,10 +1,9 @@
 import { cleanup, screen } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { liveState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

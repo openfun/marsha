@@ -1,16 +1,16 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  documentMockFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 
 import { addResource } from 'data/stores/generics';
 import { requestStatus } from 'types/api';
 import { modelName } from 'types/models';
 import { report } from 'utils/errors/report';
-import {
-  documentMockFactory,
-  timedTextMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
 
 import { pollForTrack } from '.';
 

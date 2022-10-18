@@ -1,5 +1,10 @@
 import { render, waitFor } from '@testing-library/react';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
+} from 'lib-components';
 import React from 'react';
 import videojs from 'video.js';
 
@@ -9,13 +14,8 @@ import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector
 import { liveState, timedTextMode, uploadState } from 'types/tracks';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
-import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
-import {
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
-} from 'utils/tests/factories';
 
 import { createVideojsPlayer } from './createVideojsPlayer';
 import { createPlayer } from './createPlayer';

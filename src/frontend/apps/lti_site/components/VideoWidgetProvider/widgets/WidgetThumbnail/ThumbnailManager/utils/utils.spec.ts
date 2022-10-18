@@ -1,10 +1,9 @@
-import { useJwt } from 'lib-components';
+import { useJwt, thumbnailMockFactory } from 'lib-components';
 import { defineMessages } from 'react-intl';
 
 import { UploadManagerStatus } from 'components/UploadManager';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { thumbnailMockFactory } from 'utils/tests/factories';
 
 import { determineMessage } from './utils';
 

@@ -22,10 +22,7 @@ import {
   Video,
 } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import {
-  participantMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
+import { participantMockFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

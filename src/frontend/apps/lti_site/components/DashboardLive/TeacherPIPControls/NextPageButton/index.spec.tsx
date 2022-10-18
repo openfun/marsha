@@ -1,10 +1,10 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { navigateSharingDoc } from 'data/sideEffects/navigateSharingDoc';
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

@@ -13,7 +13,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { APIList } from 'types/api';
 import { Live, LiveSession, liveState } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
-import { liveSessionFactory, videoMockFactory } from 'utils/tests/factories';
+import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 

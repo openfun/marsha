@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 
 import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
-import { playlistMockFactory } from 'utils/tests/factories';
+import { playlistMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import SelectContentResource from '.';

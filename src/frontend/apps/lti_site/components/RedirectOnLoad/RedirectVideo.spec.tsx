@@ -11,7 +11,7 @@ import {
 } from 'components/routes';
 import { modelName } from 'types/models';
 import { LiveModeType, uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
+import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectVideo } from './RedirectVideo';

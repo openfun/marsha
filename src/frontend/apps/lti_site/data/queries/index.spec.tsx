@@ -1,12 +1,7 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
-import { v4 as uuidv4 } from 'uuid';
-
-import { LiveModeType } from 'types/tracks';
 import {
+  useJwt,
   documentMockFactory,
   liveSessionFactory,
   organizationMockFactory,
@@ -16,7 +11,12 @@ import {
   thumbnailMockFactory,
   timedTextMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
+import React from 'react';
+import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { v4 as uuidv4 } from 'uuid';
+
+import { LiveModeType } from 'types/tracks';
 
 import {
   useCreateDocument,

@@ -2,7 +2,11 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { SharedLiveMediaModalWrapper } from 'components/VideoWidgetProvider/wrappers/SharedLiveMediaModalWrapper';
@@ -16,10 +20,6 @@ import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
 import { report } from 'utils/errors/report';
-import {
-  sharedLiveMediaMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

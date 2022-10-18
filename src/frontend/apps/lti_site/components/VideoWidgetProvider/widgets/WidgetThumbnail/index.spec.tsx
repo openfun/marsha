@@ -9,12 +9,11 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { useJwt } from 'lib-components';
+import { useJwt, thumbnailMockFactory } from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { thumbnailMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 
 import { WidgetThumbnail } from '.';

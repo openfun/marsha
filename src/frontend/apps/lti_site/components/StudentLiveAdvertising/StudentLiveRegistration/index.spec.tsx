@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { getAnonymousId } from 'utils/localstorage';
-import { liveSessionFactory } from 'utils/tests/factories';
+import { liveSessionFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { StudentLiveRegistration } from '.';

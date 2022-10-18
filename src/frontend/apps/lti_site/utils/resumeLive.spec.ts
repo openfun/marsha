@@ -5,7 +5,7 @@ import { useJwt } from 'lib-components';
 import { getResource } from 'data/sideEffects/getResource';
 import { modelName } from 'types/models';
 
-import { videoMockFactory } from './tests/factories';
+import { videoMockFactory } from 'lib-components';
 import { resumeLive } from './resumeLive';
 
 jest.mock('data/sideEffects/getResource', () => ({

@@ -1,14 +1,13 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
-import { Route } from 'react-router-dom';
-
 import {
   organizationMockFactory,
   playlistMockFactory,
   videoMockFactory,
-} from 'utils/tests/factories';
+} from 'lib-components';
+import { render, Deferred } from 'lib-tests';
+import React from 'react';
+import { Route } from 'react-router-dom';
 
 import { OrganizationView } from '.';
 

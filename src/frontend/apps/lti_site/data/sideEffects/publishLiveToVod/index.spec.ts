@@ -1,7 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
-
-import { videoMockFactory } from 'utils/tests/factories';
+import { useJwt, videoMockFactory } from 'lib-components';
 
 import { publishLiveToVod } from '.';
 

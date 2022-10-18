@@ -2,14 +2,14 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  sharedLiveMediaMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import { report } from 'utils/errors/report';
-import {
-  videoMockFactory,
-  sharedLiveMediaMockFactory,
-} from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

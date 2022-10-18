@@ -1,13 +1,13 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  participantMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 
 import { useVideo } from 'data/stores/useVideo';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { EventType, MessageType } from 'types/XMPP';
-import {
-  participantMockFactory,
-  videoMockFactory,
-} from 'utils/tests/factories';
 
 import marshaJoinDiscussionPluginHandler from './handler';
 

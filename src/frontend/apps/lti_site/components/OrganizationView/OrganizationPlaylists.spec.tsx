@@ -4,10 +4,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import {
-  organizationMockFactory,
-  playlistMockFactory,
-} from 'utils/tests/factories';
+import { organizationMockFactory, playlistMockFactory } from 'lib-components';
 
 import { OrganizationPlaylists } from './OrganizationPlaylists';
 

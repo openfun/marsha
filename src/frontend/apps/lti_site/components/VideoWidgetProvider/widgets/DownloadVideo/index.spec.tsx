@@ -2,11 +2,10 @@ import { within } from '@testing-library/dom';
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { videoMockFactory } from 'utils/tests/factories';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
