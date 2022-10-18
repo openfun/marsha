@@ -1,4 +1,3 @@
-
 # Changelog
 
 All notable changes to this project will be documented in this file.
@@ -16,6 +15,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add new elements to the public VOD Dashboard :
   - Transcript reader
   - Video download
+- standalone website:
+  - playlists page
 
 ### Changed
 
@@ -46,7 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Add router to the layout
   - Add menu interaction
   - Integrate internationalisation library (react-intl)
-  - ESLint Fragment mandatory rule 
+  - ESLint Fragment mandatory rule
   - ESlint better import order rule
 - Integrate design Homepage in the standalone website:
   - Menu
@@ -74,7 +75,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Fix video dashboard translations
 - Fix deposit app UI
 - Use video title in creation wizard if it exists
-- Skip screen choice between live and vod when coming back from 
+- Skip screen choice between live and vod when coming back from
   LTI select
 - Fix subtitles upload
 - Fix debounce time too low in the classroom creation form
@@ -90,26 +91,26 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow to disable chrome sandboxing in puppeteer.
   To disable it set DISABLE_PUPPETEER_SANDBOX=1
 - Add endpoint to list attendances for a video
-- Add a custom render method for our tests, it is based on 
-react-testing-library and wrap the test component in most of 
-the common application contexts (grommet, intl, react-router, 
-react-query, react-hot-toast, breadcrumb, styled-components)
+- Add a custom render method for our tests, it is based on
+  react-testing-library and wrap the test component in most of
+  the common application contexts (grommet, intl, react-router,
+  react-query, react-hot-toast, breadcrumb, styled-components)
 - Add a link to generate an ics file on the scheduled page
 - Manage tags on video resource
 - Manage license on video resource
 - Add a new instructor dashboard VOD composed with widgets:
-  - Widget for modifying video's title & description. 
+  - Widget for modifying video's title & description.
   - Widget for uploading a new video
   - Widget for uploading a new thumbnail
-  - Widget for downloading the video in the desired 
-quality
+  - Widget for downloading the video in the desired
+    quality
   - Widgets to upload timed text tracks
 - Add toggle to use subtitle as transcript
-- Add toggle to allow download or not on the VOD dashboard.  
+- Add toggle to allow download or not on the VOD dashboard.
 - Notify students when a recording is started
 - Avoid record length lower than a video segment length
-- Add a video creation wizard to help instructor through 
-VOD & Live creation processus
+- Add a video creation wizard to help instructor through
+  VOD & Live creation processus
 - Use the new dashboard VOD instead of the old one
 - Add image upload for Markdown documents
 - Add a file depository app
@@ -118,16 +119,16 @@ VOD & Live creation processus
 
 - Rename meetings to classrooms (no database change yet)
 - Remove chat & viewers buttons from control bar and add a notification for
-managing on-stage request
+  managing on-stage request
 - Rework lti app configuration, replaced global variable by stores
 - Collect frontend applications components under a directory
 - Update AWS lambda nodejs image to version 16
 
 ### Fixed
 
-- Missing migration to migrate key format of live_attendance 
-field of liveSession
-- Redirect to VOD dashboard when the live_state is ENDED and the 
+- Missing migration to migrate key format of live_attendance
+  field of liveSession
+- Redirect to VOD dashboard when the live_state is ENDED and the
   upload_state is pending
 - Upgrade cairo version in lambda-convert to generate better SVG
 
@@ -141,7 +142,7 @@ field of liveSession
 ### Changed
 
 - stopped_at is deleted and started_at is reinitialized when the
-live is restarted
+  live is restarted
 - Display number of anonymous instead of their pseudos
 - Rename markdown route in markdown-documents
 
@@ -180,7 +181,7 @@ live is restarted
 - Upgrade front and mail apps to node version 16, the current LTS
 - On LTI select request, only send title and description for existing resources
 - Adding a new resource through LTI select (deeplinking) now creates it
-with data from Moodle activity titles and description.
+  with data from Moodle activity titles and description.
 - Fetch video data after websocket reconnection
 - Use Roboto-Regular by default in our UI
 
@@ -197,17 +198,17 @@ with data from Moodle activity titles and description.
 
 ### Added
 
-- Add a control pane destined to contain widgets for the instructor to 
-control the live
+- Add a control pane destined to contain widgets for the instructor to
+  control the live
 - Add a widget to modify live title and allow / disallow live recording
 - Add a widget to schedule live and modify description
-- Add a widget to hide / unhide the chat, for the instructor and for its 
-students
+- Add a widget to hide / unhide the chat, for the instructor and for its
+  students
 - Add Markdown document edition (new feature)
 - Add a widget to make live publicly available and get the shareable url
 - New field deleted_by_cascade on all model inheriting from SafeDeleteModel
   Field added in django-safedelete version 1.2.0
-- CLOUDFRONT_SIGNED_PUBLIC_KEY_ID settings is added. It contains the 
+- CLOUDFRONT_SIGNED_PUBLIC_KEY_ID settings is added. It contains the
   public key id created on AWS cloudfront public keys
 - Push attendances for students watching a live
 - Add a login page to authenticate Marsha users
@@ -230,9 +231,8 @@ students
 - Add BBB meeting scheduling
 - Save current language of a livesession
 - Send emails in current livesession's language
-- Load livesession's language in the JWT token for direct access 
-from email
-
+- Load livesession's language in the JWT token for direct access
+  from email
 
 ### Fixed
 
@@ -251,12 +251,12 @@ from email
 - Add a view to cancel reminder mails, link added in the footer of mails
 - Prevent multiple join to BBB meetings
 - Introduce anonymous_id mechanism
-- Create a direct access to a video out of an LMS context for a public 
+- Create a direct access to a video out of an LMS context for a public
   or LTI ressource, based on a liveregistration
 - Auto-set in the localstorage anonymousId if it's set in the JWT token
 - Persist live video participants
 - Add a vertical slider on the live view, to resize the panel on the
-right (and close / open it)
+  right (and close / open it)
 - Add PATCH endpoint to update a LiveSession
 - Add start and stop live recording
 - Generate a JWT token to connect to jitsi
@@ -268,7 +268,7 @@ right (and close / open it)
 - Disable jitsi prejoin page
 - Admin can access all LiveSession belonging to a video
 - Move on-stage request functional (in Instructor view) from under
-the video to the ViewersList in the right panel
+  the video to the ViewersList in the right panel
 - Prevent students from joining the discussion anonymously
 
 ### Fixed
@@ -279,7 +279,7 @@ the video to the ViewersList in the right panel
 - Replace automatic meeting joining by a button
 - Allow generated links in Django admin for objects in other applications
 - Do not install the `marsha` Python package in `site-packages`
-- Do not allow a lti user to change his email when he registers to a scheduled 
+- Do not allow a lti user to change his email when he registers to a scheduled
   live
 - Expose XMPP info for a live once this one started
 - Continue stopping live even if input waiter fails
@@ -323,9 +323,9 @@ the video to the ViewersList in the right panel
 - Add 'joined' and 'left' labels in the chat for users arrivals and departures
 - Send updated video to clients connected to the websocket for all
   events related to the live workflow (start, pause, end, shared live medias)
-- Send email when registering for a scheduled webinar 
+- Send email when registering for a scheduled webinar
 - Management command sending reminders for scheduled webinars
-- Implement a way to address prosody controls on the nickname entered in the 
+- Implement a way to address prosody controls on the nickname entered in the
   chat
 - settings DEFAULT_LTI_LAUNCH_PRESENTATION_LOCALE as fallback value when
   launch_presentation_locale missing in the LTI request
@@ -386,7 +386,7 @@ the video to the ViewersList in the right panel
   earlier
 - Update store in the WaitingLiveVideo component
 - Set specific timeout to 30 seconds in pollForLive to update the store
-- Fix registration to scheduled events 
+- Fix registration to scheduled events
 
 ### Removed
 

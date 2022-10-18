@@ -1,5 +1,5 @@
 import { Box, Spinner } from 'grommet';
-import React, { Suspense } from 'react';
+import { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
@@ -13,6 +13,10 @@ const { HomePage } = lazyImport(() => import('features/HomePage'), 'HomePage');
 const { Favorites } = lazyImport(
   () => import('features/Favorites'),
   'Favorites',
+);
+const { PlaylistPage } = lazyImport(
+  () => import('features/Playlist/components/PlaylistPage'),
+  'PlaylistPage',
 );
 
 const RouteSpinner = () => (
@@ -33,6 +37,11 @@ function AppRoutes() {
         <Route path={routes.Favorites.path} exact>
           <Suspense fallback={<RouteSpinner />}>
             <Favorites />
+          </Suspense>
+        </Route>
+        <Route path={routes.MyPlaylist.path} exact>
+          <Suspense fallback={<RouteSpinner />}>
+            <PlaylistPage />
           </Suspense>
         </Route>
       </Switch>
