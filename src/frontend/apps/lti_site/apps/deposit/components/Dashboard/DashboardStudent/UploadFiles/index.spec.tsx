@@ -1,12 +1,11 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import {
   UploadManagerStatus,
   useUploadManager,
 } from 'components/UploadManager';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 import { uploadState } from 'types/tracks';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';

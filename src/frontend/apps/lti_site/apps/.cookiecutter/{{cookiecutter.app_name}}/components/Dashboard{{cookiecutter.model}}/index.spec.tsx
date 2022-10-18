@@ -4,12 +4,11 @@ import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { useJwt } from 'lib-components';
-import { Deferred } from 'utils/tests/Deferred';
+import { render, Deferred } from 'lib-tests';
 import {
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
 } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{cookiecutter.app_name}}/utils/tests/factories';
 import Dashboard{{cookiecutter.model}} from '.';

@@ -5,15 +5,14 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useJwt } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { startLive } from 'data/sideEffects/startLive';
 import { useVideo } from 'data/stores/useVideo';
 import { liveState, Video } from 'types/tracks';
-import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
-import render from 'utils/tests/render';
 
 import { StartLiveButton } from '.';
 

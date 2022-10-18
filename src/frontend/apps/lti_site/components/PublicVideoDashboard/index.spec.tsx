@@ -14,6 +14,7 @@ import {
   LivePanelItem,
 } from 'data/stores/useLivePanelState';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
 import { APIList } from 'types/api';
 import {
@@ -24,13 +25,11 @@ import {
 } from 'types/tracks';
 import { PersistentStore } from 'types/XMPP';
 import { getAnonymousId } from 'utils/localstorage';
-import { Deferred } from 'utils/tests/Deferred';
 import {
   liveSessionFactory,
   timedTextMockFactory,
   videoMockFactory,
 } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import PublicVideoDashboard from '.';
 

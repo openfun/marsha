@@ -1,10 +1,9 @@
-import fetchMock from 'fetch-mock';
 import { act, fireEvent, screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
-import { Deferred } from 'utils/tests/Deferred';
-import render from 'utils/tests/render';
 
 import DashboardClassroomInstructor from '.';
 

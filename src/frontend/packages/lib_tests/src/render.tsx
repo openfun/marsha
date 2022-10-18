@@ -8,6 +8,7 @@ import {
 import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import { BreadCrumbsProvider, GlobalStyles, theme } from 'lib-common';
+import { Nullable } from 'lib-common';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -137,10 +138,18 @@ afterEach(() => {
   }
 });
 
+type customRenderResult = Omit<RenderResult, 'rerender'> & {
+  elementContainer: Nullable<HTMLElement>;
+  rerender: (
+    element: ReactElement,
+    options?: Partial<Omit<RenderOptions, 'testingLibraryOptions'>>,
+  ) => void;
+};
+
 type renderFunction = (
   element: ReactElement,
   options?: Partial<RenderOptions>,
-) => RenderResult;
+) => customRenderResult;
 
 /**
  *

@@ -1,5 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
@@ -10,9 +11,7 @@ import {
 import { createPlayer } from 'Player/createPlayer';
 import { modelName } from 'types/models';
 import { uploadState } from 'types/tracks';
-import { Deferred } from 'utils/tests/Deferred';
 import { videoMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { VideoView } from '.';
 

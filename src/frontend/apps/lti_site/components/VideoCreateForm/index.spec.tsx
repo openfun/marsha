@@ -1,6 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import {
@@ -8,9 +9,7 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { Deferred } from 'utils/tests/Deferred';
 import { playlistMockFactory, videoMockFactory } from 'utils/tests/factories';
-import render from 'utils/tests/render';
 
 import { VideoCreateForm } from '.';
 
