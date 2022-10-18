@@ -31,7 +31,7 @@ import {
   Video,
   VideoStats,
   uploadState,
-} from 'types/tracks';
+} from 'lib-components';
 
 import { Organization } from 'types/Organization';
 import { VideoMetadata } from 'types/metadata';

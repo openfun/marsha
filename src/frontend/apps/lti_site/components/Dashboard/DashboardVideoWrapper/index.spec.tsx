@@ -4,7 +4,7 @@ import React, { Suspense } from 'react';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import * as websocket from 'data/websocket';
 import { modelName } from 'types/models';
-import { LiveModeType, liveState, uploadState } from 'types/tracks';
+import { LiveModeType, liveState, uploadState } from 'lib-components';
 import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 

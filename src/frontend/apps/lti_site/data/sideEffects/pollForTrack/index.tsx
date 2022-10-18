@@ -5,7 +5,7 @@ import { API_ENDPOINT } from 'settings';
 import { requestStatus } from 'types/api';
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
-import { TimedText, Video } from 'types/tracks';
+import { TimedText, Video } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 export async function pollForTrack<

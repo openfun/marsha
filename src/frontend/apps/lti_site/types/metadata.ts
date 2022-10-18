@@ -1,5 +1,5 @@
 import { RouteOptions } from './RouteOptions';
-import { Video } from './tracks';
+import { Video } from 'lib-components';
 
 export interface ResourceMetadata {
   name: string;

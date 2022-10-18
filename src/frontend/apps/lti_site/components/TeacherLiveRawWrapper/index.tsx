@@ -3,7 +3,7 @@ import React from 'react';
 import DashboardLiveRaw from 'components/DashboardLiveRaw';
 import VideoPlayer from 'components/VideoPlayer';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 
 interface TeacherLiveRawWrapperProps {
   video: Video;

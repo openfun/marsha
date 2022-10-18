@@ -1,5 +1,5 @@
 import { modelName } from '../../types/models';
-import { UploadableObject } from '../../types/tracks';
+import { UploadableObject } from 'lib-components';
 
 /**
  * Route for the `<UploadForm />` component.

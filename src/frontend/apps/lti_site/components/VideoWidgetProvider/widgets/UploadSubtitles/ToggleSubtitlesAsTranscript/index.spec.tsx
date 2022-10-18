@@ -5,7 +5,7 @@ import { useJwt, timedTextMockFactory, videoMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { timedTextMode } from 'types/tracks';
+import { timedTextMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

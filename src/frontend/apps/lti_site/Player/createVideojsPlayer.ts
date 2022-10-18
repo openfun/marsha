@@ -17,7 +17,7 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from 'types/libs/video.js/extend';
-import { liveState, Video, videoSize } from 'types/tracks';
+import { liveState, Video, videoSize } from 'lib-components';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,

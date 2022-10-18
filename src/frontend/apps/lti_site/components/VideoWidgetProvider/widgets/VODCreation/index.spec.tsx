@@ -3,7 +3,7 @@ import { useJwt, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

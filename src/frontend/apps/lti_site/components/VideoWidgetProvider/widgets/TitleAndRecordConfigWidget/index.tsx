@@ -8,7 +8,7 @@ import { TextInput } from 'components/graphicals/TextInput';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { report } from 'utils/errors/report';
 import { debounce } from 'utils/widgets/widgets';
 

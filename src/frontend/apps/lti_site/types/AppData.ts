@@ -2,7 +2,7 @@ import { Nullable } from 'lib-common';
 
 import { Document } from './file';
 import { modelName } from './models';
-import { Live, Playlist, Video } from './tracks';
+import { Live, Playlist, Video } from 'lib-components';
 
 export enum appState {
   ERROR = 'error',

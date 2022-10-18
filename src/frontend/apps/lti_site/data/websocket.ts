@@ -4,7 +4,7 @@ import { decodeJwt, useJwt } from 'lib-components';
 import { addResource } from 'data/stores/generics';
 import { WS_ENPOINT } from 'settings';
 import { modelName } from 'types/models';
-import { UploadableObject, Video } from 'types/tracks';
+import { UploadableObject, Video } from 'lib-components';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 

@@ -1,7 +1,7 @@
 import { Maybe } from 'lib-common';
 import { VideoJsPlayer } from 'video.js';
 
-import { Video, TimedText } from 'types/tracks';
+import { Video, TimedText } from 'lib-components';
 
 export interface VideoPlayerInterface {
   addTrack(track: TimedText, languages: { [key: string]: string }): void;

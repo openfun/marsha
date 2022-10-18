@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { videoMockFactory } from 'lib-components';
 import React from 'react';
 
-import { LiveModeType, liveState } from 'types/tracks';
+import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import DashboardLiveRaw from '.';

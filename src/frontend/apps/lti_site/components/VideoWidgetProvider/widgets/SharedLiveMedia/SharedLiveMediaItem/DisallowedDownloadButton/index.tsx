@@ -5,7 +5,7 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateSharedLiveMedia } from 'data/queries';
-import { SharedLiveMedia } from 'types/tracks';
+import { SharedLiveMedia } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 const messages = defineMessages({

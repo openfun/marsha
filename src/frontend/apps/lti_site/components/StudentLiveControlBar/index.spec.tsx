@@ -6,7 +6,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { JoinMode, LiveModeType, liveState } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState } from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

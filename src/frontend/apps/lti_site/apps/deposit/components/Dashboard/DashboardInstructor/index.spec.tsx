@@ -13,7 +13,7 @@ import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { APIList } from 'types/api';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { DepositedFile } from 'lib-components';
 import {

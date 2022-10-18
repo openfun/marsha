@@ -1,7 +1,7 @@
 import { Maybe } from 'lib-common';
 import create from 'zustand';
 
-import { LiveSession } from 'types/tracks';
+import { LiveSession } from 'lib-components';
 
 export type State = {
   liveSession: Maybe<LiveSession>;

@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 
 export const navigateSharingDoc = async (
   video: Video,

@@ -7,7 +7,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

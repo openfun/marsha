@@ -6,7 +6,7 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { modelName } from 'types/models';
-import { LiveModeType, liveState } from 'types/tracks';
+import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import VideoWizard from '.';

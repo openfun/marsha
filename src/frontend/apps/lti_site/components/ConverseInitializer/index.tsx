@@ -10,7 +10,7 @@ import React, {
 
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import { converseMounter } from 'utils/conversejs/converse';
 import { converse } from 'utils/window';
 

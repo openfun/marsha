@@ -6,7 +6,7 @@ import {
   useUploadManager,
 } from 'components/UploadManager';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { UploadVideoDropzone } from './UploadVideoDropzone';
 import { UploadVideoPreview } from './UploadVideoPreview';

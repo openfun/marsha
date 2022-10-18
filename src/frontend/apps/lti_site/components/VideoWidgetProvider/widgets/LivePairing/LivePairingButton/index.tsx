@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { DashboardButton } from 'components/Styled/DashboardButtons';
 import { usePairingVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 const messages = defineMessages({
   pairingSecretLabel: {

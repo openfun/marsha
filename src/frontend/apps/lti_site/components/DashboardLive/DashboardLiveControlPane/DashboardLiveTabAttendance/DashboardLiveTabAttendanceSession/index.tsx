@@ -6,7 +6,7 @@ import {
   LiveAttendance,
   LiveAttendanceInfo,
   LiveAttendanceInfos,
-} from 'types/tracks';
+} from 'lib-components';
 
 const messages = defineMessages({
   connectedDiligent: {

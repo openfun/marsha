@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 
 import { HarvestVOD } from './HarvestVOD';
 import { PublishVOD } from './PublishVOD';

@@ -4,7 +4,7 @@ import { useJwt } from 'lib-components';
 import React from 'react';
 import render from 'utils/tests/render';
 
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
 

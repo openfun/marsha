@@ -3,7 +3,7 @@ import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import render from 'utils/tests/render';
 

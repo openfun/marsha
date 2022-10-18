@@ -14,7 +14,7 @@ import React from 'react';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useThumbnail } from 'data/stores/useThumbnail';
-import { JoinMode } from 'types/tracks';
+import { JoinMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

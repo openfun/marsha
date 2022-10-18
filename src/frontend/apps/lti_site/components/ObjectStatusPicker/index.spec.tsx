@@ -7,7 +7,7 @@ import {
   UploadManagerStatus,
 } from 'components/UploadManager';
 import { modelName } from 'types/models';
-import { liveState, UploadableObject, uploadState } from 'types/tracks';
+import { liveState, UploadableObject, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { ObjectStatusPicker } from '.';

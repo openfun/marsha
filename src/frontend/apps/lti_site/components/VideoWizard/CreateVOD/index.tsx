@@ -13,7 +13,7 @@ import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { report } from 'utils/errors/report';
 
 import { LicenseSelect } from './LicenseSelect';

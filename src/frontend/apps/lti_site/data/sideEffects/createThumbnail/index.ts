@@ -2,7 +2,7 @@ import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
 import { modelName } from 'types/models';
-import { Thumbnail } from 'types/tracks';
+import { Thumbnail } from 'lib-components';
 
 /**
  * Create a new thumbnail record for a language-mode combination.

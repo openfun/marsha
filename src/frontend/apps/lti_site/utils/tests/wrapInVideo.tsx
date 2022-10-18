@@ -4,7 +4,7 @@ import {
   CurrentLiveProvider,
   CurrentVideoProvider,
 } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { convertVideoToLive } from 'utils/conversions/convertVideo';
 
 export const wrapInVideo = (component: ReactNode, video: Video) => {

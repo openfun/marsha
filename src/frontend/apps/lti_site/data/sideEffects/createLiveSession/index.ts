@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
-import { LiveSession } from 'types/tracks';
+import { LiveSession } from 'lib-components';
 
 /**
  * Create a new liveSession record for an email and the video of the jwt token.

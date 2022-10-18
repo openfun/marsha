@@ -1,4 +1,4 @@
-import { Playlist, Resource } from 'types/tracks';
+import { Playlist, Resource } from 'lib-components';
 import { Nullable } from 'utils/types';
 
 export enum {{cookiecutter.model}}ModelName {

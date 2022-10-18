@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import { LTINav } from 'components/LTINav';
 
 import { Document } from 'types/file';
-import { Video } from 'types/tracks';
+import { Video } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({

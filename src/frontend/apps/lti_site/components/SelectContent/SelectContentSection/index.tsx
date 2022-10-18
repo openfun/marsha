@@ -7,7 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Document } from 'types/file';
-import { Video, videoSize } from 'types/tracks';
+import { Video, videoSize } from 'lib-components';
 
 import { buildContentItems } from '../utils';
 

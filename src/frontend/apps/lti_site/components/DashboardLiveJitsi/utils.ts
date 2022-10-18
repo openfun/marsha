@@ -1,7 +1,7 @@
 import { AnonymousUser, useCurrentUser } from 'lib-components';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { JoinMode, LiveJitsi } from 'types/tracks';
+import { JoinMode, LiveJitsi } from 'lib-components';
 
 const loadScript = (scriptUrl: string) =>
   new Promise((resolve) => {

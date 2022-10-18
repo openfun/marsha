@@ -23,7 +23,7 @@ import {
 } from 'components/UploadManager';
 import VideoPlayer from 'components/VideoPlayer';
 import { modelName } from 'types/models';
-import { uploadState, Video } from 'types/tracks';
+import { uploadState, Video } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({

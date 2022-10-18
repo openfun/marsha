@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'settings';
-import { LiveModeType, Video } from 'types/tracks';
+import { LiveModeType, Video } from 'lib-components';
 
 /**
  * Post to an action endpoint that declares the beginning of live video.

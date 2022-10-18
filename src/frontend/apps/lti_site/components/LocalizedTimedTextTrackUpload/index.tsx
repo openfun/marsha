@@ -10,7 +10,7 @@ import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'types/models';
 import { LanguageChoice } from 'types/SelectOptions';
-import { timedTextMode, uploadState } from 'types/tracks';
+import { timedTextMode, uploadState } from 'lib-components';
 
 import { LanguageSelect } from './LanguageSelect';
 import { TimedTextTrackItem } from './TimedTextTrackItem';

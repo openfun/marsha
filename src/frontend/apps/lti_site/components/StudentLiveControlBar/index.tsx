@@ -9,7 +9,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { JoinMode, LiveModeType, liveState } from 'types/tracks';
+import { JoinMode, LiveModeType, liveState } from 'lib-components';
 
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
 

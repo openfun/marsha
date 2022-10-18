@@ -3,7 +3,7 @@ import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { liveState } from 'types/tracks';
+import { liveState } from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';

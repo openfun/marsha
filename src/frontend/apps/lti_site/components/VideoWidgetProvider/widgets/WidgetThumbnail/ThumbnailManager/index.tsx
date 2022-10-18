@@ -4,7 +4,7 @@ import { useIntl } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { UploadManagerState } from 'components/UploadManager';
-import { Thumbnail } from 'types/tracks';
+import { Thumbnail } from 'lib-components';
 
 import { determineMessage } from './utils/utils';
 

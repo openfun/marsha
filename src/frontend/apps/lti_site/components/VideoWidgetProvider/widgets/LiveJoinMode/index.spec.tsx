@@ -7,7 +7,7 @@ import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { report } from 'utils/errors/report';
-import { JoinMode } from 'types/tracks';
+import { JoinMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

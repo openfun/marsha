@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 
 import { playlistMockFactory } from 'lib-components';
-import { uploadState } from 'types/tracks';
+import { uploadState } from 'lib-components';
 
 import {
   MarkdownDocument,

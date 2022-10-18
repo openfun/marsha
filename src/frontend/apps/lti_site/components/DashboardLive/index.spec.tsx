@@ -20,7 +20,7 @@ import {
   liveState,
   uploadState,
   Video,
-} from 'types/tracks';
+} from 'lib-components';
 import { PersistentStore } from 'types/XMPP';
 import { participantMockFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';

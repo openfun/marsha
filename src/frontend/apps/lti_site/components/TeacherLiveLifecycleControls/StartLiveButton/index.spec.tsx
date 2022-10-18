@@ -10,7 +10,7 @@ import React from 'react';
 
 import { startLive } from 'data/sideEffects/startLive';
 import { useVideo } from 'data/stores/useVideo';
-import { liveState, Video } from 'types/tracks';
+import { liveState, Video } from 'lib-components';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
 
 import { StartLiveButton } from '.';
