@@ -15,6 +15,8 @@ import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 
 import render from 'utils/tests/render';
 
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from '../PortabilityRequest/route';
+
 import { RedirectOnLoad } from '.';
 
 jest.mock('lib-components', () => ({
@@ -286,5 +288,24 @@ describe('<RedirectOnLoad />', () => {
     });
 
     getByText('Select LTI content');
+  });
+
+  it('redirects to portability if app state requires it', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      state: appState.PORTABILITY,
+    } as any);
+
+    const { getByText } = render(<RedirectOnLoad />, {
+      routerOptions: {
+        routes: [
+          {
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
+            render: () => <span>Portability request</span>,
+          },
+        ],
+      },
+    });
+
+    getByText('Portability request');
   });
 });
