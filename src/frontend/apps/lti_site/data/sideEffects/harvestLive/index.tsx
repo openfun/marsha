@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { Video } from 'lib-components';
-import { API_ENDPOINT } from 'settings';
+import { API_ENDPOINT } from 'lib-components';
 
 export const harvestLive = async (video: Video) => {
   const response = await fetch(

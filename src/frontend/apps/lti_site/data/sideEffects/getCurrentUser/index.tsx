@@ -1,6 +1,6 @@
 import { AnonymousUser, useJwt } from 'lib-components';
 
-import { API_ENDPOINT } from 'settings';
+import { API_ENDPOINT } from 'lib-components';
 import { requestStatus } from 'lib-components';
 import { report } from 'utils/errors/report';
 

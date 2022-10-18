@@ -2,7 +2,7 @@ import RobustWebSocket from 'altamoon-robust-websocket';
 import { decodeJwt, useJwt } from 'lib-components';
 
 import { addResource } from 'data/stores/generics';
-import { WS_ENPOINT } from 'settings';
+import { WS_ENPOINT } from 'lib-components';
 import { modelName } from 'types/models';
 import { UploadableObject, Video } from 'lib-components';
 import { checkLtiToken } from 'utils/checkLtiToken';
