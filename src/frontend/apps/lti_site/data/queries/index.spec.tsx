@@ -7,6 +7,7 @@ import {
   organizationMockFactory,
   liveAttendanceFactory,
   playlistMockFactory,
+  portabilityRequestMockFactory,
   sharedLiveMediaMockFactory,
   thumbnailMockFactory,
   timedTextMockFactory,
@@ -20,6 +21,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   useCreateDocument,
   useCreateVideo,
+  useCreatePortabilityRequest,
   useDeleteSharedLiveMedia,
   useDeleteThumbnail,
   useLiveAttendances,
@@ -1540,6 +1542,81 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useCreatePortabilityRequest', () => {
+    it('creates the request', async () => {
+      const portabilityRequest = portabilityRequestMockFactory();
+      fetchMock.post('/api/portability-requests/', portabilityRequest);
+
+      const { result, waitFor } = renderHook(
+        () => useCreatePortabilityRequest(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        for_playlist: portabilityRequest.for_playlist.id,
+        from_playlist: portabilityRequest.from_playlist.id,
+        from_lti_consumer_site: portabilityRequest.from_lti_consumer_site!.id,
+        from_lti_user_id: portabilityRequest.from_lti_user_id!,
+      });
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/portability-requests/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          for_playlist: portabilityRequest.for_playlist.id,
+          from_playlist: portabilityRequest.from_playlist.id,
+          from_lti_consumer_site: portabilityRequest.from_lti_consumer_site!.id,
+          from_lti_user_id: portabilityRequest.from_lti_user_id,
+        }),
+      });
+      expect(result.current.data).toEqual(portabilityRequest);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to create the request', async () => {
+      const portabilityRequest = portabilityRequestMockFactory();
+      fetchMock.post('/api/portability-requests/', 400);
+
+      const { result, waitFor } = renderHook(
+        () => useCreatePortabilityRequest(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      result.current.mutate({
+        for_playlist: portabilityRequest.for_playlist.id,
+        from_playlist: portabilityRequest.from_playlist.id,
+        from_lti_consumer_site: portabilityRequest.from_lti_consumer_site!.id,
+        from_lti_user_id: portabilityRequest.from_lti_user_id!,
+      });
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/portability-requests/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'POST',
+        body: JSON.stringify({
+          for_playlist: portabilityRequest.for_playlist.id,
+          from_playlist: portabilityRequest.from_playlist.id,
+          from_lti_consumer_site: portabilityRequest.from_lti_consumer_site!.id,
+          from_lti_user_id: portabilityRequest.from_lti_user_id,
+        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');

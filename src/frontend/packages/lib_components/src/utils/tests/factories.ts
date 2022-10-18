@@ -1,7 +1,12 @@
 import * as faker from 'faker';
 
+import { PortabilityConfig } from 'types/AppData';
 import { Organization } from 'types/Organization';
 import { Participant } from 'types/Participant';
+import {
+  PortabilityRequest,
+  PortabilityRequestState,
+} from 'types/PortabilityRequest';
 import { DecodedJwtPermission } from 'types/ResourceContext';
 import { Document } from 'types/file';
 import { DecodedJwt, DecodedJwtUser } from 'types/jwt';
@@ -22,6 +27,8 @@ import {
   Video,
 } from 'types/tracks';
 
+import { ConsumerSite } from '../../types/ConsumerSite';
+
 export const organizationMockFactory = (
   organization: Partial<Organization> = {},
 ): Organization => {
@@ -32,6 +39,17 @@ export const organizationMockFactory = (
     name: faker.company.companyName(),
     users: [],
     ...organization,
+  };
+};
+
+export const consumerSiteMockFactory = (
+  consumerSite: Partial<ConsumerSite> = {},
+): ConsumerSite => {
+  return {
+    id: faker.datatype.uuid(),
+    name: faker.company.companyName(),
+    domain: faker.internet.domainName(),
+    ...consumerSite,
   };
 };
 
@@ -50,11 +68,7 @@ export const playlistMockFactory = (
   playlist: Partial<Playlist> = {},
 ): Playlist => {
   return {
-    consumer_site: {
-      id: faker.datatype.uuid(),
-      name: 'my web site',
-      domain: faker.internet.domainName(),
-    },
+    consumer_site: consumerSiteMockFactory(),
     created_by: null,
     duplicated_from: null,
     id: faker.datatype.uuid(),
@@ -345,5 +359,33 @@ export const sharedLiveMediaMockFactory = (
     },
     video: faker.datatype.uuid(),
     ...sharedLiveMedia,
+  };
+};
+
+export const PortabilityConfigMockFactory = (
+  portabilityConfig: Partial<PortabilityConfig> = {},
+): PortabilityConfig => {
+  return {
+    resource_id: faker.datatype.uuid(),
+    redirect_to: faker.internet.url(),
+    for_playlist_id: faker.datatype.uuid(),
+    portability_request_exists: false,
+    ...portabilityConfig,
+  };
+};
+
+export const portabilityRequestMockFactory = (
+  portabilityRequest: Partial<PortabilityRequest> = {},
+): PortabilityRequest => {
+  return {
+    id: faker.datatype.uuid(),
+    for_playlist: playlistLiteMockFactory(),
+    from_playlist: playlistLiteMockFactory(),
+    from_lti_consumer_site: consumerSiteMockFactory(),
+    from_lti_user_id: faker.datatype.uuid(),
+    state: PortabilityRequestState.PENDING,
+    from_user: null,
+    updated_by_user: null,
+    ...portabilityRequest,
   };
 };
