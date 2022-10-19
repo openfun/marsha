@@ -7,7 +7,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { PLAYER_ROUTE } from 'components/routes';
 
 import { modelName } from 'lib-components';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 
 interface RedirectDocumentProps {
   document: Document;

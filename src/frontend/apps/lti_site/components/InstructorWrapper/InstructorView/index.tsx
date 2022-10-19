@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { LTINav } from 'components/LTINav';
 
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { Video } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 

@@ -11,7 +11,7 @@ import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState, Video } from 'lib-components';
 
