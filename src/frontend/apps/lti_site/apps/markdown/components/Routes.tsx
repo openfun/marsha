@@ -8,7 +8,7 @@ import {
   FullScreenError,
 } from 'components/ErrorComponents';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { UploadManager } from 'components/UploadManager';
+import { UploadManager } from 'lib-components';
 
 import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
 import { MARKDOWN_NOT_FOUND_ROUTE } from './MarkdownNotFoundView/route';

@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { uploadableModelName } from 'lib-components';
 
-import { useUploadManager } from '../UploadManager';
+import { useUploadManager } from 'lib-components';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
 
 const DropzoneStyled = styled.div`

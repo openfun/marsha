@@ -17,10 +17,7 @@ import { useTimedTextTracks, useVideo } from 'data/queries';
 import { ErrorMessage } from 'components/ErrorComponents';
 import { UploadableObjectStatusBadge } from 'components/UploadableObjectStatusBadge';
 import { UploadField } from 'components/UploadField';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import VideoPlayer from 'components/VideoPlayer';
 import { modelName } from 'lib-components';
 import { uploadState, Video } from 'lib-components';

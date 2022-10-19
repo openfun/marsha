@@ -8,7 +8,7 @@ import {
   UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'lib-components';

@@ -5,7 +5,7 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { SchedulingFields } from 'lib-components';
-import { UploadManager } from 'components/UploadManager';
+import { UploadManager } from 'lib-components';
 
 import { DashboardClassroomLayout } from 'apps/classroom/components/DashboardClassroomLayout';
 import { UploadDocuments } from 'apps/classroom/components/UploadDocuments';

@@ -10,7 +10,7 @@ import {
   UploadManager,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 import { uploadState } from 'lib-components';

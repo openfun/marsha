@@ -10,10 +10,7 @@ import {
 import React, { PropsWithChildren } from 'react';
 
 import { SharedLiveMediaModalWrapper } from 'components/VideoWidgetProvider/wrappers/SharedLiveMediaModalWrapper';
-import {
-  UploadManagerContext,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerContext, useUploadManager } from 'lib-components';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
@@ -25,7 +22,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { SharedLiveMedia } from '.';
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,

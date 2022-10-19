@@ -8,7 +8,7 @@ import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
 import { Icon } from '../Icon';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   title: {

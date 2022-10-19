@@ -5,10 +5,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import {
-  UploadManagerContext,
-  UploadManagerStatus,
-} from 'components/UploadManager';
+import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
 import { createPlayer } from 'Player/createPlayer';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';

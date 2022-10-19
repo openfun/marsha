@@ -3,23 +3,20 @@ import userEvent from '@testing-library/user-event';
 import { videoMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { UploadVideoForm } from '.';
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager

@@ -16,8 +16,6 @@ import { modelName } from 'types/models';
 
 import { UploadManager, UploadManagerStatus, useUploadManager } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
-
 describe('<UploadManager />', () => {
   let getLatestHookValues: () => any = () => {};
 

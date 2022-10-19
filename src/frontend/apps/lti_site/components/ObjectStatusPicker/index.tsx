@@ -9,7 +9,7 @@ import {
   uploadState,
   Video,
 } from 'lib-components';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {

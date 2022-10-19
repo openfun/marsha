@@ -7,7 +7,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { OrganizationView } from 'components/OrganizationView';
 import { SiteLayout } from 'components/SiteLayout';
-import { UploadManager } from 'components/UploadManager';
+import { UploadManager } from 'lib-components';
 import { UploadsView } from 'components/UploadsView';
 import { useAppConfig } from 'data/stores/useAppConfig';
 

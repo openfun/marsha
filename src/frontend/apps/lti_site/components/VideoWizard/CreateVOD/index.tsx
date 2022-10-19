@@ -8,7 +8,7 @@ import { useHistory } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { TextInput } from 'components/graphicals/TextInput';
-import { useUploadManager } from 'components/UploadManager';
+import { useUploadManager } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useVideo } from 'data/stores/useVideo';

@@ -5,7 +5,7 @@ import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { UploadManager } from 'components/UploadManager';
+import { UploadManager } from 'lib-components';
 import { uploadFile } from 'data/sideEffects/uploadFile';
 import { getResource } from 'data/stores/generics';
 import { modelName } from 'lib-components';

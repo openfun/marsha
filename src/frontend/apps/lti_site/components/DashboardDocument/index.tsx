@@ -6,10 +6,7 @@ import styled from 'styled-components';
 import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 import { useDocument } from 'data/stores/useDocument';
 import { Document } from 'types/file';
