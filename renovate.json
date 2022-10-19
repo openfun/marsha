@@ -36,6 +36,17 @@
         "django"
       ],
       "allowedVersions": "<4.1"
+    },
+    {
+      "groupName": "allowed django channels version",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "channels",
+        "channels-redis"
+      ],
+      "allowedVersions": "<4"
     }
   ]
 }
