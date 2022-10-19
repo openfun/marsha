@@ -57,7 +57,7 @@ export const addResource = async (
   store.getState().addResource(object as any);
 };
 
-export const getResource = async (
+export const getStoreResource = async (
   objectType: uploadableModelName,
   objectId: string,
 ) => {

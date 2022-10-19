@@ -1,6 +1,6 @@
 import { useJwt } from 'lib-components';
 
-import { addMultipleResources } from 'data/stores/generics';
+import { addMultipleResources } from 'lib-components';
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from 'lib-components';
 import { APIListCommonRequestParams, requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';

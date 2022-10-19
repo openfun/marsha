@@ -14,7 +14,7 @@ import { IframeHeading } from 'components/Headings';
 import { LayoutMainArea } from 'components/LayoutMainArea';
 import { UploadField } from 'components/UploadField';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
-import { getResource } from 'data/stores/generics';
+import { getStoreResource } from 'lib-components';
 import { modelName, uploadableModelName } from 'lib-components';
 import { TimedText, timedTextMode, UploadableObject } from 'lib-components';
 
@@ -121,7 +121,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
 
   const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
   useAsyncEffect(async () => {
-    setObject(await getResource(objectType, objectId));
+    setObject(await getStoreResource(objectType, objectId));
   }, []);
 
   const beforeUnload = (event: BeforeUnloadEvent) => {
