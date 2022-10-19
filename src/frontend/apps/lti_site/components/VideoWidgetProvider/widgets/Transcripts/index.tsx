@@ -7,7 +7,7 @@ import { Box, Button, Select, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { TranscriptReader } from 'components/TranscriptReader';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 
 const messages = defineMessages({

@@ -13,7 +13,7 @@ import {
   useLivePanelState,
   LivePanelItem,
 } from 'data/stores/useLivePanelState';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
 import { APIList } from 'lib-components';

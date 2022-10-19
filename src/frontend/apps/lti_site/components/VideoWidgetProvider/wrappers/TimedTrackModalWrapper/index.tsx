@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteTimedTextTrack } from 'data/queries';
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { report } from 'lib-components';
 
 const messages = defineMessages({

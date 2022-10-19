@@ -5,7 +5,7 @@ import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { useThumbnail } from 'data/stores/useThumbnail';
+import { useThumbnail } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';

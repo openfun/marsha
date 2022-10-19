@@ -5,8 +5,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { stopLive } from 'data/sideEffects/stopLive';
-import { useVideo } from 'data/stores/useVideo';
-import { liveState, Video } from 'lib-components';
+import { liveState, Video, useVideo } from 'lib-components';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
 
 import { StopLiveButton } from '.';

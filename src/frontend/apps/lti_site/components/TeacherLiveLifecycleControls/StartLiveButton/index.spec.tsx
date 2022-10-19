@@ -9,8 +9,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { startLive } from 'data/sideEffects/startLive';
-import { useVideo } from 'data/stores/useVideo';
-import { liveState, Video } from 'lib-components';
+import { liveState, Video, useVideo } from 'lib-components';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
 
 import { StartLiveButton } from '.';

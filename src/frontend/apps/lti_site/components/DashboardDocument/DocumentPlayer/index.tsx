@@ -3,7 +3,7 @@ import { useJwt, useCurrentSession } from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';
 
-import { useDocument } from 'data/stores/useDocument';
+import { useDocument } from 'lib-components';
 
 import { Document } from 'types/file';
 import { DocumentXapiStatement } from 'XAPI/DocumentXapiStatement';

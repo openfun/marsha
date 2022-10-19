@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, useVideo } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
@@ -13,7 +13,6 @@ import {
   useUploadManager,
 } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
@@ -23,6 +22,7 @@ import { AppConfig } from 'types/AppData';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
+  useVideo: jest.fn(),
 }));
 
 jest.mock('data/stores/useAppConfig', () => ({
@@ -60,9 +60,6 @@ const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
 
-jest.mock('data/stores/useVideo', () => ({
-  useVideo: jest.fn(),
-}));
 const mockedUseVideo = useVideo as jest.MockedFunction<typeof useVideo>;
 
 describe('<CreateVOD />', () => {

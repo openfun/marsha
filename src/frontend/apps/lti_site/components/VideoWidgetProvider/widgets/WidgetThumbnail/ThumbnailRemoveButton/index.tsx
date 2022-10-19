@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteThumbnail } from 'data/queries';
-import { useThumbnail } from 'data/stores/useThumbnail';
+import { useThumbnail } from 'lib-components';
 import { Thumbnail } from 'lib-components';
 import { report } from 'lib-components';
 

@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt, thumbnailMockFactory } from 'lib-components';
 import React from 'react';
 
-import { useThumbnail } from 'data/stores/useThumbnail';
+import { useThumbnail } from 'lib-components';
 import { report } from 'lib-components';
 import render from 'utils/tests/render';
 

@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { deleteTimedTextTrack } from 'data/sideEffects/deleteTimedTextTrack';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';

@@ -3,7 +3,7 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
 import { timedTextMode } from 'lib-components';
 

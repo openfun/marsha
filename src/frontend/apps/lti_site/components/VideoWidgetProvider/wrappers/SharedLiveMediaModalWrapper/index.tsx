@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useSharedLiveMedia } from 'lib-components';
 import { useDeleteSharedLiveMedia } from 'data/queries';
 import { report } from 'lib-components';
 
