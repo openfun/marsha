@@ -8,7 +8,7 @@ import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { appNames } from 'types/AppData';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import {
   Live,
   LiveModeType,

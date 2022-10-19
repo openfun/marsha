@@ -1,6 +1,6 @@
 import { Nullable } from 'lib-common';
 
-import { Document } from './file';
+import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
 import { Live, Playlist, Video } from 'lib-components';
 

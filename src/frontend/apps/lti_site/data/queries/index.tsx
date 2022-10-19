@@ -18,7 +18,7 @@ import {
   updateOne,
 } from 'lib-components';
 import { APIList, useVideo as useVideoStore } from 'lib-components';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import {
   LiveModeType,
   LiveAttendance,
