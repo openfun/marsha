@@ -31,6 +31,10 @@ import { StudentLiveWrapper } from '.';
 
 const mockVideo = videoMockFactory();
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  getResource: jest.fn().mockResolvedValue(null),
+}));
 jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({
     attendanceDelay: 10000,
@@ -45,9 +49,6 @@ jest.mock('data/stores/useAppConfig', () => ({
 
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
-}));
-jest.mock('data/sideEffects/getResource', () => ({
-  getResource: jest.fn().mockResolvedValue(null),
 }));
 jest.mock('utils/resumeLive', () => ({
   resumeLive: jest.fn().mockResolvedValue(null),

@@ -6,7 +6,7 @@ import React from 'react';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UploadManager } from 'lib-components';
-import { uploadFile } from 'data/sideEffects/uploadFile';
+import { uploadFile } from 'lib-components';
 import { getResource } from 'data/stores/generics';
 import { modelName } from 'lib-components';
 import { timedTextMode, uploadState } from 'lib-components';
@@ -20,7 +20,8 @@ jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({ modelName: 'videos' }),
 }));
 
-jest.mock('data/sideEffects/uploadFile', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   uploadFile: jest.fn(),
 }));
 
