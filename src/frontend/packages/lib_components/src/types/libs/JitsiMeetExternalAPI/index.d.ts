@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { Nullable } from 'utils/types';
+import { Nullable } from 'lib-common';
 
 export as namespace JitsiMeetExternalAPI;
 export = JitsiMeetExternalAPI;
