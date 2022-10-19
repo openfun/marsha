@@ -4,7 +4,7 @@ import {
   ReceivedMessageType,
   useChatItemState,
 } from 'data/stores/useChatItemsStore';
-import { MessageType, XMPP } from 'types/XMPP';
+import { MessageType, XMPP } from 'lib-components';
 import { converse } from 'utils/window';
 
 enum StanzaType {

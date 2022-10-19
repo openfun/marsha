@@ -3,7 +3,7 @@ import { useJwt } from 'lib-components';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { Participant } from 'types/Participant';
 import { Video } from 'lib-components';
-import { EventType, MessageType, XMPP } from 'types/XMPP';
+import { EventType, MessageType, XMPP } from 'lib-components';
 import { converse } from 'utils/window';
 
 import marshaJoinDiscussionPluginHandler from './handler';

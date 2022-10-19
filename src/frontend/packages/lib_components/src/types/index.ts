@@ -5,3 +5,4 @@ export * from './apps/';
 export * from './tracks';
 export * from './api';
 export * from './models';
+export * from './XMPP';
