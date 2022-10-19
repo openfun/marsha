@@ -12,7 +12,7 @@ import { SchedulingFields } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState, Video } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 import { debounce } from 'utils/widgets/widgets';
 

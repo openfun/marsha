@@ -5,7 +5,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { LiveModeType } from 'lib-components';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
-import { ShouldNotHappen } from 'utils/errors/exception';
+import { ShouldNotHappen } from 'lib-components';
 
 const TeacherLiveRawWrapper = lazy(
   () => import('components/TeacherLiveRawWrapper'),

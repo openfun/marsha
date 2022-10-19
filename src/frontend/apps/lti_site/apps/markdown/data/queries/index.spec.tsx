@@ -15,7 +15,8 @@ import {
   useUpdateMarkdownDocument,
 } from '.';
 
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

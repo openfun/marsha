@@ -40,7 +40,10 @@ const mockedInitialiseJitis = initializeJitsi as jest.MockedFunction<
   typeof initializeJitsi
 >;
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 jest.mock('utils/window', () => ({
   converse: {

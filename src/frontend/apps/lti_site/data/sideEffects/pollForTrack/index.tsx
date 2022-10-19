@@ -6,7 +6,7 @@ import { requestStatus } from 'lib-components';
 import { Document } from 'types/file';
 import { modelName } from 'lib-components';
 import { TimedText, Video } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 export async function pollForTrack<
   T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS,

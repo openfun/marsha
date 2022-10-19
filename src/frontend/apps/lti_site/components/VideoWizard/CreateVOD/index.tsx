@@ -14,7 +14,7 @@ import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrent
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'lib-components';
 import { Video } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { LicenseSelect } from './LicenseSelect';
 import { UploadVideoForm } from './UploadVideoForm';

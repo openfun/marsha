@@ -7,7 +7,7 @@ import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   info: {

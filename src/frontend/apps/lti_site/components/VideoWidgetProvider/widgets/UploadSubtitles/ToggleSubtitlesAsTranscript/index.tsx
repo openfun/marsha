@@ -7,7 +7,7 @@ import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { timedTextMode, Video } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   useTranscriptToggleLabel: {

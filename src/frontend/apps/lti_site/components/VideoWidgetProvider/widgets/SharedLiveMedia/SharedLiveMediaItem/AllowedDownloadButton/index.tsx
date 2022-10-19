@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateSharedLiveMedia } from 'data/queries';
 import { SharedLiveMedia } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   updateSharedLiveMediaSucces: {

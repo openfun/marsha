@@ -6,11 +6,12 @@ import React from 'react';
 
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { TimedTrackModalWrapper } from '.';
 
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

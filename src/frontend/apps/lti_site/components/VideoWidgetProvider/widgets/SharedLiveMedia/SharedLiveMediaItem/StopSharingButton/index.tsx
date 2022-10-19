@@ -6,7 +6,7 @@ import styled from 'styled-components';
 
 import { useStopSharingMedia } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   updateSharedLiveMediaSucces: {

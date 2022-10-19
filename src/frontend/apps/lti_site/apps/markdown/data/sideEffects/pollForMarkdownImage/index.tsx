@@ -1,5 +1,5 @@
 import { MarkdownImage } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import { fetchOneMarkdownImage } from 'apps/markdown/data/queries';
 
 export async function pollForMarkdownImage(
