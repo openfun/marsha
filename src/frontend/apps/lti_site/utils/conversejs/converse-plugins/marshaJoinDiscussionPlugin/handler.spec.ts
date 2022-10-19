@@ -7,7 +7,7 @@ import {
 
 import { useVideo } from 'data/stores/useVideo';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { EventType, MessageType } from 'types/XMPP';
+import { EventType, MessageType } from 'lib-components';
 
 import marshaJoinDiscussionPluginHandler from './handler';
 

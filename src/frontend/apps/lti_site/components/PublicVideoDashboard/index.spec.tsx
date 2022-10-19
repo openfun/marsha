@@ -23,7 +23,7 @@ import {
   timedTextMode,
   uploadState,
 } from 'lib-components';
-import { PersistentStore } from 'types/XMPP';
+import { PersistentStore } from 'lib-components';
 import { getAnonymousId } from 'utils/localstorage';
 import {
   liveSessionFactory,
