@@ -4,7 +4,7 @@ import React from 'react';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { liveState } from 'lib-components';
-import { PersistentStore } from 'types/XMPP';
+import { PersistentStore } from 'lib-components';
 import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

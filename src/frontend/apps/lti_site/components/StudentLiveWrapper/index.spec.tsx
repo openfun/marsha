@@ -22,7 +22,7 @@ import { PictureInPictureProvider } from 'data/stores/usePictureInPicture/index'
 import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
 import { LiveModeType, liveState } from 'lib-components';
-import { PersistentStore } from 'types/XMPP';
+import { PersistentStore } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { sharedLiveMediaMockFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

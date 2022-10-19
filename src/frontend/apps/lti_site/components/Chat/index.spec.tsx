@@ -4,7 +4,7 @@ import { screen } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
 import { liveState } from 'lib-components';
-import { PersistentStore } from 'types/XMPP';
+import { PersistentStore } from 'lib-components';
 import render from 'utils/tests/render';
 
 jest.mock('data/stores/useSetDisplayName', () => ({

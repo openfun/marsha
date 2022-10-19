@@ -9,7 +9,7 @@ import {
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { useVideo } from 'data/stores/useVideo';
 import { Video } from 'lib-components';
-import { EventType, MessageType } from 'types/XMPP';
+import { EventType, MessageType } from 'lib-components';
 
 export default async function marshaJoinDiscussionPluginHandler(
   messageStanza: any,

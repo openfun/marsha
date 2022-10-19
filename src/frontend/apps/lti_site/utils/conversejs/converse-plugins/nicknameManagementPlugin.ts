@@ -1,5 +1,5 @@
 import { PROSODY_TIMEOUT_ON_NICKNAME_CHANGE_REQUEST_IN_MS } from 'default/chat';
-import { XMPP } from 'types/XMPP';
+import { XMPP } from 'lib-components';
 import { converse } from 'utils/window';
 
 const PLUGIN_NAME = 'nickname-management-plugin';
