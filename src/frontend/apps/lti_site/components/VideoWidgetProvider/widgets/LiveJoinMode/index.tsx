@@ -7,7 +7,7 @@ import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { JoinMode } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const { APPROVAL, DENIED, FORCED } = JoinMode;
 

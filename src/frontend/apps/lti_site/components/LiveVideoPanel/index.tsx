@@ -10,7 +10,7 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { ShouldNotHappen } from 'utils/errors/exception';
+import { ShouldNotHappen } from 'lib-components';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 

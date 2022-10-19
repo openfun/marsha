@@ -19,8 +19,6 @@ import render from 'utils/tests/render';
 
 import { LocalizedTimedTextTrackUpload } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
-
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
@@ -28,6 +26,7 @@ jest.mock('lib-components', () => ({
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
+  report: jest.fn(),
 }));
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<

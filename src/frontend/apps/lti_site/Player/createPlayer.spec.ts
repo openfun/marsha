@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
 
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { createPlayer } from './createPlayer';
 import { createVideojsPlayer } from './createVideojsPlayer';
@@ -14,7 +14,10 @@ jest.mock('data/stores/useAppConfig', () => ({
 
 jest.mock('./createVideojsPlayer');
 
-jest.mock('utils/errors/report');
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

@@ -5,13 +5,14 @@ import { useJwt, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { TitleAndDescriptionWidget } from '.';
 
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

@@ -17,7 +17,8 @@ jest.mock('data/stores/useSetDisplayName', () => ({
   useSetDisplayName: () => [false, mockSetDisplayName],
 }));
 
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

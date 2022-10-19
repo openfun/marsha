@@ -10,11 +10,14 @@ import {
 import { addResource } from 'data/stores/generics';
 import { requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { pollForTrack } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),

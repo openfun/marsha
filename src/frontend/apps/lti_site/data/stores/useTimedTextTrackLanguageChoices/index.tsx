@@ -8,7 +8,7 @@ import { modelName } from 'lib-components';
 import { RouteOptions } from 'types/RouteOptions';
 import { LanguageChoice } from 'types/SelectOptions';
 import { TimedText } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 type State = {
   choices: Maybe<LanguageChoice[]>;

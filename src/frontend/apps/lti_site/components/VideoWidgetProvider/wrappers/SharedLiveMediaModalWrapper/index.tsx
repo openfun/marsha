@@ -6,7 +6,7 @@ import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { useDeleteSharedLiveMedia } from 'data/queries';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   confirmationModalTitle: {

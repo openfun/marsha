@@ -6,12 +6,15 @@ import React from 'react';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { timedTextMode, uploadState } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { TimedTextCreationForm } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 describe('<TimedTextCreationForm />', () => {
   beforeEach(() => {

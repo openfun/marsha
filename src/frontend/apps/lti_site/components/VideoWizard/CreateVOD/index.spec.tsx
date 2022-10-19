@@ -20,11 +20,8 @@ import { uploadState } from 'lib-components';
 import CreateVOD from '.';
 import { AppConfig } from 'types/AppData';
 
-jest.mock('utils/errors/report', () => ({
-  report: jest.fn(),
-}));
-
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

@@ -5,7 +5,7 @@ import { addMultipleResources } from 'data/stores/generics';
 import { requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { getResourceList } from './';
 
@@ -13,7 +13,8 @@ jest.mock('data/stores/generics', () => ({
   addMultipleResources: jest.fn(),
 }));
 
-jest.mock('utils/errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

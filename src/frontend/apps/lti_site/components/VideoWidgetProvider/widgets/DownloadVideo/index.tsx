@@ -9,7 +9,7 @@ import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { videoSize } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import { Video } from 'lib-components';
 
 const messages = defineMessages({
