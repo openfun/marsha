@@ -8,7 +8,7 @@ import { UploadableObject, Video } from 'lib-components';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
-import { getResource } from './sideEffects/getResource';
+import { getResource } from 'lib-components';
 
 type WSMessageType = {
   resource: UploadableObject;

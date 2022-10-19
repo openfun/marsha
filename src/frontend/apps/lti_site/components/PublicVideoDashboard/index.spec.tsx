@@ -33,11 +33,12 @@ import {
 
 import PublicVideoDashboard from '.';
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  getResource: jest.fn().mockResolvedValue(null),
+}));
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
-}));
-jest.mock('data/sideEffects/getResource', () => ({
-  getResource: jest.fn().mockResolvedValue(null),
 }));
 jest.mock('data/sideEffects/pollForLive', () => ({
   pollForLive: jest.fn(),

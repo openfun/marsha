@@ -2,14 +2,15 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 
-import { getResource } from 'data/sideEffects/getResource';
+import { getResource } from 'lib-components';
 import { modelName } from 'lib-components';
 
 import { videoMockFactory } from 'lib-components';
 import { resumeLive } from './resumeLive';
 
-jest.mock('data/sideEffects/getResource', () => ({
-  getResource: jest.fn(),
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  getResource: jest.fn().mockResolvedValue(null),
 }));
 
 const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
