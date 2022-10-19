@@ -15,6 +15,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   a "not ready" resource which belongs to a playlist
   with portability.
 
+### Fixed
+
+- Downgrade channels-redis to version <4
+
 ## [4.0.0-beta.9] - 2022-10-18
 
 ### Added
