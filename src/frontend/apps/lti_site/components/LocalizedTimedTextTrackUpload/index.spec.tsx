@@ -9,7 +9,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal/index';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
@@ -21,13 +21,13 @@ import { LocalizedTimedTextTrackUpload } from '.';
 
 jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<

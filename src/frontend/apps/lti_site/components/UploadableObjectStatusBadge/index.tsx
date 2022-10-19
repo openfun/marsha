@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 import { UploadableObject, uploadState } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   [uploadState.DELETED]: {

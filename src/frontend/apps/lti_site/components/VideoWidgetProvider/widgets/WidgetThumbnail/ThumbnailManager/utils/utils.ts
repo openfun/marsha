@@ -1,10 +1,7 @@
 import { Nullable } from 'lib-common';
 import { defineMessages, MessageDescriptor } from 'react-intl';
 
-import {
-  UploadManagerState,
-  UploadManagerStatus,
-} from 'components/UploadManager';
+import { UploadManagerState, UploadManagerStatus } from 'lib-components';
 import { Thumbnail, uploadState } from 'lib-components';
 
 const messages = defineMessages({

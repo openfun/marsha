@@ -10,7 +10,7 @@ import {
   UploadManagerState,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 
 const messages = defineMessages({
   completedUploads: {

@@ -1,10 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
-import {
-  UploadManagerContext,
-  UploadManagerStatus,
-} from 'components/UploadManager';
+import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
 import { modelName } from 'lib-components';
 import render from 'utils/tests/render';
 

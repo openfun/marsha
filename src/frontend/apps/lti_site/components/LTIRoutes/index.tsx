@@ -15,8 +15,8 @@ import { SelectContent } from 'components/SelectContent';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { UploadForm } from 'components/UploadForm';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
-import { UploadManager } from 'components/UploadManager';
-import { LTIUploadHandlers } from 'components/UploadManager/LTIUploadHandlers';
+import { UploadManager } from 'lib-components';
+import { LTIUploadHandlers } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName } from 'lib-components';
 

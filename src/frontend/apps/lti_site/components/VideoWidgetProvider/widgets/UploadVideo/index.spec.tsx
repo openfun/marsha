@@ -7,7 +7,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
@@ -16,13 +16,13 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { UploadVideo } from '.';
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager

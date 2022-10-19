@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { Resource } from 'lib-components';
-import { useUploadManager } from '../UploadManager';
+import { useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   progressLabel: {

@@ -5,10 +5,7 @@ import { FormattedMessage, useIntl } from 'react-intl';
 
 import { PlusSVG, ValidSVG } from 'lib-components';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import {

@@ -8,7 +8,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { useJwt, thumbnailMockFactory } from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useThumbnail } from 'data/stores/useThumbnail';
@@ -18,13 +18,13 @@ import render from 'utils/tests/render';
 
 import { WidgetThumbnail } from '.';
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager

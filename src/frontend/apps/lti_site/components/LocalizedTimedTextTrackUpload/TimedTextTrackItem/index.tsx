@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { RetryUploadButton } from 'components/RetryUploadButton';
-import { UploadingObject } from 'components/UploadManager';
+import { UploadingObject } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { uploadState, TimedText } from 'lib-components';
 

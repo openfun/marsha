@@ -12,7 +12,7 @@ import {
   UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
