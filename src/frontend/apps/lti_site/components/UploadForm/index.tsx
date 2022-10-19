@@ -18,7 +18,7 @@ import { getStoreResource } from 'lib-components';
 import { modelName, uploadableModelName } from 'lib-components';
 import { TimedText, timedTextMode, UploadableObject } from 'lib-components';
 
-import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { useAsyncEffect } from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
 const messages = defineMessages({
