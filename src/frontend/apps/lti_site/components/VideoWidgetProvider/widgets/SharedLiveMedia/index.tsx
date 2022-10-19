@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ItemList } from 'components/graphicals/ItemList';
-import { useUploadManager } from 'components/UploadManager';
+import { useUploadManager } from 'lib-components';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';

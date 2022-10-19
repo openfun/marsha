@@ -5,10 +5,7 @@ import { playlistMockFactory, videoMockFactory } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import {
-  UploadManagerContext,
-  UploadManagerStatus,
-} from 'components/UploadManager';
+import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
 import { modelName } from 'lib-components';
 
 import { VideoCreateForm } from '.';

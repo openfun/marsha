@@ -11,7 +11,7 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
-} from 'components/UploadManager';
+} from 'lib-components';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'lib-components';
@@ -51,13 +51,13 @@ const licenseChoices = [
 
 URL.createObjectURL = () => '/blob/path/to/video';
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager

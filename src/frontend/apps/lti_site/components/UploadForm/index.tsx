@@ -13,10 +13,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { IframeHeading } from 'components/Headings';
 import { LayoutMainArea } from 'components/LayoutMainArea';
 import { UploadField } from 'components/UploadField';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { getResource } from 'data/stores/generics';
 import { modelName, uploadableModelName } from 'lib-components';
 import { TimedText, timedTextMode, UploadableObject } from 'lib-components';

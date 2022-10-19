@@ -2,10 +2,7 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
@@ -29,13 +26,13 @@ jest.mock('apps/deposit/data/depositAppData', () => ({
   },
 }));
 
-jest.mock('components/UploadManager', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useUploadManager: jest.fn(),
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('components/UploadManager')
-    .UploadManagerStatus,
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager

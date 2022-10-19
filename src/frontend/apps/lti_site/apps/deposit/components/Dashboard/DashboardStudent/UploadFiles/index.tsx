@@ -6,10 +6,7 @@ import { DateTime } from 'luxon';
 
 import { PlusSVG } from 'lib-components';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-} from 'components/UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';

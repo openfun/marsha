@@ -14,7 +14,7 @@ import { theme } from '../../utils/theme/theme';
 
 import { MutationFieldError } from '../MutationFieldError';
 import { UploadField } from '../UploadField';
-import { UploadManagerStatus, useUploadManager } from '../UploadManager';
+import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   createVideo: {
