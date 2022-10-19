@@ -7,7 +7,7 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { UploadManager } from 'lib-components';
 import { uploadFile } from 'lib-components';
-import { getResource } from 'data/stores/generics';
+import { getStoreResource } from 'lib-components';
 import { modelName } from 'lib-components';
 import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
@@ -22,16 +22,15 @@ jest.mock('data/stores/useAppConfig', () => ({
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  getStoreResource: jest.fn(),
   uploadFile: jest.fn(),
-}));
-
-jest.mock('data/stores/generics', () => ({
-  getResource: jest.fn(),
 }));
 
 const mockUploadFile: jest.MockedFunction<typeof uploadFile> =
   uploadFile as any;
-const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
+const mockGetResource = getStoreResource as jest.MockedFunction<
+  typeof getStoreResource
+>;
 
 describe('UploadForm', () => {
   const object = videoMockFactory({

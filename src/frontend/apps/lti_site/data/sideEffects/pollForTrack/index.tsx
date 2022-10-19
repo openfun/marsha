@@ -1,6 +1,6 @@
 import { useJwt } from 'lib-components';
 
-import { addResource } from 'data/stores/generics';
+import { addResource } from 'lib-components';
 import { API_ENDPOINT } from 'lib-components';
 import { requestStatus } from 'lib-components';
 import { Document } from 'lib-components';

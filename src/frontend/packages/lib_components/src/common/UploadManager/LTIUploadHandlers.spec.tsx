@@ -10,7 +10,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { getResource as fetchResource } from 'data/sideEffects/getResource';
 import { updateResource } from 'data/sideEffects/updateResource';
-import { addResource, getResource } from 'data/stores/generics';
+import { addResource, getStoreResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
 import { Thumbnail, Video } from 'types/tracks';
 
@@ -18,15 +18,13 @@ import { LTIUploadHandlers } from './LTIUploadHandlers';
 
 import { UploadManagerContext, UploadManagerStatus } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
-
 jest.mock('data/sideEffects/updateResource', () => ({
   updateResource: jest.fn(),
 }));
 
 jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
-  getResource: jest.fn(),
+  getStoreResource: jest.fn(),
 }));
 
 jest.mock('data/sideEffects/getResource', () => ({
@@ -34,7 +32,9 @@ jest.mock('data/sideEffects/getResource', () => ({
 }));
 
 const mockAddResource = addResource as jest.MockedFunction<typeof addResource>;
-const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
+const mockGetResource = getStoreResource as jest.MockedFunction<
+  typeof getStoreResource
+>;
 const mockUpdateResource = updateResource as jest.MockedFunction<
   typeof updateResource
 >;

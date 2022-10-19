@@ -7,7 +7,7 @@ import {
   videoMockFactory,
 } from 'lib-components';
 
-import { addResource } from 'data/stores/generics';
+import { addResource } from 'lib-components';
 import { requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';
 import { report } from 'lib-components';
@@ -17,9 +17,6 @@ import { pollForTrack } from '.';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
-}));
-
-jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
 }));
 
