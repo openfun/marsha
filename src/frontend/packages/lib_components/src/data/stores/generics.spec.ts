@@ -3,7 +3,7 @@
 import {
   addMultipleResources,
   addResource,
-  getResource,
+  getStoreResource,
 } from 'data/stores/generics';
 import { useDocument } from 'data/stores/useDocument';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
@@ -11,10 +11,6 @@ import { useThumbnail } from 'data/stores/useThumbnail';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
 import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'types/models';
-
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppConfig: () => ({}),
-}));
 
 describe('stores/generics', () => {
   afterEach(() => {
@@ -83,46 +79,52 @@ describe('stores/generics', () => {
     it('fetches an existing thumbnail resource and returns it', async () => {
       await addResource(modelName.THUMBNAILS, { id: 'thumbnail' } as any);
 
-      expect(await getResource(modelName.THUMBNAILS, 'thumbnail')).toEqual({
-        id: 'thumbnail',
-      });
+      expect(await getStoreResource(modelName.THUMBNAILS, 'thumbnail')).toEqual(
+        {
+          id: 'thumbnail',
+        },
+      );
     });
     it('fetches a non existing thumbnail and should return undefined', async () => {
-      expect(await getResource(modelName.THUMBNAILS, 'foo')).toBeUndefined();
+      expect(
+        await getStoreResource(modelName.THUMBNAILS, 'foo'),
+      ).toBeUndefined();
     });
     it('fetches an existing timed text resource and returns it', async () => {
       await addResource(modelName.TIMEDTEXTTRACKS, { id: 'timedtext' } as any);
 
-      expect(await getResource(modelName.TIMEDTEXTTRACKS, 'timedtext')).toEqual(
-        {
-          id: 'timedtext',
-        },
-      );
+      expect(
+        await getStoreResource(modelName.TIMEDTEXTTRACKS, 'timedtext'),
+      ).toEqual({
+        id: 'timedtext',
+      });
     });
     it('fetches a non existing timed text and should return undefined', async () => {
       expect(
-        await getResource(modelName.TIMEDTEXTTRACKS, 'foo'),
+        await getStoreResource(modelName.TIMEDTEXTTRACKS, 'foo'),
       ).toBeUndefined();
     });
     it('fetches an existing video resource and returns it', async () => {
       await addResource(modelName.VIDEOS, { id: 'video' } as any);
 
-      expect(await getResource(modelName.VIDEOS, 'video')).toEqual({
+      expect(await getStoreResource(modelName.VIDEOS, 'video')).toEqual({
         id: 'video',
       });
     });
     it('fetches a non existing video and should return undefined', async () => {
-      expect(await getResource(modelName.VIDEOS, 'foo')).toBeUndefined();
+      expect(await getStoreResource(modelName.VIDEOS, 'foo')).toBeUndefined();
     });
     it('fetches an existing document resource and returns it', async () => {
       await addResource(modelName.DOCUMENTS, { id: 'document' } as any);
 
-      expect(await getResource(modelName.DOCUMENTS, 'document')).toEqual({
+      expect(await getStoreResource(modelName.DOCUMENTS, 'document')).toEqual({
         id: 'document',
       });
     });
     it('fetch a non existing document and should return undefined', async () => {
-      expect(await getResource(modelName.DOCUMENTS, 'foo')).toBeUndefined();
+      expect(
+        await getStoreResource(modelName.DOCUMENTS, 'foo'),
+      ).toBeUndefined();
     });
     it('fetches an existing shared live media resource and returns it', async () => {
       await addResource(modelName.SHAREDLIVEMEDIAS, {
@@ -130,14 +132,14 @@ describe('stores/generics', () => {
       } as any);
 
       expect(
-        await getResource(modelName.SHAREDLIVEMEDIAS, 'sharedLiveMedia'),
+        await getStoreResource(modelName.SHAREDLIVEMEDIAS, 'sharedLiveMedia'),
       ).toEqual({
         id: 'sharedLiveMedia',
       });
     });
     it('fetch a non existing shared live media and should return undefined', async () => {
       expect(
-        await getResource(modelName.SHAREDLIVEMEDIAS, 'foo'),
+        await getStoreResource(modelName.SHAREDLIVEMEDIAS, 'foo'),
       ).toBeUndefined();
     });
   });

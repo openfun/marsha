@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
 
-import { addMultipleResources } from 'data/stores/generics';
+import { addMultipleResources } from 'lib-components';
 import { requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
@@ -9,12 +9,9 @@ import { report } from 'lib-components';
 
 import { getResourceList } from './';
 
-jest.mock('data/stores/generics', () => ({
-  addMultipleResources: jest.fn(),
-}));
-
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  addMultipleResources: jest.fn(),
   report: jest.fn(),
 }));
 

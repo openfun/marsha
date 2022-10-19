@@ -23,6 +23,11 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
   useVideo: jest.fn(),
+  useUploadManager: jest.fn(),
+  UploadManagerContext: {
+    Provider: ({ children }: PropsWithChildren<{}>) => children,
+  },
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
 jest.mock('data/stores/useAppConfig', () => ({
@@ -48,14 +53,6 @@ const licenseChoices = [
 
 URL.createObjectURL = () => '/blob/path/to/video';
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useUploadManager: jest.fn(),
-  UploadManagerContext: {
-    Provider: ({ children }: PropsWithChildren<{}>) => children,
-  },
-  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
-}));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;

@@ -5,7 +5,7 @@ import React from 'react';
 
 import { getResource as fetchResource } from 'data/sideEffects/getResource';
 import { updateResource } from 'data/sideEffects/updateResource';
-import { addResource, getResource } from 'data/stores/generics';
+import { addResource, getStoreResource } from 'data/stores/generics';
 import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 import { UploadManagerState, UploadManagerStatus, useUploadManager } from '.';
@@ -18,7 +18,7 @@ const UploadSuccessHandler = ({
   useAsyncEffect(async () => {
     if (objectState.status === UploadManagerStatus.SUCCESS) {
       const { file, objectId, objectType } = objectState;
-      const object = await getResource(objectType, objectId);
+      const object = await getStoreResource(objectType, objectId);
       if (object && 'title' in object && !object.title) {
         // Add the new object with title and upload_state in the store
         // to replace the old state.
