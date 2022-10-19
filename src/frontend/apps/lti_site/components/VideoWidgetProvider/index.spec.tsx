@@ -11,9 +11,9 @@ import {
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useSharedLiveMedia } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { useThumbnail } from 'data/stores/useThumbnail';
+import { useThumbnail } from 'lib-components';
 import { JoinMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

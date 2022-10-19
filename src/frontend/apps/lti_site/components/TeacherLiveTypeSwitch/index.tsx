@@ -6,9 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { updateResource } from 'data/sideEffects/updateResource';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
-import { useVideo } from 'data/stores/useVideo';
-import { modelName } from 'lib-components';
-import { LiveModeType } from 'lib-components';
+import { modelName, useVideo, LiveModeType } from 'lib-components';
 
 const messages = defineMessages({
   RAW: {

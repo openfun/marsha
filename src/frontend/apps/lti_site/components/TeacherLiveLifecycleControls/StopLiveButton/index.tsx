@@ -7,8 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { stopLive } from 'data/sideEffects/stopLive';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
-import { useVideo } from 'data/stores/useVideo';
-import { Video } from 'lib-components';
+import { Video, useVideo } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({

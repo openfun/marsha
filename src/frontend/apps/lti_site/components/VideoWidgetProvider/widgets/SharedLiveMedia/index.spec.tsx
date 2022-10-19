@@ -13,7 +13,7 @@ import { SharedLiveMediaModalWrapper } from 'components/VideoWidgetProvider/wrap
 import { UploadManagerContext, useUploadManager } from 'lib-components';
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useSharedLiveMedia } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { report } from 'lib-components';

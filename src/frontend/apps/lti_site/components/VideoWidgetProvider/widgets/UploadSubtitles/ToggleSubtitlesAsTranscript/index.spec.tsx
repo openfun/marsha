@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt, timedTextMockFactory, videoMockFactory } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { timedTextMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

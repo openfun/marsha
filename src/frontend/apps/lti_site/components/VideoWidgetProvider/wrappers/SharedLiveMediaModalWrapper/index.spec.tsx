@@ -5,7 +5,7 @@ import { useJwt, sharedLiveMediaMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useSharedLiveMedia } from 'lib-components';
 import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { SharedLiveMediaModalWrapper } from '.';

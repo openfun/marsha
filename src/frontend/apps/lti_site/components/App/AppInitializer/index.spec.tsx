@@ -3,12 +3,14 @@ import { useMaintenance } from 'lib-components';
 import React from 'react';
 
 import { useAttendance } from 'data/stores/useAttendance';
-import { useDocument } from 'data/stores/useDocument';
-import { useSentry } from 'data/stores/useSentry';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
-import { useThumbnail } from 'data/stores/useThumbnail';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { useVideo } from 'data/stores/useVideo';
+import {
+  useSentry,
+  useVideo,
+  useTimedTextTrack,
+  useThumbnail,
+  useSharedLiveMedia,
+  useDocument,
+} from 'lib-components';
 import render from 'utils/tests/render';
 
 import { AppInitializer } from '.';
