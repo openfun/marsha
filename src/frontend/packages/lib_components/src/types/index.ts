@@ -6,3 +6,4 @@ export * from './tracks';
 export * from './api';
 export * from './models';
 export * from './XMPP';
+export * from './file';

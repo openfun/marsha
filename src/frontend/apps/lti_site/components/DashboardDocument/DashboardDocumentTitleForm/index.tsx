@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { updateResource } from 'data/sideEffects/updateResource';
 import { useDocument } from 'lib-components';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
 
 const messages = defineMessages({

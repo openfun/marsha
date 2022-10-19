@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { LtiSelectResource } from 'types/AppData';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { Live, Playlist, Video } from 'lib-components';
 
 import { SelectContentTabs } from './SelectContentTabs';

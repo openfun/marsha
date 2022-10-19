@@ -7,7 +7,7 @@ import { DashboardButton } from 'components/Styled/DashboardButtons';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { useUploadManager } from 'lib-components';
 import { withLink } from 'components/withLink/withLink';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 

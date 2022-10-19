@@ -9,7 +9,7 @@ import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 import { useDocument } from 'lib-components';
-import { Document } from 'types/file';
+import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
