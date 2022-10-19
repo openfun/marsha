@@ -21,9 +21,7 @@
     "noUnusedParameters": true,
     "paths": {
       "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
-      "converse": ["types/libs/converse"],
       "intl-pluralrules": ["types/libs/intl-pluralrules"],
-      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
       "vtt.js": ["types/libs/vtt.js"]
     },
     "resolveJsonModule": true,
@@ -31,7 +29,8 @@
     "strict": true,
     "sourceMap": true,
     "target": "es6",
-    "types": ["jest"]
+    "types": ["jest"],
+    "declaration": true
   },
   "include": ["./**/*"]
 }

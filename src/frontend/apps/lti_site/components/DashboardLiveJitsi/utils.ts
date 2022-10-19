@@ -119,7 +119,7 @@ export const initializeJitsi = async (
     userInfo: {
       displayName:
         useLiveSession.getState().liveSession?.display_name ||
-        (user !== AnonymousUser.ANONYMOUS && user?.username),
+        (user !== AnonymousUser.ANONYMOUS ? user?.username : undefined),
     },
   });
 };

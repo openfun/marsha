@@ -1,5 +1,7 @@
 import { Nullable } from 'lib-common';
 
+import { default as converse } from './libs/converse';
+
 /* XMPP representation */
 export interface XMPP {
   bosh_url: Nullable<string>;

@@ -12,6 +12,10 @@
     "declaration": true,
     "declarationDir": "lib/",
     "rootDir": "./src",
-    "baseUrl": "./src"
+    "baseUrl": "./src",
+    "paths": {
+      "converse": ["types/libs/converse"],
+      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"]
+    }
   }
 }
