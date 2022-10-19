@@ -7,3 +7,5 @@ export * from './api';
 export * from './models';
 export * from './XMPP';
 export * from './file';
+export * from './Participant';
+export * from './Organization';

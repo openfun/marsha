@@ -32,7 +32,7 @@ import {
   uploadState,
 } from 'lib-components';
 
-import { Organization } from 'types/Organization';
+import { Organization } from 'lib-components';
 import { VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (

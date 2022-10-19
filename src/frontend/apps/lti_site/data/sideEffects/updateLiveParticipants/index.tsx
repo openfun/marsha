@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'lib-components';
-import { Participant } from 'types/Participant';
+import { Participant } from 'lib-components';
 import { Video } from 'lib-components';
 
 const updateLiveParticipants = async (

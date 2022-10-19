@@ -7,7 +7,7 @@ import {
   useLivePanelState,
   LivePanelItem,
 } from 'data/stores/useLivePanelState';
-import { Participant } from 'types/Participant';
+import { Participant } from 'lib-components';
 import { onStageRequestMessage } from 'utils/onStageRequestMessage';
 
 const messages = defineMessages({

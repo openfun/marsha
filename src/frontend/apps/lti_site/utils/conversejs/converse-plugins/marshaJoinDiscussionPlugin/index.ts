@@ -1,7 +1,7 @@
 import { useJwt } from 'lib-components';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { Participant } from 'types/Participant';
+import { Participant } from 'lib-components';
 import { Video } from 'lib-components';
 import { EventType, MessageType, XMPP } from 'lib-components';
 import { converse } from 'utils/window';
