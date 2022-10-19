@@ -3,7 +3,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { updateResource } from 'data/sideEffects/updateResource';
+import { updateResource } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveFeedback } from 'data/stores/useLiveFeedback';
 import { modelName, useVideo, LiveModeType } from 'lib-components';
