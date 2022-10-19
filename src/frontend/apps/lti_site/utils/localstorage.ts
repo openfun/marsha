@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { report } from './errors/report';
+import { report } from 'lib-components';
 
 export const ANONYMOUS_ID_KEY = 'marsha_anonymous_id';
 

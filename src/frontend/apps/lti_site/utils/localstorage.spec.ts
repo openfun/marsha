@@ -1,13 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 
-import { report } from './errors/report';
+import { report } from 'lib-components';
 import {
   ANONYMOUS_ID_KEY,
   getAnonymousId,
   setAnonymousId,
 } from './localstorage';
 
-jest.mock('./errors/report', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

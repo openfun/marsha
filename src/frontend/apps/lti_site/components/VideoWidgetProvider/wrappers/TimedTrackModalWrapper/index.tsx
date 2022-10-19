@@ -6,7 +6,7 @@ import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteTimedTextTrack } from 'data/queries';
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   confirmationModalTitle: {

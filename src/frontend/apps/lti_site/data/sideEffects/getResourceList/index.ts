@@ -4,7 +4,7 @@ import { addMultipleResources } from 'data/stores/generics';
 import { API_ENDPOINT, API_LIST_DEFAULT_PARAMS } from 'lib-components';
 import { APIListCommonRequestParams, requestStatus } from 'lib-components';
 import { modelName } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 /**
  * Makes and handles the GET request for a resource list. First returns a curried function that

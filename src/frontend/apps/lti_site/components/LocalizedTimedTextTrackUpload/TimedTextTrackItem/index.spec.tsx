@@ -16,7 +16,10 @@ import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { TimedTextTrackItem } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 const languageChoices = [
   { label: 'English', value: 'en' },

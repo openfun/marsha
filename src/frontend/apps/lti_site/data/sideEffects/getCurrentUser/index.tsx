@@ -2,7 +2,7 @@ import { AnonymousUser, useJwt } from 'lib-components';
 
 import { API_ENDPOINT } from 'lib-components';
 import { requestStatus } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 /**
  * Makes and handles the GET request for the current user.

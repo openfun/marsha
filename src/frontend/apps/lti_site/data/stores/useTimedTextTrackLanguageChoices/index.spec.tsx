@@ -4,11 +4,14 @@ import React from 'react';
 
 import { useJwt } from 'lib-components';
 import { requestStatus } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { useTimedTextTrackLanguageChoices } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 describe('stores/useTimedTextTrackLanguageChoices', () => {
   // Build a helper component with an out-of-scope function to let us reach our Hook from

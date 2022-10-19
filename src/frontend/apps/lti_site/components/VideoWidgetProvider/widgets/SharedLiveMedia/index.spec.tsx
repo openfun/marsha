@@ -16,7 +16,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
@@ -28,15 +28,12 @@ jest.mock('lib-components', () => ({
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
+  report: jest.fn(),
 }));
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
-
-jest.mock('utils/errors/report', () => ({
-  report: jest.fn(),
-}));
 
 describe('<SharedLiveMedia />', () => {
   beforeEach(() => {

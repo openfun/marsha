@@ -22,7 +22,7 @@ import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from 'types/XAPI';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';

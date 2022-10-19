@@ -1,6 +1,6 @@
 import { Nullable } from 'lib-common';
 
-import { ShouldNotHappen } from 'utils/errors/exception';
+import { ShouldNotHappen } from 'lib-components';
 
 export const defaultmarginSize = 40;
 

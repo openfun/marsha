@@ -10,7 +10,10 @@ import { timedTextMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { LanguageSelect } from '.';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 const onChangeMock = jest.fn();
 

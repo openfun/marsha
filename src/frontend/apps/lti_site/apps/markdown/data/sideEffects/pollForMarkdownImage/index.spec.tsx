@@ -1,12 +1,15 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 import { pollForMarkdownImage } from '.';
 import { markdownImageMockFactory } from '../../../utils/tests/factories';
 
-jest.mock('utils/errors/report', () => ({ report: jest.fn() }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 describe('apps/markdown/sideEffects/pollForMarkdownImage', () => {
   beforeEach(() => {

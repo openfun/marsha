@@ -8,7 +8,7 @@ import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteThumbnail } from 'data/queries';
 import { useThumbnail } from 'data/stores/useThumbnail';
 import { Thumbnail } from 'lib-components';
-import { report } from 'utils/errors/report';
+import { report } from 'lib-components';
 
 const messages = defineMessages({
   confirmationModalTitle: {
