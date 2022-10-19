@@ -385,6 +385,8 @@ jobs:
         auth:
           username: $DOCKER_USER
           password: $DOCKER_PASS
+        environment:
+          BUILD_PATH: ../../../backend/marsha/static/js/build/site/
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -604,6 +606,7 @@ jobs:
           DJANGO_ALLOW_ASYNC_UNSAFE: 1
           DJANGO_BBB_ENABLED: 1
           DEBUG: pw:browser*
+          BUILD_PATH: ../../../backend/marsha/static/js/build/site/
       - image: cimg/postgres:10.20
         auth:
           username: $DOCKER_USER
@@ -642,9 +645,17 @@ jobs:
           working_directory: ~/marsha/src/frontend
           command: yarn install --frozen-lockfile
       - run:
-          name: Build front-end application
+          name: Build front-end LTI application
           working_directory: ~/marsha/src/frontend
           command: yarn build-lti
+      - run:
+          name: Build lib_tests
+          working_directory: ~/marsha/src/frontend
+          command: yarn build-tests
+      - run:
+          name: Build front-end site application
+          working_directory: ~/marsha/src/frontend
+          command: yarn build-site
       - run:
           name: Copy iframe resizer
           working_directory: ~/marsha/src/frontend
