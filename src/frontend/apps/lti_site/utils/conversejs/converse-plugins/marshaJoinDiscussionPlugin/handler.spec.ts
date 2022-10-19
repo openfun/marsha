@@ -5,9 +5,8 @@ import {
   videoMockFactory,
 } from 'lib-components';
 
-import { useVideo } from 'data/stores/useVideo';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { EventType, MessageType } from 'lib-components';
+import { EventType, MessageType, useVideo } from 'lib-components';
 
 import marshaJoinDiscussionPluginHandler from './handler';
 

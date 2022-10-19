@@ -6,7 +6,7 @@ import React from 'react';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { createPlayer } from 'Player/createPlayer';
 import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';

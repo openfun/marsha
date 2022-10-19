@@ -8,7 +8,7 @@ import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
-import { useDocument } from 'data/stores/useDocument';
+import { useDocument } from 'lib-components';
 import { Document } from 'types/file';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';

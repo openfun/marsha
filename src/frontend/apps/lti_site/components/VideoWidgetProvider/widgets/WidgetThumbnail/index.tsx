@@ -10,7 +10,7 @@ import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { useUploadManager } from 'lib-components';
 import { createThumbnail } from 'data/sideEffects/createThumbnail';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { useThumbnail } from 'data/stores/useThumbnail';
+import { useThumbnail } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { theme } from 'utils/theme/theme';

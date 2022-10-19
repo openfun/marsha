@@ -4,7 +4,7 @@ import React, { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { updateResource } from 'data/sideEffects/updateResource';
-import { useDocument } from 'data/stores/useDocument';
+import { useDocument } from 'lib-components';
 import { Document } from 'types/file';
 import { modelName } from 'lib-components';
 

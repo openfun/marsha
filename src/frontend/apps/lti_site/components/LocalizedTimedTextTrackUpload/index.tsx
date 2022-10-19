@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { ItemList } from 'components/graphicals/ItemList';
 import { useUploadManager } from 'lib-components';
 import { createTimedTextTrack } from 'data/sideEffects/createTimedTextTrack';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { modelName } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';

@@ -11,9 +11,8 @@ import { TextInput } from 'components/graphicals/TextInput';
 import { useUploadManager } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useVideo } from 'data/stores/useVideo';
 import { modelName } from 'lib-components';
-import { Video } from 'lib-components';
+import { Video, useVideo } from 'lib-components';
 import { report } from 'lib-components';
 
 import { LicenseSelect } from './LicenseSelect';

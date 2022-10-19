@@ -5,7 +5,7 @@ import { useJwt, timedTextMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { TimedTrackModalWrapper } from '.';

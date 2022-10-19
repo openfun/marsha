@@ -9,8 +9,8 @@ import VideoPlayer from 'components/VideoPlayer';
 import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useThumbnail } from 'data/stores/useThumbnail';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useThumbnail } from 'lib-components';
+import { useTimedTextTrack } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`

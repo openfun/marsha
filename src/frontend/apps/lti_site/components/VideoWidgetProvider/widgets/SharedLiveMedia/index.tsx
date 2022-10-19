@@ -8,7 +8,7 @@ import { ItemList } from 'components/graphicals/ItemList';
 import { useUploadManager } from 'lib-components';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
+import { useSharedLiveMedia } from 'lib-components';
 import { modelName } from 'lib-components';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';

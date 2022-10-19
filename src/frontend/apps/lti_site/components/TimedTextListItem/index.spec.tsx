@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt, timedTextMockFactory } from 'lib-components';
 import React from 'react';
 
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
+import { useTimedTextTrack } from 'lib-components';
 import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 

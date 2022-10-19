@@ -6,7 +6,6 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { useVideo as useVideoStore } from 'data/stores/useVideo';
 import { Maybe, Nullable } from 'lib-common';
 import {
   actionOne,
@@ -18,7 +17,7 @@ import {
   metadata,
   updateOne,
 } from 'lib-components';
-import { APIList } from 'lib-components';
+import { APIList, useVideo as useVideoStore } from 'lib-components';
 import { Document } from 'types/file';
 import {
   LiveModeType,

@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { modelName } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
-import { useVideo } from './stores/useVideo';
+import { useVideo } from 'lib-components';
 import { decodeJwt, useCurrentUser } from 'lib-components';
 
 jest.mock('utils/getOrInitAnonymousId', () => ({

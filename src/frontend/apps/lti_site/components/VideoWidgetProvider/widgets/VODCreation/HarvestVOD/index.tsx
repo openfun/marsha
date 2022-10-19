@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { harvestLive } from 'data/sideEffects/harvestLive';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useVideo } from 'data/stores/useVideo';
+import { useVideo } from 'lib-components';
 import { useFetchButton } from 'utils/useFetchButton';
 
 const messages = defineMessages({
