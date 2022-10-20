@@ -68,6 +68,8 @@ describe('<PublicVODDashboard />', () => {
 
   it('displays the video player alone', async () => {
     const video = videoMockFactory({
+      show_download: false,
+      has_transcript: false,
       urls: {
         manifests: {
           hls: 'https://example.com/hls.m3u8',
@@ -113,9 +115,11 @@ describe('<PublicVODDashboard />', () => {
     expect(videoElement.poster).toEqual(
       'https://example.com/thumbnail/1080p.jpg',
     );
+    expect(screen.queryByText('Transcript')).not.toBeInTheDocument();
+    expect(screen.queryByText('Download video')).not.toBeInTheDocument();
   });
 
-  it('displays the video player, the download link and transcripts', async () => {
+  it('displays the video player, the download and transcripts widgets', async () => {
     const timedTextTracks = [
       timedTextMockFactory({
         is_ready_to_show: true,
@@ -142,9 +146,7 @@ describe('<PublicVODDashboard />', () => {
       },
     });
 
-    const { elementContainer: container } = render(
-      wrapInVideo(<PublicVODDashboard playerType="videojs" />, video),
-    );
+    render(wrapInVideo(<PublicVODDashboard playerType="videojs" />, video));
 
     await waitFor(() =>
       // The player is created
@@ -158,22 +160,8 @@ describe('<PublicVODDashboard />', () => {
       ),
     );
 
-    screen.getByText(/Download this video/i);
-    screen.getByText('Show a transcript');
-    expect(
-      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelectorAll('source[type="video/mp4"]'),
-    ).toHaveLength(2);
-    const videoElement = container!.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-    expect(videoElement.poster).toEqual(
-      'https://example.com/thumbnail/1080p.jpg',
-    );
+    screen.getByText('Transcripts');
+    screen.getByText('Download video');
   });
 
   it('uses subtitles as transcripts', async () => {
@@ -205,9 +193,7 @@ describe('<PublicVODDashboard />', () => {
       },
     });
 
-    const { elementContainer: container } = render(
-      wrapInVideo(<PublicVODDashboard playerType="videojs" />, video),
-    );
+    render(wrapInVideo(<PublicVODDashboard playerType="videojs" />, video));
 
     await waitFor(() =>
       // The player is created
@@ -221,24 +207,8 @@ describe('<PublicVODDashboard />', () => {
       ),
     );
 
-    screen.getByText(/Download this video/i);
-    screen.getByText('Show a transcript');
-    expect(
-      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelectorAll('source[type="video/mp4"]'),
-    ).toHaveLength(2);
-    const videoElement = container!.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-    expect(videoElement.poster).toEqual(
-      'https://example.com/thumbnail/1080p.jpg',
-    );
-
-    expect(container!.querySelector('option[value="ttt-1"]')).not.toBeNull();
+    screen.getByText('Transcripts');
+    screen.getByText('Download video');
   });
 
   it('redirects to the error component when upload state is deleted', () => {
