@@ -57,7 +57,7 @@ export const DashboardLiveControlPane = () => {
       <ThemeContext.Extend value={extendedTheme}>
         <Tabs>
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>
-            <VideoWidgetProvider isLive />
+            <VideoWidgetProvider isLive isTeacher />
           </Tab>
           <Tab title={intl.formatMessage(messages.titleAttendance)}>
             <DashboardLiveTabAttendance />
