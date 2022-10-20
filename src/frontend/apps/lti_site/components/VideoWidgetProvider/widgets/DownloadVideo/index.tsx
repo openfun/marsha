@@ -72,7 +72,11 @@ const StyledAnchorButton = styled(Button)`
   justify-content: center;
 `;
 
-export const DownloadVideo = () => {
+interface DownloadVideoProps {
+  isTeacher: boolean;
+}
+
+export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
   const video = useCurrentVideo();
 
   const intl = useIntl();
@@ -147,19 +151,25 @@ export const DownloadVideo = () => {
     });
   }, [video.show_download, videoMutation]);
 
+  if (!isTeacher && !toggleAllowDownload) {
+    return null;
+  }
+
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <ToggleInput
-        disabled={disabledToggle}
-        checked={toggleAllowDownload}
-        onChange={onToggleChange}
-        label={intl.formatMessage(messages.allowDownloadToggleLabel)}
-        truncateLabel={false}
-      />
+      {isTeacher && (
+        <ToggleInput
+          disabled={disabledToggle}
+          checked={toggleAllowDownload}
+          onChange={onToggleChange}
+          label={intl.formatMessage(messages.allowDownloadToggleLabel)}
+          truncateLabel={false}
+        />
+      )}
       <Box direction="column" gap="small" style={{ marginTop: '0.75rem' }}>
         <Select
           aria-label={intl.formatMessage(messages.selectQualityLabel)}
