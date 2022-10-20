@@ -83,7 +83,9 @@ export const SortableTable = <
 
     const sortItems = props.sortBy;
     const sortCurrentItem = props.currentSort;
-    const availableItems = sortItems.filter((item) => item !== sortCurrentItem);
+    const availableItems = sortItems.filter((item) => {
+      return item.label !== sortCurrentItem.label;
+    });
 
     SortMenu = (
       <Menu
@@ -209,6 +211,7 @@ export const SortableTable = <
               direction="row"
               pad={{ horizontal: 'medium', vertical: 'small' }}
               round="xsmall"
+              align="center"
             >
               {props.selectable && (
                 <Box margin={{ right: 'large' }}>
