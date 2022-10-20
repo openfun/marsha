@@ -72,7 +72,13 @@ const ToastHack = () => {
 //  react-query setup
 
 //  create the default client used by react-query
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      retry: false,
+    },
+  },
+});
 
 /////////////////////////
 //  wrap the component
