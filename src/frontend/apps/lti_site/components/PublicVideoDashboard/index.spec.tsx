@@ -213,9 +213,7 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { elementContainer: container } = render(
-      <PublicVideoDashboard video={video} playerType="videojs" />,
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
     await waitFor(() =>
       // The player is created
@@ -229,22 +227,8 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText(/Download this video/i);
-    screen.getByText('Show a transcript');
-    expect(
-      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelectorAll('source[type="video/mp4"]'),
-    ).toHaveLength(2);
-    const videoElement = container!.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-    expect(videoElement.poster).toEqual(
-      'https://example.com/thumbnail/1080p.jpg',
-    );
+    screen.getByText('Transcripts');
+    screen.getByText('Download video');
   });
 
   it('uses subtitles as transcripts', async () => {
@@ -276,9 +260,7 @@ describe('PublicVideoDashboard', () => {
       },
     });
 
-    const { elementContainer: container } = render(
-      <PublicVideoDashboard video={video} playerType="videojs" />,
-    );
+    render(<PublicVideoDashboard video={video} playerType="videojs" />);
 
     await waitFor(() =>
       // The player is created
@@ -292,24 +274,8 @@ describe('PublicVideoDashboard', () => {
       ),
     );
 
-    screen.getByText(/Download this video/i);
-    screen.getByText('Show a transcript');
-    expect(
-      container!.querySelector('source[src="https://example.com/144p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelector('source[src="https://example.com/1080p.mp4"]'),
-    ).not.toBeNull();
-    expect(
-      container!.querySelectorAll('source[type="video/mp4"]'),
-    ).toHaveLength(2);
-    const videoElement = container!.querySelector('video')!;
-    expect(videoElement.tabIndex).toEqual(-1);
-    expect(videoElement.poster).toEqual(
-      'https://example.com/thumbnail/1080p.jpg',
-    );
-
-    expect(container!.querySelector('option[value="ttt-1"]')).not.toBeNull();
+    screen.getByText('Transcripts');
+    screen.getByText('Download video');
   });
 
   it('displays the video player, the tile, the chat and chat action', async () => {

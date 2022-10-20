@@ -9,6 +9,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add new elements to the public VOD Dashboard :
+  - Transcript reader
+  - Video download
+
 ### Changed
 
 - Allow site users to manage classroom documents, deposited files,
