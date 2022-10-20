@@ -5,6 +5,7 @@ import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
 import render from 'utils/tests/render';
 
 import { WidgetsContainer } from '.';
+import { WidgetSize } from '..';
 
 const GenericComponent1 = () => <p>Generic component 1</p>;
 const GenericComponent2 = () => <p>Generic component 2</p>;
@@ -14,12 +15,12 @@ const GenericComponent5 = () => <p>Generic component 5</p>;
 const GenericComponent6 = () => <p>Generic component 6</p>;
 
 const genericComponentsList = [
-  <GenericComponent1 key="1" />,
-  <GenericComponent2 key="2" />,
-  <GenericComponent3 key="3" />,
-  <GenericComponent4 key="4" />,
-  <GenericComponent5 key="5" />,
-  <GenericComponent6 key="6" />,
+  { component: <GenericComponent1 key="1" />, size: WidgetSize.DEFAULT },
+  { component: <GenericComponent2 key="2" />, size: WidgetSize.DEFAULT },
+  { component: <GenericComponent3 key="3" />, size: WidgetSize.DEFAULT },
+  { component: <GenericComponent4 key="4" />, size: WidgetSize.DEFAULT },
+  { component: <GenericComponent5 key="5" />, size: WidgetSize.DEFAULT },
+  { component: <GenericComponent6 key="6" />, size: WidgetSize.DEFAULT },
 ];
 
 describe('<DashboardLiveWidgetContainer />', () => {

@@ -3,17 +3,18 @@ import React from 'react';
 
 import { InfoModal } from 'components/graphicals/InfoModal';
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal/index';
+import { WidgetProps, WidgetSize } from '..';
 
 interface WidgetsContainerProps {
-  children: React.ReactNode | React.ReactNode[];
+  children: WidgetProps | WidgetProps[];
 }
 
 export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
   const [infoWidgetModal, setInfoWidgetModal] = useInfoWidgetModal();
 
-  const size = React.useContext(ResponsiveContext);
+  const layoutSize = React.useContext(ResponsiveContext);
   let nbrOfColumns: number;
-  switch (size) {
+  switch (layoutSize) {
     case 'small':
       nbrOfColumns = 1;
       break;
@@ -38,6 +39,24 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         />
       )}
 
+      {Array.isArray(children)
+        ? children
+            .filter((widget) => widget.size === WidgetSize.LARGE)
+            .map((widget, index) => (
+              <Box
+                direction="column"
+                background="bg-marsha"
+                gap="small"
+                pad="small"
+                key={index}
+              >
+                {widget.component}
+              </Box>
+            ))
+        : children.size === WidgetSize.LARGE
+        ? children.component
+        : null}
+
       <Box direction="row" background="bg-marsha" gap="small" pad="small">
         {[...Array(nbrOfColumns)].map((_, indexColumn) => (
           <Box
@@ -48,14 +67,17 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
           >
             {Array.isArray(children)
               ? children
+                  .filter((widget) => widget.size === WidgetSize.DEFAULT)
                   .filter((__, indexComponent) =>
                     indexComponent < nbrOfColumns
                       ? indexComponent === indexColumn
                       : indexComponent % nbrOfColumns === indexColumn,
                   )
-                  .map((component, index) => <Box key={index}>{component}</Box>)
-              : indexColumn === 0
-              ? children
+                  .map((widget, index) => (
+                    <Box key={index}>{widget.component}</Box>
+                  ))
+              : indexColumn === 0 && children.size === WidgetSize.DEFAULT
+              ? children.component
               : null}
           </Box>
         ))}
