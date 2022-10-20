@@ -67,7 +67,7 @@ export const DashboardVOD = () => {
         />
       </StyledLiveVideoInformationBarWrapper>
 
-      <VideoWidgetProvider isLive={false} />
+      <VideoWidgetProvider isLive={false} isTeacher />
     </Box>
   );
 };

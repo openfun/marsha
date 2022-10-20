@@ -41,7 +41,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher={false} />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -68,7 +68,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher={false} />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -98,7 +98,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher={false} />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -119,7 +119,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher={false} />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -138,7 +138,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -167,7 +167,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -194,7 +194,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -235,7 +235,7 @@ describe('<InstructorDownloadVideo />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <DownloadVideo />
+          <DownloadVideo isTeacher />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
@@ -266,5 +266,32 @@ describe('<InstructorDownloadVideo />', () => {
       method: 'PATCH',
       body: '{"show_download":false}',
     });
+  });
+
+  it('Toggle is not present if isTeacher=false', async () => {
+    const mockedVideo = videoMockFactory();
+    const allowDownloadToggleLabel = 'Allow video download';
+    const disallowDownloadToggleSuccess = 'Video download disallowed.';
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DownloadVideo isTeacher={false} />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      show_download: false,
+    });
+
+    expect(
+      screen.queryByText(allowDownloadToggleLabel),
+    ).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByText(disallowDownloadToggleSuccess),
+    ).not.toBeInTheDocument();
   });
 });

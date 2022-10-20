@@ -55,7 +55,7 @@ describe('<VideoWidgetProvider />', () => {
     useThumbnail.getState().addResource(mockedThumbnail);
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
-    render(wrapInVideo(<VideoWidgetProvider isLive />, mockVideo));
+    render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
 
     // ToolsAndApplications
     screen.getByText('Tools and applications');
@@ -180,7 +180,9 @@ describe('<VideoWidgetProvider />', () => {
       choices: [{ label: 'some_language_label', value: 'some_language' }],
     });
 
-    render(wrapInVideo(<VideoWidgetProvider isLive={false} />, mockVideo));
+    render(
+      wrapInVideo(<VideoWidgetProvider isLive={false} isTeacher />, mockVideo),
+    );
 
     //  Title and description
     screen.getByText('General');
