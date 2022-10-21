@@ -9,7 +9,7 @@ import {
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useAppConfig } from 'data/stores/useAppConfig';
-import { appState } from 'types/AppData';
+import { appState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';

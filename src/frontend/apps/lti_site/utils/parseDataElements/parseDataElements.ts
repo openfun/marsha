@@ -1,4 +1,4 @@
-import { AppData } from '../../types/AppData';
+import { AppData } from 'lib-components';
 import { modelName } from 'lib-components';
 
 export const parseDataElements = (element: Element): AppData => {

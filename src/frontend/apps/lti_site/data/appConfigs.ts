@@ -1,4 +1,4 @@
-import { appNames, flags } from 'types/AppData';
+import { appNames, flags } from 'lib-components';
 
 /**
  * Additional configuration for declared applications

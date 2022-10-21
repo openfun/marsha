@@ -1,4 +1,4 @@
-import { AppData } from 'types/AppData';
+import { AppData } from 'lib-components';
 
 import {
   MarkdownDocument,

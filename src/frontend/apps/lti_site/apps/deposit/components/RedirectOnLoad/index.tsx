@@ -5,7 +5,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
-import { appState, flags } from 'types/AppData';
+import { appState, flags } from 'lib-components';
 
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 

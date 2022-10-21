@@ -7,7 +7,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
-import { appState, flags } from 'types/AppData';
+import { appState, flags } from 'lib-components';
 
 import { MARKDOWN_NOT_FOUND_ROUTE } from '../MarkdownNotFoundView/route';
 import { MARKDOWN_EDITOR_ROUTE } from '../MarkdownEditor/route';
