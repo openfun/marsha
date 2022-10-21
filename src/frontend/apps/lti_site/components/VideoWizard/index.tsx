@@ -3,7 +3,7 @@ import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { ConfigureLiveButton } from 'components/VideoWizard/ConfigureLiveButton';
 import { withLink } from 'components/withLink/withLink';

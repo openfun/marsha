@@ -2,7 +2,7 @@ import { Box } from 'grommet';
 import React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useTimedTextTrack } from 'lib-components';

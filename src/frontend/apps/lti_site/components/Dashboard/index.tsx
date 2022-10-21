@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 
 import DashboardDocument from 'components/DashboardDocument';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { LTINav } from 'components/LTINav';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
 import { useAppConfig } from 'lib-components';

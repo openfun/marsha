@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { timedTextMode, uploadState } from 'lib-components';
 import { report } from 'lib-components';

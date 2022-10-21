@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { DashboardLiveTabAttendanceSession } from './DashboardLiveTabAttendanceSession';
 import { DashboardLiveTabAttendanceWaiting } from './DashboardLiveTabAttendanceWaiting';
 
-import { ErrorMessage } from 'components/ErrorComponents';
+import { ErrorMessage } from 'lib-components';
 import { useLiveAttendances } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { POLL_FOR_ATTENDANCES } from 'default/sideEffects';

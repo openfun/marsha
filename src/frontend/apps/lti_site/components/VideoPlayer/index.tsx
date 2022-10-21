@@ -4,7 +4,7 @@ import React, { useRef, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { useThumbnail } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';

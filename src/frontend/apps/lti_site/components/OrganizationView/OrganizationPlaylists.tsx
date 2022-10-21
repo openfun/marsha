@@ -17,7 +17,7 @@ import styled from 'styled-components';
 
 import { usePlaylists } from '../../data/queries';
 import { theme } from '../../utils/theme/theme';
-import { ErrorMessage } from '../ErrorComponents';
+import { ErrorMessage } from 'lib-components';
 
 const messages = defineMessages({
   emptyTable: {
