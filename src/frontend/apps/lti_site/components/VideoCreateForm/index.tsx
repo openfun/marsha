@@ -13,7 +13,7 @@ import { UploadableObject } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 
 import { MutationFieldError } from '../MutationFieldError';
-import { UploadField } from '../UploadField';
+import { UploadField } from 'lib-components';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({

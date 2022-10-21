@@ -1,11 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Maybe } from 'lib-common';
 import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
 import styled from 'styled-components';
 
-import { uploadableModelName } from 'lib-components';
+import { useUploadManager } from 'common/UploadManager';
+import { uploadableModelName } from 'types/models';
 
-import { useUploadManager } from 'lib-components';
 import { DropzonePlaceholder } from './DropzonePlaceholder';
 
 const DropzoneStyled = styled.div`
