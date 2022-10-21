@@ -1,8 +1,9 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Nullable } from 'lib-common';
 
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
-import { Live, Playlist, Video } from 'lib-components';
+import { Document } from 'types/file';
+import { modelName } from 'types/models';
+import { Live, Playlist, Video } from 'types/tracks';
 
 export enum appState {
   ERROR = 'error',

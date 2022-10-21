@@ -19,7 +19,7 @@ import React, {
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { useAttendance } from 'data/stores/useAttendance';
-import { flags } from 'types/AppData';
+import { flags } from 'lib-components';
 
 export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);

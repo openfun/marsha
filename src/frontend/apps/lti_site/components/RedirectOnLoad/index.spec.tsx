@@ -8,7 +8,7 @@ import { PLAYER_ROUTE } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { useAppConfig } from 'data/stores/useAppConfig';
 
-import { appState } from 'types/AppData';
+import { appState } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';

@@ -5,7 +5,7 @@ import { Tab } from 'grommet';
 import React from 'react';
 
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { selectableBaseResource } from 'types/AppData';
+import { selectableBaseResource } from 'lib-components';
 import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
   documentMockFactory,
