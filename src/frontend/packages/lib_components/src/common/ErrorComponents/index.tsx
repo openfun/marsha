@@ -3,10 +3,11 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from '../Headings';
-import { LayoutMainArea } from '../LayoutMainArea';
+import { H2 } from 'common/Headings';
+import { LayoutMainArea } from 'common/LayoutMainArea';
 
 export * from './BoundaryScreenError';
+export * from './route';
 
 export interface ErrorComponentsProps {
   code:

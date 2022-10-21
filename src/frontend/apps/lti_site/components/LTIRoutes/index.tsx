@@ -3,9 +3,9 @@ import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FullScreenError } from 'components/ErrorComponents';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { ErrorComponentsProps } from 'components/ErrorComponents';
+import { FullScreenError } from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import { ErrorComponentsProps } from 'lib-components';
 import { InstructorWrapper } from 'components/InstructorWrapper';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';

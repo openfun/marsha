@@ -14,7 +14,7 @@ import { modelName } from 'lib-components';
 import { timedTextMode } from 'lib-components';
 import { report } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
-import { FULL_SCREEN_ERROR_ROUTE } from '../ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
 
 const messages = defineMessages({

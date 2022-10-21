@@ -6,7 +6,7 @@ import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import {

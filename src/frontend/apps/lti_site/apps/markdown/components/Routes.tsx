@@ -3,11 +3,8 @@ import { MemoryRouter, Route } from 'react-router-dom';
 
 import { Loader } from 'lib-components';
 
-import {
-  ErrorComponentsProps,
-  FullScreenError,
-} from 'components/ErrorComponents';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { ErrorComponentsProps, FullScreenError } from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { UploadManager } from 'lib-components';
 
 import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';

@@ -1,7 +1,7 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
