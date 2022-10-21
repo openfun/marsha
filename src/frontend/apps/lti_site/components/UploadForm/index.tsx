@@ -12,7 +12,7 @@ import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { IframeHeading } from 'components/Headings';
 import { LayoutMainArea } from 'components/LayoutMainArea';
-import { UploadField } from 'components/UploadField';
+import { UploadField } from 'lib-components';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import { getStoreResource } from 'lib-components';
 import { modelName, uploadableModelName } from 'lib-components';

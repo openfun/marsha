@@ -1,12 +1,12 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { DropzoneIcon } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import Dropzone, { DropzoneOptions, DropzoneRootProps } from 'react-dropzone';
 import styled from 'styled-components';
 import { theme } from 'utils/theme/theme';
-import { DropzoneIcon } from 'components/UploadField/DropzoneIcon';
 
 const messages = defineMessages({
   uploadImageInDocument: {

@@ -1,10 +1,10 @@
 import { Box, Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import * as React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { theme } from '../../utils/theme/theme';
 import { DropzoneIcon } from './DropzoneIcon';
 
 const messages = defineMessages({
