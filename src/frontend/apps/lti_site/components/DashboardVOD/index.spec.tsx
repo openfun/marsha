@@ -13,7 +13,8 @@ const mockedVideo = videoMockFactory({
   description: 'An example description',
 });
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

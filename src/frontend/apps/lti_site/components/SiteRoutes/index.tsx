@@ -9,7 +9,7 @@ import { OrganizationView } from 'components/OrganizationView';
 import { SiteLayout } from 'components/SiteLayout';
 import { UploadManager } from 'lib-components';
 import { UploadsView } from 'components/UploadsView';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 const queryClient = new QueryClient();
 

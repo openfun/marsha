@@ -17,7 +17,7 @@ import { UploadForm } from 'components/UploadForm';
 import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
 import { UploadManager } from 'lib-components';
 import { LTIUploadHandlers } from 'lib-components';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 
 const Dashboard = lazy(() => import('components/Dashboard'));

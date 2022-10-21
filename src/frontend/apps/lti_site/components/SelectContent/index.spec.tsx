@@ -28,13 +28,20 @@ const mockAppData = {
   videos: undefined,
 };
 
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppconfig: () => mockAppData,
-}));
-
+/**
+ * - Mock available app type in the front to provide the app used in the test
+ * - Mock appConfig to override real config because enums are mock
+ * and real values don't exist anymore
+ */
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  useAppconfig: () => mockAppData,
   Loader: () => <span>Loader</span>,
+  useAppConfig: () => ({}),
+  appNames: {
+    custom_app: 'custom_app',
+    other_custom_app: 'other_custom_app',
+  },
 }));
 
 jest.mock('data/sideEffects/initiateLive', () => ({
@@ -101,25 +108,6 @@ jest.mock(
     virtual: true,
   },
 );
-
-/**
- * Mock available app type in the front to provide the app used in the test
- */
-jest.mock('types/AppData.ts', () => ({
-  ...jest.requireActual('types/AppData.ts'),
-  appNames: {
-    custom_app: 'custom_app',
-    other_custom_app: 'other_custom_app',
-  },
-}));
-
-/**
- * Mock appConfig to override real config because enums are mock
- * and real values don't exist anymore
- */
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppConfig: () => ({}),
-}));
 
 window.HTMLFormElement.prototype.submit = jest.fn();
 

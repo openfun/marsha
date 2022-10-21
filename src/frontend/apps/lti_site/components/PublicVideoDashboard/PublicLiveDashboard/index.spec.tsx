@@ -20,7 +20,8 @@ import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { PublicLiveDashboard } from '.';
 import { StudentLiveStarter } from './StudentLiveStarter';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

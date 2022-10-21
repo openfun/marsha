@@ -8,7 +8,8 @@ import { organizationMockFactory, playlistMockFactory } from 'lib-components';
 
 import { OrganizationPlaylists } from './OrganizationPlaylists';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({}),
 }));
 

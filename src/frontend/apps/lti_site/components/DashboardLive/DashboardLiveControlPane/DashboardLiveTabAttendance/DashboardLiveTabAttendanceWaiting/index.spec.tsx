@@ -6,7 +6,8 @@ import React from 'react';
 
 import { DashboardLiveTabAttendanceWaiting } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {
@@ -14,10 +15,6 @@ jest.mock('data/stores/useAppConfig', () => ({
       },
     },
   }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 

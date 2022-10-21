@@ -5,7 +5,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
 import { StudentLiveDescription } from 'components/StudentLiveAdvertising/StudentLiveDescription';
 import { InputDisplayName } from 'components/Chat/InputDisplayName';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 const messages = defineMessages({
   title: {

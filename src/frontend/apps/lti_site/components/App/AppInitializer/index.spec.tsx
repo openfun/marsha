@@ -26,7 +26,8 @@ const mockedVideo = {
   thumbnail: { id: 'my-thumbnail-id' },
   shared_live_medias: [{ id: 'my-shared-live-media-id' }],
 };
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     flags: {
       sentry: true,

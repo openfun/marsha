@@ -20,7 +20,8 @@ import { converse } from 'utils/window';
 
 import { StudentLiveStarter } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

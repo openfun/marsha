@@ -35,7 +35,8 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   getResource: jest.fn().mockResolvedValue(null),
 }));
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     attendanceDelay: 10000,
     video: mockVideo,

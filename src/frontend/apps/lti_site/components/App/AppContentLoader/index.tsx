@@ -24,7 +24,7 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 
 import { BoundaryScreenError } from 'components/ErrorComponents';
 import { Loader } from 'lib-components';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { appNames } from 'lib-components';
 import { report } from 'lib-components';
 import { GlobalStyles } from 'utils/theme/baseStyles';

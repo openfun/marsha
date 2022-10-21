@@ -18,7 +18,8 @@ import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
 
 import DashboardClassroom from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     modelName: 'classrooms',
     resource: {

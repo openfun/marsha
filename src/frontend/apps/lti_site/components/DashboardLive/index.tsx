@@ -19,7 +19,7 @@ import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';

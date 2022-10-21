@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 type SvgProps = { size: string };
 

@@ -2,7 +2,7 @@ import { Box, Grid, ResponsiveContext, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import React, { useContext } from 'react';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 interface DashboardClassroomMessageProps {
   message: string;

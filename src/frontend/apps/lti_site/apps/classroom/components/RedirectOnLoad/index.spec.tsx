@@ -1,14 +1,15 @@
 import React from 'react';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
 import { DASHBOARD_CLASSROOM_ROUTE } from '../DashboardClassroom/route';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
 }));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<

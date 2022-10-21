@@ -5,7 +5,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LTINav } from 'components/LTINav';
 import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 
 const PlaylistPage = () => {

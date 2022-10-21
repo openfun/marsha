@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { decodeJwt, Loader } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { Document } from 'lib-components';
 import { modelName } from 'lib-components';
@@ -36,7 +36,8 @@ jest.mock('lib-components', () => ({
 }));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
 }));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<

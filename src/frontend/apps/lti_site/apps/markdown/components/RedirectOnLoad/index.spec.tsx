@@ -8,7 +8,7 @@ import {
 } from 'lib-components';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
 import render from 'utils/tests/render';
 
@@ -17,7 +17,8 @@ import { MARKDOWN_NOT_FOUND_ROUTE } from '../MarkdownNotFoundView/route';
 import { MARKDOWN_VIEWER_ROUTE } from '../MarkdownViewer/route';
 import { MARKDOWN_EDITOR_ROUTE } from '../MarkdownEditor/route';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
 }));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
