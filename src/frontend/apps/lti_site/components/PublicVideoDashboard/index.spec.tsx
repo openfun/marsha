@@ -75,7 +75,8 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

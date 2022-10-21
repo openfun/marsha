@@ -11,7 +11,8 @@ import { DashboardDocumentPaneButtons } from '.';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({}),
 }));
 

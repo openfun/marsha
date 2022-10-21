@@ -7,7 +7,10 @@ import { Route } from 'react-router-dom';
 
 import { PlaylistView } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 describe('<PlaylistView />', () => {
   afterEach(() => fetchMock.restore());

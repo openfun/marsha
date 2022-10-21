@@ -2,7 +2,7 @@ import { Box, Heading } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 const messages = defineMessages({
   noParticipants: {

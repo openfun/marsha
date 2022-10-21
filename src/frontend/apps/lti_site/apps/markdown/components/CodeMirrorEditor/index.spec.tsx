@@ -5,7 +5,10 @@ import render from 'utils/tests/render';
 
 import { CodeMirrorEditor, useCodemirrorEditor } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 describe('<CodeMirrorEditor>', () => {
   let getLatestHookValues: () => any = () => {};

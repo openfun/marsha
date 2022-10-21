@@ -5,7 +5,8 @@ import render from 'utils/tests/render';
 
 import { Icon } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: { svg: { icons: '' } },
   }),

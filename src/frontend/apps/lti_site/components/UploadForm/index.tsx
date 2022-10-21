@@ -19,7 +19,7 @@ import { modelName, uploadableModelName } from 'lib-components';
 import { TimedText, timedTextMode, UploadableObject } from 'lib-components';
 
 import { useAsyncEffect } from 'lib-components';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 const messages = defineMessages({
   linkToDashboard: {

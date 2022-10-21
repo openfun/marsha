@@ -6,7 +6,8 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { BoundaryScreenError } from 'components/ErrorComponents';
 import render from 'utils/tests/render';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

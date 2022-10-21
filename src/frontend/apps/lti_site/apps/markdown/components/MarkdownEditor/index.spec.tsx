@@ -18,7 +18,8 @@ import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
 import { uploadState } from 'lib-components';
 import { UploadManager } from 'lib-components';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     modelName: 'markdown_documents',
     resource: {

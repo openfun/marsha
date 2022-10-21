@@ -17,7 +17,7 @@ import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import { StudentLiveRecordingInfo } from 'components/StudentLiveRecordingInfo';
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,

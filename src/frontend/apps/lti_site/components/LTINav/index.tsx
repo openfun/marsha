@@ -9,7 +9,7 @@ import styled from 'styled-components';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 import { Document } from 'lib-components';
 import { modelName } from 'lib-components';

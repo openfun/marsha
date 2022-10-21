@@ -1,7 +1,7 @@
 import { Box, Image, ResponsiveContext, Stack } from 'grommet';
 import React, { useContext } from 'react';
 
-import { useAppConfig } from 'data/stores/useAppConfig/index';
+import { useAppConfig } from 'lib-components';
 
 interface WizardLayoutProps {
   children: React.ReactNode | React.ReactNode[];

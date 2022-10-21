@@ -10,7 +10,8 @@ import { render, Deferred } from 'lib-tests';
 import { {{cookiecutter.model_lower}}MockFactory } from 'apps/{{cookiecutter.app_name}}/utils/tests/factories';
 import Dashboard{{cookiecutter.model}} from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     modelName: '{{cookiecutter.model_name}}',
     resource: {

@@ -17,7 +17,7 @@ import React, {
 } from 'react';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { useAttendance } from 'data/stores/useAttendance';
 import { flags } from 'lib-components';
 

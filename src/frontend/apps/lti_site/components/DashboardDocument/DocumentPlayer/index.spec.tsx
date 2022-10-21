@@ -15,7 +15,8 @@ const mockDocument = documentMockFactory({
   title: 'foo.pdf',
   upload_state: uploadState.READY,
 });
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     document: mockDocument,
   }),

@@ -1,6 +1,6 @@
 import { useCallback } from 'react';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { flags } from 'lib-components';
 
 export const useIsFeatureEnabled = () => {

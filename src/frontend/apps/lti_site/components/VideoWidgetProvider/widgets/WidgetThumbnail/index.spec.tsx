@@ -25,7 +25,15 @@ jest.mock('lib-components', () => ({
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
+  useAppConfig: () => ({
+    static: {
+      img: {
+        liveBackground: 'path/to/image.png',
+      },
+    },
+  }),
 }));
+
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
@@ -35,16 +43,6 @@ mockUseUploadManager.mockReturnValue({
   resetUpload: jest.fn(),
   uploadManagerState: {},
 });
-
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppConfig: () => ({
-    static: {
-      img: {
-        liveBackground: 'path/to/image.png',
-      },
-    },
-  }),
-}));
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('data/stores/useInfoWidgetModal', () => ({

@@ -10,7 +10,8 @@ import render from 'utils/tests/render';
 
 import { ConfigureLiveButton } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({}),
 }));
 

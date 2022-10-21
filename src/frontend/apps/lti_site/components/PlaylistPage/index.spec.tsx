@@ -2,13 +2,14 @@ import { screen } from '@testing-library/react';
 import { Loader } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 import render from 'utils/tests/render';
 
 import PlaylistPage from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
 }));
 jest.mock('lib-components', () => ({
