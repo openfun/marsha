@@ -14,7 +14,7 @@ import {
 import styled from 'styled-components';
 
 import { useTimedTextTracks, useVideo } from 'data/queries';
-import { ErrorMessage } from 'components/ErrorComponents';
+import { ErrorMessage } from 'lib-components';
 import { UploadableObjectStatusBadge } from 'components/UploadableObjectStatusBadge';
 import { UploadField } from 'lib-components';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';

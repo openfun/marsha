@@ -14,7 +14,7 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { ErrorMessage } from '../ErrorComponents';
+import { ErrorMessage } from 'lib-components';
 import { Document } from 'lib-components';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
 import { Playlist, Video } from 'lib-components';

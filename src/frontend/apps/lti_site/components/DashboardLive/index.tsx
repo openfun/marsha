@@ -5,7 +5,7 @@ import { Redirect } from 'react-router-dom';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { toolbarButtons } from 'components/DashboardLiveJitsi/utils';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveModale } from 'components/LiveModale';

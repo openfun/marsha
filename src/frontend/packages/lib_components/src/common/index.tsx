@@ -51,3 +51,5 @@ export * from './UploadManager/LTIUploadHandlers';
 export * from './UploadField';
 export * from './UploadField/DropzoneIcon';
 export * from './UploadField/DropzonePlaceholder';
+export * from './ErrorComponents';
+export * from './Headings';

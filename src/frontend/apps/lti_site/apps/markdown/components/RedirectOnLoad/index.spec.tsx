@@ -7,7 +7,7 @@ import {
   useJwt,
 } from 'lib-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
 import render from 'utils/tests/render';

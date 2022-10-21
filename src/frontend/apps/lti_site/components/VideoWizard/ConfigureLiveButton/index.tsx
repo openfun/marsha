@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { initiateLive } from 'data/sideEffects/initiateLive';
 import { modelName } from 'lib-components';
 import { LiveModeType, Video } from 'lib-components';

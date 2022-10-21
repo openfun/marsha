@@ -6,8 +6,8 @@ import { Loader } from 'lib-components';
 import {
   ErrorComponentsProps,
   FullScreenError,
-} from 'components/ErrorComponents';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+} from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { DASHBOARD_{{ cookiecutter.app_name|upper }}_ROUTE } from './Dashboard{{cookiecutter.model}}/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';

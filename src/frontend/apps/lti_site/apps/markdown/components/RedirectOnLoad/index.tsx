@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import { useCurrentResourceContext, useJwt } from 'lib-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useAppConfig } from 'lib-components';
 

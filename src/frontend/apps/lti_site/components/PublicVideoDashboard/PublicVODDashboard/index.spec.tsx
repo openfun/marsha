@@ -4,7 +4,7 @@ import { useJwt, timedTextMockFactory, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 
 import { useTimedTextTrack } from 'lib-components';
 import { createPlayer } from 'Player/createPlayer';

@@ -3,7 +3,7 @@ import { useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { PLAYER_ROUTE } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import { useAppConfig } from 'lib-components';

@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import DashboardLiveJitsi from 'components/DashboardLiveJitsi';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
+import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';

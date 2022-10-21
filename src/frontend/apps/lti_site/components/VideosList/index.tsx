@@ -17,7 +17,7 @@ import styled from 'styled-components';
 import { useVideos } from '../../data/queries';
 import { Video } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
-import { ErrorMessage } from '../ErrorComponents';
+import { ErrorMessage } from 'lib-components';
 import { UploadableObjectStatusBadge } from '../UploadableObjectStatusBadge';
 
 const messages = defineMessages({
