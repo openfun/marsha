@@ -14,7 +14,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PublicVODDashboard } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

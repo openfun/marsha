@@ -8,7 +8,8 @@ import { InstructorView } from '.';
 
 jest.mock('jwt-decode', () => jest.fn());
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     modelName: 'videos',
   }),

@@ -13,7 +13,8 @@ import {
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
 import DashboardFileDepository from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     modelName: 'file_depositories',
     resource: {

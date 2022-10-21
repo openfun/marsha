@@ -24,26 +24,18 @@ const mockAppData = {
   videos: undefined,
 };
 
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppconfig: () => mockAppData,
-}));
-
 /**
- * Mock available app type in the front to provide the app used in the test
+ * - Mock available app type in the front to provide the app used in the test
+ * - Mock appConfig to override real config because enums are mock
+ * and real values don't exist anymore
  */
-jest.mock('types/AppData.ts', () => ({
-  ...jest.requireActual('types/AppData.ts'),
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppconfig: () => mockAppData,
   appNames: {
     custom_app: 'custom_app',
     other_custom_app: 'other_custom_app',
   },
-}));
-
-/**
- * Mock appConfig to override real config because enums are mock
- * and real values don't exist anymore
- */
-jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({}),
 }));
 

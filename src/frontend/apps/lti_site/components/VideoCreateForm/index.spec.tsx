@@ -10,7 +10,10 @@ import { modelName } from 'lib-components';
 
 import { VideoCreateForm } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 describe('<VideoCreateForm />', () => {
   jest.spyOn(console, 'error').mockImplementation(() => jest.fn());

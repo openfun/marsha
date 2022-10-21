@@ -9,7 +9,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardLiveControlPane } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {

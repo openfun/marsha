@@ -23,7 +23,9 @@ jest.mock('lib-components', () => ({
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
+  useAppConfig: () => appData,
 }));
+
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
@@ -41,10 +43,6 @@ const appData = {
     },
   },
 };
-
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppConfig: () => appData,
-}));
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('data/stores/useInfoWidgetModal', () => ({

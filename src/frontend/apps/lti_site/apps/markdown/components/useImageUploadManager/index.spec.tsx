@@ -15,7 +15,10 @@ import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 import { uploadState } from 'lib-components';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 describe('apps/markdown/components/useImageUploadManager', () => {
   let getLatestUseImageUploadManagerHookValues: () => any = () => {};

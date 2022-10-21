@@ -12,7 +12,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'lib-components';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
@@ -21,6 +21,7 @@ import { AppConfig } from 'lib-components';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  useAppConfig: jest.fn(),
   report: jest.fn(),
   useVideo: jest.fn(),
   useUploadManager: jest.fn(),
@@ -30,9 +31,6 @@ jest.mock('lib-components', () => ({
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
-jest.mock('data/stores/useAppConfig', () => ({
-  useAppConfig: jest.fn(),
-}));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;

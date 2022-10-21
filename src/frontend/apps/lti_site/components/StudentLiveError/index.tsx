@@ -4,7 +4,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { AdvertisingBox } from 'components/StudentLiveAdvertising/AdvertisingBox';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 const messages = defineMessages({
   title: {

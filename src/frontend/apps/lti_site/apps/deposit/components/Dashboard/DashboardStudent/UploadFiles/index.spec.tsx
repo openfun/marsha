@@ -14,7 +14,10 @@ import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
 
 import { UploadFiles } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 jest.mock('apps/deposit/data/depositAppData', () => ({
   depositAppData: {

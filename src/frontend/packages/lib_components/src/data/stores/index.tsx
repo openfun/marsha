@@ -1,3 +1,4 @@
+export * from './useAppConfig';
 export * from './useVideo';
 export * from './useTimedTextTrack';
 export * from './useThumbnail';

@@ -13,7 +13,7 @@ import { useIntl, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { liveState } from 'lib-components';
 

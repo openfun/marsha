@@ -7,7 +7,7 @@ import { Router } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 import { wrapInIntlProvider } from 'utils/tests/intl';
@@ -16,7 +16,8 @@ import render from 'utils/tests/render';
 
 import { LTINav } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
 }));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<

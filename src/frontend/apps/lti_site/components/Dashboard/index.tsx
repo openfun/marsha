@@ -5,7 +5,7 @@ import DashboardDocument from 'components/DashboardDocument';
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { LTINav } from 'components/LTINav';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { modelName } from 'lib-components';
 
 import { DashboardVideoWrapper } from './DashboardVideoWrapper';

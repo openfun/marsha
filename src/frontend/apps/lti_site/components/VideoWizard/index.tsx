@@ -7,7 +7,7 @@ import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { ConfigureLiveButton } from 'components/VideoWizard/ConfigureLiveButton';
 import { withLink } from 'components/withLink/withLink';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 
 import CreateVOD from './CreateVOD';
 import { WizardLayout } from './WizardLayout';

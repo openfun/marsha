@@ -3,7 +3,7 @@ import { Redirect } from 'react-router-dom';
 
 import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from 'lib-components';
 import { appState } from 'lib-components';
 import { modelName } from 'lib-components';
 

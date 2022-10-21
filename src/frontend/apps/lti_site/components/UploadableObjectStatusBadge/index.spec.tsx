@@ -9,7 +9,10 @@ import render from 'utils/tests/render';
 
 import { UploadableObjectStatusBadge } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 describe('<UploadableObjectStatusBadge />', () => {
   it('shows the status for an object that is READY', () => {

@@ -16,7 +16,10 @@ import { classroomDocumentMockFactory } from 'apps/classroom/utils/tests/factori
 import { UploadDocuments } from '.';
 import userEvent from '@testing-library/user-event';
 
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  useAppConfig: () => ({}),
+}));
 
 jest.mock('apps/classroom/data/classroomAppData', () => ({
   classroomAppData: {

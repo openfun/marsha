@@ -44,7 +44,8 @@ jest.mock('./createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     attendanceDelay: 10,
     video: mockVideo,

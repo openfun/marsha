@@ -10,7 +10,8 @@ import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { DashboardLiveTabAttendance } from '.';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     static: {
       img: {
@@ -18,12 +19,9 @@ jest.mock('data/stores/useAppConfig', () => ({
       },
     },
   }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
+
 const mockedVideo = videoMockFactory({ live_state: liveState.RUNNING });
 
 describe('<DashboardLiveTabAttendance />', () => {

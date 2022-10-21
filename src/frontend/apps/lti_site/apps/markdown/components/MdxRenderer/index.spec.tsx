@@ -11,7 +11,8 @@ import MdxRenderer from '.';
 import { useJwt } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
 
-jest.mock('data/stores/useAppConfig', () => ({
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   modelName: 'markdown_documents',
   resource: {
     id: '1',
