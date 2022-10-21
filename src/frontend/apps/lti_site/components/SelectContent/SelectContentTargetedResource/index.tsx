@@ -10,7 +10,7 @@ import {
   UseCreateVideoData,
 } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { LtiSelectResource, selectableBaseResource } from 'types/AppData';
+import { LtiSelectResource, selectableBaseResource } from 'lib-components';
 import { Document } from 'lib-components';
 import {
   Live,

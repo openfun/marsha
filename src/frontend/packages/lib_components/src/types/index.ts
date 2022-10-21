@@ -9,3 +9,4 @@ export * from './XMPP';
 export * from './file';
 export * from './Participant';
 export * from './Organization';
+export * from './AppData';

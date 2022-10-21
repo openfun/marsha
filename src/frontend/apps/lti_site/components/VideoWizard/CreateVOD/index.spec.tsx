@@ -17,7 +17,7 @@ import { modelName } from 'lib-components';
 import { uploadState } from 'lib-components';
 
 import CreateVOD from '.';
-import { AppConfig } from 'types/AppData';
+import { AppConfig } from 'lib-components';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
 import React, { createContext, PropsWithChildren, useContext } from 'react';
 
-import { AppConfig } from 'types/AppData';
+import { AppConfig } from 'lib-components';
 
 const StoreContext = createContext<Nullable<AppConfig>>(null);
 

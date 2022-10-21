@@ -7,7 +7,7 @@ import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { appNames } from 'types/AppData';
+import { appNames } from 'lib-components';
 import { Document } from 'lib-components';
 import {
   Live,

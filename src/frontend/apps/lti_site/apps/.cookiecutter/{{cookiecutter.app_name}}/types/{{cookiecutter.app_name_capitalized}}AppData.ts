@@ -1,5 +1,5 @@
 import { Nullable } from 'utils/types';
-import { AppData } from 'types/AppData';
+import { AppData } from 'lib-components';
 import { {{cookiecutter.model}}, {{cookiecutter.model}}ModelName as modelName } from './models';
 
 export interface {{cookiecutter.app_name_capitalized}}AppData extends Omit<AppData, 'modelName'> {

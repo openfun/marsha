@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { appNames, selectableBaseResource } from 'types/AppData';
+import { appNames, selectableBaseResource } from 'lib-components';
 import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
   documentMockFactory,
@@ -19,8 +19,8 @@ const mockSetContentItemsValue = jest.fn();
 /**
  * Mock available app type in the front to provide the app used in the test
  */
-jest.mock('types/AppData.ts', () => ({
-  ...jest.requireActual('types/AppData.ts'),
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
   appNames: {
     custom_app: 'custom_app',
   },
