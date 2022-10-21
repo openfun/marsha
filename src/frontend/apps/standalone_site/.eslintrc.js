@@ -66,7 +66,7 @@ module.exports = {
     'react/react-in-jsx-scope': 0,
     'react/jsx-fragments': ['error', 'element'],
   },
-  ignorePatterns: ['node_modules/'],
+  ignorePatterns: ['node_modules/', '.eslintrc.js', 'src/setupProxy.js'],
   settings: {
     react: {
       version: 'detect',
