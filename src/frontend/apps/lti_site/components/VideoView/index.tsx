@@ -16,7 +16,7 @@ import styled from 'styled-components';
 import { useTimedTextTracks, useVideo } from 'data/queries';
 import { ErrorMessage } from 'components/ErrorComponents';
 import { UploadableObjectStatusBadge } from 'components/UploadableObjectStatusBadge';
-import { UploadField } from 'components/UploadField';
+import { UploadField } from 'lib-components';
 import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import VideoPlayer from 'components/VideoPlayer';
 import { modelName } from 'lib-components';

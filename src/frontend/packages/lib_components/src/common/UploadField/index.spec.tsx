@@ -1,14 +1,19 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
-import { modelName } from 'lib-components';
-import render from 'utils/tests/render';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+} from 'common/UploadManager';
+import { modelName } from 'types/models';
 
 import { UploadField } from '.';
-
-jest.mock('data/stores/useAppConfig', () => ({ useAppConfig: () => ({}) }));
 
 describe('<UploadField />', () => {
   const objectType = modelName.VIDEOS;
