@@ -35,8 +35,29 @@ class OrganizationUpdateAPITest(TestCase):
         organization.refresh_from_db()
         self.assertEqual(organization.name, "existing name")
 
+    def test_update_organization_by_instructor(self):
+        """Organization instructors cannot update organizations."""
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory(name="existing name")
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization, role=models.INSTRUCTOR
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            f"/api/organizations/{organization.id}/",
+            {"name": "new name"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        organization.refresh_from_db()
+        self.assertEqual(organization.name, "existing name")
+
     def test_update_organization_by_admin(self):
-        """Organization admins cannot update organizations."""
+        """Organization admins can update organizations."""
         user = factories.UserFactory()
         organization = factories.OrganizationFactory(name="existing name")
         factories.OrganizationAccessFactory(
@@ -49,8 +70,9 @@ class OrganizationUpdateAPITest(TestCase):
             f"/api/organizations/{organization.id}/",
             {"name": "new name"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
         organization.refresh_from_db()
-        self.assertEqual(organization.name, "existing name")
+        self.assertEqual(organization.name, "new name")
