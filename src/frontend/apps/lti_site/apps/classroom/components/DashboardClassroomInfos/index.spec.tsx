@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { classroomInfosMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomInfosMockFactory } from 'lib-classroom';
 import render from 'utils/tests/render';
 
 import DashboardClassroomInfos from '.';

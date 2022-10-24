@@ -5,7 +5,7 @@ import { DateTime, Duration, Settings } from 'luxon';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomMockFactory } from 'lib-classroom';
 
 import DashboardClassroomForm from './index';
 
