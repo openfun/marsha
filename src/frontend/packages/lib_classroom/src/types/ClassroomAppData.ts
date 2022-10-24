@@ -1,13 +1,8 @@
 import { Nullable } from 'lib-common';
-
-import {
-  AppData,
-  Classroom,
-  ClassroomModelName as modelName,
-} from 'lib-components';
+import { AppData, ClassroomModelName, Classroom } from 'lib-components';
 
 export interface ClassroomAppData extends Omit<AppData, 'modelName'> {
-  modelName: modelName.CLASSROOMS;
+  modelName: ClassroomModelName.CLASSROOMS;
   classroom?: Nullable<Classroom>;
   classrooms?: Classroom[];
   new_classroom_url?: string;
