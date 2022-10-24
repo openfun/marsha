@@ -1,16 +1,21 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory } from 'lib-components';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { UploadManager } from 'lib-components';
-import { uploadFile } from 'lib-components';
-import { getStoreResource } from 'lib-components';
-import { modelName } from 'lib-components';
-import { timedTextMode, uploadState } from 'lib-components';
-import render from 'utils/tests/render';
+import { FULL_SCREEN_ERROR_ROUTE } from 'common/ErrorComponents/route';
+import { UploadManager } from 'common/UploadManager';
+import { DASHBOARD_ROUTE } from 'data/routes';
+import { uploadFile } from 'data/sideEffects/uploadFile';
+import { getStoreResource } from 'data/stores/generics';
+import { modelName } from 'types/models';
+import { timedTextMode, uploadState } from 'types/tracks';
+import { videoMockFactory } from 'utils/tests/factories';
 
 import { UploadForm } from '.';
 
@@ -20,9 +25,11 @@ jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({ modelName: 'videos' }),
 }));
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
+jest.mock('data/stores/generics', () => ({
   getStoreResource: jest.fn(),
+}));
+
+jest.mock('data/sideEffects/uploadFile', () => ({
   uploadFile: jest.fn(),
 }));
 

@@ -1,5 +1,6 @@
-import { modelName } from 'lib-components';
-import { UploadableObject } from 'lib-components';
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+import { modelName } from 'types/models';
+import { UploadableObject } from 'types/tracks';
 
 /**
  * Route for the `<UploadForm />` component.

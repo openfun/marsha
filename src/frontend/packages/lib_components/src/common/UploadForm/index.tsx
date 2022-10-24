@@ -1,25 +1,23 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Maybe } from 'lib-common';
-import { Loader } from 'lib-components';
-import { modelName as markdownModelName } from 'lib-components/src/types/apps/markdown/models';
-import { modelName as depositModelName } from 'lib-components/src/types/apps/deposit/models';
-import { modelName as bbbModelName } from 'lib-components/src/types/apps/classroom/models';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'components/ErrorComponents/route';
-import { IframeHeading } from 'components/Headings';
-import { LayoutMainArea } from 'components/LayoutMainArea';
-import { UploadField } from 'lib-components';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
-import { getStoreResource } from 'lib-components';
-import { modelName, uploadableModelName } from 'lib-components';
-import { TimedText, timedTextMode, UploadableObject } from 'lib-components';
-
-import { useAsyncEffect } from 'lib-components';
-import { useAppConfig } from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE } from 'common/ErrorComponents/route';
+import { IframeHeading } from 'common/Headings';
+import { LayoutMainArea } from 'common/LayoutMainArea';
+import { Loader } from 'common/Loader';
+import { UploadField } from 'common/UploadField';
+import { UploadManagerStatus, useUploadManager } from 'common/UploadManager';
+import { DASHBOARD_ROUTE } from 'data/routes';
+import { getStoreResource } from 'data/stores/generics';
+import { useAppConfig } from 'data/stores/useAppConfig';
+import { modelName, uploadableModelName } from 'types/models';
+import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
+import { useAsyncEffect } from 'utils/useAsyncEffect';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -36,32 +34,32 @@ const messages = defineMessages({
 });
 
 const titleMessages = defineMessages({
-  [modelName.VIDEOS]: {
+  videos: {
     defaultMessage: 'Create a new video',
     description: 'Title for the video upload form',
     id: 'components.UploadForm.title-videos',
   },
-  [modelName.THUMBNAILS]: {
+  thumbnails: {
     defaultMessage: 'Upload a new thumbnail',
     description: 'Title for the thumbnail upload form',
     id: 'components.UploadForm.title-thumbnail',
   },
-  [modelName.DOCUMENTS]: {
+  documents: {
     defaultMessage: 'Upload a new document',
     description: 'Title for the document upload form',
     id: 'components.UploadForm.title-document',
   },
-  [markdownModelName.MARKDOWN_IMAGES]: {
+  'markdown-images': {
     defaultMessage: 'Upload a new Markdown image',
     description: 'Title for the Markdown image upload form',
     id: 'components.UploadForm.title-markdown-image',
   },
-  [depositModelName.DepositedFiles]: {
+  depositedfiles: {
     defaultMessage: 'Upload a new file',
     description: 'Title for the deposited file upload form',
     id: 'components.UploadForm.title-depositedfile',
   },
-  [bbbModelName.CLASSROOM_DOCUMENTS]: {
+  classroomdocuments: {
     defaultMessage: 'Upload a new file',
     description: 'Title for the classroom document upload form',
     id: 'components.UploadForm.title-classroomdocument',
@@ -69,17 +67,17 @@ const titleMessages = defineMessages({
 });
 
 const timedtexttrackTitleMessages = defineMessages({
-  [timedTextMode.CLOSED_CAPTIONING]: {
+  cc: {
     defaultMessage: 'Upload a new closed captions file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-cc',
   },
-  [timedTextMode.SUBTITLE]: {
+  st: {
     defaultMessage: 'Upload a new subtitles file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-st',
   },
-  [timedTextMode.TRANSCRIPT]: {
+  ts: {
     defaultMessage: 'Upload a new transcript file',
     description: 'Title for the timed text file upload form',
     id: 'components.UploadForm.title-timedtexttracks-ts',
@@ -132,7 +130,9 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   };
 
   useEffect(() => {
-    if (uploadManagerState[objectId]) resetUpload(objectId);
+    if (uploadManagerState[objectId]) {
+      resetUpload(objectId);
+    }
     window.addEventListener('beforeunload', beforeUnload);
     return () => window.removeEventListener('beforeunload', beforeUnload);
   }, []);
