@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 export const truncateFilename = (
   filename: string | null,
   maxLength: number,
