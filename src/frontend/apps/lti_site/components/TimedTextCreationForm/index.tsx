@@ -15,7 +15,7 @@ import { timedTextMode } from 'lib-components';
 import { report } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UPLOAD_FORM_ROUTE } from 'lib-components';
 
 const messages = defineMessages({
   addTrackBtn: {

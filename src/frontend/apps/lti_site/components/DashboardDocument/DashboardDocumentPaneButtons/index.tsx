@@ -4,7 +4,7 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { DashboardButton } from 'components/Styled/DashboardButtons';
-import { UPLOAD_FORM_ROUTE } from 'components/UploadForm/route';
+import { UPLOAD_FORM_ROUTE } from 'lib-components';
 import { useUploadManager } from 'lib-components';
 import { withLink } from 'components/withLink/withLink';
 import { Document } from 'lib-components';
