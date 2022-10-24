@@ -6,7 +6,7 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { useEndClassroomAction } from 'apps/classroom/data/queries';
+import { useEndClassroomAction } from 'lib-classroom';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,

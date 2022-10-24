@@ -15,10 +15,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { theme } from 'utils/theme/theme';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import {
-  useJoinClassroomAction,
-  useClassroom,
-} from 'apps/classroom/data/queries';
+import { useJoinClassroomAction, useClassroom } from 'lib-classroom';
 import { DashboardClassroomError } from 'apps/classroom/components/DashboardClassroomError';
 
 const DashboardClassroomStudent = lazy(
