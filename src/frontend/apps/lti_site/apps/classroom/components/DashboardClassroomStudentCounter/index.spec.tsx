@@ -2,7 +2,7 @@ import { act } from '@testing-library/react';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomMockFactory } from 'lib-classroom';
 import render from 'utils/tests/render';
 
 import { DashboardClassroomStudentCounter } from '.';
