@@ -1,24 +1,30 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-empty-function */
 import { Anchor, Box, Button, Grid, Paragraph, Text } from 'grommet';
-import Dropzone from 'react-dropzone';
-import React, { useEffect, useState } from 'react';
-import { FormattedMessage, useIntl } from 'react-intl';
-
 import {
   PlusSVG,
   ValidSVG,
   UploadManagerStatus,
   useUploadManager,
   ClassroomModelName as modelName,
+  UploadableObjectProgress,
+  truncateFilename,
 } from 'lib-components';
-import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
+import React, { useEffect, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { FormattedMessage, useIntl } from 'react-intl';
 
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
+import { classroomAppData } from 'data/classroomAppData';
 import {
   useClassroomDocuments,
   useUpdateClassroomDocument,
-} from 'apps/classroom/data/queries';
-import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
-import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
+} from 'data/queries';
+import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
 
 const messages = {
   dropzonePlaceholder: {

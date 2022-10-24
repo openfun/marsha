@@ -1,7 +1,15 @@
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import React, { PropsWithChildren } from 'react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-
 import {
   UploadManagerStatus,
   useUploadManager,
@@ -10,12 +18,12 @@ import {
   ClassroomModelName as modelName,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
+import React, { PropsWithChildren } from 'react';
 
-import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
-import { classroomDocumentMockFactory } from 'apps/classroom/utils/tests/factories';
+import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
+import { classroomDocumentMockFactory } from 'utils/tests/factories';
 
 import { UploadDocuments } from '.';
-import userEvent from '@testing-library/user-event';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -27,7 +35,7 @@ jest.mock('lib-components', () => ({
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
-jest.mock('apps/classroom/data/classroomAppData', () => ({
+jest.mock('data/classroomAppData', () => ({
   classroomAppData: {
     modelName: 'classrooms',
     classroom: {
@@ -46,7 +54,7 @@ mockUseUploadManager.mockReturnValue({
   uploadManagerState: {},
 });
 
-jest.mock('apps/classroom/data/sideEffects/createClassroomDocument', () => ({
+jest.mock('data/sideEffects/createClassroomDocument', () => ({
   createClassroomDocument: jest.fn(),
 }));
 const mockCreateClassroomDocument =
