@@ -16,7 +16,7 @@ import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,
 } from 'apps/deposit/utils/tests/factories';
-import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
+import { truncateFilename } from 'lib-components';
 
 import { DashboardInstructor } from '.';
 
