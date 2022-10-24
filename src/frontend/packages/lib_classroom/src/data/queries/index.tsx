@@ -1,13 +1,12 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable @typescript-eslint/ban-types */
+/* eslint-disable @typescript-eslint/no-floating-promises */
+import { Maybe } from 'lib-common';
+import { APIList } from 'lib-components';
 import {
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from 'react-query';
-
-import {
-  APIList,
   actionOne,
   createOne,
   fetchList,
@@ -22,9 +21,15 @@ import {
   CreateClassroomActionRequest,
   CreateClassroomActionResponse,
   ClassroomDocument,
-  ClassroomModelName as modelName,
+  ClassroomModelName,
 } from 'lib-components';
-import { Maybe } from 'lib-common';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from 'react-query';
 
 type ClassroomsResponse = APIList<Classroom>;
 type UseClassroomsParams = { organization: Maybe<string> };
@@ -158,18 +163,18 @@ export const useClassroomDocuments = (
   params: UseClassroomDocumentParams,
   queryConfig?: UseQueryOptions<
     ClassroomDocumentsResponse,
-    modelName.CLASSROOM_DOCUMENTS,
+    ClassroomModelName.CLASSROOM_DOCUMENTS,
     ClassroomDocumentsResponse,
     FetchListQueryKey
   >,
 ) => {
   const key: FetchListQueryKey = [
-    `${modelName.CLASSROOMS}/${classroomId}/${modelName.CLASSROOM_DOCUMENTS}`,
+    `${ClassroomModelName.CLASSROOMS}/${classroomId}/${ClassroomModelName.CLASSROOM_DOCUMENTS}`,
     params,
   ];
   return useQuery<
     ClassroomDocumentsResponse,
-    modelName.CLASSROOM_DOCUMENTS,
+    ClassroomModelName.CLASSROOM_DOCUMENTS,
     ClassroomDocumentsResponse,
     FetchListQueryKey
   >(key, fetchList, queryConfig);

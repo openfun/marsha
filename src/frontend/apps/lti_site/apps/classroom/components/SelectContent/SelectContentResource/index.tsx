@@ -1,4 +1,4 @@
-import { useCreateClassroom } from 'apps/classroom/data/queries';
+import { useCreateClassroom } from 'lib-classroom';
 import { Box, Heading } from 'grommet';
 import React from 'react';
 import { useIntl } from 'react-intl';
