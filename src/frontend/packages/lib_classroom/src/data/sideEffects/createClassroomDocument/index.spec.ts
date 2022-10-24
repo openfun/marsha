@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import fetchMock from 'fetch-mock';
-
 import { useJwt } from 'lib-components';
 
-import { classroomDocumentMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomDocumentMockFactory } from 'utils/tests/factories';
 
 import { createClassroomDocument } from '.';
 

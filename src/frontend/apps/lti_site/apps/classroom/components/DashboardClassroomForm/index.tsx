@@ -8,10 +8,7 @@ import { SchedulingFields, UploadManager, Classroom } from 'lib-components';
 
 import { DashboardClassroomLayout } from 'apps/classroom/components/DashboardClassroomLayout';
 import { UploadDocuments } from 'apps/classroom/components/UploadDocuments';
-import {
-  useCreateClassroomAction,
-  useUpdateClassroom,
-} from 'apps/classroom/data/queries';
+import { useCreateClassroomAction, useUpdateClassroom } from 'lib-classroom';
 
 const DEBOUNCE_TIME_MS = 1500;
 

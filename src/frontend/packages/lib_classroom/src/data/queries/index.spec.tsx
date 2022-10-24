@@ -1,13 +1,17 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable react/display-name */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 
 import {
   classroomMockFactory,
   classroomDocumentMockFactory,
-} from 'apps/classroom/utils/tests/factories';
+} from 'utils/tests/factories';
 
 import {
   useClassroom,

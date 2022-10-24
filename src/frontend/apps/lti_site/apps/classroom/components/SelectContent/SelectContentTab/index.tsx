@@ -7,7 +7,7 @@ import { buildContentItems } from 'components/SelectContent/utils';
 
 import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/classroom/components/SelectContent/SelectContentSection';
-import { useCreateClassroom } from 'apps/classroom/data/queries';
+import { useCreateClassroom } from 'lib-classroom';
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 
 const Internal = ({
