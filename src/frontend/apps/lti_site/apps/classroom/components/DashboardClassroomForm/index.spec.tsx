@@ -24,16 +24,14 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-jest.mock('apps/classroom/data/classroomAppData', () => ({
+jest.mock('lib-classroom', () => ({
+  ...jest.requireActual('lib-classroom'),
   classroomAppData: {
     modelName: 'classrooms',
     classroom: {
       id: '1',
     },
   },
-}));
-
-jest.mock('apps/classroom/components/UploadDocuments', () => ({
   UploadDocuments: () => <p>Upload Documents.</p>,
 }));
 
