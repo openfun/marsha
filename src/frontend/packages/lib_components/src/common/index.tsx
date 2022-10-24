@@ -55,3 +55,4 @@ export * from './UploadForm';
 export * from './UploadForm/route';
 export * from './ErrorComponents';
 export * from './Headings';
+export * from './UploadableObjectProgress';

@@ -9,14 +9,14 @@ import {
   UploadManagerStatus,
   useUploadManager,
   FileDepositoryModelName as modelName,
+  UploadableObjectProgress,
+  truncateFilename,
 } from 'lib-components';
-import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
-import { truncateFilename } from 'lib-components';
 
 const messages = defineMessages({
   dropzonePlaceholder: {
