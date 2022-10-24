@@ -7,7 +7,7 @@
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "rollup -c && yarn tsc-alias ",
     "build:watch": "yarn run build -- --watch",
     "build:no-fail": "yarn lint && yarn test && yarn build",
     "lint": "eslint src/**/*.{ts,tsx}",
@@ -101,6 +101,7 @@
     "style-loader": "3.3.1",
     "styled-components": "5.3.6",
     "ts-jest": "29.0.3",
+    "tsc-alias": "^1.7.0",
     "typescript": "4.8.4",
     "zustand": "4.1.4"
   }
