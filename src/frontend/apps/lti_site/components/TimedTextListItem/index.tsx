@@ -11,7 +11,7 @@ import { modelName } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
 import { TimedText, uploadState } from 'lib-components';
 import { ActionLink } from '../ActionLink/ActionLink';
-import { UPLOAD_FORM_ROUTE } from '../UploadForm/route';
+import { UPLOAD_FORM_ROUTE } from 'lib-components';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
 
 const messages = defineMessages({
