@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from .. import permissions, serializers
-from ..models import Organization
+from ..models import ADMINISTRATOR, Organization
 from ..serializers import ChallengeTokenSerializer
 from .base import APIViewMixin, ObjectPkMixin
 
@@ -85,8 +85,10 @@ class OrganizationViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["retrieve"]:
+        if self.action in ["retrieve", "update", "partial_update"]:
             permission_classes = [permissions.IsOrganizationAdmin]
+        elif self.action in ["list"]:
+            permission_classes = [permissions.UserIsAuthenticated]
         else:
             try:
                 permission_classes = getattr(self, self.action).kwargs.get(
@@ -95,3 +97,20 @@ class OrganizationViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             except AttributeError:
                 permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        """
+        override get_queryset based on the request action
+        """
+
+        if self.action in ["list"]:
+            return (
+                super()
+                .get_queryset()
+                .filter(
+                    user_accesses__user_id=self.request.user.id,
+                    user_accesses__role=ADMINISTRATOR,
+                )
+            )
+
+        return super().get_queryset()
