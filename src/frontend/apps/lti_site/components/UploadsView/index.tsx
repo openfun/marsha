@@ -4,13 +4,13 @@ import {
   UploadManagerState,
   UploadManagerStatus,
   useUploadManager,
+  UploadableObjectProgress,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { useVideo } from 'data/queries';
 import { Icon } from 'components/Icon';
-import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
 
 const messages = defineMessages({
   completedUploads: {

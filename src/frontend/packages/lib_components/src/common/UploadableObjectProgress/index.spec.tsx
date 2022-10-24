@@ -1,13 +1,15 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { screen } from '@testing-library/react';
+import { modelName } from 'lib-components';
+import { render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import {
   UploadManagerContext,
   UploadManagerStatus,
-  modelName,
-} from 'lib-components';
-import render from 'utils/tests/render';
+} from 'common/UploadManager';
 
 import { UploadableObjectProgress } from '.';
 
