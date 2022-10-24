@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomMockFactory } from 'lib-classroom';
 
 import DashboardClassroomInstructor from '.';
 

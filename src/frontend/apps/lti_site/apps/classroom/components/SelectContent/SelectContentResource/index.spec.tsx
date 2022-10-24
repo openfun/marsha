@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
+import { classroomMockFactory } from 'lib-classroom';
 import { playlistMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 

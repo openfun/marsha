@@ -1,4 +1,4 @@
-import { ClassroomAppData } from 'apps/classroom/types/ClassroomAppData';
+import { ClassroomAppData } from 'lib-classroom';
 import { ClassroomModelName as modelName } from 'lib-components';
 
 export const parseDataElements = (element: Element): ClassroomAppData => {
