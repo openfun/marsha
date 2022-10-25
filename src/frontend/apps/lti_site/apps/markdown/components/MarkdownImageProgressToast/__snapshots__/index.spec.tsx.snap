@@ -3,7 +3,7 @@
 exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
 <div>
   <div
-    class="StyledGrommet-sc-19lkkz7-0 lepgwL"
+    class="StyledGrommet-sc-19lkkz7-0 ioQEen"
   >
     <div
       style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
