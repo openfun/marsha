@@ -23,6 +23,7 @@ jest.mock('lib-components', () => ({
   useAppConfig: () => ({
     video: mockVideo,
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
 
 const mockInitConverse = jest.fn();
@@ -30,10 +31,6 @@ jest.mock('utils/conversejs/converse', () => ({
   converseMounter: () => mockInitConverse,
 }));
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-}));
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext

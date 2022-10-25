@@ -11,9 +11,6 @@ import PlaylistPage from '.';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
-}));
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   useCurrentResourceContext: () => [
     {
       permissions: {

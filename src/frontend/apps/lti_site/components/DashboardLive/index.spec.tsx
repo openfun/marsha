@@ -40,7 +40,9 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
 jest.mock('components/DashboardLiveRaw', () => (props: { video: Video }) => (
   <span title={props.video.id}>live raw</span>
 ));
@@ -68,10 +70,6 @@ const mockAcceptParticipantToJoin =
     typeof converse.acceptParticipantToJoin
   >;
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-}));
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext

@@ -36,6 +36,21 @@ import PublicVideoDashboard from '.';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   getResource: jest.fn().mockResolvedValue(null),
+  useAppConfig: () => ({
+    static: {
+      img: {
+        liveBackground: 'some_url',
+      },
+    },
+  }),
+  useCurrentResourceContext: () => [
+    {
+      permissions: {
+        can_update: false,
+      },
+    },
+  ],
+  decodeJwt: () => ({}),
 }));
 jest.mock('Player/createPlayer', () => ({
   createPlayer: jest.fn(),
@@ -74,29 +89,6 @@ const mockCreatePlayer = createPlayer as jest.MockedFunction<
 const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useAppConfig: () => ({
-    static: {
-      img: {
-        liveBackground: 'some_url',
-      },
-    },
-  }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: () => [
-    {
-      permissions: {
-        can_update: false,
-      },
-    },
-  ],
-  decodeJwt: () => ({}),
-}));
 
 describe('PublicVideoDashboard', () => {
   beforeAll(() => {

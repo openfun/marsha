@@ -13,10 +13,6 @@ jest.mock('lib-components', () => ({
   useAppConfig: () => ({
     modelName: 'videos',
   }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   useCurrentResourceContext: jest.fn(),
 }));
 const mockedUseCurrentResourceContext =

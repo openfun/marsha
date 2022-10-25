@@ -50,6 +50,7 @@ jest.mock('lib-components', () => ({
     attendanceDelay: 10,
     video: mockVideo,
   }),
+  decodeJwt: () => ({}),
 }));
 
 jest.mock('data/sideEffects/pushAttendance', () => ({
@@ -113,11 +114,6 @@ jest.mock('data/stores/useTimedTextTrackLanguageChoices', () => ({
     getChoices: jest.fn(),
     choices: [],
   }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  decodeJwt: () => ({}),
 }));
 
 describe('createVideoJsPlayer', () => {
