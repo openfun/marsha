@@ -27,6 +27,12 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: () => ({
+    permissions: {
+      can_update: true,
+    },
+  }),
+  decodeJwt: () => ({}),
 }));
 
 jest.mock('components/DashboardLive', () => ({
@@ -38,16 +44,6 @@ jest.mock('components/DashboardVOD', () => ({
 }));
 
 const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: () => ({
-    permissions: {
-      can_update: true,
-    },
-  }),
-  decodeJwt: () => ({}),
-}));
 
 describe('<DashboardVideoWrapper />', () => {
   afterEach(() => {

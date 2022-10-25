@@ -18,6 +18,7 @@ jest.mock('lib-components', () => ({
   resource: {
     id: '1',
   },
+  decodeJwt: jest.fn(),
 }));
 
 jest.mock('data/sideEffects/createLiveSession', () => ({
@@ -33,10 +34,6 @@ const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  decodeJwt: jest.fn(),
-}));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
 describe('<StudentLiveRegistration />', () => {

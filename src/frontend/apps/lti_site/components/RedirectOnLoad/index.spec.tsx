@@ -18,15 +18,12 @@ import { RedirectOnLoad } from '.';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppConfig: jest.fn(),
+  useCurrentResourceContext: jest.fn(),
 }));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-}));
 const mockedUseCurrentResource =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext

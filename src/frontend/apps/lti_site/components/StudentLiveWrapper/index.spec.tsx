@@ -34,9 +34,6 @@ const mockVideo = videoMockFactory();
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   getResource: jest.fn().mockResolvedValue(null),
-}));
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
     attendanceDelay: 10000,
     video: mockVideo,
@@ -46,6 +43,8 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
+  decodeJwt: jest.fn(),
 }));
 
 jest.mock('Player/createPlayer', () => ({
@@ -84,11 +83,6 @@ jest.mock('data/stores/useJitsiApi', () => ({
   useJitsiApi: () => [mockJitsiValue, mockSetJitsi],
 }));
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-  decodeJwt: jest.fn(),
-}));
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext

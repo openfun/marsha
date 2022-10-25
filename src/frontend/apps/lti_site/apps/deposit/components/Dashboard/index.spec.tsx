@@ -21,6 +21,7 @@ jest.mock('lib-components', () => ({
       id: '1',
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
 
 jest.mock('apps/deposit/data/depositAppData', () => ({
@@ -51,10 +52,6 @@ jest.mock('./DashboardInstructor', () => ({
   ),
 }));
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-}));
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext

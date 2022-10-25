@@ -29,6 +29,8 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
+  decodeJwt: () => ({}),
 }));
 
 jest.mock('data/sideEffects/pollForLive', () => ({
@@ -71,11 +73,6 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: jest.fn(),
-  decodeJwt: () => ({}),
-}));
 const mockedUseCurrentResourceContext =
   useCurrentResourceContext as jest.MockedFunction<
     typeof useCurrentResourceContext
