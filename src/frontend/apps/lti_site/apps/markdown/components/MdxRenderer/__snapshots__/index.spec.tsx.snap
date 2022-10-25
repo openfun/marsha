@@ -1389,33 +1389,9 @@ Unicode is supported. ☺
   
 
   <pre>
-    <code
-      class="hljs language-arduino"
-    >
-      <span
-        class="hljs-function"
-      >
-        define 
-        <span
-          class="hljs-title"
-        >
-          foobar
-        </span>
-        <span
-          class="hljs-params"
-        >
-          ()
-        </span>
-         
-      </span>
-      {
-    print 
-      <span
-        class="hljs-string"
-      >
-        "Welcome to flavor country!"
-      </span>
-      ;
+    <code>
+      define foobar() {
+    print "Welcome to flavor country!";
 }
 
     </code>
@@ -1562,58 +1538,14 @@ this algorithm:
       
 
       <pre>
-        <code
-          class="hljs language-vbnet"
-        >
+        <code>
           find wooden spoon
 uncover pot
 stir
 cover pot
-balance wooden spoon precariously 
-          <span
-            class="hljs-keyword"
-          >
-            on
-          </span>
-           pot handle
-wait 
-          <span
-            class="hljs-number"
-          >
-            10
-          </span>
-           minutes
-
-          <span
-            class="hljs-keyword"
-          >
-            goto
-          </span>
-           first 
-          <span
-            class="hljs-keyword"
-          >
-            step
-          </span>
-           (
-          <span
-            class="hljs-built_in"
-          >
-            or
-          </span>
-           shut 
-          <span
-            class="hljs-keyword"
-          >
-            off
-          </span>
-           burner 
-          <span
-            class="hljs-keyword"
-          >
-            when
-          </span>
-           done)
+balance wooden spoon precariously on pot handle
+wait 10 minutes
+goto first step (or shut off burner when done)
 
         </code>
       </pre>
