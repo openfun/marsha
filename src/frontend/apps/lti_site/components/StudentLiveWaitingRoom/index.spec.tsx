@@ -26,6 +26,20 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: () => [
+    {
+      context_id: 'context_id',
+      consumer_site: 'a.site.fr',
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: 'ressource_id',
+      roles: [],
+      session_id: 'session_id',
+    },
+  ],
+  decodeJwt: () => ({}),
 }));
 
 jest.mock('data/sideEffects/setLiveSessionDisplayName', () => ({
@@ -45,24 +59,6 @@ const mockSetLiveSessionDisplayName =
   setLiveSessionDisplayName as jest.MockedFunction<
     typeof setLiveSessionDisplayName
   >;
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useCurrentResourceContext: () => [
-    {
-      context_id: 'context_id',
-      consumer_site: 'a.site.fr',
-      permissions: {
-        can_access_dashboard: false,
-        can_update: false,
-      },
-      resource_id: 'ressource_id',
-      roles: [],
-      session_id: 'session_id',
-    },
-  ],
-  decodeJwt: () => ({}),
-}));
 
 describe('<StudentLiveWaitingRoom />', () => {
   beforeEach(() => {

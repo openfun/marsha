@@ -22,15 +22,11 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  decodeJwt: () => ({}),
 }));
 
 jest.mock('components/VideoWidgetProvider', () => ({
   VideoWidgetProvider: () => <p>VideoWidgetProvider</p>,
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  decodeJwt: () => ({}),
 }));
 
 const languageChoices = [

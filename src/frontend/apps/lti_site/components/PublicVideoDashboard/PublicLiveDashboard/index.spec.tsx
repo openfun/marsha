@@ -30,10 +30,6 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
-}));
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   useCurrentResourceContext: jest.fn(),
   decodeJwt: () => ({}),
 }));

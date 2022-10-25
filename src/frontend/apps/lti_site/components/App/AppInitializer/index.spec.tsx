@@ -37,9 +37,6 @@ jest.mock('lib-components', () => ({
     document: { id: 'my-document-id' },
     attendanceDelay: 6,
   }),
-}));
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
   decodeJwt: () => ({
     maintenance: true,
   }),

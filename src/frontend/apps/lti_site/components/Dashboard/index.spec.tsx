@@ -33,13 +33,10 @@ jest.mock('lib-components', () => ({
     },
   ],
   decodeJwt: jest.fn(),
+  useAppConfig: jest.fn(),
 }));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useAppConfig: jest.fn(),
-}));
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;

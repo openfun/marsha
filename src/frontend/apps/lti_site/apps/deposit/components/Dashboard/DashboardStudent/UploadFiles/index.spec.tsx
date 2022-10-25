@@ -17,6 +17,11 @@ import { UploadFiles } from '.';
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppConfig: () => ({}),
+  useUploadManager: jest.fn(),
+  UploadManagerContext: {
+    Provider: ({ children }: PropsWithChildren<{}>) => children,
+  },
+  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
 jest.mock('apps/deposit/data/depositAppData', () => ({
@@ -29,14 +34,6 @@ jest.mock('apps/deposit/data/depositAppData', () => ({
   },
 }));
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  useUploadManager: jest.fn(),
-  UploadManagerContext: {
-    Provider: ({ children }: PropsWithChildren<{}>) => children,
-  },
-  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
-}));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
