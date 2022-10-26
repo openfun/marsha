@@ -134,7 +134,9 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       <DashboardDocumentInnerContainer>
         <CommonStatusLine document={document} />
         <Box margin={{ vertical: 'small' }}>
-          <UploadableObjectProgress objectId={document.id} />
+          <UploadableObjectProgress
+            progress={uploadManagerState[document.id].progress}
+          />
         </Box>
         <DashboardDocumentPaneButtons document={document} />
       </DashboardDocumentInnerContainer>

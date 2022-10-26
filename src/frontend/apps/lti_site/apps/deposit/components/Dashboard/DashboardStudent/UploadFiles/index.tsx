@@ -116,7 +116,9 @@ export const UploadFiles = () => {
                 <Text weight="bold">
                   {truncateFilename(state.file.name, 40)}
                 </Text>
-                <UploadableObjectProgress objectId={state.objectId} />
+                <UploadableObjectProgress
+                  progress={uploadManagerState[state.objectId].progress}
+                />
                 {intl.formatMessage(messages.uploadingFile)}
               </Box>
             ))}

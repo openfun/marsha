@@ -38,7 +38,7 @@ describe('<UploadableObjectProgress />', () => {
           },
         }}
       >
-        <UploadableObjectProgress objectId={objectId} />
+        <UploadableObjectProgress progress={0} />
       </UploadManagerContext.Provider>,
     );
     screen.getByText('0%');
@@ -58,7 +58,7 @@ describe('<UploadableObjectProgress />', () => {
           },
         }}
       >
-        <UploadableObjectProgress objectId={objectId} />
+        <UploadableObjectProgress progress={51} />
       </UploadManagerContext.Provider>,
     );
     screen.getByText('51%');
