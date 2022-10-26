@@ -26,6 +26,7 @@ module.exports = {
     curly: 2,
     'default-case': 'error',
     eqeqeq: 2,
+    'import/no-duplicates': ['error', { considerQueryString: false }],
     'import/order': [
       'error',
       {
