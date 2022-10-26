@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useCurrentUser, useJwt } from 'lib-components';
+import { useCurrentUser, useJwt, liveSessionFactory } from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
@@ -11,7 +11,6 @@ import {
   NICKNAME_MAX_LENGTH,
   NICKNAME_MIN_LENGTH,
 } from 'default/chat';
-import { liveSessionFactory } from 'lib-components';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';

@@ -8,12 +8,13 @@ import {
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
+  useJwt,
+  thumbnailMockFactory,
+  useThumbnail,
+  modelName,
+  uploadState,
 } from 'lib-components';
-import { useJwt, thumbnailMockFactory } from 'lib-components';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { useThumbnail } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { WidgetThumbnail } from '.';

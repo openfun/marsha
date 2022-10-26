@@ -3,8 +3,7 @@ import React from 'react';
 import { useIntl } from 'react-intl';
 
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
-import { UploadManagerState } from 'lib-components';
-import { Thumbnail } from 'lib-components';
+import { UploadManagerState, Thumbnail } from 'lib-components';
 
 import { determineMessage } from './utils/utils';
 

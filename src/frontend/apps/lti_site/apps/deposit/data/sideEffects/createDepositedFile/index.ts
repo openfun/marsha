@@ -1,8 +1,6 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-
 import {
+  useJwt,
+  API_ENDPOINT,
   DepositedFile,
   FileDepositoryModelName as modelName,
 } from 'lib-components';

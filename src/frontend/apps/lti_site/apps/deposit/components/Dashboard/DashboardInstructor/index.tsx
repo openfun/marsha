@@ -1,6 +1,6 @@
 import { Box, Heading, Pagination, Paragraph, Select, Text } from 'grommet';
 import { Maybe } from 'lib-common';
-import { Loader } from 'lib-components';
+import { Loader, FileDepository } from 'lib-components';
 import React, { FocusEvent, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
@@ -9,7 +9,6 @@ import {
   useDepositedFiles,
   useUpdateFileDepository,
 } from 'apps/deposit/data/queries';
-import { FileDepository } from 'lib-components';
 
 const PAGE_SIZE = 10;
 

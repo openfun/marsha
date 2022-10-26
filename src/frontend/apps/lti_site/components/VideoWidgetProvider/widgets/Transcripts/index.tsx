@@ -2,12 +2,16 @@ import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
-import { TimedText, timedTextMode, TimedTextTranscript } from 'lib-components';
+import {
+  TimedText,
+  timedTextMode,
+  TimedTextTranscript,
+  useTimedTextTrack,
+} from 'lib-components';
 import { Box, Button, Select, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { TranscriptReader } from 'components/TranscriptReader';
-import { useTimedTextTrack } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 
 const messages = defineMessages({

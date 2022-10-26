@@ -1,10 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt, timedTextMockFactory } from 'lib-components';
+import {
+  useJwt,
+  timedTextMockFactory,
+  useTimedTextTrack,
+  timedTextMode,
+  uploadState,
+} from 'lib-components';
 import React from 'react';
 
-import { useTimedTextTrack } from 'lib-components';
-import { timedTextMode, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { TimedTextListItem } from '.';

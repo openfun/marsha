@@ -1,11 +1,13 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
-
-import { addMultipleResources } from 'lib-components';
-import { requestStatus } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
-import { report } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  addMultipleResources,
+  requestStatus,
+  modelName,
+  uploadState,
+  report,
+} from 'lib-components';
 
 import { getResourceList } from './';
 

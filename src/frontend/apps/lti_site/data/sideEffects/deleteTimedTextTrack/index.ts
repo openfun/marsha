@@ -1,8 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { modelName } from 'lib-components';
-import { TimedText } from 'lib-components';
+import { useJwt, API_ENDPOINT, modelName, TimedText } from 'lib-components';
 
 /**
  * Delete one timedtexttrack record.

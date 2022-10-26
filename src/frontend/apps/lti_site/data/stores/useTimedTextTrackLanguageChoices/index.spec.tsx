@@ -2,9 +2,7 @@ import { act, render } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { useJwt } from 'lib-components';
-import { requestStatus } from 'lib-components';
-import { report } from 'lib-components';
+import { useJwt, requestStatus, report } from 'lib-components';
 
 import { useTimedTextTrackLanguageChoices } from '.';
 

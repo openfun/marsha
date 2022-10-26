@@ -7,15 +7,11 @@ import {
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useJwt, APIList, uploadState, DepositedFile } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { APIList } from 'lib-components';
-import { uploadState } from 'lib-components';
-
-import { DepositedFile } from 'lib-components';
 import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,

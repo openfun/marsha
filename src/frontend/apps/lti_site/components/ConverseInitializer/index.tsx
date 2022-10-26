@@ -1,5 +1,5 @@
 import { Box, Spinner } from 'grommet';
-import { useCurrentResourceContext } from 'lib-components';
+import { useCurrentResourceContext, liveState } from 'lib-components';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -10,7 +10,6 @@ import React, {
 
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { liveState } from 'lib-components';
 import { converseMounter } from 'utils/conversejs/converse';
 import { converse } from 'utils/window';
 

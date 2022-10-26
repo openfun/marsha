@@ -1,11 +1,14 @@
 import { act, screen } from '@testing-library/react';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  liveState,
+  PersistentStore,
+  liveSessionFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import { useLiveSession } from 'data/stores/useLiveSession';
-import { liveState } from 'lib-components';
-import { PersistentStore } from 'lib-components';
-import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

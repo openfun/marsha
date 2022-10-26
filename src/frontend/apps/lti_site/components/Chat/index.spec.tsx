@@ -1,10 +1,13 @@
-import { useJwt, videoMockFactory } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  liveState,
+  PersistentStore,
+} from 'lib-components';
 import React from 'react';
 import { screen } from '@testing-library/react';
 
 import { Chat } from 'components/Chat';
-import { liveState } from 'lib-components';
-import { PersistentStore } from 'lib-components';
 import render from 'utils/tests/render';
 
 jest.mock('data/stores/useSetDisplayName', () => ({

@@ -3,8 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { TimedTextTranscript } from 'lib-components';
-import { useAsyncEffect } from 'lib-components';
+import { TimedTextTranscript, useAsyncEffect } from 'lib-components';
 import { TranscriptSentence } from '../TranscriptSentence';
 
 interface TranscriptReaderProps {

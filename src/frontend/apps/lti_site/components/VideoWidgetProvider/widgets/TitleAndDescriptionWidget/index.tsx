@@ -8,8 +8,7 @@ import { TextAreaInput } from 'components/graphicals/TextAreaInput';
 import { TextInput } from 'components/graphicals/TextInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { Video } from 'lib-components';
-import { report } from 'lib-components';
+import { Video, report } from 'lib-components';
 import { debounce } from 'utils/widgets/widgets';
 
 const messages = defineMessages({

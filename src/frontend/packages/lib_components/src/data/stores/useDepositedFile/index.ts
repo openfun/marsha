@@ -7,8 +7,10 @@ import {
   addResource,
   removeResource,
 } from 'data/stores/actions';
-import { DepositedFile } from 'types/apps/deposit/models';
-import { FileDepositoryModelName } from 'types/apps/deposit/models';
+import {
+  DepositedFile,
+  FileDepositoryModelName,
+} from 'types/apps/deposit/models';
 import { StoreState } from 'types/stores';
 
 type DepositedFileStateResource = {

@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import DashboardLiveJitsi from 'components/DashboardLiveJitsi';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE, useAppConfig } from 'lib-components';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveVideoLayout } from 'components/LiveVideoLayout';
@@ -17,7 +17,6 @@ import { StudentLiveInfoBar } from 'components/StudentLiveInfoBar';
 import { StudentLiveRecordingInfo } from 'components/StudentLiveRecordingInfo';
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
-import { useAppConfig } from 'lib-components';
 import { useCurrentLive } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import {
   LivePanelItem,

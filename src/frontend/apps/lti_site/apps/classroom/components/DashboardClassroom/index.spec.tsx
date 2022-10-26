@@ -4,15 +4,12 @@ import {
   useCurrentResourceContext,
   useCurrentUser,
   useJwt,
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
-
-import {
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
-} from 'lib-components';
 
 import { classroomMockFactory } from 'apps/classroom/utils/tests/factories';
 

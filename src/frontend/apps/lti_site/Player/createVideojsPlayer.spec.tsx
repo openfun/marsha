@@ -4,6 +4,9 @@ import {
   videoMockFactory,
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
+  liveState,
+  timedTextMode,
+  uploadState,
 } from 'lib-components';
 import React from 'react';
 import videojs from 'video.js';
@@ -11,7 +14,6 @@ import videojs from 'video.js';
 import VideoPlayer from 'components/VideoPlayer';
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useTranscriptTimeSelector } from 'data/stores/useTranscriptTimeSelector';
-import { liveState, timedTextMode, uploadState } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
 import { wrapInIntlProvider } from 'utils/tests/intl';

@@ -1,9 +1,8 @@
 import { screen } from '@testing-library/react';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, LiveModeType } from 'lib-components';
 import React from 'react';
 
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
-import { LiveModeType } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

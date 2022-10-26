@@ -1,13 +1,12 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { decodeJwt } from 'lib-components';
+import { decodeJwt, liveSessionFactory } from 'lib-components';
 import MatchMediaMock from 'jest-matchmedia-mock';
 import React from 'react';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 
-import { liveSessionFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RegistrationForm } from '.';

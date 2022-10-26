@@ -1,14 +1,17 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory } from 'lib-components';
+import {
+  videoMockFactory,
+  UploadManagerContext,
+  UploadManagerStatus,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
 import { createPlayer } from 'Player/createPlayer';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 
 import { VideoView } from '.';
 

@@ -2,7 +2,17 @@ import { Box, Heading } from 'grommet';
 import React, { Fragment, lazy, Suspense } from 'react';
 import { useIntl } from 'react-intl';
 
-import { Loader } from 'lib-components';
+import {
+  Loader,
+  LtiSelectResource,
+  selectableBaseResource,
+  Document,
+  Live,
+  LiveModeType,
+  Playlist,
+  uploadState,
+  Video,
+} from 'lib-components';
 
 import {
   useCreateDocument,
@@ -10,15 +20,6 @@ import {
   UseCreateVideoData,
 } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { LtiSelectResource, selectableBaseResource } from 'lib-components';
-import { Document } from 'lib-components';
-import {
-  Live,
-  LiveModeType,
-  Playlist,
-  uploadState,
-  Video,
-} from 'lib-components';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';

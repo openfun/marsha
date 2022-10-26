@@ -1,12 +1,16 @@
 import { screen } from '@testing-library/react';
-import { decodeJwt, Loader } from 'lib-components';
+import {
+  decodeJwt,
+  Loader,
+  useAppConfig,
+  Document,
+  modelName,
+  liveState,
+  uploadState,
+} from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { useAppConfig } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
-import { liveState, uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import Dashboard from '.';

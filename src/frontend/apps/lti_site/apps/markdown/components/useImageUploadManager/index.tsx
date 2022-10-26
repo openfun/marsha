@@ -2,9 +2,12 @@ import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+  MarkdownDocumentModelName as modelName,
+} from 'lib-components';
 
-import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { createMarkdownImage } from 'apps/markdown/data/sideEffects/createMarkdownImage';
 import { pollForMarkdownImage } from 'apps/markdown/data/sideEffects/pollForMarkdownImage';
 import MarkdownImageProgressToast from '../MarkdownImageProgressToast';

@@ -1,12 +1,16 @@
 import * as Sentry from '@sentry/browser';
-import { decodeJwt, useJwt, useMaintenance } from 'lib-components';
 import {
+  decodeJwt,
+  useJwt,
+  useMaintenance,
   useSentry,
   useVideo,
   useTimedTextTrack,
   useThumbnail,
   useSharedLiveMedia,
   useDocument,
+  useAppConfig,
+  flags,
 } from 'lib-components';
 import React, {
   Fragment,
@@ -17,9 +21,7 @@ import React, {
 } from 'react';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useAppConfig } from 'lib-components';
 import { useAttendance } from 'data/stores/useAttendance';
-import { flags } from 'lib-components';
 
 export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);

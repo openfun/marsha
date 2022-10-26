@@ -6,12 +6,15 @@ import styled from 'styled-components';
 import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+  useDocument,
+  Document,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
-import { useDocument } from 'lib-components';
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 
 import { DashboardDocumentTitleForm } from './DashboardDocumentTitleForm';
 import { DashboardDocumentPaneButtons } from './DashboardDocumentPaneButtons';

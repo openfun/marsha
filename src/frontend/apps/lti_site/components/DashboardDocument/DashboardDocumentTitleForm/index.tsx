@@ -3,10 +3,12 @@ import { Maybe } from 'lib-common';
 import React, { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { updateResource } from 'lib-components';
-import { useDocument } from 'lib-components';
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
+import {
+  updateResource,
+  useDocument,
+  Document,
+  modelName,
+} from 'lib-components';
 
 const messages = defineMessages({
   updateError: {

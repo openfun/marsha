@@ -1,13 +1,17 @@
 import { cleanup, screen } from '@testing-library/react';
-import { videoMockFactory } from 'lib-components';
+import {
+  videoMockFactory,
+  JoinMode,
+  LiveModeType,
+  liveState,
+  PersistentStore,
+} from 'lib-components';
 import React from 'react';
 
 import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { JoinMode, LiveModeType, liveState } from 'lib-components';
-import { PersistentStore } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

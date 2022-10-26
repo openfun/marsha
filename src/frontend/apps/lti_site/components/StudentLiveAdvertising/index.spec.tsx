@@ -1,17 +1,17 @@
 import { cleanup, screen } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useCurrentUser } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import { DateTime, Duration } from 'luxon';
-import React from 'react';
-
-import { liveState } from 'lib-components';
 import {
+  useCurrentUser,
+  liveState,
   liveSessionFactory,
   thumbnailMockFactory,
   videoMockFactory,
 } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
+import { DateTime, Duration } from 'luxon';
+import React from 'react';
+
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveAdvertising } from '.';

@@ -1,15 +1,19 @@
 import { Button } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader, useVideo } from 'lib-components';
+import {
+  Loader,
+  useVideo,
+  FULL_SCREEN_ERROR_ROUTE,
+  modelName,
+  LiveModeType,
+  Video,
+} from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { modelName } from 'lib-components';
-import { LiveModeType, Video } from 'lib-components';
 
 const messages = defineMessages({
   startLiveButtonLabel: {

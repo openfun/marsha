@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  appState,
+  modelName,
+} from 'lib-components';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-import { useAppConfig } from 'lib-components';
-import { appState } from 'lib-components';
-import { modelName } from 'lib-components';
 
 import { RedirectVideo } from './RedirectVideo';
 import { RedirectDocument } from './RedirectDocument';

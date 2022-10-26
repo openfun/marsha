@@ -1,11 +1,19 @@
-import { Loader } from 'lib-components';
+import {
+  Loader,
+  FullScreenError,
+  FULL_SCREEN_ERROR_ROUTE,
+  ErrorComponentsProps,
+  UploadForm,
+  UPLOAD_FORM_ROUTE,
+  UploadManager,
+  LTIUploadHandlers,
+  useAppConfig,
+  modelName,
+} from 'lib-components';
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FullScreenError } from 'lib-components';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { ErrorComponentsProps } from 'lib-components';
 import { InstructorWrapper } from 'components/InstructorWrapper';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
@@ -13,12 +21,6 @@ import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
 import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { SelectContent } from 'components/SelectContent';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-import { UploadForm } from 'lib-components';
-import { UPLOAD_FORM_ROUTE } from 'lib-components';
-import { UploadManager } from 'lib-components';
-import { LTIUploadHandlers } from 'lib-components';
-import { useAppConfig } from 'lib-components';
-import { modelName } from 'lib-components';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const VideoWizard = lazy(() => import('components/VideoWizard'));

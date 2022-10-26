@@ -1,8 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { modelName } from 'lib-components';
-import { Thumbnail } from 'lib-components';
+import { useJwt, API_ENDPOINT, modelName, Thumbnail } from 'lib-components';
 
 /**
  * Create a new thumbnail record for a language-mode combination.

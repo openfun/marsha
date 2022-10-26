@@ -5,11 +5,13 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ItemList } from 'components/graphicals/ItemList';
-import { useUploadManager } from 'lib-components';
+import {
+  useUploadManager,
+  useSharedLiveMedia,
+  modelName,
+} from 'lib-components';
 import { createSharedLiveMedia } from 'data/sideEffects/createSharedLiveMedia';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useSharedLiveMedia } from 'lib-components';
-import { modelName } from 'lib-components';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 

@@ -2,8 +2,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { uploadState } from 'lib-components';
-import { documentMockFactory, videoMockFactory } from 'lib-components';
+import {
+  uploadState,
+  documentMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import render from 'utils/tests/render';
 
 import { SelectContentSection } from '.';

@@ -1,8 +1,7 @@
 import { screen } from '@testing-library/react';
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory, liveState } from 'lib-components';
 import React from 'react';
 
-import { liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { DateTime } from 'luxon';

@@ -7,8 +7,10 @@ import {
   addResource,
   removeResource,
 } from 'data/stores/actions';
-import { MarkdownImage } from 'types/apps/markdown/models';
-import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
+import {
+  MarkdownImage,
+  MarkdownDocumentModelName,
+} from 'types/apps/markdown/models';
 import { StoreState } from 'types/stores';
 
 type MarkdownImageStateResource = {

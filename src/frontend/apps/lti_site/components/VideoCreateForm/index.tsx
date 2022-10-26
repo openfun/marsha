@@ -1,20 +1,23 @@
 import { Box, Button, Form, Text, TextInput } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable } from 'lib-common';
-import { Spinner } from 'lib-components';
+import {
+  Spinner,
+  modelName,
+  UploadableObject,
+  UploadField,
+  UploadManagerStatus,
+  useUploadManager,
+} from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
 import { useCreateVideo } from '../../data/queries';
-import { modelName } from 'lib-components';
-import { UploadableObject } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
 
 import { MutationFieldError } from '../MutationFieldError';
-import { UploadField } from 'lib-components';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   createVideo: {

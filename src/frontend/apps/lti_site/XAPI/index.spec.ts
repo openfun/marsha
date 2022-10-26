@@ -1,6 +1,5 @@
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory, liveState } from 'lib-components';
 
-import { liveState } from 'lib-components';
 import { LiveXAPIStatement } from './LiveXapiStatement';
 import { VideoXAPIStatement } from './VideoXAPIStatement';
 import { XAPIStatement } from './index';

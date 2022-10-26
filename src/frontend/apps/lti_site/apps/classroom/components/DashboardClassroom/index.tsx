@@ -6,6 +6,7 @@ import {
   Loader,
   useCurrentResourceContext,
   useCurrentUser,
+  Attendee,
 } from 'lib-components';
 import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
@@ -18,7 +19,6 @@ import {
   useJoinClassroomAction,
   useClassroom,
 } from 'apps/classroom/data/queries';
-import { Attendee } from 'lib-components';
 import { DashboardClassroomError } from 'apps/classroom/components/DashboardClassroomError';
 
 const DashboardClassroomStudent = lazy(

@@ -1,15 +1,15 @@
 import { Box } from 'grommet';
-import { Spinner } from 'lib-components';
-import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
-
 import {
+  Spinner,
   liveState as liveStateTrack,
   UploadableObject,
   uploadState,
   Video,
+  UploadManagerStatus,
+  useUploadManager,
 } from 'lib-components';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
+import React from 'react';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 const { DELETED, INITIALIZED, ERROR, PENDING, PROCESSING, READY } = uploadState;
 const {

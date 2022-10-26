@@ -3,11 +3,10 @@ import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect, Route, Switch } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import { FULL_SCREEN_ERROR_ROUTE, useAppConfig } from 'lib-components';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { ConfigureLiveButton } from 'components/VideoWizard/ConfigureLiveButton';
 import { withLink } from 'components/withLink/withLink';
-import { useAppConfig } from 'lib-components';
 
 import CreateVOD from './CreateVOD';
 import { WizardLayout } from './WizardLayout';

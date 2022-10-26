@@ -1,11 +1,14 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { videoMockFactory } from 'lib-components';
+import {
+  videoMockFactory,
+  UploadManagerStatus,
+  useUploadManager,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { UploadVideoForm } from '.';

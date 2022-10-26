@@ -1,13 +1,12 @@
 import { Box, Button, ButtonProps, Heading, Paragraph, Spinner } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { StopSVG } from 'lib-components';
+import { StopSVG, Video, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { stopLive } from 'data/sideEffects/stopLive';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
-import { Video, useVideo } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({

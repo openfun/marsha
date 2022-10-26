@@ -7,8 +7,10 @@ import {
   addResource,
   removeResource,
 } from 'data/stores/actions';
-import { ClassroomDocument } from 'types/apps/classroom/models';
-import { ClassroomModelName } from 'types/apps/classroom/models';
+import {
+  ClassroomDocument,
+  ClassroomModelName,
+} from 'types/apps/classroom/models';
 import { StoreState } from 'types/stores';
 
 type ClassroomDocumentStateResource = {

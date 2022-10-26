@@ -5,11 +5,11 @@ import {
   OrganizationAccessRole,
   useCurrentResourceContext,
   useJwt,
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  appState,
 } from 'lib-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { useAppConfig } from 'lib-components';
-import { appState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';

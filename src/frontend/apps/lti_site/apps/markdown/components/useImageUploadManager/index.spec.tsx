@@ -10,10 +10,10 @@ import {
   UploadManager,
   UploadManagerStatus,
   useUploadManager,
+  MarkdownDocumentModelName as modelName,
+  uploadState,
 } from 'lib-components';
-import { MarkdownDocumentModelName as modelName } from 'lib-components';
 import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
-import { uploadState } from 'lib-components';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

@@ -2,9 +2,12 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
-import { appNames, selectableBaseResource } from 'lib-components';
-import { LiveModeType, liveState, uploadState } from 'lib-components';
 import {
+  appNames,
+  selectableBaseResource,
+  LiveModeType,
+  liveState,
+  uploadState,
   documentMockFactory,
   liveMockFactory,
   videoMockFactory,

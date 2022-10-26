@@ -4,7 +4,19 @@ import fetchMock from 'fetch-mock';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { useCurrentResourceContext, useJwt } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useJwt,
+  JoinMode,
+  LiveJitsi,
+  LiveModeType,
+  liveState,
+  uploadState,
+  Video,
+  PersistentStore,
+  participantMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import { useChatItemState } from 'data/stores/useChatItemsStore';
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
@@ -13,16 +25,6 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
-import {
-  JoinMode,
-  LiveJitsi,
-  LiveModeType,
-  liveState,
-  uploadState,
-  Video,
-} from 'lib-components';
-import { PersistentStore } from 'lib-components';
-import { participantMockFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

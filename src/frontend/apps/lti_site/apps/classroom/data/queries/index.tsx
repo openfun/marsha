@@ -6,18 +6,14 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { APIList } from 'lib-components';
-import { Maybe } from 'lib-common';
 import {
+  APIList,
   actionOne,
   createOne,
   fetchList,
   FetchListQueryKey,
   fetchOne,
   updateOne,
-} from 'lib-components';
-
-import {
   EndClassroomActionRequest,
   EndClassroomActionResponse,
   JoinClassroomActionRequest,
@@ -28,6 +24,7 @@ import {
   ClassroomDocument,
   ClassroomModelName as modelName,
 } from 'lib-components';
+import { Maybe } from 'lib-common';
 
 type ClassroomsResponse = APIList<Classroom>;
 type UseClassroomsParams = { organization: Maybe<string> };

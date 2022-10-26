@@ -8,7 +8,14 @@ import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
 import { Maybe, Nullable } from 'lib-common';
-import { useCurrentSession, useJwt } from 'lib-components';
+import {
+  useCurrentSession,
+  useJwt,
+  liveState,
+  Video,
+  videoSize,
+  report,
+} from 'lib-components';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
 import { useAttendance } from 'data/stores/useAttendance';
@@ -17,12 +24,10 @@ import {
   QualityLevels,
   VideoJsExtendedSourceObject,
 } from 'types/libs/video.js/extend';
-import { liveState, Video, videoSize } from 'lib-components';
 import {
   InitializedContextExtensions,
   InteractedContextExtensions,
 } from 'types/XAPI';
-import { report } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 import { isMSESupported } from 'utils/isMSESupported';
 import { VideoXAPIStatementInterface, XAPIStatement } from 'XAPI';
