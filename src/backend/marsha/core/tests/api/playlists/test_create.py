@@ -10,6 +10,8 @@ from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 class PlaylistCreateAPITest(TestCase):
     """Test the create API for playlist objects."""
 
+    maxDiff = None
+
     def test_create_playlist_by_anonymous_user(self):
         """Anonymous users cannot create playlists."""
         org = factories.OrganizationFactory()
@@ -126,18 +128,26 @@ class PlaylistCreateAPITest(TestCase):
         self.assertEqual(models.Playlist.objects.count(), 1)
 
         self.assertEqual(response.status_code, 201)
+        created_playlist = models.Playlist.objects.first()
         self.assertEqual(
             response.json(),
             {
-                "consumer_site": str(consumer_site.id),
+                "consumer_site": {
+                    "id": str(consumer_site.id),
+                    "domain": consumer_site.domain,
+                    "name": consumer_site.name,
+                },
                 "created_by": None,
                 "duplicated_from": None,
-                "id": str(models.Playlist.objects.first().id),
+                "id": str(created_playlist.id),
                 "is_portable_to_playlist": False,
                 "is_portable_to_consumer_site": False,
                 "is_public": False,
                 "lti_id": "playlist_twenty",
-                "organization": str(org.id),
+                "organization": {
+                    "id": str(org.id),
+                    "name": org.name,
+                },
                 "portable_to": [],
                 "title": "Some playlist",
                 "users": [],

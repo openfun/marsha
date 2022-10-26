@@ -13,6 +13,8 @@ from marsha.core.simple_jwt.factories import (
 class PlaylistUpdateAPITest(TestCase):
     """Test the update API for playlist objects."""
 
+    maxDiff = None
+
     def test_update_playlist_by_anonymous_user(self):
         """Anonymous users cannot update playlists."""
         playlist = factories.PlaylistFactory(title="existing title")
