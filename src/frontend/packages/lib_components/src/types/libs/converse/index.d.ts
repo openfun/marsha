@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unused-vars */
 import { Nullable } from 'lib-common';
 
 import { Participant } from '../../Participant';

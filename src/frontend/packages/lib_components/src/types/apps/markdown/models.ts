@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-interface */
 import { Nullable } from 'lib-common';
 
 import { Playlist, Resource, uploadState } from '../../tracks';
@@ -45,5 +44,4 @@ export interface MarkdownSaveTranslationsRequest {
   content: string;
   rendered_content: string;
 }
-// tslint:disable-next-line:no-empty-interface
-export interface MarkdownSaveTranslationsResponse extends MarkdownDocument {}
+export type MarkdownSaveTranslationsResponse = MarkdownDocument;

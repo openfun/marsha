@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';

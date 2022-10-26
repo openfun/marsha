@@ -1,7 +1,6 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from 'grommet';
 import { BreadCrumbsContext, Crumb as CrumbType } from 'lib-common';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useMemo, useEffect } from 'react';
 import { Link, useRouteMatch } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
@@ -55,7 +54,7 @@ interface CrumbProps {
  * @param title The title for the entry to be displayed in the breadcrumbs.
  */
 export const Crumb: React.FC<CrumbProps> = ({ title }) => {
-  const key = uuidv4();
+  const key = useMemo(() => uuidv4(), []);
   const { url } = useRouteMatch();
   const [_, setCrumbs] = useContext(BreadCrumbsContext);
 
@@ -67,7 +66,7 @@ export const Crumb: React.FC<CrumbProps> = ({ title }) => {
         crumbs.filter((currentCrumb) => currentCrumb.key !== key),
       );
     };
-  }, []);
+  }, [key, setCrumbs, title, url]);
 
   return null;
 };

@@ -1,9 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { API_ENDPOINT } from 'settings';
 
 import { addResource } from 'data/stores/generics';
@@ -28,7 +22,7 @@ export async function getResource(
   try {
     const response = await fetch(endpoint, {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
         'Content-Type': 'application/json',
       },
     });
@@ -38,8 +32,11 @@ export async function getResource(
         `Failed to fetch resource ${resourceName} with id ${resourceId}`,
       );
     }
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const resource = await response.json();
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
     await addResource(resourceName, resource);
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return resource;
   } catch (error) {
     report(error);

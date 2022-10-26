@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
 import { MarginType } from 'grommet/utils';
 import { Nullable } from 'lib-common';
@@ -76,7 +75,7 @@ interface SchedulingFieldsProps {
 export const SchedulingFields = ({
   startingAt,
   estimatedDuration,
-  onStartingAtChange = () => {},
+  onStartingAtChange,
   onEstimatedDurationChange,
   margin,
   disabled,
@@ -135,7 +134,7 @@ export const SchedulingFields = ({
         );
       } else {
         setStartingAtError(null);
-        onStartingAtChange(updatedStartingAt);
+        onStartingAtChange?.(updatedStartingAt);
       }
     }
   };

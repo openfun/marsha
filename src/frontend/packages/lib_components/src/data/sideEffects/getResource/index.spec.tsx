@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 import fetchMock from 'fetch-mock';
 
 import { addResource } from 'data/stores/generics';
@@ -8,7 +7,7 @@ import { modelName } from 'types/models';
 import { report } from 'utils/errors/report';
 import { videoMockFactory } from 'utils/tests/factories';
 
-import { getResource } from './';
+import { getResource } from '.';
 
 jest.mock('data/stores/generics', () => ({
   addResource: jest.fn(),
