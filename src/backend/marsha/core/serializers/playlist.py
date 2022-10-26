@@ -6,14 +6,16 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
-from ..models import Playlist
+from ..models import ConsumerSite, Organization, Playlist
+from .account import ConsumerSiteSerializer, OrganizationLiteSerializer
+from .base import ReadWritePrimaryKeyRelatedField
 
 
 class PlaylistSerializer(serializers.ModelSerializer):
-    """Serializer to display a complete Playlist resource."""
+    """Serializer allowing to create a new playlist resource."""
 
     class Meta:
-        """Meta for Playlistserializer."""
+        """Meta for PlaylistCreateSerializer."""
 
         model = Playlist
         fields = [
@@ -32,6 +34,16 @@ class PlaylistSerializer(serializers.ModelSerializer):
         ]
 
     portable_to = serializers.SerializerMethodField(read_only=False)
+    organization = ReadWritePrimaryKeyRelatedField(
+        OrganizationLiteSerializer,
+        queryset=Organization.objects.all(),
+        required=False,
+        allow_null=True,
+    )
+    consumer_site = ReadWritePrimaryKeyRelatedField(
+        ConsumerSiteSerializer,
+        queryset=ConsumerSite.objects.all(),
+    )
 
     def get_portable_to(self, obj):
         """Getter for portable_to attribute instead of PlaylistSerializer to prevent recursion."""

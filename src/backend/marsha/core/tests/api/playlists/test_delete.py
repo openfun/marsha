@@ -8,6 +8,8 @@ from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 class PlaylistDeleteAPITest(TestCase):
     """Test the delete API for playlist objects."""
 
+    maxDiff = None
+
     def test_delete_playlist_by_anonymous_user(self):
         """Anonymous users cannot delete playlists."""
         playlist = factories.PlaylistFactory()

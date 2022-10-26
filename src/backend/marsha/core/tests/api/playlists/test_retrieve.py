@@ -11,6 +11,8 @@ from marsha.core.simple_jwt.factories import (
 class PlaylistRetrieveAPITest(TestCase):
     """Test the retrieve API for playlist objects."""
 
+    maxDiff = None
+
     def test_retrieve_playlist_by_anonymous_user(self):
         """Anonymous users cannot retrieve playlists."""
         playlist = factories.PlaylistFactory()
@@ -93,7 +95,11 @@ class PlaylistRetrieveAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "consumer_site": str(playlist.consumer_site.id),
+                "consumer_site": {
+                    "id": str(playlist.consumer_site.id),
+                    "domain": playlist.consumer_site.domain,
+                    "name": playlist.consumer_site.name,
+                },
                 "created_by": None,
                 "duplicated_from": None,
                 "id": str(playlist.id),
@@ -128,7 +134,11 @@ class PlaylistRetrieveAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
-                "consumer_site": str(playlist.consumer_site.id),
+                "consumer_site": {
+                    "id": str(playlist.consumer_site.id),
+                    "domain": playlist.consumer_site.domain,
+                    "name": playlist.consumer_site.name,
+                },
                 "created_by": None,
                 "duplicated_from": None,
                 "id": str(playlist.id),
@@ -136,7 +146,10 @@ class PlaylistRetrieveAPITest(TestCase):
                 "is_portable_to_playlist": True,
                 "is_public": False,
                 "lti_id": playlist.lti_id,
-                "organization": str(organization.id),
+                "organization": {
+                    "id": str(organization.id),
+                    "name": organization.name,
+                },
                 "portable_to": [],
                 "title": playlist.title,
                 "users": [],
