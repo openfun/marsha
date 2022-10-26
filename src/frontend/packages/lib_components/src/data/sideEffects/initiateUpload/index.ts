@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { API_ENDPOINT } from 'settings';
 
 import { useJwt } from 'hooks/stores';
@@ -26,7 +24,7 @@ export const initiateUpload = async (
         mimetype,
       }),
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -39,5 +37,6 @@ export const initiateUpload = async (
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await response.json();
 };

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import * as faker from 'faker';
 
 import { Organization } from 'types/Organization';
