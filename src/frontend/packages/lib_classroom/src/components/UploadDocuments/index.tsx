@@ -68,6 +68,7 @@ type UploadDocumentsRowProps = {
   uploadingObjectId?: string;
   uploadState?: string;
   url?: string;
+  progress?: number;
 };
 
 const UploadDocumentsRow = ({
@@ -77,6 +78,7 @@ const UploadDocumentsRow = ({
   uploadingObjectId,
   uploadState,
   url,
+  progress,
 }: UploadDocumentsRowProps) => {
   const intl = useIntl();
 
@@ -114,7 +116,7 @@ const UploadDocumentsRow = ({
         </Box>
         {uploadingObjectId && (
           <React.Fragment>
-            <UploadableObjectProgress objectId={uploadingObjectId} />
+            <UploadableObjectProgress progress={progress || 0} />
             <Text alignSelf="center">
               {intl.formatMessage(messages.uploadingFile)}
             </Text>
@@ -256,6 +258,7 @@ export const UploadDocuments = () => {
             key={`${state.file.name}_${index}`}
             filename={state.file.name}
             uploadingObjectId={state.objectId}
+            progress={uploadManagerState[state.objectId]?.progress}
           />
         ))}
 

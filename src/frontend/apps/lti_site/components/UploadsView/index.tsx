@@ -32,9 +32,12 @@ const messages = defineMessages({
   },
 });
 
-type UploadsListItemProps = { state: UploadManagerState[string] };
+type UploadsListItemProps = {
+  state: UploadManagerState[string];
+  progress: number;
+};
 
-const UploadsListItem = ({ state }: UploadsListItemProps) => {
+const UploadsListItem = ({ state, progress }: UploadsListItemProps) => {
   const { objectId, file } = state;
   const { data, status } = useVideo(objectId);
 
@@ -62,7 +65,7 @@ const UploadsListItem = ({ state }: UploadsListItemProps) => {
         ) : (
           <Text weight="bold">{file.name}</Text>
         )}
-        <UploadableObjectProgress objectId={objectId} />
+        <UploadableObjectProgress progress={progress} />
       </Box>
     </Box>
   );
@@ -89,7 +92,11 @@ export const UploadsView = () => {
         {uploadsInProgress.length > 0 ? (
           <Box as="ul" pad="none" gap="small">
             {uploadsInProgress.map((state) => (
-              <UploadsListItem key={state.objectId} state={state} />
+              <UploadsListItem
+                key={state.objectId}
+                state={state}
+                progress={uploadManagerState[state.objectId].progress}
+              />
             ))}
           </Box>
         ) : (
@@ -105,7 +112,11 @@ export const UploadsView = () => {
             </Heading>
             <Box as="ul" pad="none" gap="small">
               {uploadsDone.map((state) => (
-                <UploadsListItem key={state.objectId} state={state} />
+                <UploadsListItem
+                  key={state.objectId}
+                  state={state}
+                  progress={uploadManagerState[state.objectId].progress}
+                />
               ))}
             </Box>
           </React.Fragment>
