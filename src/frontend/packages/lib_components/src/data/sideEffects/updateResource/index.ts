@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { API_ENDPOINT } from 'settings';
 
 import { useJwt } from 'hooks/stores';
@@ -15,7 +13,7 @@ export async function updateResource<R extends Resource>(
   const response = await fetch(endpoint, {
     body: JSON.stringify(resource),
     headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt}`,
+      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
       'Content-Type': 'application/json',
     },
     method: 'PUT',
@@ -27,5 +25,6 @@ export async function updateResource<R extends Resource>(
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return await response.json();
 }
