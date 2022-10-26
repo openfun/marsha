@@ -5,8 +5,8 @@
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-floating-promises */
 import { Maybe } from 'lib-common';
-import { APIList } from 'lib-components';
 import {
+  APIList,
   actionOne,
   createOne,
   fetchList,
