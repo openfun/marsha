@@ -1,6 +1,5 @@
-import { AppData } from 'lib-components';
-
 import {
+  AppData,
   MarkdownDocument,
   MarkdownDocumentModelName as modelName,
 } from 'lib-components';

@@ -1,7 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { SharedLiveMedia } from 'lib-components';
+import { useJwt, API_ENDPOINT, SharedLiveMedia } from 'lib-components';
 
 export const createSharedLiveMedia = async () => {
   const response = await fetch(`${API_ENDPOINT}/sharedlivemedias/`, {

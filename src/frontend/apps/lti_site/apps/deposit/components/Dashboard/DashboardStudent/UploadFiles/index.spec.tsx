@@ -2,14 +2,15 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
-import { uploadState } from 'lib-components';
-
-import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import {
+  UploadManagerStatus,
+  useUploadManager,
+  uploadState,
   DepositedFile,
   FileDepositoryModelName as modelName,
 } from 'lib-components';
+
+import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
 
 import { UploadFiles } from '.';

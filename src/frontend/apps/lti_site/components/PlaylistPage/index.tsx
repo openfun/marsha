@@ -1,12 +1,14 @@
 import React, { Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  modelName,
+} from 'lib-components';
 import { LTINav } from 'components/LTINav';
 import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
-import { useAppConfig } from 'lib-components';
-import { modelName } from 'lib-components';
 
 const PlaylistPage = () => {
   const appData = useAppConfig();

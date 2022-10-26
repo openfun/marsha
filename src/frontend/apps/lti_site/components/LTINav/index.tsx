@@ -1,6 +1,15 @@
 import { Box, Nav } from 'grommet';
-import { useCurrentResourceContext, useMaintenance } from 'lib-components';
-import { useVideo, useDocument } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useMaintenance,
+  useVideo,
+  useDocument,
+  useAppConfig,
+  Document,
+  modelName,
+  uploadState,
+  Video,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { NavLink } from 'react-router-dom';
@@ -9,11 +18,6 @@ import styled from 'styled-components';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { useAppConfig } from 'lib-components';
-
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState, Video } from 'lib-components';
 
 const messages = defineMessages({
   linkDashboard: {

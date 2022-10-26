@@ -2,7 +2,7 @@ import { within } from '@testing-library/dom';
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, uploadState, UploadManager } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import xhrMock, { MockResponse } from 'xhr-mock';
@@ -15,8 +15,6 @@ import {
 
 import MarkdownEditor from '.';
 import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
-import { uploadState } from 'lib-components';
-import { UploadManager } from 'lib-components';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

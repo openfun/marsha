@@ -2,11 +2,10 @@ import { defineMessages } from '@formatjs/intl';
 import { Box, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { DownloadSVG } from 'lib-components';
+import { DownloadSVG, videoSize, useVideo } from 'lib-components';
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { videoSize, useVideo } from 'lib-components';
 import { publishLiveToVod } from 'data/sideEffects/publishLiveToVod';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';

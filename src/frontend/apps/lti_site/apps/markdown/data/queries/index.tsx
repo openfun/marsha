@@ -6,9 +6,11 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { actionOne, createOne, fetchOne, updateOne } from 'lib-components';
-
 import {
+  actionOne,
+  createOne,
+  fetchOne,
+  updateOne,
   MarkdownDocument,
   MarkdownSaveTranslationsRequest,
   MarkdownSaveTranslationsResponse,

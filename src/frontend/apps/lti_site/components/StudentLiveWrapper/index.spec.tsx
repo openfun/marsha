@@ -7,7 +7,15 @@ import {
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { decodeJwt, useCurrentResourceContext } from 'lib-components';
+import {
+  decodeJwt,
+  useCurrentResourceContext,
+  LiveModeType,
+  liveState,
+  PersistentStore,
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import { pushAttendance } from 'data/sideEffects/pushAttendance';
@@ -21,10 +29,7 @@ import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture/index';
 import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
-import { LiveModeType, liveState } from 'lib-components';
-import { PersistentStore } from 'lib-components';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { sharedLiveMediaMockFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { StudentLiveWrapper } from '.';

@@ -1,8 +1,7 @@
 import { screen } from '@testing-library/react';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, uploadState } from 'lib-components';
 import React from 'react';
 
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

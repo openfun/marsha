@@ -1,6 +1,10 @@
 import { cleanup, screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  participantMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 import renderer from 'react-test-renderer';
 
@@ -8,7 +12,6 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { participantMockFactory, videoMockFactory } from 'lib-components';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 import render from 'utils/tests/render';

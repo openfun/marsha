@@ -1,6 +1,16 @@
 import { Box, Heading, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Crumb, Spinner } from 'lib-components';
+import {
+  Crumb,
+  Spinner,
+  ErrorMessage,
+  UploadField,
+  UploadManagerStatus,
+  useUploadManager,
+  modelName,
+  uploadState,
+  Video,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import {
@@ -14,13 +24,8 @@ import {
 import styled from 'styled-components';
 
 import { useTimedTextTracks, useVideo } from 'data/queries';
-import { ErrorMessage } from 'lib-components';
 import { UploadableObjectStatusBadge } from 'components/UploadableObjectStatusBadge';
-import { UploadField } from 'lib-components';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
 import VideoPlayer from 'components/VideoPlayer';
-import { modelName } from 'lib-components';
-import { uploadState, Video } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({

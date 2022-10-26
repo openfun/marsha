@@ -1,9 +1,12 @@
 import { Nullable } from 'lib-common';
 import React, { useState } from 'react';
 
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+  uploadState,
+} from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { uploadState } from 'lib-components';
 
 import { UploadVideoDropzone } from './UploadVideoDropzone';
 import { UploadVideoPreview } from './UploadVideoPreview';

@@ -1,9 +1,6 @@
 import { screen } from '@testing-library/react';
-import { useMaintenance } from 'lib-components';
-import React from 'react';
-
-import { useAttendance } from 'data/stores/useAttendance';
 import {
+  useMaintenance,
   useSentry,
   useVideo,
   useTimedTextTrack,
@@ -11,6 +8,9 @@ import {
   useSharedLiveMedia,
   useDocument,
 } from 'lib-components';
+import React from 'react';
+
+import { useAttendance } from 'data/stores/useAttendance';
 import render from 'utils/tests/render';
 
 import { AppInitializer } from '.';

@@ -1,11 +1,13 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  appState,
+  flags,
+} from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useAppConfig } from 'lib-components';
-
-import { appState, flags } from 'lib-components';
 
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
 

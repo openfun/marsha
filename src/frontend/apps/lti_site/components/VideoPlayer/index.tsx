@@ -4,12 +4,17 @@ import React, { useRef, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { useThumbnail } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  useThumbnail,
+  TimedText,
+  timedTextMode,
+  Video,
+  videoSize,
+} from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
-import { TimedText, timedTextMode, Video, videoSize } from 'lib-components';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
 
 interface BaseVideoPlayerProps {

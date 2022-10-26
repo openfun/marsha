@@ -1,10 +1,13 @@
 import { screen } from '@testing-library/react';
-import { thumbnailMockFactory } from 'lib-components';
+import {
+  thumbnailMockFactory,
+  UploadManagerState,
+  UploadManagerStatus,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import React from 'react';
 
-import { UploadManagerState, UploadManagerStatus } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { ThumbnailManager } from '.';

@@ -3,10 +3,12 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { useTimedTextTrack } from 'lib-components';
+import {
+  useTimedTextTrack,
+  timedTextMode,
+  timedTextMockFactory,
+} from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices/index';
-import { timedTextMode } from 'lib-components';
-import { timedTextMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { LanguageSelect } from '.';
 

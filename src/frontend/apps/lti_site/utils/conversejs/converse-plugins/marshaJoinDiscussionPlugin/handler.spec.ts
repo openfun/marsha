@@ -3,10 +3,12 @@ import {
   useJwt,
   participantMockFactory,
   videoMockFactory,
+  EventType,
+  MessageType,
+  useVideo,
 } from 'lib-components';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { EventType, MessageType, useVideo } from 'lib-components';
 
 import marshaJoinDiscussionPluginHandler from './handler';
 

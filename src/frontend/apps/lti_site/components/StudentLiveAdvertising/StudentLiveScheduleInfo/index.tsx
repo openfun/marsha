@@ -1,6 +1,6 @@
 import { Box, Clock, Heading, Paragraph, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { ChronometerSVG } from 'lib-components';
+import { ChronometerSVG, liveState } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
@@ -14,7 +14,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { theme } from 'utils/theme/theme';
-import { liveState } from 'lib-components';
 
 const Header = ({ title }: { title: ReactNode }) => (
   <Heading

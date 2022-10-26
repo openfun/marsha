@@ -8,6 +8,11 @@ import {
   useCurrentUser,
   ResourceContext,
   User,
+  BoundaryScreenError,
+  Loader,
+  useAppConfig,
+  appNames,
+  report,
 } from 'lib-components';
 import React, {
   ComponentType,
@@ -22,11 +27,6 @@ import { createIntlCache, createIntl, RawIntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 
-import { BoundaryScreenError } from 'lib-components';
-import { Loader } from 'lib-components';
-import { useAppConfig } from 'lib-components';
-import { appNames } from 'lib-components';
-import { report } from 'lib-components';
 import { GlobalStyles } from 'utils/theme/baseStyles';
 import { colors, theme } from 'utils/theme/theme';
 

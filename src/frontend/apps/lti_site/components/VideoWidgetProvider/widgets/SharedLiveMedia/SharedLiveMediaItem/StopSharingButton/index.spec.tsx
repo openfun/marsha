@@ -6,10 +6,10 @@ import {
   useJwt,
   videoMockFactory,
   sharedLiveMediaMockFactory,
+  report,
 } from 'lib-components';
 import React from 'react';
 
-import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

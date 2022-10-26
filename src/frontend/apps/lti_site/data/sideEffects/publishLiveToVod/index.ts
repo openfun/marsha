@@ -1,7 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { Video } from 'lib-components';
+import { useJwt, API_ENDPOINT, Video } from 'lib-components';
 
 export const publishLiveToVod = async (video: Video) => {
   const response = await fetch(

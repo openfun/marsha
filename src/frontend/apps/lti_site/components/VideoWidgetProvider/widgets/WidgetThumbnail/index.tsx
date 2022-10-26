@@ -1,18 +1,20 @@
 import { Box, Button, Stack, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable } from 'lib-common';
-import { PictureSVG } from 'lib-components';
+import {
+  PictureSVG,
+  useUploadManager,
+  useAppConfig,
+  useThumbnail,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
-import { useUploadManager } from 'lib-components';
 import { createThumbnail } from 'data/sideEffects/createThumbnail';
-import { useAppConfig } from 'lib-components';
-import { useThumbnail } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 import { ThumbnailManager } from './ThumbnailManager';

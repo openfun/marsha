@@ -1,13 +1,16 @@
 import * as React from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { useCurrentResourceContext, useJwt } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useJwt,
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  appState,
+  flags,
+} from 'lib-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useAppConfig } from 'lib-components';
-
-import { appState, flags } from 'lib-components';
 
 import { MARKDOWN_NOT_FOUND_ROUTE } from '../MarkdownNotFoundView/route';
 import { MARKDOWN_EDITOR_ROUTE } from '../MarkdownEditor/route';

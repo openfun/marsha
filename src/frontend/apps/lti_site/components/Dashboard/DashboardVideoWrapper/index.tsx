@@ -6,9 +6,8 @@ import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrent
 import { JitsiApiProvider } from 'data/stores/useJitsiApi';
 import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
-import { useVideo } from 'lib-components';
+import { useVideo, liveState, uploadState, Video } from 'lib-components';
 import { initVideoWebsocket } from 'data/websocket';
-import { liveState, uploadState, Video } from 'lib-components';
 
 interface DashboardVideoWrapperProps {
   video: Video;

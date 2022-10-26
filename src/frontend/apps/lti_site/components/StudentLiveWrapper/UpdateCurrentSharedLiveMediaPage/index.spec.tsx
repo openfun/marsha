@@ -1,9 +1,12 @@
 import faker from 'faker';
-import { sharedLiveMediaMockFactory, videoMockFactory } from 'lib-components';
+import {
+  sharedLiveMediaMockFactory,
+  videoMockFactory,
+  liveState,
+} from 'lib-components';
 import React from 'react';
 
 import { SharedMediaCurrentPageProvider } from 'data/stores/useSharedMediaCurrentPage';
-import { liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

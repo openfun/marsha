@@ -6,8 +6,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Document } from 'lib-components';
-import { Video, videoSize } from 'lib-components';
+import { Document, Video, videoSize } from 'lib-components';
 
 import { buildContentItems } from '../utils';
 

@@ -11,12 +11,11 @@ import {
   thumbnailMockFactory,
   timedTextMockFactory,
   videoMockFactory,
+  LiveModeType,
 } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
-
-import { LiveModeType } from 'lib-components';
 
 import {
   useCreateDocument,

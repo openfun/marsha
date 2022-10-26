@@ -1,12 +1,15 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, timedTextMockFactory } from 'lib-components';
+import {
+  useJwt,
+  timedTextMockFactory,
+  useTimedTextTrack,
+  report,
+} from 'lib-components';
 import React from 'react';
 
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { useTimedTextTrack } from 'lib-components';
-import { report } from 'lib-components';
 import render from 'utils/tests/render';
 import { TimedTrackModalWrapper } from '.';
 

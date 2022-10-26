@@ -1,7 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { Video } from 'lib-components';
+import { useJwt, API_ENDPOINT, Video } from 'lib-components';
 
 /**
  * Post to an action endpoint to stop a live streaming.

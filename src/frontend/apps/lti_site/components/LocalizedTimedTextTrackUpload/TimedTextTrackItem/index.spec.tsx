@@ -1,18 +1,19 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, timedTextMockFactory } from 'lib-components';
-import React from 'react';
-
 import {
+  useJwt,
+  timedTextMockFactory,
   UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
+  modelName,
+  uploadState,
 } from 'lib-components';
+import React from 'react';
+
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { TimedTextTrackItem } from '.';
 

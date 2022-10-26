@@ -7,14 +7,14 @@ import {
   sharedLiveMediaMockFactory,
   thumbnailMockFactory,
   videoMockFactory,
+  useSharedLiveMedia,
+  useThumbnail,
+  JoinMode,
 } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { useSharedLiveMedia } from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { useThumbnail } from 'lib-components';
-import { JoinMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

@@ -5,7 +5,13 @@ import { Redirect } from 'react-router-dom';
 
 import { ConverseInitializer } from 'components/ConverseInitializer';
 import { toolbarButtons } from 'components/DashboardLiveJitsi/utils';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  liveState,
+  LiveModeType,
+  JoinMode,
+} from 'lib-components';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveModale } from 'components/LiveModale';
@@ -19,7 +25,6 @@ import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
-import { useAppConfig } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
@@ -29,7 +34,6 @@ import {
 } from 'data/stores/useLivePanelState';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
-import { liveState, LiveModeType, JoinMode } from 'lib-components';
 import { converse } from 'utils/window';
 
 import { DashboardLiveControlPane } from './DashboardLiveControlPane';

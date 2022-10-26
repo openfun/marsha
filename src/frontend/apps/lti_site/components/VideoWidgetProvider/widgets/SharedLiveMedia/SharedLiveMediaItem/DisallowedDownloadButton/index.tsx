@@ -1,12 +1,10 @@
 import { Button } from 'grommet';
-import { NoDownloadSVG } from 'lib-components';
+import { NoDownloadSVG, SharedLiveMedia, report } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateSharedLiveMedia } from 'data/queries';
-import { SharedLiveMedia } from 'lib-components';
-import { report } from 'lib-components';
 
 const messages = defineMessages({
   updateSharedLiveMediaSucces: {

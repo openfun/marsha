@@ -5,10 +5,8 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { APIList } from 'lib-components';
-import { uploadState } from 'lib-components';
+import { APIList, uploadState, DepositedFile } from 'lib-components';
 
-import { DepositedFile } from 'lib-components';
 import {
   depositedFileMockFactory,
   fileDepositoryMockFactory,

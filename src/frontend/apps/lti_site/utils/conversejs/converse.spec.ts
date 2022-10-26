@@ -1,6 +1,5 @@
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, PersistentStore } from 'lib-components';
 
-import { PersistentStore } from 'lib-components';
 import * as mockWindow from 'utils/window';
 
 import { converseMounter } from './converse';

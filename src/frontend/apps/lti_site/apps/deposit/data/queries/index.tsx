@@ -13,10 +13,7 @@ import {
   FetchListQueryKey,
   fetchOne,
   updateOne,
-} from 'lib-components';
-import { APIList } from 'lib-components';
-
-import {
+  APIList,
   DepositedFile,
   FileDepository,
   FileDepositoryModelName as modelName,

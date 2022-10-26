@@ -1,14 +1,17 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { useTimedTextTrack } from 'lib-components';
+import {
+  useTimedTextTrack,
+  useJwt,
+  timedTextMode,
+  uploadState,
+  videoMockFactory,
+} from 'lib-components';
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
 import React from 'react';
 
-import { timedTextMode, uploadState } from 'lib-components';
-import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

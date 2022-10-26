@@ -1,8 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { Participant } from 'lib-components';
-import { Video } from 'lib-components';
+import { useJwt, API_ENDPOINT, Participant, Video } from 'lib-components';
 
 const updateLiveParticipants = async (
   video: Video,

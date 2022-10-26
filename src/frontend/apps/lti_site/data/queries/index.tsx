@@ -16,10 +16,9 @@ import {
   fetchOne,
   metadata,
   updateOne,
-} from 'lib-components';
-import { APIList, useVideo as useVideoStore } from 'lib-components';
-import { Document } from 'lib-components';
-import {
+  APIList,
+  useVideo as useVideoStore,
+  Document,
   LiveModeType,
   LiveAttendance,
   LiveSession,
@@ -30,9 +29,9 @@ import {
   Video,
   VideoStats,
   uploadState,
+  Organization,
 } from 'lib-components';
 
-import { Organization } from 'lib-components';
 import { VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (

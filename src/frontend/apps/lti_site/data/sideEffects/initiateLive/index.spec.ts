@@ -1,7 +1,11 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
-
-import { LiveModeType, liveState, uploadState } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  LiveModeType,
+  liveState,
+  uploadState,
+} from 'lib-components';
 
 import { initiateLive } from '.';
 

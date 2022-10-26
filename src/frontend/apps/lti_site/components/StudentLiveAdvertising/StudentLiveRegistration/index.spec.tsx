@@ -1,13 +1,17 @@
 import userEvent from '@testing-library/user-event';
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { decodeJwt, useCurrentUser, useJwt } from 'lib-components';
+import {
+  decodeJwt,
+  useCurrentUser,
+  useJwt,
+  liveSessionFactory,
+} from 'lib-components';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { getAnonymousId } from 'utils/localstorage';
-import { liveSessionFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { StudentLiveRegistration } from '.';

@@ -1,11 +1,13 @@
 import React, { Dispatch, lazy, SetStateAction } from 'react';
 import { Redirect } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  LiveModeType,
+  ShouldNotHappen,
+} from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { LiveModeType } from 'lib-components';
 import { convertVideoToJitsiLive } from 'utils/conversions/convertVideo';
-import { ShouldNotHappen } from 'lib-components';
 
 const TeacherLiveRawWrapper = lazy(
   () => import('components/TeacherLiveRawWrapper'),

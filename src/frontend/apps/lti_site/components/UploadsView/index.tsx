@@ -1,16 +1,16 @@
 import { Box, Heading, Text } from 'grommet';
-import { Crumb } from 'lib-components';
+import {
+  Crumb,
+  UploadManagerState,
+  UploadManagerStatus,
+  useUploadManager,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { useVideo } from 'data/queries';
 import { Icon } from 'components/Icon';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import {
-  UploadManagerState,
-  UploadManagerStatus,
-  useUploadManager,
-} from 'lib-components';
 
 const messages = defineMessages({
   completedUploads: {

@@ -1,23 +1,25 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, useVideo } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  useVideo,
+  UploadManagerContext,
+  UploadManagerStatus,
+  useUploadManager,
+  useAppConfig,
+  modelName,
+  uploadState,
+  AppConfig,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { VIDEO_WIZARD_ROUTE } from 'components/routes';
-import {
-  UploadManagerContext,
-  UploadManagerStatus,
-  useUploadManager,
-} from 'lib-components';
-import { useAppConfig } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 
 import CreateVOD from '.';
-import { AppConfig } from 'lib-components';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

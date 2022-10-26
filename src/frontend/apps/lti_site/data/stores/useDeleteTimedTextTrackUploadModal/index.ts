@@ -1,7 +1,5 @@
 import { Nullable } from 'lib-common';
-import { createStore } from 'lib-components';
-
-import { TimedText } from 'lib-components';
+import { createStore, TimedText } from 'lib-components';
 
 const store = createStore<Nullable<TimedText>>(
   'DeleteTimedTextTrackUploadModalProvider',

@@ -1,10 +1,9 @@
 import { Button } from 'grommet';
-import { BinSVG } from 'lib-components';
+import { BinSVG, SharedLiveMedia } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { SharedLiveMedia } from 'lib-components';
 
 const messages = defineMessages({
   buttonLabel: {

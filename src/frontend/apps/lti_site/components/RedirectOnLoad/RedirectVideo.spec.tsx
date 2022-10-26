@@ -1,17 +1,20 @@
 import { screen } from '@testing-library/react';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  FULL_SCREEN_ERROR_ROUTE,
+  modelName,
+  LiveModeType,
+  uploadState,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import {
   PLAYER_ROUTE,
   VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
 } from 'components/routes';
-import { modelName } from 'lib-components';
-import { LiveModeType, uploadState } from 'lib-components';
-import { videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectVideo } from './RedirectVideo';

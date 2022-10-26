@@ -1,5 +1,5 @@
 import { Box, Heading } from 'grommet';
-import { BreadCrumbs } from 'lib-components';
+import { BreadCrumbs, UploadManager, useAppConfig } from 'lib-components';
 import { BreadCrumbsProvider } from 'lib-common';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -7,9 +7,7 @@ import { BrowserRouter, Route, Switch } from 'react-router-dom';
 
 import { OrganizationView } from 'components/OrganizationView';
 import { SiteLayout } from 'components/SiteLayout';
-import { UploadManager } from 'lib-components';
 import { UploadsView } from 'components/UploadsView';
-import { useAppConfig } from 'lib-components';
 
 const queryClient = new QueryClient();
 

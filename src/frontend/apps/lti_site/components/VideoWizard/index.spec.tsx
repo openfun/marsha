@@ -1,12 +1,15 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory } from 'lib-components';
+import {
+  videoMockFactory,
+  modelName,
+  LiveModeType,
+  liveState,
+} from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { modelName } from 'lib-components';
-import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import VideoWizard from '.';

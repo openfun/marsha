@@ -6,6 +6,7 @@ import {
   QuestionMarkSVG,
   useCurrentUser,
   useJwt,
+  LiveSession,
 } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -18,7 +19,6 @@ import {
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
 } from 'default/chat';
-import { LiveSession } from 'lib-components';
 import { isAnonymous } from 'utils/chat/chat';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';

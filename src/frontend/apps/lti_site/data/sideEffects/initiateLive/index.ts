@@ -1,7 +1,4 @@
-import { useJwt } from 'lib-components';
-
-import { API_ENDPOINT } from 'lib-components';
-import { LiveModeType, Video } from 'lib-components';
+import { useJwt, API_ENDPOINT, LiveModeType, Video } from 'lib-components';
 
 /**
  * Post to an action endpoint that declares the beginning of live video.

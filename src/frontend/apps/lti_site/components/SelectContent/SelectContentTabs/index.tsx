@@ -1,5 +1,14 @@
 import { Tab, Tabs } from 'grommet';
-import { Loader } from 'lib-components';
+import {
+  Loader,
+  appNames,
+  Document,
+  Live,
+  LiveModeType,
+  Playlist,
+  uploadState,
+  Video,
+} from 'lib-components';
 import React, { lazy, Suspense } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -7,15 +16,6 @@ import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
 import { initiateLive } from 'data/sideEffects/initiateLive';
-import { appNames } from 'lib-components';
-import { Document } from 'lib-components';
-import {
-  Live,
-  LiveModeType,
-  Playlist,
-  uploadState,
-  Video,
-} from 'lib-components';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';

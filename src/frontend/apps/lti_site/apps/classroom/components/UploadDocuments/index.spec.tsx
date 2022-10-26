@@ -2,15 +2,16 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import React, { PropsWithChildren } from 'react';
 import fetchMock from 'fetch-mock';
 
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import { uploadState } from 'lib-components';
-
-import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
 import {
+  UploadManagerStatus,
+  useUploadManager,
+  uploadState,
   ClassroomDocument,
   ClassroomModelName as modelName,
 } from 'lib-components';
+import { render, Deferred } from 'lib-tests';
+
+import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
 import { classroomDocumentMockFactory } from 'apps/classroom/utils/tests/factories';
 
 import { UploadDocuments } from '.';

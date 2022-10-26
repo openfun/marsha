@@ -1,9 +1,13 @@
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  Participant,
+  Video,
+  EventType,
+  MessageType,
+  XMPP,
+} from 'lib-components';
 
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { Participant } from 'lib-components';
-import { Video } from 'lib-components';
-import { EventType, MessageType, XMPP } from 'lib-components';
 import { converse } from 'utils/window';
 
 import marshaJoinDiscussionPluginHandler from './handler';

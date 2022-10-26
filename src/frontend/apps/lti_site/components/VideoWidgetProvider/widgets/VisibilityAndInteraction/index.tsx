@@ -1,6 +1,6 @@
 import ClipboardJS from 'clipboard';
 import { Box, Button, Collapsible, Text } from 'grommet';
-import { CopySVG } from 'lib-components';
+import { CopySVG, report } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
@@ -10,7 +10,6 @@ import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { report } from 'lib-components';
 
 const messages = defineMessages({
   info: {

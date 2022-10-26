@@ -5,9 +5,12 @@ import { defineMessages, useIntl } from 'react-intl';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useTimedTextTrack } from 'lib-components';
-import { timedTextMode, Video } from 'lib-components';
-import { report } from 'lib-components';
+import {
+  useTimedTextTrack,
+  timedTextMode,
+  Video,
+  report,
+} from 'lib-components';
 
 const messages = defineMessages({
   useTranscriptToggleLabel: {
