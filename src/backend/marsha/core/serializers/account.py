@@ -6,8 +6,9 @@ from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.serializers import TokenVerifySerializer
 from rest_framework_simplejwt.settings import api_settings
 
-from ..models import Organization, OrganizationAccess
+from ..models import ConsumerSite, Organization, OrganizationAccess
 from ..simple_jwt.tokens import ChallengeToken, UserAccessToken
+from .base import ReadOnlyModelSerializer
 
 
 class ChallengeTokenSerializer(TokenVerifySerializer):
@@ -75,6 +76,34 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "users",
+        ]
+        read_only_fields = ("id",)
+
+
+class OrganizationLiteSerializer(ReadOnlyModelSerializer):
+    """Serializer for a lite representation of Organization resource."""
+
+    class Meta:
+        """Meta for OrganizationSerializer."""
+
+        model = Organization
+        fields = [
+            "id",
+            "name",
+        ]
+
+
+class ConsumerSiteSerializer(ReadOnlyModelSerializer):
+    """Serializer to display a ConsumerSite resource."""
+
+    class Meta:
+        """Meta for ConsumerSiteSerializer"""
+
+        model = ConsumerSite
+        fields = [
+            "id",
+            "name",
+            "domain",
         ]
 
 

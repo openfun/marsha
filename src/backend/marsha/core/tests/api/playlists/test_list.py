@@ -8,6 +8,8 @@ from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 class PlaylistListAPITest(TestCase):
     """Test the list API for playlist objects."""
 
+    maxDiff = None
+
     def test_list_playlists_by_anonymous_user(self):
         """Anonymous users cannot make list requests for playlists."""
         factories.PlaylistFactory()
@@ -67,7 +69,11 @@ class PlaylistListAPITest(TestCase):
             response.json()["results"],
             [
                 {
-                    "consumer_site": str(playlist_1.consumer_site.id),
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
                     "created_by": None,
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
@@ -75,13 +81,20 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_playlist": True,
                     "is_public": False,
                     "lti_id": "playlist#one",
-                    "organization": str(org_1.id),
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [],
                 },
                 {
-                    "consumer_site": str(playlist_2.consumer_site.id),
+                    "consumer_site": {
+                        "id": str(playlist_2.consumer_site.id),
+                        "domain": playlist_2.consumer_site.domain,
+                        "name": playlist_2.consumer_site.name,
+                    },
                     "created_by": None,
                     "duplicated_from": None,
                     "id": str(playlist_2.id),
@@ -89,7 +102,10 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_playlist": True,
                     "is_public": False,
                     "lti_id": "playlist#two",
-                    "organization": str(org_2.id),
+                    "organization": {
+                        "id": str(org_2.id),
+                        "name": org_2.name,
+                    },
                     "portable_to": [],
                     "title": "Second playlist",
                     "users": [],
@@ -136,7 +152,11 @@ class PlaylistListAPITest(TestCase):
             response.json()["results"],
             [
                 {
-                    "consumer_site": str(playlist_1.consumer_site.id),
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
                     "created_by": None,
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
@@ -144,7 +164,10 @@ class PlaylistListAPITest(TestCase):
                     "is_portable_to_playlist": True,
                     "is_public": False,
                     "lti_id": "playlist#eleven",
-                    "organization": str(org_1.id),
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [],

@@ -9,6 +9,7 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from rest_framework import serializers
+from rest_framework.fields import empty
 
 from ..defaults import (
     COPYING,
@@ -137,6 +138,87 @@ class TimestampField(serializers.DateTimeField):
             return super().to_internal_value(time_utils.to_datetime(value))
         except OverflowError as error:
             raise ValidationError(error) from error
+
+
+class ReadWritePrimaryKeyRelatedField(serializers.PrimaryKeyRelatedField):
+    """
+    A serializer field to serialize/deserialize complete related object.
+    It allows to serialize related foreign related object (many to one) for display purpose,
+    while still allowing to use only its PK when editing (create or update).
+    Examples (for the parent object, with this serializer for playlist):
+     - GET will return
+       ```
+        {
+            "id": "1",
+            "title": "foo",
+            "playlist": {
+                "id": "1",
+                "title": "bar",
+                "lti_id": "course-v1:ufr+mathematics+00001"
+            }
+        }
+       ```
+     - while you can POST/PUT/PATCH with
+       ```
+        {
+            "id": "1",
+            "title": "foo",
+            "playlist": 1
+        }
+       ```
+    """
+
+    def __init__(self, to_representation_serializer, **kwargs):
+        """Init the serializer providing a serializer to use for the related object."""
+        self.to_representation_serializer = to_representation_serializer
+        super().__init__(**kwargs)
+
+    def use_pk_only_optimization(self):
+        """
+        Do not use this optimization since we need to retrieve more data from the related object.
+        """
+        return False
+
+    def to_internal_value(self, data):
+        """
+        Allow to provide only the PK of the related object (nominal case) or extract the PK
+        if the POSTed data are from a previous GET, giving all the object.
+
+        This allows to provide input for the parent object like
+        ```
+        {
+            "id": "1",
+            "title": "foo",
+            "playlist": 1
+        }
+        ```
+
+        or
+        ```
+            {
+                "id": "1",
+                "title": "foo",
+                "playlist": {
+                    "id": "1",
+                    "title": "bar",
+                    "lti_id": "course-v1:ufr+mathematics+00001"
+                }
+            }
+        ```
+        """
+        if isinstance(data, dict):
+            return super().to_internal_value(data["id"])
+        return super().to_internal_value(data)
+
+    def run_validation(self, data=empty):
+        """Validate data according to the same principle as the `to_internal_value` method."""
+        if isinstance(data, dict):
+            return super().run_validation(data["id"])
+        return super().run_validation(data)
+
+    def to_representation(self, value):
+        """Use the provided serializer to serialize the related object."""
+        return self.to_representation_serializer(value).data
 
 
 class UpdateStateSerializer(serializers.Serializer):

@@ -11,7 +11,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """ViewSet for all playlist-related interactions."""
 
     permission_classes = [permissions.NotAllowed]
-    queryset = Playlist.objects.all()
+    queryset = Playlist.objects.all().select_related("organization", "consumer_site")
     serializer_class = serializers.PlaylistSerializer
 
     def get_permissions(self):
