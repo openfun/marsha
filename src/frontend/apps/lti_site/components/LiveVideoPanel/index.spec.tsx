@@ -1,6 +1,10 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  participantMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import {
@@ -8,7 +12,6 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore';
-import { participantMockFactory, videoMockFactory } from 'lib-components';
 import { renderImageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';

@@ -4,16 +4,21 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  APIList,
+  Live,
+  LiveSession,
+  liveState,
+  PersistentStore,
+  liveSessionFactory,
+  videoMockFactory,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 import { v4 as uuidv4 } from 'uuid';
 
-import { APIList } from 'lib-components';
-import { Live, LiveSession, liveState } from 'lib-components';
-import { PersistentStore } from 'lib-components';
-import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 

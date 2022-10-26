@@ -1,9 +1,12 @@
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
-import { ErrorComponentsProps, FullScreenError } from 'lib-components';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { Loader } from 'lib-components';
+import {
+  ErrorComponentsProps,
+  FullScreenError,
+  FULL_SCREEN_ERROR_ROUTE,
+  Loader,
+} from 'lib-components';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { DASHBOARD_CLASSROOM_ROUTE } from './DashboardClassroom/route';

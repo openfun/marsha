@@ -1,6 +1,6 @@
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader } from 'lib-components';
+import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -22,7 +22,6 @@ import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOp
 import ScreenDispositionSelector, {
   ScreenDisposition,
 } from 'apps/markdown/components/ScreenDispositionSelector';
-import { MarkdownDocumentRenderingOptions } from 'lib-components';
 import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
 import MarkdownImageDropzone from '../MarkdownImageDropzone';
 import { useImageUploadManager } from '../useImageUploadManager';

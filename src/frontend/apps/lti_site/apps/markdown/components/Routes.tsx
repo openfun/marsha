@@ -1,11 +1,13 @@
 import React, { lazy, Suspense } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
-import { Loader } from 'lib-components';
-
-import { ErrorComponentsProps, FullScreenError } from 'lib-components';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
-import { UploadManager } from 'lib-components';
+import {
+  Loader,
+  ErrorComponentsProps,
+  FullScreenError,
+  FULL_SCREEN_ERROR_ROUTE,
+  UploadManager,
+} from 'lib-components';
 
 import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
 import { MARKDOWN_NOT_FOUND_ROUTE } from './MarkdownNotFoundView/route';

@@ -1,7 +1,7 @@
 import { Button, Grommet, Paragraph, TextInput, ThemeType } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { decodeJwt, useJwt } from 'lib-components';
+import { decodeJwt, useJwt, LiveSession } from 'lib-components';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -10,7 +10,6 @@ import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
 import { theme } from 'utils/theme/theme';
-import { LiveSession } from 'lib-components';
 import { updateLiveSession } from 'data/sideEffects/updateLiveSession';
 
 const formTheme: ThemeType = deepMerge(theme, {

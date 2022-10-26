@@ -7,10 +7,8 @@ import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
 import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
-import { useAppConfig } from 'lib-components';
+import { useAppConfig, useThumbnail, useTimedTextTrack } from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useThumbnail } from 'lib-components';
-import { useTimedTextTrack } from 'lib-components';
 import { theme } from 'utils/theme/theme';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`

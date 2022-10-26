@@ -3,9 +3,13 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { UploadableObject, uploadState } from 'lib-components';
+import {
+  UploadableObject,
+  uploadState,
+  UploadManagerStatus,
+  useUploadManager,
+} from 'lib-components';
 import { theme } from '../../utils/theme/theme';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 const messages = defineMessages({
   [uploadState.DELETED]: {

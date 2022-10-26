@@ -2,8 +2,11 @@ import { screen } from '@testing-library/react';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
-import { modelName } from 'lib-components';
+import {
+  UploadManagerContext,
+  UploadManagerStatus,
+  modelName,
+} from 'lib-components';
 import render from 'utils/tests/render';
 
 import { UploadableObjectProgress } from '.';

@@ -1,5 +1,10 @@
 import { Box } from 'grommet';
-import { useCurrentSession, useJwt } from 'lib-components';
+import {
+  useCurrentSession,
+  useJwt,
+  videoSize,
+  VideoUrls,
+} from 'lib-components';
 import Tooltip from 'rc-tooltip';
 import 'rc-tooltip/assets/bootstrap.css';
 import React, { Fragment, useEffect, useRef } from 'react';
@@ -7,7 +12,6 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 import videojs, { VideoJsPlayer } from 'video.js';
 
-import { videoSize, VideoUrls } from 'lib-components';
 import { VideoXAPIStatement } from 'XAPI/VideoXAPIStatement';
 
 const messages = defineMessages({

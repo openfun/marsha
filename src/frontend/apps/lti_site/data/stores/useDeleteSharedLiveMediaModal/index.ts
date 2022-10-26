@@ -1,7 +1,5 @@
 import { Nullable } from 'lib-common';
-import { createStore } from 'lib-components';
-
-import { SharedLiveMedia } from 'lib-components';
+import { createStore, SharedLiveMedia } from 'lib-components';
 
 const store = createStore<Nullable<SharedLiveMedia>>(
   'DeleteSharedLiveMediaModalProvider',

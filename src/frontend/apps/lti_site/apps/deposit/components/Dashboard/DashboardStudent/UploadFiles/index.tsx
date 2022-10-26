@@ -4,14 +4,17 @@ import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
 
-import { PlusSVG } from 'lib-components';
+import {
+  PlusSVG,
+  UploadManagerStatus,
+  useUploadManager,
+  FileDepositoryModelName as modelName,
+} from 'lib-components';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
-import { FileDepositoryModelName as modelName } from 'lib-components';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 

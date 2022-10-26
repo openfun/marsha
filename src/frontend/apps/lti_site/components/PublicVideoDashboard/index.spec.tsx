@@ -1,35 +1,33 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  FULL_SCREEN_ERROR_ROUTE,
+  useTimedTextTrack,
+  APIList,
+  LiveSession,
+  liveState,
+  timedTextMode,
+  uploadState,
+  PersistentStore,
+  liveSessionFactory,
+  timedTextMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import {
   useLivePanelState,
   LivePanelItem,
 } from 'data/stores/useLivePanelState';
-import { useTimedTextTrack } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import { createPlayer } from 'Player/createPlayer';
-import { APIList } from 'lib-components';
-import {
-  LiveSession,
-  liveState,
-  timedTextMode,
-  uploadState,
-} from 'lib-components';
-import { PersistentStore } from 'lib-components';
 import { getAnonymousId } from 'utils/localstorage';
-import {
-  liveSessionFactory,
-  timedTextMockFactory,
-  videoMockFactory,
-} from 'lib-components';
 
 import PublicVideoDashboard from '.';
 

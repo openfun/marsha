@@ -1,8 +1,7 @@
 import './entry.js';
 import { Nullable } from 'lib-common';
 
-import { Video } from 'lib-components';
-import { XMPP } from 'lib-components';
+import { Video, XMPP } from 'lib-components';
 import { generateAnonymousNickname } from 'utils/chat/chat';
 import { converse } from 'utils/window';
 

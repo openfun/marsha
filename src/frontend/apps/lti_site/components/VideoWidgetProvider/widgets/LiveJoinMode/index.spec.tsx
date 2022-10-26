@@ -2,12 +2,10 @@ import { act, screen } from '@testing-library/react';
 import { within } from '@testing-library/dom';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, report, JoinMode } from 'lib-components';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
-import { report } from 'lib-components';
-import { JoinMode } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

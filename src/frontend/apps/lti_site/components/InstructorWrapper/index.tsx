@@ -1,8 +1,5 @@
-import { useCurrentResourceContext } from 'lib-components';
+import { useCurrentResourceContext, Document, Video } from 'lib-components';
 import React from 'react';
-
-import { Document } from 'lib-components';
-import { Video } from 'lib-components';
 
 import { InstructorView } from './InstructorView';
 

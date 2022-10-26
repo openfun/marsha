@@ -1,5 +1,5 @@
 import { Tabs, Box, ResponsiveContext, ThemeType, ThemeContext } from 'grommet';
-import { useCurrentResourceContext } from 'lib-components';
+import { useCurrentResourceContext, ShouldNotHappen } from 'lib-components';
 import React, { useEffect, useContext, Fragment } from 'react';
 import styled from 'styled-components';
 
@@ -10,7 +10,6 @@ import {
   LivePanelItem,
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
-import { ShouldNotHappen } from 'lib-components';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 

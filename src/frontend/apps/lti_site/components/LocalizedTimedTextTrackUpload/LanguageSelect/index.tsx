@@ -3,9 +3,8 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import { useTimedTextTrack } from 'lib-components';
+import { useTimedTextTrack, timedTextMode } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
-import { timedTextMode } from 'lib-components';
 
 const messages = defineMessages({
   selectLanguageLabel: {

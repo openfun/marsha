@@ -1,5 +1,10 @@
 import { Maybe } from 'lib-common';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  modelName,
+  JoinMode,
+  liveState,
+} from 'lib-components';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -16,8 +21,6 @@ import { useLiveSession } from 'data/stores/useLiveSession';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
 import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
-import { modelName } from 'lib-components';
-import { JoinMode, liveState } from 'lib-components';
 import { converse } from 'utils/window';
 
 interface StudentLiveStarterProps {

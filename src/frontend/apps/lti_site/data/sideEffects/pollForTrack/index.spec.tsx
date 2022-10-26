@@ -5,12 +5,11 @@ import {
   documentMockFactory,
   timedTextMockFactory,
   videoMockFactory,
+  addResource,
+  requestStatus,
+  modelName,
+  report,
 } from 'lib-components';
-
-import { addResource } from 'lib-components';
-import { requestStatus } from 'lib-components';
-import { modelName } from 'lib-components';
-import { report } from 'lib-components';
 
 import { pollForTrack } from '.';
 

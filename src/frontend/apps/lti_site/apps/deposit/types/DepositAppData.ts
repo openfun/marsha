@@ -1,7 +1,7 @@
 import { Nullable } from 'lib-common';
 
-import { AppData } from 'lib-components';
 import {
+  AppData,
   FileDepository,
   FileDepositoryModelName as modelName,
 } from 'lib-components';

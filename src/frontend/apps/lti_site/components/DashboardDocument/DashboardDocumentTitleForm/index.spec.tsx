@@ -1,10 +1,8 @@
 import { act, fireEvent, screen } from '@testing-library/react';
-import { useJwt, documentMockFactory } from 'lib-components';
+import { useJwt, documentMockFactory, uploadState } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import fetchMock from 'fetch-mock';
 import React from 'react';
-
-import { uploadState } from 'lib-components';
 
 import { DashboardDocumentTitleForm } from '.';
 

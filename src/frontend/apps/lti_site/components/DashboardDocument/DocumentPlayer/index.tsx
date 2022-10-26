@@ -1,11 +1,13 @@
 import { Box } from 'grommet';
-import { useJwt, useCurrentSession } from 'lib-components';
+import {
+  useJwt,
+  useCurrentSession,
+  useDocument,
+  Document,
+} from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';
 
-import { useDocument } from 'lib-components';
-
-import { Document } from 'lib-components';
 import { DocumentXapiStatement } from 'XAPI/DocumentXapiStatement';
 
 const IconBox = styled.span`

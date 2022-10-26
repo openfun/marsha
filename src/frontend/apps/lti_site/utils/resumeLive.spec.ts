@@ -1,11 +1,12 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  getResource,
+  modelName,
+  videoMockFactory,
+} from 'lib-components';
 
-import { getResource } from 'lib-components';
-import { modelName } from 'lib-components';
-
-import { videoMockFactory } from 'lib-components';
 import { resumeLive } from './resumeLive';
 
 jest.mock('lib-components', () => ({

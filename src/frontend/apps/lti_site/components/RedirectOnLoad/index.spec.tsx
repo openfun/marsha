@@ -1,16 +1,18 @@
 import { cleanup } from '@testing-library/react';
-import { useCurrentResourceContext } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  FULL_SCREEN_ERROR_ROUTE,
+  useAppConfig,
+  appState,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import React from 'react';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { FULL_SCREEN_ERROR_ROUTE } from 'lib-components';
 import { PLAYER_ROUTE } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-import { useAppConfig } from 'lib-components';
 
-import { appState } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';

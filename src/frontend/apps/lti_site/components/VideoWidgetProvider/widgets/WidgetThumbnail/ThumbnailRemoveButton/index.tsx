@@ -1,14 +1,11 @@
 import { Button } from 'grommet';
-import { BinSVG } from 'lib-components';
+import { BinSVG, useThumbnail, Thumbnail, report } from 'lib-components';
 import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteThumbnail } from 'data/queries';
-import { useThumbnail } from 'lib-components';
-import { Thumbnail } from 'lib-components';
-import { report } from 'lib-components';
 
 const messages = defineMessages({
   confirmationModalTitle: {

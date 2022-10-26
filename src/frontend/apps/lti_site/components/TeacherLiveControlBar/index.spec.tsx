@@ -1,6 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory } from 'lib-components';
+import { videoMockFactory, LiveModeType, liveState } from 'lib-components';
 import React from 'react';
 
 import * as pollForLiveModule from 'data/sideEffects/pollForLive';
@@ -9,7 +9,6 @@ import {
   useLivePanelState,
 } from 'data/stores/useLivePanelState';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
-import { LiveModeType, liveState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

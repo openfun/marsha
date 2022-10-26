@@ -1,10 +1,13 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
-import { videoMockFactory } from 'lib-components';
+import {
+  videoMockFactory,
+  UploadManagerContext,
+  UploadManagerStatus,
+  modelName,
+  uploadState,
+} from 'lib-components';
 
-import { UploadManagerContext, UploadManagerStatus } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { UploadableObjectStatusBadge } from '.';

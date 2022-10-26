@@ -3,9 +3,14 @@ import Dropzone from 'react-dropzone';
 import React, { useEffect, useState } from 'react';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { PlusSVG, ValidSVG } from 'lib-components';
+import {
+  PlusSVG,
+  ValidSVG,
+  UploadManagerStatus,
+  useUploadManager,
+  ClassroomModelName as modelName,
+} from 'lib-components';
 import { UploadableObjectProgress } from 'components/UploadableObjectProgress';
-import { UploadManagerStatus, useUploadManager } from 'lib-components';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import {
@@ -13,7 +18,6 @@ import {
   useUpdateClassroomDocument,
 } from 'apps/classroom/data/queries';
 import { createClassroomDocument } from 'apps/classroom/data/sideEffects/createClassroomDocument';
-import { ClassroomModelName as modelName } from 'lib-components';
 import { truncateFilename } from 'apps/deposit/utils/truncateFilename';
 
 const messages = {

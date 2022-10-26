@@ -4,9 +4,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ConfirmationModal } from 'components/graphicals/ConfirmationModal';
 import { useDeleteSharedLiveMediaModal } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { useSharedLiveMedia } from 'lib-components';
+import { useSharedLiveMedia, report } from 'lib-components';
 import { useDeleteSharedLiveMedia } from 'data/queries';
-import { report } from 'lib-components';
 
 const messages = defineMessages({
   confirmationModalTitle: {

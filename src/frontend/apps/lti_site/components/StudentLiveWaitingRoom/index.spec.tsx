@@ -1,12 +1,16 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useCurrentUser, useMaintenance } from 'lib-components';
+import {
+  useCurrentUser,
+  useMaintenance,
+  liveState,
+  liveSessionFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
-import { liveState } from 'lib-components';
-import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';

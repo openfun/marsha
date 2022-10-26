@@ -1,6 +1,15 @@
 import { act, cleanup, waitFor, screen } from '@testing-library/react';
 import { Nullable } from 'lib-common';
-import { useCurrentResourceContext, useJwt } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useJwt,
+  modelName,
+  JoinMode,
+  Live,
+  liveState,
+  liveSessionFactory,
+  videoMockFactory,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import userEvent from '@testing-library/user-event';
@@ -12,9 +21,6 @@ import { pollForLive } from 'data/sideEffects/pollForLive';
 import { setLiveSessionDisplayName } from 'data/sideEffects/setLiveSessionDisplayName';
 import { useLiveStateStarted } from 'data/stores/useLiveStateStarted';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { modelName } from 'lib-components';
-import { JoinMode, Live, liveState } from 'lib-components';
-import { liveSessionFactory, videoMockFactory } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { converse } from 'utils/window';
 

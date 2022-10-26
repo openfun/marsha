@@ -1,7 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
-
-import { TimedText } from 'lib-components';
+import { useJwt, TimedText } from 'lib-components';
 
 import { deleteTimedTextTrack } from '.';
 

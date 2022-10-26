@@ -1,17 +1,21 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { createMemoryHistory } from 'history';
-import { useCurrentResourceContext, useMaintenance } from 'lib-components';
+import {
+  useCurrentResourceContext,
+  useMaintenance,
+  useAppConfig,
+  modelName,
+  uploadState,
+  documentMockFactory,
+  videoMockFactory,
+} from 'lib-components';
 import React from 'react';
 import { Router } from 'react-router-dom';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
 import { PLAYER_ROUTE } from 'components/routes';
-import { useAppConfig } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import { documentMockFactory, videoMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 
 import { LTINav } from '.';

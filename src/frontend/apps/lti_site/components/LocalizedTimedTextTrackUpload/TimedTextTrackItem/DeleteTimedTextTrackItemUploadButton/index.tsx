@@ -1,10 +1,9 @@
 import { Button } from 'grommet';
-import { BinSVG } from 'lib-components';
+import { BinSVG, TimedText } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useDeleteTimedTextTrackUploadModal } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { TimedText } from 'lib-components';
 
 const messages = defineMessages({
   buttonLabel: {

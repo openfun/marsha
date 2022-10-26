@@ -1,10 +1,9 @@
 import { act, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import { useJwt, videoMockFactory, liveState } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { liveState } from 'lib-components';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { LivePairingButton } from '.';

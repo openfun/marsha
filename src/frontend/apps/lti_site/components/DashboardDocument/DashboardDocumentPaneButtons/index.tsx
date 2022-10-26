@@ -4,12 +4,14 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import { DashboardButton } from 'components/Styled/DashboardButtons';
-import { UPLOAD_FORM_ROUTE } from 'lib-components';
-import { useUploadManager } from 'lib-components';
+import {
+  UPLOAD_FORM_ROUTE,
+  useUploadManager,
+  Document,
+  modelName,
+  uploadState,
+} from 'lib-components';
 import { withLink } from 'components/withLink/withLink';
-import { Document } from 'lib-components';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 
 const DashboardButtonWithLink = withLink(DashboardButton);
 

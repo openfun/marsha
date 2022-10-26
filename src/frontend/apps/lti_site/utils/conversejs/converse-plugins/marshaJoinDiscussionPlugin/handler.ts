@@ -1,4 +1,10 @@
-import { useJwt } from 'lib-components';
+import {
+  useJwt,
+  Video,
+  useVideo,
+  EventType,
+  MessageType,
+} from 'lib-components';
 
 import {
   addParticipantAskingToJoin,
@@ -7,8 +13,6 @@ import {
   removeParticipantFromDiscussion,
 } from 'data/sideEffects/updateLiveParticipants';
 import { useParticipantWorkflow } from 'data/stores/useParticipantWorkflow';
-import { Video, useVideo } from 'lib-components';
-import { EventType, MessageType } from 'lib-components';
 
 export default async function marshaJoinDiscussionPluginHandler(
   messageStanza: any,

@@ -1,12 +1,11 @@
 import { Box, Button, ButtonProps, Heading, Paragraph, Spinner } from 'grommet';
-import { PlaySVG } from 'lib-components';
+import { PlaySVG, liveState, Video, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { startLive } from 'data/sideEffects/startLive';
 import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
-import { liveState, Video, useVideo } from 'lib-components';
 
 const messages = defineMessages({
   title: {

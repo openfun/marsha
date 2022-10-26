@@ -9,7 +9,7 @@ import {
   Text,
 } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Loader } from 'lib-components';
+import { Loader, ErrorMessage } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, useHistory, useRouteMatch } from 'react-router-dom';
@@ -17,7 +17,6 @@ import styled from 'styled-components';
 
 import { usePlaylists } from '../../data/queries';
 import { theme } from '../../utils/theme/theme';
-import { ErrorMessage } from 'lib-components';
 
 const messages = defineMessages({
   emptyTable: {

@@ -5,17 +5,15 @@ import {
   useJwt,
   videoMockFactory,
   sharedLiveMediaMockFactory,
-} from 'lib-components';
-import React from 'react';
-
-import {
   UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
+  modelName,
+  uploadState,
 } from 'lib-components';
+import React from 'react';
+
 import { DeleteSharedLiveMediaModalProvider } from 'data/stores/useDeleteSharedLiveMediaModal';
-import { modelName } from 'lib-components';
-import { uploadState } from 'lib-components';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 

@@ -4,12 +4,17 @@ import {
   waitForElementToBeRemoved,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { useJwt, videoMockFactory } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  liveState,
+  Video,
+  useVideo,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
 import { startLive } from 'data/sideEffects/startLive';
-import { liveState, Video, useVideo } from 'lib-components';
 import { wrapInLiveModaleProvider } from 'utils/tests/liveModale';
 
 import { StartLiveButton } from '.';

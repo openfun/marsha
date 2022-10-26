@@ -1,6 +1,5 @@
-import { TimedText, timedTextMode } from 'lib-components';
+import { TimedText, timedTextMode, report } from 'lib-components';
 import { VideoPlayerCreator } from 'types/VideoPlayer';
-import { report } from 'lib-components';
 import { createVideojsPlayer } from './createVideojsPlayer';
 
 export const createPlayer: VideoPlayerCreator = (

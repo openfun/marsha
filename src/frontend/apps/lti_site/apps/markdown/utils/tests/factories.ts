@@ -1,9 +1,8 @@
 import * as faker from 'faker';
 
-import { playlistMockFactory } from 'lib-components';
-import { uploadState } from 'lib-components';
-
 import {
+  playlistMockFactory,
+  uploadState,
   MarkdownDocument,
   MarkdownDocumentTranslation,
   MarkdownImage,

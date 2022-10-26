@@ -8,12 +8,15 @@ import { useHistory } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { TextInput } from 'components/graphicals/TextInput';
-import { useUploadManager } from 'lib-components';
+import {
+  useUploadManager,
+  modelName,
+  Video,
+  useVideo,
+  report,
+} from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { modelName } from 'lib-components';
-import { Video, useVideo } from 'lib-components';
-import { report } from 'lib-components';
 
 import { LicenseSelect } from './LicenseSelect';
 import { UploadVideoForm } from './UploadVideoForm';

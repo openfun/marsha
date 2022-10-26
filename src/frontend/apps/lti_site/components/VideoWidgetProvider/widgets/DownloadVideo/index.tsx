@@ -7,10 +7,8 @@ import styled from 'styled-components';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { videoSize } from 'lib-components';
+import { videoSize, report, Video } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
-import { report } from 'lib-components';
-import { Video } from 'lib-components';
 
 const messages = defineMessages({
   info: {
