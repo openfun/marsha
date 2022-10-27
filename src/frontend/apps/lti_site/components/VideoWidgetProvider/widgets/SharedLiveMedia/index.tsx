@@ -16,11 +16,16 @@ import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 
 const messages = defineMessages({
-  info: {
+  info_teacher: {
     defaultMessage:
       "This widget allows you to manage presentation supports. It makes possible, to upload supports you want to share with students, with options to decide which support are available and which aren't",
     description: 'Info of the widget used for managing and sharing supports.',
-    id: 'components.SharedLiveMedia.info',
+    id: 'components.SharedLiveMedia.info_teacher',
+  },
+  info_public: {
+    defaultMessage: 'This widget allows you to download presentation supports.',
+    description: 'Info of the widget used for downloading supports.',
+    id: 'components.SharedLiveMedia.info_public',
   },
   title: {
     defaultMessage: 'Supports sharing',
@@ -38,9 +43,19 @@ const messages = defineMessages({
       "A message informing the user he hasn't any document imported yet.",
     id: 'component.SharedLiveMedia.noUploadedDocuments',
   },
+  downloadAllLabel: {
+    defaultMessage: 'Download all available supports',
+    description: 'A message indicating the role of the upload button.',
+    id: 'components.SharedLiveMedia.downloadAllLabel',
+  },
 });
 
-export const SharedLiveMedia = () => {
+interface SharedMediaProps {
+  isLive: boolean;
+  isTeacher: boolean;
+}
+
+export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
   const video = useCurrentVideo();
   const intl = useIntl();
   const retryUploadIdRef = useRef<Nullable<string>>(null);
@@ -75,40 +90,87 @@ export const SharedLiveMedia = () => {
     }
   };
 
+  const downloadAllMedia = () => {
+    sharedLiveMedias.map((media, index) => {
+      const target = index === sharedLiveMedias.length - 1 ? '_self' : '_blank';
+      const url = media?.urls?.media;
+      return (
+        media.show_download && url !== undefined && window.open(url, target)
+      );
+    });
+  };
+
+  if (!isTeacher && sharedLiveMedias.length === 0) {
+    return null;
+  }
+
+  if (
+    !isTeacher &&
+    sharedLiveMedias.filter((media) => media.show_download).length < 1
+  ) {
+    return null;
+  }
+
   return (
     <FoldableItem
-      infoText={intl.formatMessage(messages.info)}
+      infoText={intl.formatMessage(
+        isTeacher ? messages.info_teacher : messages.info_public,
+      )}
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <input
-          accept="application/pdf"
-          data-testid="input-file-test-id"
-          onChange={handleChange}
-          ref={hiddenFileInput}
-          style={{ display: 'none' }}
-          type="file"
-        />
+        {isTeacher && (
+          <Box>
+            <input
+              accept="application/pdf"
+              data-testid="input-file-test-id"
+              onChange={handleChange}
+              ref={hiddenFileInput}
+              style={{ display: 'none' }}
+              type="file"
+            />
+            <Button
+              a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
+              color="blue-active"
+              fill="horizontal"
+              label={intl.formatMessage(messages.uploadButtonLabel)}
+              onClick={() => {
+                if (hiddenFileInput.current) {
+                  retryUploadIdRef.current = null;
+                  hiddenFileInput.current.click();
+                }
+              }}
+              primary
+              style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
+              title={intl.formatMessage(messages.uploadButtonLabel)}
+            />
+          </Box>
+        )}
 
-        <Button
-          a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
-          color="blue-active"
-          fill="horizontal"
-          label={intl.formatMessage(messages.uploadButtonLabel)}
-          onClick={() => {
-            if (hiddenFileInput.current) {
-              retryUploadIdRef.current = null;
-              hiddenFileInput.current.click();
-            }
-          }}
-          primary
-          style={{ height: '60px', fontFamily: 'Roboto-Medium' }}
-          title={intl.formatMessage(messages.uploadButtonLabel)}
-        />
+        {!isTeacher &&
+          sharedLiveMedias.filter((media) => media.show_download).length >=
+            1 && (
+            <Button
+              a11yTitle={intl.formatMessage(messages.downloadAllLabel)}
+              color="blue-active"
+              fill="horizontal"
+              label={intl.formatMessage(messages.downloadAllLabel)}
+              onClick={downloadAllMedia}
+              primary
+              style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
+              title={intl.formatMessage(messages.downloadAllLabel)}
+            />
+          )}
 
         <ItemList
-          itemList={sharedLiveMedias}
+          itemList={
+            isTeacher
+              ? sharedLiveMedias
+              : sharedLiveMedias.filter(
+                  (media) => media.show_download && media.is_ready_to_show,
+                )
+          }
           noItemsMessage={intl.formatMessage(messages.noUploadedDocuments)}
         >
           {(sharedLiveMedia, index) => (
@@ -124,6 +186,8 @@ export const SharedLiveMedia = () => {
                 (uploadingObject) =>
                   uploadingObject.objectId === sharedLiveMedia.id,
               )}
+              isLive={isLive}
+              isTeacher={isTeacher}
             />
           )}
         </ItemList>
