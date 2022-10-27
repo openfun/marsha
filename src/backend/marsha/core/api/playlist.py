@@ -1,11 +1,22 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
 from django.db.models import Q
 
+import django_filters
 from rest_framework import filters, viewsets
 
 from .. import permissions, serializers
 from ..models import ADMINISTRATOR, Playlist
 from .base import APIViewMixin, ObjectPkMixin
+
+
+class PlaylistFilter(django_filters.FilterSet):
+    """Filter for Playlist."""
+
+    organization = django_filters.UUIDFilter(field_name="organization__id")
+
+    class Meta:
+        model = Playlist
+        fields = []
 
 
 class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
@@ -14,9 +25,13 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.NotAllowed]
     queryset = Playlist.objects.all().select_related("organization", "consumer_site")
     serializer_class = serializers.PlaylistSerializer
-    filter_backends = [filters.OrderingFilter]
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
     ordering_fields = ["created_on", "title"]
     ordering = ["-created_on"]
+    filterset_class = PlaylistFilter
 
     def get_permissions(self):
         """
@@ -75,9 +90,6 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 )
             )
         )
-        organization_id = self.request.query_params.get("organization")
-        if organization_id:
-            queryset = queryset.filter(organization__id=organization_id)
 
         return queryset
 
