@@ -10,6 +10,9 @@ import {
   useSharedLiveMedia,
   useThumbnail,
   JoinMode,
+  timedTextMode,
+  uploadState,
+  useTimedTextTrack,
 } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -30,7 +33,7 @@ jest.mock('lib-components', () => ({
 const currentDate = DateTime.fromISO('2022-01-13T12:00');
 
 describe('<VideoWidgetProvider />', () => {
-  it('renders widgets for live', () => {
+  it('renders widgets for live teacher', () => {
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
@@ -153,7 +156,7 @@ describe('<VideoWidgetProvider />', () => {
     screen.getByRole('button', { name: 'Upload an image' });
   });
 
-  it('renders widget for vod', () => {
+  it('renders widget for vod teacher', () => {
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
@@ -205,5 +208,68 @@ describe('<VideoWidgetProvider />', () => {
 
     // visibility
     screen.getByText('Visibility and interaction parameters');
+  });
+
+  it('renders widget for vod student', () => {
+    const videoId = faker.datatype.uuid();
+    useTimedTextTrack.getState().addResource({
+      active_stamp: 234243242353,
+      id: '1',
+      is_ready_to_show: true,
+      language: 'fr',
+      mode: timedTextMode.TRANSCRIPT,
+      title: 'foo',
+      upload_state: uploadState.READY,
+      source_url: 'https://example.com/vtt/fr',
+      url: 'https://example.com/vtt/fr.vtt',
+      video: videoId,
+    });
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
+    const mockedThumbnail = thumbnailMockFactory({
+      video: videoId,
+      is_ready_to_show: true,
+    });
+    const mockVideo = videoMockFactory({
+      id: videoId,
+      title: 'An example title',
+      allow_recording: false,
+      is_public: true,
+      join_mode: JoinMode.APPROVAL,
+      starting_at: currentDate.toString(),
+      estimated_duration: '00:30',
+      description: 'An example description',
+      thumbnail: mockedThumbnail,
+      has_transcript: true,
+    });
+
+    useThumbnail.getState().addResource(mockedThumbnail);
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    useJwt.setState({
+      getDecodedJwt: () => ({ locale: 'en' } as any),
+    });
+
+    useTimedTextTrackLanguageChoices.setState({
+      choices: [{ label: 'some_language_label', value: 'some_language' }],
+    });
+
+    render(
+      wrapInVideo(
+        <VideoWidgetProvider isLive={false} isTeacher={false} />,
+        mockVideo,
+      ),
+    );
+
+    //  Download video
+    screen.getByText('Download video');
+
+    //  Transcripts
+    screen.getByText('Transcripts');
+
+    // Media sharing
+    screen.getByText('Supports sharing');
   });
 });

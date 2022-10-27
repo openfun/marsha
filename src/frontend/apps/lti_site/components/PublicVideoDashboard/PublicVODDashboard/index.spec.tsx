@@ -8,6 +8,8 @@ import {
   useTimedTextTrack,
   timedTextMode,
   uploadState,
+  useSharedLiveMedia,
+  sharedLiveMediaMockFactory,
 } from 'lib-components';
 import React from 'react';
 
@@ -18,6 +20,7 @@ import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { PublicVODDashboard } from '.';
+import faker from 'faker';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -75,6 +78,7 @@ describe('<PublicVODDashboard />', () => {
     const video = videoMockFactory({
       show_download: false,
       has_transcript: false,
+      shared_live_medias: [],
       urls: {
         manifests: {
           hls: 'https://example.com/hls.m3u8',
@@ -124,15 +128,22 @@ describe('<PublicVODDashboard />', () => {
     expect(screen.queryByText('Download video')).not.toBeInTheDocument();
   });
 
-  it('displays the video player, the download and transcripts widgets', async () => {
+  it('displays the video player, the download, SharedLiveMedia and transcripts widgets', async () => {
+    const videoId = faker.datatype.uuid();
     const timedTextTracks = [
       timedTextMockFactory({
         is_ready_to_show: true,
         mode: timedTextMode.TRANSCRIPT,
       }),
     ];
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
     useTimedTextTrack.getState().addMultipleResources(timedTextTracks);
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
     const video = videoMockFactory({
+      id: videoId,
       has_transcript: true,
       show_download: true,
       timed_text_tracks: timedTextTracks,
@@ -167,6 +178,7 @@ describe('<PublicVODDashboard />', () => {
 
     screen.getByText('Transcripts');
     screen.getByText('Download video');
+    screen.getByText('Supports sharing');
   });
 
   it('uses subtitles as transcripts', async () => {
