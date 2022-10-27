@@ -72,6 +72,8 @@ describe('<SharedLiveMediaItem />', () => {
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
               uploadingObject={mockedUploadingObject}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -129,6 +131,8 @@ describe('<SharedLiveMediaItem />', () => {
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
               uploadingObject={mockedUploadingObject}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -176,6 +180,8 @@ describe('<SharedLiveMediaItem />', () => {
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -219,6 +225,8 @@ describe('<SharedLiveMediaItem />', () => {
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -264,6 +272,8 @@ describe('<SharedLiveMediaItem />', () => {
               isShared={true}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -306,6 +316,8 @@ describe('<SharedLiveMediaItem />', () => {
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
@@ -356,6 +368,8 @@ describe('<SharedLiveMediaItem />', () => {
               isShared={null}
               onRetryFailedUpload={mockedOnRetryFailedUpload}
               sharedLiveMedia={mockedSharedLiveMedia}
+              isLive
+              isTeacher
             />
           </DeleteSharedLiveMediaModalProvider>
         </UploadManagerContext.Provider>,
