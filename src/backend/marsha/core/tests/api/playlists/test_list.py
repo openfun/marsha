@@ -81,27 +81,6 @@ class PlaylistListAPITest(TestCase):
             [
                 {
                     "consumer_site": {
-                        "id": str(playlist_1.consumer_site.id),
-                        "domain": playlist_1.consumer_site.domain,
-                        "name": playlist_1.consumer_site.name,
-                    },
-                    "created_by": None,
-                    "duplicated_from": None,
-                    "id": str(playlist_1.id),
-                    "is_portable_to_consumer_site": False,
-                    "is_portable_to_playlist": True,
-                    "is_public": False,
-                    "lti_id": "playlist#one",
-                    "organization": {
-                        "id": str(org_1.id),
-                        "name": org_1.name,
-                    },
-                    "portable_to": [],
-                    "title": "First playlist",
-                    "users": [],
-                },
-                {
-                    "consumer_site": {
                         "id": str(playlist_2.consumer_site.id),
                         "domain": playlist_2.consumer_site.domain,
                         "name": playlist_2.consumer_site.name,
@@ -119,6 +98,27 @@ class PlaylistListAPITest(TestCase):
                     },
                     "portable_to": [],
                     "title": "Second playlist",
+                    "users": [],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_1.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#one",
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
+                    "portable_to": [],
+                    "title": "First playlist",
                     "users": [],
                 },
             ],
@@ -243,31 +243,9 @@ class PlaylistListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 3)
-        print(response.json()["results"])
         self.assertEqual(
             response.json()["results"],
             [
-                {
-                    "consumer_site": {
-                        "id": str(playlist_1.consumer_site.id),
-                        "domain": playlist_1.consumer_site.domain,
-                        "name": playlist_1.consumer_site.name,
-                    },
-                    "created_by": None,
-                    "duplicated_from": None,
-                    "id": str(playlist_1.id),
-                    "is_portable_to_consumer_site": False,
-                    "is_portable_to_playlist": True,
-                    "is_public": False,
-                    "lti_id": "playlist#one",
-                    "organization": {
-                        "id": str(org_1.id),
-                        "name": org_1.name,
-                    },
-                    "portable_to": [],
-                    "title": "First playlist",
-                    "users": [str(user.id)],
-                },
                 {
                     "consumer_site": {
                         "id": str(playlist_4.consumer_site.id),
@@ -305,6 +283,139 @@ class PlaylistListAPITest(TestCase):
                     },
                     "portable_to": [],
                     "title": "Third playlist",
+                    "users": [str(user.id)],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_1.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#one",
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
+                    "portable_to": [],
+                    "title": "First playlist",
+                    "users": [str(user.id)],
+                },
+            ],
+        )
+
+    def test_list_playlist_ordering_created_on(self):
+        """
+        A user can list playlist ordering them on created_on
+        """
+        user = factories.UserFactory()
+
+        # In this org, the user is not a member but he has access to this playlist.
+        org_1 = factories.OrganizationFactory()
+        playlist_1 = factories.PlaylistFactory(
+            lti_id="playlist#one", organization=org_1, title="First playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_1, user=user, role=models.ADMINISTRATOR
+        )
+        # user has no access on this playlist
+        factories.PlaylistFactory(
+            lti_id="playlist#two", organization=org_1, title="Second playlist"
+        )
+
+        # In this org, the user is not a member but he has access to this playlist.
+        org_2 = factories.OrganizationFactory()
+        playlist_3 = factories.PlaylistFactory(
+            lti_id="playlist#three", organization=org_2, title="Third playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_3, user=user, role=models.ADMINISTRATOR
+        )
+
+        # Orphan playlist, not in an organization, the use has access to.
+        playlist_4 = factories.PlaylistFactory(
+            lti_id="playlist#four", title="Fourth playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_4, user=user, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/playlists/?ordering=created_on",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        print(response.json()["results"])
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_1.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#one",
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
+                    "portable_to": [],
+                    "title": "First playlist",
+                    "users": [str(user.id)],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_3.consumer_site.id),
+                        "domain": playlist_3.consumer_site.domain,
+                        "name": playlist_3.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_3.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#three",
+                    "organization": {
+                        "id": str(org_2.id),
+                        "name": org_2.name,
+                    },
+                    "portable_to": [],
+                    "title": "Third playlist",
+                    "users": [str(user.id)],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_4.consumer_site.id),
+                        "domain": playlist_4.consumer_site.domain,
+                        "name": playlist_4.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_4.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#four",
+                    "organization": None,
+                    "portable_to": [],
+                    "title": "Fourth playlist",
                     "users": [str(user.id)],
                 },
             ],

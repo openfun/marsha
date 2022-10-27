@@ -1,8 +1,7 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
 from django.db.models import Q
 
-from rest_framework import viewsets
-from rest_framework.response import Response
+from rest_framework import filters, viewsets
 
 from .. import permissions, serializers
 from ..models import ADMINISTRATOR, Playlist
@@ -15,6 +14,9 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     permission_classes = [permissions.NotAllowed]
     queryset = Playlist.objects.all().select_related("organization", "consumer_site")
     serializer_class = serializers.PlaylistSerializer
+    filter_backends = [filters.OrderingFilter]
+    ordering_fields = ["created_on", "title"]
+    ordering = ["-created_on"]
 
     def get_permissions(self):
         """
@@ -57,32 +59,31 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
-    def list(self, request, *args, **kwargs):
-        """
-        Return a list of playlists.
-
-        By default, filtered to only return to the user what
-        playlists they have access to.
-        """
-        queryset = self.get_queryset().filter(
-            Q(
-                organization__user_accesses__user_id=self.request.user.id,
-                organization__user_accesses__role=ADMINISTRATOR,
-            )
-            | Q(
-                user_accesses__user_id=self.request.user.id,
-                user_accesses__role=ADMINISTRATOR,
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(
+                    organization__user_accesses__user_id=self.request.user.id,
+                    organization__user_accesses__role=ADMINISTRATOR,
+                )
+                | Q(
+                    user_accesses__user_id=self.request.user.id,
+                    user_accesses__role=ADMINISTRATOR,
+                )
             )
         )
-
         organization_id = self.request.query_params.get("organization")
         if organization_id:
             queryset = queryset.filter(organization__id=organization_id)
 
-        page = self.paginate_queryset(queryset.order_by("title"))
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        return queryset
 
-        serializer = self.get_serializer(queryset.order_by("title"), many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
