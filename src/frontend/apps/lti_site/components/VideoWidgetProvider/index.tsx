@@ -41,7 +41,9 @@ enum WidgetType {
   LIVE_PAIRING = 'LIVE_PAIRING',
   VOD_CREATION = 'VOD_CREATION',
   LIVE_JOIN_MODE = 'LIVE_JOIN_MODE',
-  SHARED_LIVE_MEDIA = 'SHARED_LIVE_MEDIA',
+  SHARED_MEDIA_LIVE_TEACHER = 'SHARED_MEDIA_LIVE_TEACHER',
+  SHARED_MEDIA_VOD_TEACHER = 'SHARED_MEDIA_VOD_TEACHER',
+  SHARED_MEDIA_VOD_PUBLIC = 'SHARED_MEDIA_VOD_PUBLIC',
   TRANSCRIPTS = 'TRANSCRIPTS',
 }
 
@@ -120,8 +122,24 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <LiveJoinMode key="live_join_mode" />,
     size: WidgetSize.DEFAULT,
   },
-  [WidgetType.SHARED_LIVE_MEDIA]: {
-    component: <SharedLiveMedia key="shared_live_media" />,
+  [WidgetType.SHARED_MEDIA_LIVE_TEACHER]: {
+    component: <SharedLiveMedia key="shared_live_media" isLive isTeacher />,
+    size: WidgetSize.DEFAULT,
+  },
+  [WidgetType.SHARED_MEDIA_VOD_TEACHER]: {
+    component: (
+      <SharedLiveMedia key="shared_live_media" isLive={false} isTeacher />
+    ),
+    size: WidgetSize.DEFAULT,
+  },
+  [WidgetType.SHARED_MEDIA_VOD_PUBLIC]: {
+    component: (
+      <SharedLiveMedia
+        key="shared_live_media"
+        isLive={false}
+        isTeacher={false}
+      />
+    ),
     size: WidgetSize.DEFAULT,
   },
   [WidgetType.TRANSCRIPTS]: {
@@ -139,7 +157,7 @@ const teacherLiveWidgets: WidgetType[] = [
   WidgetType.VOD_CREATION,
   WidgetType.LIVE_JOIN_MODE,
   WidgetType.THUMBNAIL_LIVE,
-  WidgetType.SHARED_LIVE_MEDIA,
+  WidgetType.SHARED_MEDIA_LIVE_TEACHER,
 ];
 const teacherVodWidgets: WidgetType[] = [
   WidgetType.TITLE_AND_DESCRIPTION,
@@ -150,11 +168,13 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.UPLOAD_SUBTITLES,
   WidgetType.UPLOAD_TRANSCRIPTS,
   WidgetType.UPLOAD_CLOSED_CAPTATIONS,
+  WidgetType.SHARED_MEDIA_VOD_TEACHER,
 ];
 const publicLiveWidgets: WidgetType[] = [];
 const publicVodWidgets: WidgetType[] = [
   WidgetType.TRANSCRIPTS,
   WidgetType.DOWNLOAD_VOD_PUBLIC,
+  WidgetType.SHARED_MEDIA_VOD_PUBLIC,
 ];
 
 interface VideoWidgetProviderProps {
