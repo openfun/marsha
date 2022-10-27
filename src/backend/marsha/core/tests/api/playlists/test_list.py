@@ -1,7 +1,7 @@
 """Tests for the Playlist list API of the Marsha project."""
 from django.test import TestCase
 
-from marsha.core import factories
+from marsha.core import factories, models
 from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 
@@ -37,17 +37,21 @@ class PlaylistListAPITest(TestCase):
         self.assertEqual(response.json()["results"], [])
 
     def test_list_playlists_by_logged_in_user_with_organization_memberships(self):
-        """Organization members get all playlists they have access to."""
+        """Organization administrator get all playlists they have access to."""
         user = factories.UserFactory()
 
         org_1 = factories.OrganizationFactory()
-        org_1.users.add(user)
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_1, role=models.ADMINISTRATOR
+        )
         playlist_1 = factories.PlaylistFactory(
             lti_id="playlist#one", organization=org_1, title="First playlist"
         )
 
         org_2 = factories.OrganizationFactory()
-        org_2.users.add(user)
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_2, role=models.ADMINISTRATOR
+        )
         playlist_2 = factories.PlaylistFactory(
             lti_id="playlist#two", organization=org_2, title="Second playlist"
         )
@@ -55,6 +59,13 @@ class PlaylistListAPITest(TestCase):
         # User is not a member of this organization
         org_3 = factories.OrganizationFactory()
         factories.PlaylistFactory(organization=org_3)
+
+        # User is member but as instructor of this organization
+        org_4 = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_4, role=models.INSTRUCTOR
+        )
+        factories.PlaylistFactory(organization=org_4)
 
         jwt_token = UserAccessTokenFactory(user=user)
 
@@ -125,19 +136,30 @@ class PlaylistListAPITest(TestCase):
         user = factories.UserFactory()
 
         org_1 = factories.OrganizationFactory()
-        org_1.users.add(user)
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_1, role=models.ADMINISTRATOR
+        )
         playlist_1 = factories.PlaylistFactory(
             lti_id="playlist#eleven", organization=org_1, title="First playlist"
         )
 
         # User is a member of this organization, but it is not included in the request below
         org_2 = factories.OrganizationFactory()
-        org_2.users.add(user)
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_2, role=models.ADMINISTRATOR
+        )
         factories.PlaylistFactory(organization=org_2, title="Second playlist")
 
         # User is not a member of this organization
         org_3 = factories.OrganizationFactory()
         factories.PlaylistFactory(organization=org_3)
+
+        # User is member but as instructor of this organization
+        org_4 = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_4, role=models.INSTRUCTOR
+        )
+        factories.PlaylistFactory(organization=org_4)
 
         jwt_token = UserAccessTokenFactory(user=user)
 
@@ -171,6 +193,119 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [],
+                },
+            ],
+        )
+
+    def test_list_playlist_user_access_administrator(self):
+        """
+        A user can list all the playlist he has ADMINISTRATOR role
+        no matter the organization role.
+        """
+        user = factories.UserFactory()
+
+        # In this org, the user is not a member but he has access to this playlist.
+        org_1 = factories.OrganizationFactory()
+        playlist_1 = factories.PlaylistFactory(
+            lti_id="playlist#one", organization=org_1, title="First playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_1, user=user, role=models.ADMINISTRATOR
+        )
+        # user has no access on this playlist
+        factories.PlaylistFactory(
+            lti_id="playlist#two", organization=org_1, title="Second playlist"
+        )
+
+        # In this org, the user is not a member but he has access to this playlist.
+        org_2 = factories.OrganizationFactory()
+        playlist_3 = factories.PlaylistFactory(
+            lti_id="playlist#three", organization=org_2, title="Third playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_3, user=user, role=models.ADMINISTRATOR
+        )
+
+        # Orphan playlist, not in an organization, the use has access to.
+        playlist_4 = factories.PlaylistFactory(
+            lti_id="playlist#four", title="Fourth playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_4, user=user, role=models.ADMINISTRATOR
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/playlists/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        print(response.json()["results"])
+        self.assertEqual(
+            response.json()["results"],
+            [
+                {
+                    "consumer_site": {
+                        "id": str(playlist_1.consumer_site.id),
+                        "domain": playlist_1.consumer_site.domain,
+                        "name": playlist_1.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_1.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#one",
+                    "organization": {
+                        "id": str(org_1.id),
+                        "name": org_1.name,
+                    },
+                    "portable_to": [],
+                    "title": "First playlist",
+                    "users": [str(user.id)],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_4.consumer_site.id),
+                        "domain": playlist_4.consumer_site.domain,
+                        "name": playlist_4.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_4.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#four",
+                    "organization": None,
+                    "portable_to": [],
+                    "title": "Fourth playlist",
+                    "users": [str(user.id)],
+                },
+                {
+                    "consumer_site": {
+                        "id": str(playlist_3.consumer_site.id),
+                        "domain": playlist_3.consumer_site.domain,
+                        "name": playlist_3.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_3.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#three",
+                    "organization": {
+                        "id": str(org_2.id),
+                        "name": org_2.name,
+                    },
+                    "portable_to": [],
+                    "title": "Third playlist",
+                    "users": [str(user.id)],
                 },
             ],
         )

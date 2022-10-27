@@ -1,9 +1,11 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
+from django.db.models import Q
+
 from rest_framework import viewsets
 from rest_framework.response import Response
 
 from .. import permissions, serializers
-from ..models import Playlist
+from ..models import ADMINISTRATOR, Playlist
 from .base import APIViewMixin, ObjectPkMixin
 
 
@@ -63,7 +65,14 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         playlists they have access to.
         """
         queryset = self.get_queryset().filter(
-            organization__users__id=self.request.user.id
+            Q(
+                organization__user_accesses__user_id=self.request.user.id,
+                organization__user_accesses__role=ADMINISTRATOR,
+            )
+            | Q(
+                user_accesses__user_id=self.request.user.id,
+                user_accesses__role=ADMINISTRATOR,
+            )
         )
 
         organization_id = self.request.query_params.get("organization")
