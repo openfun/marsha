@@ -67,7 +67,7 @@ describe('<SharedLiveMedia />', () => {
           <InfoWidgetModalProvider value={null}>
             <DeleteSharedLiveMediaModalProvider value={null}>
               <SharedLiveMediaModalWrapper />
-              <SharedLiveMedia />
+              <SharedLiveMedia isLive isTeacher />
             </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
@@ -111,7 +111,7 @@ describe('<SharedLiveMedia />', () => {
           <InfoWidgetModalProvider value={null}>
             <DeleteSharedLiveMediaModalProvider value={null}>
               <SharedLiveMediaModalWrapper />
-              <SharedLiveMedia />
+              <SharedLiveMedia isLive isTeacher />
             </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
@@ -176,7 +176,7 @@ describe('<SharedLiveMedia />', () => {
           <InfoWidgetModalProvider value={null}>
             <DeleteSharedLiveMediaModalProvider value={null}>
               <SharedLiveMediaModalWrapper />
-              <SharedLiveMedia />
+              <SharedLiveMedia isLive isTeacher />
             </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
@@ -249,7 +249,7 @@ describe('<SharedLiveMedia />', () => {
           <InfoWidgetModalProvider value={null}>
             <DeleteSharedLiveMediaModalProvider value={null}>
               <SharedLiveMediaModalWrapper />
-              <SharedLiveMedia />
+              <SharedLiveMedia isLive isTeacher />
             </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
@@ -331,7 +331,7 @@ describe('<SharedLiveMedia />', () => {
           <InfoWidgetModalProvider value={null}>
             <DeleteSharedLiveMediaModalProvider value={null}>
               <SharedLiveMediaModalWrapper />
-              <SharedLiveMedia />
+              <SharedLiveMedia isLive isTeacher />
             </DeleteSharedLiveMediaModalProvider>
           </InfoWidgetModalProvider>
         </UploadManagerContext.Provider>,
@@ -355,7 +355,7 @@ describe('<SharedLiveMedia />', () => {
 
     userEvent.click(retryButton);
     const hiddenInput = screen.getByTestId('input-file-test-id');
-    const file = new File(['(⌐□_□)'], 'sharedMedia.pdf', {
+    const file = new File(['(⌐□_□)'], 'SharedLiveMedia.pdf', {
       type: 'application/pdf',
     });
     userEvent.upload(hiddenInput, file);
@@ -367,5 +367,243 @@ describe('<SharedLiveMedia />', () => {
       mockedSharedLiveMedia.id,
       file,
     );
+  });
+
+  it('renders the component in teacher VOD mode', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    screen.getByRole('button', { name: 'Upload a presentation support' });
+    screen.getByRole('button', {
+      name: 'Click on this button to stop allowing students to download this media.',
+    });
+    screen.getByRole('button', {
+      name: 'Click on this button to delete the media.',
+    });
+
+    expect(
+      screen.queryByRole('button', { name: 'Share' }),
+    ).not.toBeInTheDocument();
+  });
+
+  it('renders the component in student VOD mode', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher={false} />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Upload a presentation support' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', {
+        name: 'Click on this button to stop allowing students to download this media.',
+      }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Share' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', { name: 'Download all available supports' });
+    screen.getByRole('link', { name: 'Title of the file' });
+  });
+
+  it('does not show the media if show_donwload is set to false', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+      show_download: true,
+    });
+    const secondMockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file 2',
+      video: videoId,
+      show_download: false,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia, secondMockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher={false} />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+    expect(
+      screen.queryByRole('link', { name: 'Title of the file 2' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', { name: 'Download all available supports' });
+    screen.getByRole('link', { name: 'Title of the file' });
+  });
+
+  it('does not show the media if show_donwload is set to false', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+      show_download: true,
+    });
+    const secondMockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file 2',
+      video: videoId,
+      show_download: false,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia, secondMockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher={false} />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+    expect(
+      screen.queryByRole('link', { name: 'Title of the file 2' }),
+    ).not.toBeInTheDocument();
+    screen.getByRole('button', { name: 'Download all available supports' });
+    screen.getByRole('link', { name: 'Title of the file' });
+  });
+
+  it('does not show anything in public is there is no media to downoad', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+      show_download: false,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher={false} />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+    expect(
+      screen.queryByRole('link', { name: 'Title of the file' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Download all available supports' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Supports sharing')).not.toBeInTheDocument();
+  });
+
+  it('shows the compoment in teacher view even if is there is no media to downoad', () => {
+    const videoId = faker.datatype.uuid();
+    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+      title: 'Title of the file',
+      video: videoId,
+      show_download: false,
+    });
+    const mockedVideo = videoMockFactory({
+      id: videoId,
+      shared_live_medias: [mockedSharedLiveMedia],
+    });
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteSharedLiveMediaModalProvider value={null}>
+            <SharedLiveMediaModalWrapper />
+            <SharedLiveMedia isLive={false} isTeacher />
+          </DeleteSharedLiveMediaModalProvider>
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+    screen.getByRole('link', { name: 'Title of the file' });
   });
 });
