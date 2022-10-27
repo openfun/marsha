@@ -13,6 +13,9 @@ import { routes } from './routes';
 const { ClassRoom } = lazyImport(() => import('features/ClassRoom'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
+const { PortabilityRequestsRouteComponent } = lazyImport(
+  () => import('features/PortabilityRequests'),
+);
 
 const messages = defineMessages({
   metaTitle: {
@@ -66,6 +69,11 @@ function AppRoutes() {
         >
           <Suspense fallback={<ContentSpinner />}>
             <ClassRoom />
+          </Suspense>
+        </Route>
+        <Route path={routes.PORTABILITY_REQUESTS.path} exact>
+          <Suspense fallback={<ContentSpinner />}>
+            <PortabilityRequestsRouteComponent />
           </Suspense>
         </Route>
       </Switch>

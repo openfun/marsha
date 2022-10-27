@@ -69,6 +69,7 @@ const messages = defineMessages({
 enum ERouteNames {
   HOMEPAGE = 'HOMEPAGE',
   FAVORITE = 'FAVORITE',
+  PORTABILITY_REQUESTS = 'PORTABILITY_REQUESTS',
   PROFILE = 'PROFILE',
   PLAYLIST = 'PLAYLIST',
   ORGANIZATION = 'ORGANIZATION',
@@ -126,6 +127,9 @@ export const routes: Routes = {
         aria-label="svg-menu-favorites"
       />
     ),
+  },
+  PORTABILITY_REQUESTS: {
+    path: `/portability-requests/:state?`,
   },
   PROFILE: {
     label: <FormattedMessage {...messages.menuMyProfileLabel} />,
