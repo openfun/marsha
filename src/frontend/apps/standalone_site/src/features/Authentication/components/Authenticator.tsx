@@ -6,11 +6,14 @@ import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
 
 const TARGET_URL_STORAGE_KEY = 'redirect_uri';
+const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
 export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
   const location = useLocation();
   const history = useHistory();
-  const code = new URLSearchParams(location.search).get('token');
+  const code = new URLSearchParams(location.search).get(
+    QUERY_PARAMS_CHALLENGE_TOKEN_NAME,
+  );
   const { currentUser, setCurrentUser } = useCurrentUser((state) => ({
     currentUser: state.currentUser,
     setCurrentUser: state.setCurrentUser,
@@ -34,7 +37,10 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     } else {
       const targetedAddress =
         process.env.REACT_APP_BACKEND_API_BASE_URL || window.location.origin;
-      localStorage.setItem(TARGET_URL_STORAGE_KEY, window.location.pathname);
+      localStorage.setItem(
+        TARGET_URL_STORAGE_KEY,
+        window.location.pathname + window.location.search,
+      );
       window.location.replace(targetedAddress + '/account/login/');
     }
   }, [code, jwt, setJwt]);
