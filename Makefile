@@ -378,7 +378,7 @@ i18n-compile-back:
 .PHONY: i18n-compile-back
 
 i18n-compile-front:
-	@$(YARN) workspace marsha run compile-translations
+	@$(YARN) compile-translations
 .PHONY: i18n-compile-front
 
 i18n-generate: ## Generate source translations files for all applications
@@ -393,7 +393,7 @@ i18n-generate-back:
 
 i18n-generate-front:
 	@$(YARN) workspace marsha run build
-	@$(YARN) workspace marsha run extract-translations
+	@$(YARN) extract-translations
 .PHONY: i18n-generate-front
 
 

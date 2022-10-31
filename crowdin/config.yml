@@ -22,7 +22,17 @@ files: [
  },
  {
   "source" : "/frontend/apps/lti_site/i18n/frontend.json",
-  "dest": "/frontend.json",
+  "dest": "/lti_site.json",
   "translation" : "/frontend/apps/lti_site/i18n/%locale_with_underscore%.json",
+ },
+ {
+  "source" : "/frontend/apps/standalone_site/i18n/frontend.json",
+  "dest": "/standalone_site.json",
+  "translation" : "/frontend/apps/standalone_site/i18n/%locale_with_underscore%.json",
+ },
+ {
+  "source" : "/frontend/packages/i18n/frontend.json",
+  "dest": "/packages.json",
+  "translation" : "/frontend/packages/i18n/%locale_with_underscore%.json",
  }
 ]
