@@ -33,7 +33,7 @@ COPY ./src/frontend /app/
 COPY ./src/.prettierrc.js /app/
 
 RUN yarn install --frozen-lockfile && \
-    yarn workspace marsha run compile-translations && \
+    yarn compile-translations && \
     yarn workspace marsha run sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=../../node_modules  && \
     mkdir -p /app/marsha/static/css/fonts && cp node_modules/katex/dist/fonts/* /app/marsha/static/css/fonts && \
     yarn build-libs && \

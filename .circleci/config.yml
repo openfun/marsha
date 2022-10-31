@@ -406,7 +406,7 @@ jobs:
           command: yarn install --frozen-lockfile
       - run:
           name: Compile translations
-          command: yarn workspace marsha run compile-translations
+          command: yarn compile-translations
       - run:
           name: Build lib_tests
           command: yarn build-tests
@@ -417,12 +417,14 @@ jobs:
           name: Build front-end standalone application
           command: yarn build-site
       - run:
-          name: Use formatjs cli to generate frontend.json file
-          command: yarn workspace marsha run extract-translations
+          name: Extract all translations
+          command: yarn extract-translations
       - persist_to_workspace:
           root: ~/marsha
           paths:
             - src/frontend/apps/lti_site/i18n/frontend.json
+            - src/frontend/apps/standalone/i18n/frontend.json
+            - src/frontend/packages/i18n/frontend.json
       - save_cache:
           paths:
             - ./node_modules
