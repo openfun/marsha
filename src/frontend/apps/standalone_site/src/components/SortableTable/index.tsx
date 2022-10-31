@@ -171,6 +171,7 @@ export const SortableTable = <
   return (
     <Box direction="column" flex gap="small">
       <Box
+        height={{ min: 'xxsmall' }}
         background="#E4EEFA"
         direction="row"
         key="headear"
