@@ -127,7 +127,7 @@ __diff_output__/
 node_modules
 src/frontend/coverage
 src/frontend/apps/**/translations/*.json
-src/frontend/apps/**/i18n/frontend.json
+src/frontend/**/i18n/frontend.json
 src/backend/marsha/static/css
 src/backend/marsha/static/js
 src/backend/marsha/static/media
