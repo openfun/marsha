@@ -1,9 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
+import { render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'lib-classroom';
-import render from 'utils/tests/render';
+import { classroomMockFactory } from 'utils/tests/factories';
 
 import DashboardClassroomStudent from '.';
 
@@ -34,7 +34,7 @@ describe('<DashboardClassroomStudent />', () => {
   afterAll(() => {
     jest.useRealTimers();
   });
-  it('Displays message and triggers callbacks depending on classroom state', async () => {
+  it('Displays message and triggers callbacks depending on classroom state', () => {
     const classroom = classroomMockFactory({
       id: '1',
       started: false,
