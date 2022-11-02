@@ -1,8 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Grid, Text } from 'grommet';
+import { Classroom } from 'lib-components';
 import { DateTime, DurationObjectUnits } from 'luxon';
 import React, { useEffect } from 'react';
-
-import { Classroom } from 'lib-components';
 
 interface DashboardClassroomStudentCounterProps {
   classroom: Classroom;
