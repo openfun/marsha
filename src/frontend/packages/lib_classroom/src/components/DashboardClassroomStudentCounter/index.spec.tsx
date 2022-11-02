@@ -1,9 +1,9 @@
 import { act } from '@testing-library/react';
+import { render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'lib-classroom';
-import render from 'utils/tests/render';
+import { classroomMockFactory } from 'utils/tests/factories';
 
 import { DashboardClassroomStudentCounter } from '.';
 
@@ -34,7 +34,7 @@ describe('<DashboardClassroomStudentCounter />', () => {
     jest.useRealTimers();
   });
 
-  it('Displays a countdown when the classroom is scheduled', async () => {
+  it('Displays a countdown when the classroom is scheduled', () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const exstimatedDuration = Duration.fromObject({ hours: 3 });
 

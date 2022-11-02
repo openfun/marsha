@@ -1,5 +1,7 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Text } from 'grommet';
 import { Nullable } from 'lib-common';
+import { Classroom } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -7,9 +9,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'lib-classroom';
-import { DashboardClassroomStudentCounter } from 'apps/classroom/components/DashboardClassroomStudentCounter';
-import { Classroom } from 'lib-components';
+} from 'components/DashboardClassroomLayout';
+import { DashboardClassroomStudentCounter } from 'components/DashboardClassroomStudentCounter';
 
 const messages = defineMessages({
   joinedAs: {
