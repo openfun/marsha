@@ -126,7 +126,7 @@ describe('<DashboardLiveJitsi />', () => {
     await waitFor(() =>
       expect(mockExecuteCommand).not.toHaveBeenCalledWith(
         'startRecording',
-        expect.any({}),
+        expect.any(Object),
       ),
     );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
@@ -638,7 +638,7 @@ describe('<DashboardLiveJitsi />', () => {
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
-      expect.any({}),
+      expect.any(Object),
     );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',
@@ -676,7 +676,7 @@ describe('<DashboardLiveJitsi />', () => {
 
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'startRecording',
-      expect.any({}),
+      expect.any(Object),
     );
     expect(mockExecuteCommand).not.toHaveBeenCalledWith(
       'stopRecording',
