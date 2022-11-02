@@ -17,11 +17,9 @@ import { theme } from 'utils/theme/theme';
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { useJoinClassroomAction, useClassroom } from 'lib-classroom';
 import { DashboardClassroomError } from 'lib-classroom';
-import { DashboardClassroomStudent } from 'lib-classroom';
+import { DashboardClassroomStudent } from 'lib-classroom'; // Lazy
+import { DashboardClassroomInstructor } from 'lib-classroom'; // Lazy
 
-const DashboardClassroomInstructor = lazy(
-  () => import('apps/classroom/components/DashboardClassroomInstructor'),
-);
 const DashboardClassroomAskUsername = lazy(
   () => import('apps/classroom/components/DashboardClassroomAskUsername'),
 );

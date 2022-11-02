@@ -1,7 +1,7 @@
+import { render } from 'lib-tests';
 import React from 'react';
 
-import { classroomInfosMockFactory } from 'lib-classroom';
-import render from 'utils/tests/render';
+import { classroomInfosMockFactory } from 'utils/tests/factories';
 
 import DashboardClassroomInfos from '.';
 
