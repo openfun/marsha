@@ -64,14 +64,14 @@ export interface PlaylistLite extends Resource {
 }
 
 export interface Playlist extends Resource {
-  consumer_site: string;
+  consumer_site: { id: string; name: string; domain: string };
   created_by: Nullable<string>;
   duplicated_from: Nullable<string>;
   is_portable_to_playlist: boolean;
   is_portable_to_consumer_site: boolean;
   is_public: boolean;
   lti_id: string;
-  organization: string;
+  organization: { name: string; id: string };
   portable_to: PlaylistLite[];
   title: string;
   users: string[];
