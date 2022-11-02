@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Box, Button, Grid, ResponsiveContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, Classroom } from 'lib-components';
@@ -6,17 +7,17 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { useEndClassroomAction } from 'lib-classroom';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'lib-classroom';
+} from 'components/DashboardClassroomLayout';
+import { useEndClassroomAction } from 'data/queries';
 
 const DashboardClassroomForm = lazy(
-  () => import('apps/classroom/components/DashboardClassroomForm'),
+  () => import('components/DashboardClassroomForm'),
 );
 const DashboardClassroomInfos = lazy(
-  () => import('apps/classroom/components/DashboardClassroomInfos'),
+  () => import('components/DashboardClassroomInfos'),
 );
 
 const messages = defineMessages({
