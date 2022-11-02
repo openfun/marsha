@@ -18,6 +18,7 @@
         "@types/react-dom",
         "@types/react-test-renderer",
         "faker",
+        "mermaid",
         "node",
         "node-fetch",
         "react",
