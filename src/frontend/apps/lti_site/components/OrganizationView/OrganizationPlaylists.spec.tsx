@@ -21,8 +21,12 @@ describe('<OrganizationPlaylists />', () => {
   it('gets and shows the list of playlists for a given organization', async () => {
     const org = organizationMockFactory();
 
-    const playlist1 = playlistMockFactory({ organization: org.id });
-    const playlist2 = playlistMockFactory({ organization: org.id });
+    const playlist1 = playlistMockFactory({
+      organization: { name: 'organization 1', id: org.id },
+    });
+    const playlist2 = playlistMockFactory({
+      organization: { name: 'organization 2', id: org.id },
+    });
 
     const deferred = new Deferred();
     fetchMock.get(
