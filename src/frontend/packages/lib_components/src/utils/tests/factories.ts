@@ -50,7 +50,11 @@ export const playlistMockFactory = (
   playlist: Partial<Playlist> = {},
 ): Playlist => {
   return {
-    consumer_site: faker.internet.domainName(),
+    consumer_site: {
+      id: faker.datatype.uuid(),
+      name: 'my web site',
+      domain: faker.internet.domainName(),
+    },
     created_by: null,
     duplicated_from: null,
     id: faker.datatype.uuid(),
@@ -58,7 +62,10 @@ export const playlistMockFactory = (
     is_portable_to_consumer_site: faker.datatype.boolean(),
     is_public: faker.datatype.boolean(),
     lti_id: faker.datatype.string(),
-    organization: faker.company.companyName(),
+    organization: {
+      id: faker.datatype.uuid(),
+      name: faker.company.companyName(),
+    },
     portable_to: [],
     title: faker.name.title(),
     users: [],
