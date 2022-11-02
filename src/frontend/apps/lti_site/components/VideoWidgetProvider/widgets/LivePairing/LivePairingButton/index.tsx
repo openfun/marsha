@@ -1,11 +1,10 @@
 import { Meter, Text } from 'grommet';
+import { liveState, DashboardButton } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { DashboardButton } from 'components/Styled/DashboardButtons';
 import { usePairingVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { liveState } from 'lib-components';
 
 const messages = defineMessages({
   pairingSecretLabel: {

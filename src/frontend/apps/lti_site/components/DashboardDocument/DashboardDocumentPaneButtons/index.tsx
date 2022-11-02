@@ -1,16 +1,16 @@
 import { Box } from 'grommet';
-import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
-
-import { PLAYER_ROUTE } from 'components/routes';
-import { DashboardButton } from 'components/Styled/DashboardButtons';
 import {
   UPLOAD_FORM_ROUTE,
   useUploadManager,
   Document,
   modelName,
   uploadState,
+  DashboardButton,
 } from 'lib-components';
+import React from 'react';
+import { defineMessages, FormattedMessage } from 'react-intl';
+
+import { PLAYER_ROUTE } from 'components/routes';
 import { withLink } from 'components/withLink/withLink';
 
 const DashboardButtonWithLink = withLink(DashboardButton);
