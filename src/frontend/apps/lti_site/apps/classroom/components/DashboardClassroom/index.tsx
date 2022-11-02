@@ -8,7 +8,7 @@ import {
   useCurrentUser,
   Attendee,
 } from 'lib-components';
-import React, { lazy, useState, Suspense, useRef, useEffect } from 'react';
+import React, { useState, Suspense, useRef, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
@@ -19,13 +19,8 @@ import { useJoinClassroomAction, useClassroom } from 'lib-classroom';
 import { DashboardClassroomError } from 'lib-classroom';
 import { DashboardClassroomStudent } from 'lib-classroom'; // Lazy
 import { DashboardClassroomInstructor } from 'lib-classroom'; // Lazy
-
-const DashboardClassroomAskUsername = lazy(
-  () => import('apps/classroom/components/DashboardClassroomAskUsername'),
-);
-const DashboardClassroomJoin = lazy(
-  () => import('apps/classroom/components/DashboardClassroomJoin'),
-);
+import { DashboardClassroomAskUsername } from 'lib-classroom'; // Lazy
+import { DashboardClassroomJoin } from 'lib-classroom'; // Lazy
 
 const messages = defineMessages({
   loadingClassroom: {
