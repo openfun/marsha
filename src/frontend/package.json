@@ -31,6 +31,9 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
+    "@codemirror/lang-markdown": "6.0.3",
+    "@codemirror/language": "6.3.0",
+    "@codemirror/language-data": "6.1.0",
     "@codemirror/view": "6.4.0",
     "@codemirror/state": "6.1.2",
     "@types/mdast": "3.0.10",
