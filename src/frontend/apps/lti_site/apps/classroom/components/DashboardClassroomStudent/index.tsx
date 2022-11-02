@@ -7,7 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/classroom/components/DashboardClassroomLayout';
+} from 'lib-classroom';
 import { DashboardClassroomStudentCounter } from 'apps/classroom/components/DashboardClassroomStudentCounter';
 import { Classroom } from 'lib-components';
 

@@ -16,7 +16,7 @@ import { theme } from 'utils/theme/theme';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { useJoinClassroomAction, useClassroom } from 'lib-classroom';
-import { DashboardClassroomError } from 'apps/classroom/components/DashboardClassroomError';
+import { DashboardClassroomError } from 'lib-classroom';
 
 const DashboardClassroomStudent = lazy(
   () => import('apps/classroom/components/DashboardClassroomStudent'),

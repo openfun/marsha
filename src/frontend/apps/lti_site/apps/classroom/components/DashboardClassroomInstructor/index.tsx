@@ -10,7 +10,7 @@ import { useEndClassroomAction } from 'lib-classroom';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/classroom/components/DashboardClassroomLayout';
+} from 'lib-classroom';
 
 const DashboardClassroomForm = lazy(
   () => import('apps/classroom/components/DashboardClassroomForm'),
