@@ -3,7 +3,7 @@ import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardClassroomLayout } from 'apps/classroom/components/DashboardClassroomLayout';
+import { DashboardClassroomLayout } from 'lib-classroom';
 import { useCreateClassroomAction, ClassroomForm } from 'lib-classroom';
 import { Classroom } from 'lib-components/src/types/apps/classroom/models';
 

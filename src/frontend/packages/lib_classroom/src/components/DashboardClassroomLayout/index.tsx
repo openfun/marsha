@@ -1,8 +1,8 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Box, Grid, ResponsiveContext, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import React, { useContext } from 'react';
-
 import { useAppConfig } from 'lib-components';
+import React, { useContext } from 'react';
 
 interface DashboardClassroomMessageProps {
   message: string;

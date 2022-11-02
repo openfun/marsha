@@ -1,12 +1,11 @@
 import { Box, Text } from 'grommet';
 import React from 'react';
-
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'apps/classroom/components/DashboardClassroomLayout';
+} from 'components/DashboardClassroomLayout';
 
 const errorMessages = {
   notFound: defineMessages({
