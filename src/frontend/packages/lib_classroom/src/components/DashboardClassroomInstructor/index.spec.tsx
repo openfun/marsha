@@ -1,9 +1,11 @@
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable react/display-name */
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { classroomMockFactory } from 'lib-classroom';
+import { classroomMockFactory } from 'utils/tests/factories';
 
 import DashboardClassroomInstructor from '.';
 
@@ -31,11 +33,11 @@ jest.mock('apps/classroom/data/classroomAppData', () => ({
   },
 }));
 
-jest.mock('apps/classroom/components/DashboardClassroomForm', () => () => (
+jest.mock('components/DashboardClassroomForm', () => () => (
   <p>classroom form</p>
 ));
 
-jest.mock('apps/classroom/components/DashboardClassroomInfos', () => () => (
+jest.mock('components/DashboardClassroomInfos', () => () => (
   <p>classroom infos</p>
 ));
 

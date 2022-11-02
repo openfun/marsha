@@ -1,11 +1,12 @@
 import { Button } from 'grommet';
+import { Classroom } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardClassroomLayout } from 'lib-classroom';
-import { useCreateClassroomAction, ClassroomForm } from 'lib-classroom';
-import { Classroom } from 'lib-components/src/types/apps/classroom/models';
+import { ClassroomForm } from 'components/ClassroomForm';
+import { DashboardClassroomLayout } from 'components/DashboardClassroomLayout';
+import { useCreateClassroomAction } from 'data/queries';
 
 const messages = defineMessages({
   createClassroomFail: {

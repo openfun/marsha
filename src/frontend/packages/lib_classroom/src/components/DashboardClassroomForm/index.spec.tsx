@@ -1,11 +1,12 @@
+/* eslint-disable @typescript-eslint/require-await */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { DateTime, Duration, Settings } from 'luxon';
 import { render, Deferred } from 'lib-tests';
+import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'lib-classroom';
+import { classroomMockFactory } from 'utils/tests/factories';
 
 import DashboardClassroomForm from './index';
 
@@ -24,14 +25,16 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-jest.mock('lib-classroom', () => ({
-  ...jest.requireActual('lib-classroom'),
+jest.mock('data/classroomAppData', () => ({
   classroomAppData: {
     modelName: 'classrooms',
     classroom: {
       id: '1',
     },
   },
+}));
+
+jest.mock('components/UploadDocuments', () => ({
   UploadDocuments: () => <p>Upload Documents.</p>,
 }));
 

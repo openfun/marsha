@@ -1,8 +1,7 @@
 import { Box, Grid, Text } from 'grommet';
+import { ClassroomInfos } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-
-import { ClassroomInfos } from 'lib-components';
 
 const messages = defineMessages({
   moderators: {
