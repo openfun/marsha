@@ -1,6 +1,5 @@
+import { render } from 'lib-tests';
 import React from 'react';
-
-import render from 'utils/tests/render';
 
 import { DashboardClassroomLayout } from './index';
 
