@@ -188,7 +188,7 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
           }}
         />
       </Form>
-      <UploadDocuments />
+      <UploadDocuments classroomId={classroom.id} />
     </UploadManager>
   );
 };

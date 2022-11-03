@@ -13,10 +13,7 @@ import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 
-const { DashboardClassroom } = lazyImport(
-  () => import('lib-classroom'),
-  'DashboardClassroom',
-);
+const { DashboardClassroom } = lazyImport(() => import('lib-classroom'));
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>
@@ -32,7 +29,11 @@ const Routes = () => {
           <Route
             exact
             path={DASHBOARD_CLASSROOM_ROUTE()}
-            render={() => <DashboardClassroom />}
+            render={() => (
+              <DashboardClassroom
+                classroomId={classroomAppData.classroom?.id || ''}
+              />
+            )}
           />
 
           <Route
