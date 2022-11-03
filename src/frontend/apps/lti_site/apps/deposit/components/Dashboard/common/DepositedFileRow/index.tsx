@@ -1,12 +1,11 @@
 import { Anchor, Box, ResponsiveContext, Text } from 'grommet';
+import { truncateFilename, DepositedFile } from 'lib-components';
+import { DateTime } from 'luxon';
 import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { DateTime } from 'luxon';
 
 import { useUpdateDepositedFile } from 'apps/deposit/data/queries';
-import { DepositedFile } from 'lib-components';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
-import { truncateFilename } from 'lib-components';
 
 const messages = defineMessages({
   labelDownload: {

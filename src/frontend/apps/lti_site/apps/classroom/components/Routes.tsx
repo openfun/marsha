@@ -1,16 +1,15 @@
 import React, { Suspense } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
-
 import {
   ErrorComponentsProps,
   FullScreenError,
   FULL_SCREEN_ERROR_ROUTE,
   Loader,
 } from 'lib-components';
-
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import { lazyImport } from 'lib-common';
+
+import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 
