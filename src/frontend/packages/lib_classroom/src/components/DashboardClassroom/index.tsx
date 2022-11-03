@@ -1,6 +1,10 @@
+/* eslint-disable default-case */
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Box, Grommet, Spinner, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
-import { Maybe } from 'lib-common';
+import { Maybe, theme } from 'lib-common';
 import {
   AnonymousUser,
   Loader,
@@ -8,19 +12,26 @@ import {
   useCurrentUser,
   Attendee,
 } from 'lib-components';
-import React, { useState, Suspense, useRef, useEffect } from 'react';
+import React, { useState, Suspense, useRef, useEffect, lazy } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import { theme } from 'utils/theme/theme';
-
+import { DashboardClassroomError } from 'components/DashboardClassroomError';
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { useJoinClassroomAction, useClassroom } from 'lib-classroom';
-import { DashboardClassroomError } from 'lib-classroom';
-import { DashboardClassroomStudent } from 'lib-classroom'; // Lazy
-import { DashboardClassroomInstructor } from 'lib-classroom'; // Lazy
-import { DashboardClassroomAskUsername } from 'lib-classroom'; // Lazy
-import { DashboardClassroomJoin } from 'lib-classroom'; // Lazy
+import { useJoinClassroomAction, useClassroom } from 'data/queries';
+
+const DashboardClassroomStudent = lazy(
+  () => import('components/DashboardClassroomStudent'),
+);
+const DashboardClassroomInstructor = lazy(
+  () => import('components/DashboardClassroomInstructor'),
+);
+const DashboardClassroomAskUsername = lazy(
+  () => import('components/DashboardClassroomAskUsername'),
+);
+const DashboardClassroomJoin = lazy(
+  () => import('components/DashboardClassroomJoin'),
+);
 
 const messages = defineMessages({
   loadingClassroom: {
@@ -229,7 +240,7 @@ const DashboardClassroom = () => {
         // Student dashboard
         content = (
           <DashboardClassroomStudent
-            classroom={classroom!}
+            classroom={classroom}
             joinedAs={classroomJoined && userFullname}
             joinClassroomAction={joinClassroomAction}
             classroomEnded={classroomEnded}
@@ -239,7 +250,7 @@ const DashboardClassroom = () => {
         // Instructor dashboard
         content = (
           <DashboardClassroomInstructor
-            classroom={classroom!}
+            classroom={classroom}
             joinedAs={classroomJoined && userFullname}
             joinClassroomAction={joinClassroomAction}
             classroomEnded={classroomEnded}

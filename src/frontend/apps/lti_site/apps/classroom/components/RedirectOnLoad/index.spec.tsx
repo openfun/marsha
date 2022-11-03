@@ -8,7 +8,7 @@ import {
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
-import { DASHBOARD_CLASSROOM_ROUTE } from '../DashboardClassroom/route';
+import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

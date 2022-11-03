@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import {
@@ -9,11 +9,15 @@ import {
 } from 'lib-components';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { DASHBOARD_CLASSROOM_ROUTE } from './DashboardClassroom/route';
+import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
+import { lazyImport } from 'lib-common';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 
-const DashboardClassroom = lazy(() => import('./DashboardClassroom'));
+const { DashboardClassroom } = lazyImport(
+  () => import('lib-classroom'),
+  'DashboardClassroom',
+);
 
 const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
   <MemoryRouter>

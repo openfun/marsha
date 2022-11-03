@@ -9,7 +9,7 @@ import {
 } from 'lib-components';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
-import { DASHBOARD_CLASSROOM_ROUTE } from '../DashboardClassroom/route';
+import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
