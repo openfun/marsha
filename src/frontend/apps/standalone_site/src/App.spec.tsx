@@ -28,6 +28,8 @@ const consoleWarn = jest
   .spyOn(console, 'warn')
   .mockImplementation(() => jest.fn());
 
+window.scrollTo = jest.fn();
+
 describe('<App />', () => {
   afterEach(() => {
     fetchMock.restore();
