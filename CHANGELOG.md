@@ -10,6 +10,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- standalone website:
+  - classrooms page
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user

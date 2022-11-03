@@ -32,7 +32,11 @@ import {
 } from 'react-query';
 
 type ClassroomsResponse = APIList<Classroom>;
-type UseClassroomsParams = { organization: Maybe<string> };
+type UseClassroomsParams = {
+  organization?: Maybe<string>;
+  limit?: Maybe<string>;
+  offset?: Maybe<string>;
+};
 export const useClassrooms = (
   params: UseClassroomsParams,
   queryConfig?: UseQueryOptions<

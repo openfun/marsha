@@ -29,5 +29,11 @@ describe('<AppRoutes />', () => {
     await waitFor(() => {
       expect(screen.getByText(/My favorite/i)).toBeInTheDocument();
     });
+
+    fireEvent.click(screen.getByRole(/menuitem/i, { name: /Classrooms/i }));
+
+    await waitFor(() => {
+      expect(screen.getByText(/Classrooms/i)).toBeInTheDocument();
+    });
   });
 });

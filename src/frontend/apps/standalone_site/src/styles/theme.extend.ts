@@ -27,4 +27,14 @@ export const themeExtend: ThemeType = deepMerge(theme, {
       },
     },
   },
+  pagination: {
+    button: {
+      color: 'blue-active',
+      active: {
+        background: {
+          color: '#dbebff',
+        },
+      },
+    },
+  },
 });

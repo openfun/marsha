@@ -5,6 +5,7 @@ import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 
 const messages = defineMessages({
   menuHomePageLabel: {
@@ -194,13 +195,13 @@ export const routes: Routes = {
       },
       CLASSROOM: {
         label: <FormattedMessage {...messages.menuContentsClassroomsLabel} />,
-        path: `/my-contents/virtual-classes`,
+        path: `/my-contents/classrooms`,
         menuIcon: (
-          <CheckListIcon
+          <ClassroomsIcon
             width={30}
             height={30}
             role="img"
-            aria-label="svg-menu-my-contents-virtual-classes"
+            aria-label="svg-menu-my-contents-classrooms"
           />
         ),
       },
