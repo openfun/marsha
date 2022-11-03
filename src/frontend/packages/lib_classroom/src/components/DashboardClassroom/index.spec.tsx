@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable @typescript-eslint/require-await */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
@@ -11,7 +13,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { classroomMockFactory } from 'lib-classroom';
+import { classroomMockFactory } from 'utils/tests/factories';
 
 import DashboardClassroom from '.';
 
