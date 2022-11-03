@@ -1,15 +1,13 @@
-import { useCreateClassroom } from 'lib-classroom';
 import { Box, Heading } from 'grommet';
+import { useCreateClassroom } from 'lib-classroom';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
-import { buildContentItems } from 'components/SelectContent/utils';
-
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-
 import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/classroom/components/SelectContent/SelectContentSection';
+import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
+import { buildContentItems } from 'components/SelectContent/utils';
 
 const SelectContentResource = ({
   playlist,

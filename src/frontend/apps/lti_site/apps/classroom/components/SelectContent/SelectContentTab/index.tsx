@@ -1,14 +1,13 @@
 import { Tab } from 'grommet';
+import { useCreateClassroom } from 'lib-classroom';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
-import { buildContentItems } from 'components/SelectContent/utils';
-
+import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/classroom/components/SelectContent/SelectContentSection';
-import { useCreateClassroom } from 'lib-classroom';
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
+import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import { buildContentItems } from 'components/SelectContent/utils';
 
 const Internal = ({
   playlist,
