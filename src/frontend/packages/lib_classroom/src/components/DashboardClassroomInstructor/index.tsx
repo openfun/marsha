@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Box, Button, Grid, ResponsiveContext } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, Classroom } from 'lib-components';
@@ -6,7 +5,6 @@ import React, { lazy, Suspense, useContext } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
@@ -64,18 +62,15 @@ const DashboardClassroomInstructor = ({
   const intl = useIntl();
   const size = useContext(ResponsiveContext);
 
-  const endClassroomMutation = useEndClassroomAction(
-    classroomAppData.classroom!.id,
-    {
-      onSuccess: () => {
-        toast.success(intl.formatMessage(messages.endingClassroomPending));
-        classroomEnded();
-      },
-      onError: () => {
-        toast.error(intl.formatMessage(messages.createClassroomFail));
-      },
+  const endClassroomMutation = useEndClassroomAction(classroom.id, {
+    onSuccess: () => {
+      toast.success(intl.formatMessage(messages.endingClassroomPending));
+      classroomEnded();
     },
-  );
+    onError: () => {
+      toast.error(intl.formatMessage(messages.createClassroomFail));
+    },
+  });
 
   const endClassroomAction = () => {
     endClassroomMutation.mutate({});

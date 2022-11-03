@@ -25,15 +25,6 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-jest.mock('data/classroomAppData', () => ({
-  classroomAppData: {
-    modelName: 'classrooms',
-    classroom: {
-      id: '1',
-    },
-  },
-}));
-
 jest.mock('components/UploadDocuments', () => ({
   UploadDocuments: () => <p>Upload Documents.</p>,
 }));
