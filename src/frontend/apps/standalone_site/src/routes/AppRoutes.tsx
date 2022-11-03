@@ -1,22 +1,18 @@
 import { Box, Spinner } from 'grommet';
+import { lazyImport } from 'lib-common';
 import { Suspense } from 'react';
 import { Route, Switch } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { Header } from 'features/Header';
 import { Menu } from 'features/Menu';
-import { lazyImport } from 'utils/lazyImport';
 
 import { routes } from './routes';
 
-const { HomePage } = lazyImport(() => import('features/HomePage'), 'HomePage');
-const { Favorites } = lazyImport(
-  () => import('features/Favorites'),
-  'Favorites',
-);
+const { HomePage } = lazyImport(() => import('features/HomePage'));
+const { Favorites } = lazyImport(() => import('features/Favorites'));
 const { PlaylistPage } = lazyImport(
   () => import('features/Playlist/components/PlaylistPage'),
-  'PlaylistPage',
 );
 
 const RouteSpinner = () => (
