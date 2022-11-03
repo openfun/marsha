@@ -35,15 +35,6 @@ jest.mock('lib-components', () => ({
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
-jest.mock('data/classroomAppData', () => ({
-  classroomAppData: {
-    modelName: 'classrooms',
-    classroom: {
-      id: '1',
-    },
-  },
-}));
-
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
@@ -71,7 +62,7 @@ describe('<UploadDocuments />', () => {
   });
 
   it('renders a Dropzone with the relevant messages', () => {
-    render(<UploadDocuments />);
+    render(<UploadDocuments classroomId="1" />);
     screen.getByText("Drag 'n' drop some files here, or click to select files");
   });
 
@@ -86,7 +77,7 @@ describe('<UploadDocuments />', () => {
       uploadManagerState: {},
     });
 
-    const { container } = render(<UploadDocuments />);
+    const { container } = render(<UploadDocuments classroomId="1" />);
 
     const file = new File(['(⌐□_□)'], 'course.pdf', {
       type: 'application/pdf',
@@ -123,7 +114,7 @@ describe('<UploadDocuments />', () => {
       uploadManagerState: {},
     });
 
-    const { container } = render(<UploadDocuments />);
+    const { container } = render(<UploadDocuments classroomId="1" />);
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     await act(async () => {
@@ -165,7 +156,7 @@ describe('<UploadDocuments />', () => {
         },
       },
     });
-    render(<UploadDocuments />);
+    render(<UploadDocuments classroomId="1" />);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     // file exist in both uploadmanager and classrooms.classroomdocuments,
@@ -190,7 +181,7 @@ describe('<UploadDocuments />', () => {
       previous: null,
       results: [classroomDocument],
     });
-    render(<UploadDocuments />);
+    render(<UploadDocuments classroomId="1" />);
 
     await screen.findByText('file.txt');
     const downloadButton = screen.getByRole('link', { name: 'Download' });
@@ -226,7 +217,7 @@ describe('<UploadDocuments />', () => {
       status: 200,
     });
 
-    render(<UploadDocuments />);
+    render(<UploadDocuments classroomId="1" />);
 
     await screen.findByText('file.txt');
     const downloadButton = screen.getByRole('button', {

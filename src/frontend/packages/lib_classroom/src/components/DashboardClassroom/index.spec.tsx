@@ -37,15 +37,6 @@ const mockedUseCurrentResource =
     typeof useCurrentResourceContext
   >;
 
-jest.mock('apps/classroom/data/classroomAppData', () => ({
-  classroomAppData: {
-    modelName: 'classrooms',
-    classroom: {
-      id: '1',
-    },
-  },
-}));
-
 describe('<DashboardClassroom />', () => {
   beforeEach(() => {
     useJwt.setState({
@@ -70,7 +61,7 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { getByText } = render(<DashboardClassroom />);
+    const { getByText } = render(<DashboardClassroom classroomId="1" />);
 
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(classroom));
@@ -95,7 +86,9 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText, getByText } = render(<DashboardClassroom />);
+    const { findByText, getByText } = render(
+      <DashboardClassroom classroomId="1" />,
+    );
     getByText('Loading classroom...');
     await act(async () => classroomDeferred.resolve(classroom));
     await findByText('Launch the classroom now in BBB');
@@ -117,7 +110,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText } = render(<DashboardClassroom />);
+    const { findByText } = render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
 
     const createdClassroom = {
@@ -156,7 +149,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText } = render(<DashboardClassroom />);
+    const { findByText } = render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
     fireEvent.click(screen.getByText('Click here to access classroom'));
     await findByText('Please enter your name to join the classroom');
@@ -204,7 +197,7 @@ describe('<DashboardClassroom />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    render(<DashboardClassroom />);
+    render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
     fireEvent.click(screen.getByText('Join classroom'));
     await act(async () =>
@@ -274,7 +267,7 @@ describe('<DashboardClassroom />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    const { getByText } = render(<DashboardClassroom />);
+    const { getByText } = render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
     await act(async () =>
       deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
@@ -325,7 +318,7 @@ describe('<DashboardClassroom />', () => {
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    const { getByText } = render(<DashboardClassroom />, {
+    const { getByText } = render(<DashboardClassroom classroomId="1" />, {
       queryOptions: { client: queryClient },
     });
     getByText('Loading classroom...');

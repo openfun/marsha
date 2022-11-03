@@ -2,8 +2,6 @@
 /* eslint-disable @typescript-eslint/no-floating-promises */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-empty-function */
 import { Anchor, Box, Button, Grid, Paragraph, Text } from 'grommet';
 import {
@@ -14,12 +12,12 @@ import {
   ClassroomModelName as modelName,
   UploadableObjectProgress,
   truncateFilename,
+  Classroom,
 } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { FormattedMessage, useIntl } from 'react-intl';
 
-import { classroomAppData } from 'data/classroomAppData';
 import {
   useClassroomDocuments,
   useUpdateClassroomDocument,
@@ -156,10 +154,14 @@ const UploadDocumentsRow = ({
   );
 };
 
-export const UploadDocuments = () => {
+interface UploadDocumentsProps {
+  classroomId: Classroom['id'];
+}
+
+export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
   const intl = useIntl();
   const { data: classroomDocuments, refetch: refreshClassroomDocuments } =
-    useClassroomDocuments(classroomAppData.classroom!.id, {});
+    useClassroomDocuments(classroomId, {});
 
   const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);

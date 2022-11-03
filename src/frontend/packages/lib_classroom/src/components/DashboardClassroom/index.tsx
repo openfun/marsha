@@ -1,7 +1,6 @@
 /* eslint-disable default-case */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Box, Grommet, Spinner, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
 import { Maybe, theme } from 'lib-common';
@@ -11,13 +10,13 @@ import {
   useCurrentResourceContext,
   useCurrentUser,
   Attendee,
+  Classroom,
 } from 'lib-components';
 import React, { useState, Suspense, useRef, useEffect, lazy } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import { DashboardClassroomError } from 'components/DashboardClassroomError';
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { useJoinClassroomAction, useClassroom } from 'data/queries';
 
 const DashboardClassroomStudent = lazy(
@@ -113,7 +112,11 @@ const bbbTheme: ThemeType = deepMerge(theme, {
   },
 });
 
-const DashboardClassroom = () => {
+interface DashboardClassroomProps {
+  classroomId: Classroom['id'];
+}
+
+const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
   const user = useCurrentUser((state) => state.currentUser);
@@ -128,7 +131,7 @@ const DashboardClassroom = () => {
   );
 
   const { data: classroom, status: useClassroomStatus } = useClassroom(
-    classroomAppData.classroom!.id,
+    classroomId,
     { refetchInterval: classroomRefetchInterval.current },
   );
 
@@ -158,25 +161,22 @@ const DashboardClassroom = () => {
     }
   }, [classroom]);
 
-  const joinClassroomMutation = useJoinClassroomAction(
-    classroomAppData.classroom!.id,
-    {
-      onSuccess: (data) => {
-        const openedWindow = window.open(data.url, '_blank');
-        if (!openedWindow) {
-          setClassroomUrl(data.url);
-        }
+  const joinClassroomMutation = useJoinClassroomAction(classroomId, {
+    onSuccess: (data) => {
+      const openedWindow = window.open(data.url, '_blank');
+      if (!openedWindow) {
+        setClassroomUrl(data.url);
+      }
 
-        // stop classroom polling for students
-        if (!canUpdate) {
-          classroomRefetchInterval.current = 0;
-        }
-      },
-      onError: () => {
-        toast.error(intl.formatMessage(messages.startClassroomFail));
-      },
+      // stop classroom polling for students
+      if (!canUpdate) {
+        classroomRefetchInterval.current = 0;
+      }
     },
-  );
+    onError: () => {
+      toast.error(intl.formatMessage(messages.startClassroomFail));
+    },
+  });
 
   const openAskUserNameAction = () => {
     setAskUsername(true);
