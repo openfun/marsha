@@ -423,7 +423,7 @@ jobs:
           root: ~/marsha
           paths:
             - src/frontend/apps/lti_site/i18n/frontend.json
-            - src/frontend/apps/standalone/i18n/frontend.json
+            - src/frontend/apps/standalone_site/i18n/frontend.json
             - src/frontend/packages/i18n/frontend.json
       - save_cache:
           paths:
