@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Migrate app classroom from LTI to lib-classroom package
 - Create lib-classroom package
 - Add SharedLiveMedia widget to public and teacher VOD Dashboard
 - Add new elements to the public VOD Dashboard :
