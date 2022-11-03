@@ -33,13 +33,14 @@ class CheckLiveStateTest(TestCase):
         """A live is running and stream is on-going, the command should not stop it."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
+            created_on=datetime(2020, 8, 15, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
+                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
@@ -128,13 +129,14 @@ class CheckLiveStateTest(TestCase):
         """Live is ended and the delay is not expired."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
+            created_on=datetime(2020, 8, 15, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
+                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
@@ -212,13 +214,14 @@ class CheckLiveStateTest(TestCase):
         """Live is ended and the delay is expired. The channel must be stopped."""
         VideoFactory(
             id="0b791906-ccb3-4450-97cb-7b66fd9ad419",
-            created_on=datetime(2020, 8, 25, 0, 0, 0, tzinfo=timezone.utc),
+            created_on=datetime(2020, 8, 15, 0, 0, 0, tzinfo=timezone.utc),
             live_state=RUNNING,
             live_info={
                 "cloudwatch": {"logGroupName": "/aws/lambda/dev-test-marsha-medialive"},
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
+                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
