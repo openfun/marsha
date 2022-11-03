@@ -9,6 +9,7 @@ import { SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 
 import { usePortabilityRequests } from '../api/usePortabilityRequests';
+import { useLtiUserAssociationJwtQueryParam } from '../hooks/useLtiUserAssociationJwtQueryParam';
 
 import { ItemTableRow } from './ItemTableRow';
 
@@ -83,6 +84,8 @@ export const PortabilityRequests = ({
     state: state || '', // disable filter by default
     for_playlist_id: for_playlist_id || '', // disable filter by default
   });
+
+  useLtiUserAssociationJwtQueryParam();
 
   return (
     <Box pad="medium">
