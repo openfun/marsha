@@ -5,9 +5,8 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.views.decorators.cache import cache_page
 
-from rest_framework.renderers import CoreJSONRenderer
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 from rest_framework.routers import DefaultRouter
-from rest_framework.schemas import get_schema_view
 
 from marsha.core import models
 from marsha.core.api import (
@@ -107,10 +106,11 @@ urlpatterns = [
         recording_slices_state,
         name="recording_slices_state",
     ),
+    path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path(
-        "api/schema",
-        get_schema_view(title="Marsha API", renderer_classes=[CoreJSONRenderer]),
-        name="schema",
+        "api/schema/swagger-ui/",
+        SpectacularSwaggerView.as_view(url_name="schema"),
+        name="swagger-ui",
     ),
     path("api/", include(router.urls)),
     path(

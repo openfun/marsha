@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Video download
 - standalone website:
   - playlists page
+- install and configure drf-spectacular to serve a swagger ui
 
 ### Changed
 
