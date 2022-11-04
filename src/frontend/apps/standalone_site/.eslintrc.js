@@ -6,6 +6,7 @@ module.exports = {
     'plugin:@typescript-eslint/recommended-requiring-type-checking',
     'plugin:prettier/recommended',
     'react-app/jest',
+    'plugin:testing-library/react',
   ],
   parserOptions: {
     ecmaVersion: 2018, // Allows for the parsing of modern ECMAScript features
@@ -34,6 +35,7 @@ module.exports = {
     curly: 2,
     'default-case': 'error',
     eqeqeq: 2,
+    'import/no-duplicates': ['error', { considerQueryString: false }],
     'import/order': [
       'error',
       {
