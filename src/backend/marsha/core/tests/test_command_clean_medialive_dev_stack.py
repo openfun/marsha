@@ -79,7 +79,6 @@ class CleanMedialigeDevStackCommandTest(TestCase):
                 "dev-bar_99d60314-20f2-4847-84a4-d2f47bf7fe38_1629982356"
             )
             medialive_client_stubber.assert_no_pending_responses()
-        print(out.getvalue())
 
         self.assertEqual(
             (
