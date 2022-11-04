@@ -117,6 +117,7 @@ class Base(Configuration):
         "dockerflow.django",
         "waffle",
         "rest_framework",
+        "drf_spectacular",
         "corsheaders",
         "channels",
         "parler",  # django-parler, for translated models
@@ -217,6 +218,13 @@ class Base(Configuration):
                 "3/minute", environ_name="REST_FRAMEWORK_LIVE_SESSION_THROTTLE_RATE"
             ),
         },
+        "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+    }
+
+    # DRF SPECTACULAR
+    SPECTACULAR_SETTINGS = {
+        "TITLE": "Marsha API",
+        "SERVE_INCLUDE_SCHEMA": False,
     }
 
     # WAFFLE
