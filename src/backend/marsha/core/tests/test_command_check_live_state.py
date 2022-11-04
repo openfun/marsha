@@ -40,7 +40,7 @@ class CheckLiveStateTest(TestCase):
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
-                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
+                "started_at": "1598313600",  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
@@ -136,7 +136,7 @@ class CheckLiveStateTest(TestCase):
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
-                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
+                "started_at": "1598313600",  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
@@ -221,7 +221,7 @@ class CheckLiveStateTest(TestCase):
                 "medialive": {
                     "channel": {"arn": "medialive:channel:arn", "id": "123456"}
                 },
-                "started_at": 1598313600,  # 25 aug 2020 00:00:00 UTC
+                "started_at": "1598313600",  # 25 aug 2020 00:00:00 UTC
             },
             live_type=RAW,
         )
