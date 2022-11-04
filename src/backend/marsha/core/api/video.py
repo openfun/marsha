@@ -113,7 +113,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         """Extra context provided to the serializer class."""
         context = super().get_serializer_context()
 
-        if self.request.resource:
+        if self.request and self.request.resource:
             context.update(self.request.resource.token.payload)
             admin_role_permission = permissions.IsTokenAdmin()
             instructor_role_permission = permissions.IsTokenInstructor()
