@@ -2,8 +2,16 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Deferred, render } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { PlaylistPage } from './PlaylistPage';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  // no more errors on the console
+  error: () => {},
+});
 
 describe('<PlaylistPage />', () => {
   beforeEach(() => {
@@ -161,5 +169,34 @@ describe('<PlaylistPage />', () => {
     expect(screen.getByText('Creation date')).toBeInTheDocument();
     expect(screen.getAllByText('Creation date (reversed)').length).toEqual(2);
     expect(screen.getByText('Title (reversed)')).toBeInTheDocument();
+  });
+
+  it('opens the create playlist form', async () => {
+    fetchMock.get('/api/playlists/?limit=20&offset=0&ordering=-created_on', {
+      count: 0,
+      results: [],
+    });
+    fetchMock.get('/api/organizations/?limit=20&offset=0', {
+      count: 1,
+      results: [
+        {
+          id: 'id',
+          name: 'org',
+          created_on: 'some days',
+          users: [],
+          consumer_sites: ['consumer site 1'],
+        },
+      ],
+      next: 'next',
+      previous: 'previous',
+    });
+
+    render(<PlaylistPage />);
+
+    await screen.findByText('You have no playlist yet.');
+
+    userEvent.click(screen.getByRole('button', { name: 'Create playlist' }));
+
+    await screen.findByText('Create a playlist');
   });
 });

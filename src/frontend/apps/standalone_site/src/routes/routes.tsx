@@ -240,3 +240,5 @@ export const routes: Routes = {
     },
   },
 };
+
+export const CREATE_PLAYLIST_MODALE = `${routes.PLAYLIST.path}/create`;

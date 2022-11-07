@@ -53,7 +53,7 @@ function AppRoutes() {
             <HomePage />
           </Suspense>
         </Route>
-        <Route path={routes.PLAYLIST.path} exact>
+        <Route path={routes.PLAYLIST.path}>
           <Suspense fallback={<ContentSpinner />}>
             <PlaylistPage />
           </Suspense>
