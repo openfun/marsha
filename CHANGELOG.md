@@ -46,6 +46,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Video download
 - standalone website:
   - playlists page
+  - create playlist form
 - install and configure drf-spectacular to serve a swagger ui
 - Management command clean_aws_elemental_stack
 

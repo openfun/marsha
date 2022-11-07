@@ -2,13 +2,18 @@ import { Box, Button, Heading, Text } from 'grommet';
 import { Spinner } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
+import Modal from 'components/Modal';
 import { SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
+import { CREATE_PLAYLIST_MODALE, routes } from 'routes';
 
 import { PlaylistOrderType, usePlaylists } from '../api/usePlaylists';
+
+import { CreatePlaylistForm } from './CreatePlaylistForm';
 
 const messages = defineMessages({
   title: {
@@ -61,6 +66,7 @@ const messages = defineMessages({
 
 export const PlaylistPage = () => {
   const intl = useIntl();
+  const history = useHistory();
 
   const sorts = [
     {
@@ -100,113 +106,144 @@ export const PlaylistPage = () => {
     }
   }, [isLoading]);
 
-  const shouldDisplayCreateButton = hasLoadedOnce && data && data.count > 0;
+  const [shouldDisplayCreateButton, setShouldDisplayCreateButton] =
+    useState(false);
+  useEffect(() => {
+    if (!shouldDisplayCreateButton && data?.count && hasLoadedOnce) {
+      setShouldDisplayCreateButton(true);
+    }
+  }, [hasLoadedOnce, data?.count, shouldDisplayCreateButton]);
+
   const shouldDisplayError = (!isLoading && !data) || isError;
   const shouldDisplayNoPlaylistYetMessage =
     !isError && data && data.count === 0; // we dont want to show create button and no playlist yet message at the same time
   const shouldDisplayTable = !isError && data && data.count > 0;
 
   return (
-    <Box pad="medium">
-      <WhiteCard direction="column">
-        <Box flex="shrink" direction="row">
-          <Box flex>
-            <Heading level={3} truncate>
-              {intl.formatMessage(messages.title)}
-            </Heading>
-          </Box>
-          {shouldDisplayCreateButton && (
-            <Box flex="shrink" margin={{ vertical: 'auto', left: 'small' }}>
-              <Button primary a11yTitle={intl.formatMessage(messages.create)}>
-                {intl.formatMessage(messages.create)}
-              </Button>
+    <Fragment>
+      <Switch>
+        <Route path={CREATE_PLAYLIST_MODALE}>
+          <Modal
+            isOpen
+            onClose={() => {
+              history.push(routes.PLAYLIST.path);
+            }}
+          >
+            <CreatePlaylistForm />
+          </Modal>
+        </Route>
+      </Switch>
+
+      <Box pad="medium">
+        <WhiteCard direction="column">
+          <Box flex="shrink" direction="row">
+            <Box flex>
+              <Heading level={3} truncate>
+                {intl.formatMessage(messages.title)}
+              </Heading>
             </Box>
+            {shouldDisplayCreateButton && (
+              <Box flex="shrink" margin={{ vertical: 'auto', left: 'small' }}>
+                <Button
+                  primary
+                  a11yTitle={intl.formatMessage(messages.create)}
+                  onClick={() => {
+                    history.push(CREATE_PLAYLIST_MODALE);
+                  }}
+                >
+                  {intl.formatMessage(messages.create)}
+                </Button>
+              </Box>
+            )}
+          </Box>
+          {!hasLoadedOnce && <Spinner />}
+          {hasLoadedOnce && (
+            <Fragment>
+              {shouldDisplayError && (
+                <Box
+                  background="content-background"
+                  margin="auto"
+                  pad="medium"
+                  round="small"
+                >
+                  <Text size="large">{intl.formatMessage(messages.error)}</Text>
+                  <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                    <Button
+                      a11yTitle={intl.formatMessage(messages.retry)}
+                      onClick={() => {
+                        refetch();
+                      }}
+                      primary
+                    >
+                      {intl.formatMessage(messages.retry)}
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+              {shouldDisplayNoPlaylistYetMessage && (
+                <Box
+                  background="content-background"
+                  margin="auto"
+                  pad="medium"
+                  round="small"
+                >
+                  <Text size="large">
+                    {intl.formatMessage(messages.noPlaylists)}
+                  </Text>
+                  <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                    <Button
+                      primary
+                      onClick={() => {
+                        history.push(CREATE_PLAYLIST_MODALE);
+                      }}
+                    >
+                      {intl.formatMessage(messages.create)}
+                    </Button>
+                  </Box>
+                </Box>
+              )}
+              {shouldDisplayTable && (
+                <SortableTable
+                  loading={isLoading}
+                  title={
+                    <Box direction="row">
+                      <CheckListIcon width={30} height={30} />
+                      <Text margin={{ left: 'small' }}>
+                        {intl.formatMessage(messages.tableTitle, {
+                          item_count: data.count,
+                        })}
+                      </Text>
+                    </Box>
+                  }
+                  items={data.results}
+                  sortable
+                  sortBy={sorts}
+                  currentSort={currentSort}
+                  onSortChange={(newSort) => {
+                    setCurrentSort(newSort);
+                    return data.results;
+                  }}
+                  paginable
+                  numberOfItems={data.count}
+                  pageSize={ITEM_PER_PAGE}
+                  onPageChange={(newPage) => {
+                    setCurrentPage(newPage);
+                    return data.results;
+                  }}
+                >
+                  {(item) => (
+                    <Box flex direction="row" align="center">
+                      <Box basis="30%">{item.title}</Box>
+                      <Box basis="50%">{item.lti_id}</Box>
+                      <Box basis="20%">{item.consumer_site?.domain}</Box>
+                    </Box>
+                  )}
+                </SortableTable>
+              )}
+            </Fragment>
           )}
-        </Box>
-        {!hasLoadedOnce && <Spinner />}
-        {hasLoadedOnce && (
-          <Fragment>
-            {shouldDisplayError && (
-              <Box
-                background="content-background"
-                margin="auto"
-                pad="medium"
-                round="small"
-              >
-                <Text size="large">{intl.formatMessage(messages.error)}</Text>
-                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                  <Button
-                    a11yTitle={intl.formatMessage(messages.retry)}
-                    onClick={() => {
-                      refetch();
-                    }}
-                    primary
-                  >
-                    {intl.formatMessage(messages.retry)}
-                  </Button>
-                </Box>
-              </Box>
-            )}
-            {shouldDisplayNoPlaylistYetMessage && (
-              <Box
-                background="content-background"
-                margin="auto"
-                pad="medium"
-                round="small"
-              >
-                <Text size="large">
-                  {intl.formatMessage(messages.noPlaylists)}
-                </Text>
-                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                  <Button primary>{intl.formatMessage(messages.create)}</Button>
-                </Box>
-              </Box>
-            )}
-            {shouldDisplayTable && (
-              <SortableTable
-                loading={isLoading}
-                title={
-                  <Box direction="row">
-                    <CheckListIcon width={30} height={30} />
-                    <Text margin={{ left: 'small' }}>
-                      {intl.formatMessage(messages.tableTitle, {
-                        item_count: data.count,
-                      })}
-                    </Text>
-                  </Box>
-                }
-                items={data.results}
-                selectable
-                onSelectionChange={(items) => {
-                  console.log('new selection', items);
-                }}
-                sortable
-                sortBy={sorts}
-                currentSort={currentSort}
-                onSortChange={(newSort) => {
-                  setCurrentSort(newSort);
-                  return data.results;
-                }}
-                paginable
-                numberOfItems={data.count}
-                pageSize={ITEM_PER_PAGE}
-                onPageChange={(newPage) => {
-                  setCurrentPage(newPage);
-                  return data.results;
-                }}
-              >
-                {(item) => (
-                  <Box flex direction="row" align="center">
-                    <Box basis="30%">{item.title}</Box>
-                    <Box basis="50%">{item.lti_id}</Box>
-                    <Box basis="20%">{item.consumer_site.domain}</Box>
-                  </Box>
-                )}
-              </SortableTable>
-            )}
-          </Fragment>
-        )}
-      </WhiteCard>
-    </Box>
+        </WhiteCard>
+      </Box>
+    </Fragment>
   );
 };

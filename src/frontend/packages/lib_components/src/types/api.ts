@@ -35,7 +35,7 @@ export interface ConsumableQuery<R extends Resource> {
 
 export interface APIList<T> {
   count: number;
-  next: string;
-  previous: string;
+  next?: Nullable<string>;
+  previous?: Nullable<string>;
   results: T[];
 }
