@@ -171,6 +171,43 @@ class MarkdownCreateAPITest(TestCase):
             },
         )
 
+        response2 = self.client.post(
+            "/api/markdown-documents/",
+            {
+                "lti_id": "document_two",
+                "playlist": str(playlist.id),
+                "title": "Document two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(MarkdownDocument.objects.count(), 2)
+        self.assertEqual(response2.status_code, 201)
+        document2 = MarkdownDocument.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "id": str(document2.id),
+                "images": [],
+                "is_draft": True,
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "position": 0,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "content": "",
+                        "language_code": "en",
+                        "rendered_content": "",
+                        "title": "Document two",
+                    }
+                ],
+            },
+        )
+
     def test_api_document_create_user_access_token_playlist_admin(self):
         """A playlist administrator should be able to create a Markdown document."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
@@ -210,6 +247,43 @@ class MarkdownCreateAPITest(TestCase):
                         "language_code": "en",
                         "rendered_content": "",
                         "title": "Some document",
+                    }
+                ],
+            },
+        )
+
+        response2 = self.client.post(
+            "/api/markdown-documents/",
+            {
+                "lti_id": "document_two",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "Document two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(MarkdownDocument.objects.count(), 2)
+        self.assertEqual(response2.status_code, 201)
+        document2 = MarkdownDocument.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "id": str(document2.id),
+                "images": [],
+                "is_draft": True,
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "position": 0,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "content": "",
+                        "language_code": "en",
+                        "rendered_content": "",
+                        "title": "Document two",
                     }
                 ],
             },
