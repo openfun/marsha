@@ -1,6 +1,8 @@
 export * from './Button';
 export * from './Button/ButtonLayout';
 
+export * from './Form';
+
 export * from './Loader';
 
 export * from './SVGIcons';

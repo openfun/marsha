@@ -1,11 +1,17 @@
 import { Button, Grommet, Paragraph, TextInput, ThemeType } from 'grommet';
 import { deepMerge, normalizeColor } from 'grommet/utils';
 import { Maybe } from 'lib-common';
-import { decodeJwt, useJwt, LiveSession } from 'lib-components';
+import {
+  decodeJwt,
+  Form,
+  FormField,
+  LiveSession,
+  useJwt,
+} from 'lib-components';
+import { isArray } from 'lodash';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Form, FormField } from 'components/Form';
 import { createLiveSession } from 'data/sideEffects/createLiveSession';
 import { checkLtiToken } from 'utils/checkLtiToken';
 import { getAnonymousId } from 'utils/localstorage';
@@ -124,6 +130,38 @@ const messages = defineMessages({
   },
 });
 
+const isBackendFormError = (error: unknown): error is { email: string[] } => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const casted = error as { email?: unknown };
+  if (!casted.email || !isArray(casted.email)) {
+    return false;
+  }
+
+  let match = true;
+  casted.email.forEach((value) => {
+    if (!value || typeof value !== 'string') {
+      match = false;
+    }
+  });
+  return match;
+};
+
+const isValidationFormError = (error: unknown): error is { email: string } => {
+  if (!error || typeof error !== 'object') {
+    return false;
+  }
+
+  const casted = error as { email?: unknown };
+  if (!casted.email || typeof casted.email !== 'string') {
+    return false;
+  }
+
+  return true;
+};
+
 interface RegistrationFormProps {
   defaultEmail?: string;
   liveSession: Maybe<LiveSession>;
@@ -196,12 +234,16 @@ export const RegistrationForm = ({
           }
 
           let errorMessage;
-          if (error.email && error.email[0].indexOf('already registered') > 0) {
+          if (
+            isBackendFormError(error) &&
+            error.email.length > 0 &&
+            error.email[0].indexOf('already registered') > 0
+          ) {
             errorMessage = intl.formatMessage(
               messages.updateMailAlreadyExistingError,
               value,
             );
-          } else if (error.email) {
+          } else if (isValidationFormError(error)) {
             errorMessage = intl.formatMessage(
               messages.updateMailNotValidError,
               value,
