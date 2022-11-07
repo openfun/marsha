@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - fix permission for classroom creation
+- fix permission for filedepository creation
 
 ## [4.0.0-beta.10] - 2022-10-19
 
