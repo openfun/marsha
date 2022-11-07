@@ -69,7 +69,13 @@ class MarkdownDocumentViewSet(
                         | core_permissions.IsTokenAdmin
                     )
                 )
-                | markdown_permissions.IsMarkdownDocumentPlaylistOrOrganizationAdmin
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        core_permissions.IsParamsPlaylistAdmin
+                        | core_permissions.IsParamsPlaylistAdminThroughOrganization
+                    )
+                )
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
