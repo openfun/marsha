@@ -158,6 +158,34 @@ class FileDepositoryCreateAPITest(TestCase):
             },
         )
 
+        response2 = self.client.post(
+            "/api/filedepositories/",
+            {
+                "lti_id": "file_depository_two",
+                "playlist": str(playlist.id),
+                "title": "file_depository two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(FileDepository.objects.count(), 2)
+        self.assertEqual(response2.status_code, 201)
+        file_depository2 = FileDepository.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "description": "",
+                "id": str(file_depository2.id),
+                "lti_id": "file_depository_two",
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "title": "file_depository two",
+            },
+        )
+
     def test_api_file_depository_create_user_access_token_playlist_admin(self):
         """A playlist administrator should be able to create a file depository."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
@@ -190,5 +218,33 @@ class FileDepositoryCreateAPITest(TestCase):
                     "title": playlist_access.playlist.title,
                 },
                 "title": "Some file_depository",
+            },
+        )
+
+        response2 = self.client.post(
+            "/api/filedepositories/",
+            {
+                "lti_id": "file_depository_two",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "file_depository two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(FileDepository.objects.count(), 2)
+        self.assertEqual(response2.status_code, 201)
+        file_depository2 = FileDepository.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "description": "",
+                "id": str(file_depository2.id),
+                "lti_id": "file_depository_two",
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "title": "file_depository two",
             },
         )

@@ -79,7 +79,13 @@ class FileDepositoryViewSet(
                         | core_permissions.IsTokenAdmin
                     )
                 )
-                | IsFileDepositoryPlaylistOrOrganizationAdmin
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        core_permissions.IsParamsPlaylistAdmin
+                        | core_permissions.IsParamsPlaylistAdminThroughOrganization
+                    )
+                )
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
