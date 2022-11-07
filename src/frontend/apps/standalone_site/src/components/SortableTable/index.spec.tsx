@@ -257,4 +257,28 @@ describe('<SortableTable />', () => {
     screen.getByText('a new label');
     screen.getByText('and an other one just for fun');
   });
+
+  it('renders with single selection row', () => {
+    const items = [{ label: 'label 1' }, { label: 'label 2' }];
+    const onSelectionChange = jest.fn();
+
+    render(
+      <SortableTable
+        title="my table"
+        items={items}
+        selectable
+        type="single"
+        onSelectionChange={onSelectionChange}
+      >
+        {(item) => (
+          <Box>
+            <Text>{item.label}</Text>
+          </Box>
+        )}
+      </SortableTable>,
+    );
+
+    screen.getByRole('radio', { name: 'Select line 1' });
+    screen.getByRole('radio', { name: 'Select line 2' });
+  });
 });

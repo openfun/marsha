@@ -1,4 +1,12 @@
-import { Box, CheckBox, Menu, Pagination, Stack, Text } from 'grommet';
+import {
+  Box,
+  CheckBox,
+  Menu,
+  Pagination,
+  RadioButton,
+  Stack,
+  Text,
+} from 'grommet';
 import { Maybe } from 'lib-common';
 import { Spinner } from 'lib-components';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
@@ -27,8 +35,10 @@ interface Sortable<ItemType, SortByType extends SortByBase = SortByBase> {
 interface UnSelectable {
   selectable?: false;
 }
+type SelectionType = 'single' | 'multiple';
 interface Selectable<ItemType> {
   selectable: true;
+  type?: SelectionType;
   onSelectionChange: (newSelection: ItemType[]) => void;
 }
 
@@ -71,8 +81,10 @@ export const SortableTable = <
 
   let selectionCallback: Maybe<Selectable<ItemType>['onSelectionChange']> =
     undefined;
+  let selectionType: Maybe<SelectionType> = undefined;
   if (props.selectable) {
     selectionCallback = props.onSelectionChange;
+    selectionType = props.type || 'multiple';
   }
 
   let sortCallback: Maybe<Sortable<ItemType, SortByType>['onSortChange']> =
@@ -178,7 +190,7 @@ export const SortableTable = <
         pad={{ left: 'medium' }}
         round={{ size: 'xsmall', corner: 'top' }}
       >
-        {props.selectable && (
+        {props.selectable && selectionType === 'multiple' && (
           <Box margin={{ right: 'large', vertical: 'auto' }}>
             <CheckBox
               a11yTitle={
@@ -213,26 +225,39 @@ export const SortableTable = <
               pad={{ horizontal: 'medium', vertical: 'small' }}
               round="xsmall"
               align="center"
+              margin={index > 0 ? { top: 'xsmall' } : undefined}
             >
               {props.selectable && (
                 <Box margin={{ right: 'large' }}>
-                  <CheckBox
-                    a11yTitle={
-                      currentSelection.includes(item)
-                        ? `Deselect line ${index + 1}`
-                        : `Select line ${index + 1}`
-                    }
-                    checked={currentSelection.includes(item)}
-                    onChange={() => {
-                      if (currentSelection.includes(item)) {
-                        setCurrentSelection(
-                          currentSelection.filter((t) => t !== item),
-                        );
-                      } else {
-                        setCurrentSelection([...currentSelection, item]);
+                  {selectionType === 'multiple' && (
+                    <CheckBox
+                      a11yTitle={
+                        currentSelection.includes(item)
+                          ? `Deselect line ${index + 1}`
+                          : `Select line ${index + 1}`
                       }
-                    }}
-                  />
+                      checked={currentSelection.includes(item)}
+                      onChange={() => {
+                        if (currentSelection.includes(item)) {
+                          setCurrentSelection(
+                            currentSelection.filter((t) => t !== item),
+                          );
+                        } else {
+                          setCurrentSelection([...currentSelection, item]);
+                        }
+                      }}
+                    />
+                  )}
+                  {selectionType === 'single' && (
+                    <RadioButton
+                      a11yTitle={`Select line ${index + 1}`}
+                      name={`line ${index}`}
+                      checked={currentSelection.includes(item)}
+                      onChange={() => {
+                        setCurrentSelection([item]);
+                      }}
+                    />
+                  )}
                 </Box>
               )}
               <Box flex>{children(item)}</Box>
