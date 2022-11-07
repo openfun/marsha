@@ -29,15 +29,15 @@ const useFormErrorContext = () => {
 };
 
 type CleanFormProps<T> = Omit<GrommetFormProps<T>, 'children' | 'onSubmit'>;
-interface FormProps<T = {}> extends CleanFormProps<T> {
+interface FormProps<T = Record<string, unknown>> extends CleanFormProps<T> {
   initialErrors?: ErrorStateType<T>;
   onSubmit: (
     event: GrommetFormExtendedEvent<T, Element>,
   ) => Promise<void> | void;
-  onSubmitError: (values: T, error: any) => Maybe<ErrorStateType<T>>;
+  onSubmitError: (values: T, error: unknown) => Maybe<ErrorStateType<T>>;
 }
 
-export const Form = <T extends {}>({
+export const Form = <T extends Record<string, unknown>>({
   children,
   initialErrors,
   onSubmit,
@@ -50,20 +50,26 @@ export const Form = <T extends {}>({
   return (
     <GrommetForm
       {...props}
-      onSubmit={async (submitValues) => {
+      onSubmit={(submitValues) => {
         if (isSubmitOngoing.current) {
           //  a submit is already in progress
           return;
         }
 
+        const performSubmit = async (
+          submitValues: GrommetFormExtendedEvent<T, Element>,
+        ) => {
+          try {
+            setErrors({});
+            await onSubmit(submitValues);
+          } catch (e) {
+            setErrors(onSubmitError(submitValues.value, e) ?? {});
+          }
+          isSubmitOngoing.current = false;
+        };
+
         isSubmitOngoing.current = true;
-        try {
-          setErrors({});
-          await onSubmit(submitValues);
-        } catch (e) {
-          setErrors(onSubmitError(submitValues.value, e) ?? {});
-        }
-        isSubmitOngoing.current = false;
+        void performSubmit(submitValues);
       }}
     >
       <FormErrorContext.Provider value={errors}>
