@@ -28,6 +28,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Refactor check_live_state management command to use the live started_at
   timestamp to filter logs instead of using video creation date.
 
+### Fixed
+
+- fix permission for classroom creation
+
 ## [4.0.0-beta.10] - 2022-10-19
 
 ### Changed

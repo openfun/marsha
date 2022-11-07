@@ -8,6 +8,10 @@ from marsha.core import models
 
 def _is_organization_admin(user_id, classroom_id):
     """Check if user is an admin of the organization containing a classroom."""
+
+    if not user_id or not classroom_id:
+        return False
+
     return models.OrganizationAccess.objects.filter(
         role=models.ADMINISTRATOR,
         organization__playlists__classrooms__id=classroom_id,
@@ -17,6 +21,10 @@ def _is_organization_admin(user_id, classroom_id):
 
 def _is_playlist_admin(user_id, classroom_id):
     """Check if user is an admin of the playlist containing a classroom."""
+
+    if not user_id or not classroom_id:
+        return False
+
     return models.PlaylistAccess.objects.filter(
         role=models.ADMINISTRATOR,
         playlist__classrooms__id=classroom_id,

@@ -207,6 +207,40 @@ class ClassroomCreateAPITest(TestCase):
             },
         )
 
+        response2 = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_two",
+                "playlist": str(playlist.id),
+                "title": "classroom two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(Classroom.objects.count(), 2)
+        classroom2 = Classroom.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom2.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_two",
+                "meeting_id": str(classroom2.meeting_id),
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "classroom two",
+                "welcome_text": "Welcome!",
+            },
+        )
+
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_classroom_create_user_access_token_playlist_admin(
         self, mock_get_meeting_infos
@@ -253,6 +287,40 @@ class ClassroomCreateAPITest(TestCase):
                 "started": False,
                 "starting_at": None,
                 "title": "Some classroom",
+                "welcome_text": "Welcome!",
+            },
+        )
+
+        response2 = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_two",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "classroom two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(Classroom.objects.count(), 2)
+        classroom2 = Classroom.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom2.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_two",
+                "meeting_id": str(classroom2.meeting_id),
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "classroom two",
                 "welcome_text": "Welcome!",
             },
         )
