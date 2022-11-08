@@ -1,9 +1,10 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 from django.conf import settings
+from django.db.models import Q
 from django.utils import timezone
 
 import django_filters
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -47,8 +48,15 @@ class ClassroomViewSet(
 ):
     """Viewset for the API of the Classroom object."""
 
-    queryset = Classroom.objects.all()
+    queryset = Classroom.objects.all().select_related("playlist")
     serializer_class = serializers.ClassroomSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "title"]
+    ordering = ["-created_on"]
+    filterset_class = ClassroomFilter
 
     permission_classes = [
         (
@@ -92,6 +100,32 @@ class ClassroomViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(
+                    playlist__organization__user_accesses__user_id=self.request.user.id,
+                    playlist__organization__user_accesses__role=ADMINISTRATOR,
+                )
+                | Q(
+                    playlist__user_accesses__user_id=self.request.user.id,
+                    playlist__user_accesses__role=ADMINISTRATOR,
+                )
+            )
+        )
+
+        return queryset
+
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
+
     def create(self, request, *args, **kwargs):
         """Create one classroom based on the request payload."""
         try:
@@ -103,25 +137,6 @@ class ClassroomViewSet(
         serializer = self.get_serializer(classroom)
 
         return Response(serializer.data, status=201)
-
-    def list(self, request, *args, **kwargs):
-        """List classrooms belonging to user organizations."""
-        queryset = self.get_queryset().filter(
-            playlist__organization__users__id=request.user.id,
-            playlist__organization__user_accesses__role=ADMINISTRATOR,
-        )
-        filter_set = ClassroomFilter(request.query_params, queryset=queryset)
-        page = self.paginate_queryset(
-            self.filter_queryset(
-                filter_set.qs.order_by(
-                    "-created_on",
-                    "-playlist__created_on",
-                    "-playlist__organization__created_on",
-                )
-            )
-        )
-        serializer = self.get_serializer(page, many=True)
-        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],
@@ -192,7 +207,7 @@ class ClassroomViewSet(
         """
         classroom = self.get_object()
         queryset = classroom.classroom_documents.all()
-        page = self.paginate_queryset(self.filter_queryset(queryset))
+        page = self.paginate_queryset(queryset)
         serializer = serializers.ClassroomDocumentSerializer(
             page,
             many=True,
