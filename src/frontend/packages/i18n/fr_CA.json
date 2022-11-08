@@ -1,0 +1,242 @@
+{
+  "component.ClassroomForm.descriptionLabel": {
+    "description": "Label for description in classroom creation form.",
+    "message": "Description"
+  },
+  "component.ClassroomForm.requiredTitle": {
+    "description": "Message when classroom title is missing.",
+    "message": "Title is required to launch the classroom."
+  },
+  "component.ClassroomForm.scheduleClassroomLabel": {
+    "description": "Label for confirm button in classroom scheduling form.",
+    "message": "Update classroom scheduling"
+  },
+  "component.ClassroomForm.titleLabel": {
+    "description": "Label for title in classroom creation form.",
+    "message": "Title"
+  },
+  "component.ClassroomForm.updateClassroomFail": {
+    "description": "Message when classroom update failed.",
+    "message": "Classroom not updated!"
+  },
+  "component.ClassroomForm.updateClassroomSuccess": {
+    "description": "Message when classroom update is successful.",
+    "message": "Classroom updated."
+  },
+  "component.ClassroomForm.welcomeTextLabel": {
+    "description": "Label for welcome text in classroom creation form.",
+    "message": "Welcome text"
+  },
+  "component.DashboardClassroom.loadingClassroom": {
+    "description": "Accessible message for the spinner while loading the classroom in dashboard view.",
+    "message": "Loading classroom..."
+  },
+  "component.DashboardClassroom.startClassroomFail": {
+    "description": "Message when classroom start failed.",
+    "message": "Classroom not started!"
+  },
+  "component.DashboardClassroom.startClassroomSuccess": {
+    "description": "Message when classroom start is successful.",
+    "message": "Classroom started."
+  },
+  "component.DashboardClassroomAskUsername.cancel": {
+    "description": "Button label for discarding ask username form in classroom dashboard view.",
+    "message": "Cancel"
+  },
+  "component.DashboardClassroomAskUsername.join": {
+    "description": "Button label for setting username and joining the classroom in classroom dashboard view.",
+    "message": "Join"
+  },
+  "component.DashboardClassroomAskUsername.label": {
+    "description": "Label for asking username to join the classroom.",
+    "message": "Please enter your name to join the classroom"
+  },
+  "component.DashboardClassroomForm.createClassroomFail": {
+    "description": "Message when classroom creation failed.",
+    "message": "Classroom not created!"
+  },
+  "component.DashboardClassroomForm.startClassroomLabel": {
+    "description": "Label for the button starting the classroom creation in BBB.",
+    "message": "Launch the classroom now in BBB"
+  },
+  "component.DashboardClassroomInfos.listeners": {
+    "description": "Role name for listeners in dashboard classroom info view.",
+    "message": "Listeners"
+  },
+  "component.DashboardClassroomInfos.moderators": {
+    "description": "Role name for moderators in dashboard classroom info view.",
+    "message": "Moderators"
+  },
+  "component.DashboardClassroomInfos.participants": {
+    "description": "Role name for participants in dashboard classroom info view.",
+    "message": "Participants"
+  },
+  "component.DashboardClassroomInstructor.createClassroomFail": {
+    "description": "Message when classroom creation failed.",
+    "message": "Classroom not created!"
+  },
+  "component.DashboardClassroomInstructor.endClassroomLabel": {
+    "description": "Label for ending classroom in instructor dashboard.",
+    "message": "End classroom"
+  },
+  "component.DashboardClassroomInstructor.endingClassroomPending": {
+    "description": "Message when ending classroom is pending.",
+    "message": "Ending classroom…"
+  },
+  "component.DashboardClassroomInstructor.joinClassroomLabel": {
+    "description": "Label for joining classroom in instructor dashboard.",
+    "message": "Join classroom"
+  },
+  "component.DashboardClassroomInstructor.joinedAs": {
+    "description": "Message when user has joined the classroom.",
+    "message": "You have joined the classroom as {joinedAs}."
+  },
+  "component.DashboardClassroomJoin.joinLinkLabel": {
+    "description": "Label for link used to join a classroom.",
+    "message": "Please click here to access classroom."
+  },
+  "component.DashboardClassroomStudent.classroomEnded": {
+    "description": "Message when classroom has ended.",
+    "message": "Classroom ended."
+  },
+  "component.DashboardClassroomStudent.classroomNotStarted": {
+    "description": "Message when classroom is not started.",
+    "message": "Classroom not started yet."
+  },
+  "component.DashboardClassroomStudent.classroomStarted": {
+    "description": "Message when classroom is started.",
+    "message": "Classroom is started."
+  },
+  "component.DashboardClassroomStudent.joinClassroomLabel": {
+    "description": "Label for joining classroom in instructor dashboard.",
+    "message": "Click here to access classroom"
+  },
+  "component.DashboardClassroomStudent.joinedAs": {
+    "description": "Message when user has joined the classroom.",
+    "message": "You have joined the classroom as {joinedAs}."
+  },
+  "component.SchedulingFields.estimatedDurationTextLabel": {
+    "description": "Label of the input field to add/update the estimated duration of the scheduled event",
+    "message": "Estimated duration"
+  },
+  "component.SchedulingFields.invalidStartingAt": {
+    "description": "Error message when event scheduling date time update is in the past.",
+    "message": "{updatedStartingAt} is not valid: Starting date and time should be set in the future."
+  },
+  "component.SchedulingFields.startingAtDateTextLabel": {
+    "description": "Label of the input field to add/update the start date of the scheduled event",
+    "message": "Starting date"
+  },
+  "component.SchedulingFields.startingAtTextLabel": {
+    "description": "Label of the input field to add/update the start time of the scheduled event",
+    "message": "Starting time"
+  },
+  "components.DashboardClassroomError.notFound.text": {
+    "description": "Helpful text for the 404 Not Found error page",
+    "message": "This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated."
+  },
+  "components.DashboardClassroomError.notFound.title": {
+    "description": "Title for the 404 Not Found error page",
+    "message": "The classroom you are looking for could not be found"
+  },
+  "components.ErrorComponents.generic.text": {
+    "description": "Helpful text for the generic error message (random API request failure).",
+    "message": "We could not access the appropriate resources. You can try reloading the page or come back again at a later time."
+  },
+  "components.ErrorComponents.generic.title": {
+    "description": "Title for the generic error message (random API request failure).",
+    "message": "There was an unexpected error"
+  },
+  "components.ErrorComponents.liveIncompatible.title": {
+    "description": "Title when the object is incompatible with live mode",
+    "message": "Live mode incompatible with this object"
+  },
+  "components.ErrorComponents.lti.text": {
+    "description": "Helpful text for the LTI error page",
+    "message": "We could not validate your access to this video. Please contact your instructor. If you are the instructor, please check your settings."
+  },
+  "components.ErrorComponents.lti.title": {
+    "description": "Title for the LTI error page",
+    "message": "There was an error loading this video"
+  },
+  "components.ErrorComponents.notFound.text": {
+    "description": "Helpful text for the 404 Not Found error page",
+    "message": "This video does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated."
+  },
+  "components.ErrorComponents.notFound.title": {
+    "description": "Title for the 404 Not Found error page",
+    "message": "The video you are looking for could not be found"
+  },
+  "components.ErrorComponents.policy.text": {
+    "description": "Title for the upload permission error page",
+    "message": "We could not make sure you are allowed to upload a video file. Please check your settings and/or try again."
+  },
+  "components.ErrorComponents.policy.title": {
+    "description": "Helpful text for the upload permission error page",
+    "message": "Failed to authenticate your permission to upload"
+  },
+  "components.ErrorComponents.upload.text": {
+    "description": "Helpful text for the Upload error page",
+    "message": "You can try again later. You may want to check your Internet connection quality."
+  },
+  "components.ErrorComponents.upload.title": {
+    "description": "Title for the video upload error page",
+    "message": "Failed to upload your video file"
+  },
+  "components.UploadForm.dropzoneButtonPick": {
+    "description": "File upload dropzone: button to choose a file to upload,\n      has the drag text next to it (components.UploadForm.dropzoneDragText)",
+    "message": "Select a file to upload"
+  },
+  "components.UploadForm.dropzoneDragText": {
+    "description": "File upload dropzone: helptext on the dropzone,\n      goes along with the button (components.UploadForm.dropzoneButtonPick)",
+    "message": "or drop it here"
+  },
+  "components.UploadForm.linkToDashboard": {
+    "description": "Text for the link to the dashboard in the upload form.",
+    "message": "Back to dashboard"
+  },
+  "components.UploadForm.preparingUpload": {
+    "description": "Accessible message for the spinner while loading the uploadable object in the upload form.",
+    "message": "Preparing for upload..."
+  },
+  "components.UploadForm.title-classroomdocument": {
+    "description": "Title for the classroom document upload form",
+    "message": "Upload a new file"
+  },
+  "components.UploadForm.title-depositedfile": {
+    "description": "Title for the deposited file upload form",
+    "message": "Upload a new file"
+  },
+  "components.UploadForm.title-document": {
+    "description": "Title for the document upload form",
+    "message": "Upload a new document"
+  },
+  "components.UploadForm.title-markdown-image": {
+    "description": "Title for the Markdown image upload form",
+    "message": "Upload a new Markdown image"
+  },
+  "components.UploadForm.title-thumbnail": {
+    "description": "Title for the thumbnail upload form",
+    "message": "Upload a new thumbnail"
+  },
+  "components.UploadForm.title-timedtexttracks-cc": {
+    "description": "Title for the timed text file upload form",
+    "message": "Upload a new closed captions file"
+  },
+  "components.UploadForm.title-timedtexttracks-st": {
+    "description": "Title for the timed text file upload form",
+    "message": "Upload a new subtitles file"
+  },
+  "components.UploadForm.title-timedtexttracks-ts": {
+    "description": "Title for the timed text file upload form",
+    "message": "Upload a new transcript file"
+  },
+  "components.UploadForm.title-videos": {
+    "description": "Title for the video upload form",
+    "message": "Create a new video"
+  },
+  "components.UploadableObjectProgress.progressLabel": {
+    "description": "Accessibility message for the upload progress bar.",
+    "message": "Upload progress"
+  }
+}
