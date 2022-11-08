@@ -1,7 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box, Text, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import React from 'react';
+import { useContext } from 'react';
 import styled from 'styled-components';
 
 import { Route, routes } from 'routes';
@@ -15,6 +15,7 @@ const sizeMenu = '18.75rem';
 
 interface PropsExtended {
   isMenuOpen: boolean;
+  breakpoint: string;
 }
 
 const MenuBox = styled(Box)<PropsExtended>`
@@ -22,9 +23,18 @@ const MenuBox = styled(Box)<PropsExtended>`
   z-index: 1;
   transition: margin-left 0.6s;
   ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
+  ${(props) =>
+    props.breakpoint === 'small'
+      ? `
+        position: fixed;
+        background-color: white;
+        height: 100vh;
+      `
+      : ``}
 `;
 
 function Menu() {
+  const breakpoint = useContext(ResponsiveContext);
   const { isMenuOpen } = useMenu();
   const topRoutes: Route[] = [routes.HOMEPAGE, routes.FAVORITE, routes.PROFILE];
   const contents: Route[] = [
@@ -43,7 +53,8 @@ function Menu() {
         right: '3.75rem',
         top: '6.75rem',
       }}
-      isMenuOpen={isMenuOpen}
+      isMenuOpen={isMenuOpen(breakpoint)}
+      breakpoint={breakpoint}
     >
       <Box role="group">
         {topRoutes.map((route, index) => (

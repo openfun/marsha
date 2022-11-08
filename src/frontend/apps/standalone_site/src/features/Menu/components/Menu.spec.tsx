@@ -1,12 +1,21 @@
 import { screen, fireEvent } from '@testing-library/react';
+import { ResponsiveContext } from 'grommet';
 import { render } from 'lib-tests';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
+
+import { useMenu } from '../store/menuStore';
 
 import Burger from './Burger/Burger';
 import Menu from './Menu';
 
+const initialStoreState = useMenu.getState();
+
 describe('<Menu />', () => {
+  beforeEach(() => {
+    useMenu.setState(initialStoreState, true);
+  });
+
   test('renders Menu', () => {
     render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
@@ -33,5 +42,18 @@ describe('<Menu />', () => {
     expect(menu).not.toHaveStyle('margin-left: -18.75rem;');
     fireEvent.click(screen.getByRole(/button/i));
     expect(menu).toHaveStyle('margin-left: -18.75rem;');
+  });
+
+  test('menu responsive small screen', () => {
+    render(
+      <ResponsiveContext.Provider value="small">
+        <Menu />
+      </ResponsiveContext.Provider>,
+      { testingLibraryOptions: { wrapper: BrowserRouter } },
+    );
+
+    const menu = screen.getByRole('menu');
+    expect(menu).toHaveStyle('margin-left: -18.75rem;');
+    expect(menu).toHaveStyle('position: fixed;');
   });
 });
