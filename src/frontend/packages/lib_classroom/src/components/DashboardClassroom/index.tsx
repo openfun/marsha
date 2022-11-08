@@ -51,7 +51,7 @@ const messages = defineMessages({
   },
 });
 
-const bbbTheme: ThemeType = deepMerge(theme, {
+export const bbbTheme: ThemeType = deepMerge(theme, {
   box: {
     extend: null,
   },
