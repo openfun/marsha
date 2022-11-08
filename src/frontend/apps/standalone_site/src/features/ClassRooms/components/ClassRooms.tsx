@@ -5,17 +5,19 @@ import { Fragment, PropsWithChildren, ReactNode, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
-import { WhiteCard, ContentCards } from 'components/Cards';
+import { ContentCards, WhiteCard } from 'components/Cards';
 import { ContentSpinner } from 'components/Spinner';
 import { ITEM_PER_PAGE } from 'conf/global';
+import { useResponsive } from 'hooks/useResponsive';
 
 import ClassRoom from './ClassRoom';
+import ClassRoomCreate from './Create/ClassRoomCreate';
 
 const messages = defineMessages({
   ClassroomTitle: {
     defaultMessage: 'Classrooms',
     description: 'Classrooms title',
-    id: 'features.ClassRooms.ClassroomTitle',
+    id: 'features.ClassRooms.Create.ClassroomTitle',
   },
   NoClassroom: {
     defaultMessage: 'There is no classroom to display.',
@@ -44,6 +46,7 @@ const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
 };
 
 function ClassRooms() {
+  const { breakpoint } = useResponsive();
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -78,7 +81,7 @@ function ClassRooms() {
   } else if (classRooms?.results.length) {
     content = (
       <Fragment>
-        <ContentCards margin={{ top: 'medium' }}>
+        <ContentCards>
           {classRooms.results.map((classroom) => (
             <ClassRoom
               key={`classroom-${classroom.id}`}
@@ -104,10 +107,18 @@ function ClassRooms() {
 
   return (
     <Box pad="medium">
-      <WhiteCard height={{ min: '5rem' }}>
+      <WhiteCard
+        direction={breakpoint === 'xxsmall' ? 'column' : 'row'}
+        gap={breakpoint === 'xxsmall' ? 'small' : 'none'}
+        justify="between"
+        align="center"
+        height={{ min: '5rem' }}
+        margin={{ bottom: 'medium' }}
+      >
         <Text size="large" weight="bold">
           {intl.formatMessage(messages.ClassroomTitle)}
         </Text>
+        <ClassRoomCreate />
       </WhiteCard>
       {content}
     </Box>
