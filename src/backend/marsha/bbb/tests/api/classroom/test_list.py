@@ -5,7 +5,12 @@ from django.test import TestCase, override_settings
 
 from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
-from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+    UserFactory,
+)
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -63,6 +68,95 @@ class ClassroomListAPITest(TestCase):
             "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_fetch_list_user_access_token_playlist_admin(
+        self, mock_get_meeting_infos
+    ):
+        """
+        A user with UserAccessToken should be able to fetch a classroom list from playlist
+        he is admin
+        """
+        user = UserFactory()
+        playlist_access = PlaylistAccessFactory(user=user, role=ADMINISTRATOR)
+        classrooms = ClassroomFactory.create_batch(3, playlist=playlist_access.playlist)
+        ClassroomFactory()
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.get(
+            "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "description": classrooms[2].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms[2].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms[2].lti_id),
+                        "meeting_id": str(classrooms[2].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms[2].title,
+                        "welcome_text": classrooms[2].welcome_text,
+                    },
+                    {
+                        "description": classrooms[1].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms[1].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms[1].lti_id),
+                        "meeting_id": str(classrooms[1].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms[1].title,
+                        "welcome_text": classrooms[1].welcome_text,
+                    },
+                    {
+                        "description": classrooms[0].description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classrooms[0].id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classrooms[0].lti_id),
+                        "meeting_id": str(classrooms[0].meeting_id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classrooms[0].title,
+                        "welcome_text": classrooms[0].welcome_text,
+                    },
+                ],
+            },
+        )
 
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_fetch_list_user_access_token_organization_admin(
