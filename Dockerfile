@@ -38,6 +38,7 @@ COPY ./src/frontend/packages/lib_classroom/package.json /app/packages/lib_classr
 COPY ./src/frontend/packages/lib_common/package.json /app/packages/lib_common/package.json
 COPY ./src/frontend/packages/lib_components/package.json /app/packages/lib_components/package.json
 COPY ./src/frontend/packages/lib_tests/package.json /app/packages/lib_tests/package.json
+COPY ./src/frontend/packages/lib_video/package.json /app/packages/lib_video/package.json
 RUN yarn install --frozen-lockfile --network-timeout 1200000
 
 COPY ./src/frontend /app/
