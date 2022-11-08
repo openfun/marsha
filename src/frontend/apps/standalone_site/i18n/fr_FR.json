@@ -1,0 +1,86 @@
+{
+  "HomePage.HomePage.HomePage": {
+    "description": "HomePage title",
+    "message": "Homepage"
+  },
+  "HomePage.HomePage.SeeEverything": {
+    "description": "Label to see all the cards",
+    "message": "See Everything"
+  },
+  "features.Playlist.create": {
+    "description": "Create playlist button title",
+    "message": "Create playlist"
+  },
+  "features.Playlist.error": {
+    "description": "Error message on loading playlists",
+    "message": "An error occurred, please try again later."
+  },
+  "features.Playlist.noPlaylists": {
+    "description": "Message displayed when the user has not playlist yet.",
+    "message": "You have no playlist yet."
+  },
+  "features.Playlist.retry": {
+    "description": "Retry button title",
+    "message": "Retry"
+  },
+  "features.Playlist.reversedSort": {
+    "description": "Indicator to show current selection is reversed.",
+    "message": "(reversed)"
+  },
+  "features.Playlist.sortByCreateOn": {
+    "description": "Button title to sort by creation date.",
+    "message": "Creation date"
+  },
+  "features.Playlist.sortByTitle": {
+    "description": "Button title to sort by title.",
+    "message": "Title"
+  },
+  "features.Playlist.tableTitle": {
+    "description": "Playlist table title.",
+    "message": "{item_count, plural, =0 {no playlist} one {# playlist} other {# playlists}}"
+  },
+  "features.Playlist.title": {
+    "description": "Playlist page title",
+    "message": "My Playlists"
+  },
+  "routes.routes.menuContentsLessonsLabel": {
+    "description": "Label for the Lessons link in the content navigation menu",
+    "message": "Lessons"
+  },
+  "routes.routes.menuContentsLivesLabel": {
+    "description": "Label for the lives link in the content navigation menu",
+    "message": "Lives"
+  },
+  "routes.routes.menuContentsVideosLabel": {
+    "description": "Label for the video link in the content navigation menu",
+    "message": "Videos"
+  },
+  "routes.routes.menuContentsVirtualClassesLabel": {
+    "description": "Label for the Virtual Classes link in the content navigation menu",
+    "message": "Virtual Classes"
+  },
+  "routes.routes.menuFavoritesLabel": {
+    "description": "Label for the favorites link in the main navigation menu",
+    "message": "Favorites"
+  },
+  "routes.routes.menuHomePageLabel": {
+    "description": "Label for the homepage link in the main navigation menu",
+    "message": "Dashboard"
+  },
+  "routes.routes.menuMyContentsLabel": {
+    "description": "Label for the MyContents link in the main navigation menu",
+    "message": "My Contents"
+  },
+  "routes.routes.menuMyOrganizationsLabel": {
+    "description": "Label for the My Organizations link in the main navigation menu",
+    "message": "My Organizations"
+  },
+  "routes.routes.menuMyProfileLabel": {
+    "description": "Label for the My Profile link in the main navigation menu",
+    "message": "My Profile"
+  },
+  "routes.routes.menuPlaylistLabel": {
+    "description": "Label for the My playlists link in the main navigation menu",
+    "message": "My playlists"
+  }
+}

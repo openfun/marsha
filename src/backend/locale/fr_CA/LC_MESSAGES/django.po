@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-15 09:18+0000\n"
-"PO-Revision-Date: 2022-10-17 13:58\n"
+"POT-Creation-Date: 2022-11-07 16:53+0000\n"
+"PO-Revision-Date: 2022-11-08 11:01\n"
 "Last-Translator: \n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
@@ -1262,11 +1262,11 @@ msgstr ""
 msgid "shared live medias"
 msgstr ""
 
-#: marsha/core/serializers/playlist.py:53
+#: marsha/core/serializers/playlist.py:65
 msgid "Playlist is not portable to itself."
 msgstr ""
 
-#: marsha/core/serializers/playlist.py:73
+#: marsha/core/serializers/playlist.py:85
 msgid "Some playlists don't exist: {', '.join(ids_diff):s}."
 msgstr ""
 
@@ -1587,35 +1587,35 @@ msgstr ""
 msgid "image"
 msgstr ""
 
-#: marsha/settings.py:265
+#: marsha/settings.py:274
 msgid "english"
 msgstr ""
 
-#: marsha/settings.py:265
+#: marsha/settings.py:274
 msgid "french"
 msgstr ""
 
-#: marsha/settings.py:473
+#: marsha/settings.py:483
 msgid "5 minutes"
 msgstr ""
 
-#: marsha/settings.py:477
+#: marsha/settings.py:487
 msgid "Live starts in less than 5 minutes"
 msgstr ""
 
-#: marsha/settings.py:480
+#: marsha/settings.py:490
 msgid "3 hours"
 msgstr ""
 
-#: marsha/settings.py:486
+#: marsha/settings.py:496
 msgid "Live starts in less than 3 hours"
 msgstr ""
 
-#: marsha/settings.py:489
+#: marsha/settings.py:499
 msgid "3 days"
 msgstr ""
 
-#: marsha/settings.py:494
+#: marsha/settings.py:504
 msgid "Live starts in less than 3 days"
 msgstr ""
 

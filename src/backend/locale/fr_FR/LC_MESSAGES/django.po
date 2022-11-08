@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2022-10-15 09:18+0000\n"
-"PO-Revision-Date: 2022-10-17 13:58\n"
+"POT-Creation-Date: 2022-11-07 16:53+0000\n"
+"PO-Revision-Date: 2022-11-08 11:01\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -1263,11 +1263,11 @@ msgstr "document partagé"
 msgid "shared live medias"
 msgstr "documents partagés"
 
-#: marsha/core/serializers/playlist.py:53
+#: marsha/core/serializers/playlist.py:65
 msgid "Playlist is not portable to itself."
 msgstr "La liste de lecture n'est pas partageable avec elle-même."
 
-#: marsha/core/serializers/playlist.py:73
+#: marsha/core/serializers/playlist.py:85
 msgid "Some playlists don't exist: {', '.join(ids_diff):s}."
 msgstr "Certaines listes de lecture n'existent pas : {', '.join(ids_diff):s}."
 
@@ -1588,35 +1588,35 @@ msgstr "extension de l'image (ex : \"png\", \"jpg\", etc)."
 msgid "image"
 msgstr "image"
 
-#: marsha/settings.py:265
+#: marsha/settings.py:274
 msgid "english"
 msgstr "anglais"
 
-#: marsha/settings.py:265
+#: marsha/settings.py:274
 msgid "french"
 msgstr "français"
 
-#: marsha/settings.py:473
+#: marsha/settings.py:483
 msgid "5 minutes"
 msgstr "5 minutes"
 
-#: marsha/settings.py:477
+#: marsha/settings.py:487
 msgid "Live starts in less than 5 minutes"
 msgstr "Le webinaire va démarrer dans moins de 5 minutes"
 
-#: marsha/settings.py:480
+#: marsha/settings.py:490
 msgid "3 hours"
 msgstr "3 heures"
 
-#: marsha/settings.py:486
+#: marsha/settings.py:496
 msgid "Live starts in less than 3 hours"
 msgstr "Le webinaire va débuter dans moins de 3 heures"
 
-#: marsha/settings.py:489
+#: marsha/settings.py:499
 msgid "3 days"
 msgstr "3 jours"
 
-#: marsha/settings.py:494
+#: marsha/settings.py:504
 msgid "Live starts in less than 3 days"
 msgstr "Le webinaire va débuter dans moins de 3 jours"
 
