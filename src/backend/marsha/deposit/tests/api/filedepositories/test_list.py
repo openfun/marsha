@@ -1,7 +1,11 @@
 """Tests for the file_depositories list API."""
 from django.test import TestCase, override_settings
 
-from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -56,6 +60,57 @@ class FileDepositoryListAPITest(TestCase):
             "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_file_depository_fetch_list_user_access_token_playlist_admin(self):
+        """
+        A user with UserAccessToken should be able to fetch a file depository list from a playlist
+        he is administrator.
+        """
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        file_depositories = FileDepositoryFactory.create_batch(
+            3, playlist=playlist_access.playlist
+        )
+        FileDepositoryFactory()
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            "/api/filedepositories/?limit=2", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": "http://testserver/api/filedepositories/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "description": file_depositories[2].description,
+                        "id": str(file_depositories[2].id),
+                        "lti_id": str(file_depositories[2].lti_id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "title": file_depositories[2].title,
+                    },
+                    {
+                        "description": file_depositories[1].description,
+                        "id": str(file_depositories[1].id),
+                        "lti_id": str(file_depositories[1].lti_id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "title": file_depositories[1].title,
+                    },
+                ],
+            },
+        )
 
     def test_api_file_depository_fetch_list_user_access_token_organization_admin(self):
         """A user with UserAccessToken should be able to fetch a file depository list."""
