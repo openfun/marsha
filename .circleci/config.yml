@@ -32,7 +32,7 @@ generate-version-file: &generate-version-file
 version: 2.1
 commands:
   get_last_packages_commit:
-    description: 'Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key.'
+    description: "Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key."
     parameters:
       filename:
         type: string
@@ -436,6 +436,7 @@ jobs:
             - ./packages/lib_tests/node_modules
             - ./packages/lib_components/node_modules
             - ./packages/lib_classroom/node_modules
+            - ./packages/lib_video/node_modules
           key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - save_cache:
           paths:
@@ -443,6 +444,7 @@ jobs:
             - ./packages/lib_tests/lib
             - ./packages/lib_components/lib
             - ./packages/lib_classroom/lib
+            - ./packages/lib_video/lib
           key: front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
 
   # ---- mail jobs ----
@@ -642,12 +644,12 @@ jobs:
     working_directory: ~/marsha/src/backend
     parameters:
       browser:
-        description: 'Playwright browser'
-        default: 'firefox'
+        description: "Playwright browser"
+        default: "firefox"
         type: string
       browser_channel:
-        description: 'Playwright browser channel'
-        default: 'firefox'
+        description: "Playwright browser channel"
+        default: "firefox"
         type: string
     steps:
       - checkout:
