@@ -8,10 +8,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { DEFAULT_LANGUAGE } from 'conf/global';
 import { Authenticator } from 'features/Authentication';
 import { AppRoutes } from 'routes';
-import { themeExtend } from 'styles/theme.extend';
+import { getFullThemeExtend } from 'styles/theme.extend';
 import { getCurrentTranslation, getLanguage } from 'utils/lang';
 
 import './App.css';
+
+const themeExtended = getFullThemeExtend();
 
 const App = () => {
   const [currentTranslation, setCurrentTranslation] =
@@ -42,7 +44,7 @@ const App = () => {
     >
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
-        <Grommet theme={themeExtend}>
+        <Grommet theme={themeExtended}>
           <BrowserRouter>
             <Authenticator>
               <Main height={{ min: '100vh' }}>

@@ -5,11 +5,11 @@ import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Route } from 'routes';
-import { themeExtend } from 'styles/theme.extend';
+import { themeBase, themeExtend } from 'styles/theme.extend';
 
 const NavLinkStyled = styled(NavLink)`
   text-decoration: none;
-  color: ${normalizeColor('blue-active', themeExtend)};
+  color: ${normalizeColor('blue-active', themeBase)};
   display: flex;
   gap: 1rem;
   align-items: center;
