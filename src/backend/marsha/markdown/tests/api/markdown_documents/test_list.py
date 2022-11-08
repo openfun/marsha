@@ -1,7 +1,11 @@
 """Tests for the Markdown application list API."""
 from django.test import TestCase, override_settings
 
-from marsha.core.factories import OrganizationAccessFactory, PlaylistFactory
+from marsha.core.factories import (
+    OrganizationAccessFactory,
+    PlaylistAccessFactory,
+    PlaylistFactory,
+)
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -51,8 +55,78 @@ class MarkdownListAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
+    def test_api_document_fetch_list_user_access_token_playlist_admin(self):
+        """
+        A user with UserAccessToken should be able to fetch markdown documents list from playlist
+        he is admin.
+        """
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        markdown_documents = MarkdownDocumentFactory.create_batch(
+            3, playlist=playlist_access.playlist
+        )
+        MarkdownDocumentFactory()
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            "/api/markdown-documents/?limit=2", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 200)
+        first_translation = markdown_documents[2].translations.first()
+        second_translation = markdown_documents[1].translations.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 3,
+                "next": "http://testserver/api/markdown-documents/?limit=2&offset=2",
+                "previous": None,
+                "results": [
+                    {
+                        "id": str(markdown_documents[2].id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "images": [],
+                        "is_draft": True,
+                        "rendering_options": {},
+                        "translations": [
+                            {
+                                "language_code": first_translation.language_code,
+                                "title": first_translation.title,
+                                "content": first_translation.content,
+                                "rendered_content": first_translation.rendered_content,
+                            }
+                        ],
+                        "position": 0,
+                    },
+                    {
+                        "id": str(markdown_documents[1].id),
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": playlist_access.playlist.lti_id,
+                            "title": playlist_access.playlist.title,
+                        },
+                        "images": [],
+                        "is_draft": True,
+                        "rendering_options": {},
+                        "translations": [
+                            {
+                                "language_code": second_translation.language_code,
+                                "title": second_translation.title,
+                                "content": second_translation.content,
+                                "rendered_content": second_translation.rendered_content,
+                            }
+                        ],
+                        "position": 0,
+                    },
+                ],
+            },
+        )
+
     def test_api_document_fetch_list_user_access_token_organization_admin(self):
-        """A user with UserAccessToken should be able to fetch a file depository list."""
+        """A user with UserAccessToken should be able to fetch a markdown documents list."""
         organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
         organization_access = OrganizationAccessFactory(
             user=organization_access_admin.user
@@ -135,7 +209,7 @@ class MarkdownListAPITest(TestCase):
 
     def test_api_document_fetch_list_user_access_token_filter_organization(self):
         """
-        A user with UserAccessToken should be able to filter file depository list
+        A user with UserAccessToken should be able to filter markdown documents list
         by organization.
         """
         organization_access_admin_1 = OrganizationAccessFactory(role=ADMINISTRATOR)
@@ -228,7 +302,7 @@ class MarkdownListAPITest(TestCase):
 
     def test_api_document_fetch_list_user_access_token_filter_playlist(self):
         """
-        A user with UserAccessToken should be able to filter file depository list
+        A user with UserAccessToken should be able to filter markdown documents list
         by playlist.
         """
         organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
