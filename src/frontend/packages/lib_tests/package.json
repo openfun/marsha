@@ -1,8 +1,7 @@
 {
   "name": "lib-tests",
-  "version": "1.0.0",
-  "description": "",
-  "license": "ISC",
+  "version": "4.0.0-beta.11",
+  "license": "MIT",
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "jsnext:main": "lib/index.es.js",
