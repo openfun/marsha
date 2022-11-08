@@ -1,7 +1,7 @@
-import { Box, Text } from 'grommet';
+import { Box, Text, ResponsiveContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useEffect, useState, useContext } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
@@ -12,19 +12,26 @@ const colorMenu = normalizeColor('blue-active', theme);
 
 interface PropsExtended {
   isScrollTop: boolean;
+  breakpoint: string;
 }
 
 const HeaderBox = styled(Box)<PropsExtended>`
   position: fixed;
   color: ${colorMenu};
   transition: all 0.3s ease-in-out;
-  background: ${(props) => (props.isScrollTop ? `transparent` : '#fff')};
-  ${(props) => (props.isScrollTop ? `` : 'box-shadow: 1px 1px 20px #cce4f3;')}
+  ${(props) =>
+    props.isScrollTop && props.breakpoint !== 'small'
+      ? `background: transparent;`
+      : `
+        background: #fff;
+        box-shadow: 1px 1px 20px #cce4f3;
+      `}
   z-index: 2;
 `;
 
 const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
   const [isScrollTop, setIsScrollTop] = useState(true);
+  const breakpoint = useContext(ResponsiveContext);
 
   useEffect(() => {
     const onScroll = () => {
@@ -43,6 +50,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       justify="between"
       pad={{ horizontal: 'medium' }}
       isScrollTop={isScrollTop}
+      breakpoint={breakpoint}
     >
       <Box
         direction="row"
