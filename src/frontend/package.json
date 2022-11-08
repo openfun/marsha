@@ -1,6 +1,7 @@
 {
   "name": "common",
-  "version": "0.1.0",
+  "version": "4.0.0-beta.11",
+  "license": "MIT",
   "private": true,
   "workspaces": {
     "nohoist": [

@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.11] - 2022-11-08
+
 ### Added
 
 - Migrate app classroom from LTI to lib-classroom package
@@ -1311,7 +1313,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.10...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.11...master
+[4.0.0-beta.11]: https://github.com/openfun/marsha/compare/v4.0.0-beta.10...v4.0.0-beta.11
 [4.0.0-beta.10]: https://github.com/openfun/marsha/compare/v4.0.0-beta.9...v4.0.0-beta.10
 [4.0.0-beta.9]: https://github.com/openfun/marsha/compare/v4.0.0-beta.8...v4.0.0-beta.9
 [4.0.0-beta.8]: https://github.com/openfun/marsha/compare/v4.0.0-beta.7...v4.0.0-beta.8
