@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - filtered classroom list
 - filtered deposit list
+- filtered markdown document list
 
 ## [4.0.0-beta.11] - 2022-11-08
 
