@@ -1,9 +1,10 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 from django.conf import settings
+from django.db.models import Q
 from django.utils import timezone
 
 import django_filters
-from rest_framework import mixins, viewsets
+from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
@@ -55,8 +56,15 @@ class FileDepositoryViewSet(
 ):
     """Viewset for the API of the FileDepository object."""
 
-    queryset = FileDepository.objects.all()
+    queryset = FileDepository.objects.all().select_related("playlist")
     serializer_class = serializers.FileDepositorySerializer
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "title"]
+    ordering = ["-created_on"]
+    filterset_class = FileDepositoryFilter
 
     permission_classes = [
         core_permissions.IsTokenResourceRouteObject
@@ -111,6 +119,32 @@ class FileDepositoryViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(
+                    playlist__organization__user_accesses__user_id=self.request.user.id,
+                    playlist__organization__user_accesses__role=ADMINISTRATOR,
+                )
+                | Q(
+                    playlist__user_accesses__user_id=self.request.user.id,
+                    playlist__user_accesses__role=ADMINISTRATOR,
+                )
+            )
+        )
+
+        return queryset
+
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
+
     def create(self, request, *args, **kwargs):
         """Create one file_depository based on the request payload."""
         try:
@@ -122,25 +156,6 @@ class FileDepositoryViewSet(
         serializer = self.get_serializer(file_depository)
 
         return Response(serializer.data, status=201)
-
-    def list(self, request, *args, **kwargs):
-        """List deposit files belonging to user organizations."""
-        queryset = self.get_queryset().filter(
-            playlist__organization__users__id=request.user.id,
-            playlist__organization__user_accesses__role=ADMINISTRATOR,
-        )
-        filter_set = FileDepositoryFilter(request.query_params, queryset=queryset)
-        page = self.paginate_queryset(
-            self.filter_queryset(
-                filter_set.qs.order_by(
-                    "-created_on",
-                    "-playlist__created_on",
-                    "-playlist__organization__created_on",
-                )
-            )
-        )
-        serializer = self.get_serializer(page, many=True)
-        return self.get_paginated_response(serializer.data)
 
     @action(
         methods=["get"],
@@ -217,7 +232,7 @@ class FileDepositoryViewSet(
         ):
             queryset = queryset.filter(author_id=request.resource.user.get("id"))
         filter_set = DepositedFileFilter(request.query_params, queryset=queryset)
-        page = self.paginate_queryset(self.filter_queryset(filter_set.qs))
+        page = self.paginate_queryset(filter_set.qs)
         serializer = serializers.DepositedFileSerializer(
             page,
             many=True,
