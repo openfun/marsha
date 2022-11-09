@@ -6,7 +6,7 @@ import React from 'react';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
-import { DashboardLiveControlPane } from '.';
+import { DashboardControlPane } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -19,7 +19,7 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-describe('<DashboardLiveControlPane />', () => {
+describe('<DashboardControlPane />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -35,7 +35,7 @@ describe('<DashboardLiveControlPane />', () => {
     render(
       wrapInVideo(
         <ResponsiveContext.Provider value="large">
-          <DashboardLiveControlPane />
+          <DashboardControlPane isLive />
         </ResponsiveContext.Provider>,
         mockVideo,
       ),
