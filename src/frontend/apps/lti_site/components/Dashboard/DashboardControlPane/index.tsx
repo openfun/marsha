@@ -23,7 +23,11 @@ const messages = defineMessages({
   },
 });
 
-export const DashboardLiveControlPane = () => {
+export interface DashboarControlPaneParams {
+  isLive: boolean;
+}
+
+export const DashboardControlPane = ({ isLive }: DashboarControlPaneParams) => {
   const intl = useIntl();
   const extendedTheme = {
     tabs: {
@@ -57,7 +61,7 @@ export const DashboardLiveControlPane = () => {
       <ThemeContext.Extend value={extendedTheme}>
         <Tabs>
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>
-            <VideoWidgetProvider isLive isTeacher />
+            <VideoWidgetProvider isLive={isLive} isTeacher />
           </Tab>
           <Tab title={intl.formatMessage(messages.titleAttendance)}>
             <DashboardLiveTabAttendance />
