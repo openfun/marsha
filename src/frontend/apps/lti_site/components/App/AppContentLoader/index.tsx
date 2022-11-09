@@ -105,7 +105,6 @@ const intl = createIntl(
 
 const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {
   LTI: lazy(() => import('components/LTIRoutes')),
-  Site: lazy(() => import('components/SiteRoutes')),
 };
 Object.values(appNames).forEach((app) => {
   appsContent[app] = lazy(() => import(`apps/${app}/components/Routes`));
