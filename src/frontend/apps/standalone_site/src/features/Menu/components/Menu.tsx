@@ -1,9 +1,9 @@
-import { Box, Text, ResponsiveContext } from 'grommet';
+import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { useContext } from 'react';
 import styled from 'styled-components';
 
+import { useResponsive } from 'hooks/useResponsive';
 import { Route, routes } from 'routes';
 
 import { useMenu } from '../store/menuStore';
@@ -15,7 +15,7 @@ const sizeMenu = '18.75rem';
 
 interface PropsExtended {
   isMenuOpen: boolean;
-  breakpoint: string;
+  isDesktop: boolean;
 }
 
 const MenuBox = styled(Box)<PropsExtended>`
@@ -24,7 +24,7 @@ const MenuBox = styled(Box)<PropsExtended>`
   transition: margin-left 0.6s;
   ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
   ${(props) =>
-    props.breakpoint === 'small'
+    !props.isDesktop
       ? `
         position: fixed;
         background-color: white;
@@ -34,7 +34,7 @@ const MenuBox = styled(Box)<PropsExtended>`
 `;
 
 function Menu() {
-  const breakpoint = useContext(ResponsiveContext);
+  const { isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
   const topRoutes: Route[] = [routes.HOMEPAGE, routes.FAVORITE, routes.PROFILE];
   const contents: Route[] = [
@@ -53,8 +53,8 @@ function Menu() {
         right: '3.75rem',
         top: '6.75rem',
       }}
-      isMenuOpen={isMenuOpen(breakpoint)}
-      breakpoint={breakpoint}
+      isMenuOpen={isMenuOpen(isDesktop)}
+      isDesktop={isDesktop}
     >
       <Box role="group">
         {topRoutes.map((route, index) => (

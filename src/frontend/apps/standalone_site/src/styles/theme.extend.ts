@@ -26,6 +26,10 @@ export const themeExtend = {
         even: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
       },
     },
+    breakpoints: {
+      xxsmall: { value: 380 },
+      xsmall: { value: 540 },
+    },
   },
   pagination: {
     button: {
