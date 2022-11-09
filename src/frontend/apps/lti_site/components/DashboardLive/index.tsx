@@ -36,12 +36,12 @@ import { useLiveModaleConfiguration } from 'data/stores/useLiveModale';
 import { usePictureInPicture } from 'data/stores/usePictureInPicture';
 import { converse } from 'utils/window';
 
-import { DashboardLiveControlPane } from './DashboardLiveControlPane';
 import {
   OnStageRequestToast,
   ON_STAGE_REQUEST_TOAST_ID,
 } from './OnStageRequestToast';
 import { TeacherPIPControls } from './TeacherPIPControls';
+import { DashboardControlPane } from 'components/Dashboard/DashboardControlPane';
 
 export const DashboardLive = () => {
   const video = useCurrentVideo();
@@ -201,7 +201,7 @@ export const DashboardLive = () => {
                     <TeacherLiveTypeSwitch />
                   </Box>
                 )}
-              <DashboardLiveControlPane />
+              <DashboardControlPane isLive />
             </Fragment>
           }
           displayActionsElement
