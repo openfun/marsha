@@ -10,6 +10,7 @@ import dts from 'rollup-plugin-dts';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
+const tsconfig = require('./tsconfig.json');
 
 export default [
   {
@@ -87,7 +88,7 @@ export default [
   {
     input: 'src/types/libs/converse/index.d.ts',
     output: [{ file: 'lib/types/libs/converse/index.d.ts', format: 'es' }],
-    plugins: [dts()],
+    plugins: [dts({ compilerOptions: tsconfig.compilerOptions })],
   },
   {
     input: 'src/types/libs/JitsiMeetExternalAPI/index.d.ts',
