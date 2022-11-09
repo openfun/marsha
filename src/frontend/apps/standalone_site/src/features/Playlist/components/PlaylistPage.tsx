@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
 import { SortableTable } from 'components/SortableTable';
+import { ITEM_PER_PAGE } from 'conf/global';
 
 import { PlaylistOrderType, usePlaylists } from '../api/usePlaylists';
 
@@ -59,8 +60,6 @@ const messages = defineMessages({
 });
 
 export const PlaylistPage = () => {
-  const pageSize = 20;
-
   const intl = useIntl();
 
   const sorts = [
@@ -90,8 +89,8 @@ export const PlaylistPage = () => {
   const [currentSort, setCurrentSort] = useState(sorts[1]);
   const [currentPage, setCurrentPage] = useState(1);
   const { isError, isLoading, data, refetch } = usePlaylists({
-    offset: `${(currentPage - 1) * pageSize}`,
-    limit: `${pageSize}`,
+    offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
+    limit: `${ITEM_PER_PAGE}`,
     ordering: currentSort.value,
   });
 
@@ -190,7 +189,7 @@ export const PlaylistPage = () => {
                 }}
                 paginable
                 numberOfItems={data.count}
-                pageSize={pageSize}
+                pageSize={ITEM_PER_PAGE}
                 onPageChange={(newPage) => {
                   setCurrentPage(newPage);
                   return data.results;
