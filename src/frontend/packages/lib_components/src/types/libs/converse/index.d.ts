@@ -1,9 +1,9 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Nullable } from 'lib-common';
 
-import { Participant } from '../../Participant';
-import { PersistentStore } from '../../XMPP';
-import { Video } from '../../tracks';
+import { Participant } from 'types/Participant';
+import { PersistentStore } from 'types/XMPP';
+import { Video } from 'types/tracks';
 
 export as namespace converse;
 export = converse;
