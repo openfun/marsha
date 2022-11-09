@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add new elements to the teacher VOD Dashboard :
+  - Attendances from live session
+
 ### Changed
 
 - filtered classroom list
