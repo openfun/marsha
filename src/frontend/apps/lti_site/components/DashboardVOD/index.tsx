@@ -6,10 +6,16 @@ import styled from 'styled-components';
 import { ThumbnailDisplayer } from 'components/graphicals/ThumbnailDisplayer';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import VideoPlayer from 'components/VideoPlayer';
-import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
-import { useAppConfig, useThumbnail, useTimedTextTrack } from 'lib-components';
+import {
+  liveState,
+  useAppConfig,
+  useThumbnail,
+  useTimedTextTrack,
+} from 'lib-components';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { theme } from 'utils/theme/theme';
+import { DashboardControlPane } from 'components/Dashboard/DashboardControlPane';
+import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
@@ -64,8 +70,11 @@ export const DashboardVOD = () => {
           startDate={video.starting_at}
         />
       </StyledLiveVideoInformationBarWrapper>
-
-      <VideoWidgetProvider isLive={false} isTeacher />
+      {video.live_state === liveState.ENDED ? (
+        <DashboardControlPane isLive={false} />
+      ) : (
+        <VideoWidgetProvider isTeacher isLive={false} />
+      )}
     </Box>
   );
 };
