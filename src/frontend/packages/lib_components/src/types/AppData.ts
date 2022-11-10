@@ -7,6 +7,7 @@ import { Live, Playlist, Video } from 'types/tracks';
 
 export enum appState {
   ERROR = 'error',
+  PORTABILITY = 'portability',
   SUCCESS = 'success',
 }
 
@@ -35,6 +36,13 @@ export enum selectableBaseResource {
 }
 
 export type LtiSelectResource = selectableBaseResource | appNames;
+
+export interface PortabilityConfig {
+  resource_id: string;
+  redirect_to: string;
+  for_playlist_id: string;
+  portability_request_exists: boolean;
+}
 
 export interface AppConfig {
   attendanceDelay: number;
@@ -78,6 +86,7 @@ export interface AppConfig {
     [key in flags]?: boolean;
   };
   uploadPollInterval: number;
+  portability?: PortabilityConfig;
 }
 
 export interface AuthenticatedUser {

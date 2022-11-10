@@ -1,5 +1,6 @@
 import { Nullable } from 'lib-common';
 
+import { ConsumerSite } from './ConsumerSite';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
 import { ClassroomDocument } from './apps/classroom/models';
@@ -64,7 +65,7 @@ export interface PlaylistLite extends Resource {
 }
 
 export interface Playlist extends Resource {
-  consumer_site: { id: string; name: string; domain: string };
+  consumer_site: ConsumerSite;
   created_by: Nullable<string>;
   duplicated_from: Nullable<string>;
   is_portable_to_playlist: boolean;

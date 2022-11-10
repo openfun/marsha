@@ -7,6 +7,7 @@ import {
   appState,
   modelName,
 } from 'lib-components';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 
 import { RedirectVideo } from './RedirectVideo';
@@ -18,9 +19,14 @@ export const RedirectOnLoad = () => {
   const appData = useAppConfig();
 
   const resource = appData.document || appData.video || null;
+
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
+  }
+
+  if (appData.state === appState.PORTABILITY) {
+    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
   }
 
   if (appData.lti_select_form_data) {
