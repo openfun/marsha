@@ -2,11 +2,13 @@ import { Layer, Button, Box, Heading } from 'grommet';
 import { FormClose } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import React, { Fragment, useState } from 'react';
+import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { Link, useLocation, useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useResponsive } from 'hooks/useResponsive';
+import { routes } from 'routes';
 
 import ClassroomCreateForm from './ClassRoomCreateForm';
 
@@ -18,29 +20,31 @@ const FormCloseIcon = styled(FormClose)`
 `;
 
 const messages = defineMessages({
-  AddClassroom: {
-    defaultMessage: 'Add Classroom',
-    description: 'Text button add classroom.',
-    id: 'features.ClassRooms.Create.AddClassroom',
+  HeadingCreateClassroom: {
+    defaultMessage: 'Create Classroom',
+    description: 'Text heading create classroom.',
+    id: 'features.ClassRooms.Create.HeadingCreateClassroom',
   },
 });
 
 function ClassRoomCreate() {
   const intl = useIntl();
-  const [isShowModal, setIsShowModal] = useState(false);
+  const history = useHistory();
+  const { pathname } = useLocation();
   const { isDesktop } = useResponsive();
+
+  const ClassroomsRoute = routes.CONTENTS.subRoutes.CLASSROOM;
+  const CreateRoute = ClassroomsRoute.subRoutes?.CREATE;
 
   return (
     <Fragment>
-      <Button
-        primary
-        label={intl.formatMessage(messages.AddClassroom)}
-        onClick={() => setIsShowModal(true)}
-      />
-      {isShowModal && (
+      <Link to={CreateRoute?.path || ''}>
+        <Button primary label={CreateRoute?.label} />
+      </Link>
+      {CreateRoute?.path === pathname && (
         <Layer
-          onEsc={() => setIsShowModal(false)}
-          onClickOutside={() => setIsShowModal(false)}
+          onEsc={() => history.push(ClassroomsRoute.path)}
+          onClickOutside={() => history.push(ClassroomsRoute.path)}
         >
           <Box
             width={isDesktop ? { max: '650px', width: '80vw' } : undefined}
@@ -48,7 +52,7 @@ function ClassRoomCreate() {
           >
             <FormCloseIcon
               color="white"
-              onClick={() => setIsShowModal(false)}
+              onClick={() => history.push(ClassroomsRoute.path)}
             />
             <Heading
               level={2}
@@ -56,9 +60,11 @@ function ClassRoomCreate() {
               textAlign="center"
               weight="bold"
             >
-              {intl.formatMessage(messages.AddClassroom)}
+              {intl.formatMessage(messages.HeadingCreateClassroom)}
             </Heading>
-            <ClassroomCreateForm onSubmit={() => setIsShowModal(false)} />
+            <ClassroomCreateForm
+              onSubmit={() => history.push(ClassroomsRoute.path)}
+            />
           </Box>
         </Layer>
       )}

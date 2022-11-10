@@ -44,7 +44,7 @@ function AppRoutes() {
             <PlaylistPage />
           </Suspense>
         </Route>
-        <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path} exact>
+        <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path}>
           <Suspense fallback={<ContentSpinner />}>
             <ClassRooms />
           </Suspense>
