@@ -15,6 +15,7 @@ from marsha.core.api import (
     LiveSessionViewSet,
     OrganizationViewSet,
     PlaylistViewSet,
+    PortabilityResourceViewSet,
     SharedLiveMediaViewSet,
     ThumbnailViewSet,
     TimedTextTrackViewSet,
@@ -62,6 +63,9 @@ router.register(
 router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
 router.register("organizations", OrganizationViewSet, basename="organizations")
 router.register("playlists", PlaylistViewSet, basename="playlists")
+router.register(
+    "portability-requests", PortabilityResourceViewSet, basename="portability_requests"
+)
 router.register("users", UserViewSet, basename="users")
 router.register(
     "lti-user-associations", LtiUserAssociationViewSet, basename="lti_user_associations"
