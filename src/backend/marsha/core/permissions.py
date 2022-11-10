@@ -8,7 +8,15 @@ from rest_framework import permissions
 from rest_framework.permissions import IsAuthenticated
 
 from . import models
-from .models.account import ADMINISTRATOR, INSTRUCTOR, LTI_ROLES, STUDENT
+from .models import Playlist, PlaylistAccess, PortabilityRequest
+from .models.account import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    LTI_ROLES,
+    STUDENT,
+    ConsumerSiteAccess,
+    OrganizationAccess,
+)
 
 
 class NotAllowed(permissions.BasePermission):
@@ -516,3 +524,98 @@ class HasPlaylistToken(permissions.BasePermission):
             playlist_id = request.resource.playlist_id
             return models.Playlist.objects.filter(id=playlist_id).exists()
         return False
+
+
+class BaseObjectPermission(permissions.BasePermission):
+    """Base permission to be used for detail views"""
+
+    def has_permission(self, request, view):
+        """
+        Allow access only for detailed views, `has_object_permission`
+        will be called when it returns `True`
+        """
+        lookup_url_kwarg = view.lookup_url_kwarg or view.lookup_field
+        if lookup_url_kwarg and lookup_url_kwarg in view.kwargs:
+            # The inheriting has_object_permission will use the request.user.id
+            # as filter, so even if it looks like `UserIsAuthenticated` we
+            # test it here to never allow `.filter(user_id=None)` queries.
+            return request.user.id is not None
+        return False
+
+    def has_object_permission(self, request, view, obj):
+        """To be implemented in inheriting classes."""
+        raise NotImplementedError()
+
+
+class BasePortabilityRequestAdministratorAccessPermission(BaseObjectPermission):
+    """Base permission to check for user Role against portability request's aimed playlist."""
+
+    access_model = None
+    playlist_lookup = None
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Allow access when the user has `access_model` permission on the `playlist_lookup`
+        playlist with administrator role.
+        """
+        portability_request = obj
+        return self.access_model.objects.filter(
+            role=ADMINISTRATOR,
+            user_id=request.user.id,
+            **{self.playlist_lookup: portability_request.for_playlist_id}
+        ).exists()
+
+
+class HasPlaylistAdministratorAccess(
+    BasePortabilityRequestAdministratorAccessPermission,
+):
+    """Allow access when the user has administrative role on playlist."""
+
+    access_model = PlaylistAccess
+    playlist_lookup = "playlist_id"
+
+
+class HasPlaylistConsumerSiteAdministratorAccess(
+    BasePortabilityRequestAdministratorAccessPermission,
+):
+    """
+    Allow access when the user has administrative role on consumer site
+    related to the playlist.
+    """
+
+    access_model = ConsumerSiteAccess
+    playlist_lookup = "consumer_site__playlists__id"
+
+
+class HasPlaylistOrganizationAdministratorAccess(
+    BasePortabilityRequestAdministratorAccessPermission,
+):
+    """
+    Allow access when the user has administrative role on the organization owning the playlist.
+    """
+
+    access_model = OrganizationAccess
+    playlist_lookup = "organization__playlists__id"
+
+
+class IsPlaylistOwner(BaseObjectPermission):
+    """Allow access when the user is the owner/creator of the playlist."""
+
+    def has_object_permission(self, request, view, obj):
+        """Determine permission for a specific playlist"""
+        portability_request = obj
+        return Playlist.objects.filter(
+            created_by_id=request.user.id,
+            pk=portability_request.for_playlist_id,
+        ).exists()
+
+
+class IsPortabilityRequestOwner(BaseObjectPermission):
+    """Allow access when the user is the owner/creator of the portability request."""
+
+    def has_object_permission(self, request, view, obj):
+        """Determine permission for a specific portability request"""
+        return PortabilityRequest.objects.filter(
+            from_user_id=request.user.id,
+            pk=view.get_object_pk(),
+        ).exists()

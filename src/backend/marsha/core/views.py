@@ -44,7 +44,7 @@ from .lti.utils import (
     get_or_create_resource,
     get_selectable_resources,
 )
-from .models import Document, LiveSession, Playlist, Video
+from .models import Document, LiveSession, Playlist, PortabilityRequest, Video
 from .models.account import LTIPassport
 from .serializers import DocumentSerializer, PlaylistLiteSerializer, VideoSerializer
 from .utils.url_utils import build_absolute_uri_behind_proxy
