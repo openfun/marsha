@@ -54,6 +54,11 @@ const messages = defineMessages({
     description: 'Label for the Classrooms link in the content navigation menu',
     id: 'routes.routes.menuContentsClassroomsLabel',
   },
+  menuContentsClassroomsCreateLabel: {
+    defaultMessage: 'Create Classroom',
+    description: 'Label for the Create Classrooms link',
+    id: 'routes.routes.menuContentsClassroomsCreateLabel',
+  },
   menuContentsLessonsLabel: {
     defaultMessage: 'Lessons',
     description: 'Label for the Lessons link in the content navigation menu',
@@ -83,7 +88,7 @@ export interface Route {
   path: string;
   alias?: string[];
   menuIcon?: React.ReactNode;
-  subRoutes?: { [key in string]: BasicRoute };
+  subRoutes?: { [key in string]: Route };
 }
 
 type Routes = {
@@ -91,7 +96,7 @@ type Routes = {
 } & {
   [ERouteNames.CONTENTS]: Route & {
     subRoutes: {
-      [key in EMyContentsSubRouteNames]: BasicRoute;
+      [key in EMyContentsSubRouteNames]: Route;
     };
   };
 };
@@ -204,6 +209,16 @@ export const routes: Routes = {
             aria-label="svg-menu-my-contents-classrooms"
           />
         ),
+        subRoutes: {
+          CREATE: {
+            label: (
+              <FormattedMessage
+                {...messages.menuContentsClassroomsCreateLabel}
+              />
+            ),
+            path: `/my-contents/classrooms/create`,
+          },
+        },
       },
       LESSON: {
         label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,

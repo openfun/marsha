@@ -8,16 +8,16 @@ describe('<ClassRoomCreate />', () => {
   test('renders ClassRoomCreate', () => {
     render(<ClassRoomCreate />);
 
-    const button = screen.getByRole('button', { name: /Add Classroom/i });
+    const button = screen.getByRole('button', { name: /Create Classroom/i });
     expect(button).toBeInTheDocument();
     expect(
-      screen.queryByRole('heading', { name: /Add Classroom/i }),
+      screen.queryByRole('heading', { name: /Create Classroom/i }),
     ).not.toBeInTheDocument();
 
     fireEvent.click(button);
 
     expect(
-      screen.getByRole('heading', { name: /Add Classroom/i }),
+      screen.getByRole('heading', { name: /Create Classroom/i }),
     ).toBeInTheDocument();
   });
 });
