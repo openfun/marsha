@@ -9,5 +9,6 @@ export * from './models';
 export * from './XMPP';
 export * from './file';
 export * from './Participant';
+export * from './PortabilityRequest';
 export * from './Organization';
 export * from './AppData';
