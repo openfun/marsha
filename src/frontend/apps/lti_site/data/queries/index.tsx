@@ -23,6 +23,7 @@ import {
   LiveModeType,
   LiveAttendance,
   LiveSession,
+  PortabilityRequest,
   SharedLiveMedia,
   Thumbnail,
   TimedText,
@@ -671,4 +672,48 @@ export const useLiveSessionsQuery = (
     LiveSessionsResponse,
     FetchListQueryKey
   >(key, fetchList, queryConfig);
+};
+
+type UseCreatePortabilityRequestData = {
+  for_playlist: string;
+  from_playlist: string;
+  // for now, only allow request creation from LTI context
+  from_lti_consumer_site: string; // mandatory in LTI
+  from_lti_user_id: string; // mandatory in LTI
+};
+type UseCreatePortabilityRequestError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseCreatePortabilityRequestData]?: string[] }[];
+    };
+type UseCreatePortabilityRequestOptions = UseMutationOptions<
+  PortabilityRequest,
+  UseCreatePortabilityRequestError,
+  UseCreatePortabilityRequestData
+>;
+export const useCreatePortabilityRequest = (
+  options?: UseCreatePortabilityRequestOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    PortabilityRequest,
+    UseCreatePortabilityRequestError,
+    UseCreatePortabilityRequestData
+  >(
+    (newPortabilityRequest) =>
+      createOne({
+        name: 'portability-requests',
+        object: newPortabilityRequest,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('portability-requests');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+    },
+  );
 };

@@ -16,6 +16,8 @@ import { MemoryRouter, Redirect, Route, Switch } from 'react-router-dom';
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { InstructorWrapper } from 'components/InstructorWrapper';
 import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
+import { PortabilityRequest } from 'components/PortabilityRequest';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
 import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
@@ -93,6 +95,14 @@ const Routes = () => {
           />
 
           <Route path={VIDEO_WIZARD_ROUTE()} component={VideoWizard} />
+
+          <Route
+            exact
+            path={RESOURCE_PORTABILITY_REQUEST_ROUTE()}
+            render={() => (
+              <PortabilityRequest portability={appData.portability!} />
+            )}
+          />
 
           <Route
             exact
