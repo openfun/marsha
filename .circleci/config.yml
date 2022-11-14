@@ -570,15 +570,35 @@ jobs:
       - run:
           name: Run tests on lti site
           command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
-      - run:
-          name: Run test on standalone site
-          command: yarn workspace standalone_site run test
       - store_artifacts:
           path: ~/marsha/src/frontend/apps/lti_site/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_components/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_classroom/__diff_output__
+
+  test-website:
+    docker:
+      - image: cimg/node:16.15
+        auth:
+          username: $DOCKER_USER
+          password: $DOCKER_PASS
+    working_directory: ~/marsha/src/frontend
+    resource_class: large
+    steps:
+      - checkout:
+          path: ~/marsha
+      - get_last_packages_commit:
+          filename: packages-last-commit.txt
+      - restore_cache:
+          keys:
+            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+      - run:
+          name: Run test on standalone site
+          command: yarn workspace standalone_site run test
 
   test-e2e:
     docker:
@@ -1206,6 +1226,12 @@ workflows:
             tags:
               only: /.*/
       - test-front:
+          requires:
+            - build-front
+          filters:
+            tags:
+              only: /.*/
+      - test-website:
           requires:
             - build-front
           filters:
