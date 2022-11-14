@@ -9,7 +9,7 @@ import { Menu } from 'features/Menu';
 
 import { routes } from './routes';
 
-const { ClassRooms } = lazyImport(() => import('features/ClassRooms'));
+const { ClassRoom } = lazyImport(() => import('features/ClassRoom'));
 const { Favorites } = lazyImport(() => import('features/Favorites'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
 const { PlaylistPage } = lazyImport(
@@ -46,7 +46,7 @@ function AppRoutes() {
         </Route>
         <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path}>
           <Suspense fallback={<ContentSpinner />}>
-            <ClassRooms />
+            <ClassRoom />
           </Suspense>
         </Route>
       </Switch>

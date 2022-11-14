@@ -15,8 +15,8 @@ jest.mock('features/HomePage', () => ({
   HomePage: () => <div>My HomePage</div>,
 }));
 
-jest.mock('features/ClassRooms', () => ({
-  ClassRooms: () => <div>My Classrooms</div>,
+jest.mock('features/ClassRoom', () => ({
+  ClassRoom: () => <div>My Classrooms</div>,
 }));
 
 jest.mock('features/Favorites', () => ({

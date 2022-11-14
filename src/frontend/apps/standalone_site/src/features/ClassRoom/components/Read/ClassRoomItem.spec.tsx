@@ -3,7 +3,7 @@ import { classroomMockFactory } from 'lib-classroom';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import ClassRoom from './ClassRoom';
+import ClassRoom from './ClassRoomItem';
 
 const classroom = {
   welcome_text: 'Welcome!',
