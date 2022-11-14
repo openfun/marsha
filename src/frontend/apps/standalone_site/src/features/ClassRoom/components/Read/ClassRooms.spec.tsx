@@ -60,7 +60,6 @@ describe('<ClassRooms/>', () => {
         client: queryClient,
       },
     });
-    expect(screen.getByText(/Classrooms/i)).toBeInTheDocument();
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
 
     await waitFor(() => {
@@ -81,7 +80,6 @@ describe('<ClassRooms/>', () => {
     fetchMock.get('/api/classrooms/?limit=20&offset=0', someStuff);
 
     render(<ClassRooms />);
-    expect(screen.getByText(/Classrooms/i)).toBeInTheDocument();
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
     await waitFor(() => {
       expect(
@@ -94,7 +92,6 @@ describe('<ClassRooms/>', () => {
     fetchMock.get('/api/classrooms/?limit=20&offset=0', someResponse);
 
     render(<ClassRooms />);
-    expect(screen.getByText(/Classrooms/i)).toBeInTheDocument();
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
     await waitFor(() => {
       expect(screen.getByText(/some title/i)).toBeInTheDocument();
