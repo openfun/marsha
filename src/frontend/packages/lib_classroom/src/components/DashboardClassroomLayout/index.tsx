@@ -49,6 +49,7 @@ export const DashboardClassroomLayout = ({
       }}
       fill
       pad="small"
+      className="DashboardClassroomLayout"
     >
       <Grid columns={columns} gap="small" fill>
         <Box
@@ -87,6 +88,7 @@ export const DashboardClassroomLayout = ({
             gap="medium"
             justify="end"
             pad="medium"
+            className="classroom-edit-submit"
           >
             {right}
           </Box>
