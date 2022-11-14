@@ -9,7 +9,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 
-import marsha.core.managers
+import marsha.core.models
 import marsha.core.models.base
 
 
@@ -149,7 +149,7 @@ class Migration(migrations.Migration):
                 "verbose_name_plural": "users",
                 "db_table": "user",
             },
-            managers=[("objects", marsha.core.managers.UserManager())],
+            managers=[("objects", marsha.core.models.UserManager())],
         ),
         migrations.CreateModel(
             name="AudioTrack",
