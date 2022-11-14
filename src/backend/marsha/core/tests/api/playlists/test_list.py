@@ -309,6 +309,49 @@ class PlaylistListAPITest(TestCase):
             ],
         )
 
+    def test_list_playlist_not_duplicated(self):
+        """
+        When several users have administrator role on a playlist,
+        the playlist must be returned only once.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+
+        playlist = factories.PlaylistFactory(
+            organization=organization,
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist,
+            user=user,
+            role=models.ADMINISTRATOR,
+        )
+        factories.PlaylistAccessFactory.create_batch(
+            3,
+            playlist=playlist,
+            role=models.ADMINISTRATOR,
+        )
+        factories.OrganizationAccessFactory(
+            organization=organization,
+            user=user,
+            role=models.ADMINISTRATOR,
+        )
+        factories.OrganizationAccessFactory.create_batch(
+            3,
+            organization=organization,
+            role=models.ADMINISTRATOR,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/playlists/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(response.json()["results"][0]["id"], str(playlist.id))
+
     def test_list_playlist_ordering_created_on(self):
         """
         A user can list playlist ordering them on created_on
@@ -354,7 +397,6 @@ class PlaylistListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 3)
-        print(response.json()["results"])
         self.assertEqual(
             response.json()["results"],
             [
