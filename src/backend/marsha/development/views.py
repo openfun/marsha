@@ -1,5 +1,6 @@
 """Declare development views."""
 from logging import getLogger
+from urllib.parse import urlparse
 import uuid
 
 from django.conf import settings
@@ -48,15 +49,20 @@ class DevelopmentLTIView(TemplateView):
 
         """
         domain = self.request.build_absolute_uri("/").split("/")[2]
+
+        # use the HTTP_REFERER like to be consistent with the LTI passport
+        request_domain = urlparse(self.request.build_absolute_uri("/")).hostname
         try:
-            consumer_site = ConsumerSite.objects.get(domain=domain)
+            consumer_site = ConsumerSite.objects.get(domain=request_domain)
         except ConsumerSite.DoesNotExist:
             consumer_site, _ = ConsumerSite.objects.get_or_create(
-                domain=domain, name=domain
+                domain=request_domain, name=request_domain
             )
 
         try:
-            playlist = Playlist.objects.get(consumer_site=consumer_site)
+            playlist = Playlist.objects.filter(consumer_site=consumer_site).latest(
+                "created_on",
+            )
         except Playlist.DoesNotExist:
             playlist, _ = Playlist.objects.get_or_create(
                 consumer_site=consumer_site, title=domain, lti_id=domain
