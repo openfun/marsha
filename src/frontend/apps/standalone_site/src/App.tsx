@@ -1,5 +1,7 @@
 import { Grommet, Main, Page } from 'grommet';
+import { colors } from 'lib-common';
 import { useEffect, useMemo, useState } from 'react';
+import { Toaster } from 'react-hot-toast';
 import { IntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
@@ -45,6 +47,22 @@ const App = () => {
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
         <Grommet theme={themeExtended}>
+          <Toaster
+            toastOptions={{
+              duration: 5000,
+              success: {
+                style: {
+                  background: colors['status-ok'],
+                },
+              },
+              error: {
+                style: {
+                  color: colors['white'],
+                  background: colors['accent-2'],
+                },
+              },
+            }}
+          />
           <BrowserRouter>
             <Authenticator>
               <Main height={{ min: '100vh' }}>
