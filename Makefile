@@ -193,6 +193,13 @@ migrate:  ## Run django migration for the marsha project.
 	@$(COMPOSE_RUN_APP) python manage.py migrate
 .PHONY: migrate
 
+resetdb:  ## Reset local database for the marsha project.
+	@echo "$(BOLD)Drop database and recreate$(RESET)"
+	@$(COMPOSE) up -d db
+	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
+	@$(COMPOSE_RUN_APP) python manage.py load_development_datasets --flush-db
+.PHONY: resetdb
+
 superuser: ## create a Django superuser
 	@echo "$(BOLD)Creating a Django superuser$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py createsuperuser

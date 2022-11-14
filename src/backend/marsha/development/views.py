@@ -59,11 +59,11 @@ class DevelopmentLTIView(TemplateView):
                 domain=request_domain, name=request_domain
             )
 
-        try:
-            playlist = Playlist.objects.filter(consumer_site=consumer_site).latest(
-                "created_on",
-            )
-        except Playlist.DoesNotExist:
+        if not (
+            playlist := Playlist.objects.filter(consumer_site=consumer_site)
+            .order_by("-created_on")
+            .first()
+        ):
             playlist, _ = Playlist.objects.get_or_create(
                 consumer_site=consumer_site, title=domain, lti_id=domain
             )
