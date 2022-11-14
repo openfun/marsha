@@ -57,6 +57,7 @@ const DashboardClassroomInfos = ({ infos }: DashboardClassroomInfosProps) => {
         size: 'small',
         side: 'all',
       }}
+      className="DashboardClassroomInfos"
     >
       <Grid columns={{ count: 3, size: 'auto' }}>
         <DashboardClassroomInfosItem

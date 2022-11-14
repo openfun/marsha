@@ -39,7 +39,7 @@ const DashboardClassroomAskUsername = ({
   const intl = useIntl();
 
   return (
-    <Box pad="large" gap="medium">
+    <Box pad="large" gap="medium" className="DashboardClassroomAskUsername">
       <FormField label={intl.formatMessage(messages.label)}>
         <TextInput
           value={userFullname}
