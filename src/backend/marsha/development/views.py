@@ -31,7 +31,7 @@ class DevelopmentLTIView(TemplateView):
 
     """
 
-    template_name = "core/lti_development.html"
+    template_name = "development/lti_development.html"
 
     def get_context_data(self, **kwargs):
         """Generate a UUID to pre-populate the `uuid` fields in the LTI request form.

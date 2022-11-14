@@ -8,11 +8,10 @@ import uuid
 from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase, override_settings
 
+from marsha.core.defaults import STATE_CHOICES
+from marsha.core.factories import VideoFactory
+from marsha.core.models import ConsumerSite, Video
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-
-from ..defaults import STATE_CHOICES
-from ..factories import VideoFactory
-from ..models import ConsumerSite, Video
 
 
 # We don't enforce arguments documentation in tests
