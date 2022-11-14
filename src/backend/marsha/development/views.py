@@ -99,13 +99,21 @@ class DevelopmentLTIView(TemplateView):
             ),
             "oauth_dict": oauth_dict,
             "last_objects": {
-                "videos": Video.objects.order_by("-updated_on")[:5],
-                "documents": Document.objects.order_by("-updated_on")[:5],
-                "classrooms": Classroom.objects.order_by("-updated_on")[:5],
-                "markdown-documents": MarkdownDocument.objects.order_by("-updated_on")[
-                    :5
-                ],
-                "deposits": FileDepository.objects.order_by("-updated_on")[:5],
+                "videos": Video.objects.filter(playlist=playlist).order_by(
+                    "-updated_on"
+                )[:5],
+                "documents": Document.objects.filter(playlist=playlist).order_by(
+                    "-updated_on"
+                )[:5],
+                "classrooms": Classroom.objects.filter(playlist=playlist).order_by(
+                    "-updated_on"
+                )[:5],
+                "markdown-documents": MarkdownDocument.objects.filter(
+                    playlist=playlist
+                ).order_by("-updated_on")[:5],
+                "deposits": FileDepository.objects.filter(playlist=playlist).order_by(
+                    "-updated_on"
+                )[:5],
             },
         }
 
