@@ -2,15 +2,14 @@
 import secrets
 import string
 
-from django.contrib.auth.models import AbstractUser
+from django.contrib.auth.models import AbstractUser, UserManager as DefaultUserManager
 from django.contrib.sites.models import _simple_domain_name_validator
 from django.core.exceptions import ValidationError
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE
-
-from marsha.core.managers import UserManager
+from safedelete.managers import SafeDeleteManager
 
 from .base import BaseModel
 
@@ -38,6 +37,10 @@ ROLE_CHOICES = (
     (INSTRUCTOR, _("instructor")),
     (STUDENT, _("student")),
 )
+
+
+class UserManager(DefaultUserManager, SafeDeleteManager):
+    """Extends the default manager for users with the one for soft-deletion."""
 
 
 class User(BaseModel, AbstractUser):
