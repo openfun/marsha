@@ -57,6 +57,9 @@ class ConsumerSiteFactory(DjangoModelFactory):
 class ConsumerSiteAccessFactory(DjangoModelFactory):
     """Factory for the ConsumerSiteAccess model."""
 
+    consumer_site = factory.SubFactory(ConsumerSiteFactory)
+    user = factory.SubFactory(UserFactory)
+
     class Meta:  # noqa
         model = models.ConsumerSiteAccess
 
@@ -235,3 +238,50 @@ class LtiUserAssociationFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = models.LtiUserAssociation
+
+
+class PortabilityRequestFactory(DjangoModelFactory):
+    """Factory for the PortabilityRequest model."""
+
+    for_playlist = factory.LazyAttribute(
+        lambda o: o.resource.playlist if o.resource else None
+    )
+
+    from_playlist = factory.SubFactory(
+        PlaylistFactory,
+        consumer_site=factory.SubFactory(ConsumerSiteFactory),
+    )
+    from_lti_consumer_site = factory.LazyAttribute(
+        lambda o: o.from_playlist.consumer_site if o.from_playlist else None
+    )
+    from_lti_user_id = factory.Faker("uuid4")
+
+    state = factory.fuzzy.FuzzyChoice(
+        [state[0] for state in models.PortabilityRequestState.get_choices()]
+    )
+
+    class Meta:  # noqa
+        model = models.PortabilityRequest
+
+    class Params:  # pylint:disable=missing-class-docstring
+        resource = factory.SubFactory(
+            VideoFactory, playlist=factory.SubFactory(PlaylistFactory)
+        )
+
+
+class PendingPortabilityRequestFactory(PortabilityRequestFactory):
+    """Factory for the PortabilityRequest model generating a pending request."""
+
+    state = models.PortabilityRequestState.PENDING.value
+
+
+class NotPendingPortabilityRequestFactory(PortabilityRequestFactory):
+    """Factory for the PortabilityRequest model generating a not pending request."""
+
+    state = factory.fuzzy.FuzzyChoice(
+        [
+            state[0]
+            for state in models.PortabilityRequestState.get_choices()
+            if state[0] != models.PortabilityRequestState.PENDING.value
+        ]
+    )
