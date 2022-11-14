@@ -757,6 +757,9 @@ class Development(Base):
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
 
+    # Development tools
+    INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
+
     # Mail
     EMAIL_HOST = values.Value("mailcatcher")
     EMAIL_PORT = values.PositiveIntegerValue(1025)
@@ -829,6 +832,9 @@ class Test(Base):
     CHANNEL_LAYERS = {
         "default": {"BACKEND": "channels.layers.InMemoryChannelLayer"},
     }
+
+    # Development tools (we want to test them in tests)
+    INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
 
 
 class Production(Base):
