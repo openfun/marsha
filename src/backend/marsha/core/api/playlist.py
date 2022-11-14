@@ -89,6 +89,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     user_accesses__role=ADMINISTRATOR,
                 )
             )
+            .distinct()
         )
 
         return queryset
