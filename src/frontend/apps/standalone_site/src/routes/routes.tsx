@@ -49,12 +49,12 @@ const messages = defineMessages({
     description: 'Label for the lives link in the content navigation menu',
     id: 'routes.routes.menuContentsLivesLabel',
   },
-  menuContentsClassroomsLabel: {
+  menuContentsClassroomLabel: {
     defaultMessage: 'Classrooms',
-    description: 'Label for the Classrooms link in the content navigation menu',
+    description: 'Label for the Classroom link in the content navigation menu',
     id: 'routes.routes.menuContentsClassroomsLabel',
   },
-  menuContentsClassroomsCreateLabel: {
+  menuContentsClassroomCreateLabel: {
     defaultMessage: 'Create Classroom',
     description: 'Label for the Create Classrooms link',
     id: 'routes.routes.menuContentsClassroomsCreateLabel',
@@ -84,7 +84,7 @@ enum EMyContentsSubRouteNames {
 type BasicRoute = Omit<Route, 'subRoutes'>;
 
 export interface Route {
-  label: React.ReactNode;
+  label?: React.ReactNode;
   path: string;
   alias?: string[];
   menuIcon?: React.ReactNode;
@@ -199,24 +199,27 @@ export const routes: Routes = {
         ),
       },
       CLASSROOM: {
-        label: <FormattedMessage {...messages.menuContentsClassroomsLabel} />,
-        path: `/my-contents/classrooms`,
+        label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
+        path: `/my-contents/classroom`,
         menuIcon: (
           <ClassroomsIcon
             width={30}
             height={30}
             role="img"
-            aria-label="svg-menu-my-contents-classrooms"
+            aria-label="svg-menu-my-contents-classroom"
           />
         ),
         subRoutes: {
           CREATE: {
             label: (
               <FormattedMessage
-                {...messages.menuContentsClassroomsCreateLabel}
+                {...messages.menuContentsClassroomCreateLabel}
               />
             ),
-            path: `/my-contents/classrooms/create`,
+            path: `/my-contents/classroom/create`,
+          },
+          UPDATE: {
+            path: `/my-contents/classroom/:classroomId`,
           },
         },
       },

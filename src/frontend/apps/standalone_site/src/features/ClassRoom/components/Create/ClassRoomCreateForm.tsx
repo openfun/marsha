@@ -13,9 +13,12 @@ import { useCreateClassroom } from 'lib-classroom';
 import { Playlist } from 'lib-components';
 import { Fragment, useState, useEffect } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { ITEM_PER_PAGE } from 'conf/global';
 import { PlaylistOrderType, usePlaylists } from 'features/Playlist';
+import { routes } from 'routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -55,6 +58,10 @@ const messages = defineMessages({
   },
 });
 
+const ButtonStyled = styled(Button)`
+  border-radius: 5px;
+`;
+
 type ClassroomCreate = {
   playlist: string;
   title: string;
@@ -67,6 +74,7 @@ interface ClassroomCreateFormProps {
 
 const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
   const intl = useIntl();
+  const history = useHistory();
   const [currentPlaylistPage, setCurrentPlaylistPage] = useState(0);
   const { data: playlistResponse, error: errorPlaylist } = usePlaylists(
     {
@@ -79,10 +87,15 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const { mutate: createClassroom, error: errorClassroom } = useCreateClassroom(
     {
-      onSuccess: () => {
+      onSuccess: (data) => {
         if (onSubmit) {
           onSubmit();
         }
+
+        const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
+        const classroomPath = classroomRoute.path;
+
+        history.push(`${classroomPath}/${data.id}`);
       },
     },
   );
@@ -193,8 +206,8 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
             }
           />
         </FormField>
-        <Box direction="row" justify="center" margin={{ top: 'medium' }}>
-          <Button
+        <Box direction="row" justify="center">
+          <ButtonStyled
             disabled={isSubmitDisabled}
             primary
             size="large"

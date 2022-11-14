@@ -5,13 +5,11 @@ import { Fragment, PropsWithChildren, ReactNode, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
-import { ContentCards, WhiteCard } from 'components/Cards';
+import { ContentCards } from 'components/Cards';
 import { ContentSpinner } from 'components/Spinner';
 import { ITEM_PER_PAGE } from 'conf/global';
-import { useResponsive } from 'hooks/useResponsive';
 
-import ClassRoom from './ClassRoom';
-import ClassRoomCreate from './Create/ClassRoomCreate';
+import ClassRoomItem from './ClassRoomItem';
 
 const messages = defineMessages({
   ClassroomTitle: {
@@ -46,7 +44,6 @@ const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
 };
 
 function ClassRooms() {
-  const { breakpoint } = useResponsive();
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -83,7 +80,7 @@ function ClassRooms() {
       <Fragment>
         <ContentCards>
           {classRooms.results.map((classroom) => (
-            <ClassRoom
+            <ClassRoomItem
               key={`classroom-${classroom.id}`}
               classroom={classroom}
             />
@@ -105,24 +102,7 @@ function ClassRooms() {
     );
   }
 
-  return (
-    <Box pad="medium">
-      <WhiteCard
-        direction={breakpoint === 'xxsmall' ? 'column' : 'row'}
-        gap={breakpoint === 'xxsmall' ? 'small' : 'none'}
-        justify="between"
-        align="center"
-        height={{ min: '5rem' }}
-        margin={{ bottom: 'medium' }}
-      >
-        <Text size="large" weight="bold">
-          {intl.formatMessage(messages.ClassroomTitle)}
-        </Text>
-        <ClassRoomCreate />
-      </WhiteCard>
-      {content}
-    </Box>
-  );
+  return content;
 }
 
 export default ClassRooms;
