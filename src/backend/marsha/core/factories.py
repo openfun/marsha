@@ -11,7 +11,7 @@ from factory import fuzzy
 from factory.django import DjangoModelFactory
 
 from marsha.core import models
-from marsha.core.defaults import ENDED, RAW
+from marsha.core.defaults import ENDED, IDLE, LIVE_TYPE_CHOICES, PENDING, RAW
 
 
 # usage of format function here is wanted in this file
@@ -128,6 +128,19 @@ class VideoFactory(DjangoModelFactory):
     position = fuzzy.FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("video#{:d}".format)
+
+
+class WebinarVideoFactory(VideoFactory):
+    """Factory for the Video model representing a webinar."""
+
+    live_state = IDLE
+    live_type = factory.fuzzy.FuzzyChoice(
+        live_type[0] for live_type in LIVE_TYPE_CHOICES
+    )
+    upload_state = PENDING
+    starting_at = factory.LazyAttribute(
+        lambda o: timezone.now() + datetime.timedelta(days=10)
+    )
 
 
 class UploadedVideoFactory(VideoFactory):
