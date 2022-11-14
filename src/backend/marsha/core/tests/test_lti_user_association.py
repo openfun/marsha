@@ -7,6 +7,7 @@ from django.test import RequestFactory, TestCase
 from marsha.core.factories import (
     ConsumerSiteFactory,
     LtiUserAssociationFactory,
+    PortabilityRequestFactory,
     UserFactory,
 )
 from marsha.core.lti import LTI
@@ -136,3 +137,32 @@ class LTIUserAssociationTestCase(TestCase):
             user_id=user.pk,
         )
         self.assertEqual(LtiUserAssociation.objects.count(), 1)
+
+    def test_create_user_association_updates_portability_requests(self):
+        """
+        Test the LTI user association creation function also
+        updates the user related portability requests.
+        """
+        untouched_portability_request = PortabilityRequestFactory()
+        updated_portability_request = PortabilityRequestFactory()
+
+        create_user_association(
+            lti_consumer_site_id=untouched_portability_request.from_lti_consumer_site_id,
+            lti_user_id=str(uuid.uuid4()),
+            user_id=UserFactory().pk,
+        )
+        self.assertEqual(LtiUserAssociation.objects.count(), 1)
+        untouched_portability_request.refresh_from_db()
+        self.assertIsNone(untouched_portability_request.from_user)
+
+        user = UserFactory()
+        create_user_association(
+            lti_consumer_site_id=updated_portability_request.from_lti_consumer_site_id,
+            lti_user_id=str(updated_portability_request.from_lti_user_id),
+            user_id=user.pk,
+        )
+        self.assertEqual(LtiUserAssociation.objects.count(), 2)
+        untouched_portability_request.refresh_from_db()
+        self.assertIsNone(untouched_portability_request.from_user)
+        updated_portability_request.refresh_from_db()
+        self.assertEqual(updated_portability_request.from_user, user)
