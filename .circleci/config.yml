@@ -632,7 +632,7 @@ jobs:
           path: ~/marsha
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
-          command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y ppa:deadsnakes/ppa && apt install -y python3.10 python3.10-dev build-essential
+          command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install pip for Python 3.10
           command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
