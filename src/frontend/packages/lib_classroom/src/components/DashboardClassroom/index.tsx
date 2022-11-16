@@ -14,7 +14,7 @@ import {
 } from 'lib-components';
 import React, { useState, Suspense, useRef, useEffect, lazy } from 'react';
 import { toast } from 'react-hot-toast';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { DashboardClassroomError } from 'components/DashboardClassroomError';
 import { useJoinClassroomAction, useClassroom } from 'data/queries';
@@ -203,9 +203,10 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     case 'idle':
     case 'loading':
       content = (
-        <Spinner size="large">
-          <FormattedMessage {...messages.loadingClassroom} />
-        </Spinner>
+        <Spinner
+          size="large"
+          message={intl.formatMessage(messages.loadingClassroom)}
+        />
       );
       break;
 
