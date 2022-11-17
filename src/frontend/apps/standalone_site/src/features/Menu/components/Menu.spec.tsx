@@ -19,13 +19,13 @@ describe('<Menu />', () => {
   test('renders Menu', () => {
     render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
-      screen.getByRole(/menuitem/i, { name: /Favorites/i }),
+      screen.getByRole(/menuitem/i, { name: /My playlists/i }),
     ).toBeInTheDocument();
     expect(
       screen.getByRole(/menuitem/i, { name: /My Contents/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Videos/i }),
+      screen.getByRole(/menuitem/i, { name: /Classrooms/i }),
     ).toBeInTheDocument();
   });
 

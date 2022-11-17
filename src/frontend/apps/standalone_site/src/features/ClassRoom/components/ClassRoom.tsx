@@ -9,6 +9,7 @@ import ClassRoomUpdate from './Update/ClassRoomUpdate';
 
 function ClassRoom() {
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
+  const contentPath = routes.CONTENTS.path;
   const classroomPath = classroomRoute.path;
   const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
   const classroomUpdatePath = classroomRoute.subRoutes?.UPDATE?.path || '';
@@ -16,7 +17,7 @@ function ClassRoom() {
   return (
     <Box pad="medium">
       <Switch>
-        <Route path={[classroomPath, classroomCreatePath]} exact>
+        <Route path={[classroomPath, classroomCreatePath, contentPath]} exact>
           <ClassRoomCreate />
           <ClassRooms />
         </Route>

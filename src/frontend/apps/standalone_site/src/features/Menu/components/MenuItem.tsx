@@ -29,7 +29,12 @@ interface MenuItemProps {
 function MenuItem({ route, children }: PropsWithChildren<MenuItemProps>) {
   return (
     <Fragment>
-      <NavLinkStyled exact to={route.path} role="menuitem">
+      <NavLinkStyled
+        exact={!route.isNavStrict}
+        strict={route.isNavStrict}
+        to={route.path}
+        role="menuitem"
+      >
         {route.menuIcon}
         <Text size="0.938rem" weight="bold">
           {route.label}
