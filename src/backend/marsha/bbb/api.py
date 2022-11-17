@@ -115,6 +115,7 @@ class ClassroomViewSet(
                     playlist__user_accesses__role=ADMINISTRATOR,
                 )
             )
+            .distinct()
         )
 
         return queryset

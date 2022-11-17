@@ -241,6 +241,76 @@ class ClassroomListAPITest(TestCase):
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_fetch_list_user_access_token_not_duplicated(
+        self, mock_get_meeting_infos
+    ):
+        """
+        When several users have administrator role on a playlist,
+        the classroom must be returned only once.
+        """
+        user = UserFactory()
+        organization_access_admin = OrganizationAccessFactory(
+            user=user, role=ADMINISTRATOR
+        )
+        OrganizationAccessFactory.create_batch(
+            3,
+            organization=organization_access_admin.organization,
+            role=ADMINISTRATOR,
+        )
+
+        playlist = PlaylistFactory(organization=organization_access_admin.organization)
+        PlaylistAccessFactory(
+            user=user,
+            role=ADMINISTRATOR,
+            playlist=playlist,
+        )
+        PlaylistAccessFactory.create_batch(3, playlist=playlist)
+
+        classroom = ClassroomFactory(playlist=playlist)
+        ClassroomFactory.create_batch(3)
+
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/classrooms/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "description": classroom.description,
+                        "ended": False,
+                        "estimated_duration": None,
+                        "id": str(classroom.id),
+                        "infos": {"returncode": "SUCCESS", "running": "true"},
+                        "lti_id": str(classroom.lti_id),
+                        "meeting_id": str(classroom.meeting_id),
+                        "playlist": {
+                            "id": str(playlist.id),
+                            "lti_id": playlist.lti_id,
+                            "title": playlist.title,
+                        },
+                        "started": False,
+                        "starting_at": None,
+                        "title": classroom.title,
+                        "welcome_text": classroom.welcome_text,
+                    },
+                ],
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_fetch_list_user_access_token_filter_organization(
         self, mock_get_meeting_infos
     ):
