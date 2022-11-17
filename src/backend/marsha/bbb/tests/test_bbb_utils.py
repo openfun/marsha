@@ -60,11 +60,12 @@ class ClassroomServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
+                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
+                        "record": True,
                     }
                 )
             ],
@@ -131,10 +132,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "3d56249a0307871b230c46a64118456262c4f613",
+                        "checksum": "d198c1846dd058c9d030fafff557be74a2a276ba",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
+                        "record": True,
                     }
                 )
             ],
@@ -203,11 +205,12 @@ class ClassroomServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
+                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
+                        "record": True,
                     }
                 )
             ],
@@ -256,11 +259,12 @@ class ClassroomServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
+                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
+                        "record": True,
                     }
                 ),
             ],
@@ -358,11 +362,12 @@ class ClassroomServiceTestCase(TestCase):
                 responses.matchers.query_param_matcher(
                     {
                         "attendeePW": "9#R1kuUl3R",
-                        "checksum": "c410b2eaf47efafc9a5ebc0d6d12990069fd78bf",
+                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
                         "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
+                        "record": True,
                     }
                 ),
             ],
