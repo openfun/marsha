@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
 - Allow LTI users to request for a playlist portability
+- Enable recording when creating a BBB room instance
 
 ### Changed
 
