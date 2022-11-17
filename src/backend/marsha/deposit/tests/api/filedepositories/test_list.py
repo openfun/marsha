@@ -5,6 +5,7 @@ from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
     PlaylistFactory,
+    UserFactory,
 )
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
@@ -169,6 +170,61 @@ class FileDepositoryListAPITest(TestCase):
                             "title": playlist_1_b.title,
                         },
                         "title": file_depository_1_b[1].title,
+                    },
+                ],
+            },
+        )
+
+    def test_api_file_depository_fetch_list_user_access_token_not_duplicated(self):
+        """
+        The file depository list must not return duplicated values
+        for a user with UserAccessToken and proper rights.
+        """
+        user = UserFactory()
+
+        organization_access = OrganizationAccessFactory(
+            user=user,
+            role=ADMINISTRATOR,
+        )
+        OrganizationAccessFactory.create_batch(
+            5, organization=organization_access.organization
+        )
+
+        playlist = PlaylistFactory(organization=organization_access.organization)
+
+        PlaylistAccessFactory(
+            user=user,
+            playlist=playlist,
+            role=ADMINISTRATOR,
+        )
+        PlaylistAccessFactory.create_batch(5, playlist=playlist)
+
+        file_depository = FileDepositoryFactory(playlist=playlist)
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/filedepositories/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "description": file_depository.description,
+                        "id": str(file_depository.id),
+                        "lti_id": str(file_depository.lti_id),
+                        "playlist": {
+                            "id": str(playlist.id),
+                            "lti_id": playlist.lti_id,
+                            "title": playlist.title,
+                        },
+                        "title": file_depository.title,
                     },
                 ],
             },
