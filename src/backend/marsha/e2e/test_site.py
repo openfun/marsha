@@ -46,8 +46,8 @@ def test_site_login(page: Page, live_server: LiveServer):
     page.click("text=Log in")
 
     page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=Favorites")
-    page.wait_for_selector("text=My profile")
+    page.wait_for_selector("text=My Playlists")
+    page.wait_for_selector("text=My Contents")
 
 
 @pytest.mark.usefixtures("user_logged_in")
@@ -56,5 +56,5 @@ def test_site_logged_in(page: Page, live_server: LiveServer):
     page.goto(live_server.url)
 
     page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=Favorites")
-    page.wait_for_selector("text=My profile")
+    page.wait_for_selector("text=My Playlists")
+    page.wait_for_selector("text=My Contents")

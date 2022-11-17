@@ -16,11 +16,11 @@ jest.mock('features/HomePage', () => ({
 }));
 
 jest.mock('features/ClassRoom', () => ({
-  ClassRoom: () => <div>My Classrooms</div>,
+  ClassRoom: () => <div>My Classrooms Page</div>,
 }));
 
-jest.mock('features/Favorites', () => ({
-  Favorites: () => <div>My Favorites</div>,
+jest.mock('features/Playlist', () => ({
+  PlaylistPage: () => <div>My Playlist Page</div>,
 }));
 
 window.scrollTo = jest.fn();
@@ -48,16 +48,16 @@ describe('<AppRoutes />', () => {
       expect(screen.getByText(/My HomePage/i)).toBeInTheDocument();
     });
 
-    fireEvent.click(screen.getByRole(/menuitem/i, { name: /Favorites/i }));
+    fireEvent.click(screen.getByRole(/menuitem/i, { name: /My playlists/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/My favorites/i)).toBeInTheDocument();
+      expect(screen.getByText(/My Playlist Page/i)).toBeInTheDocument();
     });
 
     fireEvent.click(screen.getByRole(/menuitem/i, { name: /Classrooms/i }));
 
     await waitFor(() => {
-      expect(screen.getByText(/My Classrooms/i)).toBeInTheDocument();
+      expect(screen.getByText(/My Classrooms Page/i)).toBeInTheDocument();
     });
 
     expect(window.scrollTo).toHaveBeenCalledTimes(3);
