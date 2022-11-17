@@ -1,7 +1,7 @@
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
+//import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
@@ -24,7 +24,7 @@ const messages = defineMessages({
     id: 'routes.routes.menuMyProfileLabel',
   },
   menuPlaylistLabel: {
-    defaultMessage: 'My playlists',
+    defaultMessage: 'My Playlists',
     description: 'Label for the My playlists link in the main navigation menu',
     id: 'routes.routes.menuPlaylistLabel',
   },
@@ -75,10 +75,10 @@ enum ERouteNames {
   CONTENTS = 'CONTENTS',
 }
 enum EMyContentsSubRouteNames {
-  VIDEO = 'VIDEO',
-  LIVE = 'LIVE',
+  //VIDEO = 'VIDEO',
+  //LIVE = 'LIVE',
   CLASSROOM = 'CLASSROOM',
-  LESSON = 'LESSON',
+  //LESSON = 'LESSON',
 }
 
 type BasicRoute = Omit<Route, 'subRoutes'>;
@@ -88,6 +88,7 @@ export interface Route {
   path: string;
   alias?: string[];
   menuIcon?: React.ReactNode;
+  isNavStrict?: boolean; // if true, all the subroutes will be active in the menu
   subRoutes?: { [key in string]: Route };
 }
 
@@ -174,30 +175,30 @@ export const routes: Routes = {
       />
     ),
     subRoutes: {
-      VIDEO: {
-        label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
-        path: `/my-contents/videos`,
-        menuIcon: (
-          <CheckListIcon
-            width={30}
-            height={30}
-            role="img"
-            aria-label="svg-menu-my-contents-videos"
-          />
-        ),
-      },
-      LIVE: {
-        label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
-        path: `/my-contents/lives`,
-        menuIcon: (
-          <CheckListIcon
-            width={30}
-            height={30}
-            role="img"
-            aria-label="svg-menu-my-contents-live"
-          />
-        ),
-      },
+      // VIDEO: {
+      //   label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
+      //   path: `/my-contents/videos`,
+      //   menuIcon: (
+      //     <CheckListIcon
+      //       width={30}
+      //       height={30}
+      //       role="img"
+      //       aria-label="svg-menu-my-contents-videos"
+      //     />
+      //   ),
+      // },
+      // LIVE: {
+      //   label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
+      //   path: `/my-contents/lives`,
+      //   menuIcon: (
+      //     <CheckListIcon
+      //       width={30}
+      //       height={30}
+      //       role="img"
+      //       aria-label="svg-menu-my-contents-live"
+      //     />
+      //   ),
+      // },
       CLASSROOM: {
         label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
         path: `/my-contents/classroom`,
@@ -222,19 +223,20 @@ export const routes: Routes = {
             path: `/my-contents/classroom/:classroomId`,
           },
         },
+        isNavStrict: true,
       },
-      LESSON: {
-        label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
-        path: `/my-contents/lessons`,
-        menuIcon: (
-          <CheckListIcon
-            width={30}
-            height={30}
-            role="img"
-            aria-label="svg-menu-my-contents-lessons"
-          />
-        ),
-      },
+      // LESSON: {
+      //   label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
+      //   path: `/my-contents/lessons`,
+      //   menuIcon: (
+      //     <CheckListIcon
+      //       width={30}
+      //       height={30}
+      //       role="img"
+      //       aria-label="svg-menu-my-contents-lessons"
+      //     />
+      //   ),
+      // },
     },
   },
 };

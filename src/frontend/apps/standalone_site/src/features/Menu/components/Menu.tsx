@@ -1,6 +1,7 @@
 import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { useResponsive } from 'hooks/useResponsive';
@@ -9,6 +10,14 @@ import { Route, routes } from 'routes';
 import { useMenu } from '../store/menuStore';
 
 import MenuItem from './MenuItem';
+
+const messages = defineMessages({
+  menuTypeContentLabel: {
+    defaultMessage: 'TYPES OF CONTENT',
+    description: 'Label types of content in the menu',
+    id: 'features.Menu.menuTypeContentLabel',
+  },
+});
 
 const colorMenu = normalizeColor('blue-active', theme);
 const sizeMenu = '18.75rem';
@@ -34,14 +43,11 @@ const MenuBox = styled(Box)<PropsExtended>`
 `;
 
 function Menu() {
+  const intl = useIntl();
   const { isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
-  const topRoutes: Route[] = [routes.HOMEPAGE, routes.FAVORITE, routes.PROFILE];
-  const contents: Route[] = [
-    routes.PLAYLIST,
-    routes.ORGANIZATION,
-    routes.CONTENTS,
-  ];
+  const topRoutes: Route[] = [routes.HOMEPAGE];
+  const contents: Route[] = [routes.PLAYLIST, routes.CONTENTS];
 
   return (
     <MenuBox
@@ -68,7 +74,7 @@ function Menu() {
       />
       <Box role="group">
         <Text size="small" weight="bold" margin={{ left: '1rem' }}>
-          TYPES DE CONTENUS
+          {intl.formatMessage(messages.menuTypeContentLabel)}
         </Text>
         {contents.map((content, index) => (
           <MenuItem key={`menuItemContent-${index}`} route={content}>

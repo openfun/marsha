@@ -43,7 +43,7 @@ describe('<App />', () => {
     expect(await screen.findByText(/Homepage/i)).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Favorites/i }),
+      screen.getByRole(/menuitem/i, { name: /My playlists/i }),
     ).toBeInTheDocument();
     expect(consoleWarn).toHaveBeenCalled();
   });

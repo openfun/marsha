@@ -10,11 +10,8 @@ import { Menu } from 'features/Menu';
 import { routes } from './routes';
 
 const { ClassRoom } = lazyImport(() => import('features/ClassRoom'));
-const { Favorites } = lazyImport(() => import('features/Favorites'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
-const { PlaylistPage } = lazyImport(
-  () => import('features/Playlist/components/PlaylistPage'),
-);
+const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 
 function AppRoutes() {
   const location = useLocation();
@@ -34,17 +31,17 @@ function AppRoutes() {
             <HomePage />
           </Suspense>
         </Route>
-        <Route path={routes.FAVORITE.path} exact>
-          <Suspense fallback={<ContentSpinner />}>
-            <Favorites />
-          </Suspense>
-        </Route>
         <Route path={routes.PLAYLIST.path} exact>
           <Suspense fallback={<ContentSpinner />}>
             <PlaylistPage />
           </Suspense>
         </Route>
-        <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path}>
+        <Route
+          path={[
+            routes.CONTENTS.path,
+            routes.CONTENTS.subRoutes.CLASSROOM.path,
+          ]}
+        >
           <Suspense fallback={<ContentSpinner />}>
             <ClassRoom />
           </Suspense>
