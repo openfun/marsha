@@ -87,9 +87,9 @@ function HomePage() {
   const intl = useIntl();
 
   return (
-    <HomePageBox>
+    <HomePageBox margin={{ top: 'medium' }}>
       <BlockBox margin={{ horizontal: 'auto' }}>
-        <Image src={banner} alt="Homepage Banner" width="fit-content" />
+        <Image src={banner} alt="Homepage Banner" width="100%" />
       </BlockBox>
       <Box margin={{ top: 'medium' }}>
         <Box direction="row" justify="between" margin={{ bottom: 'small' }}>
