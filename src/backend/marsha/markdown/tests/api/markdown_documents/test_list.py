@@ -5,6 +5,7 @@ from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
     PlaylistFactory,
+    UserFactory,
 )
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
@@ -199,6 +200,73 @@ class MarkdownListAPITest(TestCase):
                                 "title": second_translation.title,
                                 "content": second_translation.content,
                                 "rendered_content": second_translation.rendered_content,
+                            }
+                        ],
+                        "position": 0,
+                    },
+                ],
+            },
+        )
+
+    def test_api_document_fetch_list_user_access_token_not_duplicated(self):
+        """
+        The markdown documents list must not return duplicated values
+        for a user with UserAccessToken and proper rights.
+        """
+        user = UserFactory()
+
+        organization_access = OrganizationAccessFactory(
+            user=user,
+            role=ADMINISTRATOR,
+        )
+        OrganizationAccessFactory.create_batch(
+            5, organization=organization_access.organization
+        )
+
+        playlist = PlaylistFactory(organization=organization_access.organization)
+
+        playlist_access = PlaylistAccessFactory(
+            user=user,
+            playlist=playlist,
+            role=ADMINISTRATOR,
+        )
+        PlaylistAccessFactory.create_batch(5, playlist=playlist)
+
+        markdown_document = MarkdownDocumentFactory(
+            playlist=playlist,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.get(
+            "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 200)
+        mardown_translation = markdown_document.translations.first()
+
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 1,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "id": str(markdown_document.id),
+                        "playlist": {
+                            "id": str(playlist.id),
+                            "lti_id": playlist.lti_id,
+                            "title": playlist.title,
+                        },
+                        "images": [],
+                        "is_draft": True,
+                        "rendering_options": {},
+                        "translations": [
+                            {
+                                "language_code": mardown_translation.language_code,
+                                "title": mardown_translation.title,
+                                "content": mardown_translation.content,
+                                "rendered_content": mardown_translation.rendered_content,
                             }
                         ],
                         "position": 0,
