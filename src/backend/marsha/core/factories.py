@@ -77,7 +77,10 @@ class OrganizationFactory(DjangoModelFactory):
 
 
 class ConsumerSiteOrganizationFactory(DjangoModelFactory):
-    """Factory for the SiteOrganization model."""
+    """Factory for the ConsumerSiteOrganization model."""
+
+    consumer_site = factory.SubFactory(ConsumerSiteFactory)
+    organization = factory.SubFactory(OrganizationFactory)
 
     class Meta:  # noqa
         model = models.ConsumerSiteOrganization
