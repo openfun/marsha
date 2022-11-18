@@ -9,6 +9,7 @@ from django.utils.translation import gettext_lazy as _, pgettext_lazy
 
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
+from safedelete.queryset import SafeDeleteQueryset
 
 from . import ADMINISTRATOR, ConsumerSite, Playlist, User
 from .base import BaseModel
@@ -40,12 +41,14 @@ class PortabilityRequestState(Enum):
         ]
 
 
-class PortabilityRequestManager(SafeDeleteManager):
-    """Custom manager for portability requests."""
+class PortabilityRequestQueryset(SafeDeleteQueryset):
+    """A queryset to provide helper for querying portability requests."""
 
-    def regarding_user_id(self, user_id, include_owned_requests=False, **kwargs):
+    def annotate_can_accept_or_reject(self, user_id, force_value=None):
         """
-        Return portability requests related to a user.
+        Annotate the queryset with a boolean indicating if the user can act
+        on the portability request.
+        Required for the PortabilityRequestSerializer serializer.
 
         Parameters
         ----------
@@ -53,13 +56,52 @@ class PortabilityRequestManager(SafeDeleteManager):
             The user ID to filter portability requests for.
             We use the user ID here because it can be provided from UserToken
 
-        include_owned_requests : bool
-            If True, include portability requests owned by the user.
+        force_value : optional[bool]
+            If set, force the value of the annotation to `force_value`.
+            Useful to avoid heavy request when we already know the answer.
 
-        kwargs : dict
-            Additional filters to apply to the queryset.
+        Returns
+        -------
+        QuerySet
+            The annotated queryset.
         """
-        or_filters = [
+        if force_value is not None:
+            return self.annotate(
+                can_accept_or_reject=models.Value(
+                    force_value, output_field=models.BooleanField()
+                ),
+            )
+
+        return self.annotate(
+            can_accept_or_reject=models.Case(
+                models.When(
+                    Q(
+                        reduce(
+                            or_,
+                            PortabilityRequestManager.regarding_user_id_or_filters(
+                                user_id
+                            ),
+                            Q(),
+                        ),
+                        state=PortabilityRequestState.PENDING.value,
+                    ),
+                    then=models.Value(True),
+                ),
+                default=models.Value(False),
+                output_field=models.BooleanField(),
+            )
+        )
+
+
+class PortabilityRequestManager(SafeDeleteManager):
+    """Custom manager for portability requests."""
+
+    @classmethod
+    def regarding_user_id_or_filters(cls, user_id):
+        """
+        Get the Q filters to select the portability request a user is related to.
+        """
+        return [
             # Is owner of the linked playlist
             Q(for_playlist__created_by_id=user_id),
             # Has admin role on playlist
@@ -78,12 +120,33 @@ class PortabilityRequestManager(SafeDeleteManager):
                 for_playlist__consumer_site__user_accesses__role=ADMINISTRATOR,
             ),
         ]
+
+    def regarding_user_id(self, user_id, include_owned_requests=False, **kwargs):
+        """
+        Return portability requests related to a user.
+
+        Parameters
+        ----------
+        user_id : str
+            The user ID to filter portability requests for.
+            We use the user ID here because it can be provided from UserToken
+
+        include_owned_requests : bool
+            If True, include portability requests owned by the user.
+
+        kwargs : dict
+            Additional filters to apply to the queryset.
+        """
         if include_owned_requests:
             return self.filter(
-                Q(from_user_id=user_id) | reduce(or_, or_filters, Q()), **kwargs
+                Q(from_user_id=user_id)
+                | reduce(or_, self.regarding_user_id_or_filters(user_id), Q()),
+                **kwargs,
             ).distinct()
 
-        return self.filter(reduce(or_, or_filters, Q()), **kwargs).distinct()
+        return self.filter(
+            reduce(or_, self.regarding_user_id_or_filters(user_id), Q()), **kwargs
+        ).distinct()
 
 
 class PortabilityRequest(BaseModel):
@@ -151,7 +214,7 @@ class PortabilityRequest(BaseModel):
         blank=True,
     )
 
-    objects = PortabilityRequestManager()
+    objects = PortabilityRequestManager(PortabilityRequestQueryset)
 
     class Meta:
         """Options for the ``PortabilityRequest`` model."""

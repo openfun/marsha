@@ -74,7 +74,9 @@ class PortabilityRequestListAPITest(TestCase):
 
         self.assertEqual(response.status_code, 403)  # Forbidden
 
-    def test_list_portability_request_logged_in_user_with_created_playlist(self):
+    def test_list_portability_request_logged_in_user_with_created_portability_request(
+        self,
+    ):
         """Creator of the portability request can list it."""
         user = UserFactory()
         portability_request = PortabilityRequestFactory(from_user=user)
@@ -115,6 +117,7 @@ class PortabilityRequestListAPITest(TestCase):
                     },
                     "state": portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": False,  # important
                 }
             ],
         )
@@ -151,6 +154,7 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": portability_request.state == "pending",
                 }
             ],
         )
@@ -191,6 +195,7 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": portability_request.state == "pending",
                 }
             ],
         )
@@ -231,6 +236,7 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": portability_request.state == "pending",
                 }
             ],
         )
@@ -273,6 +279,7 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": portability_request.state == "pending",
                 }
             ],
         )
@@ -308,6 +315,7 @@ class PortabilityRequestListAPITest(TestCase):
                 "from_user": None,
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": portability_request.state == "pending",
             }
             for portability_request in (
                 PortabilityRequestFactory(
@@ -376,6 +384,7 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": "pending",
                     "updated_by_user": None,
+                    "can_accept_or_reject": True,
                 },
             ],
             query_params="?state=pending",
@@ -424,6 +433,8 @@ class PortabilityRequestListAPITest(TestCase):
                     "from_user": None,
                     "state": linked_portability_request.state,
                     "updated_by_user": None,
+                    "can_accept_or_reject": linked_portability_request.state
+                    == "pending",
                 },
             ],
             query_params=f"?for_playlist_id={playlist_owned.pk}",

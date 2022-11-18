@@ -96,6 +96,7 @@ class PortabilityRequestRetrieveAPITest(TestCase):
                 },
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": False,  # important
             },
         )
 
@@ -131,6 +132,8 @@ class PortabilityRequestRetrieveAPITest(TestCase):
                 "from_user": None,
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": portability_request.state
+                == "pending",  # important
             },
         )
 
@@ -170,6 +173,7 @@ class PortabilityRequestRetrieveAPITest(TestCase):
                 "from_user": None,
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": portability_request.state == "pending",
             },
         )
 
@@ -209,6 +213,7 @@ class PortabilityRequestRetrieveAPITest(TestCase):
                 "from_user": None,
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": portability_request.state == "pending",
             },
         )
 
@@ -250,5 +255,6 @@ class PortabilityRequestRetrieveAPITest(TestCase):
                 "from_user": None,
                 "state": portability_request.state,
                 "updated_by_user": None,
+                "can_accept_or_reject": portability_request.state == "pending",
             },
         )
