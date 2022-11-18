@@ -1,4 +1,4 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { screen, fireEvent, waitFor, within } from '@testing-library/react';
 import { render } from 'lib-tests';
 
 import AppRoutes from './AppRoutes';
@@ -61,5 +61,23 @@ describe('<AppRoutes />', () => {
     });
 
     expect(window.scrollTo).toHaveBeenCalledTimes(3);
+  });
+
+  test('renders meta title desc', async () => {
+    const meta = document.createElement('meta');
+    meta.setAttribute('name', 'description');
+    meta.setAttribute('data-testid', 'description-id');
+    document.head.appendChild(meta);
+
+    render(<AppRoutes />);
+
+    await waitFor(() => {
+      expect(document.title).toEqual('Marsha');
+    });
+
+    expect(within(document.head).getByTestId('description-id')).toHaveAttribute(
+      'content',
+      'Marsha',
+    );
   });
 });
