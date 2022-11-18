@@ -107,6 +107,7 @@ class PortabilityRequestAcceptAPITest(TestCase):
                 "from_user": None,
                 "state": "rejected",  # important
                 "updated_by_user": None,
+                "can_accept_or_reject": False,
             },
         )
 
@@ -146,6 +147,7 @@ class PortabilityRequestAcceptAPITest(TestCase):
                 "from_user": None,
                 "state": "rejected",  # important
                 "updated_by_user": None,
+                "can_accept_or_reject": False,
             },
         )
 
@@ -185,6 +187,7 @@ class PortabilityRequestAcceptAPITest(TestCase):
                 "from_user": None,
                 "state": "rejected",  # important
                 "updated_by_user": None,
+                "can_accept_or_reject": False,
             },
         )
 
@@ -226,6 +229,7 @@ class PortabilityRequestAcceptAPITest(TestCase):
                 "from_user": None,
                 "state": "rejected",  # important
                 "updated_by_user": None,
+                "can_accept_or_reject": False,
             },
         )
 

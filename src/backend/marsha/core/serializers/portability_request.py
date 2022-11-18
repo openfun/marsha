@@ -33,6 +33,10 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
         required=False,
     )
 
+    # Field consuming the `can_accept_or_reject` property filled by
+    # the `PortabilityRequestManager` `annotate_can_accept_or_reject` method
+    can_accept_or_reject = serializers.BooleanField(read_only=True)
+
     class Meta:  # noqa
         model = PortabilityRequest
         fields = (
@@ -44,6 +48,8 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
             "from_user",
             "state",
             "updated_by_user",
+            # Non-model fields
+            "can_accept_or_reject",
         )
         read_only_fields = (
             "id",
