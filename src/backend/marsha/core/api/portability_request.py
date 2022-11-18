@@ -101,13 +101,18 @@ class PortabilityResourceViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelView
             return PortabilityRequest.objects.regarding_user_id(
                 self.request.user.id,
                 include_owned_requests=True,
-            )
+            ).annotate_can_accept_or_reject(self.request.user.id)
         if self.action in ["accept", "reject"]:
+            # `can_accept_or_reject` is forced to `False` because it is only used for frontend
+            # purpose, and we want to return the state after update without having to
+            # make a new request.
             return PortabilityRequest.objects.regarding_user_id(
                 self.request.user.id,
-            )
+            ).annotate_can_accept_or_reject(self.request.user.id, force_value=False)
         if self.action in ["destroy", "partial_update", "update"]:
-            return PortabilityRequest.objects.filter(from_user_id=self.request.user.id)
+            return PortabilityRequest.objects.filter(
+                from_user_id=self.request.user.id
+            ).annotate_can_accept_or_reject(self.request.user.id, force_value=True)
         return super().get_queryset().distinct()
 
     @action(methods=["post"], detail=True)
