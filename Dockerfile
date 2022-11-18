@@ -29,18 +29,27 @@ FROM node:16 as front-builder
 
 WORKDIR /app
 
+# Make layers for node_modules which will be mostly cached
+COPY ./src/frontend/package.json /app/package.json
+COPY ./src/frontend/yarn.lock /app/yarn.lock
+COPY ./src/frontend/apps/lti_site/package.json /app/apps/lti_site/package.json
+COPY ./src/frontend/apps/standalone_site/package.json /app/apps/standalone_site/package.json
+COPY ./src/frontend/packages/lib_classroom/package.json /app/packages/lib_classroom/package.json
+COPY ./src/frontend/packages/lib_common/package.json /app/packages/lib_common/package.json
+COPY ./src/frontend/packages/lib_components/package.json /app/packages/lib_components/package.json
+COPY ./src/frontend/packages/lib_tests/package.json /app/packages/lib_tests/package.json
+RUN yarn install --frozen-lockfile --network-timeout 1200000
+
 COPY ./src/frontend /app/
 COPY ./src/.prettierrc.js /app/
 
-RUN yarn install --frozen-lockfile --network-timeout 1200000 && \
-    yarn compile-translations && \
+RUN yarn compile-translations && \
     yarn workspace marsha run sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=../../node_modules  && \
     mkdir -p /app/marsha/static/css/fonts && cp node_modules/katex/dist/fonts/* /app/marsha/static/css/fonts && \
     yarn build-libs && \
     yarn build-tests && \
     BUILD_PATH=/app/marsha/static/js/build/site/ DJANGO_STATIC_DIR=/app/marsha/static yarn workspace standalone_site run build && \
     yarn workspace marsha run build --mode=production --output-path /app/marsha/static/js/build/lti_site/
-    
 
 # ---- mails ----
 FROM node:16 as mail-builder
