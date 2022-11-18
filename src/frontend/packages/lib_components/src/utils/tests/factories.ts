@@ -386,6 +386,7 @@ export const portabilityRequestMockFactory = (
     state: PortabilityRequestState.PENDING,
     from_user: null,
     updated_by_user: null,
+    can_accept_or_reject: true,
     ...portabilityRequest,
   };
 };
