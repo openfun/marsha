@@ -39,11 +39,11 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
-    "@codemirror/lang-markdown": "6.0.4",
-    "@codemirror/language": "6.3.0",
+    "@codemirror/lang-markdown": "6.0.5",
+    "@codemirror/language": "6.3.1",
     "@codemirror/language-data": "6.1.0",
-    "@codemirror/view": "6.4.0",
-    "@codemirror/state": "6.1.2",
+    "@codemirror/view": "6.5.1",
+    "@codemirror/state": "6.1.4",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
