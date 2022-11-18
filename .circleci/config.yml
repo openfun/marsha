@@ -134,6 +134,7 @@ jobs:
       # Activate docker-in-docker
       - setup_remote_docker:
           version: 20.10.11
+          docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -198,6 +199,7 @@ jobs:
       # Activate docker-in-docker
       - setup_remote_docker:
           version: 20.10.11
+          docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
@@ -1013,6 +1015,7 @@ jobs:
       # Activate docker-in-docker
       - setup_remote_docker:
           version: 20.10.11
+          docker_layer_caching: true
       - *docker_login
       - run:
           name: Build production image (using cached layers)
@@ -1078,6 +1081,7 @@ jobs:
       # Activate docker-in-docker
       - setup_remote_docker:
           version: 20.10.11
+          docker_layer_caching: true
       - *docker_login
       # Each image is tagged with the current git commit sha1 to avoid
       # collisions in parallel builds.
