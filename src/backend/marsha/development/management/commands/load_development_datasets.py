@@ -12,6 +12,7 @@ from marsha.core.factories import (
     DocumentFactory,
     OrganizationFactory,
     PlaylistAccessFactory,
+    PortabilityRequestFactory,
     VideoFactory,
     WebinarVideoFactory,
 )
@@ -32,16 +33,6 @@ from marsha.markdown.factories import MarkdownDocumentFactory
 
 
 User = get_user_model()
-
-
-def populate_playlist(playlist):
-    """Populate a playlist with "default" resources."""
-    ClassroomFactory.create_batch(3, playlist=playlist)
-    FileDepositoryFactory.create_batch(3, playlist=playlist)
-    DocumentFactory.create_batch(3, playlist=playlist)
-    MarkdownDocumentFactory.create_batch(3, playlist=playlist)
-    VideoFactory.create_batch(3, playlist=playlist)
-    WebinarVideoFactory.create_batch(3, playlist=playlist)
 
 
 class Command(BaseCommand):
@@ -243,7 +234,7 @@ class Command(BaseCommand):
             is_portable_to_playlist=False,
         )
         if created:
-            populate_playlist(playlist_admin)
+            self._populate_playlist(playlist_admin)
 
         playlist_admin_permission, created = Playlist.objects.get_or_create(
             title="admin user playlist",
@@ -259,7 +250,7 @@ class Command(BaseCommand):
                 playlist=playlist_admin_permission,
                 role=ADMINISTRATOR,
             )
-            populate_playlist(playlist_admin_permission)
+            self._populate_playlist(playlist_admin_permission)
             # also add random playlists
             PlaylistAccessFactory.create_batch(
                 5,
@@ -276,7 +267,7 @@ class Command(BaseCommand):
             is_portable_to_playlist=False,
         )
         if created:
-            populate_playlist(playlist_instructor)
+            self._populate_playlist(playlist_instructor)
 
         playlist, created = Playlist.objects.get_or_create(
             title="Playlist created by unknown user",
@@ -302,6 +293,17 @@ class Command(BaseCommand):
         )
 
         if created:
-            populate_playlist(playlist)
+            self._populate_playlist(playlist)
 
         self.stdout.write(" - done.")
+
+    def _populate_playlist(self, playlist):
+        """Populate a playlist with "default" resources."""
+        ClassroomFactory.create_batch(3, playlist=playlist)
+        FileDepositoryFactory.create_batch(3, playlist=playlist)
+        DocumentFactory.create_batch(3, playlist=playlist)
+        MarkdownDocumentFactory.create_batch(3, playlist=playlist)
+        PortabilityRequestFactory.create_batch(8, for_playlist=playlist)
+        PortabilityRequestFactory(from_playlist=playlist, from_user=self.superuser)
+        VideoFactory.create_batch(3, playlist=playlist)
+        WebinarVideoFactory.create_batch(3, playlist=playlist)
