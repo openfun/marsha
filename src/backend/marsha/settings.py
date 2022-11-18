@@ -534,6 +534,9 @@ class Base(Configuration):
     SOCIAL_AUTH_URL_NAMESPACE = "account:social"
     SOCIAL_AUTH_SAML_FER_IDP_FAKER = False
     SOCIAL_AUTH_SAML_FER_IDP_FAKER_DOCKER_PORT = 8060
+    SOCIAL_AUTH_SAML_FER_FEDERATION_SAML_METADATA_STORE = (
+        "social_edu_federation.django.metadata_store.CachedMetadataStore"
+    )
 
     SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG = {
         "authnRequestsSigned": values.BooleanValue(
