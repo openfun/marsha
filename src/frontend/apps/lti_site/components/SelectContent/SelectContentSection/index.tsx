@@ -111,18 +111,26 @@ const AssertedIconStatus = ({
   );
 };
 
+type ContentCardContent = Video | Document;
+const isVideoGuard = (content: ContentCardContent): content is Video => {
+  return (
+    (content as Video).thumbnail !== undefined ||
+    (content as Video).urls !== undefined
+  );
+};
+
 const ContentCard = ({
   content,
   onClick,
 }: {
-  content: Video | Document;
+  content: ContentCardContent;
   onClick: () => void;
 }) => {
   const intl = useIntl();
   const contentTitle = { content_title: content.title };
 
   let thumbnail;
-  if ('thumbnail' in content || 'urls' in content) {
+  if (isVideoGuard(content)) {
     const thumbnailUrls =
       (content.thumbnail &&
         content.thumbnail.is_ready_to_show &&
