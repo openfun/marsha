@@ -598,7 +598,7 @@ jobs:
             - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Run test on standalone site
-          command: yarn workspace standalone_site run test
+          command: yarn workspace standalone_site run test --watchAll=false --maxWorkers=2
 
   test-e2e:
     docker:
