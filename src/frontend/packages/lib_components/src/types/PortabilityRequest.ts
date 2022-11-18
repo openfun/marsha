@@ -19,4 +19,5 @@ export interface PortabilityRequest {
   from_user: Nullable<User>;
   state: PortabilityRequestState;
   updated_by_user: Nullable<User>;
+  can_accept_or_reject: boolean;
 }
