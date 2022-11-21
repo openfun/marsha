@@ -539,6 +539,7 @@ class Base(Configuration):
     SOCIAL_AUTH_SAML_FER_FEDERATION_SAML_METADATA_STORE = (
         "social_edu_federation.django.metadata_store.CachedMetadataStore"
     )
+    SOCIAL_AUTH_SAML_FER_REDIRECT_IS_HTTPS = values.BooleanValue(False)
 
     SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG = {
         "authnRequestsSigned": values.BooleanValue(
