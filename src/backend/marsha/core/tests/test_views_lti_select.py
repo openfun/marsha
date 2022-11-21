@@ -310,6 +310,7 @@ class SelectLTIViewTestCase(TestCase):
         lti_parameters.update({"lti_message_type": "ContentItemSelection"})
         self.assertEqual(jwt_token.get("lti_select_form_data"), lti_parameters)
 
+    @override_settings(SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
     def test_views_lti_select_behind_tls_termination_proxy(self):
         """Validate the context passed to the frontend app for a LTI Content selection."""
         lti_consumer_parameters = {
@@ -342,6 +343,7 @@ class SelectLTIViewTestCase(TestCase):
             lti_parameters,
             HTTP_REFERER="http://testserver",
             HTTP_X_FORWARDED_PROTO="https",
+            HTTP_HOST="testserver",
         )
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")

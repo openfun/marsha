@@ -4,7 +4,6 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from .models import {{cookiecutter.model}}
 
@@ -60,7 +59,6 @@ class {{cookiecutter.model}}SelectLTISerializer({{cookiecutter.model}}Serializer
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
+        return self.context["request"].build_absolute_uri(
             reverse("{{cookiecutter.app_name}}:{{cookiecutter.model_lower}}_lti_view", args=[obj.id]),
         )

@@ -21,7 +21,6 @@ from ..defaults import (
 )
 from ..models import Thumbnail, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
-from ..utils.url_utils import build_absolute_uri_behind_proxy
 from .base import TimestampField, get_video_cloudfront_url_params
 from .playlist import PlaylistLiteSerializer
 from .shared_live_media import SharedLiveMediaSerializer
@@ -436,8 +435,7 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
+        return self.context["request"].build_absolute_uri(
             reverse("video_lti_view", args=[obj.id]),
         )
 

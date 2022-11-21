@@ -12,7 +12,6 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.time_utils import to_timestamp
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions as markdown_permissions, serializers
 from ..core.models import ADMINISTRATOR
@@ -158,7 +157,7 @@ class MarkdownDocumentViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
+        new_url = self.request.build_absolute_uri(LTI_ROUTE)
 
         markdown_documents = serializers.MarkdownDocumentSelectLTISerializer(
             MarkdownDocument.objects.filter(

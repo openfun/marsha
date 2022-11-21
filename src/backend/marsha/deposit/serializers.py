@@ -15,7 +15,6 @@ from marsha.core.serializers import (
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from ..core.models import User
 from .models import DepositedFile, FileDepository
@@ -225,7 +224,6 @@ class FileDepositorySelectLTISerializer(FileDepositorySerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
+        return self.context["request"].build_absolute_uri(
             reverse("deposit:file_depository_lti_view", args=[obj.id]),
         )
