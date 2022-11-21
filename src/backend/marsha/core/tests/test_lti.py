@@ -313,6 +313,7 @@ class LTITestCase(TestCase):
         self.assertEqual(mock_verify.call_count, 1)
 
     @mock.patch.object(LTIOAuthServer, "verify_request", return_value=True)
+    @override_settings(SECURE_PROXY_SSL_HEADER=("HTTP_X_FORWARDED_PROTO", "https"))
     def test_lti_behind_tls_termination_proxy(self, mock_verify):
         """The launch url should be corrected when placed behind a tls termination proxy."""
         ConsumerSiteLTIPassportFactory(
@@ -329,8 +330,9 @@ class LTITestCase(TestCase):
             data,
             HTTP_X_FORWARDED_PROTO="https",
             HTTP_REFERER="http://testserver/lti/videos/",
+            HTTP_HOST="testserver",
         )
-        self.assertEqual(request.build_absolute_uri(), "http://testserver/lti/videos/")
+        self.assertEqual(request.build_absolute_uri(), "https://testserver/lti/videos/")
         lti = LTI(request, uuid.uuid4())
         lti.verify()
         self.assertEqual(

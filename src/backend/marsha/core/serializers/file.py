@@ -13,7 +13,6 @@ from rest_framework import serializers
 
 from ..models import Document
 from ..utils import cloudfront_utils, time_utils
-from ..utils.url_utils import build_absolute_uri_behind_proxy
 from .base import TimestampField, UploadableFileWithExtensionSerializerMixin
 from .playlist import PlaylistLiteSerializer
 
@@ -166,9 +165,8 @@ class DocumentSelectLTISerializer(serializers.ModelSerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
-            reverse("document_lti_view", args=[obj.id]),
+        return self.context["request"].build_absolute_uri(
+            reverse("document_lti_view", args=[obj.id])
         )
 
 

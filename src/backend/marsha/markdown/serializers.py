@@ -16,7 +16,6 @@ from marsha.core.serializers import (
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 from marsha.core.utils import cloudfront_utils, time_utils
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from .models import MarkdownDocument, MarkdownImage
 
@@ -228,7 +227,6 @@ class MarkdownDocumentSelectLTISerializer(MarkdownDocumentSerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
+        return self.context["request"].build_absolute_uri(
             reverse("markdown:markdown_document_lti_view", args=[obj.id]),
         )
