@@ -63,7 +63,6 @@ from .lti.utils import (
 from .models import Document, LiveSession, Playlist, PortabilityRequest, Video
 from .models.account import LTIPassport
 from .serializers import DocumentSerializer, PlaylistLiteSerializer, VideoSerializer
-from .utils.url_utils import build_absolute_uri_behind_proxy
 
 
 # pylint: disable=too-many-lines
@@ -844,8 +843,8 @@ class LTISelectView(BaseResourceView):
             app_data.update(
                 {
                     f"{resource_kind}s": serialized_data,
-                    f"new_{resource_kind}_url": build_absolute_uri_behind_proxy(
-                        self.request, resource_config["route"]
+                    f"new_{resource_kind}_url": self.request.build_absolute_uri(
+                        resource_config["route"],
                     ),
                 }
             )

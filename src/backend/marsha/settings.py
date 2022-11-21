@@ -102,6 +102,7 @@ class Base(Configuration):
     SECURE_REFERRER_POLICY = "same-origin"
     SILENCED_SYSTEM_CHECKS = values.ListValue([])
     CSRF_TRUSTED_ORIGINS = values.ListValue([])
+    SECURE_PROXY_SSL_HEADER = values.TupleValue(("HTTP_X_FORWARDED_PROTO", "https"))
 
     # Application definition
 
