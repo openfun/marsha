@@ -111,7 +111,7 @@ def create(classroom: Classroom):
         "attendeePW": classroom.attendee_password,
         "moderatorPW": classroom.moderator_password,
         "welcome": classroom.welcome_text,
-        "record": True,
+        "record": settings.BBB_ENABLE_RECORD,
     }
 
     documents = classroom.classroom_documents.filter(upload_state="ready")

@@ -19,6 +19,7 @@ from marsha.bbb.utils.bbb_utils import (
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
+@override_settings(BBB_ENABLE_RECORD=True)
 class ClassroomServiceTestCase(TestCase):
     """Test our intentions about the Classroom service."""
 
@@ -66,6 +67,80 @@ class ClassroomServiceTestCase(TestCase):
                         "name": "Classroom 001",
                         "welcome": "Welcome!",
                         "record": True,
+                    }
+                )
+            ],
+            body=f"""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingID>{classroom.id}</meetingID>
+                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
+                <parentMeetingID>bbb-none</parentMeetingID>
+                <attendeePW>{classroom.attendee_password}</attendeePW>
+                <moderatorPW>{classroom.moderator_password}</moderatorPW>
+                <createTime>1628693645640</createTime>
+                <voiceBridge>83267</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
+                <hasUserJoined>false</hasUserJoined>
+                <duration>0</duration>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <messageKey></messageKey>
+                <message></message>
+            </response>
+            """,
+            status=200,
+        )
+
+        api_response = create(classroom)
+
+        self.assertDictEqual(
+            {
+                "attendeePW": classroom.attendee_password,
+                "createDate": "Wed Aug 11 14:54:05 UTC 2021",
+                "createTime": "1628693645640",
+                "dialNumber": "613-555-1234",
+                "duration": "0",
+                "hasBeenForciblyEnded": "false",
+                "hasUserJoined": "false",
+                "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
+                "meetingID": str(classroom.id),
+                "message": "Meeting created.",
+                "messageKey": None,
+                "moderatorPW": classroom.moderator_password,
+                "parentMeetingID": "bbb-none",
+                "returncode": "SUCCESS",
+                "voiceBridge": "83267",
+            },
+            api_response,
+        )
+        self.assertEqual(classroom.started, True)
+        self.assertEqual(classroom.ended, False)
+
+    @responses.activate
+    @override_settings(BBB_ENABLE_RECORD=False)
+    def test_bbb_create_new_classroom_record_disabled(self):
+        """Create a classroom in current classroom related server."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
+            attendee_password="9#R1kuUl3R",
+            moderator_password="0$C7Aaz0o",
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "attendeePW": "9#R1kuUl3R",
+                        "checksum": "9f67744c41124aefce0cc7d6b2e071ee06c67c7b",
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "moderatorPW": "0$C7Aaz0o",
+                        "name": "Classroom 001",
+                        "welcome": "Welcome!",
+                        "record": False,
                     }
                 )
             ],
