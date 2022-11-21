@@ -18,6 +18,8 @@ class Playlist(BaseModel):
         max_length=255,
         verbose_name=_("lti id"),
         help_text=_("ID for synchronization with an external LTI tool"),
+        null=True,
+        blank=True,
     )
     organization = models.ForeignKey(
         to="Organization",
@@ -30,8 +32,10 @@ class Playlist(BaseModel):
     consumer_site = models.ForeignKey(
         to="ConsumerSite",
         related_name="playlists",
-        # playlist is (soft-)deleted if organization is (soft-)deleted
+        # playlist is (soft-)deleted if consumer site is (soft-)deleted
         on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
     created_by = models.ForeignKey(
         to="User",
@@ -96,7 +100,24 @@ class Playlist(BaseModel):
                 fields=["lti_id", "consumer_site"],
                 condition=models.Q(deleted=None),
                 name="playlist_unique_idx",
-            )
+            ),
+            models.CheckConstraint(
+                name="consumer_site_or_organization_check_idx",
+                check=models.Q(
+                    # In LTI context
+                    models.Q(
+                        # organization can be provided or not
+                        consumer_site__isnull=False,
+                        lti_id__isnull=False,
+                    )
+                    # In standalone site context
+                    | models.Q(
+                        consumer_site__isnull=True,
+                        lti_id__isnull=True,
+                        organization__isnull=False,
+                    )
+                ),
+            ),
         ]
 
     def __str__(self):
