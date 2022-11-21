@@ -11,7 +11,6 @@ from rest_framework.response import Response
 from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 from . import permissions, serializers
 from ..core.models import ADMINISTRATOR
@@ -162,7 +161,7 @@ class ClassroomViewSet(
             HttpResponse carrying selectable content as a JSON object.
 
         """
-        new_url = build_absolute_uri_behind_proxy(self.request, LTI_ROUTE)
+        new_url = self.request.build_absolute_uri(LTI_ROUTE)
 
         classrooms = serializers.ClassroomSelectLTISerializer(
             Classroom.objects.filter(playlist__id=request.resource.playlist_id),

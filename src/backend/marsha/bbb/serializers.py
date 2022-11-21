@@ -22,7 +22,6 @@ from marsha.core.serializers import (
     UploadableFileWithExtensionSerializerMixin,
 )
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
-from marsha.core.utils.url_utils import build_absolute_uri_behind_proxy
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -119,8 +118,7 @@ class ClassroomSelectLTISerializer(ClassroomSerializer):
             the LTI url to be used by LTI consumers
 
         """
-        return build_absolute_uri_behind_proxy(
-            self.context["request"],
+        return self.context["request"].build_absolute_uri(
             reverse("classroom:classroom_lti_view", args=[obj.id]),
         )
 
