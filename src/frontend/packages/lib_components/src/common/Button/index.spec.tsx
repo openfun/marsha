@@ -15,7 +15,7 @@ describe('<Button />', () => {
   it('renders the Button component with its title only', () => {
     render(<Button label="Button" />);
 
-    screen.getByRole('button', { name: /Button/i });
+    expect(screen.getByRole('button', { name: /Button/i })).toBeInTheDocument();
   });
 
   it('calls onCLick when clicking the button', () => {

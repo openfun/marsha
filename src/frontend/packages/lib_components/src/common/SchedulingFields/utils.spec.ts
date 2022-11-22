@@ -43,7 +43,7 @@ describe('SchedulingFields/utils', () => {
   });
 
   describe('mergeDateTime', () => {
-    it('merges date and time to dateTime ISO string in local timezone ', () => {
+    it('merges date and time to dateTime ISO string in local timezone', () => {
       const dateTime = mergeDateTime('2022-04-11', '18:30');
 
       const expectedDateTime = DateTime.fromObject(

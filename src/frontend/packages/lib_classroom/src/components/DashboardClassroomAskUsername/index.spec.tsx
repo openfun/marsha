@@ -12,7 +12,7 @@ describe('<DashboardClassroomAskUsername />', () => {
     const userFullname = 'Initial value';
     const mockSetUserFullname = jest.fn();
 
-    const { getByText } = render(
+    render(
       <DashboardClassroomAskUsername
         userFullname={userFullname}
         setUserFullname={mockSetUserFullname}
@@ -21,7 +21,7 @@ describe('<DashboardClassroomAskUsername />', () => {
       />,
     );
 
-    getByText('Please enter your name to join the classroom');
+    screen.getByText('Please enter your name to join the classroom');
     const inputUsername = screen.getByDisplayValue('Initial value');
     expect(inputUsername).toHaveValue(userFullname);
 

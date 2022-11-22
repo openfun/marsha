@@ -1,3 +1,6 @@
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
+/* eslint-disable testing-library/no-unnecessary-act */
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/no-unsafe-call */
@@ -63,7 +66,12 @@ describe('<UploadDocuments />', () => {
 
   it('renders a Dropzone with the relevant messages', () => {
     render(<UploadDocuments classroomId="1" />);
-    screen.getByText("Drag 'n' drop some files here, or click to select files");
+
+    expect(
+      screen.getByText(
+        "Drag 'n' drop some files here, or click to select files",
+      ),
+    ).toBeInTheDocument();
   });
 
   it('passes the file to the callback', async () => {
@@ -89,13 +97,13 @@ describe('<UploadDocuments />', () => {
         },
       });
     });
-    expect(screen.queryByText('course.pdf')).toBeInTheDocument();
+    expect(screen.getByText('course.pdf')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     const classroomDocument = classroomDocumentMockFactory();
     createDeferred.resolve(classroomDocument);
 
-    await waitFor(() => expect(expect(mockAddUpload).toHaveBeenCalledTimes(1)));
+    await waitFor(() => expect(mockAddUpload).toHaveBeenCalledTimes(1));
     expect(mockAddUpload).toHaveBeenLastCalledWith(
       modelName.CLASSROOM_DOCUMENTS,
       classroomDocument.id,

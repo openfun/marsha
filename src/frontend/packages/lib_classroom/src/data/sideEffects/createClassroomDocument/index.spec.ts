@@ -46,7 +46,7 @@ describe('sideEffects/createClassroomDocument', () => {
 
     await expect(
       createClassroomDocument({ filename: file.name, size: file.size }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to create the deposited file (API error)', async () => {
@@ -55,6 +55,6 @@ describe('sideEffects/createClassroomDocument', () => {
 
     await expect(
       createClassroomDocument({ filename: file.name, size: file.size }),
-    ).rejects.toThrowError('Failed to create a new classroom document.');
+    ).rejects.toThrow('Failed to create a new classroom document.');
   });
 });

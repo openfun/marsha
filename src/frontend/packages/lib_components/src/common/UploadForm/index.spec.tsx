@@ -1,3 +1,5 @@
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
@@ -111,7 +113,7 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
     render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />);
 
-    await screen.findByText('Create a new video');
+    expect(await screen.findByText('Create a new video')).toBeInTheDocument();
   });
 
   it('gets the policy from the API and uses it to upload the file', async () => {

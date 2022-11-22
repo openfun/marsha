@@ -93,14 +93,15 @@ describe('<LTIUploadHandlers />', () => {
         id: object.id,
         title: file.name,
       });
-      expect(mockUpdateResource).toHaveBeenCalledWith(
-        {
-          id: object.id,
-          title: file.name,
-        },
-        modelName.VIDEOS,
-      );
     });
+
+    expect(mockUpdateResource).toHaveBeenCalledWith(
+      {
+        id: object.id,
+        title: file.name,
+      },
+      modelName.VIDEOS,
+    );
   });
 
   it('does not update the object name to the file when the object title is already set', async () => {

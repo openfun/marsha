@@ -49,7 +49,7 @@ describe('sideEffects/updateResource', () => {
   it('throws an error if the response does not return a 2xx', async () => {
     fetchMock.mock('/api/videos/video-id/', 400, { method: 'PUT' });
 
-    await expect(updateResource(video, modelName.VIDEOS)).rejects.toThrowError(
+    await expect(updateResource(video, modelName.VIDEOS)).rejects.toThrow(
       'Failed to update resource videos with id video-id',
     );
   });

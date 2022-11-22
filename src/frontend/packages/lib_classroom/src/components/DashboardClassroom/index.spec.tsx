@@ -61,11 +61,11 @@ describe('<DashboardClassroom />', () => {
     const classroomDeferred = new Deferred();
     fetchMock.get('/api/classrooms/1/', classroomDeferred.promise);
 
-    const { getByText } = render(<DashboardClassroom classroomId="1" />);
+    render(<DashboardClassroom classroomId="1" />);
 
-    getByText('Loading classroom...');
+    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
     await act(async () => classroomDeferred.resolve(classroom));
-    getByText('Classroom not started yet.');
+    expect(screen.getByText('Classroom not started yet.')).toBeInTheDocument();
   });
 
   it('shows instructor dashboard', async () => {
@@ -86,12 +86,13 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText, getByText } = render(
-      <DashboardClassroom classroomId="1" />,
-    );
-    getByText('Loading classroom...');
+    render(<DashboardClassroom classroomId="1" />);
+
+    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
     await act(async () => classroomDeferred.resolve(classroom));
-    await findByText('Launch the classroom now in BBB');
+    expect(
+      await screen.findByText('Launch the classroom now in BBB'),
+    ).toBeInTheDocument();
   });
 
   it('asks for fullname when joining a classroom, cancellable for instructor', async () => {
@@ -110,7 +111,7 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText } = render(<DashboardClassroom classroomId="1" />);
+    render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
 
     const createdClassroom = {
@@ -124,10 +125,12 @@ describe('<DashboardClassroom />', () => {
     });
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    fireEvent.click(await findByText('Join classroom'));
+    fireEvent.click(await screen.findByText('Join classroom'));
 
-    await findByText('Please enter your name to join the classroom');
-    await findByText('Cancel');
+    expect(
+      await screen.findByText('Please enter your name to join the classroom'),
+    ).toBeInTheDocument();
+    expect(await screen.findByText('Cancel')).toBeInTheDocument();
   });
 
   it('asks for fullname when joining a classroom, not cancellable for student', async () => {
@@ -149,10 +152,10 @@ describe('<DashboardClassroom />', () => {
       results: [],
     });
 
-    const { findByText } = render(<DashboardClassroom classroomId="1" />);
+    render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
     fireEvent.click(screen.getByText('Click here to access classroom'));
-    await findByText('Please enter your name to join the classroom');
+    await screen.findByText('Please enter your name to join the classroom');
     expect(screen.queryByText('Cancel')).not.toBeInTheDocument();
 
     const inputUsername = screen.getByRole('textbox');
@@ -267,7 +270,7 @@ describe('<DashboardClassroom />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
 
-    const { getByText } = render(<DashboardClassroom classroomId="1" />);
+    render(<DashboardClassroom classroomId="1" />);
     await act(async () => classroomDeferred.resolve(classroom));
     await act(async () =>
       deferredPatch.resolve({ url: 'server.bbb/classroom/url' }),
@@ -299,7 +302,11 @@ describe('<DashboardClassroom />', () => {
     await act(async () => updatedClassroomDeferred.resolve(updatedClassroom));
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
-    getByText(`You have joined the classroom as ${token.user?.user_fullname}.`);
+    expect(
+      screen.getByText(
+        `You have joined the classroom as ${token.user?.user_fullname}.`,
+      ),
+    ).toBeInTheDocument();
   });
 
   it('shows an error message when it fails to get the classroom', async () => {
@@ -318,14 +325,19 @@ describe('<DashboardClassroom />', () => {
 
     jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
-    const { getByText } = render(<DashboardClassroom classroomId="1" />, {
+    render(<DashboardClassroom classroomId="1" />, {
       queryOptions: { client: queryClient },
     });
-    getByText('Loading classroom...');
+
+    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
     await act(async () => classroomDeferred.resolve(500));
-    getByText('The classroom you are looking for could not be found');
-    getByText(
-      'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
-    );
+    expect(
+      screen.getByText('The classroom you are looking for could not be found'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated.',
+      ),
+    ).toBeInTheDocument();
   });
 });
