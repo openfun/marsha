@@ -7,11 +7,11 @@ import {
 } from '@testing-library/react';
 import { Grommet, ResponsiveContext, ThemeType } from 'grommet';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import { BreadCrumbsProvider, GlobalStyles, theme } from 'lib-common';
-import { Nullable } from 'lib-common';
+import { BreadCrumbsProvider, GlobalStyles, theme, Nullable } from 'lib-common';
 import React, { CSSProperties, ReactElement } from 'react';
 import toast, { Toast, Toaster, useToaster } from 'react-hot-toast';
 import { QueryClient, QueryClientProvider } from 'react-query';
+import { RouteProps } from 'react-router-dom';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';
@@ -21,7 +21,7 @@ interface IntlOptions {
   locale?: string;
 }
 interface RouterOptions {
-  routes?: { path: string; render: ({ match }: any) => JSX.Element }[];
+  routes?: RouteProps[];
   componentPath?: string;
   header?: React.ReactElement;
   history?: string[];
@@ -61,7 +61,7 @@ const matchMedia = new MatchMediaMock();
 
 //  stores toast to be able to clean up at the end of the test
 //  @see {@link afterEach}
-let getToastHook: () => any = () => {};
+let getToastHook: () => ReturnType<typeof useToaster> | null = () => null;
 const ToastHack = () => {
   const toasts = useToaster();
   getToastHook = () => toasts;
