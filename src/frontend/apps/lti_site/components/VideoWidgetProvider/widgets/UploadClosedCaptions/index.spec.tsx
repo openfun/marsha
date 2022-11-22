@@ -4,9 +4,9 @@ import { useJwt } from 'lib-components';
 import React from 'react';
 
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
 import { UploadClosedCaptions } from '.';
+import fetchMock from 'fetch-mock';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: jest.fn(),
@@ -17,8 +17,8 @@ const mockUseInfoWidgetModal = useInfoWidgetModal as jest.MockedFunction<
 >;
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
 ];
 
 describe('<UploadClosedCaptions />', () => {
@@ -28,16 +28,23 @@ describe('<UploadClosedCaptions />', () => {
     });
   });
 
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
   it('renders the UploadClosedCaptions', () => {
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockSetInfoWidgetModalProvider = jest.fn();
     mockUseInfoWidgetModal.mockReturnValue([
       null,
       mockSetInfoWidgetModalProvider,
     ]);
-
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     render(<UploadClosedCaptions />);
 

@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
@@ -8,8 +8,7 @@ import {
   timedTextMode,
   timedTextMockFactory,
 } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices/index';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 import { LanguageSelect } from '.';
 
 jest.mock('lib-components', () => ({
@@ -20,18 +19,28 @@ jest.mock('lib-components', () => ({
 const onChangeMock = jest.fn();
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
-  { label: 'Spanish', value: 'es' },
-  { label: 'Slovenian', value: 'sl' },
-  { label: 'Swedish', value: 'sv' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
+  { display_name: 'Spanish', value: 'es' },
+  { display_name: 'Slovenian', value: 'sl' },
+  { display_name: 'Swedish', value: 'sv' },
 ];
 
 describe('<LanguageSelect />', () => {
-  it('renders the component with instructor local language available', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
+  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
+  it('renders the component with instructor local language available', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(
       <LanguageSelect
@@ -41,7 +50,12 @@ describe('<LanguageSelect />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });
+    await waitFor(() =>
+      expect(onChangeMock).toHaveBeenLastCalledWith({
+        label: 'French',
+        value: 'fr',
+      }),
+    );
 
     screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: fr',
@@ -53,10 +67,14 @@ describe('<LanguageSelect />', () => {
     ).toHaveValue('French');
   });
 
-  it('renders the component with instructor local language unavailable', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
+  it('renders the component with instructor local language unavailable', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(
       <LanguageSelect
@@ -66,10 +84,12 @@ describe('<LanguageSelect />', () => {
       { intlOptions: { locale: 'pg-PG' } },
     );
 
-    expect(onChangeMock).toHaveBeenCalledWith({
-      label: 'English',
-      value: 'en',
-    });
+    await waitFor(() =>
+      expect(onChangeMock).toHaveBeenLastCalledWith({
+        label: 'English',
+        value: 'en',
+      }),
+    );
 
     screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: en',
@@ -81,10 +101,15 @@ describe('<LanguageSelect />', () => {
     ).toHaveValue('English');
   });
 
-  it('renders the component with some languages already having some subtitles uploaded', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
+  it('renders the component with some languages already having some subtitles uploaded', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
     useTimedTextTrack.getState().addMultipleResources([
       timedTextMockFactory({
         language: 'fr',
@@ -104,7 +129,13 @@ describe('<LanguageSelect />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });
+    await waitFor(() =>
+      expect(onChangeMock).toHaveBeenLastCalledWith({
+        label: 'French',
+        value: 'fr',
+      }),
+    );
+
     const selectButton = screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: fr',
     });
@@ -127,7 +158,7 @@ describe('<LanguageSelect />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component with no languages', () => {
+  it('renders the component with no languages', async () => {
     fetchMock.mock('/api/timedtexttracks/', 500, { method: 'OPTIONS' });
 
     render(
@@ -138,10 +169,12 @@ describe('<LanguageSelect />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    expect(onChangeMock).toHaveBeenCalledWith({
-      label: 'No language availables',
-      value: 'error',
-    });
+    await waitFor(() =>
+      expect(onChangeMock).toHaveBeenLastCalledWith({
+        label: 'No language availables',
+        value: 'error',
+      }),
+    );
 
     expect(
       screen.queryByRole('button', {
@@ -164,10 +197,14 @@ describe('<LanguageSelect />', () => {
     ).toHaveValue('No language availables');
   });
 
-  it('changes the selected language', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
+  it('changes the selected language', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(
       <LanguageSelect
@@ -177,7 +214,13 @@ describe('<LanguageSelect />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    expect(onChangeMock).toHaveBeenCalledWith({ label: 'French', value: 'fr' });
+    await waitFor(() =>
+      expect(onChangeMock).toHaveBeenLastCalledWith({
+        label: 'French',
+        value: 'fr',
+      }),
+    );
+
     const selectButton = screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: fr',
     });

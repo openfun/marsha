@@ -1,13 +1,13 @@
 import { Box, Text } from 'grommet';
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import { RetryUploadButton } from 'components/RetryUploadButton';
 import { UploadingObject, uploadState, TimedText } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 
 import { DeleteTimedTextTrackItemUploadButton } from './DeleteTimedTextTrackItemUploadButton';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 const messages = defineMessages({
   retryUploadFailedLabel: {
@@ -36,8 +36,14 @@ export const TimedTextTrackItem = ({
   uploadingObject,
 }: TimedTextTrackItemProps) => {
   const intl = useIntl();
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
 
   const IS_UPLOAD_IN_PROGRESS =
@@ -51,10 +57,6 @@ export const TimedTextTrackItem = ({
   const languageLabel = languageChoice
     ? languageChoice.label
     : intl.formatMessage(messages.languageNotFound);
-
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   return (
     <Box
