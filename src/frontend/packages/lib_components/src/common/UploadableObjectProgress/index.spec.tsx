@@ -41,7 +41,8 @@ describe('<UploadableObjectProgress />', () => {
         <UploadableObjectProgress progress={0} />
       </UploadManagerContext.Provider>,
     );
-    screen.getByText('0%');
+
+    expect(screen.getByText('0%')).toBeInTheDocument();
 
     rerender(
       <UploadManagerContext.Provider
@@ -61,6 +62,7 @@ describe('<UploadableObjectProgress />', () => {
         <UploadableObjectProgress progress={51} />
       </UploadManagerContext.Provider>,
     );
-    screen.getByText('51%');
+
+    expect(screen.getByText('51%')).toBeInTheDocument();
   });
 });

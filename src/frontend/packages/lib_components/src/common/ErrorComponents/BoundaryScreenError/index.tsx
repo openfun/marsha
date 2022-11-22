@@ -109,7 +109,7 @@ export const BoundaryScreenError = ({
           <Box margin="auto" width="90%">
             <Image
               alt={intl.formatMessage(messages.altErrorDrawing)}
-              fit={'contain'}
+              fit="contain"
               src={appData.static.img.errorMain}
             />
           </Box>

@@ -43,7 +43,7 @@ describe('<DashboardClassroomInstructor />', () => {
     const joinClassroomAction = jest.fn();
     const classroomEnded = jest.fn();
 
-    const { findByText, getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomInstructor
         classroom={classroom}
         joinedAs={false}
@@ -52,7 +52,7 @@ describe('<DashboardClassroomInstructor />', () => {
       />,
     );
 
-    await findByText('classroom form');
+    await screen.findByText('classroom form');
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
 
@@ -65,7 +65,7 @@ describe('<DashboardClassroomInstructor />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    await findByText('classroom infos');
+    await screen.findByText('classroom infos');
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
 
@@ -81,7 +81,7 @@ describe('<DashboardClassroomInstructor />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    getByText('You have joined the classroom as John Doe.');
+    screen.getByText('You have joined the classroom as John Doe.');
     const cancelButton = screen.queryByText('Join classroom');
     expect(cancelButton).toBeNull();
 
@@ -92,7 +92,7 @@ describe('<DashboardClassroomInstructor />', () => {
     await act(async () =>
       deferredPatch.resolve({ message: 'classroom ended' }),
     );
-    await findByText('Ending classroom…');
+    await screen.findByText('Ending classroom…');
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/end/');
     expect(fetchMock.calls()[0]![1]).toEqual({

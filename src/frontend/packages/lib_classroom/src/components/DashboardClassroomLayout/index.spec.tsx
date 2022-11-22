@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -20,21 +21,17 @@ const right = <p>Right content</p>;
 
 describe('DashboardClassroomLayout', () => {
   it('renders correctly without right content', () => {
-    const { getByText, queryByText } = render(
-      <DashboardClassroomLayout left={left} />,
-    );
+    render(<DashboardClassroomLayout left={left} />);
 
-    getByText('Left content');
-    const rightContent = queryByText('Right content');
+    screen.getByText('Left content');
+    const rightContent = screen.queryByText('Right content');
     expect(rightContent).not.toBeInTheDocument();
   });
 
   it('renders correctly with right content', () => {
-    const { getByText } = render(
-      <DashboardClassroomLayout left={left} right={right} />,
-    );
+    render(<DashboardClassroomLayout left={left} right={right} />);
 
-    getByText('Left content');
-    getByText('Right content');
+    expect(screen.getByText('Left content')).toBeInTheDocument();
+    expect(screen.getByText('Right content')).toBeInTheDocument();
   });
 });

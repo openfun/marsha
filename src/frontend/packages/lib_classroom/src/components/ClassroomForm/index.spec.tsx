@@ -51,11 +51,9 @@ describe('<ClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
-      <ClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    const { rerender } = render(<ClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -136,11 +134,9 @@ describe('<ClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
-      <ClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    const { rerender } = render(<ClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -282,11 +278,9 @@ describe('<ClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
-      <ClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    const { rerender } = render(<ClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -355,11 +349,9 @@ describe('<ClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
-      <ClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    const { rerender } = render(<ClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     userEvent.clear(inputStartingAtDate);
@@ -406,19 +398,17 @@ describe('<ClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, queryByText } = render(
-      <ClassroomForm classroom={classroom} />,
-    );
+    render(<ClassroomForm classroom={classroom} />);
 
     // title empty, error message should be shown
-    getByText('Title is required to launch the classroom.');
+    screen.getByText('Title is required to launch the classroom.');
 
     // title filled, error message should be hidden
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
     });
     userEvent.type(inputTitle, 'updated title');
-    const titleError = queryByText(
+    const titleError = screen.queryByText(
       'Title is required to launch the classroom.',
     );
     expect(titleError).not.toBeInTheDocument();

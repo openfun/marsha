@@ -125,7 +125,7 @@ describe('queries/actionOne', () => {
         action: 'action',
         object: objectToUpdate,
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
     expect(fetchMock.lastCall()?.[1]).toEqual({

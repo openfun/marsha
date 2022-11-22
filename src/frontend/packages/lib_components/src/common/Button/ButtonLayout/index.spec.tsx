@@ -16,9 +16,9 @@ describe('<ButtonLayout />', () => {
     render(
       <ButtonLayout
         label="Button"
-        reversedColor={'reversed-color'}
-        textColor={'text-color'}
-        tintColor={'int-color'}
+        reversedColor="reversed-color"
+        textColor="text-color"
+        tintColor="int-color"
       />,
     );
 
@@ -32,9 +32,9 @@ describe('<ButtonLayout />', () => {
       <ButtonLayout
         badge={badge}
         label="Button"
-        reversedColor={'reversed-color'}
-        tintColor={'int-color'}
-        textColor={'text-color'}
+        reversedColor="reversed-color"
+        tintColor="int-color"
+        textColor="text-color"
       />,
     );
 
@@ -48,9 +48,9 @@ describe('<ButtonLayout />', () => {
       <ButtonLayout
         Icon={() => <span>icon</span>}
         label="Button"
-        reversedColor={'reversed-color'}
-        tintColor={'int-color'}
-        textColor={'text-color'}
+        reversedColor="reversed-color"
+        tintColor="int-color"
+        textColor="text-color"
       />,
     );
 
@@ -65,15 +65,15 @@ describe('<ButtonLayout />', () => {
         badge={badge}
         Icon={() => <span>icon</span>}
         label="Button"
-        reversedColor={'reversed-color'}
-        tintColor={'int-color'}
-        textColor={'text-color'}
+        reversedColor="reversed-color"
+        tintColor="int-color"
+        textColor="text-color"
       />,
     );
 
-    screen.getByText('Button');
-    screen.getByText('icon');
-    screen.getByText('badge');
+    expect(screen.getByText('Button')).toBeInTheDocument();
+    expect(screen.getByText('icon')).toBeInTheDocument();
+    expect(screen.getByText('badge')).toBeInTheDocument();
   });
 
   it('renders the Button component with default style', () => {
@@ -82,9 +82,9 @@ describe('<ButtonLayout />', () => {
         badge={badge}
         Icon={Icon}
         label="Button"
-        reversedColor={'#ffffff'}
-        tintColor={'#0a67de'}
-        textColor={'#0a67de'}
+        reversedColor="#ffffff"
+        tintColor="#0a67de"
+        textColor="#0a67de"
       />,
     );
 
@@ -112,9 +112,9 @@ describe('<ButtonLayout />', () => {
         Icon={Icon}
         label="Button"
         reversed
-        reversedColor={'#ffffff'}
-        tintColor={'#031963'}
-        textColor={'#0a67de'}
+        reversedColor="#ffffff"
+        tintColor="#031963"
+        textColor="#0a67de"
       />,
     );
 

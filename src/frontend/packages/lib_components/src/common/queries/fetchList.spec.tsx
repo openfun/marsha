@@ -89,7 +89,7 @@ describe('queries/fetchList', () => {
         pageParam: undefined,
         queryKey: ['model-name'],
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/?limit=999');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -112,7 +112,7 @@ describe('queries/fetchList', () => {
         pageParam: undefined,
         queryKey: ['model-name'],
       }),
-    ).rejects.toThrowError('Failed to get list of model-name.');
+    ).rejects.toThrow('Failed to get list of model-name.');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/?limit=999');
     expect(fetchMock.lastCall()?.[1]).toEqual({

@@ -43,7 +43,7 @@ describe('sideEffects/initiateUpload', () => {
 
     await expect(
       initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to trigger the initiate-upload (API error)', async () => {
@@ -51,7 +51,7 @@ describe('sideEffects/initiateUpload', () => {
 
     await expect(
       initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
-    ).rejects.toThrowError(
+    ).rejects.toThrow(
       'Failed to trigger initiate-upload on the API for videos/42.',
     );
   });

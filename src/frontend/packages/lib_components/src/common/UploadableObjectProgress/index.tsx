@@ -30,12 +30,12 @@ export const UploadableObjectProgress = ({
     { color: 'brand', label: `${progress}%`, value: progress },
   ];
   return (
-    <Box direction={'row'} justify={'between'}>
+    <Box direction="row" justify="between">
       <StyledMeter
         a11yTitle={intl.formatMessage(messages.progressLabel)}
         values={values}
       />
-      <Text color={'brand'} weight={'bold'}>{`${progress}%`}</Text>
+      <Text color="brand" weight="bold">{`${progress}%`}</Text>
     </Box>
   );
 };

@@ -6,9 +6,8 @@ import MainLayout from './MainLayout';
 
 describe('<MainLayout />', () => {
   test('renders MainLayout', () => {
-    const Header = forwardRef<Nullable<HTMLDivElement>>(() => (
-      <Fragment>My Header</Fragment>
-    ));
+    const HeaderComponent = () => <Fragment>My Header</Fragment>;
+    const Header = forwardRef<Nullable<HTMLDivElement>>(HeaderComponent);
     const Menu = () => <Fragment>My menu</Fragment>;
     render(
       <MainLayout Header={Header} menu={<Menu />}>

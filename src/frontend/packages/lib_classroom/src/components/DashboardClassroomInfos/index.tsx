@@ -60,15 +60,15 @@ const DashboardClassroomInfos = ({ infos }: DashboardClassroomInfosProps) => {
     >
       <Grid columns={{ count: 3, size: 'auto' }}>
         <DashboardClassroomInfosItem
-          unit={'moderators'}
+          unit="moderators"
           value={infos?.moderatorCount || '0'}
         />
         <DashboardClassroomInfosItem
-          unit={'participants'}
+          unit="participants"
           value={infos?.voiceParticipantCount || '0'}
         />
         <DashboardClassroomInfosItem
-          unit={'listeners'}
+          unit="listeners"
           value={infos?.listenerCount || '0'}
         />
       </Grid>

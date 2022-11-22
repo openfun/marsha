@@ -69,7 +69,7 @@ describe('metadata', () => {
         pageParam: undefined,
         queryKey: ['model-name', 'fr'],
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -94,7 +94,7 @@ describe('metadata', () => {
         pageParam: undefined,
         queryKey: ['model-name', 'fr'],
       }),
-    ).rejects.toThrowError('Failed to get metadata for /model-name/.');
+    ).rejects.toThrow('Failed to get metadata for /model-name/.');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
