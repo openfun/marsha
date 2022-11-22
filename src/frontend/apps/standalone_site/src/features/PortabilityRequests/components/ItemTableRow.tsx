@@ -2,6 +2,7 @@ import { Box, Button } from 'grommet';
 import { FormCheckmark, FormClose } from 'grommet-icons';
 import { PortabilityRequest, Spinner } from 'lib-components';
 import React from 'react';
+import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import {
@@ -12,6 +13,12 @@ import {
 import { PortabilityRequestStateTag } from './PortabilityRequestStateTag';
 
 const messages = defineMessages({
+  actionFailed: {
+    defaultMessage: 'The requested action has failed please try again',
+    description:
+      'Displayed error when the API request failed (for both accept or reject)',
+    id: 'features.PortabilityRequests.ItemTableRow.actionFailed',
+  },
   acceptPortabilityRequest: {
     defaultMessage: 'Accept',
     description: 'Accessibility text for portability request accept button',
@@ -61,6 +68,9 @@ const AcceptRejectButtons = ({ item }: ItemTableRowProps) => {
     onSuccess: () => {
       setDisplayButtons(false);
     },
+    onError: () => {
+      toast.error(intl.formatMessage(messages.actionFailed));
+    },
   });
 
   const {
@@ -69,6 +79,9 @@ const AcceptRejectButtons = ({ item }: ItemTableRowProps) => {
   } = rejectPortabilityRequest(item.id, {
     onSuccess: () => {
       setDisplayButtons(false);
+    },
+    onError: () => {
+      toast.error(intl.formatMessage(messages.actionFailed));
     },
   });
 
@@ -94,7 +107,7 @@ const AcceptRejectButtons = ({ item }: ItemTableRowProps) => {
       <Button
         primary
         alignSelf="center"
-        a11yTitle={intl.formatMessage(messages.acceptPortabilityRequest)}
+        a11yTitle={intl.formatMessage(messages.rejectPortabilityRequest)}
         color="status-error"
         icon={<FormClose color="white" />}
         onClick={() => mutateRejectPortabilityRequest({})}
