@@ -27,6 +27,7 @@ import {
   Video,
 } from 'types/tracks';
 
+import { User } from '../../types';
 import { ConsumerSite } from '../../types/ConsumerSite';
 
 export const organizationMockFactory = (
@@ -388,5 +389,14 @@ export const portabilityRequestMockFactory = (
     updated_by_user: null,
     can_accept_or_reject: true,
     ...portabilityRequest,
+  };
+};
+
+export const userMockFactory = (user: Partial<User> = {}): User => {
+  return {
+    is_staff: false,
+    is_superuser: false,
+    organization_accesses: [],
+    ...user,
   };
 };
