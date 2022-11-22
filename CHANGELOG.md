@@ -24,6 +24,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - filtered classroom list
 - filtered deposit list
 - filtered markdown document list
+- use a lite serializer for classroom resource on list endpoint
 
 ## [4.0.0-beta.11] - 2022-11-08
 
