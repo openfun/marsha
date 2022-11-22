@@ -31,9 +31,10 @@ import {
   VideoStats,
   uploadState,
   Organization,
+  modelName,
 } from 'lib-components';
 
-import { VideoMetadata } from 'types/metadata';
+import { TimedTextMetadata, VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (
   organizationId: string,
@@ -273,6 +274,29 @@ export const useVideoMetadata = (
       ...queryConfig,
     },
   );
+};
+
+export const useFetchTimedTextTrackLanguageChoices = (
+  queryConfig?: UseQueryOptions<
+    TimedTextMetadata,
+    'timedtexttracks',
+    TimedTextMetadata,
+    string[]
+  >,
+) => {
+  return useQuery<
+    TimedTextMetadata,
+    'timedtexttracks',
+    TimedTextMetadata,
+    string[]
+  >([modelName.TIMEDTEXTTRACKS], metadata, {
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    cacheTime: Infinity,
+    staleTime: Infinity,
+    ...queryConfig,
+  });
 };
 
 export type UseCreateVideoData = {
