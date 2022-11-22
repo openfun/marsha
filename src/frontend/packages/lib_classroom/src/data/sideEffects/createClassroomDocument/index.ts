@@ -7,11 +7,13 @@ import {
   API_ENDPOINT,
   ClassroomDocument,
   ClassroomModelName,
+  Classroom,
 } from 'lib-components';
 
 export const createClassroomDocument = async (file: {
   filename: string;
   size: number;
+  classroom: Classroom['id'];
 }) => {
   const response = await fetch(
     `${API_ENDPOINT}/${String(ClassroomModelName.CLASSROOM_DOCUMENTS)}/`,

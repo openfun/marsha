@@ -190,6 +190,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
     createClassroomDocument({
       filename: file.name,
       size: file.size,
+      classroom: classroomId,
     }).then((response) => {
       addUpload(modelName.CLASSROOM_DOCUMENTS, response.id, file);
       refreshClassroomDocuments();
