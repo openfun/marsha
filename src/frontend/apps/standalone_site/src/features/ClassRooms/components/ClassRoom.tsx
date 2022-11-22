@@ -1,6 +1,6 @@
 import { Text, Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import { Classroom } from 'lib-components';
+import { ClassroomLite } from 'lib-components';
 import React, { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -16,7 +16,7 @@ const TextTruncated = styled(Text)`
   overflow: hidden;
 `;
 
-function ClassRoom({ classroom }: { classroom: Classroom }) {
+function ClassRoom({ classroom }: { classroom: ClassroomLite }) {
   const intl = useIntl();
 
   return (
