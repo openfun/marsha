@@ -111,11 +111,8 @@ const mockVideo = videoMockFactory({
   ],
 });
 
-jest.mock('data/stores/useTimedTextTrackLanguageChoices', () => ({
-  useTimedTextTrackLanguageChoices: () => ({
-    getChoices: jest.fn(),
-    choices: [],
-  }),
+jest.mock('data/queries/', () => ({
+  useFetchTimedTextTrackLanguageChoices: () => ({}),
 }));
 
 describe('createVideoJsPlayer', () => {
