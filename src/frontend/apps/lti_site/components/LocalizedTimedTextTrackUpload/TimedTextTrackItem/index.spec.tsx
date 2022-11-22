@@ -13,8 +13,7 @@ import {
 import React from 'react';
 
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 import { TimedTextTrackItem } from '.';
 
 jest.mock('lib-components', () => ({
@@ -23,11 +22,11 @@ jest.mock('lib-components', () => ({
 }));
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
-  { label: 'Spanish', value: 'es' },
-  { label: 'Slovenian', value: 'sl' },
-  { label: 'Swedish', value: 'sv' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
+  { display_name: 'Spanish', value: 'es' },
+  { display_name: 'Slovenian', value: 'sl' },
+  { display_name: 'Swedish', value: 'sv' },
 ];
 
 const mockedOnRetryFailedUpload = jest.fn();
@@ -39,11 +38,19 @@ describe('<TimedTextTrackItem />', () => {
     });
   });
 
-  it('renders the component for a correctly uploaded timed text track', () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
+  it('renders the component for a correctly uploaded timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedTimedTextTrack = timedTextMockFactory({ language: 'fr-FR' });
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     render(
       <DeleteTimedTextTrackUploadModalProvider value={null}>
@@ -53,10 +60,11 @@ describe('<TimedTextTrackItem />', () => {
         />
       </DeleteTimedTextTrackUploadModalProvider>,
     );
+
+    await screen.findByText('French');
     screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
-    screen.getByText('French');
     expect(
       screen.queryByRole('button', {
         name: 'Click on this button to retry uploading your failed upload.',
@@ -64,7 +72,14 @@ describe('<TimedTextTrackItem />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component for an uploading timed text track', () => {
+  it('renders the component for an uploading timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PENDING,
@@ -76,9 +91,6 @@ describe('<TimedTextTrackItem />', () => {
       progress: 50,
       status: UploadManagerStatus.UPLOADING,
     };
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     render(
       <UploadManagerContext.Provider
@@ -99,10 +111,10 @@ describe('<TimedTextTrackItem />', () => {
       </UploadManagerContext.Provider>,
     );
 
+    await screen.findByText('French');
     screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
-    screen.getByText('French');
     screen.getByText('Uploading');
     expect(
       screen.queryByRole('button', {
@@ -111,7 +123,14 @@ describe('<TimedTextTrackItem />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component for a processing timed text track', () => {
+  it('renders the component for a processing timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PROCESSING,
@@ -123,9 +142,6 @@ describe('<TimedTextTrackItem />', () => {
       progress: 100,
       status: UploadManagerStatus.SUCCESS,
     };
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     render(
       <UploadManagerContext.Provider
@@ -146,10 +162,10 @@ describe('<TimedTextTrackItem />', () => {
       </UploadManagerContext.Provider>,
     );
 
+    await screen.findByText('French');
     screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
-    screen.getByText('French');
     screen.getByText('Processing');
     expect(
       screen.queryByRole('button', {
@@ -158,13 +174,17 @@ describe('<TimedTextTrackItem />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the component for a failed timed text track and retries it', () => {
+  it('renders the component for a failed timed text track and retries it', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PENDING,
-    });
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
     });
 
     render(
@@ -175,10 +195,11 @@ describe('<TimedTextTrackItem />', () => {
         />
       </DeleteTimedTextTrackUploadModalProvider>,
     );
+
+    await screen.findByText('French');
     screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
-    screen.getByText('French');
     const retryButton = screen.getByRole('button', {
       name: 'Click on this button to retry uploading your failed upload.',
     });

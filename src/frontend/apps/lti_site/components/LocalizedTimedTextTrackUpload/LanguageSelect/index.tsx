@@ -2,7 +2,7 @@ import { Select } from 'grommet';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 import { useTimedTextTrack, timedTextMode } from 'lib-components';
 import { LanguageChoice } from 'types/SelectOptions';
 
@@ -41,9 +41,16 @@ export const LanguageSelect = ({
     [intl, messages],
   );
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
+
   const { timedTextTracks } = useTimedTextTrack((state) => ({
     timedTextTracks: state.getTimedTextTracks(),
   }));
@@ -83,10 +90,6 @@ export const LanguageSelect = ({
         ? availableSelectableLanguages[0]
         : errorLanguageChoice),
   );
-
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   useEffect(() => {
     onChange(selectedLanguage);

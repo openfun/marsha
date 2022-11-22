@@ -8,7 +8,6 @@ import {
   uploadState,
   videoMockFactory,
 } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
@@ -58,8 +57,8 @@ const transcripts = [
 ];
 
 const languagechoices = [
-  { value: 'English', label: 'en' },
-  { value: 'French', label: 'fr' },
+  { display_name: 'English', label: 'en' },
+  { display_name: 'French', label: 'fr' },
 ];
 
 describe('<Transcripts />', () => {
@@ -74,18 +73,13 @@ describe('<Transcripts />', () => {
         actions: {
           POST: {
             language: {
-              choices: [
-                { display_name: 'English', value: 'en' },
-                { display_name: 'French', value: 'fr' },
-              ],
+              choices: [languagechoices],
             },
           },
         },
       },
       { method: 'OPTIONS' },
     );
-
-    useTimedTextTrackLanguageChoices.setState({ choices: languagechoices });
   });
 
   afterEach(() => {

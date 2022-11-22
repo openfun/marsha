@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
-import React, { useRef, useEffect } from 'react';
+import React, { useRef, useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router';
 
@@ -12,10 +12,10 @@ import {
   Video,
   videoSize,
 } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { useVideoProgress } from 'data/stores/useVideoProgress';
 import { createPlayer } from 'Player/createPlayer';
 import { VideoPlayerInterface } from 'types/VideoPlayer';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 interface BaseVideoPlayerProps {
   video: Nullable<Video>;
@@ -33,10 +33,15 @@ const VideoPlayer = ({
   const intl = useIntl();
   const videoNodeRef = useRef<Nullable<HTMLVideoElement>>(null);
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
-
   const thumbnail = useThumbnail((state) => state.getThumbnail());
 
   const setPlayerCurrentTime = useVideoProgress(
@@ -60,7 +65,6 @@ const VideoPlayer = ({
    * Noop out if the video is missing, render will redirect to an error page.
    */
   useEffect(() => {
-    getChoices();
     if (video) {
       // Instantiate the player and keep the instance in state
       playerRef.current = createPlayer(
