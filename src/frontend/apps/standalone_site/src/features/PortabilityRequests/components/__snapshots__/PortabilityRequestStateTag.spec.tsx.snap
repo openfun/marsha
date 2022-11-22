@@ -1,0 +1,239 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<PortabilityRequestStateTag /> accepted state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-hhOBVt PoHIa"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              accepted
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> pending state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-jIRcFI enNWMs"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              pending
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> rejected state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-gYbzsP liRoWs"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              rejected
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> renders accepted state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-hhOBVt PoHIa"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              accepted
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> renders pending state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-jIRcFI enNWMs"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              pending
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> renders rejected state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-gYbzsP liRoWs"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              rejected
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<PortabilityRequestStateTag /> rendersaccepted state 1`] = `
+<div>
+  <div
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+  >
+    <div
+      style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
+    />
+    <div
+      data-testid="test-component-container"
+    >
+      <div
+        class="StyledBox-sc-13pk1d4-0 bNHvXa sc-hhOBVt PoHIa"
+      >
+        <div
+          class="StyledBox-sc-13pk1d4-0 eYzGpf"
+        >
+          <span
+            class="StyledText-sc-1sadyjn-0 jbJJSg"
+          >
+            
+            <span
+              class="StyledText-sc-1sadyjn-0 iGZjmp"
+            >
+              accepted
+            </span>
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
