@@ -1,10 +1,10 @@
 import { Maybe } from 'lib-common';
 import React from 'react';
-import { MemoryRouter, Route, Switch } from 'react-router-dom';
+import { MemoryRouter, Route, RouteProps, Switch } from 'react-router-dom';
 
 export const wrapInRouter = (
   Component: JSX.Element,
-  routes?: { path: string; render: ({ match }: any) => JSX.Element }[],
+  routes?: RouteProps[],
   componentPath = '/',
   history: Maybe<string[]> = undefined,
   header: React.ReactNode = undefined,
@@ -14,7 +14,15 @@ export const wrapInRouter = (
     <Switch>
       {routes &&
         routes.map((routeProps) => (
-          <Route exact key={routeProps.path} {...routeProps} />
+          <Route
+            exact
+            key={
+              Array.isArray(routeProps.path)
+                ? String(routeProps.path[0])
+                : String(routeProps.path || '')
+            }
+            {...routeProps}
+          />
         ))}
       <Route path={componentPath}>{Component}</Route>
     </Switch>
