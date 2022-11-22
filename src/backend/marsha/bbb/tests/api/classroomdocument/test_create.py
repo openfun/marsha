@@ -238,3 +238,33 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 "url": None,
             },
         )
+
+    def test_api_classroom_document_create_user_access_token_admin_other_playlist(self):
+        """
+        A playlist administrator should not be able to create a classroom document in a playlist
+        he is not administrator.
+        """
+        playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        ohter_playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+
+        classroom = ClassroomFactory(playlist=playlist_access.playlist)
+
+        # user from the other_playlist must not be able to access the classroom
+        # as it is not administrator.
+        jwt_token = UserAccessTokenFactory(user=ohter_playlist_access.user)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                    "classroom": str(classroom.id),
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
+        self.assertEqual(classroom.classroom_documents.count(), 0)

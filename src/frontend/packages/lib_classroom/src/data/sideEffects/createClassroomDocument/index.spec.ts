@@ -25,6 +25,7 @@ describe('sideEffects/createClassroomDocument', () => {
     const createdClassroomDocument = await createClassroomDocument({
       filename: file.name,
       size: file.size,
+      classroom: classroomDocument.classroom.id,
     });
 
     const fetchArgs = fetchMock.lastCall()![1]!;
@@ -43,18 +44,26 @@ describe('sideEffects/createClassroomDocument', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
     const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
-
+    const classroomDocument = classroomDocumentMockFactory();
     await expect(
-      createClassroomDocument({ filename: file.name, size: file.size }),
+      createClassroomDocument({
+        filename: file.name,
+        size: file.size,
+        classroom: classroomDocument.classroom.id,
+      }),
     ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to create the deposited file (API error)', async () => {
     fetchMock.mock('/api/classroomdocuments/', 400);
     const file = new File(['anrusitanrsui tnarsuit narsuit'], 'TestFile.txt');
-
+    const classroomDocument = classroomDocumentMockFactory();
     await expect(
-      createClassroomDocument({ filename: file.name, size: file.size }),
+      createClassroomDocument({
+        filename: file.name,
+        size: file.size,
+        classroom: classroomDocument.classroom.id,
+      }),
     ).rejects.toThrow('Failed to create a new classroom document.');
   });
 });
