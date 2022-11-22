@@ -4,11 +4,11 @@ import { useJwt, videoMockFactory } from 'lib-components';
 import React from 'react';
 
 import { useInfoWidgetModal } from 'data/stores/useInfoWidgetModal';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
 import { UploadSubtitles } from '.';
+import fetchMock from 'fetch-mock';
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: jest.fn(),
@@ -19,8 +19,8 @@ const mockUseInfoWidgetModal = useInfoWidgetModal as jest.MockedFunction<
 >;
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
 ];
 
 describe('<UploadSubtitles />', () => {
@@ -31,17 +31,24 @@ describe('<UploadSubtitles />', () => {
     });
   });
 
-  it('renders the UploadSubtitles', () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
+  it('renders the UploadSubtitles', async () => {
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
     const mockSetInfoWidgetModalProvider = jest.fn();
     mockUseInfoWidgetModal.mockReturnValue([
       null,
       mockSetInfoWidgetModalProvider,
     ]);
     const mockedVideo = videoMockFactory();
-
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     render(wrapInVideo(<UploadSubtitles />, mockedVideo));
 

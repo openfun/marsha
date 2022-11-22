@@ -2,6 +2,7 @@ import { within } from '@testing-library/dom';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
+import fetchMock from 'fetch-mock';
 import {
   useJwt,
   sharedLiveMediaMockFactory,
@@ -17,7 +18,6 @@ import {
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 
@@ -32,7 +32,33 @@ jest.mock('lib-components', () => ({
 
 const currentDate = DateTime.fromISO('2022-01-13T12:00');
 
+const languageChoices = [
+  { display_name: 'some_language_label', value: 'some_language' },
+];
+
 describe('<VideoWidgetProvider />', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'some token',
+    });
+
+    fetchMock.mock(
+      '/api/timedtexttracks/',
+      {
+        actions: {
+          POST: {
+            language: {
+              choices: languageChoices,
+            },
+          },
+        },
+      },
+      { method: 'OPTIONS' },
+    );
+  });
+
+  afterEach(() => fetchMock.restore());
+
   it('renders widgets for live teacher', () => {
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
@@ -180,10 +206,6 @@ describe('<VideoWidgetProvider />', () => {
       getDecodedJwt: () => ({ locale: 'en' } as any),
     });
 
-    useTimedTextTrackLanguageChoices.setState({
-      choices: [{ label: 'some_language_label', value: 'some_language' }],
-    });
-
     render(
       wrapInVideo(<VideoWidgetProvider isLive={false} isTeacher />, mockVideo),
     );
@@ -250,10 +272,6 @@ describe('<VideoWidgetProvider />', () => {
 
     useJwt.setState({
       getDecodedJwt: () => ({ locale: 'en' } as any),
-    });
-
-    useTimedTextTrackLanguageChoices.setState({
-      choices: [{ label: 'some_language_label', value: 'some_language' }],
     });
 
     render(

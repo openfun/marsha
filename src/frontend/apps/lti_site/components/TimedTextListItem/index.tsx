@@ -1,5 +1,5 @@
 import { Maybe } from 'lib-common';
-import React, { useEffect } from 'react';
+import React, { useMemo } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
@@ -12,10 +12,10 @@ import {
   uploadState,
   UPLOAD_FORM_ROUTE,
 } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { LanguageChoice } from 'types/SelectOptions';
 import { ActionLink } from '../ActionLink/ActionLink';
 import { ObjectStatusPicker } from '../ObjectStatusPicker';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 const messages = defineMessages({
   delete: {
@@ -68,18 +68,18 @@ interface TimedTextListItemProps {
 }
 
 export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
-
   const deleteTimedTextTrackRecord = useTimedTextTrack(
     (state) => state.removeResource,
   );
-
-  // On load, get TTT language choices and start polling if necessary
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   const language: Maybe<LanguageChoice> =
     choices &&

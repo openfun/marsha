@@ -1,7 +1,7 @@
 import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, Nullable } from 'lib-common';
-import React, { useEffect, useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import Select, { ActionMeta } from 'react-select';
@@ -16,8 +16,8 @@ import {
   FULL_SCREEN_ERROR_ROUTE,
   UPLOAD_FORM_ROUTE,
 } from 'lib-components';
-import { useTimedTextTrackLanguageChoices } from '../../data/stores/useTimedTextTrackLanguageChoices';
 import { theme } from '../../utils/theme/theme';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 const messages = defineMessages({
   addTrackBtn: {
@@ -73,16 +73,18 @@ export const TimedTextCreationForm = ({
   const [newTTLanguage, setNewTTLanguage] = useState('');
   const [newTTUploadId, setNewTTUploadId] = useState('');
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
   const doCreateTimedTextTrack = useTimedTextTrack(
     (state) => state.addResource,
   );
-
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   const availableLanguages =
     choices &&

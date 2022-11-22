@@ -1,8 +1,8 @@
 import { screen } from '@testing-library/react';
+import fetchMock from 'fetch-mock';
 import { liveState, useJwt, videoMockFactory } from 'lib-components';
 import React from 'react';
 
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import render from 'utils/tests/render';
 import { wrapInVideo } from 'utils/tests/wrapInVideo';
 import { DashboardVOD } from '.';
@@ -30,8 +30,8 @@ jest.mock('components/VideoWidgetProvider', () => ({
 }));
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
 ];
 
 describe('<DashboardVOD />', () => {
@@ -39,15 +39,21 @@ describe('<DashboardVOD />', () => {
     useJwt.setState({
       jwt: 'some token',
     });
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+  });
+
+  afterEach(() => {
+    fetchMock.restore();
   });
 
   it('renders the DashboardVOD without tabs if video does not come from a live session', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
-
     const { container } = render(wrapInVideo(<DashboardVOD />, mockedVideo));
-
     // Video
     const videoElement = container.getElementsByTagName('video')[0]!;
     expect(videoElement).toHaveAttribute(
@@ -72,10 +78,6 @@ describe('<DashboardVOD />', () => {
   });
 
   it('renders the DashboardVOD with tabs if video comes from a live session', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
-
     const mockedLiveVideo = videoMockFactory({
       id: 'video_id',
       title: 'Title of the video',

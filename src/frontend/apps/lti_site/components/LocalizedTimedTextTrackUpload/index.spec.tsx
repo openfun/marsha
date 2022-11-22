@@ -16,8 +16,7 @@ import {
 import React, { PropsWithChildren } from 'react';
 
 import { DeleteTimedTextTrackUploadModalProvider } from 'data/stores/useDeleteTimedTextTrackUploadModal/index';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { LocalizedTimedTextTrackUpload } from '.';
 
@@ -36,28 +35,39 @@ const mockUseUploadManager = useUploadManager as jest.MockedFunction<
 >;
 
 const languageChoices = [
-  { label: 'English', value: 'en' },
-  { label: 'French', value: 'fr' },
-  { label: 'Spanish', value: 'es' },
-  { label: 'Slovenian', value: 'sl' },
-  { label: 'Swedish', value: 'sv' },
+  { display_name: 'English', value: 'en' },
+  { display_name: 'French', value: 'fr' },
+  { display_name: 'Spanish', value: 'es' },
+  { display_name: 'Slovenian', value: 'sl' },
+  { display_name: 'Swedish', value: 'sv' },
 ];
 
 describe('<LocalizedTimedTextTrackUpload />', () => {
+  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+
   beforeEach(() => {
     useJwt.setState({
       jwt: 'jsonWebToken',
     });
   });
 
-  it('renders the component without any uploaded timed text track', () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
+  it('renders the component without any uploaded timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
       uploadManagerState: {},
-    });
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
     });
 
     render(
@@ -67,7 +77,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    screen.getByRole('button', {
+    await screen.findByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: fr',
     });
     expect(
@@ -81,6 +91,14 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   });
 
   it('uploads a timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
     const mockTimedTextTrack = {
       id: 'timedTextTrack_id',
       active_stamp: null,
@@ -92,9 +110,6 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       url: 'url',
       video: 'video_id',
     };
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
 
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
@@ -119,14 +134,16 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    const uploadButton = screen.getByRole('button', { name: 'Upload file' });
+    const uploadButton = await screen.findByRole('button', {
+      name: 'Upload file',
+    });
     userEvent.click(uploadButton);
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'subtitle.vtt', {
       type: '*',
     });
     userEvent.upload(hiddenInput, file);
-    expect(fetchMock.calls()).toHaveLength(1);
+    expect(fetchMock.calls()).toHaveLength(2);
     expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -137,7 +154,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       body: JSON.stringify({ language: 'fr', mode: 'st' }),
     });
     await waitFor(() =>
-      expect(mockAddUpload).toHaveBeenCalledWith(
+      expect(mockAddUpload).toHaveBeenLastCalledWith(
         modelName.TIMEDTEXTTRACKS,
         mockTimedTextTrack.id,
         file,
@@ -145,10 +162,14 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     );
   });
 
-  it('renders the component with several uploaded and uploading timed text track', () => {
-    useTimedTextTrackLanguageChoices.setState({
-      choices: languageChoices,
-    });
+  it('renders the component with several uploaded and uploading timed text track', async () => {
+    fetchMock.mock(
+      `/api/timedtexttracks/`,
+      {
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
 
     const mockedTimedTextTrackUploading = timedTextMockFactory({
       language: 'fr-FR',
@@ -194,7 +215,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       { intlOptions: { locale: 'fr-FR' } },
     );
 
-    screen.getByText('French');
+    await screen.findByText('French');
     screen.getByText('Uploading');
     screen.getByText('English');
     screen.getByText('Processing');

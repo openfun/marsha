@@ -10,9 +10,9 @@ import {
 } from 'lib-components';
 import { Box, Button, Select, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { TranscriptReader } from 'components/TranscriptReader';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
+import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 const messages = defineMessages({
   info: {
@@ -56,8 +56,14 @@ export const Transcripts = () => {
   );
   const timedTextTracks: TimedText[] = useTimedTextTrack(timeTextFetcher);
 
-  const { choices, getChoices } = useTimedTextTrackLanguageChoices(
-    (state) => state,
+  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const choices = useMemo(
+    () =>
+      data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [data?.actions.POST.language.choices],
   );
 
   const transcripts = useMemo(
@@ -101,11 +107,6 @@ export const Transcripts = () => {
     language: '',
     transcript: null,
   });
-
-  // getChoices is not passed as a dependency because we only want it to load once
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   useEffect(() => {
     const onSelectChange = (option: { label: string; value: string }) => {

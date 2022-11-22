@@ -12,7 +12,6 @@ import {
   uploadState,
 } from 'lib-components';
 import { createTimedTextTrack } from 'data/sideEffects/createTimedTextTrack';
-import { useTimedTextTrackLanguageChoices } from 'data/stores/useTimedTextTrackLanguageChoices';
 import { LanguageChoice } from 'types/SelectOptions';
 
 import { LanguageSelect } from './LanguageSelect';
@@ -41,7 +40,6 @@ export const LocalizedTimedTextTrackUpload = ({
   const intl = useIntl();
 
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
-  const { getChoices } = useTimedTextTrackLanguageChoices((state) => state);
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
@@ -49,10 +47,6 @@ export const LocalizedTimedTextTrackUpload = ({
   const filteredTimedTextTracks = timedTextTracks.filter(
     (track) => track.mode === timedTextModeWidget,
   );
-
-  useEffect(() => {
-    getChoices();
-  }, []);
 
   // When an upload is over and successful, it is deleted from the uploadManagerState, in order
   // to be able to perform a consecutive upload
