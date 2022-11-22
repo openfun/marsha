@@ -99,6 +99,15 @@ class ClassroomViewSet(
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
 
+    def get_serializer_class(self):
+        """
+        Manage the serializer class to use based on the action
+        """
+        if self.action in ["list"]:
+            return serializers.ClassroomLiteSerializer
+
+        return super().get_serializer_class()
+
     def _get_list_queryset(self):
         """Build the queryset used on the list action."""
         queryset = (

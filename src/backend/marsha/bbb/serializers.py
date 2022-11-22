@@ -21,6 +21,7 @@ from marsha.core.serializers import (
     InitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
 )
+from marsha.core.serializers.base import ReadOnlyModelSerializer
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
 
 
@@ -85,6 +86,25 @@ class ClassroomSerializer(serializers.ModelSerializer):
                 )
 
         return value
+
+
+class ClassroomLiteSerializer(ReadOnlyModelSerializer):
+    """Classroom lite serializer without playlist and infos fetch from the BBB api."""
+
+    class Meta:  # noqa
+        model = Classroom
+        fields = (
+            "id",
+            "lti_id",
+            "title",
+            "description",
+            "meeting_id",
+            "welcome_text",
+            "started",
+            "ended",
+            "starting_at",
+            "estimated_duration",
+        )
 
 
 class ClassroomSelectLTISerializer(ClassroomSerializer):

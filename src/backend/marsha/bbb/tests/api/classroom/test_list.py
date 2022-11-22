@@ -1,9 +1,6 @@
 """Tests for the classroom API."""
-from unittest import mock
-
 from django.test import TestCase, override_settings
 
-from marsha.bbb import serializers
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core.factories import (
     OrganizationAccessFactory,
@@ -69,10 +66,7 @@ class ClassroomListAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 403)
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token_playlist_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_fetch_list_user_access_token_playlist_admin(self):
         """
         A user with UserAccessToken should be able to fetch a classroom list from playlist
         he is admin
@@ -81,11 +75,6 @@ class ClassroomListAPITest(TestCase):
         playlist_access = PlaylistAccessFactory(user=user, role=ADMINISTRATOR)
         classrooms = ClassroomFactory.create_batch(3, playlist=playlist_access.playlist)
         ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=user)
         response = self.client.get(
@@ -105,14 +94,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms[2].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms[2].lti_id),
                         "meeting_id": str(classrooms[2].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_access.playlist.id),
-                            "lti_id": playlist_access.playlist.lti_id,
-                            "title": playlist_access.playlist.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms[2].title,
@@ -123,14 +106,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms[1].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms[1].lti_id),
                         "meeting_id": str(classrooms[1].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_access.playlist.id),
-                            "lti_id": playlist_access.playlist.lti_id,
-                            "title": playlist_access.playlist.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms[1].title,
@@ -141,14 +118,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms[0].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms[0].lti_id),
                         "meeting_id": str(classrooms[0].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_access.playlist.id),
-                            "lti_id": playlist_access.playlist.lti_id,
-                            "title": playlist_access.playlist.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms[0].title,
@@ -158,10 +129,7 @@ class ClassroomListAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token_organization_admin(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_fetch_list_user_access_token_organization_admin(self):
         """A user with UserAccessToken should be able to fetch a classroom list."""
         organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
         organization_access = OrganizationAccessFactory(
@@ -180,11 +148,6 @@ class ClassroomListAPITest(TestCase):
         ClassroomFactory.create_batch(3, playlist=playlist_2_a)
         ClassroomFactory.create_batch(3, playlist=playlist_2_b)
         ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
 
@@ -205,14 +168,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_1_b[2].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_1_b[2].lti_id),
                         "meeting_id": str(classrooms_1_b[2].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_1_b.id),
-                            "lti_id": playlist_1_b.lti_id,
-                            "title": playlist_1_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_1_b[2].title,
@@ -223,14 +180,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_1_b[1].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_1_b[1].lti_id),
                         "meeting_id": str(classrooms_1_b[1].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_1_b.id),
-                            "lti_id": playlist_1_b.lti_id,
-                            "title": playlist_1_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_1_b[1].title,
@@ -240,10 +191,7 @@ class ClassroomListAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token_not_duplicated(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_fetch_list_user_access_token_not_duplicated(self):
         """
         When several users have administrator role on a playlist,
         the classroom must be returned only once.
@@ -269,11 +217,6 @@ class ClassroomListAPITest(TestCase):
         classroom = ClassroomFactory(playlist=playlist)
         ClassroomFactory.create_batch(3)
 
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
-
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
@@ -293,14 +236,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classroom.id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classroom.lti_id),
                         "meeting_id": str(classroom.meeting_id),
-                        "playlist": {
-                            "id": str(playlist.id),
-                            "lti_id": playlist.lti_id,
-                            "title": playlist.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classroom.title,
@@ -310,10 +247,7 @@ class ClassroomListAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token_filter_organization(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_fetch_list_user_access_token_filter_organization(self):
         """A user with UserAccessToken should be able to filter classroom list by organization."""
         organization_access_admin_1 = OrganizationAccessFactory(role=ADMINISTRATOR)
         organization_access_admin_2 = OrganizationAccessFactory(
@@ -337,11 +271,6 @@ class ClassroomListAPITest(TestCase):
         classrooms_2_b = ClassroomFactory.create_batch(3, playlist=playlist_2_b)
         ClassroomFactory()
 
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
-
         jwt_token = UserAccessTokenFactory(user=organization_access_admin_1.user)
 
         response = self.client.get(
@@ -364,14 +293,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_2_b[2].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_2_b[2].lti_id),
                         "meeting_id": str(classrooms_2_b[2].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_2_b.id),
-                            "lti_id": playlist_2_b.lti_id,
-                            "title": playlist_2_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_2_b[2].title,
@@ -382,14 +305,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_2_b[1].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_2_b[1].lti_id),
                         "meeting_id": str(classrooms_2_b[1].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_2_b.id),
-                            "lti_id": playlist_2_b.lti_id,
-                            "title": playlist_2_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_2_b[1].title,
@@ -399,10 +316,7 @@ class ClassroomListAPITest(TestCase):
             },
         )
 
-    @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_fetch_list_user_access_token_filter_playlist(
-        self, mock_get_meeting_infos
-    ):
+    def test_api_fetch_list_user_access_token_filter_playlist(self):
         """A user with UserAccessToken should be able to filter classroom list by playlist."""
         organization_access_admin = OrganizationAccessFactory(role=ADMINISTRATOR)
         organization_access = OrganizationAccessFactory(
@@ -421,11 +335,6 @@ class ClassroomListAPITest(TestCase):
         ClassroomFactory.create_batch(3, playlist=playlist_2_a)
         ClassroomFactory.create_batch(3, playlist=playlist_2_b)
         ClassroomFactory()
-
-        mock_get_meeting_infos.return_value = {
-            "returncode": "SUCCESS",
-            "running": "true",
-        }
 
         jwt_token = UserAccessTokenFactory(user=organization_access_admin.user)
 
@@ -449,14 +358,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_1_b[2].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_1_b[2].lti_id),
                         "meeting_id": str(classrooms_1_b[2].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_1_b.id),
-                            "lti_id": playlist_1_b.lti_id,
-                            "title": playlist_1_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_1_b[2].title,
@@ -467,14 +370,8 @@ class ClassroomListAPITest(TestCase):
                         "ended": False,
                         "estimated_duration": None,
                         "id": str(classrooms_1_b[1].id),
-                        "infos": {"returncode": "SUCCESS", "running": "true"},
                         "lti_id": str(classrooms_1_b[1].lti_id),
                         "meeting_id": str(classrooms_1_b[1].meeting_id),
-                        "playlist": {
-                            "id": str(playlist_1_b.id),
-                            "lti_id": playlist_1_b.lti_id,
-                            "title": playlist_1_b.title,
-                        },
                         "started": False,
                         "starting_at": None,
                         "title": classrooms_1_b[1].title,
