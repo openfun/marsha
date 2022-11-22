@@ -134,7 +134,7 @@ def create(classroom: Classroom):
     classroom.started = True
     classroom.moderator_password = api_response["moderatorPW"]
     classroom.attendee_password = api_response["attendeePW"]
-    classroom.save()
+    classroom.save(update_fields=["started", "moderator_password", "attendee_password"])
     return api_response
 
 
@@ -159,7 +159,7 @@ def end(classroom: Classroom, moderator=False):
     api_response = request_api("end", parameters)
     classroom.started = False
     classroom.ended = True
-    classroom.save()
+    classroom.save(update_fields=["started", "ended"])
     return api_response
 
 
@@ -182,9 +182,9 @@ def get_meeting_infos(classroom: Classroom):
             else:
                 api_response["attendees"] = [attendees]
 
-        classroom.save()
+        classroom.save(update_fields=["started"])
         return api_response
     except ApiMeetingException as exception:
         classroom.started = False
-        classroom.save()
+        classroom.save(update_fields=["started"])
         raise exception
