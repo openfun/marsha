@@ -44,6 +44,7 @@ import {
   useLiveSessionsQuery,
   useDeleteTimedTextTrack,
   useVideoMetadata,
+  useFetchTimedTextTrackLanguageChoices,
 } from '.';
 
 setLogger({
@@ -840,6 +841,67 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
           'Accept-Language': 'en',
+        },
+        method: 'OPTIONS',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useFetchTimedTextTrackLanguageChoices', () => {
+    it('requests the TimedTextTrackLanguageChoices', async () => {
+      const timedTextTrackLanguageChoices = {
+        name: 'Timed Text Track List',
+        description: 'Viewset for the API of the TimedTextTrack object.',
+        renders: ['application/json', 'text/html'],
+        parses: [
+          'application/json',
+          'application/x-www-form-urlencoded',
+          'multipart/form-data',
+        ],
+      };
+      fetchMock.mock(`/api/timedtexttracks/`, timedTextTrackLanguageChoices);
+
+      const { result, waitFor } = renderHook(
+        () => useFetchTimedTextTrackLanguageChoices(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+          'Accept-Language': 'undefined',
+        },
+        method: 'OPTIONS',
+      });
+      expect(result.current.data).toEqual(timedTextTrackLanguageChoices);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to get the timedtext metadata', async () => {
+      fetchMock.mock(`/api/timedtexttracks/`, 404);
+
+      const { result, waitFor } = renderHook(
+        () => useFetchTimedTextTrackLanguageChoices(),
+        {
+          wrapper: Wrapper,
+        },
+      );
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+          'Accept-Language': 'undefined',
         },
         method: 'OPTIONS',
       });
