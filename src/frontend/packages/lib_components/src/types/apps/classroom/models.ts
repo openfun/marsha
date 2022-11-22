@@ -16,6 +16,8 @@ export interface Classroom extends Resource {
   estimated_duration: Nullable<string>;
 }
 
+export type ClassroomLite = Omit<Classroom, 'infos' | 'playlist'>;
+
 export interface ClassroomInfos {
   returncode: string;
   classroomName: string;

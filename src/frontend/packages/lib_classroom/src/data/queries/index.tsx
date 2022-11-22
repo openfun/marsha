@@ -18,6 +18,7 @@ import {
   JoinClassroomActionRequest,
   JoinClassroomActionResponse,
   Classroom,
+  ClassroomLite,
   CreateClassroomActionRequest,
   CreateClassroomActionResponse,
   ClassroomDocument,
@@ -31,7 +32,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-type ClassroomsResponse = APIList<Classroom>;
+type ClassroomsResponse = APIList<ClassroomLite>;
 type UseClassroomsParams = {
   organization?: Maybe<string>;
   limit?: Maybe<string>;
