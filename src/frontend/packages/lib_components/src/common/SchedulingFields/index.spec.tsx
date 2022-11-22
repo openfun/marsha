@@ -58,10 +58,14 @@ describe('<SchedulingFields />', () => {
       />,
     );
 
-    screen.getByDisplayValue(startingAt.toFormat('yyyy/MM/dd'));
-    screen.getByDisplayValue(
-      startingAt.toLocaleString(DateTime.TIME_24_SIMPLE),
-    );
+    expect(
+      screen.getByDisplayValue(startingAt.toFormat('yyyy/MM/dd')),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByDisplayValue(
+        startingAt.toLocaleString(DateTime.TIME_24_SIMPLE),
+      ),
+    ).toBeInTheDocument();
   });
 
   it('formats estimated duration', () => {
@@ -74,7 +78,9 @@ describe('<SchedulingFields />', () => {
       />,
     );
 
-    screen.getByDisplayValue(estimatedDuration.toFormat('h:mm'));
+    expect(
+      screen.getByDisplayValue(estimatedDuration.toFormat('h:mm')),
+    ).toBeInTheDocument();
   });
 
   it('clears inputs', () => {

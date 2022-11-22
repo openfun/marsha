@@ -1,3 +1,5 @@
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -17,7 +19,8 @@ describe('<UploadField />', () => {
 
   it('renders a Dropzone with the relevant messages', () => {
     render(<UploadField {...{ objectId, objectType }} />);
-    screen.getByText('Select a file to upload');
+
+    expect(screen.getByText('Select a file to upload')).toBeInTheDocument();
   });
 
   it('passes the file to the callback', async () => {

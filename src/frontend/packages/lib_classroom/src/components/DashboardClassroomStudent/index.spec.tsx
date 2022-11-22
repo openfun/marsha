@@ -43,7 +43,7 @@ describe('<DashboardClassroomStudent />', () => {
     const joinClassroomAction = jest.fn();
     const classroomEnded = jest.fn();
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomStudent
         classroom={classroom}
         joinedAs={false}
@@ -52,7 +52,7 @@ describe('<DashboardClassroomStudent />', () => {
       />,
     );
 
-    getByText('Classroom not started yet.');
+    screen.getByText('Classroom not started yet.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
 
@@ -74,8 +74,8 @@ describe('<DashboardClassroomStudent />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    getByText(classroom.title!);
-    getByText(classroom.description!);
+    screen.getByText(classroom.title!);
+    screen.getByText(classroom.description!);
     const displayedStartingDate = startingAt.toLocaleString(DateTime.DATE_HUGE);
     const displayedStartingTime = startingAt.toLocaleString(
       DateTime.TIME_24_SIMPLE,
@@ -83,7 +83,7 @@ describe('<DashboardClassroomStudent />', () => {
     const displayedEndingTime = endingDateTime.toLocaleString(
       DateTime.TIME_24_SIMPLE,
     );
-    getByText(
+    screen.getByText(
       `${displayedStartingDate} - ${displayedStartingTime} > ${displayedEndingTime}`,
     );
     expect(classroomEnded).toHaveBeenCalledTimes(0);
@@ -102,7 +102,7 @@ describe('<DashboardClassroomStudent />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    getByText(`${displayedStartingDate} - ${displayedStartingTime}`);
+    screen.getByText(`${displayedStartingDate} - ${displayedStartingTime}`);
 
     // classroom starts
     rerender(
@@ -126,7 +126,7 @@ describe('<DashboardClassroomStudent />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    getByText('You have joined the classroom as John Doe.');
+    screen.getByText('You have joined the classroom as John Doe.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
 
@@ -139,7 +139,7 @@ describe('<DashboardClassroomStudent />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    getByText('Classroom ended.');
+    screen.getByText('Classroom ended.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);
     expect(classroomEnded).toHaveBeenCalledTimes(1);
   });

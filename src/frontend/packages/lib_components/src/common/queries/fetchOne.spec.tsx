@@ -65,7 +65,7 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1],
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -88,7 +88,7 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1],
       }),
-    ).rejects.toThrowError('Failed to get /api/model-name/1/.');
+    ).rejects.toThrow('Failed to get /api/model-name/1/.');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -157,7 +157,7 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1, 'action'],
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -180,7 +180,7 @@ describe('queries/fetchOne', () => {
         pageParam: undefined,
         queryKey: ['model-name', 1, 'action'],
       }),
-    ).rejects.toThrowError('Failed to get /api/model-name/1/action/.');
+    ).rejects.toThrow('Failed to get /api/model-name/1/action/.');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
     expect(fetchMock.lastCall()?.[1]).toEqual({

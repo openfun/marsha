@@ -9,7 +9,7 @@ describe('lib_components/src/utils/decodeJwt.ts', () => {
     }).toThrow('Impossible to decode JWT token, there is no jwt to decode.');
   });
 
-  it('throws an error when JWT has no required attributes', () => {
+  it('throws an error when JWT has no required attributes: missing resource_id', () => {
     //   "sub": "1234567890",
     //   "name": "John Doe",
     //   "iat": 1516239022
@@ -21,7 +21,7 @@ describe('lib_components/src/utils/decodeJwt.ts', () => {
     }).toThrow('JWT token is invalid');
   });
 
-  it('throws an error when JWT has no required attributes', () => {
+  it('throws an error when JWT has no required attributes: empty resource_id', () => {
     //   "sub": "1234567890",
     //   "name": "John Doe",
     //   "iat": 1516239022
@@ -48,7 +48,7 @@ describe('lib_components/src/utils/decodeJwt.ts', () => {
     );
   });
 
-  it('returns the payload object when resource is provided', () => {
+  it('returns the payload object when resource is provided with a user', () => {
     //   "sub": "1234567890",
     //   "name": "John Doe",
     //   "iat": 1516239022,

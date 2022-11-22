@@ -52,17 +52,15 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, findByText } = render(
-      <DashboardClassroomForm classroom={classroom} />,
-    );
-    getByText('Title');
-    getByText('Welcome text');
+    render(<DashboardClassroomForm classroom={classroom} />);
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
     await act(async () =>
       deferredPatch.resolve({ message: 'Classroom created.' }),
     );
-    await findByText('Classroom created.');
+    await screen.findByText('Classroom created.');
 
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/create/');
@@ -81,11 +79,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -182,11 +180,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -334,11 +332,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputTitle = screen.getByRole('textbox', {
       name: /title/i,
@@ -409,11 +407,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
 
-    const { getByText, rerender } = render(
+    const { rerender } = render(
       <DashboardClassroomForm classroom={classroom} />,
     );
-    getByText('Title');
-    getByText('Welcome text');
+    screen.getByText('Title');
+    screen.getByText('Welcome text');
 
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     userEvent.clear(inputStartingAtDate);
@@ -465,13 +463,11 @@ describe('<DashboardClassroomForm />', () => {
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
 
-    const { getByText, queryByText } = render(
-      <DashboardClassroomForm classroom={classroom} />,
-    );
+    render(<DashboardClassroomForm classroom={classroom} />);
 
     // title empty, error message should be shown
-    getByText('Title is required to launch the classroom.');
-    const launchButton = getByText('Launch the classroom now in BBB');
+    screen.getByText('Title is required to launch the classroom.');
+    const launchButton = screen.getByText('Launch the classroom now in BBB');
     expect(launchButton).toBeDisabled();
 
     // title filled, error message should be hidden
@@ -479,7 +475,7 @@ describe('<DashboardClassroomForm />', () => {
       name: /title/i,
     });
     userEvent.type(inputTitle, 'updated title');
-    const titleError = queryByText(
+    const titleError = screen.queryByText(
       'Title is required to launch the classroom.',
     );
     expect(titleError).not.toBeInTheDocument();

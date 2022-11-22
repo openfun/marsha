@@ -69,7 +69,7 @@ describe('queries/createOne', () => {
         name: 'model-name',
         object: objectToCreate,
       }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/');
     expect(fetchMock.lastCall()?.[1]).toEqual({

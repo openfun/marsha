@@ -24,9 +24,9 @@ describe('<SortableTable />', () => {
       </SortableTable>,
     );
 
-    await screen.findByText('my table');
-    screen.getByText('label 1');
-    screen.getByText('label 2');
+    expect(await screen.findByText('my table')).toBeInTheDocument();
+    expect(screen.getByText('label 1')).toBeInTheDocument();
+    expect(screen.getByText('label 2')).toBeInTheDocument();
   });
 
   it('renders rows, sorting, select box and pagination', async () => {
@@ -164,9 +164,8 @@ describe('<SortableTable />', () => {
       </SortableTable>,
     );
 
-    await screen.findByText('my table');
-
-    screen.getByRole('status');
+    expect(await screen.findByText('my table')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('renders the loading on top of current content', async () => {
@@ -182,9 +181,9 @@ describe('<SortableTable />', () => {
       </SortableTable>,
     );
 
-    await screen.findByText('my table');
-    screen.getByText('some label');
-    screen.getByRole('status');
+    expect(await screen.findByText('my table')).toBeInTheDocument();
+    expect(screen.getByText('some label')).toBeInTheDocument();
+    expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
   it('renders a loader while fetching data to render', async () => {
@@ -210,8 +209,8 @@ describe('<SortableTable />', () => {
 
     await waitForElementToBeRemoved(() => screen.queryByRole('status'));
 
-    screen.getByText('some label');
-    screen.getByText('some other label');
+    expect(screen.getByText('some label')).toBeInTheDocument();
+    expect(screen.getByText('some other label')).toBeInTheDocument();
   });
 
   it('renders a loader while loading new page context', async () => {
