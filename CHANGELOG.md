@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - filtered markdown document list
 - use a lite serializer for classroom resource on list endpoint
 - rework of the TimedTextTrackLanguageChoices hook
+- adapt lib-classroom with eslint rules
 
 ## [4.0.0-beta.11] - 2022-11-08
 
