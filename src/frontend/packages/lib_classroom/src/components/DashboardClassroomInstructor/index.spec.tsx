@@ -1,6 +1,4 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable react/display-name */
-import { act, fireEvent, screen } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
@@ -24,13 +22,15 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-jest.mock('components/DashboardClassroomForm', () => () => (
-  <p>classroom form</p>
-));
+jest.mock('components/DashboardClassroomForm', () => {
+  const DashboardClassroomForm = () => <p>classroom form</p>;
+  return DashboardClassroomForm;
+});
 
-jest.mock('components/DashboardClassroomInfos', () => () => (
-  <p>classroom infos</p>
-));
+jest.mock('components/DashboardClassroomInfos', () => {
+  const DashboardClassroomInfos = () => <p>classroom infos</p>;
+  return DashboardClassroomInfos;
+});
 
 describe('<DashboardClassroomInstructor />', () => {
   afterEach(() => {
@@ -89,9 +89,7 @@ describe('<DashboardClassroomInstructor />', () => {
     fetchMock.patch('/api/classrooms/1/end/', deferredPatch.promise);
 
     fireEvent.click(screen.getByText('End classroom'));
-    await act(async () =>
-      deferredPatch.resolve({ message: 'classroom ended' }),
-    );
+    deferredPatch.resolve({ message: 'classroom ended' });
     await screen.findByText('Ending classroom…');
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/end/');

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -57,9 +56,7 @@ describe('<DashboardClassroomForm />', () => {
     screen.getByText('Welcome text');
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom created.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom created.' });
     await screen.findByText('Classroom created.');
 
     expect(fetchMock.calls()).toHaveLength(1);
@@ -130,11 +127,11 @@ describe('<DashboardClassroomForm />', () => {
     );
 
     fireEvent.click(screen.getByText('Launch the classroom now in BBB'));
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom created.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom created.' });
 
-    expect(fetchMock.calls()).toHaveLength(3);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(3);
+    });
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
@@ -210,12 +207,11 @@ describe('<DashboardClassroomForm />', () => {
     fireEvent.blur(inputWelcomeText);
 
     jest.runAllTimers();
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
-    expect(fetchMock.calls()).toHaveLength(2);
-
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(2);
+    });
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0]![1]).toEqual({
       headers: {
@@ -252,12 +248,10 @@ describe('<DashboardClassroomForm />', () => {
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
     userEvent.type(inputStartingAtDate, startingAt.toFormat('yyyy/MM/dd'));
     fireEvent.blur(inputStartingAtDate);
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
     // using userEvent.type with following input doesn't work
-    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+    const inputStartingAtTime = await screen.findByLabelText(/starting time/i);
     fireEvent.change(inputStartingAtTime, {
       target: { value: startingAt.toLocaleString(DateTime.TIME_24_SIMPLE) },
     });
@@ -290,11 +284,11 @@ describe('<DashboardClassroomForm />', () => {
       />,
     );
 
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
-    expect(fetchMock.calls()).toHaveLength(4);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(4);
+    });
 
     expect(fetchMock.calls()[2]![0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[2]![1]).toEqual({
@@ -428,12 +422,11 @@ describe('<DashboardClassroomForm />', () => {
     userEvent.clear(inputEstimatedDuration);
 
     jest.runAllTimers();
-    await act(async () =>
-      deferredPatch.resolve({ message: 'Classroom scheduled.' }),
-    );
+    deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
-    expect(fetchMock.calls()).toHaveLength(2);
-
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(2);
+    });
     expect(fetchMock.calls()[0][0]).toEqual('/api/classrooms/1/');
     expect(fetchMock.calls()[0][1]).toEqual({
       headers: {
@@ -457,7 +450,7 @@ describe('<DashboardClassroomForm />', () => {
     });
   });
 
-  it('shows an error when classroom title is missing', async () => {
+  it('shows an error when classroom title is missing', () => {
     const classroom = classroomMockFactory({ title: null, id: '1' });
 
     const deferredPatch = new Deferred();
