@@ -1,46 +1,43 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Grid, Text } from 'grommet';
-import { Classroom } from 'lib-components';
 import { DateTime, DurationObjectUnits } from 'luxon';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
 
 interface DashboardClassroomStudentCounterProps {
-  classroom: Classroom;
+  starting_at: string;
 }
 
 export const DashboardClassroomStudentCounter = ({
-  classroom,
+  starting_at,
 }: DashboardClassroomStudentCounterProps) => {
-  const startingAt = DateTime.fromISO(classroom.starting_at || '').setZone(
-    DateTime.local().zoneName,
-    { keepLocalTime: true },
-  );
   const [counter, setCounter] = React.useState<
     DurationObjectUnits | undefined
   >();
 
-  const updateCounter = () => {
+  const updateCounter = useCallback(() => {
+    const startingAt = DateTime.fromISO(starting_at).setZone(
+      DateTime.local().zoneName,
+      { keepLocalTime: true },
+    );
+
     setCounter(
       startingAt
         .diffNow(['days', 'hours', 'minutes', 'seconds'])
         .mapUnits((x, u) => (u === 'seconds' ? Math.floor(x) : x))
         .toObject(),
     );
-  };
-
-  if (!counter) {
-    updateCounter();
-  }
+  }, [starting_at]);
 
   useEffect(() => {
-    let timeout: number | undefined;
-    if (!timeout && classroom.starting_at && counter) {
-      timeout = window.setTimeout(updateCounter, 1000);
+    if (!counter) {
+      updateCounter();
+      return;
     }
+
+    const timeout = window.setTimeout(updateCounter, 1000);
     return () => {
       window.clearTimeout(timeout);
     };
-  }, [classroom, counter]);
+  }, [counter, updateCounter]);
 
   if (counter) {
     return (

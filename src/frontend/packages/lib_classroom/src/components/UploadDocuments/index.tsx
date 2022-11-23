@@ -1,8 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-empty-function */
 import { Anchor, Box, Button, Grid, Paragraph, Text } from 'grommet';
 import {
   PlusSVG,
@@ -14,7 +9,7 @@ import {
   truncateFilename,
   Classroom,
 } from 'lib-components';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -81,19 +76,21 @@ const UploadDocumentsRow = ({
   const intl = useIntl();
 
   const updateClassroomMutation = useUpdateClassroomDocument(documentId);
-  let setDefaultDocument = () => {};
-  if (uploadState === 'ready' && updateClassroomMutation) {
-    setDefaultDocument = () => {
-      updateClassroomMutation.mutate(
-        { is_default: true },
-        {
-          onSuccess: () => {
-            window.dispatchEvent(new CustomEvent('classroomDocumentUpdated'));
-          },
+
+  const setDefaultDocument = useCallback(() => {
+    if (uploadState !== 'ready' || !updateClassroomMutation) {
+      return;
+    }
+
+    updateClassroomMutation.mutate(
+      { is_default: true },
+      {
+        onSuccess: () => {
+          window.dispatchEvent(new CustomEvent('classroomDocumentUpdated'));
         },
-      );
-    };
-  }
+      },
+    );
+  }, [updateClassroomMutation, uploadState]);
 
   return (
     <Grid fill>
@@ -176,11 +173,15 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
     [UploadManagerStatus.SUCCESS].includes(state.status),
   );
 
-  const onDrop = (files: any) => {
+  const onDrop = (files: File[]) => {
     setFilesToUpload(filesToUpload.concat(files));
   };
 
-  const uploadFiles = () => {
+  const uploadFiles = useCallback(() => {
+    if (!filesToUpload.length) {
+      setUploading(false);
+    }
+
     const file = filesToUpload.shift();
     if (!file) {
       return;
@@ -195,17 +196,13 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       addUpload(modelName.CLASSROOM_DOCUMENTS, response.id, file);
       refreshClassroomDocuments();
     });
-  };
+  }, [filesToUpload, addUpload, refreshClassroomDocuments]);
 
   useEffect(() => {
-    if (uploading) {
-      if (filesToUpload.length > 0) {
-        uploadFiles();
-      } else {
-        setUploading(false);
-      }
+    if (uploadsSucceeded.length && uploading) {
+      uploadFiles();
     }
-  }, [uploadsSucceeded.length]);
+  }, [uploadFiles, uploading, uploadsSucceeded.length]);
 
   useEffect(() => {
     const handleClassroomDocumentUpdated = () => {
@@ -222,7 +219,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
         handleClassroomDocumentUpdated,
       );
     };
-  }, []);
+  }, [refreshClassroomDocuments]);
 
   return (
     <Box>
