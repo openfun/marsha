@@ -9,7 +9,7 @@ import {
   truncateFilename,
   Classroom,
 } from 'lib-components';
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { FormattedMessage, useIntl } from 'react-intl';
 
@@ -54,31 +54,23 @@ const messages = {
   },
 };
 
-type UploadDocumentsRowProps = {
-  filename: string;
-  isDefault?: boolean;
-  documentId?: string;
-  uploadingObjectId?: string;
-  uploadState?: string;
-  url?: string;
-  progress?: number;
+type UploadDocumentsRowReadyProps = {
+  isDefault: boolean;
+  documentId: string;
+  url: string;
 };
 
-const UploadDocumentsRow = ({
-  filename,
+const UploadDocumentsRowReady = ({
   isDefault,
   documentId,
-  uploadingObjectId,
-  uploadState,
   url,
-  progress,
-}: UploadDocumentsRowProps) => {
+}: UploadDocumentsRowReadyProps) => {
   const intl = useIntl();
 
   const updateClassroomMutation = useUpdateClassroomDocument(documentId);
 
   const setDefaultDocument = useCallback(() => {
-    if (uploadState !== 'ready' || !updateClassroomMutation) {
+    if (!updateClassroomMutation) {
       return;
     }
 
@@ -90,8 +82,44 @@ const UploadDocumentsRow = ({
         },
       },
     );
-  }, [updateClassroomMutation, uploadState]);
+  }, [updateClassroomMutation]);
 
+  return (
+    <Box direction="row" align="center" gap="small">
+      {isDefault ? (
+        <ValidSVG iconColor="brand" height="20px" width="20px" />
+      ) : (
+        <Button
+          alignSelf="start"
+          onClick={setDefaultDocument}
+          title={intl.formatMessage(messages.setDefaultDocument)}
+        >
+          <ValidSVG iconColor="light-5" height="20px" width="20px" />
+        </Button>
+      )}
+      <Anchor
+        download
+        a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
+        label={intl.formatMessage(messages.downloadButtonLabel)}
+        style={{ fontFamily: 'Roboto-Medium' }}
+        title={intl.formatMessage(messages.downloadButtonLabel)}
+        href={url}
+      />
+    </Box>
+  );
+};
+
+type UploadDocumentsRowProps = {
+  filename: string;
+  uploadingObjectId?: string;
+  children?: React.ReactNode;
+};
+
+const UploadDocumentsRow = ({
+  filename,
+  uploadingObjectId,
+  children,
+}: UploadDocumentsRowProps) => {
   return (
     <Grid fill>
       <Box
@@ -109,43 +137,7 @@ const UploadDocumentsRow = ({
             {truncateFilename(filename, 40)}
           </Text>
         </Box>
-        {uploadingObjectId && (
-          <React.Fragment>
-            <UploadableObjectProgress progress={progress || 0} />
-            <Text alignSelf="center">
-              {intl.formatMessage(messages.uploadingFile)}
-            </Text>
-          </React.Fragment>
-        )}
-        {uploadState && (
-          <Box justify="end" flex="shrink" direction="row">
-            {uploadState === 'ready' ? (
-              <Box direction="row" align="center" gap="small">
-                {isDefault ? (
-                  <ValidSVG iconColor="brand" height="20px" width="20px" />
-                ) : (
-                  <Button
-                    alignSelf="start"
-                    onClick={setDefaultDocument}
-                    title={intl.formatMessage(messages.setDefaultDocument)}
-                  >
-                    <ValidSVG iconColor="light-5" height="20px" width="20px" />
-                  </Button>
-                )}
-                <Anchor
-                  download
-                  a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
-                  label={intl.formatMessage(messages.downloadButtonLabel)}
-                  style={{ fontFamily: 'Roboto-Medium' }}
-                  title={intl.formatMessage(messages.downloadButtonLabel)}
-                  href={url}
-                />
-              </Box>
-            ) : (
-              <Text>{uploadState}</Text>
-            )}
-          </Box>
-        )}
+        {children}
       </Box>
     </Grid>
   );
@@ -249,11 +241,19 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
             <UploadDocumentsRow
               key={classroomDocument.id}
               filename={classroomDocument.filename}
-              isDefault={classroomDocument.is_default}
-              documentId={classroomDocument.id}
-              uploadState={classroomDocument.upload_state}
-              url={classroomDocument.url}
-            />
+            >
+              <Box justify="end" flex="shrink" direction="row">
+                {classroomDocument.upload_state === 'ready' ? (
+                  <UploadDocumentsRowReady
+                    isDefault={classroomDocument.is_default}
+                    documentId={classroomDocument.id}
+                    url={classroomDocument.url}
+                  />
+                ) : (
+                  <Text>{classroomDocument.upload_state}</Text>
+                )}
+              </Box>
+            </UploadDocumentsRow>
           ))}
 
         {uploadsInProgress.map((state, index) => (
@@ -261,8 +261,16 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
             key={`${state.file.name}_${index}`}
             filename={state.file.name}
             uploadingObjectId={state.objectId}
-            progress={uploadManagerState[state.objectId]?.progress}
-          />
+          >
+            <Fragment>
+              <UploadableObjectProgress
+                progress={uploadManagerState[state.objectId]?.progress || 0}
+              />
+              <Text alignSelf="center">
+                {intl.formatMessage(messages.uploadingFile)}
+              </Text>
+            </Fragment>
+          </UploadDocumentsRow>
         ))}
 
         {filesToUpload.map((file, index) => (
