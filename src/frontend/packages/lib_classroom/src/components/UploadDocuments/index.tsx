@@ -173,9 +173,12 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
     [UploadManagerStatus.SUCCESS].includes(state.status),
   );
 
-  const onDrop = (files: File[]) => {
-    setFilesToUpload(filesToUpload.concat(files));
-  };
+  const onDrop = useCallback(
+    (files: File[]) => {
+      setFilesToUpload(filesToUpload.concat(files));
+    },
+    [filesToUpload],
+  );
 
   const uploadFiles = useCallback(() => {
     if (!filesToUpload.length) {
@@ -273,7 +276,11 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
           <Dropzone onDrop={onDrop} accept={{ 'application/pdf': ['.pdf'] }}>
             {({ getRootProps, getInputProps }) => (
               <div {...getRootProps()}>
-                <input {...getInputProps()} />
+                <input
+                  {...getInputProps()}
+                  aria-label="File Upload"
+                  aria-hidden="true"
+                />
                 <Box direction="row" align="center" gap="medium">
                   <PlusSVG iconColor="#75A7E5" height="35px" width="35px" />
                   <Paragraph color="#75A7E5" textAlign="center" margin="none">

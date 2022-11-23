@@ -1,14 +1,3 @@
-/* eslint-disable testing-library/no-container */
-/* eslint-disable testing-library/no-node-access */
-/* eslint-disable testing-library/no-unnecessary-act */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
@@ -84,19 +73,17 @@ describe('<UploadDocuments />', () => {
       uploadManagerState: {},
     });
 
-    const { container } = render(<UploadDocuments classroomId="1" />);
+    render(<UploadDocuments classroomId="1" />);
 
     const file = new File(['(⌐□_□)'], 'course.pdf', {
       type: 'application/pdf',
     });
-    await act(async () => {
-      fireEvent.change(container.querySelector('input[type="file"]')!, {
-        target: {
-          files: [file],
-        },
-      });
+    fireEvent.change(screen.getByLabelText('File Upload'), {
+      target: {
+        files: [file],
+      },
     });
-    expect(screen.getByText('course.pdf')).toBeInTheDocument();
+    expect(await screen.findByText('course.pdf')).toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     const classroomDocument = classroomDocumentMockFactory();
@@ -121,16 +108,23 @@ describe('<UploadDocuments />', () => {
       uploadManagerState: {},
     });
 
-    const { container } = render(<UploadDocuments classroomId="1" />);
+    render(<UploadDocuments classroomId="1" />);
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+    fireEvent.change(screen.getByLabelText('File Upload'), {
+      target: {
+        files: [file],
+      },
+    });
+
+    // We cannot easily asset that something asynchrone is not in the document,
+    // so we wait a bit to be sure that the mp4 file is rejected
     await act(async () => {
-      fireEvent.change(container.querySelector('input[type="file"]')!, {
-        target: {
-          files: [file],
-        },
+      await new Promise<void>((resolve) => {
+        setTimeout(() => resolve(), 500);
       });
     });
+
     expect(screen.queryByText('course.mp4')).not.toBeInTheDocument();
     expect(screen.queryByText('Upload')).not.toBeInTheDocument();
   });
@@ -230,11 +224,13 @@ describe('<UploadDocuments />', () => {
     const downloadButton = screen.getByRole('button', {
       name: 'Click to set as default document',
     });
-    await act(async () => {
-      userEvent.click(downloadButton);
-    });
-    expect(fetchMock.lastCall()![1]!.body).toEqual(
-      JSON.stringify({ is_default: true }),
+
+    userEvent.click(downloadButton);
+
+    await waitFor(() =>
+      expect(fetchMock.lastCall()![1]!.body).toEqual(
+        JSON.stringify({ is_default: true }),
+      ),
     );
   });
 });

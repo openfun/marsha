@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable react/display-name */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
@@ -45,9 +41,11 @@ describe('queries', () => {
       },
     });
 
-    Wrapper = ({ children }: Element) => (
+    const WrapperInit = ({ children }: Element) => (
       <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
     );
+
+    Wrapper = WrapperInit;
   });
 
   afterEach(() => {
@@ -510,7 +508,7 @@ describe('queries', () => {
       expect(result.current.status).toEqual('success');
     });
 
-    it('returns undefined if no id provided', async () => {
+    it('returns undefined if no id provided', () => {
       const { result } = renderHook(() => useUpdateClassroomDocument(), {
         wrapper: Wrapper,
       });
