@@ -508,13 +508,6 @@ describe('queries', () => {
       expect(result.current.status).toEqual('success');
     });
 
-    it('returns undefined if no id provided', () => {
-      const { result } = renderHook(() => useUpdateClassroomDocument(), {
-        wrapper: Wrapper,
-      });
-      expect(result.current).not.toBeDefined();
-    });
-
     it('fails to update the resource', async () => {
       const classroomDocument = classroomDocumentMockFactory();
       fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, 400);

@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-floating-promises */
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -161,7 +156,7 @@ export const useUpdateClassroom = (
 };
 
 type ClassroomDocumentsResponse = APIList<ClassroomDocument>;
-type UseClassroomDocumentParams = {};
+type UseClassroomDocumentParams = Record<string, never>;
 export const useClassroomDocuments = (
   classroomId: string,
   params: UseClassroomDocumentParams,
@@ -197,12 +192,9 @@ type UseUpdateClassroomDocumentOptions = UseMutationOptions<
   UseUpdateClassroomDocumentData
 >;
 export const useUpdateClassroomDocument = (
-  id?: string,
+  id: string,
   options?: UseUpdateClassroomDocumentOptions,
 ) => {
-  if (!id) {
-    return undefined;
-  }
   const queryClient = useQueryClient();
   return useMutation<
     ClassroomDocument,
