@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Button, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Classroom } from 'lib-components';
@@ -79,7 +78,7 @@ const DashboardClassroomStudent = ({
     if (classroom.ended) {
       classroomEnded();
     }
-  }, [classroom]);
+  }, [classroom.ended, classroomEnded]);
 
   let left: JSX.Element;
   let right: Nullable<JSX.Element> = null;
@@ -143,7 +142,7 @@ const DashboardClassroomStudent = ({
             {displayedEventTime}
           </Text>
         </Box>
-        <DashboardClassroomStudentCounter classroom={classroom} />
+        <DashboardClassroomStudentCounter starting_at={classroom.starting_at} />
       </React.Fragment>
     );
   } else {
