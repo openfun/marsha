@@ -1,18 +1,21 @@
-/* eslint-disable default-case */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Box, Grommet, Spinner, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
-import { Maybe, theme } from 'lib-common';
+import { theme } from 'lib-common';
 import {
   AnonymousUser,
   Loader,
   useCurrentResourceContext,
   useCurrentUser,
-  Attendee,
   Classroom,
 } from 'lib-components';
-import React, { useState, Suspense, useRef, useEffect, lazy } from 'react';
+import React, {
+  useState,
+  Suspense,
+  useRef,
+  useEffect,
+  lazy,
+  useCallback,
+} from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -135,14 +138,13 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     { refetchInterval: classroomRefetchInterval.current },
   );
 
-  const consumerSiteUserId = `${context.consumer_site}_${
-    user && user !== AnonymousUser.ANONYMOUS ? user.id : ''
+  const consumerSiteUserId = `${context.consumer_site || ''}_${
+    user && user !== AnonymousUser.ANONYMOUS && user.id ? user.id : ''
   }`;
 
   useEffect(() => {
-    let attendeeFound: Maybe<Attendee>;
     if (classroom?.infos?.attendees) {
-      attendeeFound = classroom.infos.attendees?.find((attendee) => {
+      const attendeeFound = classroom.infos.attendees.find((attendee) => {
         return (
           consumerSiteUserId === attendee.userID &&
           (attendee.hasVideo === 'true' ||
@@ -150,16 +152,17 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
             attendee.isListeningOnly === 'true')
         );
       });
+
+      if (attendeeFound) {
+        setUserFullname(attendeeFound.fullName);
+        setClassroomJoined(true);
+        return;
+      }
     }
 
-    if (attendeeFound) {
-      setUserFullname(attendeeFound.fullName);
-      setClassroomJoined(true);
-    } else {
-      setClassroomJoined(false);
-      setClassroomUrl('');
-    }
-  }, [classroom]);
+    setClassroomJoined(false);
+    setClassroomUrl('');
+  }, [classroom?.infos?.attendees, consumerSiteUserId]);
 
   const joinClassroomMutation = useJoinClassroomAction(classroomId, {
     onSuccess: (data) => {
@@ -178,30 +181,29 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     },
   });
 
-  const openAskUserNameAction = () => {
-    setAskUsername(true);
-  };
-  const closeAskUserNameAction = () => {
-    setAskUsername(false);
-  };
-  const joinClassroomAction = () => {
+  const askUserNameAction = useCallback((isOpen: boolean) => {
+    setAskUsername(isOpen);
+  }, []);
+
+  const joinClassroomAction = useCallback(() => {
     if (userFullname) {
-      closeAskUserNameAction();
+      askUserNameAction(false);
       joinClassroomMutation.mutate({ fullname: userFullname });
     } else {
-      openAskUserNameAction();
+      askUserNameAction(true);
     }
-  };
+  }, [askUserNameAction, joinClassroomMutation, userFullname]);
 
-  const classroomEnded = () => {
+  const classroomEnded = useCallback(() => {
     setClassroomUrl('');
-    closeAskUserNameAction();
-  };
+    askUserNameAction(false);
+  }, [askUserNameAction]);
 
   let content: JSX.Element;
   switch (useClassroomStatus) {
     case 'idle':
     case 'loading':
+    default:
       content = (
         <Spinner
           size="large"
@@ -224,7 +226,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
               userFullname={userFullname}
               setUserFullname={setUserFullname}
               onJoin={joinClassroomAction}
-              onCancel={closeAskUserNameAction}
+              onCancel={() => askUserNameAction(false)}
             />
           );
         } else {

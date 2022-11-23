@@ -3,8 +3,6 @@ import { render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'utils/tests/factories';
-
 import { DashboardClassroomStudentCounter } from '.';
 
 jest.mock('lib-components', () => ({
@@ -36,18 +34,8 @@ describe('<DashboardClassroomStudentCounter />', () => {
 
   it('Displays a countdown when the classroom is scheduled', () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
-    const exstimatedDuration = Duration.fromObject({ hours: 3 });
-
-    const classroom = classroomMockFactory({
-      id: '1',
-      started: false,
-      ended: false,
-      starting_at: startingAt.toISO(),
-      estimated_duration: exstimatedDuration.toFormat('hh:mm:ss'),
-    });
-
     const { container } = render(
-      <DashboardClassroomStudentCounter classroom={classroom} />,
+      <DashboardClassroomStudentCounter starting_at={startingAt.toISO()} />,
     );
 
     const expectCountdown = (
