@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable @typescript-eslint/require-await */
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
@@ -236,7 +235,12 @@ describe('<DashboardClassroom />', () => {
   });
 
   it('displays user fullname when joining a classroom', async () => {
-    const token = ltiInstructorTokenMockFactory();
+    const token = ltiInstructorTokenMockFactory(
+      {},
+      {
+        user_fullname: 'John Doe',
+      },
+    );
     useCurrentUser.setState({
       currentUser: {
         anonymous_id: token.user?.anonymous_id,
@@ -290,7 +294,7 @@ describe('<DashboardClassroom />', () => {
       infos: {
         attendees: [
           {
-            userID: `${token.consumer_site}_${token.user?.id}`,
+            userID: `${token.consumer_site || ''}_${token.user?.id || ''}`,
             fullName: token.user?.user_fullname,
             hasVideo: 'true',
             hasJoinedVoice: 'true',
@@ -303,9 +307,7 @@ describe('<DashboardClassroom />', () => {
 
     expect(fetchMock.calls()[0]![0]).toEqual('/api/classrooms/1/');
     expect(
-      screen.getByText(
-        `You have joined the classroom as ${token.user?.user_fullname}.`,
-      ),
+      screen.getByText(`You have joined the classroom as John Doe.`),
     ).toBeInTheDocument();
   });
 

@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import {
   useJwt,
   API_ENDPOINT,
@@ -15,11 +11,16 @@ export const createClassroomDocument = async (file: {
   size: number;
   classroom: Classroom['id'];
 }) => {
+  const jwt = useJwt.getState().jwt;
+  if (!jwt) {
+    throw new Error('No JWT found');
+  }
+
   const response = await fetch(
     `${API_ENDPOINT}/${String(ClassroomModelName.CLASSROOM_DOCUMENTS)}/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        Authorization: `Bearer ${jwt}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
@@ -31,7 +32,7 @@ export const createClassroomDocument = async (file: {
     throw new Error('Failed to create a new classroom document.');
   }
 
-  const classroomDocument: ClassroomDocument = await response.json();
+  const classroomDocument = (await response.json()) as ClassroomDocument;
 
   return classroomDocument;
 };

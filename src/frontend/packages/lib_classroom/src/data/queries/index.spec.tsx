@@ -488,10 +488,10 @@ describe('queries', () => {
           wrapper: Wrapper,
         },
       );
-      result.current!.mutate({
+      result.current.mutate({
         is_default: true,
       });
-      await waitFor(() => result.current!.isSuccess);
+      await waitFor(() => result.current.isSuccess);
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classroomdocuments/${classroomDocument.id}/`,
@@ -506,8 +506,8 @@ describe('queries', () => {
           is_default: true,
         }),
       });
-      expect(result.current!.data).toEqual(classroomDocument);
-      expect(result.current!.status).toEqual('success');
+      expect(result.current.data).toEqual(classroomDocument);
+      expect(result.current.status).toEqual('success');
     });
 
     it('returns undefined if no id provided', async () => {
@@ -527,10 +527,10 @@ describe('queries', () => {
           wrapper: Wrapper,
         },
       );
-      result.current!.mutate({
+      result.current.mutate({
         is_default: true,
       });
-      await waitFor(() => result.current!.isError);
+      await waitFor(() => result.current.isError);
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/classroomdocuments/${classroomDocument.id}/`,
@@ -545,8 +545,8 @@ describe('queries', () => {
           is_default: true,
         }),
       });
-      expect(result.current!.data).toEqual(undefined);
-      expect(result.current!.status).toEqual('error');
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
     });
   });
 });

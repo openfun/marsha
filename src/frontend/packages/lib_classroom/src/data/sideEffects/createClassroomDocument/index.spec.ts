@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 
