@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { Box, Grid, ResponsiveContext, Text } from 'grommet';
 import { Nullable } from 'lib-common';
 import { useAppConfig } from 'lib-components';
@@ -43,7 +42,7 @@ export const DashboardClassroomLayout = ({
   return (
     <Box
       background={{
-        image: `url(${appData.static.img.bbbBackground})`,
+        image: `url(${appData.static.img.bbbBackground || ''})`,
         size: 'cover',
         position: 'right top',
       }}
@@ -68,7 +67,7 @@ export const DashboardClassroomLayout = ({
             height="30px"
             width="30px"
             background={{
-              image: `url(${appData.static.img.bbbLogo})`,
+              image: `url(${appData.static.img.bbbLogo || ''})`,
               size: 'cover',
               position: 'left center',
             }}
