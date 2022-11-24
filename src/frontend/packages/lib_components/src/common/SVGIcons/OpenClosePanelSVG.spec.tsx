@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { OpenClosePanelSVG } from './OpenClosePanelSVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<OpenClosePanelSVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders OpenClosePanelSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <OpenClosePanelSVG
@@ -15,5 +22,6 @@ describe('<OpenClosePanelSVG />', () => {
         iconColor="white"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

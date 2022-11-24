@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { RoundCrossSVG } from './RoundCrossSVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<RoundCrossSVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders InfoCircleSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <RoundCrossSVG
@@ -15,5 +22,6 @@ describe('<RoundCrossSVG />', () => {
         iconColor="blue-focus"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

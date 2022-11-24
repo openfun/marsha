@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { RoundPlusSVG } from './RoundPlusSVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<RoundPlusSVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders RoundPlus correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <RoundPlusSVG
@@ -15,5 +22,6 @@ describe('<RoundPlusSVG />', () => {
         iconColor="blue-focus"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

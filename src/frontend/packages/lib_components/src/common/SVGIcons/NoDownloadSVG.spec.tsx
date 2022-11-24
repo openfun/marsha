@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { NoDownloadSVG } from './NoDownloadSVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<NoDownloadSVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders NoDownloadSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <NoDownloadSVG
@@ -15,5 +22,6 @@ describe('<NoDownloadSVG />', () => {
         iconColor="blue-off"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });
