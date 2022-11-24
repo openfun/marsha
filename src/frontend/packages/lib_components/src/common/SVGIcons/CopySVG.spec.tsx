@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { CopySVG } from './CopySVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<CopySVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders CopySVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <CopySVG
@@ -15,5 +22,6 @@ describe('<CopySVG />', () => {
         iconColor="blue-active"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import { DoubleArrowResizerSVG } from './DoubleArrowResizerSVG';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<DoubleArrowResizerSVG />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders DoubleArrowResizerSVG correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <DoubleArrowResizerSVG
@@ -15,5 +22,6 @@ describe('<DoubleArrowResizerSVG />', () => {
         iconColor="blue-focus"
       />,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });

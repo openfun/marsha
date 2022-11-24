@@ -1,10 +1,17 @@
-/* eslint-disable jest/expect-expect */
 import { renderIconSnapshot } from 'lib-tests';
 import React from 'react';
 
 import SVGIcon from '.';
 
+const consoleError = jest
+  .spyOn(console, 'error')
+  .mockImplementation(() => jest.fn());
+
 describe('<SVGIcon />', () => {
+  afterAll(() => {
+    consoleError.mockClear();
+  });
+
   it('renders SVGIcon component correctly [screenshot]', async () => {
     await renderIconSnapshot(
       <SVGIcon iconColor="#035ccd">
@@ -18,5 +25,6 @@ describe('<SVGIcon />', () => {
         </g>
       </SVGIcon>,
     );
+    expect(consoleError).not.toHaveBeenCalled();
   });
 });
