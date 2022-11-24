@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Shareable classroom link
 - Endpoint fetching jitsi info for a specific video
   (/api/videos/{video_id}/jitsi/)
+- Reopen chatrooms in readonly mode when converting a live to a vod
 
 ### Changed
 

@@ -50,7 +50,7 @@ from ..utils.medialive_utils import (
     wait_medialive_channel_is_created,
 )
 from ..utils.time_utils import to_timestamp
-from ..utils.xmpp_utils import close_room, create_room
+from ..utils.xmpp_utils import close_room, create_room, reopen_room_for_vod
 from .base import APIViewMixin, ObjectPkMixin
 
 
@@ -554,6 +554,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         video.live_state = defaults.ENDED
         video.upload_state = defaults.READY
         video.save()
+
+        if settings.LIVE_CHAT_ENABLED:
+            reopen_room_for_vod(video.id)
 
         channel_layers_utils.dispatch_video_to_groups(video)
 
