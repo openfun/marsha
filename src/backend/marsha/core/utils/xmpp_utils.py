@@ -181,6 +181,81 @@ def close_room(room_name):
     )
 
 
+def reopen_room_for_vod(room_name):
+    """Converts a closed room to a moderated one for vod use.
+
+    room types documentation:
+    https://xmpp.org/extensions/xep-0045.html#terms-rooms
+
+    roles documentation:
+    https://xmpp.org/extensions/xep-0045.html#roles-priv
+
+    links between room types and roles:
+    https://xmpp.org/extensions/xep-0045.html#roles-change
+
+    Parameters
+    ----------
+    room_name: string
+        The name of the room you want to convert to VOD use.
+    """
+
+    client = _connect()
+
+    client.send(
+        xmpp.Presence(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}/admin",
+            payload=[xmpp.Node(tag="x", attrs={"xmlns": xmpp.NS_MUC})],
+        )
+    )
+
+    # request the current room config
+    default_config_iq = client.SendAndWaitForResponse(
+        xmpp.Iq(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
+            frm=settings.XMPP_PRIVATE_ADMIN_JID,
+            typ="get",
+            queryNS=xmpp.NS_MUC_OWNER,
+        )
+    )
+
+    data = []
+    fileds_to_exclude = [
+        "muc#roomconfig_membersonly",
+        "muc#roomconfig_moderatedroom",
+    ]
+
+    # Remove config we want to modify
+    for children in default_config_iq.getQueryPayload()[0].getChildren():
+        if (
+            children.getName() == "field"
+            and children.getAttr("var") not in fileds_to_exclude
+        ):
+            data.append(children)
+
+    # Add our own config
+    data = data + [
+        # Reopen room
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_membersonly", value=0),
+        # Switch to a moderated room
+        xmpp.DataField(typ="boolean", name="muc#roomconfig_moderatedroom", value=1),
+    ]
+
+    client.send(
+        xmpp.Iq(
+            to=f"{room_name}@{settings.XMPP_CONFERENCE_DOMAIN}",
+            frm=settings.XMPP_PRIVATE_ADMIN_JID,
+            typ="set",
+            queryNS=xmpp.NS_MUC_OWNER,
+            payload=[
+                xmpp.DataForm(
+                    typ="submit",
+                    data=data,
+                )
+            ],
+        )
+    )
+
+
 def generate_jwt(room_name, affiliation, expires_at):
     """Generate the JWT token used by xmpp server.
 

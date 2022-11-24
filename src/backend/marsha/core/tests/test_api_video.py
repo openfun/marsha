@@ -6093,6 +6093,12 @@ class VideoAPITest(TestCase):
             },
         )
 
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")
+    @override_settings(XMPP_CONFERENCE_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_CONVERSE_PERSISTENT_STORE="localStorage")
+    @override_settings(XMPP_DOMAIN="conference.xmpp-server.com")
+    @override_settings(XMPP_JWT_SHARED_SECRET="xmpp_shared_secret")
     def test_api_video_instructor_harvested_live_to_vod(self):
         """An instructor can transform an harvested live to a vod."""
         video = factories.VideoFactory(
@@ -6108,12 +6114,18 @@ class VideoAPITest(TestCase):
 
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "reopen_room_for_vod"
+        ) as mock_reopen_room, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.post(
                 f"/api/videos/{video.id}/live-to-vod/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_reopen_room.assert_called_once_with(video.id)
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -6180,7 +6192,13 @@ class VideoAPITest(TestCase):
                 "live_state": ENDED,
                 "live_info": {},
                 "live_type": JITSI,
-                "xmpp": None,
+                "xmpp": {
+                    "bosh_url": "https://xmpp-server.com/http-bind?token=xmpp_jwt",
+                    "converse_persistent_store": "localStorage",
+                    "websocket_url": None,
+                    "conference_url": f"{video.id}@conference.xmpp-server.com",
+                    "jid": "conference.xmpp-server.com",
+                },
                 "tags": [],
                 "license": None,
             },
