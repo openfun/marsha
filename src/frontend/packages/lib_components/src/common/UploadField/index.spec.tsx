@@ -1,5 +1,3 @@
-/* eslint-disable testing-library/no-container */
-/* eslint-disable testing-library/no-node-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -25,7 +23,7 @@ describe('<UploadField />', () => {
 
   it('passes the file to the callback', async () => {
     const setUploadState = jest.fn();
-    const { container } = render(
+    render(
       <UploadManagerContext.Provider
         value={{ setUploadState, uploadManagerState: {} }}
       >
@@ -35,7 +33,7 @@ describe('<UploadField />', () => {
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
 
-    fireEvent.change(container.querySelector('input[type="file"]')!, {
+    fireEvent.change(screen.getByLabelText('File Upload'), {
       target: {
         files: [file],
       },
