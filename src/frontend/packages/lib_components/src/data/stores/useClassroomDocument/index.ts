@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Nullable } from 'lib-common';
 import create from 'zustand';
 
@@ -49,9 +48,9 @@ export const useClassroomDocument = create<ClassroomDocumentState>(
         ) {
           const classroomDocumentId = Object.keys(
             get()[ClassroomModelName.CLASSROOM_DOCUMENTS],
-          ).shift();
+          ).shift() as string;
           return get()[ClassroomModelName.CLASSROOM_DOCUMENTS][
-            classroomDocumentId!
+            classroomDocumentId
           ];
         }
 

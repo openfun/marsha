@@ -3,9 +3,9 @@ import { Nullable } from 'lib-common';
 import { ConsumerSite } from './ConsumerSite';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
-import { ClassroomDocument } from './apps/classroom/models';
+import { Classroom, ClassroomDocument } from './apps/classroom/models';
 import { DepositedFile } from './apps/deposit/models';
-import { MarkdownImage } from './apps/markdown/models';
+import { MarkdownDocument, MarkdownImage } from './apps/markdown/models';
 import { Document } from './file';
 
 /** Base shape for all resources to extend. */
@@ -268,3 +268,10 @@ export type UploadableObject =
   | MarkdownImage
   | DepositedFile
   | ClassroomDocument;
+
+export type AppDataRessource =
+  | Video
+  | Document
+  | MarkdownDocument
+  | DepositedFile
+  | Classroom;

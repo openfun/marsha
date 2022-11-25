@@ -25,6 +25,5 @@ export async function updateResource<R extends Resource>(
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return await response.json();
+  return (await response.json()) as R;
 }
