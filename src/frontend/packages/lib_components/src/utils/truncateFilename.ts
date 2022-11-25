@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 export const truncateFilename = (
   filename: string | null,
   maxLength: number,
@@ -16,7 +15,7 @@ export const truncateFilename = (
   let extension = '';
   const splittedFilename = filename.split('.');
   if (splittedFilename.length > 1) {
-    extension = `.${splittedFilename.pop()}`;
+    extension = `.${splittedFilename.pop() || ''}`;
   }
   const truncated = filename.substring(
     0,

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Nullable } from 'lib-common';
 import create from 'zustand';
 
@@ -42,8 +41,10 @@ export const useThumbnail = create<ThumbnailState>((set, get) => {
       ),
     getThumbnail: () => {
       if (Object.keys(get()[modelName.THUMBNAILS]).length > 0) {
-        const thumbnailId = Object.keys(get()[modelName.THUMBNAILS]).shift();
-        return get()[modelName.THUMBNAILS][thumbnailId!];
+        const thumbnailId = Object.keys(
+          get()[modelName.THUMBNAILS],
+        ).shift() as string;
+        return get()[modelName.THUMBNAILS][thumbnailId];
       }
 
       return null;

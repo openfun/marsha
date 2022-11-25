@@ -1,11 +1,5 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable default-case */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { ClassroomModelName } from 'types/apps/classroom/models';
 import { FileDepositoryModelName } from 'types/apps/deposit/models';
 import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
@@ -36,6 +30,7 @@ const getStore = async (objectType: uploadableModelName) => {
       const { useDepositedFile } = await import('./useDepositedFile');
       return useDepositedFile;
     case ClassroomModelName.CLASSROOM_DOCUMENTS:
+    default:
       const { useClassroomDocument } = await import('./useClassroomDocument');
       return useClassroomDocument;
   }
@@ -63,5 +58,7 @@ export const getStoreResource = async (
 ) => {
   const store = await getStore(objectType);
   const state = store.getState();
-  return state[objectType] && state[objectType]![objectId];
+  const stateObjectType = state[objectType];
+
+  return stateObjectType && stateObjectType[objectId];
 };
