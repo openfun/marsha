@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { Maybe } from 'lib-common';
 import React, { useEffect, useState } from 'react';
@@ -117,25 +116,33 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   const objectStatus = uploadManagerState[objectId]?.status;
 
   const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
+  const [isMounted, setIsMounted] = useState(false);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!isMounted && uploadManagerState[objectId]) {
+      resetUpload(objectId);
+    }
+  }, [isMounted, objectId, resetUpload, uploadManagerState]);
 
   useEffect(() => {
     (async () => setObject(await getStoreResource(objectType, objectId)))();
   }, [objectId, objectType]);
 
-  const beforeUnload = (event: BeforeUnloadEvent) => {
-    if (objectStatus === UploadManagerStatus.UPLOADING) {
-      event.preventDefault();
-      event.returnValue = '';
-    }
-  };
-
   useEffect(() => {
-    if (uploadManagerState[objectId]) {
-      resetUpload(objectId);
-    }
+    const beforeUnload = (event: BeforeUnloadEvent) => {
+      if (objectStatus === UploadManagerStatus.UPLOADING) {
+        event.preventDefault();
+        event.returnValue = '';
+      }
+    };
+
     window.addEventListener('beforeunload', beforeUnload);
     return () => window.removeEventListener('beforeunload', beforeUnload);
-  }, []);
+  }, [objectStatus]);
 
   if (object === undefined) {
     return (
