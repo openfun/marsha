@@ -7,7 +7,7 @@
   "types": "lib/index.d.ts",
   "scripts": {
     "build": "rollup -c && yarn tsc-alias ",
-    "build:watch": "yarn run build -- --watch",
+    "build:watch": "yarn rollup -c --watch",
     "build:no-fail": "yarn lint && yarn test && yarn build",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
