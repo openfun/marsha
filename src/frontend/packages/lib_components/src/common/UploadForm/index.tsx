@@ -16,8 +16,7 @@ import { DASHBOARD_ROUTE } from 'data/routes';
 import { getStoreResource } from 'data/stores/generics';
 import { useAppConfig } from 'data/stores/useAppConfig';
 import { modelName, uploadableModelName } from 'types/models';
-import { TimedText, timedTextMode, UploadableObject } from 'types/tracks';
-import { useAsyncEffect } from 'utils/useAsyncEffect';
+import { TimedText, UploadableObject } from 'types/tracks';
 
 const messages = defineMessages({
   linkToDashboard: {
@@ -118,9 +117,10 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   const objectStatus = uploadManagerState[objectId]?.status;
 
   const [object, setObject] = useState(undefined as Maybe<UploadableObject>);
-  useAsyncEffect(async () => {
-    setObject(await getStoreResource(objectType, objectId));
-  }, []);
+
+  useEffect(() => {
+    (async () => setObject(await getStoreResource(objectType, objectId)))();
+  }, [objectId, objectType]);
 
   const beforeUnload = (event: BeforeUnloadEvent) => {
     if (objectStatus === UploadManagerStatus.UPLOADING) {
