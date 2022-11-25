@@ -32,11 +32,8 @@ export async function getResource(
         `Failed to fetch resource ${resourceName} with id ${resourceId}`,
       );
     }
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    const resource = await response.json();
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+    const resource = (await response.json()) as UploadableObject;
     await addResource(resourceName, resource);
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return resource;
   } catch (error) {
     report(error);

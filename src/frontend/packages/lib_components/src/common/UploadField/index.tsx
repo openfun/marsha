@@ -1,6 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Maybe } from 'lib-common';
 import React, { useState } from 'react';
 import Dropzone from 'react-dropzone';
@@ -25,7 +22,7 @@ export const UploadField = ({ objectType, objectId }: UploadFieldProps) => {
   const { addUpload } = useUploadManager();
   const [file, setFile] = useState<Maybe<File>>(undefined);
 
-  const onDrop = (files: any) => {
+  const onDrop = (files: File[]) => {
     setFile(files[0]);
     addUpload(objectType, objectId, files[0]);
   };

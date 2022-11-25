@@ -1,7 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { uploadableModelName } from '../../types/models';
 import { StoreState } from '../../types/stores';
 import { Resource } from '../../types/tracks';
@@ -37,9 +33,14 @@ export function removeResource<R extends Resource>(
   objectType: uploadableModelName,
   object: R,
 ) {
-  const objects = Object.values(state[objectType]!).filter(
+  const stateObjectType = state[objectType];
+  if (!stateObjectType) {
+    return {};
+  }
+
+  const objects = Object.values(stateObjectType).filter(
     (objectToFilter: R) => objectToFilter.id !== object.id,
-  );
+  ) as R[];
 
   return {
     [objectType]: {

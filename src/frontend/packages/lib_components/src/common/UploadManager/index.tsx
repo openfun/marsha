@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable prefer-spread */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
 import React, {
   createContext,
   useCallback,
@@ -57,7 +52,9 @@ export const UploadManagerContext = createContext<{
  * Should wrap any component that makes use of the upload manager, either to perform uploads or
  * to read uploads state.
  */
-export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
+export const UploadManager = ({
+  children,
+}: React.PropsWithChildren<unknown>) => {
   const [uploadManagerState, setUploadState] = useState<UploadManagerState>({});
   const [newUpload, setNewUpload] = useState(false);
 
@@ -76,84 +73,86 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
 
     Object.values(uploadManagerState)
       .filter(({ status }) => status === UploadManagerStatus.INIT)
-      .forEach(async ({ file, objectId, objectType }) => {
-        let presignedPost: AWSPresignedPost;
-        try {
-          presignedPost = await initiateUpload(
-            objectType,
-            objectId,
-            file.name,
-            file.type,
-          );
-        } catch (error) {
-          setUploadState((state) => ({
-            ...state,
-            [objectId]: {
-              ...state[objectId],
-              status: UploadManagerStatus.ERR_POLICY,
-            },
-          }));
-          return;
-        }
-
-        // Use FormData to meet the requirement of a multi-part POST request for s3
-        // NB: order of keys is important here, which is why we do not iterate over an object
-        const formArguments: [string, string | File][] = [];
-        formArguments.push(
-          ...Object.keys(presignedPost.fields).map((key) => {
-            const value: [string, string] = [key, presignedPost.fields[key]];
-            return value;
-          }),
-        );
-        if (
-          [
-            modelName.VIDEOS,
-            modelName.THUMBNAILS,
-            modelName.SHAREDLIVEMEDIAS,
-            MarkdownDocumentModelName.MARKDOWN_IMAGES,
-            FileDepositoryModelName.DepositedFiles,
-            ClassroomModelName.CLASSROOM_DOCUMENTS,
-          ].includes(objectType)
-        ) {
-          formArguments.push(['Content-Type', file.type]);
-        }
-        formArguments.push(['file', file]);
-
-        const formData = makeFormData.apply(null, formArguments);
-
-        setUploadState((state) => ({
-          ...state,
-          [objectId]: {
-            ...state[objectId],
-            status: UploadManagerStatus.UPLOADING,
-          },
-        }));
-
-        try {
-          await uploadFile(presignedPost.url, formData, (progress: number) =>
+      .forEach(({ file, objectId, objectType }) => {
+        (async () => {
+          let presignedPost: AWSPresignedPost;
+          try {
+            presignedPost = await initiateUpload(
+              objectType,
+              objectId,
+              file.name,
+              file.type,
+            );
+          } catch (error) {
             setUploadState((state) => ({
               ...state,
-              [objectId]: { ...state[objectId], progress },
-            })),
+              [objectId]: {
+                ...state[objectId],
+                status: UploadManagerStatus.ERR_POLICY,
+              },
+            }));
+            return;
+          }
+
+          // Use FormData to meet the requirement of a multi-part POST request for s3
+          // NB: order of keys is important here, which is why we do not iterate over an object
+          const formArguments: [string, string | File][] = [];
+          formArguments.push(
+            ...Object.keys(presignedPost.fields).map((key) => {
+              const value: [string, string] = [key, presignedPost.fields[key]];
+              return value;
+            }),
           );
-        } catch (e) {
+          if (
+            [
+              modelName.VIDEOS,
+              modelName.THUMBNAILS,
+              modelName.SHAREDLIVEMEDIAS,
+              MarkdownDocumentModelName.MARKDOWN_IMAGES,
+              FileDepositoryModelName.DepositedFiles,
+              ClassroomModelName.CLASSROOM_DOCUMENTS,
+            ].includes(objectType)
+          ) {
+            formArguments.push(['Content-Type', file.type]);
+          }
+          formArguments.push(['file', file]);
+
+          const formData = makeFormData(...formArguments);
+
           setUploadState((state) => ({
             ...state,
             [objectId]: {
               ...state[objectId],
-              status: UploadManagerStatus.ERR_UPLOAD,
+              status: UploadManagerStatus.UPLOADING,
             },
           }));
-          return;
-        }
 
-        setUploadState((state) => ({
-          ...state,
-          [objectId]: {
-            ...state[objectId],
-            status: UploadManagerStatus.SUCCESS,
-          },
-        }));
+          try {
+            await uploadFile(presignedPost.url, formData, (progress: number) =>
+              setUploadState((state) => ({
+                ...state,
+                [objectId]: { ...state[objectId], progress },
+              })),
+            );
+          } catch (e) {
+            setUploadState((state) => ({
+              ...state,
+              [objectId]: {
+                ...state[objectId],
+                status: UploadManagerStatus.ERR_UPLOAD,
+              },
+            }));
+            return;
+          }
+
+          setUploadState((state) => ({
+            ...state,
+            [objectId]: {
+              ...state[objectId],
+              status: UploadManagerStatus.SUCCESS,
+            },
+          }));
+        })();
       });
   }, [uploadManagerState, newUpload]);
 

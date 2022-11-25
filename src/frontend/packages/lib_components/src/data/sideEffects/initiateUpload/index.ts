@@ -1,6 +1,7 @@
 import { API_ENDPOINT } from 'settings';
 
 import { useJwt } from 'hooks/stores';
+import { AWSPresignedPost } from 'types/AWSPresignedPost';
 import { uploadableModelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 
@@ -37,6 +38,5 @@ export const initiateUpload = async (
     );
   }
 
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-  return await response.json();
+  return (await response.json()) as AWSPresignedPost;
 };

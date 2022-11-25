@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Nullable } from 'lib-common';
 import create from 'zustand';
 
@@ -48,8 +47,8 @@ export const useDepositedFile = create<DepositedFileState>((set, get) => {
       ) {
         const depositedFileId = Object.keys(
           get()[FileDepositoryModelName.DepositedFiles],
-        ).shift();
-        return get()[FileDepositoryModelName.DepositedFiles][depositedFileId!];
+        ).shift() as string;
+        return get()[FileDepositoryModelName.DepositedFiles][depositedFileId];
       }
 
       return null;

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 import { modelName } from 'types/models';
 import { UploadableObject } from 'types/tracks';
 
@@ -12,7 +11,7 @@ export const UPLOAD_FORM_ROUTE = (
   objectId?: UploadableObject['id'],
 ) => {
   if (objectType) {
-    return `/form/${objectType}/${objectId}`;
+    return `/form/${objectType}/${objectId || ''}`;
   } else {
     return `/form/:objectType(${Object.values(modelName).join('|')})/:objectId`;
   }

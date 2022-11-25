@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { Nullable } from 'lib-common';
 import create from 'zustand';
 
@@ -48,9 +47,9 @@ export const useMarkdownImage = create<MarkdownImageState>((set, get) => {
       ) {
         const markdownImageId = Object.keys(
           get()[MarkdownDocumentModelName.MARKDOWN_IMAGES],
-        ).shift();
+        ).shift() as string;
         return get()[MarkdownDocumentModelName.MARKDOWN_IMAGES][
-          markdownImageId!
+          markdownImageId
         ];
       }
 
