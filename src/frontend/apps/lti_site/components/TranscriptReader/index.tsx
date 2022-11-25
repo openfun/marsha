@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { VTTCue, WebVTT } from 'vtt.js';
 
 import { useVideoProgress } from '../../data/stores/useVideoProgress';
-import { TimedTextTranscript, useAsyncEffect } from 'lib-components';
+import { TimedTextTranscript } from 'lib-components';
 import { TranscriptSentence } from '../TranscriptSentence';
 
 interface TranscriptReaderProps {
@@ -17,17 +17,19 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
     (state) => state.playerCurrentTime,
   );
 
-  useAsyncEffect(async () => {
-    const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+  useEffect(() => {
+    (async () => {
+      const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
 
-    const response = await fetch(transcript.url);
-    const content = await response.text();
-    parser.oncue = (cue: VTTCue) => {
-      setCues((prevCues) => [...prevCues, cue]);
-    };
+      const response = await fetch(transcript.url);
+      const content = await response.text();
+      parser.oncue = (cue: VTTCue) => {
+        setCues((prevCues) => [...prevCues, cue]);
+      };
 
-    parser.parse(content);
-    parser.flush();
+      parser.parse(content);
+      parser.flush();
+    })();
   }, []);
 
   const transcriptWrapperRef = useRef<HTMLDivElement>(null);
