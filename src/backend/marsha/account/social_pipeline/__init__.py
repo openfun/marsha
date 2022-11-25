@@ -15,6 +15,9 @@ _steps_mapping = {
     "social_core.pipeline.social_auth.auth_allowed": (
         "marsha.account.social_pipeline.social_auth.auth_allowed"
     ),
+    "social_core.pipeline.social_auth.social_details": (
+        "marsha.account.social_pipeline.social_auth.social_details"
+    ),
 }
 assert len(  # nosec
     set(_steps_mapping.keys()) & set(DEFAULT_EDU_FED_AUTH_PIPELINE)
