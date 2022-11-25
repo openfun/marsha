@@ -1,5 +1,3 @@
-/* eslint-disable testing-library/no-container */
-/* eslint-disable testing-library/no-node-access */
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
@@ -135,7 +133,7 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockResolvedValue(true);
 
-    const { container } = render(
+    render(
       <UploadManager>
         <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
@@ -158,7 +156,7 @@ describe('UploadForm', () => {
     await screen.findByRole('heading', { name: 'Create a new video' });
     screen.getByRole('button', { name: 'Select a file to upload' });
 
-    fireEvent.drop(container.querySelector('input[type="file"]')!, {
+    fireEvent.drop(screen.getByLabelText('File Upload'), {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
@@ -176,7 +174,7 @@ describe('UploadForm', () => {
     );
     mockGetResource.mockResolvedValue(object);
 
-    const { container } = render(
+    render(
       <UploadManager>
         <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
@@ -193,7 +191,7 @@ describe('UploadForm', () => {
     );
     await screen.findByText('Create a new video');
 
-    fireEvent.change(container.querySelector('input[type="file"]')!, {
+    fireEvent.change(screen.getByLabelText('File Upload'), {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
@@ -220,7 +218,7 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockRejectedValue(new Error('failed to upload file'));
 
-    const { container } = render(
+    render(
       <UploadManager>
         <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
       </UploadManager>,
@@ -237,7 +235,7 @@ describe('UploadForm', () => {
     );
     await screen.findByText('Create a new video');
 
-    fireEvent.change(container.querySelector('input[type="file"]')!, {
+    fireEvent.change(screen.getByLabelText('File Upload'), {
       target: {
         files: [new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' })],
       },
