@@ -1,4 +1,3 @@
-/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @typescript-eslint/ban-types */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 /* eslint-disable prefer-spread */
@@ -60,8 +59,21 @@ export const UploadManagerContext = createContext<{
  */
 export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
   const [uploadManagerState, setUploadState] = useState<UploadManagerState>({});
+  const [newUpload, setNewUpload] = useState(false);
+
+  const uploadManagerKey = Object.keys(uploadManagerState).join('_');
 
   useEffect(() => {
+    setNewUpload(true);
+  }, [uploadManagerKey]);
+
+  useEffect(() => {
+    if (!newUpload || !Object.keys(uploadManagerState).length) {
+      return;
+    }
+
+    setNewUpload(false);
+
     Object.values(uploadManagerState)
       .filter(({ status }) => status === UploadManagerStatus.INIT)
       .forEach(async ({ file, objectId, objectType }) => {
@@ -143,7 +155,7 @@ export const UploadManager = ({ children }: React.PropsWithChildren<{}>) => {
           },
         }));
       });
-  }, [Object.keys(uploadManagerState).join('_')]);
+  }, [uploadManagerState, newUpload]);
 
   return (
     <UploadManagerContext.Provider
