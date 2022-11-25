@@ -2,13 +2,13 @@
 from unittest import mock
 
 from django.conf import settings
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from social_django.utils import load_backend, load_strategy
 from waffle.testutils import override_switch
 
 from marsha.account.social_pipeline import MARSHA_DEFAULT_AUTH_PIPELINE
-from marsha.account.social_pipeline.social_auth import auth_allowed
+from marsha.account.social_pipeline.social_auth import auth_allowed, social_details
 from marsha.core.defaults import RENATER_FER_SAML
 
 
@@ -63,3 +63,127 @@ class AuthAllowedPipelineTestCase(TestCase):
                 auth_allowed(backend, details, strategy, 42, some_kwargs=18)
             )
             self.assertFalse(social_create_user_mock.called)
+
+
+class SocialDetailsPipelineTestCase(TestCase):
+    """Test case for the `social_details` pipeline step."""
+
+    def test_marsha_pipeline_includes_social_details_step(self):
+        """Asserts our step is in Marsha's default pipeline."""
+        self.assertIn(
+            "marsha.account.social_pipeline.social_auth.social_details",
+            MARSHA_DEFAULT_AUTH_PIPELINE,
+            msg="MARSHA_DEFAULT_AUTH_PIPELINE must be fixed to include marsha's`social_details`",
+        )
+
+        self.assertIn(
+            "marsha.account.social_pipeline.social_auth.social_details",
+            settings.SOCIAL_AUTH_SAML_FER_PIPELINE,
+            msg="SOCIAL_AUTH_SAML_FER_PIPELINE must be fixed to include marsha's`social_details`",
+        )
+
+    @override_settings(AUTHENTICATION_BACKENDS=["social_core.backends.saml.SAMLAuth"])
+    def test_social_details_step_with_other_backend(self):
+        """Assert the details are untouched when the backend is not SAML FER."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml", None)
+        details = {"first_name": "", "last_name": "", "fullname": "John Doe"}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {"details": details},
+            )
+
+    def test_social_details_step_with_first_name_and_last_name(self):
+        """Assert the first name and last name are preserved."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {"first_name": "John", "last_name": "Doe", "fullname": "John Doe"}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {"details": details},
+            )
+
+    def test_social_details_step_without_first_name(self):
+        """Assert the first name and last name are updated when first name missing."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {"first_name": " ", "last_name": "Doe", "fullname": "John Doe"}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {
+                    "details": {
+                        "first_name": "",
+                        "last_name": "John Doe",
+                        "fullname": "John Doe",
+                    }
+                },
+            )
+
+    def test_social_details_step_without_last_name(self):
+        """Assert the first name and last name are updated when last name missing."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {"first_name": "John", "last_name": " ", "fullname": "John Doe"}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {
+                    "details": {
+                        "first_name": "",
+                        "last_name": "John Doe",
+                        "fullname": "John Doe",
+                    }
+                },
+            )
+
+    def test_social_details_step_without_full_name(self):
+        """Assert the full name is not required."""
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {"first_name": "John", "last_name": "Doe"}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {"details": {"first_name": "John", "last_name": "Doe"}},
+            )
+
+    def test_social_details_step_without_names(self):
+        """
+        Coverage test when no names are provided, still this
+        is an edge case we expect not to have.
+        """
+        strategy = load_strategy()
+        backend = load_backend(strategy, "saml_fer", None)
+        details = {}
+
+        with mock.patch(
+            "marsha.account.social_pipeline.social_auth.social_social_details"
+        ) as social_details_mock:
+            social_details_mock.return_value = {"details": details}
+            self.assertDictEqual(
+                social_details(backend, details, response=None),
+                {"details": {"first_name": "", "last_name": ""}},
+            )
