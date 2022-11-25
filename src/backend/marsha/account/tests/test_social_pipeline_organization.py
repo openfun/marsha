@@ -104,7 +104,7 @@ class OrganizationPipelineTestCase(TestCase):
         Main test method used everywhere in following tests.
 
         This asserts the values for Organization and linking objects are properly defined.
-        This expect only one organization for all tests.
+        This expects only one organization for all tests.
 
         Parameters
         ----------
@@ -144,7 +144,7 @@ class OrganizationPipelineTestCase(TestCase):
     def test_create_organization_from_saml_teacher_new(self):
         """Assert new teacher from new organization initializes properly."""
         # Prepare data
-        saml_details = {"role": "teacher", **self.default_saml_details}
+        saml_details = {"roles": ["teacher"], **self.default_saml_details}
 
         # Call pipeline step "create_organization_from_saml"
         with self.assertNumQueries(
@@ -195,7 +195,7 @@ class OrganizationPipelineTestCase(TestCase):
     def test_create_organization_from_saml_student_or_unknown_new(self):
         """Assert new student from new organization initializes properly."""
         # Prepare data
-        saml_details = {"role": "", **self.default_saml_details}
+        saml_details = {"roles": [], **self.default_saml_details}
 
         # Call pipeline step "create_organization_from_saml"
         with self.assertNumQueries(
@@ -252,7 +252,7 @@ class OrganizationPipelineTestCase(TestCase):
         OrganizationFactory(name="Marsha organization")
 
         # Prepare data
-        saml_details = {"role": "teacher", **self.default_saml_details}
+        saml_details = {"roles": ["teacher"], **self.default_saml_details}
 
         # Call pipeline step "create_organization_from_saml"
         with self.assertNumQueries(
@@ -298,7 +298,7 @@ class OrganizationPipelineTestCase(TestCase):
         OrganizationFactory(name="Marsha organization")
 
         # Prepare data
-        saml_details = {"role": "not_teacher", **self.default_saml_details}
+        saml_details = {"roles": ["not_teacher"], **self.default_saml_details}
 
         # Call pipeline step "create_organization_from_saml"
         with self.assertNumQueries(
@@ -340,7 +340,7 @@ class OrganizationPipelineTestCase(TestCase):
         Assert new student from existing organization linked to an IdP
         initializes properly.
         """
-        saml_details = {"role": "not_teacher", **self.default_saml_details}
+        saml_details = {"roles": ["not_teacher"], **self.default_saml_details}
 
         # Init organization with already one user
         create_organization_from_saml(
@@ -388,7 +388,7 @@ class OrganizationPipelineTestCase(TestCase):
         while other already exist.
         """
         # Init organization with already one user
-        saml_details = {"role": "not_teacher", **self.default_saml_details}
+        saml_details = {"roles": ["not_teacher"], **self.default_saml_details}
 
         create_organization_from_saml(
             None,  # strategy is unused
@@ -465,7 +465,7 @@ class OrganizationPipelineTestCase(TestCase):
         """
         Assert the pipeline step fails if `new_association` has not been already defined.
         """
-        saml_details = {"role": "not_teacher", **self.default_saml_details}
+        saml_details = {"roles": ["not_teacher"], **self.default_saml_details}
 
         with self.assertRaises(RuntimeError):
             create_organization_from_saml(
