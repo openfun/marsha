@@ -33,6 +33,7 @@ import {
   Organization,
   modelName,
 } from 'lib-components';
+import { VTTCue, WebVTT } from 'vtt.js';
 
 import { TimedTextMetadata, VideoMetadata } from 'types/metadata';
 
@@ -740,4 +741,31 @@ export const useCreatePortabilityRequest = (
       },
     },
   );
+};
+
+export const useTranscriptReaderRequest = (
+  url: string,
+  onSuccess: (cue: VTTCue) => void,
+  queryConfig?: UseQueryOptions<string, 'useTranscriptReaderRequest', string>,
+) => {
+  return useQuery({
+    queryKey: ['useTranscriptReaderRequest'],
+    queryFn: async () => {
+      const response = await fetch(url);
+      return await response.text();
+    },
+    onSuccess: (transcriptReader: string) => {
+      if (!transcriptReader) return;
+
+      const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
+
+      parser.oncue = (cue: VTTCue) => {
+        onSuccess(cue);
+      };
+
+      parser.parse(transcriptReader);
+      parser.flush();
+    },
+    ...queryConfig,
+  });
 };
