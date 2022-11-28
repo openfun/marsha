@@ -32,7 +32,8 @@ export const DashboardControlPane = ({ isLive }: DashboarControlPaneParams) => {
   const extendedTheme = {
     tabs: {
       header: {
-        extend: 'button * { \
+        extend:
+          'button * { \
           font-size: 16px; \
         }',
       },
