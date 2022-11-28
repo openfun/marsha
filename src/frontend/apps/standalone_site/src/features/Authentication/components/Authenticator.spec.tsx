@@ -79,11 +79,10 @@ describe('<Authenticator />', () => {
     useDataDeferred.resolve({
       date_joined: 'date_joined',
       email: 'email',
-      first_name: 'first_name',
+      full_name: 'full name',
       id: 'id',
       is_staff: false,
       is_superuser: false,
-      last_name: 'last_name',
       organization_accesses: [],
     });
 
@@ -112,11 +111,10 @@ describe('<Authenticator />', () => {
     fetchMock.get('/api/users/whoami/', {
       date_joined: 'date_joined',
       email: 'email',
-      first_name: 'first_name',
+      full_name: 'full name',
       id: 'id',
       is_staff: false,
       is_superuser: false,
-      last_name: 'last_name',
       organization_accesses: [],
     });
 

@@ -181,7 +181,7 @@ describe('<DashboardClassroom />', () => {
         is_superuser: false,
         organization_accesses: [],
         username: token.user?.username || undefined,
-        user_fullname: token.user?.user_fullname,
+        full_name: token.user?.user_fullname,
       },
     });
     mockedUseCurrentResource.mockReturnValue([token] as any);
@@ -249,7 +249,7 @@ describe('<DashboardClassroom />', () => {
         is_superuser: false,
         organization_accesses: [],
         username: token.user?.username || undefined,
-        user_fullname: token.user?.user_fullname,
+        full_name: token.user?.user_fullname,
       },
     });
     mockedUseCurrentResource.mockReturnValue([token] as any);

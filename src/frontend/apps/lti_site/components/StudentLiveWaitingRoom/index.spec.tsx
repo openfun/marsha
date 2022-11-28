@@ -74,7 +74,7 @@ describe('<StudentLiveWaitingRoom />', () => {
       currentUser: {
         id: 'user_id',
         username: 'username',
-        user_fullname: 'hisName',
+        full_name: 'hisName',
         email: 'test@openfun.fr',
       } as any,
     });
