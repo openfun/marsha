@@ -5,7 +5,6 @@ describe('sideEffects/uploadFile', () => {
 
   // Build a minimal mock for the xhr class. Allow the `Function` type to let us manage
   // event listener callbacks with no fuss.
-  // tslint:disable:ban-types
   const callbacks: { [eventName: string]: Function } = {};
   const addEventListener = (eventName: string, callback: Function) => {
     callbacks[eventName] = callback;

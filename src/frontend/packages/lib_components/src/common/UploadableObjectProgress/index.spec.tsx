@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { screen } from '@testing-library/react';
 import { modelName } from 'lib-components';
 import { render } from 'lib-tests';

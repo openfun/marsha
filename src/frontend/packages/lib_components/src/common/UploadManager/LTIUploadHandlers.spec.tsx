@@ -1,8 +1,3 @@
-/* eslint-disable @typescript-eslint/require-await */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-empty-function */
-/* eslint-disable @typescript-eslint/no-unsafe-call */
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import { waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -104,7 +99,7 @@ describe('<LTIUploadHandlers />', () => {
     );
   });
 
-  it('does not update the object name to the file when the object title is already set', async () => {
+  it('does not update the object name to the file when the object title is already set', () => {
     mockGetResource.mockResolvedValue({
       ...object,
       title: 'title already present',

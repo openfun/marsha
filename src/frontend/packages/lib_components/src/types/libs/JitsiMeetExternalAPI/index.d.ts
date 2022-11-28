@@ -35,7 +35,6 @@ declare class JitsiMeetExternalAPI {
   dispose: () => void;
 }
 
-// tslint:disable-next-line:no-namespace
 declare namespace JitsiMeetExternalAPI {
   export type Command =
     | 'startRecording'
