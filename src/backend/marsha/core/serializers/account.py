@@ -112,11 +112,12 @@ class UserSerializer(serializers.ModelSerializer):
     """
     Regular user serializer.
 
-    Allowlist fields as user objects contain a lot more information
+    Allow list fields as user objects contain a lot more information
     than we'd like to expose on the API.
     """
 
     organization_accesses = OrganizationAccessSerializer(many=True)
+    full_name = serializers.CharField(source="get_full_name", read_only=True)
 
     class Meta:
         """Meta for UserSerializer."""
@@ -125,11 +126,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = [
             "date_joined",
             "email",
-            "first_name",
+            "full_name",
             "id",
             "is_staff",
             "is_superuser",
-            "last_name",
             "organization_accesses",
         ]
 

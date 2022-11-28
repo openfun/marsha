@@ -10,12 +10,10 @@ const isUser = (user: unknown): user is User => {
     return (
       isPresentWithType(casted.date_joined, 'string') &&
       isPresentWithType(casted.email, 'string') &&
-      isPresentWithType(casted.first_name, 'string') &&
-      isPresentWithType(casted.first_name, 'string') &&
+      isPresentWithType(casted.full_name, 'string') &&
       isPresentWithType(casted.id, 'string') &&
       isPresentWithType(casted.is_staff, 'boolean') &&
-      isPresentWithType(casted.is_superuser, 'boolean') &&
-      isPresentWithType(casted.last_name, 'string')
+      isPresentWithType(casted.is_superuser, 'boolean')
     );
   }
 

@@ -17,12 +17,10 @@ export interface User {
   anonymous_id?: string;
   date_joined?: string;
   email?: string;
-  first_name?: string;
+  full_name?: Nullable<string>;
   id?: string;
   is_staff: boolean;
   is_superuser: boolean;
-  last_name?: string;
   organization_accesses: OrganizationAccess[];
   username?: string;
-  user_fullname?: Nullable<string>;
 }
