@@ -27,6 +27,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - use a lite serializer for classroom resource on list endpoint
 - rework of the TimedTextTrackLanguageChoices hook
 - adapt lib-classroom with eslint rules
+- the full name replaces the first and last names in the
+  user's profile API
 
 ## [4.0.0-beta.11] - 2022-11-08
 

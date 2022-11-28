@@ -130,7 +130,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   const [askUsername, setAskUsername] = useState(false);
   const [classroomJoined, setClassroomJoined] = useState(false);
   const [userFullname, setUserFullname] = useState(
-    (user && user !== AnonymousUser.ANONYMOUS && user.user_fullname) || '',
+    (user && user !== AnonymousUser.ANONYMOUS && user.full_name) || '',
   );
 
   const { data: classroom, status: useClassroomStatus } = useClassroom(

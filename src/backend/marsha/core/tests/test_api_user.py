@@ -51,11 +51,10 @@ class UserAPITest(TestCase):
             user.date_joined.isoformat()[:-6] + "Z",  # NB: DRF literally does this
         )
         self.assertEqual(response.json()["email"], "jane.doe@example.com")
-        self.assertEqual(response.json()["first_name"], "Jane")
+        self.assertEqual(response.json()["full_name"], "Jane Doe")
         self.assertEqual(response.json()["id"], str(user.id))
         self.assertEqual(response.json()["is_staff"], False)
         self.assertEqual(response.json()["is_superuser"], False)
-        self.assertEqual(response.json()["last_name"], "Doe")
 
         resp_accesses = response.json()["organization_accesses"]
         resp_org_access_1 = (

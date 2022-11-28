@@ -54,7 +54,7 @@ const currentUser: User = {
   email: decodedJwt.user?.email || undefined,
   id: decodedJwt.user?.id,
   username: decodedJwt.user?.username || undefined,
-  user_fullname: decodedJwt.user?.user_fullname,
+  full_name: decodedJwt.user?.user_fullname,
   is_staff: false,
   is_superuser: false,
   organization_accesses: [],
