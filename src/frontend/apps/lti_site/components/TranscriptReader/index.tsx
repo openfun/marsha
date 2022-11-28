@@ -1,11 +1,12 @@
 import { Box, Paragraph } from 'grommet';
-import React, { useState, useEffect, useRef } from 'react';
-import { VTTCue, WebVTT } from 'vtt.js';
-
-import { useVideoProgress } from '../../data/stores/useVideoProgress';
 import { TimedTextTranscript } from 'lib-components';
-import { TranscriptSentence } from '../TranscriptSentence';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import { VTTCue } from 'vtt.js';
 
+import { useTranscriptReaderRequest } from 'data/queries';
+import { useVideoProgress } from 'data/stores/useVideoProgress';
+
+import { TranscriptSentence } from '../TranscriptSentence';
 interface TranscriptReaderProps {
   transcript: TimedTextTranscript;
 }
@@ -17,20 +18,19 @@ export const TranscriptReader = ({ transcript }: TranscriptReaderProps) => {
     (state) => state.playerCurrentTime,
   );
 
-  useEffect(() => {
-    (async () => {
-      const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
-
-      const response = await fetch(transcript.url);
-      const content = await response.text();
-      parser.oncue = (cue: VTTCue) => {
-        setCues((prevCues) => [...prevCues, cue]);
-      };
-
-      parser.parse(content);
-      parser.flush();
-    })();
+  const onSuccess = useCallback((cue: VTTCue) => {
+    setCues((prevCues) => {
+      // Dont insert duplicate cues
+      return !prevCues.filter((e) => e.id === cue.id).length
+        ? [...prevCues, cue]
+        : prevCues;
+    });
   }, []);
+
+  useTranscriptReaderRequest(transcript.url, onSuccess, {
+    keepPreviousData: true,
+    staleTime: 20000,
+  });
 
   const transcriptWrapperRef = useRef<HTMLDivElement>(null);
 
