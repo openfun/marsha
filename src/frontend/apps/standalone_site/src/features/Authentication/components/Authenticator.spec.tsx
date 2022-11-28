@@ -1,7 +1,8 @@
-import { render, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { Deferred } from 'lib-tests';
-import { MemoryRouter } from 'react-router-dom';
+import { useCurrentUser, useJwt } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
+import { useLocation } from 'react-router-dom';
 
 import { Authenticator } from './Authenticator';
 
@@ -12,24 +13,39 @@ Object.defineProperty(window, 'location', {
   },
 });
 
+const WrappedAuthenticator = () => {
+  // simply wrap the Authenticator to display the location
+  // for test purposes
+  const location = useLocation();
+  return (
+    <Authenticator>{`${location.pathname}${location.search}`}</Authenticator>
+  );
+};
+
 describe('<Authenticator />', () => {
   beforeEach(() => {
+    localStorage.removeItem('redirect_uri');
+
+    useJwt.setState({
+      jwt: undefined,
+    });
+    useCurrentUser.setState({
+      currentUser: null,
+    });
     fetchMock.restore();
   });
 
   it('redirects the user on the backend authent', async () => {
-    render(
-      <MemoryRouter initialEntries={['/']} initialIndex={0}>
-        <Authenticator>my site content</Authenticator>
-      </MemoryRouter>,
-    );
+    render(<WrappedAuthenticator />, {
+      routerOptions: { history: ['/some/path/'] },
+    });
 
     await waitFor(() =>
       expect(replace).toHaveBeenCalledWith(
         'http://localhost:8060/account/login/',
       ),
     );
-    expect(screen.queryByText('my site content')).not.toBeInTheDocument();
+    expect(screen.queryByText('/some/path/')).not.toBeInTheDocument();
   });
 
   it('authenticates the user and render the content', async () => {
@@ -39,11 +55,11 @@ describe('<Authenticator />', () => {
     const useDataDeferred = new Deferred();
     fetchMock.get('/api/users/whoami/', useDataDeferred.promise);
 
-    render(
-      <MemoryRouter initialEntries={['/?token=some-token']} initialIndex={0}>
-        <Authenticator>my site content</Authenticator>
-      </MemoryRouter>,
-    );
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/?token=some-token'],
+      },
+    });
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual('/api/auth/challenge/'),
@@ -71,6 +87,51 @@ describe('<Authenticator />', () => {
       organization_accesses: [],
     });
 
-    await screen.findByText('my site content');
+    await screen.findByText('/some/path/');
+  });
+
+  it('authenticates the user and render the initially requested URL', async () => {
+    // populate the local storage with the initially requested URL
+    const { unmount } = render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/other/path/?some=query'],
+      },
+    });
+
+    await waitFor(() =>
+      expect(replace).toHaveBeenCalledWith(
+        'http://localhost:8060/account/login/',
+      ),
+    );
+    expect(
+      screen.queryByText('/some/other/path/?some=query'),
+    ).not.toBeInTheDocument();
+
+    fetchMock.post('/api/auth/challenge/', { access: 'some-access' });
+
+    fetchMock.get('/api/users/whoami/', {
+      date_joined: 'date_joined',
+      email: 'email',
+      first_name: 'first_name',
+      id: 'id',
+      is_staff: false,
+      is_superuser: false,
+      last_name: 'last_name',
+      organization_accesses: [],
+    });
+
+    //  unmount components to mock the redirection after authentication (and init the new location)
+    unmount();
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/?token=some-token'],
+      },
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.getByText('/some/other/path/?some=query'),
+      ).toBeInTheDocument();
+    });
   });
 });

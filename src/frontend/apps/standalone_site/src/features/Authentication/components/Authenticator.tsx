@@ -39,11 +39,11 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
         process.env.REACT_APP_BACKEND_API_BASE_URL || window.location.origin;
       localStorage.setItem(
         TARGET_URL_STORAGE_KEY,
-        window.location.pathname + window.location.search,
+        location.pathname + location.search,
       );
       window.location.replace(targetedAddress + '/account/login/');
     }
-  }, [code, jwt, setJwt]);
+  }, [code, jwt, location, setJwt]);
 
   useEffect(() => {
     if (!jwt || currentUser) {
@@ -55,11 +55,12 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
 
       const targetUri = localStorage.getItem(TARGET_URL_STORAGE_KEY);
       localStorage.removeItem(TARGET_URL_STORAGE_KEY);
-      //  remove token from url
-      history.replace(targetUri || window.location.pathname);
+      // redirect to the originally targeted URL (ie before the authentication loop)
+      // or the root page if no target was set
+      history.replace(targetUri || location.pathname);
     };
     fetchUserData();
-  }, [jwt, currentUser, setCurrentUser, history]);
+  }, [jwt, currentUser, location, setCurrentUser, history]);
 
   if (!jwt && !code) {
     return <Fragment />;
