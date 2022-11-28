@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Nullable } from 'lib-common';
 
 import { Participant } from 'types/Participant';
@@ -8,7 +7,6 @@ import { Video } from 'types/tracks';
 export as namespace converse;
 export = converse;
 
-// tslint:disable-next-line:no-namespace
 declare namespace converse {
   export interface Converse {
     acceptParticipantToJoin: (participant: Participant, video: Video) => void;
@@ -23,7 +21,7 @@ declare namespace converse {
       callbackSuccess: () => void,
       callbackError: (stanza: Nullable<HTMLElement>) => void,
     ) => void;
-    env: any;
+    env: { Promise; Strophe; dayjs; sizzle; _; $build; $iq; $msg; $pres };
     ROOMSTATUS: {
       CONNECTED: 0;
       CONNECTING: 1;
@@ -34,7 +32,7 @@ declare namespace converse {
       PASSWORD_REQUIRED: 3;
     };
     plugins: {
-      add: (name: string, plugin: any) => void;
+      add: (name: string, plugin) => void;
     };
   }
 

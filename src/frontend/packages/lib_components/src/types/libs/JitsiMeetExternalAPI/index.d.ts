@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Nullable } from 'lib-common';
 
 export as namespace JitsiMeetExternalAPI;
@@ -20,7 +19,7 @@ declare class JitsiMeetExternalAPI {
     },
   );
 
-  getLivestreamUrl: () => Promise<any>;
+  getLivestreamUrl: () => Promise;
   executeCommand: (
     command: JitsiMeetExternalAPI.Command,
     options?:
@@ -28,8 +27,8 @@ declare class JitsiMeetExternalAPI {
       | JitsiMeetExternalAPI.RecordingOptions
       | JitsiMeetExternalAPI.ConfigOption,
   ) => void;
-  addListener: (eventName: string, callback: (event: any) => void) => void;
-  removeListener: (eventName: string, callback: (event: any) => void) => void;
+  addListener: (eventName: string, callback: (event) => void) => void;
+  removeListener: (eventName: string, callback: (event) => void) => void;
   isAudioMuted: () => Promise<boolean>;
   isVideoMuted: () => Promise<boolean>;
   dispose: () => void;
