@@ -19,5 +19,4 @@ global.ResizeObserver = ResizeObserver;
 
 // During tests we want queries to be silent
 // see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
-// tslint:disable-next-line:no-console
 setLogger({ log: console.log, warn: console.warn, error: () => {} });
