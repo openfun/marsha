@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-floating-promises */
-/* eslint-disable @typescript-eslint/require-await */
 import { act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render, Deferred } from 'lib-tests';
@@ -69,14 +67,16 @@ describe('<UploadManager />', () => {
       expect(mockInitiateUpload.calls()).toHaveLength(1);
     }
     {
-      await act(async () =>
+      await act(async () => {
         initiateUploadDeferred.resolve({
           fields: {
             key: 'foo',
           },
           url: 'https://s3.aws.example.com/',
-        }),
-      );
+        });
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -89,11 +89,13 @@ describe('<UploadManager />', () => {
       });
     }
     {
-      await act(async () =>
+      await act(async () => {
         fileUploadDeferred.resolve(
           new MockResponse().body('form data body').status(204),
-        ),
-      );
+        );
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -150,7 +152,12 @@ describe('<UploadManager />', () => {
       expect(mockInitiateUpload.calls()).toHaveLength(1);
     }
     {
-      await act(async () => initiateUploadDeferred.resolve(400));
+      await act(async () => {
+        initiateUploadDeferred.resolve(400);
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -209,14 +216,17 @@ describe('<UploadManager />', () => {
       expect(mockInitiateUpload.calls()).toHaveLength(1);
     }
     {
-      await act(async () =>
+      await act(async () => {
         initiateUploadDeferred.resolve({
           fields: {
             key: 'foo',
           },
           url: 'https://s3.aws.example.com/',
-        }),
-      );
+        });
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -229,9 +239,12 @@ describe('<UploadManager />', () => {
       });
     }
     {
-      await act(async () =>
-        fileUploadDeferred.resolve(new MockResponse().status(400)),
-      );
+      await act(async () => {
+        fileUploadDeferred.resolve(new MockResponse().status(400));
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -288,14 +301,17 @@ describe('<UploadManager />', () => {
       expect(mockInitiateUpload.calls()).toHaveLength(1);
     }
     {
-      await act(async () =>
+      await act(async () => {
         initiateUploadDeferred.resolve({
           fields: {
             key: 'foo',
           },
           url: 'https://s3.aws.example.com/',
-        }),
-      );
+        });
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
@@ -308,11 +324,14 @@ describe('<UploadManager />', () => {
       });
     }
     {
-      await act(async () =>
+      await act(async () => {
         fileUploadDeferred.resolve(
           new MockResponse().body('form data body').status(204),
-        ),
-      );
+        );
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
       const { uploadManagerState } = getLatestHookValues();
       expect(uploadManagerState).toEqual({
         [objectId]: {
