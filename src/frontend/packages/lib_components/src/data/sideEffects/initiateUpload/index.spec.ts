@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import fetchMock from 'fetch-mock';
 
 import { useJwt } from 'hooks/stores/useJwt';

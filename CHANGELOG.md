@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - filtered markdown document list
 - use a lite serializer for classroom resource on list endpoint
 - rework of the TimedTextTrackLanguageChoices hook
+- adapt lib-components with eslint rules
 - adapt lib-classroom with eslint rules
 - the full name replaces the first and last names in the
   user's profile API
