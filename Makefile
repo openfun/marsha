@@ -105,7 +105,7 @@ ngrok: run
 	@$(COMPOSE) up -d ngrok
 	@echo
 	@echo "$(BOLD)App running at:$(RESET)"
-	@bin/get_ngrok_url
+	@echo $(shell ./bin/get_ngrok_url)
 .PHONY: ngrok
 
 ngrok-apply: ## start the development server using Docker through ngrok and apply terraform plan
