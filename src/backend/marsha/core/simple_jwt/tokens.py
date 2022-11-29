@@ -5,6 +5,7 @@ from django.conf import settings
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework_simplejwt.exceptions import TokenError
+from rest_framework_simplejwt.settings import api_settings
 from rest_framework_simplejwt.tokens import AccessToken, Token
 
 from marsha.core.models import NONE, STUDENT
@@ -75,6 +76,20 @@ class ResourceAccessToken(AccessToken):
     """
 
     token_type = "resource_access"  # nosec
+
+    def set_jti(self, jti=None):
+        """
+        Populates the configured jti claim of a token with a string where there
+        is a negligible probability that the same string will be chosen at a
+        later time.
+
+        See here:
+        https://tools.ietf.org/html/rfc7519#section-4.1.7
+        """
+        if not jti:
+            super().set_jti()
+        else:
+            self.payload[api_settings.JTI_CLAIM] = jti
 
     def verify(self):
         """Performs additional validation steps to test payload content."""

@@ -20,7 +20,7 @@ from marsha.core.factories import (
     UserFactory,
 )
 from marsha.core.lti import LTI
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, NONE
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.core.tests.utils import reload_urlconf
@@ -274,7 +274,9 @@ class ClassroomLTIViewTestCase(TestCase):
             {"can_access_dashboard": True, "can_update": True},
         )
         self.assertEqual(context.get("state"), "success")
-        self.assertIsNotNone(context.get("resource"))
+
+        resource_data = context.get("resource")
+        invite_token = resource_data.pop("invite_token")
         self.assertEqual(
             {
                 "id": str(classroom.id),
@@ -293,9 +295,18 @@ class ClassroomLTIViewTestCase(TestCase):
                 "welcome_text": classroom.welcome_text,
                 "starting_at": None,
                 "estimated_duration": None,
+                # "invite_token" is tested separately
             },
-            context.get("resource"),
+            resource_data,
         )
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
+        )
+
         self.assertEqual(context.get("modelName"), "classrooms")
         self.assertEqual(context.get("appName"), "classroom")
         self.assertEqual(
@@ -609,7 +620,9 @@ class MeetingLTIViewTestCase(TestCase):
             {"can_access_dashboard": True, "can_update": True},
         )
         self.assertEqual(context.get("state"), "success")
-        self.assertIsNotNone(context.get("resource"))
+
+        resource_data = context.get("resource")
+        invite_token = resource_data.pop("invite_token")
         self.assertEqual(
             {
                 "id": str(classroom.id),
@@ -628,9 +641,18 @@ class MeetingLTIViewTestCase(TestCase):
                 "welcome_text": classroom.welcome_text,
                 "starting_at": None,
                 "estimated_duration": None,
+                # "invite_token" is tested separately
             },
-            context.get("resource"),
+            resource_data,
         )
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
+        )
+
         self.assertEqual(context.get("modelName"), "classrooms")
         self.assertEqual(context.get("appName"), "classroom")
         self.assertEqual(

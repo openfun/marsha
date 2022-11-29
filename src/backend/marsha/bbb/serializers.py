@@ -17,6 +17,7 @@ from marsha.bbb.utils.bbb_utils import (
     get_meeting_infos,
     get_url as get_document_url,
 )
+from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.serializers import (
     InitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
@@ -40,9 +41,11 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "welcome_text",
             "started",
             "ended",
-            "infos",
             "starting_at",
             "estimated_duration",
+            # specific generated fields
+            "infos",
+            "invite_token",
         )
         read_only_fields = (
             "id",
@@ -56,6 +59,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     playlist = PlaylistLiteSerializer(read_only=True)
     infos = serializers.SerializerMethodField()
+    invite_token = serializers.SerializerMethodField()
 
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
@@ -63,6 +67,12 @@ class ClassroomSerializer(serializers.ModelSerializer):
             return get_meeting_infos(classroom=obj)
         except ApiMeetingException:
             return None
+
+    def get_invite_token(self, obj):
+        """Get the invite token for the classroom."""
+        if self.context.get("is_admin", False):
+            return str(create_classroom_stable_invite_jwt(obj))
+        return None
 
     def update(self, instance, validated_data):
         if any(

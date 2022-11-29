@@ -108,6 +108,34 @@ class ClassroomViewSet(
 
         return super().get_serializer_class()
 
+    def get_serializer_context(self):
+        """
+        Extra context provided to the serializer class.
+
+        We add an `is_admin` flag to the context to let the serializer
+        know if the user has right to share the classroom, this will
+        generate a `classroom_stable_invite_jwt`.
+        """
+        serializer_context = super().get_serializer_context()
+        if self.action in ["retrieve", "update", "partial_update"]:
+            serializer_context["is_admin"] = (
+                # For standalone site
+                (
+                    core_permissions.UserIsAuthenticated
+                    & IsClassroomPlaylistOrOrganizationAdmin
+                )
+                # For LTI
+                | (
+                    core_permissions.ResourceIsAuthenticated
+                    & core_permissions.IsTokenResourceRouteObject
+                    & (
+                        core_permissions.IsTokenInstructor
+                        | core_permissions.IsTokenAdmin
+                    )
+                )
+            )().has_permission(self.request, self)
+        return serializer_context
+
     def _get_list_queryset(self):
         """Build the queryset used on the list action."""
         queryset = (
