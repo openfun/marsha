@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - classroom (list/create/update)
   - Add a new "invite" JWT in classroom API to allow
     students to join a classroom through a link
+  - Manage portability requests (list/accept/reject)
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
@@ -23,19 +24,19 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- filtered classroom list
-- filtered deposit list
-- filtered markdown document list
-- use a lite serializer for classroom resource on list endpoint
-- rework of the TimedTextTrackLanguageChoices hook
-- adapt lib-components with eslint rules
-- adapt lib-classroom with eslint rules
-- the full name replaces the first and last names in the
+- Filtered classroom list
+- Filtered deposit list
+- Filtered markdown document list
+- Use a lite serializer for classroom resource on list endpoint
+- Rework of the TimedTextTrackLanguageChoices hook
+- Adapt lib-components with eslint rules
+- Adapt lib-classroom with eslint rules
+- The full name replaces the first and last names in the
   user's profile API
 
 ### Fixed
 
-- change permission on retrieve endpoints
+- Change permission on retrieve endpoints
 
 ## [4.0.0-beta.11] - 2022-11-08
 
@@ -64,9 +65,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
-- fix permission for classroom creation
-- fix permission for filedepository creation
-- fix permission for markdown document creation
+- Fix permission for classroom creation
+- Fix permission for filedepository creation
+- Fix permission for markdown document creation
 
 ## [4.0.0-beta.10] - 2022-10-19
 
@@ -84,7 +85,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- standalone website:
+- Standalone website:
   - Add router to the layout
   - Add menu interaction
   - Integrate internationalisation library (react-intl)
@@ -96,19 +97,19 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Homepage
 - Catch and design error with react-error-boundary
 - Enable visibility widget in VOD dashboard
-- introduce initialized upload state
+- Introduce initialized upload state
 - Add BBB presentation upload
 - Authenticate the user in the standalone site
 - Allow to target a specific resource in LTI Select
 
 ### Changed
 
-- move the lti data queries to the lib_components package
-- call api update-state with an error when the
+- Move the lti data queries to the lib_components package
+- Call api update-state with an error when the
   timed text track format is not supported by
   @openfun/subsrt
-- rename front application bbb in classroom
-- rename lti/filedepositories in lti/deposits
+- Rename front application bbb in classroom
+- Rename lti/filedepositories in lti/deposits
 
 ### Fixed
 
