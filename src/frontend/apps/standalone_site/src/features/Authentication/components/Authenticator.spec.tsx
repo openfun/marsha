@@ -121,6 +121,7 @@ describe('<Authenticator />', () => {
     });
 
     //  unmount components to mock the redirection after authentication (and init the new location)
+    //  this is mandatory to take the new location.search into account
     unmount();
     render(<WrappedAuthenticator />, {
       routerOptions: {
