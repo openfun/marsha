@@ -96,9 +96,12 @@ class FileDepositoryViewSet(
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                core_permissions.IsTokenInstructor
-                | core_permissions.IsTokenAdmin
-                | core_permissions.IsTokenStudent
+                core_permissions.IsTokenResourceRouteObject
+                & (
+                    core_permissions.IsTokenInstructor
+                    | core_permissions.IsTokenAdmin
+                    | core_permissions.IsTokenStudent
+                )
                 | IsFileDepositoryPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["update", "partial_update"]:

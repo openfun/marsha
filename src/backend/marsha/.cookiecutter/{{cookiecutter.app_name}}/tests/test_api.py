@@ -89,6 +89,20 @@ class {{cookiecutter.model}}APITest(TestCase):
             content,
         )
 
+    def test_api_{{cookiecutter.model_lower}}_fetch_from_other_{{cookiecutter.model_lower}}(self):
+        """A student should be allowed to fetch a {{cookiecutter.model_lower}}."""
+        {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
+        other_{{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()
+
+
+        jwt_token = StudentLtiTokenFactory(resource=other_{{cookiecutter.model_lower}})
+
+        response = self.client.get(
+            f"/api/{{cookiecutter.model_url_part}}/{ {{cookiecutter.model_lower}}.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_{{cookiecutter.model_lower}}_fetch_instructor(self):
         """An instructor should be able to fetch a {{cookiecutter.model_lower}}."""
         {{cookiecutter.model_lower}} = {{cookiecutter.model}}Factory()

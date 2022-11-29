@@ -99,6 +99,32 @@ class ClassroomServiceJoinAPITest(TestCase):
             response.data.get("url"),
         )
 
+    def test_api_bbb_join_from_other_classroom(self):
+        """
+        Joining a classroom using a resource token for an other resource should not be allowed.
+        """
+        classroom = ClassroomFactory(
+            meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
+            title="Classroom 1",
+            attendee_password="9#R1kuUl3R",
+            moderator_password="0$C7Aaz0o",
+        )
+        other_classroom = ClassroomFactory()
+
+        jwt_token = StudentLtiTokenFactory(
+            resource=other_classroom,
+            consumer_site="consumer_site",
+            user__id="user_id",
+        )
+
+        response = self.client.patch(
+            f"/api/classrooms/{classroom.id}/join/",
+            data=json.dumps({"fullname": "John Doe"}),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_bbb_join_instructor(self):
         """Joining a classroom as instructor should return a moderator classroom url."""
         classroom = ClassroomFactory(

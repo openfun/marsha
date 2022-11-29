@@ -101,6 +101,30 @@ class MarkdownRetrieveAPITest(TestCase):
             },
         )
 
+    def test_api_document_fetch_from_other_document(self):
+        """
+        An instructor should not be able to fetch a Markdown document with a resource
+        token from an other markdown document.
+        """
+        markdown_document = MarkdownDocumentFactory(
+            pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
+            playlist__pk="6a716ff3-1bfb-4870-906e-fda50293f0ac",
+            playlist__title="foo",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            translations__title="Amazing title",
+            translations__content="# Heading1\nSome content",
+            translations__rendered_content="<h1>Heading1</h1>\n<p>Some content</p>",
+        )
+        other_markdown_document = MarkdownDocumentFactory()
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_markdown_document)
+
+        response = self.client.get(
+            f"/api/markdown-documents/{markdown_document.pk}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_document_fetch_instructor_read_only(self):
         """An instructor should not be able to fetch a Markdown document in read_only."""
         markdown_document = MarkdownDocumentFactory()
