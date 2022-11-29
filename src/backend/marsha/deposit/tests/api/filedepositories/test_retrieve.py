@@ -61,6 +61,21 @@ class FileDepositoryRetrieveAPITest(TestCase):
             content,
         )
 
+    def test_api_file_depository_fetch_from_other_file_depository(self):
+        """
+        Fetching a file depository using a resource token from an other resource should
+        not be allowed.
+        """
+        file_depository = FileDepositoryFactory()
+        other_file_depository = FileDepositoryFactory()
+        jwt_token = StudentLtiTokenFactory(resource=other_file_depository)
+
+        response = self.client.get(
+            f"/api/filedepositories/{file_depository.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     def test_api_file_depository_fetch_instructor(self):
         """An instructor should be able to fetch a file_depository."""
         file_depository = FileDepositoryFactory()

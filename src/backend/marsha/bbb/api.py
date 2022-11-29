@@ -14,7 +14,6 @@ from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 from . import permissions, serializers
 from ..core.models import ADMINISTRATOR
-from ..core.permissions import ResourceIsAuthenticated
 from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .defaults import LTI_ROUTE
@@ -89,9 +88,10 @@ class ClassroomViewSet(
                     )
                 )
             ]
-        elif self.action in ["retrieve"]:
+        elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
-                ResourceIsAuthenticated | IsClassroomPlaylistOrOrganizationAdmin
+                core_permissions.IsTokenResourceRouteObject
+                | IsClassroomPlaylistOrOrganizationAdmin
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
@@ -259,9 +259,6 @@ class ClassroomViewSet(
         methods=["patch"],
         detail=True,
         url_path="join",
-        permission_classes=[
-            ResourceIsAuthenticated | IsClassroomPlaylistOrOrganizationAdmin
-        ],
     )
     def service_join(self, request, *args, **kwargs):
         """Join a Big Blue Button classroom.
