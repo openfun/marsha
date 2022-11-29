@@ -25,6 +25,7 @@ export const classroomMockFactory = (
     infos: classroomInfosMockFactory(),
     starting_at: null,
     estimated_duration: null,
+    invite_token: null,
     ...classroom,
   };
 };
