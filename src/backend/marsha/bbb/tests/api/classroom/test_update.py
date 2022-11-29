@@ -16,12 +16,13 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, NONE
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.utils import reload_urlconf
 
 
@@ -149,6 +150,9 @@ class ClassroomUpdateAPITest(TestCase):
                 content_type="application/json",
             )
         self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -170,8 +174,18 @@ class ClassroomUpdateAPITest(TestCase):
                 .isoformat()
                 .replace("+00:00", "Z"),
                 "estimated_duration": "00:01:00",
+                # invite_token is tested below
             },
-            response.json(),
+            content,
+        )
+
+        # don't verify here, because of time travel (tested elsewhere)
+        decoded_invite_token = ResourceAccessToken(invite_token, verify=False)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
         )
 
         classroom.refresh_from_db()
@@ -259,6 +273,9 @@ class ClassroomUpdateAPITest(TestCase):
                 content_type="application/json",
             )
         self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -277,8 +294,18 @@ class ClassroomUpdateAPITest(TestCase):
                 },
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
+                # invite_token is tested below
             },
-            response.json(),
+            content,
+        )
+
+        # don't verify here, because of time travel (tested elsewhere)
+        decoded_invite_token = ResourceAccessToken(invite_token, verify=False)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
         )
 
         classroom.refresh_from_db()

@@ -12,6 +12,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - standalone website:
   - classroom (list/create/update)
+  - Add a new "invite" JWT in classroom API to allow
+    students to join a classroom through a link
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
