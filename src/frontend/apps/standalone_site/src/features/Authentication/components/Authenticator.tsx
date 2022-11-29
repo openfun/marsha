@@ -9,9 +9,9 @@ const TARGET_URL_STORAGE_KEY = 'redirect_uri';
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
 export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
-  const location = useLocation();
+  const { pathname, search } = useLocation();
   const history = useHistory();
-  const code = new URLSearchParams(location.search).get(
+  const code = new URLSearchParams(search).get(
     QUERY_PARAMS_CHALLENGE_TOKEN_NAME,
   );
   const { currentUser, setCurrentUser } = useCurrentUser((state) => ({
@@ -37,13 +37,10 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     } else {
       const targetedAddress =
         process.env.REACT_APP_BACKEND_API_BASE_URL || window.location.origin;
-      localStorage.setItem(
-        TARGET_URL_STORAGE_KEY,
-        location.pathname + location.search,
-      );
+      localStorage.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
       window.location.replace(targetedAddress + '/account/login/');
     }
-  }, [code, jwt, location, setJwt]);
+  }, [code, jwt, pathname, search, setJwt]);
 
   useEffect(() => {
     if (!jwt || currentUser) {
@@ -57,10 +54,10 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
       localStorage.removeItem(TARGET_URL_STORAGE_KEY);
       // redirect to the originally targeted URL (ie before the authentication loop)
       // or the root page if no target was set
-      history.replace(targetUri || location.pathname);
+      history.replace(targetUri || pathname);
     };
     fetchUserData();
-  }, [jwt, currentUser, location, setCurrentUser, history]);
+  }, [jwt, currentUser, pathname, setCurrentUser, history]);
 
   if (!jwt && !code) {
     return <Fragment />;
