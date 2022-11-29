@@ -44,7 +44,7 @@ class {{cookiecutter.model}}ViewSet(
                 & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
             ]
         elif self.action in ["retrieve"]:
-            permission_classes = [core_permissions.ResourceIsAuthenticated]
+            permission_classes = [core_permissions.IsTokenResourceRouteObject]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]

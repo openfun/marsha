@@ -30,6 +30,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - the full name replaces the first and last names in the
   user's profile API
 
+### Fixed
+
+- change permission on retrieve endpoints
+
 ## [4.0.0-beta.11] - 2022-11-08
 
 ### Added

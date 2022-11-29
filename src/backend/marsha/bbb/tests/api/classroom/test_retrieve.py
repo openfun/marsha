@@ -80,6 +80,21 @@ class ClassroomRetrieveAPITest(TestCase):
             content,
         )
 
+    def test_api_classroom_fetch_from_other_classroom(self):
+        """
+        Fetching a classroom with a token resource for an other classroom should not be allowed.
+        """
+        classroom = ClassroomFactory()
+        other_classroom = ClassroomFactory()
+
+        jwt_token = StudentLtiTokenFactory(resource=other_classroom)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
     @mock.patch.object(serializers, "get_meeting_infos")
     def test_api_classroom_fetch_student_scheduled(self, mock_get_meeting_infos):
         """A student should be allowed to fetch a scheduled classroom."""
