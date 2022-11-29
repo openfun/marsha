@@ -14,6 +14,7 @@ export interface Classroom extends Resource {
   infos?: ClassroomInfos;
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;
+  invite_token: Nullable<string>;
 }
 
 export type ClassroomLite = Omit<Classroom, 'infos' | 'playlist'>;
