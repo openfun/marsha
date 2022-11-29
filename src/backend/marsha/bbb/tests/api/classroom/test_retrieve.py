@@ -13,12 +13,13 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, NONE
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
+from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.utils import reload_urlconf
 
 
@@ -76,6 +77,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                "invite_token": None,
             },
             content,
         )
@@ -138,6 +140,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
+                "invite_token": None,
             },
             content,
         )
@@ -158,7 +161,9 @@ class ClassroomRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
+
         content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -177,8 +182,17 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                # invite_token is tested below
             },
             content,
+        )
+
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -220,8 +234,10 @@ class ClassroomRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
         self.assertDictEqual(
-            response.json(),
             {
                 "id": str(classroom.id),
                 "infos": {"returncode": "SUCCESS", "running": "true"},
@@ -239,7 +255,17 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                # invite_token is tested below
             },
+            content,
+        )
+
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -261,8 +287,10 @@ class ClassroomRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
         self.assertDictEqual(
-            response.json(),
             {
                 "id": str(classroom.id),
                 "infos": {"returncode": "SUCCESS", "running": "true"},
@@ -280,5 +308,25 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                # invite_token is tested below
             },
+            content,
         )
+
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
+        )
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        invite_token_2 = content.pop("invite_token")
+
+        self.assertEqual(str(invite_token), str(invite_token_2))
