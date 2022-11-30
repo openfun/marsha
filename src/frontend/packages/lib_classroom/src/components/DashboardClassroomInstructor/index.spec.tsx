@@ -1,5 +1,9 @@
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import {
+  useCurrentResourceContext,
+  ltiInstructorTokenMockFactory,
+} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
@@ -20,17 +24,30 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
+const mockedUseCurrentResource =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 jest.mock('components/DashboardClassroomForm', () => {
   const DashboardClassroomForm = () => <p>classroom form</p>;
   return DashboardClassroomForm;
 });
 
-jest.mock('components/DashboardClassroomInfos', () => {
-  const DashboardClassroomInfos = () => <p>classroom infos</p>;
-  return DashboardClassroomInfos;
-});
+jest.mock(
+  'components/DashboardClassroomInfos',
+  () =>
+    ({ inviteToken }: { inviteToken?: string }) =>
+      (
+        <div>
+          <p>classroom infos</p>
+          {inviteToken && <p>Invite link</p>}
+        </div>
+      ),
+);
 
 describe('<DashboardClassroomInstructor />', () => {
   afterEach(() => {
@@ -66,6 +83,7 @@ describe('<DashboardClassroomInstructor />', () => {
       />,
     );
     await screen.findByText('classroom infos');
+    expect(screen.queryByText('Invite link')).not.toBeInTheDocument();
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
 
@@ -101,5 +119,42 @@ describe('<DashboardClassroomInstructor />', () => {
       body: JSON.stringify({}),
     });
     expect(classroomEnded).toHaveBeenCalledTimes(1);
+  });
+
+  it('Displays invite link depend state', () => {
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        ...ltiInstructorTokenMockFactory(),
+        isFromWebsite: true,
+      },
+    ] as any);
+
+    const classroom = classroomMockFactory({
+      id: '1',
+      started: true,
+      invite_token: null,
+    });
+
+    const { rerender } = render(
+      <DashboardClassroomInstructor
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={jest.fn()}
+        classroomEnded={jest.fn()}
+      />,
+    );
+
+    expect(screen.queryByText('Invite link')).not.toBeInTheDocument();
+
+    rerender(
+      <DashboardClassroomInstructor
+        classroom={{ ...classroom, invite_token: '1234465' }}
+        joinedAs={false}
+        joinClassroomAction={jest.fn()}
+        classroomEnded={jest.fn()}
+      />,
+    );
+
+    expect(screen.getByText('Invite link')).toBeInTheDocument();
   });
 });

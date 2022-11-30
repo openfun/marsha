@@ -82,6 +82,7 @@ function ClassRoomUpdate() {
       can_access_dashboard: true,
       can_update: true,
     },
+    isFromWebsite: true,
   };
 
   return (

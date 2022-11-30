@@ -93,7 +93,10 @@ const DashboardClassroomInstructor = ({
         <DashboardClassroomMessage
           message={intl.formatMessage(messages.joinedAs, { joinedAs })}
         />
-        <DashboardClassroomInfos infos={classroom.infos} />
+        <DashboardClassroomInfos
+          infos={classroom.infos}
+          inviteToken={classroom.invite_token}
+        />
       </React.Fragment>
     );
     right = (
@@ -108,7 +111,10 @@ const DashboardClassroomInstructor = ({
   } else {
     left = (
       <Box margin={{ top: 'large' }}>
-        <DashboardClassroomInfos infos={classroom.infos} />
+        <DashboardClassroomInfos
+          infos={classroom.infos}
+          inviteToken={classroom.invite_token}
+        />
       </Box>
     );
     right = (
