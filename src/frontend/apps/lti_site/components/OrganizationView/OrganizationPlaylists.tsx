@@ -146,7 +146,7 @@ export const OrganizationPlaylists: React.FC<OrganizationPlaylistsProps> = ({
                         </Link>
                       </TableCell>
                       <TableCell>{playlist.lti_id}</TableCell>
-                      <TableCell>{playlist.consumer_site.name}</TableCell>
+                      <TableCell>{playlist.consumer_site?.name}</TableCell>
                     </TableRowLinked>
                   ))}
                 </React.Fragment>
