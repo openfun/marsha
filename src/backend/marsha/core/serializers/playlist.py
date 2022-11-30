@@ -43,6 +43,8 @@ class PlaylistSerializer(serializers.ModelSerializer):
     consumer_site = ReadWritePrimaryKeyRelatedField(
         ConsumerSiteSerializer,
         queryset=ConsumerSite.objects.all(),
+        required=False,
+        allow_null=True,
     )
 
     def get_portable_to(self, obj):

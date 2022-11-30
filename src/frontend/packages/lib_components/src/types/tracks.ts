@@ -65,7 +65,7 @@ export interface PlaylistLite extends Resource {
 }
 
 export interface Playlist extends Resource {
-  consumer_site: ConsumerSite;
+  consumer_site: Nullable<ConsumerSite>;
   created_by: Nullable<string>;
   duplicated_from: Nullable<string>;
   is_portable_to_playlist: boolean;
