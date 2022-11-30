@@ -10,4 +10,5 @@ export interface ResourceContext {
   playlist_id?: string;
   resource_id: string;
   roles: string[];
+  isFromWebsite?: boolean;
 }
