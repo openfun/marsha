@@ -1,7 +1,10 @@
 import { Box, Grid, Text } from 'grommet';
+import { Nullable } from 'lib-common';
 import { ClassroomInfos } from 'lib-components';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
+
+import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
 
 const messages = defineMessages({
   moderators: {
@@ -43,37 +46,48 @@ const DashboardClassroomInfosItem = ({
 };
 
 interface DashboardClassroomInfosProps {
+  inviteToken: Nullable<string>;
   infos?: ClassroomInfos;
 }
 
-const DashboardClassroomInfos = ({ infos }: DashboardClassroomInfosProps) => {
+const DashboardClassroomInfos = ({
+  infos,
+  inviteToken,
+}: DashboardClassroomInfosProps) => {
   return (
-    <Box
-      margin={{ top: 'large' }}
-      pad={{ vertical: 'small', horizontal: 'small' }}
-      round="xsmall"
-      border={{
-        color: 'blue-active',
-        size: 'small',
-        side: 'all',
-      }}
-      className="DashboardClassroomInfos"
-    >
-      <Grid columns={{ count: 3, size: 'auto' }}>
-        <DashboardClassroomInfosItem
-          unit="moderators"
-          value={infos?.moderatorCount || '0'}
-        />
-        <DashboardClassroomInfosItem
-          unit="participants"
-          value={infos?.voiceParticipantCount || '0'}
-        />
-        <DashboardClassroomInfosItem
-          unit="listeners"
-          value={infos?.listenerCount || '0'}
-        />
-      </Grid>
-    </Box>
+    <Fragment>
+      <Box
+        margin={{ top: 'large' }}
+        pad={{ vertical: 'small', horizontal: 'small' }}
+        round="xsmall"
+        border={{
+          color: 'blue-active',
+          size: 'small',
+          side: 'all',
+        }}
+        className="DashboardClassroomInfos"
+      >
+        <Grid columns={{ count: 3, size: 'auto' }}>
+          <DashboardClassroomInfosItem
+            unit="moderators"
+            value={infos?.moderatorCount || '0'}
+          />
+          <DashboardClassroomInfosItem
+            unit="participants"
+            value={infos?.voiceParticipantCount || '0'}
+          />
+          <DashboardClassroomInfosItem
+            unit="listeners"
+            value={infos?.listenerCount || '0'}
+          />
+        </Grid>
+      </Box>
+      {inviteToken && (
+        <Box margin={{ top: 'large' }}>
+          <DashboardCopyClipboard inviteToken={inviteToken} />
+        </Box>
+      )}
+    </Fragment>
   );
 };
 

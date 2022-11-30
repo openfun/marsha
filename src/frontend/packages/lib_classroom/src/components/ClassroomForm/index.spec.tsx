@@ -1,6 +1,7 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { useCurrentResourceContext } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
@@ -22,7 +23,13 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
+const mockedUseCurrentResource =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 jest.mock('components/UploadDocuments', () => ({
   UploadDocuments: () => <p>Upload Documents.</p>,
@@ -418,5 +425,24 @@ describe('<ClassroomForm />', () => {
       'Title is required to launch the classroom.',
     );
     expect(titleError).not.toBeInTheDocument();
+  });
+
+  it('displays invite link', () => {
+    const classroom = classroomMockFactory({
+      title: null,
+      id: '1',
+      invite_token: 'my-token',
+    });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: true,
+      },
+    ] as any);
+    render(<ClassroomForm classroom={classroom} />);
+
+    expect(
+      screen.getByText('Invite someone with this link:'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
   });
 });

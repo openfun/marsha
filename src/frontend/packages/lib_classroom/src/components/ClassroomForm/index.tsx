@@ -1,10 +1,11 @@
-import { Form, FormField, Text, TextArea, TextInput } from 'grommet';
+import { Box, Form, FormField, Text, TextArea, TextInput } from 'grommet';
 import { Maybe } from 'lib-common';
 import { SchedulingFields, UploadManager, Classroom } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
+import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
 import { UploadDocuments } from 'components/UploadDocuments';
 import { useUpdateClassroom } from 'data/queries';
 
@@ -189,6 +190,11 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
         />
       </Form>
       <UploadDocuments classroomId={classroom.id} />
+      {classroom.invite_token && (
+        <Box margin={{ top: 'medium' }}>
+          <DashboardCopyClipboard inviteToken={classroom.invite_token} />
+        </Box>
+      )}
     </UploadManager>
   );
 };
