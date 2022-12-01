@@ -1,4 +1,4 @@
-import { Grommet, Main, Page } from 'grommet';
+import { Grommet } from 'grommet';
 import { colors } from 'lib-common';
 import { useEffect, useMemo, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -8,7 +8,6 @@ import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
 import { DEFAULT_LANGUAGE } from 'conf/global';
-import { Authenticator } from 'features/Authentication';
 import { AppRoutes } from 'routes';
 import { getFullThemeExtend } from 'styles/theme.extend';
 import { getCurrentTranslation, getLanguage } from 'utils/lang';
@@ -64,13 +63,7 @@ const App = () => {
             }}
           />
           <BrowserRouter>
-            <Authenticator>
-              <Main height={{ min: '100vh' }}>
-                <Page kind="full">
-                  <AppRoutes />
-                </Page>
-              </Main>
-            </Authenticator>
+            <AppRoutes />
           </BrowserRouter>
         </Grommet>
       </QueryClientProvider>

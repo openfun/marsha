@@ -5,7 +5,8 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
-import { Header } from 'features/Header';
+import { Authenticator, VisitorAuthenticator } from 'features/Authentication';
+import { Header, HeaderLight } from 'features/Header';
 import { Menu } from 'features/Menu';
 
 import { routes } from './routes';
@@ -49,35 +50,53 @@ function AppRoutes() {
   }, [intl]);
 
   return (
-    <MainLayout Header={Header} menu={<Menu />}>
-      <Switch>
-        <Route path={routes.HOMEPAGE.path} exact>
-          <Suspense fallback={<ContentSpinner />}>
-            <HomePage />
-          </Suspense>
-        </Route>
-        <Route path={routes.PLAYLIST.path}>
-          <Suspense fallback={<ContentSpinner />}>
-            <PlaylistPage />
-          </Suspense>
-        </Route>
-        <Route
-          path={[
-            routes.CONTENTS.path,
-            routes.CONTENTS.subRoutes.CLASSROOM.path,
-          ]}
-        >
-          <Suspense fallback={<ContentSpinner />}>
-            <ClassRoom />
-          </Suspense>
-        </Route>
-        <Route path={routes.PORTABILITY_REQUESTS.path} exact>
-          <Suspense fallback={<ContentSpinner />}>
-            <PortabilityRequestsRouteComponent />
-          </Suspense>
-        </Route>
-      </Switch>
-    </MainLayout>
+    <Switch>
+      <Route
+        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
+        exact
+      >
+        <VisitorAuthenticator>
+          <MainLayout Header={HeaderLight} direction="column">
+            <Suspense fallback={<ContentSpinner />}>
+              <ClassRoom />
+            </Suspense>
+          </MainLayout>
+        </VisitorAuthenticator>
+      </Route>
+      <Route>
+        <Authenticator>
+          <MainLayout Header={Header} menu={<Menu />}>
+            <Switch>
+              <Route path={routes.HOMEPAGE.path} exact>
+                <Suspense fallback={<ContentSpinner />}>
+                  <HomePage />
+                </Suspense>
+              </Route>
+              <Route path={routes.PLAYLIST.path}>
+                <Suspense fallback={<ContentSpinner />}>
+                  <PlaylistPage />
+                </Suspense>
+              </Route>
+              <Route
+                path={[
+                  routes.CONTENTS.path,
+                  routes.CONTENTS.subRoutes.CLASSROOM.path,
+                ]}
+              >
+                <Suspense fallback={<ContentSpinner />}>
+                  <ClassRoom />
+                </Suspense>
+              </Route>
+              <Route path={routes.PORTABILITY_REQUESTS.path} exact>
+                <Suspense fallback={<ContentSpinner />}>
+                  <PortabilityRequestsRouteComponent />
+                </Suspense>
+              </Route>
+            </Switch>
+          </MainLayout>
+        </Authenticator>
+      </Route>
+    </Switch>
   );
 }
 
