@@ -1,4 +1,4 @@
-import { Box } from 'grommet';
+import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import React, {
@@ -17,13 +17,13 @@ const MainLayoutBox = styled(Box)`
   min-height: 100vh;
 `;
 
-interface MainLayoutProps {
+interface MainLayoutProps extends BoxProps {
   children: React.ReactNode;
   Header: ForwardRefExoticComponent<RefAttributes<Nullable<HTMLDivElement>>>;
-  menu: React.ReactNode;
+  menu?: React.ReactNode;
 }
 
-function MainLayout({ children, Header, menu }: MainLayoutProps) {
+function MainLayout({ children, Header, menu, ...boxProps }: MainLayoutProps) {
   const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -48,7 +48,7 @@ function MainLayout({ children, Header, menu }: MainLayoutProps) {
   }, []);
 
   return (
-    <MainLayoutBox direction="row">
+    <MainLayoutBox direction="row" {...boxProps}>
       <Header ref={headerBoxRef} />
       {menu}
       <Box

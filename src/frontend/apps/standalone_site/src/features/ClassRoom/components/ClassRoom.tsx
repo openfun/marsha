@@ -9,20 +9,26 @@ import ClassRoomUpdate from './Update/ClassRoomUpdate';
 
 function ClassRoom() {
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
-  const contentPath = routes.CONTENTS.path;
-  const classroomPath = classroomRoute.path;
   const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
   const classroomUpdatePath = classroomRoute.subRoutes?.UPDATE?.path || '';
+  const classroomInvitePath = classroomRoute.subRoutes?.INVITE?.path || '';
 
   return (
     <Box pad="medium">
       <Switch>
-        <Route path={[classroomPath, classroomCreatePath, contentPath]} exact>
+        <Route path={classroomCreatePath} exact>
           <ClassRoomCreate />
           <ClassRooms />
         </Route>
+        <Route path={classroomInvitePath} exact>
+          <ClassRoomUpdate isInvited={true} />
+        </Route>
         <Route path={classroomUpdatePath} exact>
-          <ClassRoomUpdate />
+          <ClassRoomUpdate isInvited={false} />
+        </Route>
+        <Route>
+          <ClassRoomCreate />
+          <ClassRooms />
         </Route>
       </Switch>
     </Box>
