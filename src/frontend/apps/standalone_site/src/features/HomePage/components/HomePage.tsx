@@ -1,15 +1,15 @@
 import { Image, Box, Text } from 'grommet';
-import React, { Fragment } from 'react';
+import { useClassrooms } from 'lib-classroom';
+import { StyledLink } from 'lib-components';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import card1 from 'assets/img/card-1.png';
-import card2 from 'assets/img/card-2.png';
-import card3 from 'assets/img/card-3.png';
 import banner from 'assets/img/homepage-banner.png';
-import { ReactComponent as BarreCodeIcon } from 'assets/svg/iko_boot_code_barresvg.svg';
-import { ReactComponent as UniversityIcon } from 'assets/svg/iko_boot_universitesvg.svg';
-import { ContentCards, ContentCard } from 'components/Cards';
+import { ContentCards } from 'components/Cards';
+import ManageAPIState from 'components/ManageAPIState/';
+import { ClassRoomItem } from 'features/ClassRoom';
+import { routes } from 'routes';
 
 const messages = defineMessages({
   HomePage: {
@@ -24,7 +24,7 @@ const messages = defineMessages({
   },
 });
 
-const HomePageBox = styled(Box)`
+const BoxText = styled(Box)`
   color: #002c84;
 `;
 
@@ -32,105 +32,52 @@ const BlockBox = styled(Box)`
   display: block;
 `;
 
-const cards = [
-  {
-    image: card1,
-    title: 'Smart Building',
-  },
-  {
-    image: card2,
-    title: 'Défi énergétiques et risques sanitaires dans les transports',
-  },
-  {
-    image: card3,
-    title: 'Eco Concevoir demain',
-  },
-  {
-    image: card1,
-    title: 'La politique publique des déchets en 5 questions',
-  },
-  {
-    image: card1,
-    title: 'Smart Building',
-  },
-  {
-    image: card2,
-    title: 'Défi énergétiques et risques sanitaires dans les transports',
-  },
-  {
-    image: card3,
-    title: 'Eco Concevoir demain',
-  },
-  {
-    image: card1,
-    title: 'La politique publique des déchets en 5 questions',
-  },
-  {
-    image: card1,
-    title: 'Smart Building',
-  },
-  {
-    image: card2,
-    title: 'Défi énergétiques et risques sanitaires dans les transports',
-  },
-  {
-    image: card3,
-    title: 'Eco Concevoir demain',
-  },
-  {
-    image: card1,
-    title: 'La politique publique des déchets en 5 questions',
-  },
-];
-
 function HomePage() {
   const intl = useIntl();
+  const contentPath = routes.CONTENTS.path;
+
+  const {
+    isError,
+    isLoading,
+    data: classRooms,
+  } = useClassrooms(
+    {
+      offset: `0`,
+      limit: `5`,
+    },
+    { keepPreviousData: true, staleTime: 20000 },
+  );
 
   return (
-    <HomePageBox margin={{ top: 'medium' }}>
+    <Box margin={{ top: 'medium' }}>
       <BlockBox margin={{ horizontal: 'auto' }}>
         <Image src={banner} alt="Homepage Banner" width="100%" />
       </BlockBox>
       <Box margin={{ top: 'medium' }}>
-        <Box direction="row" justify="between" margin={{ bottom: 'small' }}>
+        <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
           <Text weight="bolder">{intl.formatMessage(messages.HomePage)}</Text>
           <Text weight="bolder">
-            › {intl.formatMessage(messages.SeeEverything)}
+            <StyledLink to={`${contentPath}`}>
+              › {intl.formatMessage(messages.SeeEverything)}
+            </StyledLink>
           </Text>
-        </Box>
-        <ContentCards>
-          {cards.map(({ title, image }, index) => (
-            <ContentCard
-              key={`homepage-card-${index}`}
-              title={title}
-              header={
-                <Image src={image} alt={`Image about ${title}`} fit="contain" />
-              }
-              footer={
-                <Fragment>
-                  <Box gap="small" align="center" direction="row">
-                    <Box>
-                      <UniversityIcon width={20} height={20} />
-                    </Box>
-                    <Text size="0.688rem" weight="bold">
-                      Conservatoire nationale des Arts et Métiers (Cnam)
-                    </Text>
-                  </Box>
-                  <Box gap="small" align="center" direction="row">
-                    <Box>
-                      <BarreCodeIcon width={20} height={20} color="#093388" />
-                    </Box>
-                    <Text size="0.688rem" weight="bold" color="#093388">
-                      011042
-                    </Text>
-                  </Box>
-                </Fragment>
-              }
-            ></ContentCard>
-          ))}
-        </ContentCards>
+        </BoxText>
+        <ManageAPIState
+          isError={isError}
+          isLoading={isLoading}
+          itemsLength={classRooms?.results.length || 0}
+        >
+          <ContentCards>
+            {classRooms?.results.map((classroom) => (
+              <ClassRoomItem
+                key={`classroom-${classroom.id}`}
+                classroom={classroom}
+              />
+            ))}
+          </ContentCards>
+        </ManageAPIState>
       </Box>
-    </HomePageBox>
+    </Box>
   );
 }
 
