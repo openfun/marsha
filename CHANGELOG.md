@@ -15,12 +15,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Add a new "invite" JWT in classroom API to allow
     students to join a classroom through a link
   - Manage portability requests (list/accept/reject)
+  - access site visitor mode
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
 - Allow LTI users to request for a playlist portability
 - Enable recording when creating a BBB room instance
 - Mutualize Eslint configuration
+- Shareable classroom link
 
 ### Changed
 

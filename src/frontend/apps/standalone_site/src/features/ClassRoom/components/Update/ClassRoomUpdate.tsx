@@ -6,7 +6,6 @@ import {
   CurrentResourceContextProvider,
   ResourceContext,
 } from 'lib-components';
-import { Fragment } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -67,7 +66,11 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
     `}
 `;
 
-function ClassRoomUpdate() {
+interface ClassRoomUpdateProps {
+  isInvited: boolean;
+}
+
+function ClassRoomUpdate({ isInvited }: ClassRoomUpdateProps) {
   const { classroomId } = useParams<{ classroomId?: string }>();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
@@ -79,25 +82,23 @@ function ClassRoomUpdate() {
     resource_id: classroomId,
     roles: [],
     permissions: {
-      can_access_dashboard: true,
-      can_update: true,
+      can_access_dashboard: !isInvited,
+      can_update: !isInvited,
     },
     isFromWebsite: true,
   };
 
   return (
-    <Fragment>
-      <AppConfigProvider value={appConfig}>
-        <CurrentResourceContextProvider value={resourceContext}>
-          <DashboardClassroomStyled
-            isSmallerBreakpoint={isSmallerBreakpoint}
-            breakpoint={breakpoint}
-          >
-            <DashboardClassroom classroomId={classroomId} />
-          </DashboardClassroomStyled>
-        </CurrentResourceContextProvider>
-      </AppConfigProvider>
-    </Fragment>
+    <AppConfigProvider value={appConfig}>
+      <CurrentResourceContextProvider value={resourceContext}>
+        <DashboardClassroomStyled
+          isSmallerBreakpoint={isSmallerBreakpoint}
+          breakpoint={breakpoint}
+        >
+          <DashboardClassroom classroomId={classroomId} />
+        </DashboardClassroomStyled>
+      </CurrentResourceContextProvider>
+    </AppConfigProvider>
   );
 }
 

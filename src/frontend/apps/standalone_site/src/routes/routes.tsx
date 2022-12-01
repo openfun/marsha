@@ -226,6 +226,9 @@ export const routes: Routes = {
           UPDATE: {
             path: `/my-contents/classroom/:classroomId`,
           },
+          INVITE: {
+            path: `/my-contents/classroom/:classroomId/invite/:inviteId`,
+          },
         },
         isNavStrict: true,
       },
