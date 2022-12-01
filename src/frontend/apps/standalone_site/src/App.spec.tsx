@@ -1,28 +1,11 @@
 import { render, screen } from '@testing-library/react';
+import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import fetchMock from 'fetch-mock';
 
 import App from './App';
 
-const mockedLocation = {
-  search: 'token=some-token',
-  assign: jest.fn(),
-  replace: jest.fn(),
-} as any;
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useLocation: () => mockedLocation,
-}));
+fetchMockAuth();
 
-fetchMock.post('/api/auth/challenge/', { access: 'some-access' });
-fetchMock.get('/api/users/whoami/', {
-  date_joined: 'date_joined',
-  email: 'email',
-  full_name: 'full name',
-  id: 'id',
-  is_staff: false,
-  is_superuser: false,
-  organization_accesses: [],
-});
 const consoleWarn = jest
   .spyOn(console, 'warn')
   .mockImplementation(() => jest.fn());

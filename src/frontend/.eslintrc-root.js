@@ -51,7 +51,7 @@ module.exports = {
   },
   overrides: [
     {
-      files: ['*.spec.*', '*.test.*'],
+      files: ['*.spec.*', '*.test.*', '**/__mock__/**/*'],
       plugins: ['jest'],
       extends: ['plugin:jest/recommended', 'plugin:testing-library/react'],
       rules: {
