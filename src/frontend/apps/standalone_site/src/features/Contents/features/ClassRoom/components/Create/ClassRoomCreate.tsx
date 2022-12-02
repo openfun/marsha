@@ -14,12 +14,12 @@ const messages = defineMessages({
   ClassroomTitle: {
     defaultMessage: 'Classrooms',
     description: 'Classrooms title',
-    id: 'features.ClassRooms.Create.ClassroomTitle',
+    id: 'features.Contents.features.ClassRooms.Create.ClassroomTitle',
   },
   CreateClassroomLabel: {
     defaultMessage: 'Create Classroom',
     description: 'Text heading create classroom.',
-    id: 'features.ClassRooms.Create.CreateClassroomLabel',
+    id: 'features.Contents.features.ClassRooms.Create.CreateClassroomLabel',
   },
 });
 

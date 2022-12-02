@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 
-import ClassRoom from './ClassRoom';
+import ClassRoom from './ClassRoomRouter';
 
 jest.mock('./Read/ClassRooms', () => ({
   __esModule: true,

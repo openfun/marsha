@@ -13,11 +13,16 @@ const messages = defineMessages({
   NoClassroom: {
     defaultMessage: 'There is no classroom to display.',
     description: 'Text when there is no classroom to display.',
-    id: 'features.ClassRooms.NoClassroom',
+    id: 'features.Contents.features.ClassRooms.NoClassroom',
   },
 });
 
-function ClassRooms() {
+interface ClassRoomsProps {
+  withPagination?: boolean;
+  limit?: number;
+}
+
+const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -28,7 +33,7 @@ function ClassRooms() {
   } = useClassrooms(
     {
       offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
-      limit: `${ITEM_PER_PAGE}`,
+      limit: `${limit || ITEM_PER_PAGE}`,
     },
     { keepPreviousData: true, staleTime: 20000 },
   );
@@ -48,7 +53,7 @@ function ClassRooms() {
           />
         ))}
       </ContentCards>
-      {(classRooms?.count || 0) > ITEM_PER_PAGE && (
+      {(classRooms?.count || 0) > ITEM_PER_PAGE && withPagination && (
         <Pagination
           numberItems={classRooms?.count || 0}
           onChange={({ page: newPage }: { page: number }) => {
@@ -62,6 +67,6 @@ function ClassRooms() {
       )}
     </ManageAPIState>
   );
-}
+};
 
 export default ClassRooms;

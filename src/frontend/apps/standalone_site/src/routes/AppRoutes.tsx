@@ -11,7 +11,7 @@ import { Menu } from 'features/Menu';
 
 import { routes } from './routes';
 
-const { ClassRoom } = lazyImport(() => import('features/ClassRoom'));
+const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
@@ -58,7 +58,7 @@ function AppRoutes() {
         <VisitorAuthenticator>
           <MainLayout Header={HeaderLight} direction="column">
             <Suspense fallback={<ContentSpinner />}>
-              <ClassRoom />
+              <ContentsRouter />
             </Suspense>
           </MainLayout>
         </VisitorAuthenticator>
@@ -77,14 +77,9 @@ function AppRoutes() {
                   <PlaylistPage />
                 </Suspense>
               </Route>
-              <Route
-                path={[
-                  routes.CONTENTS.path,
-                  routes.CONTENTS.subRoutes.CLASSROOM.path,
-                ]}
-              >
+              <Route path={routes.CONTENTS.path}>
                 <Suspense fallback={<ContentSpinner />}>
-                  <ClassRoom />
+                  <ContentsRouter />
                 </Suspense>
               </Route>
               <Route path={routes.PORTABILITY_REQUESTS.path} exact>
