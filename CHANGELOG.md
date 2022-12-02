@@ -15,6 +15,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Add a new "invite" JWT in classroom API to allow
     students to join a classroom through a link
   - Manage portability requests (list/accept/reject)
+  - dynamic content in homepage
+  - page my-contents
   - access site visitor mode
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session

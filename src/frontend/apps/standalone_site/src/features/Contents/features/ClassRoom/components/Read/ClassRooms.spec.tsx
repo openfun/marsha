@@ -123,4 +123,30 @@ describe('<ClassRooms/>', () => {
       ).toBeInTheDocument();
     });
   });
+
+  test('render without pagination', async () => {
+    fetchMock.get('/api/classrooms/?limit=20&offset=0', {
+      ...someResponse,
+      count: 111,
+    });
+
+    render(<ClassRooms withPagination={false} />);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByLabelText('Pagination Navigation'),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test('render with limit', async () => {
+    fetchMock.get('/api/classrooms/?limit=1&offset=0', {
+      ...someResponse,
+    });
+
+    render(<ClassRooms withPagination={false} limit={1} />);
+
+    expect(await screen.findByText(/some description/i)).toBeInTheDocument();
+    expect(screen.getByText(/some welcome text/i)).toBeInTheDocument();
+  });
 });

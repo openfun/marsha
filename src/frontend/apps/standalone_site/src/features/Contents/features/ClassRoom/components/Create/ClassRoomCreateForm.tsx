@@ -15,37 +15,37 @@ const messages = defineMessages({
   titleLabel: {
     defaultMessage: 'Title',
     description: 'Label for title in classroom creation form.',
-    id: 'features.ClassroomCreateForm.titleLabel',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.titleLabel',
   },
   descriptionLabel: {
     defaultMessage: 'Description',
     description: 'Label for description in classroom creation form.',
-    id: 'features.ClassroomCreateForm.descriptionLabel',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.descriptionLabel',
   },
   welcomeTextLabel: {
     defaultMessage: 'Welcome text',
     description: 'Label for welcome text in classroom creation form.',
-    id: 'features.ClassroomCreateForm.welcomeTextLabel',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.welcomeTextLabel',
   },
   requiredField: {
     defaultMessage: 'This field is required to create the classroom.',
     description: 'Message when classroom field is missing.',
-    id: 'features.ClassroomCreateForm.requiredField',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.requiredField',
   },
   selectPlaylistLabel: {
     defaultMessage: 'Choose the playlist.',
     description: 'Label select playlist.',
-    id: 'features.ClassroomCreateForm.selectPlaylistLabel',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.selectPlaylistLabel',
   },
   submitLabel: {
     defaultMessage: 'Add classroom',
     description: 'Label for button submit in classroom creation form.',
-    id: 'features.ClassroomCreateForm.submitLabel',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.submitLabel',
   },
   Error: {
     defaultMessage: 'Sorry, an error has occurred. Please try again.',
     description: 'Text when there is an error.',
-    id: 'features.ClassroomCreateForm.Error',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.Error',
   },
 });
 
