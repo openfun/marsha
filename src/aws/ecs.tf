@@ -9,10 +9,7 @@ resource "aws_ecs_service" "marsha_ffmpeg_transmux_service" {
   launch_type     = "FARGATE"
 
   network_configuration {
-    subnets = [ 
-      aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1.id,
-      aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet2.id 
-    ]
+    subnets = var.create_vpc ? [aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1[0].id, aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet2[0].id] : var.subnets_id 
     security_groups = [ aws_security_group.fargate_ffmpeg_transmux_security_group.id ]
     assign_public_ip = true
   }

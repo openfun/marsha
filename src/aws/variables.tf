@@ -118,3 +118,33 @@ variable "lambda_convert_ephemeral_storage" {
   type    = number
   default = 512
 }
+
+variable "create_vpc" {
+  description = "Whether to create vpc or not"
+  type    = bool
+  default = true
+}
+
+variable "vpc_id" {
+  description = "Custom vpc id"
+  type        = string
+  default     = ""
+}
+
+variable "subnets_id" {
+  description = "List of exactly two subnets"
+  type        = list
+  default     = []
+}
+
+variable "create_user" {
+  description = "Whether to create user or not"
+  type = bool
+  default = true
+}
+
+variable "user_arn" {
+  description = "User arn"
+  type = string
+  default = ""
+}
