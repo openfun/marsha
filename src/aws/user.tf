@@ -1,10 +1,12 @@
 # Define a user and associate appropriate policies
 resource "aws_iam_user" "marsha_user" {
-  name = "${terraform.workspace}-marsha"
+  count = var.create_user ? 1 : 0
+  name  = "${terraform.workspace}-marsha"
 }
 
 resource "aws_iam_access_key" "marsha_access_key" {
-  user = aws_iam_user.marsha_user.name
+  count = var.create_user ? 1 : 0
+  user = aws_iam_user.marsha_user[0].name
 }
 
 # Grant user access to the source bucket
@@ -19,7 +21,7 @@ resource "aws_s3_bucket_policy" "marsha_source_bucket_policy" {
       "Sid": "User access",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "${aws_iam_user.marsha_user.arn}"
+        "AWS": "${var.create_user ? aws_iam_user.marsha_user[0].arn : var.user_arn}"
       },
       "Action": [ "s3:*" ],
       "Resource": [
@@ -44,7 +46,7 @@ resource "aws_s3_bucket_policy" "marsha_destination_bucket_policy" {
       "Sid": "User access",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "${aws_iam_user.marsha_user.arn}"
+        "AWS": "${var.create_user ? aws_iam_user.marsha_user[0].arn : var.user_arn}"
       },
       "Action": [ "s3:*" ],
       "Resource": [
@@ -78,7 +80,7 @@ resource "aws_s3_bucket_policy" "marsha_static_bucket_policy" {
       "Sid": "User access",
       "Effect": "Allow",
       "Principal": {
-        "AWS": "${aws_iam_user.marsha_user.arn}"
+        "AWS": "${var.create_user ? aws_iam_user.marsha_user[0].arn : var.user_arn}"
       },
       "Action": [ "s3:*" ],
       "Resource": [
@@ -102,8 +104,9 @@ EOF
 
 # Grant user to manage live streaming. Affects medialive, mediapackage and sns.
 resource "aws_iam_user_policy" "live-streaming-policies" {
+  count = var.create_user ? 1 : 0
   name = "${terraform.workspace}-marsha-live-streaming-policies"
-  user = aws_iam_user.marsha_user.name
+  user = aws_iam_user.marsha_user[0].name
 
   policy = <<POLICY
 {

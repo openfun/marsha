@@ -205,8 +205,8 @@ resource "aws_lambda_function" "marsha_mediapackage_lambda" {
       RECORDING_SLICES_STATE_ENDPOINT = "${var.marsha_base_url}${var.recording_slices_state_endpoint}"
       SECURITY_GROUP = aws_security_group.fargate_ffmpeg_transmux_security_group.id
       SHARED_SECRET = var.update_state_secret
-      VPC_SUBNET1 = aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1.id
-      VPC_SUBNET2 = aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet2.id
+      VPC_SUBNET1 = var.create_vpc ? aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet1[0].id : var.subnets_id[0]
+      VPC_SUBNET2 = var.create_vpc ? aws_subnet.fargate_ffmpeg_transmux_vpc_public_subnet2[0].id : var.subnets_id[1]
     }
   }
 }

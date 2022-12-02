@@ -121,6 +121,7 @@ TAG:  The tag to publish (default: production)
     --env AWS_ACCESS_KEY_ID="${AWS_ACCESS_KEY_ID}" \
     --env AWS_SECRET_ACCESS_KEY="${AWS_SECRET_ACCESS_KEY}" \
     --env AWS_REGION="${AWS_REGION}" \
+    --env AWS_SESSION_TOKEN="${AWS_SESSION_TOKEN}" \
       amazon/aws-cli ecr get-login-password --region "${AWS_REGION}" | \
       docker login --username AWS --password-stdin "${LAMBDA_REPOSITORY_URL}"
   docker push "${LAMBDA_REPOSITORY_URL}/${LAMBDA_IMAGE_NAME}:${tag}"
