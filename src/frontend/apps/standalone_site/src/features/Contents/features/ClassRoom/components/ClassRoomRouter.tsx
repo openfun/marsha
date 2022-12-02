@@ -7,7 +7,7 @@ import ClassRoomCreate from './Create/ClassRoomCreate';
 import ClassRooms from './Read/ClassRooms';
 import ClassRoomUpdate from './Update/ClassRoomUpdate';
 
-function ClassRoom() {
+function ClassRoomRouter() {
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
   const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
   const classroomUpdatePath = classroomRoute.subRoutes?.UPDATE?.path || '';
@@ -35,4 +35,4 @@ function ClassRoom() {
   );
 }
 
-export default ClassRoom;
+export default ClassRoomRouter;

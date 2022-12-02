@@ -1,4 +1,5 @@
-import { screen, fireEvent, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { render } from 'lib-tests';
 
@@ -19,8 +20,8 @@ jest.mock('features/HomePage', () => ({
   HomePage: () => <div>My HomePage</div>,
 }));
 
-jest.mock('features/ClassRoom', () => ({
-  ClassRoom: () => <div>My Classrooms Page</div>,
+jest.mock('features/Contents/', () => ({
+  ContentsRouter: () => <div>My ContentsRouter Page</div>,
 }));
 
 jest.mock('features/Playlist', () => ({
@@ -48,13 +49,15 @@ describe('<AppRoutes />', () => {
 
     expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole(/menuitem/i, { name: /My playlists/i }));
+    userEvent.click(screen.getByRole(/menuitem/i, { name: /My playlists/i }));
 
     expect(await screen.findByText(/My Playlist Page/i)).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole(/menuitem/i, { name: /Classrooms/i }));
+    userEvent.click(screen.getByRole(/menuitem/i, { name: /Classrooms/i }));
 
-    expect(await screen.findByText(/My Classrooms Page/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/My ContentsRouter Page/i)).toBeInTheDocument();
+    });
 
     expect(window.scrollTo).toHaveBeenCalled();
   });
@@ -84,6 +87,6 @@ describe('<AppRoutes />', () => {
       },
     });
     expect(screen.getByText('My HeaderLight')).toBeInTheDocument();
-    expect(screen.getByText('My Classrooms Page')).toBeInTheDocument();
+    expect(screen.getByText('My ContentsRouter Page')).toBeInTheDocument();
   });
 });
