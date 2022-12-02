@@ -1,9 +1,8 @@
 import { Text, Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import { ClassroomLite } from 'lib-components';
+import { ClassroomLite, StyledLink } from 'lib-components';
 import React, { Fragment } from 'react';
 import { useIntl } from 'react-intl';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
@@ -18,18 +17,12 @@ const TextTruncated = styled(Text)`
   overflow: hidden;
 `;
 
-const LinkStyled = styled(Link)`
-  height: inherit;
-  display: flex;
-  text-decoration: none;
-`;
-
 function ClassRoom({ classroom }: { classroom: ClassroomLite }) {
   const intl = useIntl();
   const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
 
   return (
-    <LinkStyled to={`${classroomPath}/${classroom.id}`}>
+    <StyledLink to={`${classroomPath}/${classroom.id}`}>
       <ContentCard
         header={
           <Box
@@ -81,7 +74,7 @@ function ClassRoom({ classroom }: { classroom: ClassroomLite }) {
           </TextTruncated>
         )}
       </ContentCard>
-    </LinkStyled>
+    </StyledLink>
   );
 }
 
