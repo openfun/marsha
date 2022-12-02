@@ -1,21 +1,21 @@
 import { Text, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
-import { Fragment, PropsWithChildren, ReactNode } from 'react';
+import { Fragment, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { ContentSpinner } from 'components/Spinner';
 
 const messages = defineMessages({
-  NoClassroom: {
-    defaultMessage: 'There is no classroom to display.',
-    description: 'Text when there is no classroom to display.',
-    id: 'features.ClassRooms.NoClassroom',
+  NoThing: {
+    defaultMessage: 'There is nothing to display.',
+    description: 'Text when there is nothing to display.',
+    id: 'components.ManageAPIState.NoThing',
   },
   Error: {
     defaultMessage: 'Sorry, an error has occurred.',
     description: 'Text when there is an error.',
-    id: 'features.ClassRooms.Error',
+    id: 'components.ManageAPIState.Error',
   },
 });
 
@@ -33,26 +33,36 @@ const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
   );
 };
 
-interface ClassRoomAPIStateProps {
+interface ManageAPIStateProps {
   isLoading: boolean;
   isError: boolean;
-  classRoomsLength: number;
+  itemsLength: number;
+  nothingToDisplay?: ReactElement | string;
 }
 
-function ClassRoomAPIState({
+function ManageAPIState({
   isLoading,
   isError,
-  classRoomsLength,
+  itemsLength,
   children,
-}: PropsWithChildren<ClassRoomAPIStateProps>) {
+  nothingToDisplay,
+}: PropsWithChildren<ManageAPIStateProps>) {
   const intl = useIntl();
 
   let content = (
     <ContainerInfo>
       <ClassroomsIcon width={80} height={80} />
-      <Text weight="bold">{intl.formatMessage(messages.NoClassroom)}</Text>
+      <Text weight="bold">
+        {typeof nothingToDisplay === 'string'
+          ? nothingToDisplay
+          : intl.formatMessage(messages.NoThing)}
+      </Text>
     </ContainerInfo>
   );
+
+  if (nothingToDisplay && typeof nothingToDisplay !== 'string') {
+    content = nothingToDisplay;
+  }
 
   if (isError) {
     content = (
@@ -63,11 +73,11 @@ function ClassRoomAPIState({
     );
   } else if (isLoading) {
     content = <ContentSpinner />;
-  } else if (classRoomsLength) {
+  } else if (itemsLength) {
     content = <Fragment>{children}</Fragment>;
   }
 
   return content;
 }
 
-export default ClassRoomAPIState;
+export default ManageAPIState;

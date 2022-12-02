@@ -1,15 +1,24 @@
 import { Pagination } from 'grommet';
 import { useClassrooms } from 'lib-classroom';
 import { useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { ContentCards } from 'components/Cards';
+import ManageAPIState from 'components/ManageAPIState/';
 import { ITEM_PER_PAGE } from 'conf/global';
-
-import ClassRoomAPIState from '../ClassRoomAPIState';
 
 import ClassRoomItem from './ClassRoomItem';
 
+const messages = defineMessages({
+  NoClassroom: {
+    defaultMessage: 'There is no classroom to display.',
+    description: 'Text when there is no classroom to display.',
+    id: 'features.ClassRooms.NoClassroom',
+  },
+});
+
 function ClassRooms() {
+  const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
 
   const {
@@ -25,10 +34,11 @@ function ClassRooms() {
   );
 
   return (
-    <ClassRoomAPIState
+    <ManageAPIState
       isError={isError}
       isLoading={isLoading}
-      classRoomsLength={classRooms?.results.length || 0}
+      itemsLength={classRooms?.results.length || 0}
+      nothingToDisplay={intl.formatMessage(messages.NoClassroom)}
     >
       <ContentCards>
         {classRooms?.results.map((classroom) => (
@@ -50,7 +60,7 @@ function ClassRooms() {
           margin={{ top: 'medium' }}
         />
       )}
-    </ClassRoomAPIState>
+    </ManageAPIState>
   );
 }
 
