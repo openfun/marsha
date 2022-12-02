@@ -1,9 +1,13 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Spinner, UploadManagerStatus, useUploadManager } from 'lib-components';
+import {
+  Spinner,
+  UploadManagerStatus,
+  useUploadManager,
+  StyledLink,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { theme } from '../../utils/theme/theme';
@@ -17,8 +21,7 @@ const messages = defineMessages({
   },
 });
 
-const StyledLink = styled(Link)`
-  &,
+const styledLinkCSS = `
   &:active {
     text-decoration: none;
     color: inherit;
@@ -57,7 +60,7 @@ export const SidebarUploadsIndicator = () => {
   ).length;
 
   return (
-    <StyledLink to="/uploads">
+    <StyledLink to="/uploads" css={styledLinkCSS}>
       <Box
         direction="row"
         pad={{ horizontal: 'medium', vertical: 'small' }}
