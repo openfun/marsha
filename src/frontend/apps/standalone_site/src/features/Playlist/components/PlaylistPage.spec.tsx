@@ -197,6 +197,6 @@ describe('<PlaylistPage />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'Create playlist' }));
 
-    await screen.findByText('Create a playlist');
+    expect(await screen.findByText('Create a playlist')).toBeInTheDocument();
   });
 });
