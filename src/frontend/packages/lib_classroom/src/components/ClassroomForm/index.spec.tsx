@@ -30,12 +30,10 @@ jest.mock('components/UploadDocuments', () => ({
 
 Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
-const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
 describe('<ClassroomForm />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
-    jest.setSystemTime(currentDate.toJSDate());
   });
   afterEach(() => {
     jest.resetAllMocks();
@@ -127,7 +125,9 @@ describe('<ClassroomForm />', () => {
   });
 
   it('schedules a classroom', async () => {
-    const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
+    const startingAt = DateTime.local()
+      .plus({ days: 1 })
+      .set({ second: 0, millisecond: 0 });
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({ id: '1', started: false });
 
@@ -266,7 +266,10 @@ describe('<ClassroomForm />', () => {
   });
 
   it('updates a classroom scheduled', async () => {
-    const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
+    const startingAt = DateTime.local()
+      .plus({ days: 2, hours: 2 })
+      .set({ second: 0, millisecond: 0 })
+      .startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({
       id: '1',
@@ -337,7 +340,10 @@ describe('<ClassroomForm />', () => {
   });
 
   it('clears a classroom scheduled', async () => {
-    const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
+    const startingAt = DateTime.local()
+      .plus({ days: 2, hours: 2 })
+      .set({ second: 0, millisecond: 0 })
+      .startOf('hour');
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({
       id: '1',
