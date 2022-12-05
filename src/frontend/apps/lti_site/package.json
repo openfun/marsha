@@ -111,7 +111,6 @@
     "@types/react-datepicker": "4.8.0",
     "altamoon-robust-websocket": "1.0.3",
     "buffer": "6.0.3",
-    "clipboard": "2.0.11",
     "codemirror": "6.0.1",
     "core-js": "3.26.1",
     "dompurify": "2.4.1",
