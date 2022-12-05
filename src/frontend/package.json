@@ -42,12 +42,12 @@
     "@codemirror/lang-markdown": "6.0.5",
     "@codemirror/language": "6.3.1",
     "@codemirror/language-data": "6.1.0",
-    "@codemirror/view": "6.5.1",
+    "@codemirror/view": "6.6.0",
     "@codemirror/state": "6.1.4",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
-    "grommet": "2.27.0",
+    "grommet": "2.28.0",
     "unist-util-visit": "4.1.1"
   },
   "dependencies": {
@@ -55,12 +55,12 @@
     "yargs": "17.6.2"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.43.0",
-    "@typescript-eslint/parser": "5.43.0",
-    "eslint": "8.28.0",
+    "@typescript-eslint/eslint-plugin": "5.45.0",
+    "@typescript-eslint/parser": "5.45.0",
+    "eslint": "8.29.0",
     "eslint-config-prettier": "8.5.0",
     "eslint-plugin-import": "2.26.0",
-    "eslint-plugin-jest": "27.1.5",
+    "eslint-plugin-jest": "27.1.6",
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.31.11",
     "eslint-plugin-react-hooks": "4.6.0",
