@@ -196,25 +196,10 @@ class PortabilityRequestManagerTestCase(TestCase):
 class PortabilityRequestStateTestCase(TestCase):
     """Test our intentions about the PortabilityRequestState enum."""
 
-    def test_get_state_display(self):
-        """The get_state_display method should return the expected value."""
-        self.assertEqual(
-            PortabilityRequestState.get_state_display("pending"),
-            "pending",  # display/translated value
-        )
-        self.assertEqual(
-            PortabilityRequestState.get_state_display("accepted"),
-            "accepted",  # display/translated value
-        )
-        self.assertEqual(
-            PortabilityRequestState.get_state_display("rejected"),
-            "rejected",  # display/translated value
-        )
-
-    def test_get_choices(self):
+    def test_choices(self):
         """The get_choices method should return the expected value."""
         self.assertListEqual(
-            PortabilityRequestState.get_choices(),
+            PortabilityRequestState.choices,
             [
                 # (Enum value, display/translated value)
                 ("pending", "pending"),
