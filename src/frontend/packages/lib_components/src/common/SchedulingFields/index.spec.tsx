@@ -111,7 +111,7 @@ describe('<SchedulingFields />', () => {
     expect(onEstimatedDurationChange).toHaveBeenCalledWith(null);
   });
 
-  it('shows error when setting a past start date', () => {
+  it('does not allow to set a date outside bounded range', () => {
     const onStartingAtChange = jest.fn();
     const onEstimatedDurationChange = jest.fn();
 
@@ -126,33 +126,11 @@ describe('<SchedulingFields />', () => {
 
     const startingAtPast = DateTime.local().minus({ days: 1 });
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+    expect(inputStartingAtDate).toHaveValue('');
     fireEvent.change(inputStartingAtDate, {
       target: { value: startingAtPast.toFormat('yyyy/MM/dd') },
     });
 
-    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
-    fireEvent.change(inputStartingAtTime, {
-      target: { value: startingAtPast.toLocaleString(DateTime.TIME_24_SIMPLE) },
-    });
-    expect(onStartingAtChange).not.toHaveBeenCalled();
-    expect(
-      screen.getByText(
-        `${startingAtPast.toLocaleString(
-          DateTime.DATETIME_MED,
-        )} is not valid: Starting date and time should be set in the future.`,
-      ),
-    ).toBeInTheDocument();
-
-    const startingAtFuture = DateTime.local().plus({ days: 1 });
-    fireEvent.change(inputStartingAtDate, {
-      target: { value: startingAtFuture.toFormat('yyyy/MM/dd') },
-    });
-    expect(
-      screen.queryByText(
-        `${startingAtPast.toLocaleString(
-          DateTime.DATETIME_MED,
-        )} is not valid: Starting date and time should be set in the future.`,
-      ),
-    ).not.toBeInTheDocument();
+    expect(inputStartingAtDate).toHaveValue('');
   });
 });
