@@ -12,6 +12,7 @@ from factory.django import DjangoModelFactory
 
 from marsha.core import models
 from marsha.core.defaults import ENDED, IDLE, LIVE_TYPE_CHOICES, PENDING, RAW
+from marsha.core.models import PortabilityRequestState
 
 
 # usage of format function here is wanted in this file
@@ -294,9 +295,7 @@ class PortabilityRequestFactory(DjangoModelFactory):
     )
     from_lti_user_id = factory.Faker("uuid4")
 
-    state = factory.fuzzy.FuzzyChoice(
-        [state[0] for state in models.PortabilityRequestState.get_choices()]
-    )
+    state = factory.fuzzy.FuzzyChoice(PortabilityRequestState.values)
 
     class Meta:  # noqa
         model = models.PortabilityRequest
@@ -318,8 +317,8 @@ class NotPendingPortabilityRequestFactory(PortabilityRequestFactory):
 
     state = factory.fuzzy.FuzzyChoice(
         [
-            state[0]
-            for state in models.PortabilityRequestState.get_choices()
-            if state[0] != models.PortabilityRequestState.PENDING.value
+            state
+            for state in models.PortabilityRequestState.values
+            if state != models.PortabilityRequestState.PENDING.value
         ]
     )

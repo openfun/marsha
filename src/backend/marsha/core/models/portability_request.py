@@ -1,5 +1,4 @@
 """This module holds the model for portability requests."""
-from enum import Enum, unique
 from functools import reduce
 from operator import or_
 
@@ -15,30 +14,12 @@ from . import ADMINISTRATOR, ConsumerSite, Playlist, User
 from .base import BaseModel
 
 
-@unique
-class PortabilityRequestState(Enum):
+class PortabilityRequestState(models.TextChoices):
     """The state of the portability request."""
 
-    PENDING = "pending"
-    ACCEPTED = "accepted"
-    REJECTED = "rejected"
-
-    @classmethod
-    def get_state_display(cls, state):
-        """Get the display name for the portability request state."""
-        return {
-            cls.PENDING.value: pgettext_lazy("portability request", "pending"),
-            cls.ACCEPTED.value: pgettext_lazy("portability request", "accepted"),
-            cls.REJECTED.value: pgettext_lazy("portability request", "rejected"),
-        }[state]
-
-    @classmethod
-    def get_choices(cls):
-        """Get the choices for the portability request state (for Django admin)."""
-        return [
-            (state.value, cls.get_state_display(state.value))
-            for state in cls.__members__.values()
-        ]
+    PENDING = "pending", pgettext_lazy("portability request", "pending")
+    ACCEPTED = "accepted", pgettext_lazy("portability request", "accepted")
+    REJECTED = "rejected", pgettext_lazy("portability request", "rejected")
 
 
 class PortabilityRequestQueryset(SafeDeleteQueryset):
@@ -202,7 +183,7 @@ class PortabilityRequest(BaseModel):
         max_length=20,
         verbose_name=_("request state"),
         help_text=_("state of the request"),
-        choices=PortabilityRequestState.get_choices(),
+        choices=PortabilityRequestState.choices,
     )
     updated_by_user = models.ForeignKey(
         to=User,
