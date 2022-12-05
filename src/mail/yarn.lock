@@ -9,6 +9,17 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
+"@html-to/text-cli@0.5.1":
+  version "0.5.1"
+  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.1.tgz#711dc58509b73daea7bddbb1888d2323eb75f6f3"
+  integrity sha512-HPFkMUxJgCJW14clGQGAKuxK3nZdHl3kCo73CI0gXaJQ8BwkINPkf9XnSp57R+TgfBnE1H4ONdur+Bd33EsEnA==
+  dependencies:
+    "@selderee/plugin-htmlparser2" "^0.10.0"
+    aspargvs "^0.6.0"
+    deepmerge "^4.2.2"
+    htmlparser2 "^8.0.1"
+    selderee "^0.10.0"
+
 "@selderee/plugin-htmlparser2@^0.10.0":
   version "0.10.0"
   resolved "https://registry.yarnpkg.com/@selderee/plugin-htmlparser2/-/plugin-htmlparser2-0.10.0.tgz#8a304d18df907e086f3cfc71ea0ced52d6524430"
@@ -46,6 +57,13 @@ anymatch@~3.1.2:
   dependencies:
     normalize-path "^3.0.0"
     picomatch "^2.0.4"
+
+aspargvs@^0.6.0:
+  version "0.6.0"
+  resolved "https://registry.yarnpkg.com/aspargvs/-/aspargvs-0.6.0.tgz#15991c35425b044cb99868b6b3cfa7e051a28424"
+  integrity sha512-yUrWCd1hkK5UtDOne1gM3O+FoTFGQ+BVlSd4G7FczBz8+JaFn1uzvQzROxwp9hmlhIUtwSwyRuV9mHgd/WbXxg==
+  dependencies:
+    peberminta "^0.8.0"
 
 balanced-match@^1.0.0:
   version "1.0.2"
@@ -361,16 +379,6 @@ html-minifier@^4.0.0:
     param-case "^2.1.1"
     relateurl "^0.2.7"
     uglify-js "^3.5.1"
-
-html-to-text@9.0.0:
-  version "9.0.0"
-  resolved "https://registry.yarnpkg.com/html-to-text/-/html-to-text-9.0.0.tgz#9ee91686373a07a40fd4e933d7d4d60b48d65f17"
-  integrity sha512-nKlrWW/7/9ClpXHOVWHg9FYKc6QXfBeC9XVZQbE3eRC5sqTsN91LvwI/SZMz2j2WG4Ci9FfWjoCZ30c8cErt0Q==
-  dependencies:
-    "@selderee/plugin-htmlparser2" "^0.10.0"
-    deepmerge "^4.2.2"
-    htmlparser2 "^8.0.1"
-    selderee "^0.10.0"
 
 htmlparser2@^4.0.0, htmlparser2@^4.1.0:
   version "4.1.0"
