@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
+import { render } from 'lib-tests';
 import React from 'react';
-
-import render from 'utils/tests/render';
 
 import { DashedBoxCustom } from './index';
 
@@ -16,7 +15,8 @@ describe('<DashedBoxCustom />', () => {
         <GenericComponent1 />
       </DashedBoxCustom>,
     );
-    screen.getByText('generic component 1');
+
+    expect(screen.getByText('generic component 1')).toBeInTheDocument();
   });
 
   it('renders DashedBoxCustom with 3 children', () => {
@@ -27,8 +27,9 @@ describe('<DashedBoxCustom />', () => {
         <GenericComponent3 />
       </DashedBoxCustom>,
     );
-    screen.getByText('generic component 1');
-    screen.getByText('generic component 2');
-    screen.getByText('generic component 3');
+
+    expect(screen.getByText('generic component 1')).toBeInTheDocument();
+    expect(screen.getByText('generic component 2')).toBeInTheDocument();
+    expect(screen.getByText('generic component 3')).toBeInTheDocument();
   });
 });
