@@ -60,3 +60,4 @@ export * from './Headings';
 export * from './UploadableObjectProgress';
 export * from './Styled';
 export * from './graphicals';
+export * from './CopyClipboard';

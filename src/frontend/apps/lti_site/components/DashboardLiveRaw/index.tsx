@@ -1,9 +1,8 @@
-import ClipboardJS from 'clipboard';
 import { Box, Heading, Paragraph } from 'grommet';
-import React, { useEffect } from 'react';
+import { CopyClipboard } from 'lib-components';
+import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import ReactTooltip from 'react-tooltip';
-import styled from 'styled-components';
 
 import { liveState, Video } from 'lib-components';
 
@@ -44,36 +43,12 @@ const messages = defineMessages({
   },
 });
 
-const IconBox = styled.span`
-  font-size: 18px;
-`;
-
-const CopyButton = styled.button`
-  border: none;
-  cursor: pointer;
-`;
-
 export interface DashboardLiveRawProps {
   video: Video;
 }
 
 const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
   const intl = useIntl();
-
-  useEffect(() => {
-    const clipboard = new ClipboardJS('.copy');
-    clipboard.on('success', (event) => {
-      setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
-
-      event.clearSelection();
-    });
-
-    clipboard.on('error', (event) => {
-      ReactTooltip.hide(event.trigger);
-    });
-
-    return () => clipboard.destroy();
-  }, []);
 
   if (!video.live_state || video.live_state === liveState.IDLE) {
     return (
@@ -96,30 +71,46 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
             </Heading>
             <ul>
               <li>
-                <FormattedMessage {...messages.url} />
-                :&nbsp;
-                <span id={`url-${matches[2]}`}>{matches[1]}</span>
-                <CopyButton
-                  data-tip
-                  aria-label={`copy url ${matches[1]}`}
-                  className="copy"
-                  data-clipboard-target={`#url-${matches[2]}`}
-                >
-                  <IconBox className="icon-copy" />
-                </CopyButton>
+                <CopyClipboard
+                  text={
+                    <Fragment>
+                      <FormattedMessage {...messages.url} />
+                      :&nbsp;
+                      <span id={`url-${matches[2]}`}>{matches[1]}</span>
+                    </Fragment>
+                  }
+                  textToCopy={matches[1]}
+                  title={`copy url ${matches[1]}`}
+                  onSuccess={(event) => {
+                    setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
+
+                    event.clearSelection();
+                  }}
+                  onError={(event) => {
+                    ReactTooltip.hide(event.trigger);
+                  }}
+                />
               </li>
               <li>
-                <FormattedMessage {...messages.streamKey} />
-                :&nbsp;
-                <span id={`key-${matches[2]}`}>{matches[2]}</span>
-                <CopyButton
-                  data-tip
-                  aria-label={`copy key ${matches[2]}`}
-                  className="copy"
-                  data-clipboard-target={`#key-${matches[2]}`}
-                >
-                  <IconBox className="icon-copy" />
-                </CopyButton>
+                <CopyClipboard
+                  text={
+                    <Fragment>
+                      <FormattedMessage {...messages.streamKey} />
+                      :&nbsp;
+                      <span id={`key-${matches[2]}`}>{matches[2]}</span>
+                    </Fragment>
+                  }
+                  textToCopy={matches[2]}
+                  title={`copy key ${matches[2]}`}
+                  onSuccess={(event) => {
+                    setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
+
+                    event.clearSelection();
+                  }}
+                  onError={(event) => {
+                    ReactTooltip.hide(event.trigger);
+                  }}
+                />
               </li>
             </ul>
           </Box>

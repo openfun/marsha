@@ -1,4 +1,3 @@
-import ClipboardJS from 'clipboard';
 import {
   Box,
   Button,
@@ -9,12 +8,18 @@ import {
   Text,
   TextInput,
 } from 'grommet';
-import { AddCircle, Copy, Trash } from 'grommet-icons';
-import React, { useEffect, useState } from 'react';
+import { AddCircle, Trash } from 'grommet-icons';
+import React, { useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { ErrorMessage, Document, Playlist, Video } from 'lib-components';
+import {
+  ErrorMessage,
+  Document,
+  Playlist,
+  Video,
+  CopyClipboard,
+} from 'lib-components';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
 
 const messages = defineMessages({
@@ -157,19 +162,6 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
     object.playlist.id,
   );
 
-  useEffect(() => {
-    const clipboard = new ClipboardJS('.copy');
-    clipboard.on('success', (event) => {
-      toast.success(intl.formatMessage(messages.copied, { text: event.text }));
-    });
-
-    clipboard.on('error', (event) => {
-      toast.error(event.text);
-    });
-
-    return () => clipboard.destroy();
-  }, []);
-
   const mutation = useUpdatePlaylist(object.playlist.id, {
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.updatePlaylistSuccess));
@@ -220,17 +212,25 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
         <React.Fragment>
           <Box align="center" direction="row" pad={{ top: 'small' }}>
             <Text role="heading" margin="small">
-              <FormattedMessage
-                {...messages.playlistTitle}
-                values={{ title: playlist?.title, id: playlist?.id }}
-              />
-              <Button
-                aria-label={intl.formatMessage(messages.copy, {
+              <CopyClipboard
+                text={
+                  <FormattedMessage
+                    {...messages.playlistTitle}
+                    values={{ title: playlist?.title, id: playlist?.id }}
+                  />
+                }
+                textToCopy={playlist?.id}
+                title={intl.formatMessage(messages.copy, {
                   text: playlist?.id,
                 })}
-                data-clipboard-text={playlist?.id}
-                icon={<Copy />}
-                className="copy"
+                onSuccess={(event) => {
+                  toast.success(
+                    intl.formatMessage(messages.copied, { text: event.text }),
+                  );
+                }}
+                onError={(event) => {
+                  toast.error(event.text);
+                }}
               />
             </Text>
           </Box>
