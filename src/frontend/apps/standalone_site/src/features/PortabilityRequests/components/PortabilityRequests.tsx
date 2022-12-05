@@ -5,7 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { SortableTable } from 'components/SortableTable';
+import { commonSortMessages, SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 
 import { usePortabilityRequests } from '../api/usePortabilityRequests';
@@ -41,16 +41,6 @@ const messages = defineMessages({
     description: 'Retry button title',
     id: 'features.PortabilityRequests.retry',
   },
-  sortByAscendingCreationDate: {
-    defaultMessage: 'Creation date',
-    description: 'Sort portability requests by ascending creation date',
-    id: 'features.PortabilityRequests.sortByAscendingCreationDate',
-  },
-  sortByDescendingCreationDate: {
-    defaultMessage: 'Creation date (reversed)',
-    description: 'Sort portability requests by descending creation date',
-    id: 'features.PortabilityRequests.sortByDescendingCreationDate',
-  },
 });
 
 interface PortabilityRequestsProps {
@@ -67,11 +57,13 @@ export const PortabilityRequests = ({
   const sorts = [
     {
       id: '-created_on',
-      label: intl.formatMessage(messages.sortByDescendingCreationDate),
+      label: intl.formatMessage(
+        commonSortMessages.sortByDescendingCreationDate,
+      ),
     },
     {
       id: 'created_on',
-      label: intl.formatMessage(messages.sortByAscendingCreationDate),
+      label: intl.formatMessage(commonSortMessages.sortByAscendingCreationDate),
     },
   ];
 
