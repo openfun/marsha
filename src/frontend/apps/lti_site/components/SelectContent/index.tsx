@@ -1,6 +1,4 @@
-import ClipboardJS from 'clipboard';
-import { Box, Button, Text } from 'grommet';
-import { Copy } from 'grommet-icons';
+import { Box } from 'grommet';
 import React, { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -11,6 +9,7 @@ import {
   Live,
   Playlist,
   Video,
+  CopyClipboard,
 } from 'lib-components';
 
 import { SelectContentTabs } from './SelectContentTabs';
@@ -64,34 +63,27 @@ export const SelectContent = ({
     }
   }, [contentItemsValue]);
 
-  useEffect(() => {
-    const clipboard = new ClipboardJS('.copy');
-    clipboard.on('success', (event) => {
-      toast.success(intl.formatMessage(messages.copied, { text: event.text }));
-    });
-
-    clipboard.on('error', (event) => {
-      toast.error(event.text);
-    });
-
-    return () => clipboard.destroy();
-  }, []);
-
   return (
     <Box pad="medium">
       <Box justify="center" align="center" direction="row">
-        <Text role="heading" margin="small">
-          <FormattedMessage
-            {...messages.playlistTitle}
-            values={{ title: playlist?.title, id: playlist?.id }}
-          />
-          <Button
-            aria-label={`copy key ${playlist?.id}`}
-            data-clipboard-text={playlist?.id}
-            icon={<Copy />}
-            className="copy"
-          />
-        </Text>
+        <CopyClipboard
+          text={
+            <FormattedMessage
+              {...messages.playlistTitle}
+              values={{ title: playlist?.title, id: playlist?.id }}
+            />
+          }
+          textToCopy={playlist?.id}
+          title={`copy key ${playlist?.id}`}
+          onSuccess={(event) => {
+            toast.success(
+              intl.formatMessage(messages.copied, { text: event.text }),
+            );
+          }}
+          onError={(event) => {
+            toast.error(event.text);
+          }}
+        />
       </Box>
 
       <form

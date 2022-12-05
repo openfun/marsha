@@ -6,8 +6,6 @@ import render from 'utils/tests/render';
 
 import DashboardLiveRaw from '.';
 
-jest.mock('clipboard');
-
 describe('<DashboardLiveRaw>', () => {
   it('renders advice to start the stream', () => {
     const video = videoMockFactory({

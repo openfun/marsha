@@ -1,7 +1,6 @@
-import ClipboardJS from 'clipboard';
-import { Box, Button, Collapsible, Text } from 'grommet';
-import { CopySVG, report, DashedBoxCustom } from 'lib-components';
-import React, { useEffect, useState } from 'react';
+import { Box, Collapsible } from 'grommet';
+import { report, CopyClipboard } from 'lib-components';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
@@ -83,25 +82,6 @@ export const VisibilityAndInteraction = () => {
     });
   };
 
-  useEffect(() => {
-    if (video.is_public) {
-      const clipboard = new ClipboardJS('.copy');
-      clipboard.on('success', () => {
-        toast(intl.formatMessage(messages.copySuccess), {
-          icon: '📋',
-          position: 'bottom-center',
-        });
-      });
-
-      clipboard.on('error', (event) => {
-        toast.error(event.text, {
-          position: 'bottom-center',
-        });
-      });
-      return () => clipboard.destroy();
-    }
-  }, [video.is_public]);
-
   const publicVideoUrl = window.location.origin
     .concat('/videos/')
     .concat(video.id);
@@ -119,27 +99,22 @@ export const VisibilityAndInteraction = () => {
           label={intl.formatMessage(messages.publiclyAvailableLabel)}
         />
         <Collapsible open={visibilityChecked}>
-          <DashedBoxCustom>
-            <Text
-              color={video.is_public ? 'blue-active' : '#b4cff2'}
-              size="0.875rem"
-              style={{ fontFamily: 'Roboto-Medium' }}
-              truncate
-            >
-              {publicVideoUrl}
-            </Text>
-
-            <Button
-              a11yTitle={intl.formatMessage(messages.copyButtonTitle)}
-              className={'copy'}
-              data-clipboard-text={publicVideoUrl}
-              plain
-              style={{ display: 'flex', padding: 0 }}
-              title={intl.formatMessage(messages.copyButtonTitle)}
-            >
-              <CopySVG iconColor="blue-active" width="20px" height="25px" />
-            </Button>
-          </DashedBoxCustom>
+          <CopyClipboard
+            isActive={video.is_public}
+            text={publicVideoUrl}
+            title={intl.formatMessage(messages.copyButtonTitle)}
+            onSuccess={() => {
+              toast(intl.formatMessage(messages.copySuccess), {
+                icon: '📋',
+                position: 'bottom-center',
+              });
+            }}
+            onError={(event) => {
+              toast.error(event.text, {
+                position: 'bottom-center',
+              });
+            }}
+          />
         </Collapsible>
       </Box>
     </FoldableItem>
