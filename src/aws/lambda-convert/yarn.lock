@@ -1276,10 +1276,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@29.2.3":
-  version "29.2.3"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.2.3.tgz#f5fd88e43e5a9e4221ca361e23790d48fcf0a211"
-  integrity sha512-6XwoEbmatfyoCjWRX7z0fKMmgYKe9+/HrviJ5k0X/tjJWHGAezZOfYaxqQKuzG/TvQyr+ktjm4jgbk0s4/oF2w==
+"@types/jest@29.2.4":
+  version "29.2.4"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.2.4.tgz#9c155c4b81c9570dbd183eb8604aa0ae80ba5a5b"
+  integrity sha512-PipFB04k2qTRPePduVLTRiPzQfvMeLwUN3Z21hsAKaB/W9IIzgB2pizCL466ftJlcyZqnHoC9ZHpxLGl3fS86A==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
@@ -1417,10 +1417,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-sdk@2.1258.0:
-  version "2.1258.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1258.0.tgz#35cadaef14e2cebe0ed13029d2d9f84bb3cf2e8b"
-  integrity sha512-siqNFXlhJZVN1BizPZebJViFXtTUPgcA+yLfHKl2eC4Ied7kE7spOjZmAzpuiGUTzFagk1oWCaJ1Hit4llIoGg==
+aws-sdk@2.1267.0:
+  version "2.1267.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1267.0.tgz#8f45c7bc7efb89a757526d993c5f77a2e7208676"
+  integrity sha512-ANTtRay26WwNRbYs6eZYN71b3DURNfWaq3AD6BtVNa8fVvnSLn+NNINw2+vLRjDLPZXMAQVHm0qH/TmyBvtjRA==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3135,10 +3135,10 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs=
 
-node-poppler@6.0.3:
-  version "6.0.3"
-  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-6.0.3.tgz#c054be1396e14c0ba4ec29c0685a7e1aa98e2ccd"
-  integrity sha512-cI6KB4qomfUtWHSALNgmf3hTvi9ibYRVBbSaRkP0keic5yI4Wlf1ivtc2Bd51AMbPcchJfh/i5LQeNcKWthU8w==
+node-poppler@6.1.0:
+  version "6.1.0"
+  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-6.1.0.tgz#ad13ab8a639de5fb2761f557a65e92c676d581a9"
+  integrity sha512-Io1aFa0f6gL5dQFsqAj4k4bPEaSqp9S5I8lw71ffTYBdD09xwTwGU+XpOmzPX+R9O6kpjh9/XP5mU1YtrLAPMQ==
   dependencies:
     camelcase "^6.3.0"
     upath "^2.0.1"
@@ -3342,10 +3342,10 @@ pngjs@^3.0.0, pngjs@^3.3.3:
   resolved "https://registry.yarnpkg.com/pngjs/-/pngjs-3.4.0.tgz#99ca7d725965fb655814eaf65f38f12bbdbf555f"
   integrity sha512-NCrCHhWmnQklfH4MtJMRjZ2a8c80qXeMlQMv2uVp9ISJMTt562SbGd6n2oq0PaPgKm7Z6pL9E2UlLIhC+SHL3w==
 
-prettier@2.7.1:
-  version "2.7.1"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.7.1.tgz#e235806850d057f97bb08368a4f7d899f7760c64"
-  integrity sha512-ujppO+MkdPqoVINuDFDRLClm7D78qbDt0/NR+wp5FqEZOoTNAjPHWj17QRhu7geIHJfcNhRk1XVQmF8Bp3ye+g==
+prettier@2.8.0:
+  version "2.8.0"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.0.tgz#c7df58393c9ba77d6fba3921ae01faf994fb9dc9"
+  integrity sha512-9Lmg8hTFZKG0Asr/kW9Bp8tJjRVluO8EJQVfY2T7FMw9T5jy4I/Uvx0Rca/XWf50QQ1/SS48+6IJWnrb+2yemA==
 
 pretty-format@^29.0.0, pretty-format@^29.0.2:
   version "29.0.2"

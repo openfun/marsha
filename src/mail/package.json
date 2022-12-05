@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "html-to-text": "8.2.1",
+    "html-to-text": "9.0.0",
     "mjml": "4.13.0"
   },
   "scripts": {
