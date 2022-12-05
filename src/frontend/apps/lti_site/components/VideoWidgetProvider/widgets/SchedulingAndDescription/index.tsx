@@ -1,11 +1,11 @@
 import { DateTime, Duration } from 'luxon';
 import { Box, Grommet, Text, ThemeType } from 'grommet';
 import { deepMerge } from 'grommet/utils';
+import { DashedBoxCustom } from 'lib-components';
 import React, { Fragment, useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashedBoxCustom } from 'components/graphicals/DashedBoxCustom';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { TextAreaInput } from 'components/graphicals/TextAreaInput';
 import { SchedulingFields, liveState, Video, report } from 'lib-components';

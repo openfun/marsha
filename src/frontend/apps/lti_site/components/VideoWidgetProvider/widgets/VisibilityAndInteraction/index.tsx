@@ -1,11 +1,10 @@
 import ClipboardJS from 'clipboard';
 import { Box, Button, Collapsible, Text } from 'grommet';
-import { CopySVG, report } from 'lib-components';
+import { CopySVG, report, DashedBoxCustom } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
-import { DashedBoxCustom } from 'components/graphicals/DashedBoxCustom';
 import { FoldableItem } from 'components/graphicals/FoldableItem';
 import { ToggleInput } from 'components/graphicals/ToggleInput';
 import { useUpdateVideo } from 'data/queries';
