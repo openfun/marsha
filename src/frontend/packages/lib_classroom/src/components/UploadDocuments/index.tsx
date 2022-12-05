@@ -191,7 +191,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       addUpload(modelName.CLASSROOM_DOCUMENTS, response.id, file);
       refreshClassroomDocuments();
     });
-  }, [filesToUpload, addUpload, refreshClassroomDocuments]);
+  }, [addUpload, classroomId, filesToUpload, refreshClassroomDocuments]);
 
   useEffect(() => {
     if (uploadsSucceeded.length && uploading) {

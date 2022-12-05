@@ -278,7 +278,11 @@ describe('<SortableTable />', () => {
       </SortableTable>,
     );
 
-    screen.getByRole('radio', { name: 'Select line 1' });
-    screen.getByRole('radio', { name: 'Select line 2' });
+    expect(
+      screen.getByRole('radio', { name: 'Select line 1' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('radio', { name: 'Select line 2' }),
+    ).toBeInTheDocument();
   });
 });
