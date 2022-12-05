@@ -10,6 +10,7 @@ import {
 import { Maybe } from 'lib-common';
 import { Spinner } from 'lib-components';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
+import { defineMessages } from 'react-intl';
 
 interface SortByBase {
   label: string;
@@ -52,6 +53,29 @@ interface Paginable<ItemType> {
   pageSize?: number;
   onPageChange: (newPage: number) => ItemType[] | Promise<ItemType[]>;
 }
+
+export const commonSortMessages = defineMessages({
+  sortByAscendingCreationDate: {
+    defaultMessage: 'Creation date',
+    description: 'Sort table objects by ascending creation date',
+    id: 'components.SortableTable.sortByAscendingCreationDate',
+  },
+  sortByDescendingCreationDate: {
+    defaultMessage: 'Creation date (reversed)',
+    description: 'Sort table objects by descending creation date',
+    id: 'components.SortableTable.sortByDescendingCreationDate',
+  },
+  sortByAscendingTitle: {
+    defaultMessage: 'Title',
+    description: 'Sort table objects by ascending title.',
+    id: 'components.SortableTable.sortByAscendingTitle',
+  },
+  sortByDescendingTitle: {
+    defaultMessage: 'Title (reversed)',
+    description: 'Sort table objects by descending title.',
+    id: 'components.SortableTable.sortByDescendingTitle',
+  },
+});
 
 type SortableTableProps<
   ItemType,
