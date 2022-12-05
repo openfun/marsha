@@ -7,7 +7,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
 import Modal from 'components/Modal';
-import { SortableTable } from 'components/SortableTable';
+import { commonSortMessages, SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { CREATE_PLAYLIST_MODALE, routes } from 'routes';
 
@@ -47,21 +47,6 @@ const messages = defineMessages({
     description: 'Retry button title',
     id: 'features.Playlist.retry',
   },
-  sortByCreateOn: {
-    defaultMessage: 'Creation date',
-    description: 'Button title to sort by creation date.',
-    id: 'features.Playlist.sortByCreateOn',
-  },
-  sortByTitle: {
-    defaultMessage: 'Title',
-    description: 'Button title to sort by title.',
-    id: 'features.Playlist.sortByTitle',
-  },
-  reversedSort: {
-    defaultMessage: '(reversed)',
-    description: 'Indicator to show current selection is reversed.',
-    id: 'features.Playlist.reversedSort',
-  },
 });
 
 export const PlaylistPage = () => {
@@ -70,23 +55,21 @@ export const PlaylistPage = () => {
 
   const sorts = [
     {
-      label: intl.formatMessage(messages.sortByCreateOn),
+      label: intl.formatMessage(commonSortMessages.sortByAscendingCreationDate),
       value: PlaylistOrderType.BY_CREATED_ON,
     },
     {
-      label: `${intl.formatMessage(
-        messages.sortByCreateOn,
-      )} ${intl.formatMessage(messages.reversedSort)}`,
+      label: intl.formatMessage(
+        commonSortMessages.sortByDescendingCreationDate,
+      ),
       value: PlaylistOrderType.BY_CREATED_ON_REVERSED,
     },
     {
-      label: intl.formatMessage(messages.sortByTitle),
+      label: intl.formatMessage(commonSortMessages.sortByAscendingTitle),
       value: PlaylistOrderType.BY_TITLE,
     },
     {
-      label: `${intl.formatMessage(messages.sortByTitle)} ${intl.formatMessage(
-        messages.reversedSort,
-      )}`,
+      label: intl.formatMessage(commonSortMessages.sortByDescendingTitle),
       value: PlaylistOrderType.BY_TITLE_REVERSED,
     },
   ];
