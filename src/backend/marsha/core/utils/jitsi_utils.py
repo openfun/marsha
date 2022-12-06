@@ -10,6 +10,11 @@ import jwt
 def create_payload(room, moderator=True):
     """Create the payload so that it contains each information jitsi requires"""
     token_payload = {
+        "context": {
+            "user": {
+                "affiliation": "owner" if moderator else "member",
+            },
+        },
         "exp": timezone.now()
         + timedelta(seconds=settings.JITSI_JWT_TOKEN_EXPIRATION_SECONDS),
         "iat": timezone.now(),
