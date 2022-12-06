@@ -45,6 +45,12 @@ class InitLiveStateSerializer(serializers.Serializer):
     type = serializers.ChoiceField(LIVE_TYPE_CHOICES)
 
 
+class JitsiModeratorSerializer(serializers.Serializer):
+    """A serializer to validate data submitted on the jitsi info API endpoint."""
+
+    moderator = serializers.BooleanField(required=False, default=False)
+
+
 class VideoBaseSerializer(serializers.ModelSerializer):
     """Base Serializer to factorize common Video attributes."""
 
@@ -360,19 +366,13 @@ class VideoSerializer(VideoBaseSerializer):
             )
 
         if obj.live_type == JITSI:
-            jitsi = {
-                "external_api_url": settings.JITSI_EXTERNAL_API_URL,
-                "domain": settings.JITSI_DOMAIN,
-                "config_overwrite": settings.JITSI_CONFIG_OVERWRITE,
-                "interface_config_overwrite": settings.JITSI_INTERFACE_CONFIG_OVERWRITE,
-                "room_name": str(obj.pk),
-            }
-            if settings.JITSI_JWT_APP_ID and settings.JITSI_JWT_APP_SECRET:
-                jitsi["token"] = jitsi_utils.generate_token(
-                    str(obj.pk), self.context.get("is_admin")
-                )
-
-            live_info.update({"jitsi": jitsi})
+            live_info.update(
+                {
+                    "jitsi": jitsi_utils.generate_jitsi_info(
+                        obj, self.context.get("is_admin")
+                    )
+                }
+            )
 
         return live_info
 

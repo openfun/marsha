@@ -35,7 +35,7 @@ from ..services.video_recording import (
     start_recording,
     stop_recording,
 )
-from ..utils import time_utils
+from ..utils import jitsi_utils, time_utils
 from ..utils.api_utils import validate_signature
 from ..utils.medialive_utils import (
     ManifestMissingException,
@@ -70,10 +70,10 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["partial_update", "update"]:
+        if self.action in ["partial_update", "update", "jitsi_info"]:
             permission_classes = [
-                permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-                | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+                permissions.IsTokenResourceRouteObject
+                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 | permissions.IsVideoPlaylistAdmin
                 | permissions.IsVideoOrganizationAdmin
             ]
@@ -1051,3 +1051,34 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         data = stat_backend(video, **settings.STAT_BACKEND_SETTINGS)
 
         return Response(data=data, content_type="application/json")
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="jitsi",
+    )
+    # pylint: disable=unused-argument
+    def jitsi_info(self, request, pk=None):
+        """
+        Generate a dictionnary containing all info needed to connect to jisti.
+        This endpoint is only fetchable for an admin or instructor
+        If the moderator querystring is present, it will be used, otherwise False
+        is used in the token for the moderator parameter.
+        """
+
+        video = self.get_object()
+
+        if not video.is_live:
+            return Response({"detail": "not a live video"}, status=400)
+
+        if not video.live_type == JITSI:
+            return Response({"detail": "not a jitsi live"}, status=400)
+
+        serializer = serializers.JitsiModeratorSerializer(data=request.query_params)
+        serializer.is_valid(raise_exception=True)
+
+        jitsi_info = jitsi_utils.generate_jitsi_info(
+            video, serializer.validated_data["moderator"]
+        )
+
+        return Response(jitsi_info)

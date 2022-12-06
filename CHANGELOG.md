@@ -23,6 +23,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Enable recording when creating a BBB room instance
 - Mutualize Eslint configuration
 - Shareable classroom link
+- Endpoint fetching jitsi info for a specific video
+  (/api/videos/{video_id}/jitsi/)
 
 ### Changed
 
