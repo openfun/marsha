@@ -4549,11 +4549,12 @@ class VideoAPITest(TestCase):
                         "interface_config_overwrite": {},
                         "room_name": str(video.pk),
                         "token": (
-                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9."
-                            "eyJleHAiOjE2NTE2MjMwMDAsImlhdCI6MTY1MTYyMjQwMCwibW9kZXJhdG9yIjp0cnVl"
-                            "LCJhdWQiOiJqaXRzaSIsImlzcyI6ImppdHNpX2FwcF9pZCIsInN1YiI6Im1lZXQuaml0"
-                            "LnNpIiwicm9vbSI6IjI3YTIzZjUyLTMzNzktNDZhMi05NGZhLTY5N2I1OWNmZTNjNyJ9"
-                            ".XHsCRoAAGC4jp-hj80LGE8tNOi3V3efgPcqcXuBKHJI"
+                            "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjb250ZXh0Ijp7InVzZXIiOnsiYW"
+                            "ZmaWxpYXRpb24iOiJvd25lciJ9fSwiZXhwIjoxNjUxNjIzMDAwLCJpYXQiOjE2NTE2M"
+                            "jI0MDAsIm1vZGVyYXRvciI6dHJ1ZSwiYXVkIjoiaml0c2kiLCJpc3MiOiJqaXRzaV9h"
+                            "cHBfaWQiLCJzdWIiOiJtZWV0LmppdC5zaSIsInJvb20iOiIyN2EyM2Y1Mi0zMzc5LTQ"
+                            "2YTItOTRmYS02OTdiNTljZmUzYzcifQ.JxHCJ4VKfvtEliTyNnR0sj2LGLOUQAcEnmi"
+                            "q-vi_MDA"
                         ),
                     }
                 },

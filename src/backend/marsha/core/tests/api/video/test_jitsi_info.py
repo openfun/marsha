@@ -101,6 +101,12 @@ class VideoJitsiInfoTest(TestCase):
             token, key="secret", options={"verify_signature": False}
         )
         self.assertFalse(decoded_token["moderator"])
+        self.assertEqual(
+            decoded_token["context"]["user"],
+            {
+                "affiliation": "member",
+            },
+        )
 
     @override_settings(JITSI_JWT_APP_ID="marsha")
     @override_settings(JITSI_JWT_APP_SECRET="secret")
@@ -137,6 +143,12 @@ class VideoJitsiInfoTest(TestCase):
             token, key="secret", options={"verify_signature": False}
         )
         self.assertFalse(decoded_token["moderator"])
+        self.assertEqual(
+            decoded_token["context"]["user"],
+            {
+                "affiliation": "member",
+            },
+        )
 
     @override_settings(JITSI_JWT_APP_ID="marsha")
     @override_settings(JITSI_JWT_APP_SECRET="secret")
@@ -173,6 +185,12 @@ class VideoJitsiInfoTest(TestCase):
             token, key="secret", options={"verify_signature": False}
         )
         self.assertTrue(decoded_token["moderator"])
+        self.assertEqual(
+            decoded_token["context"]["user"],
+            {
+                "affiliation": "owner",
+            },
+        )
 
     def test_jitsi_info_playlist_admin(self):
         """
