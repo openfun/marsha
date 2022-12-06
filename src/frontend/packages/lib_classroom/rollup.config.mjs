@@ -6,9 +6,19 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
+import { replaceTscAliasPaths } from 'tsc-alias';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
+
+const pluginImportAbsoluteToRelative = () => ({
+  name: 'tsc-alias',
+  closeBundle() {
+    replaceTscAliasPaths({
+      tsconfigPath: './tsconfig.json',
+    });
+  },
+});
 
 export default {
   input: 'src/index.ts',
@@ -50,6 +60,7 @@ export default {
     /jest/,
     'zustand',
   ],
+
   plugins: [
     external([
       'grommet',
@@ -81,5 +92,6 @@ export default {
       extensions: ['.js', '.jsx', '.ts', '.tsx'],
       exclude: [/node_modules/],
     }),
+    pluginImportAbsoluteToRelative(),
   ],
 };

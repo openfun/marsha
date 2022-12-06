@@ -7,10 +7,20 @@ import resolve from '@rollup/plugin-node-resolve';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'rollup-plugin-dts';
+import { replaceTscAliasPaths } from 'tsc-alias';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
 const tsconfig = require('./tsconfig.json');
+
+const pluginImportAbsoluteToRelative = () => ({
+  name: 'tsc-alias',
+  closeBundle() {
+    replaceTscAliasPaths({
+      tsconfigPath: './tsconfig.json',
+    });
+  },
+});
 
 export default [
   {
@@ -83,6 +93,7 @@ export default [
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
         exclude: [/node_modules/],
       }),
+      pluginImportAbsoluteToRelative(),
     ],
   },
   {
