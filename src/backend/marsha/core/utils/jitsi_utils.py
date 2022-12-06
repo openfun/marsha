@@ -33,3 +33,18 @@ def generate_token(room, moderator):
     )
 
     return token
+
+
+def generate_jitsi_info(video, moderator):
+    """Generate all information needed to connect to a jitsi instance."""
+    jitsi = {
+        "external_api_url": settings.JITSI_EXTERNAL_API_URL,
+        "domain": settings.JITSI_DOMAIN,
+        "config_overwrite": settings.JITSI_CONFIG_OVERWRITE,
+        "interface_config_overwrite": settings.JITSI_INTERFACE_CONFIG_OVERWRITE,
+        "room_name": str(video.pk),
+    }
+    if settings.JITSI_JWT_APP_ID and settings.JITSI_JWT_APP_SECRET:
+        jitsi["token"] = generate_token(str(video.pk), moderator)
+
+    return jitsi
