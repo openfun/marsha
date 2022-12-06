@@ -6,8 +6,8 @@
   "module": "lib/index.es.js",
   "types": "lib/index.d.ts",
   "scripts": {
-    "build": "rollup -c && yarn tsc-alias ",
-    "build:watch": "yarn rollup -c --watch",
+    "build": "rollup -c",
+    "build:watch": "yarn build --watch",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
