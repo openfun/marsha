@@ -31,7 +31,7 @@ describe('<ClassRoomCreateForm />', () => {
   });
 
   test('renders ClassRoomCreateForm', () => {
-    render(<ClassRoomCreateForm />);
+    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
 
     deferred.resolve(playlistsResponse);
 
@@ -48,12 +48,11 @@ describe('<ClassRoomCreateForm />', () => {
   });
 
   test('field mandatory', async () => {
-    render(<ClassRoomCreateForm />);
+    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
 
     deferred.resolve(playlistsResponse);
 
     const button = screen.getByRole('button', { name: /Add Classroom/i });
-    expect(button).toBeDisabled();
 
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
       target: { value: 'my title' },
@@ -116,9 +115,9 @@ describe('<ClassRoomCreateForm />', () => {
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
       body: JSON.stringify({
-        playlist: 'some-playlist-id',
         title: 'my title',
         description: 'my description',
+        playlist: 'some-playlist-id',
       }),
     });
 
@@ -128,7 +127,7 @@ describe('<ClassRoomCreateForm />', () => {
   test('post failed', async () => {
     fetchMock.post('/api/classrooms/', 500);
 
-    render(<ClassRoomCreateForm />);
+    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
 
     deferred.resolve(playlistsResponse);
 
