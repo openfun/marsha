@@ -26,16 +26,18 @@ const StyledLiveVideoInformationBarWrapper = styled(Box)`
 `;
 
 interface LiveStudentLayoutProps {
+  isLive: boolean;
   actionsElement: React.ReactElement;
   additionalContent?: React.ReactElement;
   displayActionsElement: boolean;
   isXmppReady: boolean;
-  liveTitleElement: React.ReactElement;
+  liveTitleElement?: React.ReactElement;
   mainElement: React.ReactElement;
   sideElement?: React.ReactElement;
 }
 
-export const LiveVideoLayout = ({
+export const VideoLayout = ({
+  isLive,
   actionsElement,
   additionalContent,
   displayActionsElement,
@@ -160,7 +162,7 @@ export const LiveVideoLayout = ({
             </Box>
           </Box>
 
-          {isLargeLayout && (
+          {isLargeLayout && isLive && (
             <StyledLiveVideoInformationBarWrapper
               align="center"
               background="white"

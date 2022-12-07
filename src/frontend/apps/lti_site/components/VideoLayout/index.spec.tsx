@@ -8,14 +8,14 @@ import { useLivePanelState } from 'data/stores/useLivePanelState';
 import { imageSnapshot } from 'utils/tests/imageSnapshot';
 import render from 'utils/tests/render';
 
-import { LiveVideoLayout } from '.';
+import { VideoLayout } from './VideoLayout';
 
 const ActionsElement = <p>actions element</p>;
 const LiveTitleElement = <p>live title element</p>;
 const MainCompo = <p>main component</p>;
 const PanelCompo = <p>panel component</p>;
 
-describe('<LiveVideoLayout />', () => {
+describe('<VideoLayout />', () => {
   beforeEach(() => {
     useJwt.setState({
       getDecodedJwt: jest.fn(),
@@ -29,7 +29,8 @@ describe('<LiveVideoLayout />', () => {
 
     render(
       <ResponsiveContext.Provider value="large">
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
@@ -53,7 +54,8 @@ describe('<LiveVideoLayout />', () => {
   it('hides the panel when isPanelOpen is false [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
@@ -76,7 +78,8 @@ describe('<LiveVideoLayout />', () => {
   it('does not render panel when is isPanelOpen is not defined [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
@@ -99,7 +102,8 @@ describe('<LiveVideoLayout />', () => {
   it('does not render panel when sideElement is not defined even if isPanelOpen is true [screenshot]', async () => {
     render(
       <ResponsiveContext.Provider value="large">
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={ActionsElement}
           displayActionsElement={true}
           isXmppReady={true}
@@ -125,7 +129,8 @@ describe('<LiveVideoLayout />', () => {
 
     render(
       <ResponsiveContext.Provider value="large">
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={ActionsElement}
           displayActionsElement={false}
           isXmppReady={true}
@@ -147,7 +152,8 @@ describe('<LiveVideoLayout />', () => {
   it('shows the panel when the open button is clicked', async () => {
     useLivePanelState.setState({ isPanelVisible: false });
     render(
-      <LiveVideoLayout
+      <VideoLayout
+        isLive
         actionsElement={ActionsElement}
         displayActionsElement={false}
         isXmppReady={true}

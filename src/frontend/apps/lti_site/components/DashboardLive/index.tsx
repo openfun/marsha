@@ -15,7 +15,6 @@ import {
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
 import { LiveModale } from 'components/LiveModale';
-import { LiveVideoLayout } from 'components/LiveVideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
 import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
@@ -25,6 +24,7 @@ import { TeacherLiveControlBar } from 'components/TeacherLiveControlBar';
 import { TeacherLiveInfoBar } from 'components/TeacherLiveInfoBar';
 import { TeacherLiveRecordingActions } from 'components/TeacherLiveRecordingActions';
 import { TeacherLiveTypeSwitch } from 'components/TeacherLiveTypeSwitch';
+import { VideoLayout } from 'components/VideoLayout/VideoLayout';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { useJitsiApi } from 'data/stores/useJitsiApi';
 import { LiveFeedbackProvider } from 'data/stores/useLiveFeedback';
@@ -174,7 +174,8 @@ export const DashboardLive = () => {
   return (
     <ConverseInitializer>
       <LiveFeedbackProvider value={false}>
-        <LiveVideoLayout
+        <VideoLayout
+          isLive
           actionsElement={
             <Fragment>
               {isLiveStarted && <TeacherLiveControlBar />}
@@ -250,7 +251,7 @@ export const DashboardLive = () => {
               {modaleConfiguration && <LiveModale {...modaleConfiguration} />}
             </Stack>
           }
-          sideElement={<LiveVideoPanel />}
+          sideElement={<LiveVideoPanel isLive />}
         />
       </LiveFeedbackProvider>
     </ConverseInitializer>

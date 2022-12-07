@@ -8,7 +8,7 @@ import DashboardLiveJitsi from 'components/DashboardLiveJitsi';
 import { FULL_SCREEN_ERROR_ROUTE, useAppConfig } from 'lib-components';
 import { AudioControl } from 'components/JitsiControls/AudioControl';
 import { CameraControl } from 'components/JitsiControls/CameraControl';
-import { LiveVideoLayout } from 'components/LiveVideoLayout';
+import { VideoLayout } from 'components/VideoLayout/VideoLayout';
 import { LiveVideoPanel } from 'components/LiveVideoPanel';
 import { PictureInPictureLayer } from 'components/PictureInPictureLayer';
 import { SharedMediaExplorer } from 'components/SharedMediaExplorer';
@@ -105,7 +105,8 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   }
 
   return (
-    <LiveVideoLayout
+    <VideoLayout
+      isLive
       actionsElement={<StudentLiveControlBar />}
       displayActionsElement={!!live.xmpp}
       isXmppReady={!!live.xmpp}
@@ -156,7 +157,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
           )}
         </Box>
       }
-      sideElement={<LiveVideoPanel />}
+      sideElement={<LiveVideoPanel isLive />}
     />
   );
 };
