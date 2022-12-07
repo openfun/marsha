@@ -137,6 +137,19 @@ const VideoPlayer = ({
     oldTimedTextTracks.current = timedTextTracks;
   }, [timedTextTracks]);
 
+  const resolutions = useMemo(() => {
+    if (video?.urls?.mp4) {
+      const tmpResolutions = Object.keys(video.urls.mp4).map(
+        (size) => Number(size) as videoSize,
+      );
+      tmpResolutions.sort((a, b) => b - a);
+
+      return tmpResolutions;
+    }
+
+    return [];
+  }, [video?.urls?.mp4]);
+
   // The video is somehow missing and jwt must be set
   if (!video) {
     return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
@@ -144,20 +157,14 @@ const VideoPlayer = ({
 
   const thumbnailUrls =
     (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
-    video.urls!.thumbnails;
-  const resolutions = Object.keys(video.urls!.mp4).map(
-    (size) => Number(size) as videoSize,
-  );
-
-  // order resolutions from the higher to the lower
-  resolutions.sort((a, b) => b - a);
+    video.urls?.thumbnails;
 
   return (
     <Box>
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
-        poster={thumbnailUrls[resolutions[0]]}
+        poster={thumbnailUrls && thumbnailUrls[resolutions[0]]}
         /* tabIndex is set to -1 to not take focus on this element when a user is navigating using
        their keyboard. */
         tabIndex={-1}

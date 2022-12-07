@@ -5,6 +5,8 @@ import {
   videoMockFactory,
   timedTextMode,
   uploadState,
+  liveState,
+  LiveModeType,
 } from 'lib-components';
 import React from 'react';
 
@@ -168,5 +170,37 @@ describe('VideoPlayer', () => {
       'https://example.com/thumbnail/1080p.jpg',
     );
     expect(screen.queryByText('Webinar is paused')).not.toBeInTheDocument();
+  });
+
+  it('renders a live video without mp4 or thumbnails', async () => {
+    const video = videoMockFactory({
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+      urls: {
+        manifests: {
+          hls: 'https://example.com/hls.m3u8',
+        },
+        mp4: {},
+        thumbnails: {},
+      },
+    });
+
+    const { container } = render(
+      <VideoPlayer video={video} playerType={'videojs'} timedTextTracks={[]} />,
+    );
+    await waitFor(() =>
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        video,
+        'en',
+        expect.any(Function),
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+    expect(videoElement).toBeInTheDocument();
+    expect(videoElement?.poster).toEqual('');
   });
 });
