@@ -14,6 +14,7 @@ import {
   timedTextMode,
   uploadState,
   useTimedTextTrack,
+  liveState,
 } from 'lib-components';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -80,6 +81,7 @@ describe('<VideoWidgetProvider />', () => {
       description: 'An example description',
       thumbnail: mockedThumbnail,
       shared_live_medias: [mockedSharedLiveMedia],
+      live_state: liveState.RUNNING,
     });
 
     useThumbnail.getState().addResource(mockedThumbnail);

@@ -162,6 +162,7 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.UPLOAD_TRANSCRIPTS,
   WidgetType.UPLOAD_CLOSED_CAPTATIONS,
   WidgetType.SHARED_MEDIA_VOD_TEACHER,
+  WidgetType.TOOLS_AND_APPLICATIONS,
 ];
 const publicLiveWidgets: WidgetType[] = [];
 const publicVodWidgets: WidgetType[] = [
