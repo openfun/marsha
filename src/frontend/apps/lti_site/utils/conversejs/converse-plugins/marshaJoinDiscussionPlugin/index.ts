@@ -1,9 +1,11 @@
 import {
+  fetchJitsiInfo,
   useJwt,
   Participant,
   Video,
   EventType,
   MessageType,
+  VideoJitsiConnectionInfos,
   XMPP,
 } from 'lib-components';
 
@@ -95,7 +97,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
         _converse.connection.send(msg);
       };
 
-      const acceptParticipantToJoin = (
+      const acceptParticipantToJoin = async (
         participant: Participant,
         aVideo: Video,
       ) => {
@@ -104,13 +106,28 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
           return;
         }
 
+        let jitsiInfo: VideoJitsiConnectionInfos;
+        if (
+          aVideo.live_info.jitsi &&
+          aVideo.live_info.jitsi.hasOwnProperty('token')
+        ) {
+          // When the original jitsi info has a token property, it means
+          // jitsi needs a token to connect to it. This token must be refeshed
+          // without moderation permission and a valid lifetime.
+          jitsiInfo = await fetchJitsiInfo(aVideo);
+        } else {
+          // Otherwise, jitsi is in anonymous mode, no more info to fetch on the api,
+          // all already existing info can be send to the student.
+          jitsiInfo = aVideo.live_info.jitsi!;
+        }
+
         // send message to user to accept joining the discussion
         const msg = converse.env.$msg({
           from: _converse.connection.jid,
           to: participant.id,
           type: MessageType.EVENT,
           event: EventType.ACCEPT,
-          jitsi: JSON.stringify(aVideo.live_info.jitsi),
+          jitsi: JSON.stringify(jitsiInfo),
         });
         _converse.connection.send(msg);
 
