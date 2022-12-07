@@ -4,7 +4,7 @@ import { Box, Button } from 'grommet';
 import { render } from 'lib-tests';
 import { createRef } from 'react';
 
-import Modale, { ModalControlMethods } from '.';
+import Modale, { ModalControlMethods } from './Modal';
 
 describe('<Modale />', () => {
   it('opens the modal on init', async () => {
@@ -63,9 +63,7 @@ describe('<Modale />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'Open' }));
 
-    userEvent.click(
-      await screen.findByRole('button', { name: 'Close the modale' }),
-    );
+    userEvent.click(await screen.findByLabelText('Close the modal'));
 
     await waitForElementToBeRemoved(screen.queryByText('Some awesome content'));
     expect(onClose).toHaveBeenCalled();

@@ -1,10 +1,11 @@
-import { Box, Button, Heading, Select, Stack, Text, TextInput } from 'grommet';
+import { Box, Button, Heading, Select, Text, TextInput } from 'grommet';
 import { Form, FormField, Organization, report, Spinner } from 'lib-components';
 import { useLayoutEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
 import { useOrganizations } from 'api/useOrganizations';
+import { ModalButton } from 'components/Modal';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { routes } from 'routes';
 
@@ -54,6 +55,11 @@ const messages = defineMessages({
     description: 'Create playlist button title to submit create form.',
     id: 'feature.Playlist.CreatePlaylistForm.createPlaylistButtonTitle',
   },
+  requiredField: {
+    defaultMessage: 'This field is required to create the playlist.',
+    description: 'Message when playlist field is missing.',
+    id: 'feature.Playlist.CreatePlaylistForm.requiredField',
+  },
 });
 
 interface CreatePlaylistFormValues {
@@ -97,7 +103,7 @@ export const CreatePlaylistForm = () => {
 
   if (isLoading && organizations.length === 0 && !isError) {
     return (
-      <Box width="large" pad="medium">
+      <Box width="large">
         <Box margin="auto">
           <Spinner />
         </Box>
@@ -107,7 +113,7 @@ export const CreatePlaylistForm = () => {
 
   if (isError) {
     return (
-      <Box width="large" pad="medium">
+      <Box width="large">
         <Text>{intl.formatMessage(messages.errorOrganizations)}</Text>
         <Box margin="auto" pad={{ top: 'medium' }}>
           <Button
@@ -124,7 +130,7 @@ export const CreatePlaylistForm = () => {
   }
 
   return (
-    <Box width="large" pad="medium">
+    <Box width="large">
       <Form
         onSubmit={(event) => {
           const values = event.value;
@@ -148,6 +154,9 @@ export const CreatePlaylistForm = () => {
           setFormValues(values);
         }}
         onSubmitError={() => ({})}
+        messages={{
+          required: intl.formatMessage(messages.requiredField),
+        }}
       >
         <Box gap="medium">
           <Heading
@@ -208,24 +217,13 @@ export const CreatePlaylistForm = () => {
             <Text>{intl.formatMessage(messages.playlistNameHelper)}</Text>
           </Box>
 
-          <Stack guidingChild="first" interactiveChild="first">
-            <Box fill>
-              <Button
-                type="submit"
-                primary
-                label={intl.formatMessage(messages.createPlaylistButtonTitle)}
-                disabled={isCreating}
-                style={{ cursor: isCreating ? 'wait' : undefined }}
-              />
-            </Box>
-            {isCreating && (
-              <Box fill>
-                <Box margin="auto">
-                  <Spinner />
-                </Box>
-              </Box>
-            )}
-          </Stack>
+          <ModalButton
+            label={intl.formatMessage(messages.createPlaylistButtonTitle)}
+            onClickCancel={() => {
+              history.push(routes.PLAYLIST.path);
+            }}
+            isSubmiting={isCreating}
+          />
         </Box>
       </Form>
     </Box>

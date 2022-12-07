@@ -1,6 +1,7 @@
-import { Box, Button, Layer, LayerProps } from 'grommet';
-import { Nullable } from 'lib-common';
-import { ExitCrossSVG } from 'lib-components';
+import { Box, Layer, LayerProps } from 'grommet';
+import { FormClose } from 'grommet-icons';
+import { normalizeColor } from 'grommet/utils';
+import { Nullable, theme } from 'lib-common';
 import {
   forwardRef,
   MutableRefObject,
@@ -10,14 +11,24 @@ import {
   useState,
 } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import styled from 'styled-components';
+
+import { useResponsive } from 'hooks/useResponsive';
 
 const messages = defineMessages({
   closeButtonTitle: {
-    defaultMessage: 'Close the modale',
-    description: 'Accessibility title for close modale button title.',
-    id: 'components.Modale.closeButtonTitle',
+    defaultMessage: 'Close the modal',
+    description: 'Accessibility title for close modal button title.',
+    id: 'components.Modal.closeButtonTitle',
   },
 });
+
+const FormCloseIcon = styled(FormClose)`
+  background-color: ${normalizeColor('blue-active', theme)};
+  border-radius: 100%;
+  align-self: end;
+  cursor: pointer;
+`;
 
 export interface ModalControlMethods {
   open: () => void;
@@ -54,6 +65,7 @@ const Modal = forwardRef<
 
   const intl = useIntl();
   const [isOpen, setIsOpen] = useState(initialIsOpen || false);
+  const { isDesktop } = useResponsive();
 
   const handleClose = useCallback(() => {
     setIsOpen(false);
@@ -95,16 +107,17 @@ const Modal = forwardRef<
       animation="fadeIn"
       {...layerProps}
     >
-      <Box style={{ position: 'absolute', right: '0' }}>
-        <Button
-          a11yTitle={intl.formatMessage(messages.closeButtonTitle)}
-          margin={{ left: 'auto' }}
+      <Box
+        width={isDesktop ? { max: '650px', width: '80vw' } : undefined}
+        pad={{ horizontal: 'medium', top: 'medium', bottom: '1.9rem' }}
+      >
+        <FormCloseIcon
+          color="white"
           onClick={handleClose}
-        >
-          <ExitCrossSVG height="36px" width="36px" iconColor="blue-active" />
-        </Button>
+          a11yTitle={intl.formatMessage(messages.closeButtonTitle)}
+        />
+        {children}
       </Box>
-      {children}
     </Layer>
   );
 });

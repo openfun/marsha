@@ -1,4 +1,5 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -14,7 +15,7 @@ describe('<ClassRoomCreate />', () => {
       screen.queryByRole('heading', { name: /Create Classroom/i }),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(button);
+    userEvent.click(button);
 
     expect(
       screen.getByRole('heading', { name: /Create Classroom/i }),
