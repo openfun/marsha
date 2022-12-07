@@ -4,10 +4,11 @@ import React from 'react';
 import { ChatLayout } from './ChatLayout';
 
 interface ChatProps {
+  isModerated: boolean;
   standalone?: boolean;
 }
 
-export const Chat = ({ standalone }: ChatProps) => {
+export const Chat = ({ isModerated, standalone }: ChatProps) => {
   const conditionalProps: Partial<BoxExtendedProps> = {};
   if (standalone) {
     conditionalProps.height = 'large';
@@ -19,10 +20,10 @@ export const Chat = ({ standalone }: ChatProps) => {
     <Box {...conditionalProps}>
       {!!standalone ? (
         <div>
-          <ChatLayout />
+          <ChatLayout isModerated={isModerated} />
         </div>
       ) : (
-        <ChatLayout />
+        <ChatLayout isModerated={isModerated} />
       )}
     </Box>
   );

@@ -51,7 +51,7 @@ describe('<ChatLayout />', () => {
   });
 
   it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
-    render(<ChatLayout />);
+    render(<ChatLayout isModerated={false} />);
 
     // If no set, hasReceivedMessageHistory default value is false
     expect(useChatItemState.getState().hasReceivedMessageHistory).toEqual(
@@ -68,7 +68,7 @@ describe('<ChatLayout />', () => {
   });
 
   it('has received history message and has no display_name, the join button is not disabled anymore.', () => {
-    render(<ChatLayout />);
+    render(<ChatLayout isModerated={false} />);
 
     const joinChatButton = screen.getByRole('button', {
       name: 'Join the chat',
@@ -85,7 +85,7 @@ describe('<ChatLayout />', () => {
     const liveSession = liveSessionFactory({ display_name: 'l33t' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(<ChatLayout />);
+    render(<ChatLayout isModerated={false} />);
 
     expect(
       screen.queryByRole('button', {
@@ -99,7 +99,7 @@ describe('<ChatLayout />', () => {
   it('configures to ask for display name on ask button click', () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
 
-    render(<ChatLayout />);
+    render(<ChatLayout isModerated={false} />);
 
     userEvent.click(
       screen.getByRole('button', {
