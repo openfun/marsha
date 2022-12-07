@@ -193,7 +193,7 @@ interface JitsiConnectionInfos {
   room_name: string;
 }
 
-interface VideoJitsiConnectionInfos
+export interface VideoJitsiConnectionInfos
   extends Omit<JitsiConnectionInfos, 'external_api_url' | 'domain'> {
   external_api_url?: string;
   domain?: string;
