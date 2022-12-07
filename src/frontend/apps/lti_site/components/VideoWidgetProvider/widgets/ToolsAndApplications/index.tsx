@@ -87,6 +87,10 @@ export const ToolsAndApplications = () => {
       allow_recording: !video.allow_recording,
     });
   };
+  // Do not display the component for original VODs
+  if (video.live_state === null) {
+    return null;
+  }
 
   return (
     <FoldableItem

@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, report } from 'lib-components';
+import { useJwt, videoMockFactory, report, liveState } from 'lib-components';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'data/stores/useInfoWidgetModal';
@@ -30,6 +30,7 @@ describe('<ToolsAndApplications />', () => {
   it('renders the widget', () => {
     const mockedVideo = videoMockFactory({
       has_chat: true,
+      live_state: liveState.RUNNING,
     });
 
     render(
@@ -53,6 +54,7 @@ describe('<ToolsAndApplications />', () => {
   it('clicks on the toggle button for activate the chat', async () => {
     const mockedVideo = videoMockFactory({
       has_chat: false,
+      live_state: liveState.RUNNING,
     });
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
@@ -95,6 +97,7 @@ describe('<ToolsAndApplications />', () => {
   it('clicks on the toggle button for deactivate the chat', async () => {
     const mockedVideo = videoMockFactory({
       has_chat: true,
+      live_state: liveState.RUNNING,
     });
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
@@ -138,6 +141,7 @@ describe('<ToolsAndApplications />', () => {
   it('clicks on the toggle button for activate chat, but backend returns an error', async () => {
     const mockedVideo = videoMockFactory({
       has_chat: false,
+      live_state: liveState.RUNNING,
     });
 
     fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
@@ -175,8 +179,30 @@ describe('<ToolsAndApplications />', () => {
     screen.getByText('Video update has failed !');
   });
 
+  it('does not display the widget if live_state is null (pure VOD)', () => {
+    const mockedVideo = videoMockFactory({
+      has_chat: true,
+      live_state: null,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <ToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    expect(
+      screen.queryByText('Tools and applications'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Activate chat')).not.toBeInTheDocument();
+  });
+
   it('renders the activation live toggle', async () => {
     const mockedVideo = videoMockFactory({
+      live_state: liveState.RUNNING,
       allow_recording: false,
     });
 
@@ -198,6 +224,7 @@ describe('<ToolsAndApplications />', () => {
 
   it('clicks on the toggle button for activate the live recording', async () => {
     const mockedVideo = videoMockFactory({
+      live_state: liveState.RUNNING,
       allow_recording: false,
     });
 
@@ -242,6 +269,7 @@ describe('<ToolsAndApplications />', () => {
 
   it('clicks on the toggle button for activate the live recording', async () => {
     const mockedVideo = videoMockFactory({
+      live_state: liveState.RUNNING,
       allow_recording: true,
     });
 
@@ -286,6 +314,7 @@ describe('<ToolsAndApplications />', () => {
 
   it('clicks on the toggle button for activate live recording, but backend returns an error', async () => {
     const mockedVideo = videoMockFactory({
+      live_state: liveState.RUNNING,
       allow_recording: false,
     });
 
