@@ -1,24 +1,14 @@
-import { Layer, Button, Box, Heading, Text } from 'grommet';
-import { FormClose } from 'grommet-icons';
-import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { Button, Heading, Text } from 'grommet';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
 import { WhiteCard } from 'components/Cards';
+import { Modal } from 'components/Modal';
 import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 import ClassroomCreateForm from './ClassRoomCreateForm';
-
-const FormCloseIcon = styled(FormClose)`
-  background-color: ${normalizeColor('blue-active', theme)};
-  border-radius: 100%;
-  align-self: end;
-  cursor: pointer;
-`;
 
 const messages = defineMessages({
   ClassroomTitle: {
@@ -35,7 +25,7 @@ const messages = defineMessages({
 
 function ClassRoomCreate() {
   const intl = useIntl();
-  const { isDesktop, breakpoint } = useResponsive();
+  const { breakpoint } = useResponsive();
   const history = useHistory();
 
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
@@ -66,31 +56,22 @@ function ClassRoomCreate() {
       </WhiteCard>
       <Switch>
         <Route path={classroomCreatePath} exact>
-          <Layer
-            onEsc={() => history.push(classroomPath)}
-            onClickOutside={() => history.push(classroomPath)}
+          <Modal
+            isOpen
+            onClose={() => {
+              history.push(classroomPath);
+            }}
           >
-            <Box
-              width={isDesktop ? { max: '650px', width: '80vw' } : undefined}
-              pad="medium"
+            <Heading
+              level={2}
+              margin={{ top: 'xxsmall' }}
+              textAlign="center"
+              weight="bold"
             >
-              <FormCloseIcon
-                color="white"
-                onClick={() => history.push(classroomPath)}
-              />
-              <Heading
-                level={2}
-                margin={{ top: 'xxsmall' }}
-                textAlign="center"
-                weight="bold"
-              >
-                {intl.formatMessage(messages.CreateClassroomLabel)}
-              </Heading>
-              <ClassroomCreateForm
-                onSubmit={() => history.push(classroomPath)}
-              />
-            </Box>
-          </Layer>
+              {intl.formatMessage(messages.CreateClassroomLabel)}
+            </Heading>
+            <ClassroomCreateForm onSubmit={() => history.push(classroomPath)} />
+          </Modal>
         </Route>
       </Switch>
     </Fragment>

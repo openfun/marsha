@@ -6,7 +6,7 @@ import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import Modal from 'components/Modal';
+import { Modal } from 'components/Modal';
 import { commonSortMessages, SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { CREATE_PLAYLIST_MODALE, routes } from 'routes';

@@ -1,21 +1,12 @@
-import {
-  Form,
-  FormField,
-  Text,
-  TextArea,
-  TextInput,
-  Button,
-  Select,
-  Box,
-} from 'grommet';
+import { Text, TextArea, TextInput, Select, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
-import { Playlist } from 'lib-components';
+import { Playlist, Form, FormField } from 'lib-components';
 import { Fragment, useState, useEffect } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
-import styled from 'styled-components';
 
+import { ModalButton } from 'components/Modal';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { PlaylistOrderType, usePlaylists } from 'features/Playlist';
 import { routes } from 'routes';
@@ -24,32 +15,32 @@ const messages = defineMessages({
   titleLabel: {
     defaultMessage: 'Title',
     description: 'Label for title in classroom creation form.',
-    id: 'component.ClassroomCreateForm.titleLabel',
+    id: 'features.ClassroomCreateForm.titleLabel',
   },
   descriptionLabel: {
     defaultMessage: 'Description',
     description: 'Label for description in classroom creation form.',
-    id: 'component.ClassroomCreateForm.descriptionLabel',
+    id: 'features.ClassroomCreateForm.descriptionLabel',
   },
   welcomeTextLabel: {
     defaultMessage: 'Welcome text',
     description: 'Label for welcome text in classroom creation form.',
-    id: 'component.ClassroomCreateForm.welcomeTextLabel',
+    id: 'features.ClassroomCreateForm.welcomeTextLabel',
   },
   requiredField: {
     defaultMessage: 'This field is required to create the classroom.',
     description: 'Message when classroom field is missing.',
-    id: 'component.ClassroomCreateForm.requiredField',
+    id: 'features.ClassroomCreateForm.requiredField',
   },
   selectPlaylistLabel: {
     defaultMessage: 'Choose the playlist.',
     description: 'Label select playlist.',
-    id: 'component.ClassroomCreateForm.selectPlaylistLabel',
+    id: 'features.ClassroomCreateForm.selectPlaylistLabel',
   },
   submitLabel: {
     defaultMessage: 'Add classroom',
     description: 'Label for button submit in classroom creation form.',
-    id: 'component.ClassroomCreateForm.submitLabel',
+    id: 'features.ClassroomCreateForm.submitLabel',
   },
   Error: {
     defaultMessage: 'Sorry, an error has occurred. Please try again.',
@@ -58,10 +49,6 @@ const messages = defineMessages({
   },
 });
 
-const ButtonStyled = styled(Button)`
-  border-radius: 5px;
-`;
-
 type ClassroomCreate = {
   playlist: string;
   title: string;
@@ -69,7 +56,7 @@ type ClassroomCreate = {
 };
 
 interface ClassroomCreateFormProps {
-  onSubmit?: () => void;
+  onSubmit: () => void;
 }
 
 const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
@@ -85,27 +72,25 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
     { keepPreviousData: true, staleTime: 20000 },
   );
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
-  const { mutate: createClassroom, error: errorClassroom } = useCreateClassroom(
-    {
-      onSuccess: (data) => {
-        if (onSubmit) {
-          onSubmit();
-        }
+  const {
+    mutate: createClassroom,
+    error: errorClassroom,
+    isLoading: isCreating,
+  } = useCreateClassroom({
+    onSuccess: (data) => {
+      onSubmit();
 
-        const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
-        const classroomPath = classroomRoute.path;
+      const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
+      const classroomPath = classroomRoute.path;
 
-        history.push(`${classroomPath}/${data.id}`);
-      },
+      history.push(`${classroomPath}/${data.id}`);
     },
-  );
+  });
   const [classroom, setClassroom] = useState<ClassroomCreate>({
     playlist: '',
     title: '',
     description: '',
   });
-
-  const isSubmitDisabled = !classroom.title || !classroom.playlist;
 
   useEffect(() => {
     if (!playlistResponse || !playlistResponse.results) {
@@ -117,13 +102,6 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
       ...playlistResponse.results,
     ]);
   }, [playlistResponse]);
-
-  const fieldError = (isError: boolean) =>
-    isError && (
-      <Text size="small" color="status-error">
-        <FormattedMessage {...messages.requiredField} />
-      </Text>
-    );
 
   return (
     <Fragment>
@@ -141,42 +119,37 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
           </Text>
         </Box>
       )}
-      <Form>
+      <Form
+        onSubmitError={() => ({})}
+        onSubmit={() => createClassroom(classroom)}
+        onChange={(values) => {
+          setClassroom(values as ClassroomCreate);
+        }}
+        messages={{
+          required: intl.formatMessage(messages.requiredField),
+        }}
+      >
         <FormField
-          className="form-field mandatory"
           label={intl.formatMessage(messages.titleLabel)}
           htmlFor="title-id"
-          required={true}
-          error={fieldError(!classroom.title)}
+          name="title"
+          required
         >
-          <TextInput
-            size="1rem"
-            name="title"
-            id="title-id"
-            value={classroom.title || ''}
-            onChange={(e) =>
-              setClassroom({ ...classroom, title: e.target.value })
-            }
-          />
+          <TextInput size="1rem" name="title" id="title-id" />
         </FormField>
         <FormField
-          className="form-field mandatory"
           label={intl.formatMessage(messages.selectPlaylistLabel)}
           htmlFor="select-playlist-id"
-          required={true}
-          error={fieldError(!classroom.playlist)}
+          name="playlist"
+          required
         >
           <Select
             id="select-playlist-id"
             name="playlist"
             aria-label={intl.formatMessage(messages.selectPlaylistLabel)}
-            onChange={({ value }) =>
-              setClassroom({ ...classroom, playlist: String(value) })
-            }
             options={playlists}
             labelKey="title"
             valueKey={{ key: 'id', reduce: true }}
-            placeholder={intl.formatMessage(messages.selectPlaylistLabel)}
             size="1rem"
             onMore={() => {
               if (!playlistResponse) {
@@ -191,32 +164,24 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
           />
         </FormField>
         <FormField
-          className="form-field"
           label={intl.formatMessage(messages.descriptionLabel)}
           htmlFor="description-id"
+          name="description"
         >
           <TextArea
             size="1rem"
             rows={5}
             name="description"
             id="description-id"
-            value={classroom.description || ''}
-            onChange={(e) =>
-              setClassroom({ ...classroom, description: e.target.value })
-            }
           />
         </FormField>
-        <Box direction="row" justify="center">
-          <ButtonStyled
-            disabled={isSubmitDisabled}
-            primary
-            size="large"
-            label={intl.formatMessage(messages.submitLabel)}
-            onClick={() => {
-              createClassroom(classroom);
-            }}
-          />
-        </Box>
+        <ModalButton
+          label={intl.formatMessage(messages.submitLabel)}
+          onClickCancel={() => {
+            onSubmit();
+          }}
+          isSubmiting={isCreating}
+        />
       </Form>
     </Fragment>
   );
