@@ -43,13 +43,21 @@ describe('<Chat />', () => {
   });
 
   it('renders the Chat component', () => {
-    render(<Chat />);
+    render(<Chat isModerated={false} />);
 
     screen.getByRole('button', { name: 'Join the chat' });
   });
 
+  it('renders the Chat component in moderated mode', () => {
+    render(<Chat isModerated />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Join the chat' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('renders the Chat component as standalone', () => {
-    render(<Chat standalone />);
+    render(<Chat standalone isModerated={false} />);
 
     screen.getByRole('button', { name: 'Join the chat' });
   });

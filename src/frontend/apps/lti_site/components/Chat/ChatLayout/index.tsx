@@ -10,7 +10,11 @@ import { converse } from 'utils/window';
 import { useLiveSession } from 'data/stores/useLiveSession';
 import { useSetDisplayName } from 'data/stores/useSetDisplayName';
 
-export const ChatLayout = () => {
+export interface ChatLayoutProps {
+  isModerated: boolean;
+}
+
+export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
   const liveSession = useLiveSession((state) => state.liveSession);
   const [_, setDisplayName] = useSetDisplayName();
   const hasReceivedMessageHistory = useChatItemState(
@@ -46,20 +50,24 @@ export const ChatLayout = () => {
         ) : (
           <ChatConversationDisplayer />
         )}
-        <Box margin="small">
-          {liveSession?.display_name ? (
-            <InputBar
-              handleUserInput={processChatMessage}
-              isChatInput={true}
-              placeholderText={intl.formatMessage(messages.inputBarPlaceholder)}
-            />
-          ) : (
-            <JoinChatButton
-              disabled={!hasReceivedMessageHistory}
-              handleClick={handleJoinChatButton}
-            />
-          )}
-        </Box>
+        {!isModerated && (
+          <Box margin="small">
+            {liveSession?.display_name ? (
+              <InputBar
+                handleUserInput={processChatMessage}
+                isChatInput={true}
+                placeholderText={intl.formatMessage(
+                  messages.inputBarPlaceholder,
+                )}
+              />
+            ) : (
+              <JoinChatButton
+                disabled={!hasReceivedMessageHistory}
+                handleClick={handleJoinChatButton}
+              />
+            )}
+          </Box>
+        )}
       </Box>
     </Box>
   );
