@@ -209,7 +209,6 @@ export const DashboardLive = () => {
           liveTitleElement={
             <TeacherLiveInfoBar
               flex={isLiveStarted ? { grow: 1, shrink: 2 } : true}
-              title={video.title}
               startDate={video.starting_at}
             />
           }

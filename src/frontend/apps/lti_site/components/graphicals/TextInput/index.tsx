@@ -1,4 +1,7 @@
-import { TextInput as GrommetTextInput } from 'grommet';
+import {
+  TextInput as GrommetTextInput,
+  TextInputProps as GrommetTextInputProps,
+} from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import React from 'react';
 import styled from 'styled-components';
@@ -15,7 +18,7 @@ const StyledGrommetTextInput = styled(GrommetTextInput)`
   }
 `;
 
-interface TextInputProps {
+interface TextInputProps extends Omit<GrommetTextInputProps, 'ref'> {
   disabled?: boolean;
   placeholder?: string;
   setValue: (inputText: string) => void;
@@ -29,6 +32,7 @@ export const TextInput = ({
   title,
   value,
   disabled,
+  ...other
 }: TextInputProps) => {
   return (
     <StyledGrommetTextInput
@@ -42,6 +46,7 @@ export const TextInput = ({
       spellCheck={false}
       title={title}
       value={value}
+      {...other}
     />
   );
 };

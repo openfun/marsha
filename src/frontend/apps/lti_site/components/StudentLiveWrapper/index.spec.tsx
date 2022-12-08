@@ -195,7 +195,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -257,7 +257,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
 
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
     screen.getByText('Recording');
   });
 
@@ -312,7 +312,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     screen.getByText('Join the chat');
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -373,7 +373,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     );
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
@@ -438,7 +438,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
     expect(screen.queryByText('Live is starting')).not.toBeInTheDocument();
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
     expect(useLivePanelState.getState().currentItem).toEqual(undefined);
@@ -530,7 +530,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       ),
     );
 
-    screen.getByText('No title');
+    screen.getByRole('heading', { name: 'No title' });
   });
 
   it('displays the video in the picture and shared media in background when a media is shared', async () => {
@@ -678,7 +678,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
     expect(screen.queryByText('Other participants')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -732,7 +732,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     screen.getByText('Join the chat');
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.CHAT,
@@ -786,7 +786,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Live will begin soon')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
     userEvent.click(viewersTabButton);
@@ -840,7 +840,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([]);
     expect(useLivePanelState.getState().currentItem).toEqual(
@@ -886,7 +886,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
     expect(screen.queryByText('Join the chat')).not.toBeInTheDocument();
-    screen.getByText('live title');
+    screen.getByRole('heading', { name: 'live title' });
 
     expect(useLivePanelState.getState().availableItems).toEqual([
       LivePanelItem.VIEWERS_LIST,
@@ -980,7 +980,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
-    screen.getByText('No title');
+    screen.getByRole('heading', { name: 'No title' });
   });
 
   it('inits the live title bar with title and starting date', async () => {
@@ -1020,7 +1020,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
 
-    screen.getByText("Hello world, it's me");
+    screen.getByRole('heading', { name: "Hello world, it's me" });
     screen.getByText('10/1/2020  ·  8:00:00 AM', {
       normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
     });

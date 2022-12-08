@@ -64,11 +64,7 @@ export const DashboardVOD = () => {
         }}
         round="xsmall"
       >
-        <TeacherLiveInfoBar
-          flex={true}
-          title={video.title}
-          startDate={video.starting_at}
-        />
+        <TeacherLiveInfoBar flex={true} startDate={video.starting_at} />
       </StyledLiveVideoInformationBarWrapper>
       {video.live_state === liveState.ENDED ? (
         <DashboardControlPane isLive={false} />

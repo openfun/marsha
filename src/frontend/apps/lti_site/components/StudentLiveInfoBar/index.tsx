@@ -5,17 +5,13 @@ import React from 'react';
 import { LiveInfoBar } from 'components/LiveInfoBar';
 
 interface StudentLiveInfoBarProps {
-  title: string;
   startDate: Nullable<string>;
 }
 
-export const StudentLiveInfoBar = ({
-  title,
-  startDate,
-}: StudentLiveInfoBarProps) => {
+export const StudentLiveInfoBar = ({ startDate }: StudentLiveInfoBarProps) => {
   return (
     <Box direction="column" flex style={{ minWidth: '0' }}>
-      <LiveInfoBar title={title} startDate={startDate} />
+      <LiveInfoBar isTeacher={false} startDate={startDate} />
     </Box>
   );
 };

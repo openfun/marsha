@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory, report } from 'lib-components';
@@ -171,6 +171,157 @@ describe('<ToolsAndApplications />', () => {
       }),
     });
     expect(chatToggleButton).not.toBeChecked();
+    expect(report).toHaveBeenCalled();
+    screen.getByText('Video update has failed !');
+  });
+
+  it('renders the activation live toggle', async () => {
+    const mockedVideo = videoMockFactory({
+      allow_recording: false,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <ToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const recordingToggleButton = screen.getByRole('checkbox', {
+      name: 'Activate live recording',
+    });
+    expect(recordingToggleButton).not.toBeChecked();
+    screen.getByText('Activate live recording');
+  });
+
+  it('clicks on the toggle button for activate the live recording', async () => {
+    const mockedVideo = videoMockFactory({
+      allow_recording: false,
+    });
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      allow_recording: true,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <ToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    screen.getByText('Activate live recording');
+    const recordingToggleButton = screen.getByRole('checkbox', {
+      name: 'Activate live recording',
+    });
+
+    userEvent.click(recordingToggleButton);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(1);
+    });
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        allow_recording: true,
+      }),
+    });
+    expect(recordingToggleButton).toBeChecked();
+    expect(report).not.toHaveBeenCalled();
+    screen.getByText('Video updated.');
+  });
+
+  it('clicks on the toggle button for activate the live recording', async () => {
+    const mockedVideo = videoMockFactory({
+      allow_recording: true,
+    });
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
+      ...mockedVideo,
+      allow_recording: false,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <ToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    screen.getByText('Activate live recording');
+    const recordingToggleButton = screen.getByRole('checkbox', {
+      name: 'Activate live recording',
+    });
+
+    userEvent.click(recordingToggleButton);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(1);
+    });
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        allow_recording: false,
+      }),
+    });
+    expect(recordingToggleButton).not.toBeChecked();
+    expect(report).not.toHaveBeenCalled();
+    screen.getByText('Video updated.');
+  });
+
+  it('clicks on the toggle button for activate live recording, but backend returns an error', async () => {
+    const mockedVideo = videoMockFactory({
+      allow_recording: false,
+    });
+
+    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <ToolsAndApplications />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    screen.getByText('Activate live recording');
+
+    const recordingToggleButton = screen.getByRole('checkbox', {
+      name: 'Activate live recording',
+    });
+
+    userEvent.click(recordingToggleButton);
+    await waitFor(() => {
+      expect(fetchMock.calls()).toHaveLength(1);
+    });
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer json web token',
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: JSON.stringify({
+        allow_recording: true,
+      }),
+    });
+    expect(recordingToggleButton).not.toBeChecked();
     expect(report).toHaveBeenCalled();
     screen.getByText('Video update has failed !');
   });

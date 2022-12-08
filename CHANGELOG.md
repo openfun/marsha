@@ -31,6 +31,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Move title edition on the title itself
+- Move record toggle
 - standalone website:
   - mutualize modals and styles
   - fine tune UI

@@ -18,6 +18,7 @@ export * from './SVGIcons/DoubleArrowResizerSVG';
 export * from './SVGIcons/DownArrowSVG';
 export * from './SVGIcons/DownloadSVG';
 export * from './SVGIcons/ExitCrossSVG';
+export * from './SVGIcons/EditionSVG';
 export * from './SVGIcons/InfoCircleSVG';
 export * from './SVGIcons/JoinDiscussionSVG';
 export * from './SVGIcons/MicrophoneOffSVG';
