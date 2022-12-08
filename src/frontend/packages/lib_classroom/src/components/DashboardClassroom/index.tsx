@@ -1,5 +1,4 @@
-import { Box, Grommet, Spinner, ThemeType } from 'grommet';
-import { deepMerge } from 'grommet/utils';
+import { Box, Spinner, ThemeContext } from 'grommet';
 import { theme } from 'lib-common';
 import {
   AnonymousUser,
@@ -51,67 +50,6 @@ const messages = defineMessages({
     defaultMessage: 'Classroom not started!',
     description: 'Message when classroom start failed.',
     id: 'component.DashboardClassroom.startClassroomFail',
-  },
-});
-
-export const bbbTheme: ThemeType = deepMerge(theme, {
-  box: {
-    extend: null,
-  },
-  button: {
-    default: {
-      background: { color: 'white' },
-      border: { color: 'brand', size: 'xsmall' },
-      color: 'brand',
-      padding: { vertical: 'xsmall', horizontal: 'small' },
-    },
-    primary: {
-      background: { color: 'brand' },
-      border: undefined,
-      color: 'white',
-    },
-    border: {
-      radius: '4px',
-    },
-    size: {
-      large: {
-        border: {
-          radius: '6px',
-        },
-        pad: {
-          horizontal: '3rem',
-          vertical: '1rem',
-        },
-      },
-    },
-    extend: null,
-  },
-  formField: {
-    label: {
-      size: '0.8rem',
-      margin: '0.5rem 1rem 0',
-      color: 'bg-grey',
-    },
-    border: {
-      position: 'outer',
-      side: 'all',
-      color: 'blue-active',
-      style: 'solid',
-    },
-    round: {
-      size: 'xsmall',
-    },
-  },
-  textInput: {
-    extend: 'padding: 0 1rem 0.8rem',
-  },
-  maskedInput: {
-    extend: 'padding: 0 1rem 0.8rem',
-  },
-  dateInput: {
-    icon: {
-      size: '18px',
-    },
   },
 });
 
@@ -275,11 +213,11 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   }
 
   return (
-    <Grommet theme={bbbTheme}>
+    <ThemeContext.Extend value={theme}>
       <Box align="center">
         <Suspense fallback={<Loader />}>{content}</Suspense>
       </Box>
-    </Grommet>
+    </ThemeContext.Extend>
   );
 };
 

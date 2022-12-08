@@ -123,8 +123,30 @@ export const theme: ThemeType = {
     extend: 'min-height: initial; min-width: initial;',
   },
   button: {
+    default: {
+      background: { color: 'white' },
+      border: { color: 'brand' },
+      color: 'brand',
+      padding: { vertical: 'xsmall', horizontal: 'small' },
+    },
+    primary: {
+      background: { color: 'brand' },
+      border: undefined,
+      color: 'white',
+    },
     border: {
       radius: '4px',
+    },
+    size: {
+      large: {
+        border: {
+          radius: '6px',
+        },
+        pad: {
+          horizontal: '3rem',
+          vertical: '1rem',
+        },
+      },
     },
     extend: 'padding: 0.5rem 1rem;',
   },
@@ -194,7 +216,18 @@ export const theme: ThemeType = {
   formField: {
     label: {
       requiredIndicator: true,
-      size: '1.5rem',
+      size: '0.8rem',
+      margin: '0.5rem 1rem 0',
+      color: 'bg-grey',
+    },
+    border: {
+      position: 'outer',
+      side: 'all',
+      color: 'blue-active',
+      style: 'solid',
+    },
+    round: {
+      size: 'xsmall',
     },
   },
   select: {
@@ -269,6 +302,17 @@ export const theme: ThemeType = {
       height: '1.75rem',
       maxWidth: 'initial',
       size: '1.5rem',
+    },
+  },
+  textInput: {
+    extend: 'padding: 0 1rem 0.8rem',
+  },
+  maskedInput: {
+    extend: 'padding: 0 1rem 0.8rem',
+  },
+  dateInput: {
+    icon: {
+      size: '18px',
     },
   },
 };
