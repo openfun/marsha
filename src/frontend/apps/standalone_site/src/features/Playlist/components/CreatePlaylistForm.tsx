@@ -121,9 +121,8 @@ export const CreatePlaylistForm = () => {
               refetch();
             }}
             primary
-          >
-            {intl.formatMessage(messages.retryOrganizations)}
-          </Button>
+            label={intl.formatMessage(messages.retryOrganizations)}
+          />
         </Box>
       </Box>
     );

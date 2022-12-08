@@ -133,9 +133,8 @@ export const PlaylistPage = () => {
                   onClick={() => {
                     history.push(CREATE_PLAYLIST_MODALE);
                   }}
-                >
-                  {intl.formatMessage(messages.create)}
-                </Button>
+                  label={intl.formatMessage(messages.create)}
+                />
               </Box>
             )}
           </Box>
@@ -157,9 +156,8 @@ export const PlaylistPage = () => {
                         refetch();
                       }}
                       primary
-                    >
-                      {intl.formatMessage(messages.retry)}
-                    </Button>
+                      label={intl.formatMessage(messages.retry)}
+                    />
                   </Box>
                 </Box>
               )}
@@ -179,9 +177,8 @@ export const PlaylistPage = () => {
                       onClick={() => {
                         history.push(CREATE_PLAYLIST_MODALE);
                       }}
-                    >
-                      {intl.formatMessage(messages.create)}
-                    </Button>
+                      label={intl.formatMessage(messages.create)}
+                    />
                   </Box>
                 </Box>
               )}
