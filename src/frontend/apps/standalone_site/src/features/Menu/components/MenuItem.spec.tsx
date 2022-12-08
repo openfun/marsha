@@ -1,12 +1,12 @@
 import { screen } from '@testing-library/react';
 import { normalizeColor } from 'grommet/utils';
 import { createMemoryHistory } from 'history';
+import { theme } from 'lib-common';
 import { render } from 'lib-tests';
 import React from 'react';
 import { BrowserRouter, Router } from 'react-router-dom';
 
 import { routes } from 'routes';
-import { themeExtend } from 'styles/theme.extend';
 
 import MenuItem from './MenuItem';
 
@@ -35,12 +35,12 @@ describe('<MenuItem />', () => {
     );
 
     expect(screen.getByRole(/menuitem/i, { name: /Dashboard/i })).toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', themeExtend),
+      backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
     expect(
       screen.getByRole(/menuitem/i, { name: /Favorites/i }),
     ).not.toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', themeExtend),
+      backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
 
     history.push(routes.FAVORITE.path);
@@ -54,10 +54,10 @@ describe('<MenuItem />', () => {
     expect(
       screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
     ).not.toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', themeExtend),
+      backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
     expect(screen.getByRole(/menuitem/i, { name: /Favorites/i })).toHaveStyle({
-      backgroundColor: normalizeColor('bg-menu-hover', themeExtend),
+      backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
   });
 });
