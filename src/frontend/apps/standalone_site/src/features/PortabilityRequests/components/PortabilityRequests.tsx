@@ -105,9 +105,8 @@ export const PortabilityRequests = ({
                   refetch();
                 }}
                 primary
-              >
-                {intl.formatMessage(messages.retry)}
-              </Button>
+                label={intl.formatMessage(messages.retry)}
+              />
             </Box>
           </Box>
         )}
