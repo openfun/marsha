@@ -94,13 +94,6 @@ describe('<VideoWidgetProvider />', () => {
     });
     expect(hasChatToggleButton).toBeChecked();
     screen.getByText('Activate chat');
-
-    // GeneralTitle
-    screen.getByText('General');
-    const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your live here',
-    });
-    expect(textInput).toHaveValue('An example title');
     const liveRecordingToggleButton = screen.getByRole('checkbox', {
       name: 'Activate live recording',
     });
@@ -209,9 +202,6 @@ describe('<VideoWidgetProvider />', () => {
     render(
       wrapInVideo(<VideoWidgetProvider isLive={false} isTeacher />, mockVideo),
     );
-
-    //  Title and description
-    screen.getByText('General');
 
     //  Upload video
     screen.getByText('Video');

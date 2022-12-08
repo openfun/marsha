@@ -28,6 +28,12 @@ const messages = defineMessages({
       'The label associated to the toggle button reponsible of live chat activation / deactivation.',
     id: 'components.ToolsAndApplications.chatActiveLabel',
   },
+  recordingToggleLabel: {
+    defaultMessage: 'Activate live recording',
+    description:
+      'The label associated to the toggle button reponsible of live recording activation / deactivation.',
+    id: 'component.ToolsAndApplications.liveRecordingToggleLabel',
+  },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
@@ -44,6 +50,9 @@ export const ToolsAndApplications = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
   const [isChatActive, setChatActive] = useState(video.has_chat);
+  const [isAllowRecordingActive, setIsAllowRecordingActive] = useState(
+    video.allow_recording,
+  );
 
   const videoMutation = useUpdateVideo(video.id, {
     onSuccess: () => {
@@ -54,6 +63,9 @@ export const ToolsAndApplications = () => {
     onError: (err, variables) => {
       if ('has_chat' in variables) {
         setChatActive(video.has_chat);
+      }
+      if ('allow_recording' in variables) {
+        setIsAllowRecordingActive(video.allow_recording);
       }
       report(err);
       toast.error(intl.formatMessage(messages.updateVideoFail), {
@@ -69,6 +81,13 @@ export const ToolsAndApplications = () => {
     });
   };
 
+  const onAllowRecordingActiveChange = () => {
+    setIsAllowRecordingActive(!video.allow_recording);
+    videoMutation.mutate({
+      allow_recording: !video.allow_recording,
+    });
+  };
+
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
@@ -80,6 +99,12 @@ export const ToolsAndApplications = () => {
           checked={isChatActive}
           onChange={onChatActiveChange}
           label={intl.formatMessage(messages.chatActiveLabel)}
+        />
+        <ToggleInput
+          disabled={video.is_recording}
+          checked={isAllowRecordingActive}
+          onChange={onAllowRecordingActiveChange}
+          label={intl.formatMessage(messages.recordingToggleLabel)}
         />
       </Box>
     </FoldableItem>

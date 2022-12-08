@@ -508,7 +508,7 @@ describe('components/DashboardLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    screen.getByText("Hello world, it's me");
+    screen.getByDisplayValue("Hello world, it's me");
     screen.getByText('10/1/2020  ·  8:00:00 AM', {
       normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
     });

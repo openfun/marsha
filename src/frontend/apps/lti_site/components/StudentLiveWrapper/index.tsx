@@ -1,7 +1,7 @@
 import { Box, Layer } from 'grommet';
 import { Nullable } from 'lib-common';
 import React, { useEffect, useRef, useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
 import DashboardLiveJitsi from 'components/DashboardLiveJitsi';
@@ -28,15 +28,6 @@ import { convertLiveToJitsiLive } from 'utils/conversions/convertVideo';
 import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
 
 import { UpdateCurrentSharedLiveMediaPage } from './UpdateCurrentSharedLiveMediaPage';
-
-const messages = defineMessages({
-  defaultLiveTitle: {
-    defaultMessage: 'No title',
-    description:
-      'Default live title for students (if the live has no title set)',
-    id: 'components.StudentLiveWrapper.defaultLiveTitle',
-  },
-});
 
 interface StudentLiveWrapperProps {
   playerType: string;
@@ -118,12 +109,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       actionsElement={<StudentLiveControlBar />}
       displayActionsElement={!!live.xmpp}
       isXmppReady={!!live.xmpp}
-      liveTitleElement={
-        <StudentLiveInfoBar
-          title={live.title ?? intl.formatMessage(messages.defaultLiveTitle)}
-          startDate={live.starting_at}
-        />
-      }
+      liveTitleElement={<StudentLiveInfoBar startDate={live.starting_at} />}
       mainElement={
         <Box ref={mainElementRef}>
           <PictureInPictureLayer

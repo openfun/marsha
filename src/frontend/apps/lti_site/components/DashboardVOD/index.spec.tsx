@@ -63,7 +63,7 @@ describe('<DashboardVOD />', () => {
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
     // TeacherLiveInfoBar
-    screen.getByRole('heading', { name: 'Title of the video' });
+    screen.getByDisplayValue('Title of the video');
 
     // DashboardControlPane
     expect(
@@ -98,7 +98,7 @@ describe('<DashboardVOD />', () => {
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
     // TeacherLiveInfoBar
-    screen.getByRole('heading', { name: 'Title of the video' });
+    screen.getByDisplayValue('Title of the video');
 
     // DashboardControlPane
     screen.getByRole('tab', { name: 'configuration' });

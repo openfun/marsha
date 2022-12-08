@@ -21,12 +21,10 @@ import { LivePairing } from './widgets/LivePairing';
 import { VODCreation } from './widgets/VODCreation';
 import { LiveJoinMode } from './widgets/LiveJoinMode';
 import { SharedLiveMedia } from './widgets/SharedLiveMedia';
-import { TitleAndRecordConfigWidget } from './widgets/TitleAndRecordConfigWidget';
 import { Transcripts } from './widgets/Transcripts';
 
 enum WidgetType {
   TITLE_AND_DESCRIPTION = 'TITLE_AND_DESCRIPTION',
-  TITLE_AND_RECORD_CONFIG = 'TITLE_AND_RECCORD_CONFIG',
   THUMBNAIL_LIVE = 'THUMBNAIL_LIVE',
   THUMBNAIL_VOD = 'THUMBNAIL_VOD',
   DOWNLOAD_VOD_TEACHER = 'DOWNLOAD_VOD_TEACHER',
@@ -60,10 +58,6 @@ export interface WidgetProps {
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
   [WidgetType.TITLE_AND_DESCRIPTION]: {
     component: <TitleAndDescriptionWidget key="title_and_description" />,
-    size: WidgetSize.DEFAULT,
-  },
-  [WidgetType.TITLE_AND_RECORD_CONFIG]: {
-    component: <TitleAndRecordConfigWidget key="title_and_record_config" />,
     size: WidgetSize.DEFAULT,
   },
   [WidgetType.THUMBNAIL_LIVE]: {
@@ -150,13 +144,12 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
 
 const teacherLiveWidgets: WidgetType[] = [
   WidgetType.TOOLS_AND_APPLICATIONS,
-  WidgetType.TITLE_AND_RECORD_CONFIG,
-  WidgetType.VISIBILITY_AND_INTERACTION,
-  WidgetType.SCHEDULING_AND_DESCRIPTION,
-  WidgetType.LIVE_PAIRING,
   WidgetType.VOD_CREATION,
-  WidgetType.LIVE_JOIN_MODE,
   WidgetType.THUMBNAIL_LIVE,
+  WidgetType.SCHEDULING_AND_DESCRIPTION,
+  WidgetType.VISIBILITY_AND_INTERACTION,
+  WidgetType.LIVE_PAIRING,
+  WidgetType.LIVE_JOIN_MODE,
   WidgetType.SHARED_MEDIA_LIVE_TEACHER,
 ];
 const teacherVodWidgets: WidgetType[] = [
