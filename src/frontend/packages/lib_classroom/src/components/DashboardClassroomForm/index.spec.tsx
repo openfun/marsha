@@ -246,8 +246,11 @@ describe('<DashboardClassroomForm />', () => {
       />,
     );
 
+    // using userEvent.type with following input doesn't work
     const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    userEvent.type(inputStartingAtDate, startingAt.toFormat('yyyy/MM/dd'));
+    fireEvent.change(inputStartingAtDate, {
+      target: { value: startingAt.toFormat('yyyy/MM/dd') },
+    });
     fireEvent.blur(inputStartingAtDate);
     deferredPatch.resolve({ message: 'Classroom scheduled.' });
 
