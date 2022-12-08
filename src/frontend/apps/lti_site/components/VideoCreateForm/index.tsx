@@ -104,6 +104,11 @@ or go to the video page to start adding subtitles.`,
     description: 'Label for the video title field in the video creation form.',
     id: 'components.VideoCreateForm.videoTitle',
   },
+  createAnotherVideo: {
+    defaultMessage: 'Create another video',
+    description: 'Label button to create another video',
+    id: 'components.VideoCreateForm.createAnotherVideo',
+  },
 });
 
 const ProgressStep = styled.div`
@@ -317,16 +322,17 @@ const VideoCreateFormStep1 = ({
             type="submit"
             alignSelf="end"
             style={{ cursor: mutation.isLoading ? 'progress' : 'pointer' }}
-          >
-            <Box direction="row" align="center" gap="small">
-              <FormattedMessage {...messages.createVideo} />
-              {mutation.isLoading ? (
-                <Spinner size="small" color="white">
-                  <FormattedMessage {...messages.step1Loading} />
-                </Spinner>
-              ) : null}
-            </Box>
-          </Button>
+            label={
+              <Box direction="row" align="center" gap="small">
+                <FormattedMessage {...messages.createVideo} />
+                {mutation.isLoading ? (
+                  <Spinner size="small" color="white">
+                    <FormattedMessage {...messages.step1Loading} />
+                  </Spinner>
+                ) : null}
+              </Box>
+            }
+          />
         </Box>
       </Form>
     </Box>
@@ -380,9 +386,11 @@ const VideoCreateFormStep3 = ({ onNextStep }: VideoCreateFormStep3Props) => {
         <FormattedMessage {...messages.step3Message} />
       </Text>
       <Box align="end">
-        <Button primary onClick={() => onNextStep()}>
-          Create another video
-        </Button>
+        <Button
+          primary
+          onClick={() => onNextStep()}
+          label={<FormattedMessage {...messages.createAnotherVideo} />}
+        />
       </Box>
     </Box>
   );
