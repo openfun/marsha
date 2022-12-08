@@ -40,6 +40,12 @@ const messages = defineMessages({
       'A placeholder text indicating the purpose of the input and what it is supposed to received.',
     id: 'components.LiveInfoBar.placeholderTitleInput',
   },
+  nbViewers: {
+    defaultMessage:
+      '{numberOfStudents, plural, =0 {No viewers connected.} one {# viewer connected.} other {# viewers connected}}',
+    description: 'Number of user connected on the live',
+    id: 'component.LiveInfoBar.nbViewers',
+  },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
     description: 'Message displayed when video is successfully updated.',
@@ -64,7 +70,9 @@ interface LiveInfoBarProps {
 }
 
 export const LiveInfoBar = ({ isTeacher, startDate }: LiveInfoBarProps) => {
-  const participants = useParticipantsStore((state) => state.participants);
+  const numberOfStudents = useParticipantsStore(
+    (state) => state.participants,
+  ).filter((client) => !client.isInstructor).length;
   const video = useCurrentVideo();
   const intl = useIntl();
   const [title, setTitle] = useState<string>(
@@ -116,7 +124,12 @@ export const LiveInfoBar = ({ isTeacher, startDate }: LiveInfoBarProps) => {
   return (
     <Fragment>
       {isTeacher ? (
-        <Box gap={'small'} alignContent={'center'} direction={'row'}>
+        <Box
+          margin={{ top: 'small', right: 'small' }}
+          gap={'small'}
+          alignContent={'center'}
+          direction={'row'}
+        >
           <StyledTitleTextInput
             icon={
               <EditionSVG
@@ -140,7 +153,7 @@ export const LiveInfoBar = ({ isTeacher, startDate }: LiveInfoBarProps) => {
           a11yTitle={title}
           color="blue-active"
           level="1"
-          margin={{ bottom: 'small', right: 'small' }}
+          margin={{ bottom: 'none' }}
           size="1.3rem"
           title={title}
           truncate
@@ -150,19 +163,21 @@ export const LiveInfoBar = ({ isTeacher, startDate }: LiveInfoBarProps) => {
         </Heading>
       )}
       <Box direction="row">
-        {participants.length > 0 && (
+        {numberOfStudents > 0 && (
           <Paragraph
             color="blue-active"
-            margin={{ right: 'large', bottom: 'none' }}
+            margin={{ left: 'small', right: 'large', bottom: 'small' }}
             size="small"
           >
-            {`${participants.length} viewers connected.`}
+            {intl.formatMessage(messages.nbViewers, {
+              numberOfStudents,
+            })}
           </Paragraph>
         )}
         {localStartDate && (
           <Paragraph
             color="blue-active"
-            margin={{ right: 'large', bottom: 'none' }}
+            margin={{ right: 'large', bottom: 'small' }}
             size="small"
           >
             {localStartDate}

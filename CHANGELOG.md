@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Number of viewer doesn't include the instructor accounts
 - Move title edition on the title itself
 - Move record toggle
 - standalone website:

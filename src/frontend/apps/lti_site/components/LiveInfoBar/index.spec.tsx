@@ -4,7 +4,12 @@ import fetchMock from 'fetch-mock';
 import React from 'react';
 import { useParticipantsStore } from 'data/stores/useParticipantsStore/index';
 import render from 'utils/tests/render';
-import { videoMockFactory, report, useJwt } from 'lib-components';
+import {
+  participantMockFactory,
+  videoMockFactory,
+  report,
+  useJwt,
+} from 'lib-components';
 
 import { LiveInfoBar } from '.';
 import { wrapInVideo } from '../../utils/tests/wrapInVideo';
@@ -13,6 +18,8 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
+
+const mockParticipant = participantMockFactory();
 
 describe('<LiveInfoBar />', () => {
   beforeEach(() => {
@@ -72,7 +79,7 @@ describe('<LiveInfoBar />', () => {
     screen.getByText('9/26/2022  ·  7:00:00 AM', {
       normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
     });
-    screen.getByText('4 viewers connected.');
+    screen.getByText('3 viewers connected');
   });
 
   it('renders startDate Intl NL - Netherlands', () => {
@@ -237,5 +244,38 @@ describe('<LiveInfoBar />', () => {
     expect(textInput).toHaveValue('An existing title');
     expect(report).toHaveBeenCalled();
     screen.getByText('Video update has failed !');
+  });
+
+  it('displays the correct number of students in the discussion', async () => {
+    const mockedVideo = videoMockFactory({});
+
+    useParticipantsStore.setState({
+      participants: [
+        {
+          ...mockParticipant,
+          isInstructor: true,
+          isOnStage: false,
+        },
+        {
+          ...mockParticipant,
+          isInstructor: false,
+          isOnStage: true,
+        },
+        {
+          ...mockParticipant,
+          isInstructor: false,
+          isOnStage: false,
+        },
+      ],
+    });
+
+    render(
+      wrapInVideo(
+        <LiveInfoBar isTeacher startDate={'some date'} />,
+        mockedVideo,
+      ),
+    );
+
+    screen.getByText('2 viewers connected');
   });
 });
