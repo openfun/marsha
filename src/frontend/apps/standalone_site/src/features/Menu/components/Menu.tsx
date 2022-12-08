@@ -42,7 +42,7 @@ const MenuBox = styled(Box)<PropsExtended>`
       : ``}
 `;
 
-function Menu() {
+const Menu = () => {
   const intl = useIntl();
   const { isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
@@ -93,6 +93,6 @@ function Menu() {
       </Box>
     </MenuBox>
   );
-}
+};
 
 export default Menu;

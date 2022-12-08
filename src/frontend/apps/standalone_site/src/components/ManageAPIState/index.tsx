@@ -40,13 +40,13 @@ interface ManageAPIStateProps {
   nothingToDisplay?: ReactElement | string;
 }
 
-function ManageAPIState({
+const ManageAPIState = ({
   isLoading,
   isError,
   itemsLength,
   children,
   nothingToDisplay,
-}: PropsWithChildren<ManageAPIStateProps>) {
+}: PropsWithChildren<ManageAPIStateProps>) => {
   const intl = useIntl();
 
   let content = (
@@ -78,6 +78,6 @@ function ManageAPIState({
   }
 
   return content;
-}
+};
 
 export default ManageAPIState;

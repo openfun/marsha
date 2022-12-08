@@ -39,6 +39,13 @@ module.exports = {
     'react/prop-types': 'off',
     'react/react-in-jsx-scope': 'off',
     'react/jsx-fragments': ['error', 'element'],
+    'react/function-component-definition': [
+      'error',
+      {
+        namedComponents: 'arrow-function',
+        unnamedComponents: ['function-expression', 'arrow-function'],
+      },
+    ],
   },
   ignorePatterns: ['node_modules/', '.eslintrc.js'],
   settings: {

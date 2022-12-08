@@ -26,7 +26,7 @@ interface MenuItemProps {
   route: Route;
 }
 
-function MenuItem({ route, children }: PropsWithChildren<MenuItemProps>) {
+const MenuItem = ({ route, children }: PropsWithChildren<MenuItemProps>) => {
   return (
     <Fragment>
       <NavLinkStyled
@@ -43,6 +43,6 @@ function MenuItem({ route, children }: PropsWithChildren<MenuItemProps>) {
       <div>{children}</div>
     </Fragment>
   );
-}
+};
 
 export default MenuItem;

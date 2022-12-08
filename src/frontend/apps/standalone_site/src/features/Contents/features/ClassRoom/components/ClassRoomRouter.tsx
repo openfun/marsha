@@ -7,7 +7,7 @@ import ClassRoomCreate from './Create/ClassRoomCreate';
 import ClassRooms from './Read/ClassRooms';
 import ClassRoomUpdate from './Update/ClassRoomUpdate';
 
-function ClassRoomRouter() {
+const ClassRoomRouter = () => {
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
   const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
   const classroomUpdatePath = classroomRoute.subRoutes?.UPDATE?.path || '';
@@ -33,6 +33,6 @@ function ClassRoomRouter() {
       </Switch>
     </Box>
   );
-}
+};
 
 export default ClassRoomRouter;

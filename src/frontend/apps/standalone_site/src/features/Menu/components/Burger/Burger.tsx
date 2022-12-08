@@ -8,7 +8,7 @@ import styles from './Burger.module.css';
 
 type BurgerProps = SVGProps<SVGSVGElement>;
 
-function Burger(props: BurgerProps) {
+const Burger = (props: BurgerProps) => {
   const { isDesktop } = useResponsive();
   const { isMenuOpen, switchMenuOpen } = useMenu();
 
@@ -22,6 +22,6 @@ function Burger(props: BurgerProps) {
       {...props}
     />
   );
-}
+};
 
 export default Burger;

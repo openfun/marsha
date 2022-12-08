@@ -23,7 +23,12 @@ interface MainLayoutProps extends BoxProps {
   menu?: React.ReactNode;
 }
 
-function MainLayout({ children, Header, menu, ...boxProps }: MainLayoutProps) {
+const MainLayout = ({
+  children,
+  Header,
+  menu,
+  ...boxProps
+}: MainLayoutProps) => {
   const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
   const [headerHeight, setHeaderHeight] = useState(0);
 
@@ -64,6 +69,6 @@ function MainLayout({ children, Header, menu, ...boxProps }: MainLayoutProps) {
       </Box>
     </MainLayoutBox>
   );
-}
+};
 
 export default MainLayout;

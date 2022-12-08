@@ -31,7 +31,7 @@ const messages = defineMessages({
   },
 });
 
-function AppRoutes() {
+const AppRoutes = () => {
   const intl = useIntl();
   const location = useLocation();
 
@@ -93,6 +93,6 @@ function AppRoutes() {
       </Route>
     </Switch>
   );
-}
+};
 
 export default AppRoutes;

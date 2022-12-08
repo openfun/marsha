@@ -24,7 +24,7 @@ const BoxText = styled(Box)`
   color: #002c84;
 `;
 
-function Contents() {
+const Contents = () => {
   const intl = useIntl();
 
   return (
@@ -44,6 +44,6 @@ function Contents() {
       </Box>
     </Box>
   );
-}
+};
 
 export default Contents;
