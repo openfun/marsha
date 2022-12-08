@@ -13,6 +13,7 @@ const colorsGeneric = {
   'bg-grey': '#717171',
   'bg-lightgrey': '#afafaf',
   'bg-marsha': '#edf5fa',
+  'bg-menu-hover': '#CDDEF5',
   'bg-select': '#e5eefa',
   'blue-active': '#055fd2',
   'blue-focus': '#031963',
@@ -21,6 +22,7 @@ const colorsGeneric = {
   'blue-chat': '#0a67de',
   'blue-message': '#ecf3fc',
   'border-grey': '#979797',
+  'content-background': '#E5EEFA',
   'dark-1': '#08223c',
   'dark-2': '#183653',
   'dark-3': '#2e4d6b',
@@ -151,6 +153,10 @@ export const theme: ThemeType = {
     extend: 'padding: 0.5rem 1rem;',
   },
   global: {
+    size: {
+      xsmedium: '240px',
+      xlmedium: '480px',
+    },
     colors,
     input: {
       weight: 'normal',
@@ -313,6 +319,16 @@ export const theme: ThemeType = {
   dateInput: {
     icon: {
       size: '18px',
+    },
+  },
+  pagination: {
+    button: {
+      color: 'blue-active',
+      active: {
+        background: {
+          color: '#dbebff',
+        },
+      },
     },
   },
 };

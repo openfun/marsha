@@ -1,15 +1,15 @@
 import { Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import React, { PropsWithChildren, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { Route } from 'routes';
-import { themeBase, themeExtend } from 'styles/theme.extend';
 
 const NavLinkStyled = styled(NavLink)`
   text-decoration: none;
-  color: ${normalizeColor('blue-active', themeBase)};
+  color: ${normalizeColor('blue-active', theme)};
   display: flex;
   gap: 1rem;
   align-items: center;
@@ -18,7 +18,7 @@ const NavLinkStyled = styled(NavLink)`
   transition: background-color 0.2s ease-in-out;
   &:active,
   &.active {
-    background-color: ${normalizeColor('bg-menu-hover', themeExtend)};
+    background-color: ${normalizeColor('bg-menu-hover', theme)};
   }
 `;
 
