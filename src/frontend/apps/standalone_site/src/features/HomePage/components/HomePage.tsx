@@ -29,7 +29,7 @@ const BlockBox = styled(Box)`
   display: block;
 `;
 
-function HomePage() {
+const HomePage = () => {
   const intl = useIntl();
 
   return (
@@ -50,6 +50,6 @@ function HomePage() {
       </Box>
     </Box>
   );
-}
+};
 
 export default HomePage;

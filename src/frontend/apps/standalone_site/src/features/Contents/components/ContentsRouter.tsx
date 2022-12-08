@@ -5,7 +5,7 @@ import { routes } from 'routes';
 
 import Contents from './Contents';
 
-function ContentsRouter() {
+const ContentsRouter = () => {
   return (
     <Switch>
       <Route path={routes.CONTENTS.path} exact>
@@ -16,6 +16,6 @@ function ContentsRouter() {
       </Route>
     </Switch>
   );
-}
+};
 
 export default ContentsRouter;

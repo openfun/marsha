@@ -17,7 +17,7 @@ const TextTruncated = styled(Text)`
   overflow: hidden;
 `;
 
-function ClassRoom({ classroom }: { classroom: ClassroomLite }) {
+const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   const intl = useIntl();
   const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
 
@@ -76,6 +76,6 @@ function ClassRoom({ classroom }: { classroom: ClassroomLite }) {
       </ContentCard>
     </StyledLink>
   );
-}
+};
 
 export default ClassRoom;

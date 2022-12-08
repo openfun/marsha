@@ -70,7 +70,7 @@ interface ClassRoomUpdateProps {
   isInvited: boolean;
 }
 
-function ClassRoomUpdate({ isInvited }: ClassRoomUpdateProps) {
+const ClassRoomUpdate = ({ isInvited }: ClassRoomUpdateProps) => {
   const { classroomId } = useParams<{ classroomId?: string }>();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
@@ -100,6 +100,6 @@ function ClassRoomUpdate({ isInvited }: ClassRoomUpdateProps) {
       </CurrentResourceContextProvider>
     </AppConfigProvider>
   );
-}
+};
 
 export default ClassRoomUpdate;

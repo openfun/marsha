@@ -23,7 +23,7 @@ const messages = defineMessages({
   },
 });
 
-function ClassRoomCreate() {
+const ClassRoomCreate = () => {
   const intl = useIntl();
   const { breakpoint } = useResponsive();
   const history = useHistory();
@@ -76,6 +76,6 @@ function ClassRoomCreate() {
       </Switch>
     </Fragment>
   );
-}
+};
 
 export default ClassRoomCreate;
