@@ -4,7 +4,7 @@ from django.urls import include, path
 
 from social_edu_federation.django.views import EduFedMetadataView
 
-from .api import LoginView as ApiLoginView
+from .api import LoginView as ApiLoginView, SamlFerIdpListAPIView
 from .views import (
     LoginView,
     LogoutView,
@@ -59,6 +59,11 @@ urlpatterns = [
     ),
     # API
     path("api/login/", ApiLoginView.as_view(), name="api_login"),
+    path(
+        "api/saml/renater_fer_idp_list/",
+        SamlFerIdpListAPIView.as_view(),
+        name="api_saml_fer_idp_list",
+    ),
 ]
 
 if settings.SOCIAL_AUTH_SAML_FER_IDP_FAKER:
