@@ -1,5 +1,12 @@
 import { Box, Button, Heading, Select, Text, TextInput } from 'grommet';
-import { Form, FormField, Organization, report, Spinner } from 'lib-components';
+import {
+  Form,
+  FormField,
+  Organization,
+  report,
+  Spinner,
+  FormHelpText,
+} from 'lib-components';
 import { useLayoutEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
@@ -198,9 +205,9 @@ export const CreatePlaylistForm = () => {
                 {(option: Organization) => option.name}
               </Select>
             </FormField>
-            <Text margin={{ top: 'small' }}>
+            <FormHelpText>
               {intl.formatMessage(messages.organizationHelper)}
-            </Text>
+            </FormHelpText>
           </Box>
 
           <Box>
@@ -213,17 +220,18 @@ export const CreatePlaylistForm = () => {
             >
               <TextInput name="name" id="textinput-name-id" />
             </FormField>
-            <Text>{intl.formatMessage(messages.playlistNameHelper)}</Text>
+            <FormHelpText>
+              {intl.formatMessage(messages.playlistNameHelper)}
+            </FormHelpText>
           </Box>
-
-          <ModalButton
-            label={intl.formatMessage(messages.createPlaylistButtonTitle)}
-            onClickCancel={() => {
-              history.push(routes.PLAYLIST.path);
-            }}
-            isSubmiting={isCreating}
-          />
         </Box>
+        <ModalButton
+          label={intl.formatMessage(messages.createPlaylistButtonTitle)}
+          onClickCancel={() => {
+            history.push(routes.PLAYLIST.path);
+          }}
+          isSubmiting={isCreating}
+        />
       </Form>
     </Box>
   );

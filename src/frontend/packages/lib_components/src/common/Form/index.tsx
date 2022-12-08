@@ -1,9 +1,13 @@
 import {
+  Box,
+  BoxProps,
   Form as GrommetForm,
   FormExtendedEvent as GrommetFormExtendedEvent,
   FormField as GrommetFormField,
   FormFieldProps as GrommetFormFieldProps,
   FormProps as GrommetFormProps,
+  Text,
+  TextProps,
 } from 'grommet';
 import { Maybe } from 'lib-common';
 import React, {
@@ -91,3 +95,26 @@ export const FormField = (props: PropsWithChildren<GrommetFormFieldProps>) => {
     </GrommetFormField>
   );
 };
+
+interface FormHelpTextProps {
+  boxProps?: BoxProps;
+  textProps?: TextProps;
+  disabled?: boolean;
+}
+
+export const FormHelpText = ({
+  children,
+  boxProps,
+  textProps,
+  disabled,
+}: PropsWithChildren<FormHelpTextProps>) => (
+  <Box pad={{ left: 'small' }} {...boxProps}>
+    <Text
+      size="xsmall"
+      {...textProps}
+      color={disabled ? 'bg-grey' : 'blue-active'}
+    >
+      {children}
+    </Text>
+  </Box>
+);
