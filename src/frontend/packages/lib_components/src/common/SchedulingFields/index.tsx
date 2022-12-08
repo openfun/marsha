@@ -5,6 +5,8 @@ import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { FormHelpText } from 'common/Form';
+
 import { mergeDateTime, splitDateTime } from './utils';
 
 const messages = defineMessages({
@@ -207,65 +209,80 @@ export const SchedulingFields = ({
   return (
     <React.Fragment>
       <Box direction="row" justify="between" margin={margin} gap="small">
-        <FormField
-          label={intl.formatMessage(messages.startingAtDateTextLabel)}
-          htmlFor="starting_at_date"
-          margin="none"
-          background={startingAtError ? 'status-error-off' : 'white'}
-          // Fix of the calendar icon still clickable when component disabled (see below)
-          style={{ pointerEvents: disabled ? 'none' : undefined }}
-        >
-          <DateInput
-            dropProps={{ align: { bottom: 'top' } }}
-            id="starting_at_date"
-            format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
-            value={currentStartingAtDate || undefined}
-            onChange={onStartingAtDateInputChange}
-            calendarProps={{
-              bounds: [
-                DateTime.local().toISO(),
-                DateTime.local().plus({ years: 1 }).toISO(),
-              ],
-            }}
-            // TODO : calendar icon still clickable even when component is disabled
-            // need to open an issue on grommet's github
+        <Box>
+          <FormField
+            label={intl.formatMessage(messages.startingAtDateTextLabel)}
+            htmlFor="starting_at_date"
+            margin="none"
+            background={startingAtError ? 'status-error-off' : 'white'}
+            // Fix of the calendar icon still clickable when component disabled (see below)
+            style={{ pointerEvents: disabled ? 'none' : undefined }}
+            height="80%"
             disabled={disabled}
-          />
-        </FormField>
-        <FormField
-          label={intl.formatMessage(messages.startingAtTimeTextLabel)}
-          htmlFor="starting_at_time"
-          margin="none"
-          background={startingAtError ? 'status-error-off' : 'white'}
-        >
-          <TextInput
-            id="starting_at_time"
-            value={currentStartingAtTime}
-            onChange={onStartingAtTimeInputChange}
-            onSuggestionSelect={onStartingAtTimeSuggestionSelect}
-            suggestions={timeSuggestions}
-            defaultSuggestion={22}
-            placeholder="hh:mm"
-            dropHeight="medium"
+          >
+            <DateInput
+              dropProps={{ align: { bottom: 'top' } }}
+              id="starting_at_date"
+              format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
+              value={currentStartingAtDate || undefined}
+              onChange={onStartingAtDateInputChange}
+              calendarProps={{
+                bounds: [
+                  DateTime.local().toISO(),
+                  DateTime.local().plus({ years: 1 }).toISO(),
+                ],
+              }}
+              // TODO : calendar icon still clickable even when component is disabled
+              // need to open an issue on grommet's github
+              disabled={disabled}
+            />
+          </FormField>
+          <FormHelpText>
+            {intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
+          </FormHelpText>
+        </Box>
+        <Box>
+          <FormField
+            label={intl.formatMessage(messages.startingAtTimeTextLabel)}
+            htmlFor="starting_at_time"
+            margin="none"
+            background={startingAtError ? 'status-error-off' : 'white'}
+            height="80%"
             disabled={disabled}
-          />
-        </FormField>
-        <FormField
-          label={intl.formatMessage(messages.estimatedDurationTextLabel)}
-          htmlFor="estimated_duration"
-          margin="none"
-        >
-          <TextInput
-            id="estimated_duration"
-            value={currentEstimatedDuration}
-            onChange={onEstimatedDurationInputChange}
-            onSuggestionSelect={onEstimatedDurationSuggestionSelect}
-            suggestions={durationSuggestions}
-            placeholder="hh:mm"
-            dropHeight="medium"
+          >
+            <TextInput
+              id="starting_at_time"
+              value={currentStartingAtTime}
+              onChange={onStartingAtTimeInputChange}
+              onSuggestionSelect={onStartingAtTimeSuggestionSelect}
+              suggestions={timeSuggestions}
+              defaultSuggestion={22}
+              dropHeight="medium"
+              disabled={disabled}
+            />
+          </FormField>
+          <FormHelpText>hh:mm</FormHelpText>
+        </Box>
+        <Box>
+          <FormField
+            label={intl.formatMessage(messages.estimatedDurationTextLabel)}
+            htmlFor="estimated_duration"
+            margin="none"
+            height="80%"
             disabled={disabled}
-          />
-        </FormField>
+          >
+            <TextInput
+              id="estimated_duration"
+              value={currentEstimatedDuration}
+              onChange={onEstimatedDurationInputChange}
+              onSuggestionSelect={onEstimatedDurationSuggestionSelect}
+              suggestions={durationSuggestions}
+              dropHeight="medium"
+              disabled={disabled}
+            />
+          </FormField>
+          <FormHelpText>hh:mm</FormHelpText>
+        </Box>
       </Box>
       {startingAtError && (
         <Box margin={{ top: 'small' }}>
