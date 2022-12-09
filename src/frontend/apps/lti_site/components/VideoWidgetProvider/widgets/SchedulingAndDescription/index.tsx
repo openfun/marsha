@@ -1,6 +1,5 @@
 import { DateTime, Duration } from 'luxon';
-import { Box, Grommet, Text, ThemeType } from 'grommet';
-import { deepMerge } from 'grommet/utils';
+import { Box, Grommet, Text } from 'grommet';
 import { DashedBoxCustom } from 'lib-components';
 import React, { Fragment, useCallback, useState } from 'react';
 import { toast } from 'react-hot-toast';
@@ -11,7 +10,7 @@ import { TextAreaInput } from 'components/graphicals/TextAreaInput';
 import { SchedulingFields, liveState, Video, report } from 'lib-components';
 import { useUpdateVideo } from 'data/queries';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { theme } from 'utils/theme/theme';
+import { theme } from 'lib-common';
 import { debounce } from 'utils/widgets/widgets';
 
 const messages = defineMessages({
@@ -62,52 +61,6 @@ const messages = defineMessages({
   },
 });
 
-const schedulingFieldsTheme: ThemeType = deepMerge(theme, {
-  global: {
-    input: {
-      font: {
-        size: '0.8em',
-      },
-    },
-  },
-  box: {
-    extend: null,
-  },
-  button: {
-    extend: 'margin: 0 3% 0 0',
-  },
-  formField: {
-    label: {
-      size: '0.7rem',
-      margin: '0.3rem 0.3rem 0 0.3rem',
-      color: 'bg-grey',
-    },
-    border: {
-      position: 'outer',
-      side: 'all',
-      color: 'blue-active',
-      style: 'solid',
-    },
-    round: {
-      size: 'xsmall',
-    },
-  },
-  textInput: {
-    extend: `padding: 0.3rem 0 0 0.3rem;`,
-  },
-  maskedInput: {
-    extend: `padding: 0.3rem 0 0 0.3rem;`,
-  },
-  dateInput: {
-    icon: {
-      size: '18px',
-    },
-  },
-  text: {
-    extend: 'font-size: 0.7em',
-  },
-});
-
 export const SchedulingAndDescription = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
@@ -148,7 +101,7 @@ export const SchedulingAndDescription = () => {
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <Grommet theme={schedulingFieldsTheme}>
+        <Grommet theme={theme}>
           <SchedulingFields
             estimatedDuration={video.estimated_duration}
             disabled={video.live_state !== liveState.IDLE}
