@@ -13,8 +13,10 @@ from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from django.utils.module_loading import import_string
 
+from boto3.exceptions import Boto3Error
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 
 from marsha.core.defaults import JITSI
@@ -328,33 +330,57 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 400,
             )
 
-        # dispatch earlier in the websocket that the live is starting without saving it
-        tmp_video = deepcopy(video)
-        tmp_video.live_state = defaults.STARTING
-        if settings.LIVE_CHAT_ENABLED:
-            create_room(video.id)
-        channel_layers_utils.dispatch_video_to_groups(tmp_video)
-        del tmp_video
+        # The live_state at the beginning of the start live action is saved in order to
+        # use it later
+        original_live_state = video.live_state
 
-        if video.live_info is None or video.live_state == defaults.HARVESTED:
-            now = timezone.now()
-            stamp = to_timestamp(now)
-            key = f"{video.pk}_{stamp}"
-            video.live_info = create_live_stream(key)
-            wait_medialive_channel_is_created(video.get_medialive_channel().get("id"))
+        # dispatch earlier in the websocket that the live is starting and force
+        # to save it in an atomic transaction.
+        with transaction.atomic():
+            video.live_state = defaults.STARTING
+            video.save(update_fields=("live_state",))
+            if settings.LIVE_CHAT_ENABLED:
+                create_room(video.id)
+            channel_layers_utils.dispatch_video_to_groups(video)
 
-        start_live_channel(video.get_medialive_channel().get("id"))
+        try:
+            if video.live_info is None or original_live_state == defaults.HARVESTED:
+                now = timezone.now()
+                stamp = to_timestamp(now)
+                key = f"{video.pk}_{stamp}"
+                video.live_info = create_live_stream(key)
+                wait_medialive_channel_is_created(
+                    video.get_medialive_channel().get("id")
+                )
+
+            start_live_channel(video.get_medialive_channel().get("id"))
+        except Boto3Error as start_live_channel_exception:
+            # If something went wrong with aws, we rollback to the orginal live state
+            video.live_state = original_live_state
+            video.save(update_fields=("live_state",))
+            channel_layers_utils.dispatch_video_to_groups(video)
+
+            # Dispatch the rollbacked state to the websocket
+            raise APIException(
+                "Something went wrong with AWS when starting live channel"
+            ) from start_live_channel_exception
 
         # if the video has been harvested, we need to reset its recordings
         # and its related live attendances
-        if video.live_state == defaults.HARVESTED:
+        if original_live_state == defaults.HARVESTED:
             video.recording_slices = []
             LiveSession.objects.filter(video=video).update(live_attendance=None)
 
-        video.live_state = defaults.STARTING
         video.upload_state = defaults.PENDING
         video.resolutions = None
-        video.save()
+        video.save(
+            update_fields=(
+                "live_info",
+                "recording_slices",
+                "resolutions",
+                "upload_state",
+            )
+        )
 
         channel_layers_utils.dispatch_video_to_groups(video)
 

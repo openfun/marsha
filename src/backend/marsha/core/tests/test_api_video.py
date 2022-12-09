@@ -8,6 +8,8 @@ import uuid
 from django.conf import settings
 from django.test import TestCase, override_settings
 
+from boto3.exceptions import Boto3Error
+
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     PlaylistLtiTokenFactory,
@@ -33,6 +35,7 @@ from ..defaults import (
     RAW,
     READY,
     RUNNING,
+    STARTING,
     STATE_CHOICES,
     STOPPED,
     STOPPING,
@@ -5233,6 +5236,60 @@ class VideoAPITest(TestCase):
             )
             mock_dispatch_video_to_groups.assert_not_called()
         self.assertEqual(response.status_code, 400)
+
+    def test_api_instructor_start_aws_raising_exception(self):
+        """
+        When creating or starting the AWS stack and this one fails, the live should be rollback
+        to its original state (IDLE here) and dispatch in the websocket.
+        """
+        video = factories.VideoFactory(
+            playlist__title="foo bar",
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            upload_state=PENDING,
+            live_state=IDLE,
+            live_type=JITSI,
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=video,
+            user__id="56255f3807599c377bf0e5bf072359fd",
+        )
+
+        # start a live video,
+        with (
+            mock.patch.object(api.video, "start_live_channel"),
+            mock.patch.object(
+                api.video, "create_live_stream"
+            ) as mock_create_live_stream,
+            mock.patch(
+                "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+            ) as mock_dispatch_video_to_groups,
+        ):
+            mock_create_live_stream.side_effect = Boto3Error("bad request")
+            # Must test live state precisely because
+            # mock.call(video) is always equal to
+            # mock_dispatch_video_to_groups.call_args_list[0] event with
+            # different live_state, plus the video is an object reference,
+            # which prevent any testing afterward
+            mocked_live_state_calls = []
+            mock_dispatch_video_to_groups.side_effect = (
+                # We know the only argument is the video
+                lambda *args: mocked_live_state_calls.append(args[0].live_state)
+            )
+            response = self.client.post(
+                f"/api/videos/{video.id}/start-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+            self.assertEqual(len(mocked_live_state_calls), 2)
+            self.assertEqual(mocked_live_state_calls[0], STARTING)
+            self.assertEqual(mocked_live_state_calls[1], IDLE)
+
+        self.assertEqual(response.status_code, 500)
+
+        video.refresh_from_db()
+
+        self.assertEqual(video.live_state, IDLE)
 
     def test_api_instructor_start_non_idle_or_stopped_live(self):
         """An instructor should not start a video its state is not IDLE or STOPPED."""
