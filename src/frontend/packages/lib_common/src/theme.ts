@@ -1,6 +1,7 @@
 import { TextProps, ThemeType } from 'grommet';
 import { ColorType } from 'grommet/utils';
 import { rgba } from 'polished';
+import { css } from 'styled-components';
 
 const colorsGeneric = {
   'accent-1': 'brand',
@@ -18,9 +19,11 @@ const colorsGeneric = {
   'blue-active': '#055fd2',
   'blue-focus': '#031963',
   'blue-hover': '#2d76d3',
+  'blue-hover-light': '#E5F1F8',
   'blue-off': '#81ade6',
   'blue-chat': '#0a67de',
   'blue-message': '#ecf3fc',
+  'blue-button': '#035ccd',
   'border-grey': '#979797',
   'content-background': '#E5EEFA',
   'dark-1': '#08223c',
@@ -127,14 +130,21 @@ export const theme: ThemeType = {
   button: {
     default: {
       background: { color: 'white' },
-      border: { color: 'brand' },
-      color: 'brand',
+      border: { color: 'brand', width: '1px' },
+      color: 'blue-active',
       padding: { vertical: 'xsmall', horizontal: 'small' },
     },
     primary: {
-      background: { color: 'brand' },
+      background: { color: 'blue-button' },
       border: undefined,
       color: 'white',
+      padding: { vertical: 'small', horizontal: 'medium' },
+    },
+    secondary: {
+      background: { color: 'transparent' },
+      border: { color: 'brand' },
+      color: 'blue-active',
+      padding: { vertical: 'xsmall', horizontal: 'small' },
     },
     border: {
       radius: '4px',
@@ -150,7 +160,6 @@ export const theme: ThemeType = {
         },
       },
     },
-    extend: 'padding: 0.5rem 1rem;',
   },
   global: {
     size: {
@@ -220,10 +229,15 @@ export const theme: ThemeType = {
     },
   },
   formField: {
+    focus: {
+      border: {
+        color: 'blue-focus',
+      },
+    },
     label: {
       requiredIndicator: true,
-      size: '0.8rem',
-      margin: '0.5rem 1rem 0',
+      size: '0.688rem',
+      margin: '0.3rem 1rem 0',
       color: 'bg-grey',
     },
     border: {
@@ -235,17 +249,90 @@ export const theme: ThemeType = {
     round: {
       size: 'xsmall',
     },
+    error: {
+      container: {
+        a11yTitle: 'error-form-field',
+      },
+    },
+    help: {
+      margin: '0.3rem 1rem 0',
+      color: 'bg-grey',
+    },
+    disabled: {
+      border: {
+        color: 'bg-grey',
+      },
+    },
+    extend: css`
+      & input::placeholder {
+        color: transparent;
+      }
+      & {
+        transition: all 0.2s linear;
+      }
+      & input {
+        font-size: 1rem;
+      }
+      & label span[aria-label='required'] {
+        font-size: 0.688rem;
+      }
+      &:hover {
+        box-shadow: 0 0 0 2px ${colorsGeneric['blue-active']};
+      }
+      &:focus-within {
+        border-color: ${colorsGeneric['blue-focus']};
+        box-shadow: 0 0 0 2px ${colorsGeneric['blue-focus']};
+      }
+      &:focus-within input,
+      &:focus-within textarea {
+        color: ${colorsGeneric['blue-focus']};
+      }
+      &:has(div[aria-label='error-form-field']),
+      &:focus-within:has(div[aria-label='error-form-field']) {
+        border-color: ${colorsGeneric['red-active']};
+        box-shadow: 0 0 0 2px ${colorsGeneric['red-active']};
+      }
+      & div[aria-label='error-form-field'] span {
+        color: white;
+      }
+      & div[aria-label='error-form-field'] {
+        background-color: ${colorsGeneric['red-active']};
+        margin: 2px;
+        border-radius: 4px;
+      }
+      & div[aria-label='error-form-field'] span {
+        color: white;
+        font-size: 1rem;
+      }
+    `,
   },
   select: {
     control: {
       extend: `font-size: 1rem; border-color: ${colorsGeneric['blue-active']}; padding: 0;`,
     },
+    container: {
+      extend: css`
+        & {
+          border: 1px solid ${colorsGeneric['blue-active']};
+        }
+        & button {
+          transition: all 0.2s linear;
+          width: 98%;
+          border-radius: 4px;
+          margin: 0.125rem 0 0.125rem 1%;
+        }
+        & button:hover {
+          background-color: ${colorsGeneric['blue-hover-light']};
+          color: inherit;
+        }
+      `,
+    },
     options: {
       container: {
-        pad: 'none',
+        pad: 'small',
       },
       text: {
-        size: '1rem',
+        size: '0.875rem',
       },
     },
   },
@@ -310,11 +397,18 @@ export const theme: ThemeType = {
       size: '1.5rem',
     },
   },
+  textArea: {
+    extend: css`
+      & {
+        padding: 0.5rem 1rem;
+      }
+    `,
+  },
   textInput: {
-    extend: 'padding: 0 1rem 0.8rem',
+    extend: 'padding: 0.5rem 1rem;',
   },
   maskedInput: {
-    extend: 'padding: 0 1rem 0.8rem',
+    extend: 'padding: 0.5rem 1rem;',
   },
   dateInput: {
     icon: {
