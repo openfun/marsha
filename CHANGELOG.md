@@ -28,6 +28,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- standalone website:
+  - mutualize modals and styles
+  - fine tune UI
 - Filtered classroom list
 - Filtered deposit list
 - Filtered markdown document list

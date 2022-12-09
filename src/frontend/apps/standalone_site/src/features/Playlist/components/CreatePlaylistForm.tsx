@@ -70,7 +70,7 @@ const messages = defineMessages({
 });
 
 interface CreatePlaylistFormValues {
-  organization: Organization;
+  organizationId: string;
   name: string;
 }
 
@@ -79,7 +79,7 @@ export const CreatePlaylistForm = () => {
   const history = useHistory();
   const [formValues, setFormValues] = useState<
     Partial<CreatePlaylistFormValues>
-  >({ organization: undefined, name: '' });
+  >({ organizationId: undefined, name: '' });
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
   const {
     isLoading,
@@ -140,7 +140,7 @@ export const CreatePlaylistForm = () => {
       <Form
         onSubmit={(event) => {
           const values = event.value;
-          if (!values.name || !values.organization) {
+          if (!values.name || !values.organizationId) {
             //  should not happen with validation.
             report(
               new Error(
@@ -151,7 +151,7 @@ export const CreatePlaylistForm = () => {
           }
 
           mutate({
-            organization: values.organization.id,
+            organization: values.organizationId,
             title: values.name,
           });
         }}
@@ -178,11 +178,11 @@ export const CreatePlaylistForm = () => {
               required
               label={intl.formatMessage(messages.organizationFieldLabel)}
               htmlFor="select-organization-id"
-              name="organization"
+              name="organizationId"
               margin="0"
             >
               <Select
-                name="organization"
+                name="organizationId"
                 id="select-organization-id"
                 options={organizations}
                 onMore={() => {
@@ -196,14 +196,9 @@ export const CreatePlaylistForm = () => {
                     );
                   }
                 }}
-                valueLabel={(value: Organization) => (
-                  <Box margin="small">
-                    <Text>{value.name}</Text>
-                  </Box>
-                )}
-              >
-                {(option: Organization) => option.name}
-              </Select>
+                labelKey="name"
+                valueKey={{ key: 'id', reduce: true }}
+              />
             </FormField>
             <FormHelpText>
               {intl.formatMessage(messages.organizationHelper)}

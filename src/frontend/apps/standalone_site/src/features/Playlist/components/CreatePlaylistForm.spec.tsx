@@ -100,10 +100,10 @@ describe('<CreatePlaylistForm />', () => {
 
     expect(
       await screen.findByRole('button', {
-        name: 'Open Drop; Selected: [object Object]',
+        name: 'Open Drop; Selected: id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByText('org')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('org')).toBeInTheDocument();
 
     userEvent.type(
       screen.getByRole('textbox', { name: 'Name required' }),
