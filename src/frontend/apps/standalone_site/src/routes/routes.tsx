@@ -74,6 +74,7 @@ enum ERouteNames {
   PLAYLIST = 'PLAYLIST',
   ORGANIZATION = 'ORGANIZATION',
   CONTENTS = 'CONTENTS',
+  LOGIN = 'LOGIN',
 }
 enum EMyContentsSubRouteNames {
   //VIDEO = 'VIDEO',
@@ -127,6 +128,9 @@ export const routes: Routes = {
         aria-label="svg-menu-favorites"
       />
     ),
+  },
+  LOGIN: {
+    path: `/login`,
   },
   PORTABILITY_REQUESTS: {
     path: `/portability-requests/:state?`,
