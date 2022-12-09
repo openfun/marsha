@@ -1,10 +1,12 @@
 import { Box } from 'grommet';
+import React from 'react';
 
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
 import { WhiteCard } from 'components/Cards';
 import { useResponsive } from 'hooks/useResponsive';
 
 import { LoginForm } from './LoginForm';
+import { RenaterSamlFerIdpSearchSelect } from './RenaterSamlFerIdpSearchSelect';
 
 export const Login = () => {
   const { isDesktop } = useResponsive();
@@ -26,6 +28,7 @@ export const Login = () => {
         <Box direction="row" width="100%" style={{ maxWidth: '566px' }}>
           <WhiteCard flex="grow">
             <LoginForm />
+            <RenaterSamlFerIdpSearchSelect />
           </WhiteCard>
         </Box>
       </Box>
