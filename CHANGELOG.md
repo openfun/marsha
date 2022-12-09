@@ -47,6 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Change permission on retrieve endpoints
 - Deal with webinar without thumbnail
+- Force to save the starting live state on the start action
 
 ## [4.0.0-beta.11] - 2022-11-08
 
