@@ -13,6 +13,7 @@ import { routes } from './routes';
 
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
+const { Login } = lazyImport(() => import('features/Authentication'));
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
@@ -62,6 +63,11 @@ const AppRoutes = () => {
             </Suspense>
           </MainLayout>
         </VisitorAuthenticator>
+      </Route>
+      <Route path={routes.LOGIN.path} exact>
+        <Suspense fallback={<ContentSpinner />}>
+          <Login />
+        </Suspense>
       </Route>
       <Route>
         <Authenticator>
