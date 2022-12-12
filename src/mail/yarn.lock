@@ -9,10 +9,10 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@html-to/text-cli@0.5.1":
-  version "0.5.1"
-  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.1.tgz#711dc58509b73daea7bddbb1888d2323eb75f6f3"
-  integrity sha512-HPFkMUxJgCJW14clGQGAKuxK3nZdHl3kCo73CI0gXaJQ8BwkINPkf9XnSp57R+TgfBnE1H4ONdur+Bd33EsEnA==
+"@html-to/text-cli@0.5.2":
+  version "0.5.2"
+  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.2.tgz#1630ae20a1454460df913ab1fb6460bdc8bc44fa"
+  integrity sha512-MMNDsENeMWQAOAt0hX0CXJsjDUZYx0IYkxoZvfbSaBo5N5Rf2vAVXswLsida1fkiFTOt5Cwt2Cw3r8Efo8LB/g==
   dependencies:
     "@selderee/plugin-htmlparser2" "^0.10.0"
     aspargvs "^0.6.0"
