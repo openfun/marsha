@@ -10,11 +10,14 @@ export interface RenaterSamlFerIdp {
   login_url: string;
 }
 
-export const getRenaterFerIdpList = async (): Promise<RenaterSamlFerIdp[]> => {
+export const getRenaterFerIdpList = async (
+  signal?: AbortSignal,
+): Promise<RenaterSamlFerIdp[]> => {
   const response = await fetch(`/account/api/saml/renater_fer_idp_list/`, {
     headers: {
       'Content-Type': 'application/json',
     },
+    signal,
   });
 
   if (!response.ok) {
