@@ -6,7 +6,7 @@ import { WhiteCard } from 'components/Cards';
 import { useResponsive } from 'hooks/useResponsive';
 
 import { LoginForm } from './LoginForm';
-import { RenaterSamlFerIdpSearchSelect } from './RenaterSamlFerIdpSearchSelect';
+import { RenaterAuthenticator } from './RenaterAuthenticator';
 
 export const Login = () => {
   const { isDesktop } = useResponsive();
@@ -28,7 +28,7 @@ export const Login = () => {
         <Box direction="row" width="100%" style={{ maxWidth: '566px' }}>
           <WhiteCard flex="grow">
             <LoginForm />
-            <RenaterSamlFerIdpSearchSelect />
+            <RenaterAuthenticator />
           </WhiteCard>
         </Box>
       </Box>
