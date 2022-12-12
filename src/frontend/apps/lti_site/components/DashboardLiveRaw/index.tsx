@@ -2,7 +2,7 @@ import { Box, Heading, Paragraph } from 'grommet';
 import { CopyClipboard } from 'lib-components';
 import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import ReactTooltip from 'react-tooltip';
+import { toast } from 'react-hot-toast';
 
 import { liveState, Video } from 'lib-components';
 
@@ -82,12 +82,14 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
                   textToCopy={matches[1]}
                   title={`copy url ${matches[1]}`}
                   onSuccess={(event) => {
-                    setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
+                    toast.success(
+                      intl.formatMessage(messages.copied, { text: event.text }),
+                    );
 
                     event.clearSelection();
                   }}
                   onError={(event) => {
-                    ReactTooltip.hide(event.trigger);
+                    toast.error(event.text);
                   }}
                 />
               </li>
@@ -103,12 +105,14 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
                   textToCopy={matches[2]}
                   title={`copy key ${matches[2]}`}
                   onSuccess={(event) => {
-                    setTimeout(() => ReactTooltip.hide(event.trigger), 1000);
+                    toast.success(
+                      intl.formatMessage(messages.copied, { text: event.text }),
+                    );
 
                     event.clearSelection();
                   }}
                   onError={(event) => {
-                    ReactTooltip.hide(event.trigger);
+                    toast.error(event.text);
                   }}
                 />
               </li>
@@ -119,20 +123,7 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
     },
   );
 
-  return (
-    <Box>
-      {endpoints}
-      <ReactTooltip
-        effect="solid"
-        place="bottom"
-        type="success"
-        isCapture={true}
-        event="click"
-      >
-        <FormattedMessage {...messages.copied} />
-      </ReactTooltip>
-    </Box>
-  );
+  return <Box>{endpoints}</Box>;
 };
 
 export default DashboardLiveRaw;
