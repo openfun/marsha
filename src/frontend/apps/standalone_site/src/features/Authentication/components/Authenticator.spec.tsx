@@ -2,7 +2,7 @@ import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
-import { useLocation } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 
 import { Authenticator } from './Authenticator';
 
@@ -18,7 +18,16 @@ const WrappedAuthenticator = () => {
   // for test purposes
   const location = useLocation();
   return (
-    <Authenticator>{`${location.pathname}${location.search}`}</Authenticator>
+    <Switch>
+      <Route path="/login" exact>
+        login page
+      </Route>
+      <Route>
+        <Authenticator>
+          {`${location.pathname}${location.search}`}
+        </Authenticator>
+      </Route>
+    </Switch>
   );
 };
 
@@ -35,16 +44,12 @@ describe('<Authenticator />', () => {
     fetchMock.restore();
   });
 
-  it('redirects the user on the backend authent', async () => {
+  it('redirects the user on the authent page', () => {
     render(<WrappedAuthenticator />, {
       routerOptions: { history: ['/some/path/'] },
     });
 
-    await waitFor(() =>
-      expect(replace).toHaveBeenCalledWith(
-        'http://localhost:8060/account/login/',
-      ),
-    );
+    expect(screen.getByText('login page')).toBeInTheDocument();
     expect(screen.queryByText('/some/path/')).not.toBeInTheDocument();
   });
 
@@ -97,11 +102,7 @@ describe('<Authenticator />', () => {
       },
     });
 
-    await waitFor(() =>
-      expect(replace).toHaveBeenCalledWith(
-        'http://localhost:8060/account/login/',
-      ),
-    );
+    expect(screen.getByText('login page')).toBeInTheDocument();
     expect(
       screen.queryByText('/some/other/path/?some=query'),
     ).not.toBeInTheDocument();
@@ -127,10 +128,8 @@ describe('<Authenticator />', () => {
       },
     });
 
-    await waitFor(() => {
-      expect(
-        screen.getByText('/some/other/path/?some=query'),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByText('/some/other/path/?some=query'),
+    ).toBeInTheDocument();
   });
 });
