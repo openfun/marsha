@@ -1,5 +1,5 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
-import { Hide, View } from 'grommet-icons';
+import { Hide, FormView, Alert } from 'grommet-icons';
 import React, { useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 import { useHistory } from 'react-router-dom';
@@ -60,14 +60,25 @@ export const LoginForm = () => {
             type={reveal ? 'text' : 'password'}
           />
           <Button
-            icon={reveal ? <View size="medium" /> : <Hide size="medium" />}
+            plain
+            style={{ margin: '0 1rem' }}
+            icon={reveal ? <FormView size="medium" /> : <Hide size="medium" />}
             onClick={() => setReveal(!reveal)}
           />
         </Box>
       </FormField>
       {message && (
-        <Box pad={{ horizontal: 'small' }}>
-          <Text>{message}</Text>
+        <Box
+          direction="row"
+          align="center"
+          justify="center"
+          margin={{ vertical: 'medium' }}
+          gap="small"
+        >
+          <Alert size="medium" color="#df8c00" />
+          <Text weight="bold" size="small">
+            {message}
+          </Text>
         </Box>
       )}
       <Box flex={false}>

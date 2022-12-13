@@ -146,11 +146,11 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
           <Select
             id="select-playlist-id"
             name="playlist"
+            size="medium"
             aria-label={intl.formatMessage(messages.selectPlaylistLabel)}
             options={playlists}
             labelKey="title"
             valueKey={{ key: 'id', reduce: true }}
-            size="1rem"
             onMore={() => {
               if (!playlistResponse) {
                 return;

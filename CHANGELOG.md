@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - dynamic content in homepage
   - page my-contents
   - access site visitor mode
+  - login page
 - Add new elements to the teacher VOD Dashboard :
   - Attendances from live session
 - Allow to store link between an LTI user and a "site" user
