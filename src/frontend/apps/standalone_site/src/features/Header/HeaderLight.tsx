@@ -4,18 +4,25 @@ import { forwardRef } from 'react';
 
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
 
-const HeaderLight = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
-  return (
-    <Box
-      ref={ref}
-      role="menubar"
-      pad="small"
-      background={{ color: 'bg-marsha' }}
-    >
-      <LogoIcon width={117} height={80} />
-    </Box>
-  );
-});
+interface HeaderLightProps {
+  bgcolor?: string;
+  color?: string;
+}
+
+const HeaderLight = forwardRef<Nullable<HTMLDivElement>, HeaderLightProps>(
+  ({ bgcolor, color }, ref) => {
+    return (
+      <Box
+        ref={ref}
+        role="menubar"
+        pad="small"
+        background={{ color: bgcolor || 'bg-marsha' }}
+      >
+        <LogoIcon width={117} height={80} color={color} />
+      </Box>
+    );
+  },
+);
 
 HeaderLight.displayName = 'HeaderLight';
 export default HeaderLight;
