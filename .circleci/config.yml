@@ -410,14 +410,14 @@ jobs:
           name: Compile translations
           command: yarn compile-translations
       - run:
-          name: Build lib_tests
-          command: yarn build-tests
+          name: Build all libs
+          command: yarn build-libs
       - run:
           name: Build front-end lti application
-          command: yarn build-lti
+          command: yarn workspace marsha run build
       - run:
           name: Build front-end standalone application
-          command: yarn build-site
+          command: yarn workspace standalone_site run build
       - run:
           name: Extract all translations
           command: yarn extract-translations
