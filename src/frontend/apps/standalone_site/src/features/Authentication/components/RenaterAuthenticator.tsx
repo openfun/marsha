@@ -2,6 +2,8 @@ import { Box, FormField, Select, Text } from 'grommet';
 import React, { useEffect } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
+import { useResponsive } from 'hooks/useResponsive';
+
 import {
   getRenaterFerIdpList,
   RenaterSamlFerIdp,
@@ -26,6 +28,7 @@ export const RenaterAuthenticator = () => {
     RenaterSamlFerIdp[]
   >([]);
   const [options, setOptions] = React.useState<RenaterSamlFerIdp[]>([]);
+  const { breakpoint, isSmallerBreakpoint } = useResponsive();
 
   useEffect(() => {
     const controller = new AbortController();
@@ -48,7 +51,12 @@ export const RenaterAuthenticator = () => {
   return (
     <Box
       background="bg-select"
-      pad={{ horizontal: 'large', top: 'medium', bottom: 'large' }}
+      pad={{
+        horizontal: isSmallerBreakpoint(breakpoint, 'medium')
+          ? 'large'
+          : 'xlarge',
+        vertical: 'medium',
+      }}
       round="xsmall"
     >
       <Box
@@ -60,20 +68,18 @@ export const RenaterAuthenticator = () => {
       >
         <Box background="blue-active" height="1px" width="100%" />
         <Box width="100%">
-          <Text size="small" textAlign="center" weight="bold">
+          <Text
+            size={isSmallerBreakpoint(breakpoint, 'small') ? 'xsmall' : 'small'}
+            textAlign="center"
+            weight="bold"
+          >
             {intl.formatMessage(messages.textConnectWith)}
           </Text>
         </Box>
         <Box background="blue-active" height="1px" width="100%" />
       </Box>
-      <FormField
-        label={intl.formatMessage(messages.labelSelectRenater)}
-        htmlFor="select-renater-id"
-        name="renater"
-      >
+      <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
         <Select
-          id="select-renater-id"
-          name="renater"
           size="medium"
           labelKey="display_name"
           options={options}
