@@ -34,7 +34,7 @@
     "build-tests": "yarn workspace lib-common run build && yarn workspace lib-tests run build",
     "build-libs": "yarn build-tests && yarn workspace lib-components run build && yarn workspace lib-classroom run build",
     "build-lti": "yarn build-libs && yarn workspace marsha run build",
-    "build-site": "yarn build-libs && yarn build-tests && yarn workspace standalone_site run build",
+    "build-site": "yarn build-libs && yarn workspace standalone_site run build",
     "start-site": "yarn build-libs && yarn workspace standalone_site run start",
     "prettier": "yarn workspaces run prettier"
   },
