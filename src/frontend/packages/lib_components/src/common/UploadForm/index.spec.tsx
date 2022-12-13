@@ -103,7 +103,7 @@ describe('UploadForm', () => {
     },
   });
 
-  beforeEach(jest.resetAllMocks);
+  beforeEach(() => jest.resetAllMocks());
 
   afterEach(() => fetchMock.restore());
 
@@ -133,21 +133,19 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockResolvedValue(true);
 
-    render(
-      <UploadManager>
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-      </UploadManager>,
-      {
-        routerOptions: {
-          routes: [
-            {
-              path: DASHBOARD_ROUTE(),
-              render: () => <span>dashboard</span>,
-            },
-          ],
-        },
+    render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(),
+            render: () => <span>dashboard</span>,
+          },
+        ],
+        wrapper: (routing: JSX.Element) => (
+          <UploadManager>{routing}</UploadManager>
+        ),
       },
-    );
+    });
 
     // First the form goes through a loading state as we get the object
     screen.getByRole('status', { name: 'Preparing for upload...' });
@@ -174,21 +172,20 @@ describe('UploadForm', () => {
     );
     mockGetResource.mockResolvedValue(object);
 
-    render(
-      <UploadManager>
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-      </UploadManager>,
-      {
-        routerOptions: {
-          routes: [
-            {
-              path: FULL_SCREEN_ERROR_ROUTE('policy'),
-              render: () => <span>error policy</span>,
-            },
-          ],
-        },
+    render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: FULL_SCREEN_ERROR_ROUTE('policy'),
+            render: () => <span>error policy</span>,
+          },
+        ],
+        wrapper: (routing: JSX.Element) => (
+          <UploadManager>{routing}</UploadManager>
+        ),
       },
-    );
+    });
+
     await screen.findByText('Create a new video');
 
     fireEvent.change(screen.getByLabelText('File Upload'), {
@@ -218,21 +215,20 @@ describe('UploadForm', () => {
     mockGetResource.mockResolvedValue(object);
     mockUploadFile.mockRejectedValue(new Error('failed to upload file'));
 
-    render(
-      <UploadManager>
-        <UploadForm objectId={object.id} objectType={modelName.VIDEOS} />
-      </UploadManager>,
-      {
-        routerOptions: {
-          routes: [
-            {
-              path: FULL_SCREEN_ERROR_ROUTE('upload'),
-              render: () => <span>error upload</span>,
-            },
-          ],
-        },
+    render(<UploadForm objectId={object.id} objectType={modelName.VIDEOS} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: FULL_SCREEN_ERROR_ROUTE('upload'),
+            render: () => <span>error upload</span>,
+          },
+        ],
+        wrapper: (routing: JSX.Element) => (
+          <UploadManager>{routing}</UploadManager>
+        ),
       },
-    );
+    });
+
     await screen.findByText('Create a new video');
 
     fireEvent.change(screen.getByLabelText('File Upload'), {
