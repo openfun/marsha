@@ -25,6 +25,7 @@ interface RouterOptions {
   componentPath?: string;
   header?: React.ReactElement;
   history?: string[];
+  wrapper?: (routing: JSX.Element) => JSX.Element;
 }
 interface QueryOptions {
   client: QueryClient;
@@ -107,6 +108,7 @@ const appendUtilsElement = (
               options?.routerOptions?.componentPath || '/',
               options?.routerOptions?.history,
               options?.routerOptions?.header,
+              options?.routerOptions?.wrapper,
             )}
           </QueryClientProvider>
         </BreadCrumbsProvider>
