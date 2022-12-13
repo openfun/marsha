@@ -2,6 +2,8 @@ import { Loader, useCurrentUser, useJwt } from 'lib-components';
 import { Fragment, PropsWithChildren, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { routes } from 'routes';
+
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
 
@@ -35,12 +37,10 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     if (code) {
       fetchJwt(code);
     } else {
-      const targetedAddress =
-        process.env.REACT_APP_BACKEND_API_BASE_URL || window.location.origin;
       localStorage.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
-      window.location.replace(targetedAddress + '/account/login/');
+      history.push(routes.LOGIN.path);
     }
-  }, [code, jwt, pathname, search, setJwt]);
+  }, [code, history, jwt, pathname, search, setJwt]);
 
   useEffect(() => {
     if (!jwt || currentUser) {
