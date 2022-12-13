@@ -13,6 +13,7 @@ const colorsGeneric = {
   'bg-info': '#f0f6fe',
   'bg-grey': '#717171',
   'bg-lightgrey': '#afafaf',
+  'bg-lightgrey2': '#f8fafe',
   'bg-marsha': '#edf5fa',
   'bg-menu-hover': '#CDDEF5',
   'bg-select': '#e5eefa',
@@ -238,7 +239,6 @@ export const theme: ThemeType = {
       requiredIndicator: true,
       size: '0.688rem',
       margin: '0.3rem 1rem 0',
-      color: 'bg-grey',
     },
     border: {
       position: 'outer',
@@ -264,17 +264,33 @@ export const theme: ThemeType = {
       },
     },
     extend: css`
+      & {
+        background-color: white;
+        transition: all 0.2s linear;
+      }
+      & input,
+      & textarea {
+        margin-top: 1rem;
+      }
       & input::placeholder {
         color: transparent;
       }
-      & {
-        transition: all 0.2s linear;
+      & input:focus {
+        box-shadow: none;
       }
       & input {
         font-size: 1rem;
       }
+      & label {
+        position: absolute;
+      }
       & label span[aria-label='required'] {
         font-size: 0.688rem;
+      }
+      & svg {
+        color: ${colorsGeneric['blue-active']};
+        fill: ${colorsGeneric['blue-active']};
+        stroke: ${colorsGeneric['blue-active']};
       }
       &:hover {
         box-shadow: 0 0 0 2px ${colorsGeneric['blue-active']};
@@ -284,8 +300,14 @@ export const theme: ThemeType = {
         box-shadow: 0 0 0 2px ${colorsGeneric['blue-focus']};
       }
       &:focus-within input,
+      &:focus-within label,
       &:focus-within textarea {
         color: ${colorsGeneric['blue-focus']};
+      }
+      &:focus-within svg {
+        color: ${colorsGeneric['blue-focus']};
+        fill: ${colorsGeneric['blue-focus']};
+        stroke: ${colorsGeneric['blue-focus']};
       }
       &:has(div[aria-label='error-form-field']),
       &:focus-within:has(div[aria-label='error-form-field']) {
@@ -308,7 +330,11 @@ export const theme: ThemeType = {
   },
   select: {
     control: {
-      extend: `font-size: 1rem; border-color: ${colorsGeneric['blue-active']}; padding: 0;`,
+      extend: `
+        font-size: 1rem; 
+        border-color: ${colorsGeneric['blue-active']}; 
+        padding: 0;
+      `,
     },
     container: {
       extend: css`
