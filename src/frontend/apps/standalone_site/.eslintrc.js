@@ -22,7 +22,7 @@ module.exports = {
         pathGroups: [
           {
             pattern:
-              '+(features|components|utils|routes|styles|assets|conf|hooks|api)/**',
+              '+(features|components|utils|routes|styles|assets|conf|hooks|api|__mock__)/**',
             group: 'internal',
           },
           {
