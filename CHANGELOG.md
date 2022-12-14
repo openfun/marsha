@@ -46,6 +46,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Fix recording button bugs
 - Fix recording button bug on small display
 - Change permission on retrieve endpoints
 - Deal with webinar without thumbnail
