@@ -1,7 +1,8 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { render } from 'lib-tests';
+
+import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 
 import AppRoutes from './AppRoutes';
 

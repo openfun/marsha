@@ -27,10 +27,9 @@ def user_logged_in(page: Page, live_server: LiveServer):
     user = factories.UserFactory(username="jane")
     user.set_password("password")
     page.goto(live_server.url)
-    page.click("text=Log in")
     page.fill("input[name=username]", "jane")
     page.fill("input[name=password]", "password")
-    page.click("text=Log in")
+    page.click("text=OK")
     yield
 
 
@@ -40,20 +39,9 @@ def test_site_login(page: Page, live_server: LiveServer):
     user.set_password("password")
 
     page.goto(live_server.url)
-    page.click("text=Log in")
     page.fill("input[name=username]", "john")
     page.fill("input[name=password]", "password")
-    page.click("text=Log in")
-
-    page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=My Playlists")
-    page.wait_for_selector("text=My Contents")
-
-
-@pytest.mark.usefixtures("user_logged_in")
-def test_site_logged_in(page: Page, live_server: LiveServer):
-    """Test site already logged in."""
-    page.goto(live_server.url)
+    page.click("text=OK")
 
     page.wait_for_selector("text=Dashboard")
     page.wait_for_selector("text=My Playlists")
