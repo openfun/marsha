@@ -1,7 +1,8 @@
-import { Loader, useCurrentUser, useJwt } from 'lib-components';
+import { AnonymousUser, Loader, useCurrentUser, useJwt } from 'lib-components';
 import { Fragment, PropsWithChildren, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
 
+import { TIME_USER_SESSION } from 'conf/global';
 import { routes } from 'routes';
 
 import { getCurrentUser } from '../api/getUserData';
@@ -20,9 +21,11 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     currentUser: state.currentUser,
     setCurrentUser: state.setCurrentUser,
   }));
-  const { jwt, setJwt } = useJwt((state) => ({
+  const { jwt, setJwt, reset, jwtCreateTimestamp } = useJwt((state) => ({
     jwt: state.jwt,
     setJwt: state.setJwt,
+    reset: state.reset,
+    jwtCreateTimestamp: state.jwtCreateTimestamp,
   }));
 
   useEffect(() => {
@@ -48,7 +51,14 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     }
 
     const fetchUserData = async () => {
-      setCurrentUser(await getCurrentUser(jwt));
+      const _currentUser = await getCurrentUser(jwt);
+      if (_currentUser === AnonymousUser.ANONYMOUS) {
+        reset();
+        history.push(routes.LOGIN.path);
+        return;
+      }
+
+      setCurrentUser(_currentUser);
 
       const targetUri = localStorage.getItem(TARGET_URL_STORAGE_KEY);
       localStorage.removeItem(TARGET_URL_STORAGE_KEY);
@@ -57,7 +67,19 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
       history.replace(targetUri || pathname);
     };
     fetchUserData();
-  }, [jwt, currentUser, pathname, setCurrentUser, history]);
+  }, [jwt, currentUser, pathname, setCurrentUser, history, reset]);
+
+  /**
+   * Reset the JWT token every TIME_USER_SESSION minutes
+   */
+  useEffect(() => {
+    if (
+      jwtCreateTimestamp &&
+      jwtCreateTimestamp + TIME_USER_SESSION * 60 * 1000 < Date.now()
+    ) {
+      reset();
+    }
+  }, [reset, jwtCreateTimestamp]);
 
   if (!jwt && !code) {
     return <Fragment />;
