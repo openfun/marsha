@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
-import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import fetchMock from 'fetch-mock';
+
+import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 
 import App from './App';
 
