@@ -44,26 +44,21 @@ const messages = defineMessage({
 
 export const StopRecording = () => {
   const intl = useIntl();
-  const [segmentDuration, setSegmentDuration] = useState(0);
   const [recordingActionEnabled, setRecordingActionEnabled] = useState(false);
   const video = useCurrentVideo();
-  useVideoMetadata(intl.locale, {
-    onSuccess: (videoMetadata) => {
-      setSegmentDuration(videoMetadata.live.segment_duration_seconds);
-    },
-  });
-  useEffect(() => {
-    let timeoutId: number;
-    if (segmentDuration > 0) {
-      timeoutId = window.setTimeout(() => {
-        setRecordingActionEnabled(true);
-      }, segmentDuration * 1000);
-    }
+  const { data } = useVideoMetadata(intl.locale);
 
-    return () => {
-      window.clearTimeout(timeoutId);
-    };
-  }, [segmentDuration]);
+  useEffect(() => {
+    if (data && data.live.segment_duration_seconds > 0) {
+      const timeoutId = window.setTimeout(() => {
+        setRecordingActionEnabled(true);
+      }, data.live.segment_duration_seconds * 1000);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    }
+  }, [data]);
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));
   });
