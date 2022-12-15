@@ -2,7 +2,11 @@
 from django.conf import settings
 from django.urls import include, path
 
-from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import (
+    TokenBlacklistView,
+    TokenObtainPairView,
+    TokenRefreshView,
+)
 from social_edu_federation.django.views import EduFedMetadataView
 
 from .api import SamlFerIdpListAPIView
@@ -60,6 +64,8 @@ urlpatterns = [
     ),
     # API
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
+    path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
+    path("api/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
     path(
         "api/saml/renater_fer_idp_list/",
         SamlFerIdpListAPIView.as_view(),
