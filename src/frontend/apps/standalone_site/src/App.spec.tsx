@@ -33,7 +33,7 @@ describe('<App />', () => {
 
   test('renders with another language', async () => {
     jest.mock(
-      'translations/fr.json',
+      'translations/fr_FR.json',
       () => ({
         'features.HomePage.HomePage': 'Mon Accueil',
         'routes.routes.menuHomePageLabel': 'Mon Tableau de bord',

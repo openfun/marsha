@@ -10,31 +10,51 @@ import { BrowserRouter } from 'react-router-dom';
 import { DEFAULT_LANGUAGE } from 'conf/global';
 import { AppRoutes } from 'routes';
 import { getFullThemeExtend } from 'styles/theme.extend';
-import { getCurrentTranslation, getLanguage } from 'utils/lang';
+import { getCurrentTranslation, getLanguage, getLocaleCode } from 'utils/lang';
 
 import './App.css';
 
 const themeExtended = getFullThemeExtend();
 
 const App = () => {
+  const [isAppInitialized, setIsAppInitialized] = useState(false);
   const [currentTranslation, setCurrentTranslation] =
     useState<Record<string, string>>();
   const queryClient = useMemo(() => new QueryClient(), []);
+  const [language, setLanguage] = useState<string>();
+  const [localCode, setLocalCode] = useState<string>();
+
+  useEffect(() => {
+    const language = getLanguage();
+    setLanguage(language);
+    setLocalCode(getLocaleCode(language));
+  }, []);
 
   /**
    * Load the current language and translation
    */
   useEffect(() => {
-    getCurrentTranslation(getLanguage()).then((translation) => {
-      setCurrentTranslation(translation);
-    });
-  }, []);
+    if (language) {
+      getCurrentTranslation(language).then((translation) => {
+        setCurrentTranslation(translation);
+      });
+    }
+  }, [language]);
+
+  //  call this effect last to configure all stores first
+  useEffect(() => {
+    setIsAppInitialized(true);
+  }, [setIsAppInitialized]);
+
+  if (!isAppInitialized) {
+    return null;
+  }
 
   return (
     <IntlProvider
       messages={currentTranslation}
-      locale={getLanguage()}
-      defaultLocale={DEFAULT_LANGUAGE}
+      locale={localCode || ''}
+      defaultLocale={getLocaleCode(DEFAULT_LANGUAGE)}
       onError={(err) => {
         // https://github.com/formatjs/formatjs/issues/465
         if (err.code === 'MISSING_TRANSLATION') {
