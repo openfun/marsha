@@ -178,13 +178,13 @@ export const DashboardLive = () => {
           actionsElement={
             <Fragment>
               {isLiveStarted && <TeacherLiveControlBar />}
-              <Box flex={isLiveStarted} direction="row">
+              <Box flex={isLiveStarted} direction="row" justify="end">
                 <TeacherLiveRecordingActions
                   isJitsiAdministrator={canStartLive}
                 />
                 <TeacherLiveLifecycleControls
                   canStartStreaming={canShowStartButton}
-                  flex={isLiveStarted ? { grow: 1, shrink: 1 } : false}
+                  flex={isLiveStarted ? { shrink: 1 } : false}
                   hasRightToStart={canStartLive}
                 />
               </Box>

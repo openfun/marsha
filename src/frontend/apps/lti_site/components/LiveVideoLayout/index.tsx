@@ -181,7 +181,18 @@ export const LiveVideoLayout = ({
             </StyledLiveVideoInformationBarWrapper>
           )}
           {!isLargeLayout && displayActionsElement && (
-            <Box height={'67px'} margin={{ top: 'small' }}>
+            <Box
+              direction="row"
+              pad={{
+                bottom: 'small',
+                left: 'small',
+                right: 'small',
+                top: 'small',
+              }}
+              min-height={'67px'}
+              margin={{ top: 'small' }}
+              wrap
+            >
               {actionsElement}
             </Box>
           )}
