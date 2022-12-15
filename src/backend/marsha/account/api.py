@@ -5,23 +5,9 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
-from rest_framework_simplejwt.views import TokenObtainPairView
 from social_django.utils import load_backend, load_strategy
 from social_edu_federation.django.metadata_store import CachedMetadataStore
 from social_edu_federation.django.views import SocialBackendViewMixin
-
-from marsha.account.serializers import ChallengeTokenObtainSerializer
-
-
-class LoginView(TokenObtainPairView):
-    """
-    Login API view which expects payload with `username` and `password`
-    and returns a `challenge_token`.
-    """
-
-    serializer_class = ChallengeTokenObtainSerializer
-    permission_classes = (AllowAny,)
-    http_method_names = ["post"]
 
 
 class SamlFerIdpListAPIView(SocialBackendViewMixin, APIView):

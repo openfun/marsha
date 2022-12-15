@@ -679,6 +679,9 @@ class Base(Configuration):
                 "marsha.core.simple_jwt.tokens.ResourceAccessToken",
                 "marsha.core.simple_jwt.tokens.UserAccessToken",
             ),
+            # Settings for authentication API
+            "UPDATE_LAST_LOGIN": True,
+            "TOKEN_OBTAIN_SERIALIZER": "marsha.account.serializers.UserTokenObtainPairSerializer",
         }
 
     # pylint: disable=invalid-name

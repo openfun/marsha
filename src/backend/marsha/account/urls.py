@@ -2,9 +2,10 @@
 from django.conf import settings
 from django.urls import include, path
 
+from rest_framework_simplejwt.views import TokenObtainPairView
 from social_edu_federation.django.views import EduFedMetadataView
 
-from .api import LoginView as ApiLoginView, SamlFerIdpListAPIView
+from .api import SamlFerIdpListAPIView
 from .views import (
     LoginView,
     LogoutView,
@@ -58,7 +59,7 @@ urlpatterns = [
         name="saml_fer_idp_choice",
     ),
     # API
-    path("api/login/", ApiLoginView.as_view(), name="api_login"),
+    path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
     path(
         "api/saml/renater_fer_idp_list/",
         SamlFerIdpListAPIView.as_view(),
