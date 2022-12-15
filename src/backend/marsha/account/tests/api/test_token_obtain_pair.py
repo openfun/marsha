@@ -1,14 +1,15 @@
-"""Tests for the account login API."""
+"""Tests for the obtain token pair (access/refresh) API."""
 import json
 
 from django.test import TestCase
 from django.utils import timezone
 
 from marsha.core.factories import UserFactory
+from marsha.core.simple_jwt.tokens import UserAccessToken, UserRefreshToken
 
 
-class LoginAPITest(TestCase):
-    """Testcase for the account login API."""
+class TokenObtainPairViewTest(TestCase):
+    """Testcase for the obtain token pair (access/refresh) API."""
 
     maxDiff = None
 
@@ -22,7 +23,7 @@ class LoginAPITest(TestCase):
         """An empty request should return a 400 error."""
 
         response = self.client.post(
-            "/account/api/login/",
+            "/account/api/token/",
             content_type="application/json",
             data=json.dumps({}),
         )
@@ -33,7 +34,7 @@ class LoginAPITest(TestCase):
         """A request with a username that does not exist should return a 400 error."""
 
         response = self.client.post(
-            "/account/api/login/",
+            "/account/api/token/",
             content_type="application/json",
             data=json.dumps(
                 {
@@ -49,7 +50,7 @@ class LoginAPITest(TestCase):
         """A request with a wrong password should return a 400 error."""
 
         response = self.client.post(
-            "/account/api/login/",
+            "/account/api/token/",
             content_type="application/json",
             data=json.dumps(
                 {
@@ -69,7 +70,7 @@ class LoginAPITest(TestCase):
         self.user.save()
 
         response = self.client.post(
-            "/account/api/login/",
+            "/account/api/token/",
             content_type="application/json",
             data=json.dumps(
                 {
@@ -80,7 +81,14 @@ class LoginAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertIn("challenge_token", response.json())
+        response_data = response.json()
+        self.assertIn("access", response_data)
+        self.assertIn("refresh", response_data)
 
+        # Verify tokens
+        UserAccessToken(response_data["access"])
+        UserRefreshToken(response_data["refresh"])
+
+        # Check last login is updated
         self.user.refresh_from_db()
         self.assertGreater(self.user.last_login, now)
