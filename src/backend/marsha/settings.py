@@ -122,6 +122,7 @@ class Base(Configuration):
         "corsheaders",
         "channels",
         "parler",  # django-parler, for translated models
+        "rest_framework_simplejwt.token_blacklist",
         "social_django.apps.PythonSocialAuthConfig",  # python-social-auth for Django
         "social_edu_federation.django.apps.PythonSocialEduFedAuthConfig",
         # Marsha
@@ -682,6 +683,9 @@ class Base(Configuration):
             # Settings for authentication API
             "UPDATE_LAST_LOGIN": True,
             "TOKEN_OBTAIN_SERIALIZER": "marsha.account.serializers.UserTokenObtainPairSerializer",
+            "ROTATE_REFRESH_TOKENS": True,
+            "BLACKLIST_AFTER_ROTATION": True,
+            "TOKEN_REFRESH_SERIALIZER": "marsha.account.serializers.UserTokenRefreshSerializer",
         }
 
     # pylint: disable=invalid-name
