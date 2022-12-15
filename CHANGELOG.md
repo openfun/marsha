@@ -36,6 +36,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - mutualize modals and styles
   - fine tune UI
+  - guess ISO15897 locale code
 - Filtered classroom list
 - Filtered deposit list
 - Filtered markdown document list
