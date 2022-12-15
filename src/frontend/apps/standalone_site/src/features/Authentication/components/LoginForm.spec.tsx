@@ -54,7 +54,7 @@ describe('<LoginFrom />', () => {
   });
 
   it('attempts to login: with fail', async () => {
-    fetchMock.post('/account/api/login/', {
+    fetchMock.post('/account/api/token/', {
       status: 401,
       body: {
         detail: 'No active account found with the given credentials',
@@ -83,7 +83,7 @@ describe('<LoginFrom />', () => {
 
     expect(consoleError).toHaveBeenCalled();
 
-    expect(fetchMock.lastCall()![0]).toEqual('/account/api/login/');
+    expect(fetchMock.lastCall()![0]).toEqual('/account/api/token/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -97,7 +97,7 @@ describe('<LoginFrom />', () => {
   });
 
   it('attempts to login: with success', async () => {
-    fetchMock.post('/account/api/login/', {
+    fetchMock.post('/account/api/token/', {
       status: 200,
       ok: true,
     });
@@ -111,7 +111,5 @@ describe('<LoginFrom />', () => {
     userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/'));
-
-    expect(fetchMock.lastCall()![0]).toEqual('/api/auth/challenge/');
   });
 });
