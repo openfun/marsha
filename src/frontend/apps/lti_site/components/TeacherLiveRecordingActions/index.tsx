@@ -27,7 +27,7 @@ export const TeacherLiveRecordingActions = ({
   if (video.is_recording) {
     return (
       <Box
-        flex
+        flex={{ grow: 0 }}
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >
@@ -37,7 +37,7 @@ export const TeacherLiveRecordingActions = ({
   } else {
     return (
       <Box
-        flex
+        flex={{ grow: 0 }}
         margin={{ horizontal: 'medium' }}
         pad={{ horizontal: 'auto', vertical: 'small' }}
       >

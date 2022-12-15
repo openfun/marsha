@@ -20,6 +20,7 @@
 - [Quentin Bey](https://github.com/qbey) <quentin.bey@polyconseil.fr>
 - [Anthony Le Courric](https://github.com/AntoLC) <freelance.anthony@gmail.com>
 - [Alfred Pichard](https://github.com/AlfredPichard) <alfred.pichard@polyconseil.fr>
+- [Théo Clement](https://github.com/Kitero) <theoclementtheo@gmail.com>
 
 - [Renovate Bot](https://renovatebot.com) <bot@renovateapp.com>
 - [Renovate Bot](https://renovatebot.com) <29139614+renovate[bot]@users.noreply.github.com>
