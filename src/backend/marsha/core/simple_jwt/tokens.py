@@ -6,7 +6,7 @@ from django.utils.translation import gettext_lazy as _
 
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.settings import api_settings
-from rest_framework_simplejwt.tokens import AccessToken, Token
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken, Token
 
 from marsha.core.models import NONE, STUDENT
 from marsha.core.simple_jwt.utils import define_locales
@@ -462,3 +462,9 @@ class UserAccessToken(AccessToken):
 
         if not self.payload.get("user_id", None):
             raise TokenError(_("Malformed user token"))
+
+
+class UserRefreshToken(RefreshToken):
+    """Refresh token for user authentication, which relies on our own `UserAccessToken`."""
+
+    access_token_class = UserAccessToken
