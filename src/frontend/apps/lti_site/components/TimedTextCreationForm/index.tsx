@@ -1,13 +1,16 @@
 import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Maybe, Nullable } from 'lib-common';
+import {
+  createTimedTextTrack,
+  useFetchTimedTextTrackLanguageChoices,
+} from 'lib-video';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import Select, { ActionMeta } from 'react-select';
 import styled from 'styled-components';
 
-import { createTimedTextTrack } from '../../data/sideEffects/createTimedTextTrack';
 import {
   useTimedTextTrack,
   modelName,
@@ -17,7 +20,6 @@ import {
   UPLOAD_FORM_ROUTE,
 } from 'lib-components';
 import { theme } from '../../utils/theme/theme';
-import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
 
 const messages = defineMessages({
   addTrackBtn: {

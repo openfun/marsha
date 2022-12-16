@@ -4,7 +4,6 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
-import { ObjectStatusPicker } from 'components/ObjectStatusPicker';
 import {
   UploadManagerStatus,
   useUploadManager,
@@ -13,6 +12,7 @@ import {
   modelName,
   uploadState,
   UploadableObjectProgress,
+  ObjectStatusPicker,
 } from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 
@@ -58,12 +58,18 @@ const DashboardDocumentInternalHeading = styled(DashboardInternalHeading)`
   padding: 0 1rem 0 0;
 `;
 
-const CommonStatusLine = ({ document }: { document: Document }) => (
+const CommonStatusLine = ({
+  document,
+  documentUploadStatus,
+}: {
+  document: Document;
+  documentUploadStatus?: UploadManagerStatus;
+}) => (
   <Box align={'center'} direction={'row'}>
     <DashboardDocumentInternalHeading>
       <FormattedMessage {...messages.title} />
     </DashboardDocumentInternalHeading>
-    <ObjectStatusPicker object={document} />
+    <ObjectStatusPicker object={document} uploadStatus={documentUploadStatus} />
   </Box>
 );
 
@@ -78,6 +84,7 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   const { document } = useDocument((state) => ({
     document: state.getDocument(props.document),
   }));
+  const documentUploadState = uploadManagerState[document.id]?.status;
 
   useEffect(() => {
     if ([PENDING, PROCESSING].includes(document.upload_state)) {
@@ -92,7 +99,10 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
       <DashboardDocumentInnerContainer>
         <Box direction={'row'}>
           <Box basis={'1/2'} margin={'small'}>
-            <CommonStatusLine document={document} />
+            <CommonStatusLine
+              document={document}
+              documentUploadStatus={documentUploadState}
+            />
             {intl.formatMessage(messages[READY])}
             <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
               <DashboardDocumentInternalHeading>
@@ -120,7 +130,10 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   ) {
     return (
       <DashboardDocumentInnerContainer>
-        <CommonStatusLine document={document} />
+        <CommonStatusLine
+          document={document}
+          documentUploadStatus={documentUploadState}
+        />
         <DashboardDocumentPaneButtons document={document} />
       </DashboardDocumentInnerContainer>
     );
@@ -132,7 +145,10 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   ) {
     return (
       <DashboardDocumentInnerContainer>
-        <CommonStatusLine document={document} />
+        <CommonStatusLine
+          document={document}
+          documentUploadStatus={documentUploadState}
+        />
         <Box margin={{ vertical: 'small' }}>
           <UploadableObjectProgress
             progress={uploadManagerState[document.id].progress}
@@ -145,7 +161,10 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
 
   return (
     <DashboardDocumentInnerContainer>
-      <CommonStatusLine document={document} />
+      <CommonStatusLine
+        document={document}
+        documentUploadStatus={documentUploadState}
+      />
       {document.upload_state === PENDING &&
         intl.formatMessage(messages[PENDING])}
       <DashboardDocumentPaneButtons document={document} />

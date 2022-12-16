@@ -15,7 +15,7 @@ type TimedTextTrackStore = {
   };
 };
 
-type TimedTextTrackState = StoreState<TimedText> &
+export type TimedTextTrackState = StoreState<TimedText> &
   TimedTextTrackStore & {
     getTimedTextTracks: () => TimedText[];
   };

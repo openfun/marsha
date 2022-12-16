@@ -21,7 +21,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(common|hooks|types|utils|data)/**',
+            pattern: '+(common|hooks|types|utils|data|settings)/**',
             group: 'internal',
           },
         ],

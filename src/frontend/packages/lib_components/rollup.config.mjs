@@ -8,6 +8,7 @@ import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'rollup-plugin-dts';
 import { replaceTscAliasPaths } from 'tsc-alias';
+import copy from 'rollup-plugin-copy';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
@@ -23,6 +24,18 @@ const pluginImportAbsoluteToRelative = () => ({
 });
 
 export default [
+  {
+    input: 'src/types/libs/converse/index.d.ts',
+    output: [{ file: 'lib/declaration/converse.d.ts', format: 'es' }],
+    plugins: [dts({ compilerOptions: tsconfig.compilerOptions })],
+  },
+  {
+    input: 'src/types/libs/JitsiMeetExternalAPI/index.d.ts',
+    output: [
+      { file: 'lib/declaration/JitsiMeetExternalAPI.d.ts', format: 'es' },
+    ],
+    plugins: [dts()],
+  },
   {
     input: 'src/index.ts',
     output: [
@@ -52,7 +65,8 @@ export default [
     external: [
       'grommet',
       'react',
-      'reactDom',
+      'react-dom',
+      'react-router',
       'react-router-dom',
       'styled-components',
       'styled-reboot',
@@ -61,16 +75,19 @@ export default [
       'uuid',
       /jest/,
       'zustand',
+      'react-intl',
     ],
     plugins: [
       external([
         'grommet',
         'react',
-        'reactDom',
+        'react-dom',
+        'react-router',
         'react-router-dom',
         'styled-components',
         /@babel\/runtime/,
         'zustand',
+        'react-intl',
       ]),
       json(),
       commonjs({
@@ -94,18 +111,15 @@ export default [
         exclude: [/node_modules/],
       }),
       pluginImportAbsoluteToRelative(),
+      copy({
+        targets: [
+          {
+            src: './root-declaration.txt',
+            dest: './lib',
+            rename: 'index.d.ts',
+          },
+        ],
+      }),
     ],
-  },
-  {
-    input: 'src/types/libs/converse/index.d.ts',
-    output: [{ file: 'lib/types/libs/converse/index.d.ts', format: 'es' }],
-    plugins: [dts({ compilerOptions: tsconfig.compilerOptions })],
-  },
-  {
-    input: 'src/types/libs/JitsiMeetExternalAPI/index.d.ts',
-    output: [
-      { file: 'lib/types/libs/JitsiMeetExternalAPI/index.d.ts', format: 'es' },
-    ],
-    plugins: [dts()],
   },
 ];

@@ -1,5 +1,7 @@
 import { Nullable } from 'lib-common';
 
+import { JitsiMeetExternalAPI } from 'types/libs/JitsiMeetExternalAPI';
+
 import { ConsumerSite } from './ConsumerSite';
 import { Participant } from './Participant';
 import { XMPP } from './XMPP';
@@ -247,8 +249,9 @@ export interface VideoStats {
   nb_views: number;
 }
 
-export interface Live extends Omit<Video, 'live_state'> {
+export interface Live extends Omit<Video, 'live_state' | 'live_type'> {
   live_state: Exclude<liveState, liveState.ENDED>;
+  live_type: LiveModeType;
 }
 
 export interface LiveJitsi extends Omit<Live, 'live_type' | 'live_info'> {

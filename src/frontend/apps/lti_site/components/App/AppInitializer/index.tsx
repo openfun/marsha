@@ -12,6 +12,7 @@ import {
   useAppConfig,
   flags,
 } from 'lib-components';
+import { useAttendance } from 'lib-video';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -21,7 +22,6 @@ import React, {
 } from 'react';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useAttendance } from 'data/stores/useAttendance';
 
 export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);

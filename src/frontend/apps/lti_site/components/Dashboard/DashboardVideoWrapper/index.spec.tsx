@@ -1,8 +1,7 @@
 import { cleanup, screen } from '@testing-library/react';
 import React, { Suspense } from 'react';
 
-import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
-import * as websocket from 'data/websocket';
+import { LiveModaleConfigurationProvider } from 'lib-video';
 import {
   modelName,
   LiveModeType,
@@ -39,15 +38,11 @@ jest.mock('lib-components', () => ({
   decodeJwt: () => ({}),
 }));
 
-jest.mock('components/DashboardLive', () => ({
-  DashboardLive: () => <p>{`Dashboard video live`}</p>,
+jest.mock('lib-video', () => ({
+  ...jest.requireActual('lib-video'),
+  LiveTeacherDashboard: () => <p>{`Dashboard video live`}</p>,
+  VODTeacherDashboard: () => <p>{`VOD dashboard`}</p>,
 }));
-
-jest.mock('components/DashboardVOD', () => ({
-  DashboardVOD: () => <p>{`VOD dashboard`}</p>,
-}));
-
-const spiedInitVideoWebsocket = jest.spyOn(websocket, 'initVideoWebsocket');
 
 describe('<DashboardVideoWrapper />', () => {
   afterEach(() => {
@@ -81,7 +76,6 @@ describe('<DashboardVideoWrapper />', () => {
         </LiveModaleConfigurationProvider>,
       );
 
-      expect(spiedInitVideoWebsocket).toHaveBeenCalled();
       screen.getByText('Dashboard video live');
 
       cleanup();
@@ -97,8 +91,6 @@ describe('<DashboardVideoWrapper />', () => {
       });
 
       render(<DashboardVideoWrapper video={video} />);
-
-      expect(spiedInitVideoWebsocket).toHaveBeenCalled();
 
       screen.getAllByText('VOD dashboard');
 

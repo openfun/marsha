@@ -12,3 +12,4 @@ export * from './Participant';
 export * from './PortabilityRequest';
 export * from './Organization';
 export * from './AppData';
+export * from './XAPI';

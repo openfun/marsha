@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
 import React from 'react';
 
-import { initiateLive } from 'data/sideEffects/initiateLive';
 import {
   selectableBaseResource,
   LiveModeType,
@@ -20,6 +19,7 @@ import render from 'utils/tests/render';
 import { SelectContentTabProps } from './SelectContentTabs';
 import { buildContentItems } from './utils';
 import { SelectContent } from '.';
+import { initiateLive } from 'lib-video';
 
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',
@@ -46,7 +46,8 @@ jest.mock('lib-components', () => ({
   },
 }));
 
-jest.mock('data/sideEffects/initiateLive', () => ({
+jest.mock('lib-video', () => ({
+  ...jest.requireActual('lib-video'),
   initiateLive: jest.fn(),
 }));
 const mockedInitiateLive = initiateLive as jest.MockedFunction<
@@ -599,12 +600,11 @@ describe('<SelectContent />', () => {
           method: 'POST',
         }),
       ).toBe(true);
+    });
 
-      expect(mockedInitiateLive).toHaveBeenCalledWith(
-        video,
-        LiveModeType.JITSI,
-      );
+    expect(mockedInitiateLive).toHaveBeenCalledWith(video, LiveModeType.JITSI);
 
+    await waitFor(() => {
       expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
     });
 

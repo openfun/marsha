@@ -15,11 +15,11 @@ import { useIntl } from 'react-intl';
 import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument, useCreateVideo } from 'data/queries';
-import { initiateLive } from 'data/sideEffects/initiateLive';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
 import { buildContentItems } from '../utils';
+import { initiateLive } from 'lib-video';
 
 export interface SelectContentTabProps {
   playlist: Playlist;

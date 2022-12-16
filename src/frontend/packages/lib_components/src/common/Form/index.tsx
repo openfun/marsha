@@ -55,14 +55,13 @@ export const Form = <T extends Record<string, unknown>>({
     <GrommetForm
       {...props}
       onSubmit={(submitValues) => {
-        if (isSubmitOngoing.current) {
-          //  a submit is already in progress
-          return;
-        }
+        const asyncSubmit = async () => {
+          if (isSubmitOngoing.current) {
+            //  a submit is already in progress
+            return;
+          }
 
-        const performSubmit = async (
-          submitValues: GrommetFormExtendedEvent<T, Element>,
-        ) => {
+          isSubmitOngoing.current = true;
           try {
             setErrors({});
             await onSubmit(submitValues);
@@ -72,8 +71,7 @@ export const Form = <T extends Record<string, unknown>>({
           isSubmitOngoing.current = false;
         };
 
-        isSubmitOngoing.current = true;
-        void performSubmit(submitValues);
+        void asyncSubmit();
       }}
     >
       <FormErrorContext.Provider value={errors}>
