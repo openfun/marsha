@@ -1,19 +1,16 @@
 import { useJwt } from 'lib-components';
 import { useMutation, UseMutationOptions } from 'react-query';
 
+import { TokenResponse } from 'features/Authentication/model/response';
+
 type UseBasicLoginData = {
   username: string;
   password: string;
 };
 export type UseBasicLoginError = { code: 'exception'; detail?: string };
 
-type UseBasicLoginResponseData = {
-  access: string;
-  refresh: string;
-};
-
 type UseBasicLoginOptions = UseMutationOptions<
-  UseBasicLoginResponseData,
+  TokenResponse,
   UseBasicLoginError,
   UseBasicLoginData
 >;
@@ -22,7 +19,7 @@ const actionLogin = async ({
   object,
 }: {
   object: UseBasicLoginData;
-}): Promise<UseBasicLoginResponseData> => {
+}): Promise<TokenResponse> => {
   const response = await fetch('/account/api/token/', {
     headers: {
       'Content-Type': 'application/json',
@@ -38,7 +35,7 @@ const actionLogin = async ({
     throw { code: 'exception' };
   }
 
-  return (await response.json()) as UseBasicLoginResponseData;
+  return (await response.json()) as TokenResponse;
 };
 
 export const useBasicLogin = (options?: UseBasicLoginOptions) => {
@@ -47,11 +44,7 @@ export const useBasicLogin = (options?: UseBasicLoginOptions) => {
     setRefreshJwt: state.setRefreshJwt,
   }));
 
-  return useMutation<
-    UseBasicLoginResponseData,
-    UseBasicLoginError,
-    UseBasicLoginData
-  >(
+  return useMutation<TokenResponse, UseBasicLoginError, UseBasicLoginData>(
     (basicCredentials) =>
       actionLogin({
         object: basicCredentials,
