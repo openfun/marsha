@@ -1,7 +1,7 @@
 module.exports = {
   plugins: [
     [
-      'react-intl',
+      'formatjs',
       {
         extractFromFormatMessageCall: true,
         idInterpolationPattern: '[sha512:contenthash:base64:6]',
