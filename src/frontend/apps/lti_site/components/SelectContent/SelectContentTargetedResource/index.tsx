@@ -19,11 +19,11 @@ import {
   useCreateVideo,
   UseCreateVideoData,
 } from 'data/queries';
-import { initiateLive } from 'data/sideEffects/initiateLive';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
 import { buildContentItems } from '../utils';
+import { initiateLive } from 'lib-video';
 
 interface SelectContentVideoProps {
   addMessage: string;

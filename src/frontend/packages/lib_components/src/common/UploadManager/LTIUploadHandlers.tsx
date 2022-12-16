@@ -11,34 +11,45 @@ const UploadSuccessHandler = ({
 }: {
   objectState: UploadManagerState[string];
 }) => {
+  //  once upload on S3 is finished, push new state to backend
   useEffect(() => {
     (async () => {
-      if (objectState.status === UploadManagerStatus.SUCCESS) {
-        const { file, objectId, objectType } = objectState;
-        const object = await getStoreResource(objectType, objectId);
-        if (object && 'title' in object && !object.title) {
-          // Add the new object with title and upload_state in the store
-          // to replace the old state.
-          await addResource(objectType, {
+      if (objectState.status !== UploadManagerStatus.SUCCESS) {
+        return;
+      }
+
+      const { file, objectId, objectType } = objectState;
+      const object = await getStoreResource(objectType, objectId);
+
+      if (object && 'title' in object && !object.title) {
+        // Add the new object with title and upload_state in the store
+        // to replace the old state.
+        await addResource(objectType, {
+          ...object,
+          title: file.name,
+        });
+
+        // Fetch the API to update the title resource.
+        await updateResource(
+          {
             ...object,
             title: file.name,
-          });
+          },
+          objectType,
+        );
+      }
+    })();
+  }, [objectState]);
 
-          // Fetch the API to update the title resource.
-          await updateResource(
-            {
-              ...object,
-              title: file.name,
-            },
-            objectType,
-          );
-        }
+  //  update the ressource beeing uploaded
+  useEffect(() => {
+    (async () => {
+      if (objectState.status !== UploadManagerStatus.UPLOADING) {
+        return;
       }
 
-      if (objectState.status === UploadManagerStatus.UPLOADING) {
-        const { objectId, objectType } = objectState;
-        await fetchResource(objectType, objectId);
-      }
+      const { objectId, objectType } = objectState;
+      await fetchResource(objectType, objectId);
     })();
   }, [objectState]);
 

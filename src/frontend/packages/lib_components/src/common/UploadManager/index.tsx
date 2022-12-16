@@ -60,10 +60,12 @@ export const UploadManager = ({
 
   const uploadManagerKey = Object.keys(uploadManagerState).join('_');
 
+  //  when list of download changes, check for new uploads
   useEffect(() => {
     setNewUpload(true);
   }, [uploadManagerKey]);
 
+  //  upload process
   useEffect(() => {
     if (!newUpload || !Object.keys(uploadManagerState).length) {
       return;
@@ -103,6 +105,7 @@ export const UploadManager = ({
               return value;
             }),
           );
+
           if (
             [
               modelName.VIDEOS,

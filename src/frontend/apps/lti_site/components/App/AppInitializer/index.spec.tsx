@@ -8,9 +8,9 @@ import {
   useSharedLiveMedia,
   useDocument,
 } from 'lib-components';
+import { useAttendance } from 'lib-video';
 import React from 'react';
 
-import { useAttendance } from 'data/stores/useAttendance';
 import render from 'utils/tests/render';
 
 import { AppInitializer } from '.';

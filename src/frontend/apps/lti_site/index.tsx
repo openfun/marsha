@@ -1,4 +1,5 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
+import 'lib-video/lib/index.css';
 
 import React from 'react';
 import ReactDOM from 'react-dom';

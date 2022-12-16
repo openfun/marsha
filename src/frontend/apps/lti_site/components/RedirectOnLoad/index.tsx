@@ -43,4 +43,6 @@ export const RedirectOnLoad = () => {
     case modelName.VIDEOS:
       return <RedirectVideo video={appData.video!} />;
   }
+
+  return null;
 };

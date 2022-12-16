@@ -1,9 +1,6 @@
 import { Nullable } from 'lib-common';
 
-export as namespace JitsiMeetExternalAPI;
-export = JitsiMeetExternalAPI;
-
-declare class JitsiMeetExternalAPI {
+export declare class JitsiMeetExternalAPI {
   constructor(
     domain: string,
     options?: {
@@ -34,7 +31,7 @@ declare class JitsiMeetExternalAPI {
   dispose: () => void;
 }
 
-declare namespace JitsiMeetExternalAPI {
+export declare namespace JitsiMeetExternalAPI {
   export type Command =
     | 'startRecording'
     | 'stopRecording'

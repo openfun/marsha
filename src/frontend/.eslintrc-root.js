@@ -15,7 +15,10 @@ module.exports = {
     '@typescript-eslint/explicit-module-boundary-types': 'off',
     '@typescript-eslint/no-floating-promises': 'off',
     '@typescript-eslint/no-non-null-assertion': 'error',
-    '@typescript-eslint/no-unused-vars': ['error', { varsIgnorePattern: '^_' }],
+    '@typescript-eslint/no-unused-vars': [
+      'error',
+      { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+    ],
     'array-callback-return': 'error',
     'block-scoped-var': 'error',
     'react/jsx-curly-brace-presence': [
@@ -67,7 +70,7 @@ module.exports = {
         '@typescript-eslint/no-non-null-assertion': 'error',
         '@typescript-eslint/no-unused-vars': [
           'error',
-          { varsIgnorePattern: '^_' },
+          { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
         ],
       },
     },
@@ -85,10 +88,20 @@ module.exports = {
         '@typescript-eslint/no-unsafe-call': 'off',
         '@typescript-eslint/no-unsafe-member-access': 'off',
         '@typescript-eslint/no-unsafe-return': 'off',
+        '@typescript-eslint/no-unused-vars': [
+          'error',
+          { varsIgnorePattern: '^_', argsIgnorePattern: '^_' },
+        ],
         'react/display-name': 0,
         'jest/expect-expect': 'error',
         '@typescript-eslint/unbound-method': 'off',
         'jest/unbound-method': 'error',
+      },
+    },
+    {
+      files: ['*.d.ts'],
+      rules: {
+        '@typescript-eslint/no-explicit-any': 0,
       },
     },
   ],

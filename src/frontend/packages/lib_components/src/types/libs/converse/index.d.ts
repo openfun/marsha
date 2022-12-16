@@ -4,10 +4,7 @@ import { Participant } from 'types/Participant';
 import { PersistentStore } from 'types/XMPP';
 import { Video } from 'types/tracks';
 
-export as namespace converse;
-export = converse;
-
-declare namespace converse {
+export declare namespace converse {
   export interface Converse {
     acceptParticipantToJoin: (participant: Participant, video: Video) => void;
     askParticipantToJoin: (username?: string) => Promise<void>;

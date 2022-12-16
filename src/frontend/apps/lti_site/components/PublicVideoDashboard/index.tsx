@@ -1,14 +1,21 @@
-import React from 'react';
-
 import {
-  CurrentLiveProvider,
-  CurrentVideoProvider,
-} from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { useVideo, Video } from 'lib-components';
-import { convertVideoToLive } from 'utils/conversions/convertVideo';
-
-import { PublicLiveDashboard } from './PublicLiveDashboard';
-import { PublicVODDashboard } from './PublicVODDashboard';
+  checkLtiToken,
+  decodeJwt,
+  FULL_SCREEN_ERROR_ROUTE,
+  uploadState,
+  useJwt,
+  useVideo,
+  Video,
+} from 'lib-components';
+import {
+  convertVideoToLive,
+  generateVideoWebsocketUrl,
+  getOrInitAnonymousId,
+  LiveStudentDashboard,
+  VODStudentDashboard,
+} from 'lib-video';
+import React, { useMemo } from 'react';
+import { Redirect } from 'react-router-dom';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -16,26 +23,43 @@ interface PublicVideoDashboardProps {
 }
 
 const PublicVideoDashboard = ({
-  video: baseVideo,
+  video,
   playerType,
 }: PublicVideoDashboardProps) => {
-  const video = useVideo((state) => state.getVideo(baseVideo));
+  const currentVideo = useVideo((state) => state.getVideo(video));
+  const videoWebsocketUrl = useMemo(() => {
+    return generateVideoWebsocketUrl(currentVideo.id, (url) => {
+      const { jwt } = useJwt.getState();
 
-  const live = convertVideoToLive(video);
+      if (!checkLtiToken(decodeJwt(jwt))) {
+        const anonymousId = getOrInitAnonymousId();
+        url = `${url}&anonymous_id=${anonymousId}`;
+      }
+      return url;
+    });
+  }, [currentVideo.id]);
+
+  const live = convertVideoToLive(currentVideo);
   if (live) {
     return (
-      <CurrentVideoProvider value={live}>
-        <CurrentLiveProvider value={live}>
-          <PublicLiveDashboard playerType={playerType} />
-        </CurrentLiveProvider>
-      </CurrentVideoProvider>
+      <LiveStudentDashboard
+        playerType={playerType}
+        live={live}
+        socketUrl={videoWebsocketUrl}
+      />
     );
   }
 
+  if (video.upload_state === uploadState.DELETED) {
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+  }
+
   return (
-    <CurrentVideoProvider value={video}>
-      <PublicVODDashboard playerType={playerType} />
-    </CurrentVideoProvider>
+    <VODStudentDashboard
+      playerType={playerType}
+      video={currentVideo}
+      socketUrl={videoWebsocketUrl}
+    />
   );
 };
 
