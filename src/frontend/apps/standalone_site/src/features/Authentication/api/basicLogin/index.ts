@@ -42,8 +42,9 @@ const actionLogin = async ({
 };
 
 export const useBasicLogin = (options?: UseBasicLoginOptions) => {
-  const { setJwt } = useJwt((state) => ({
+  const { setJwt, setRefreshJwt } = useJwt((state) => ({
     setJwt: state.setJwt,
+    setRefreshJwt: state.setRefreshJwt,
   }));
 
   return useMutation<
@@ -59,6 +60,7 @@ export const useBasicLogin = (options?: UseBasicLoginOptions) => {
       ...options,
       onSuccess: (data, variables, context) => {
         setJwt(data.access);
+        setRefreshJwt(data.refresh);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
