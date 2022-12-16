@@ -11,6 +11,8 @@ from social_django.utils import load_backend, load_strategy
 from social_edu_federation.django.metadata_store import CachedMetadataStore
 from social_edu_federation.django.views import SocialBackendViewMixin
 
+from marsha.account.serializers import SetPasswordSerializer
+
 
 class PasswordResetAPIView(APIView):
     """
@@ -44,6 +46,20 @@ class PasswordResetAPIView(APIView):
             )
 
         return Response(form.errors, status=HTTP_400_BAD_REQUEST)
+
+
+class PasswordResetConfirmAPIView(APIView):
+    """Set the new password for the user."""
+
+    def post(self, request, *args, **kwargs):
+        """Manage posted data to set the new password."""
+        serializer = SetPasswordSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(
+            {"detail": "Password has been reset with the new password."},
+            status=HTTP_200_OK,
+        )
 
 
 class SamlFerIdpListAPIView(SocialBackendViewMixin, APIView):
