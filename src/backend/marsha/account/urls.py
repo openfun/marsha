@@ -9,7 +9,11 @@ from rest_framework_simplejwt.views import (
 )
 from social_edu_federation.django.views import EduFedMetadataView
 
-from .api import PasswordResetAPIView, SamlFerIdpListAPIView
+from .api import (
+    PasswordResetAPIView,
+    PasswordResetConfirmAPIView,
+    SamlFerIdpListAPIView,
+)
 from .views import (
     LoginView,
     LogoutView,
@@ -70,6 +74,11 @@ urlpatterns = [
         "api/password/reset/",
         PasswordResetAPIView.as_view(),
         name="api_password_reset",
+    ),
+    path(
+        "api/password/reset/confirm/",
+        PasswordResetConfirmAPIView.as_view(),
+        name="api_password_reset_confirm",
     ),
     path(
         "api/saml/renater_fer_idp_list/",
