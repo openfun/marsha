@@ -6,10 +6,12 @@ import {
   FULL_SCREEN_ERROR_ROUTE,
   useTimedTextTrack,
   uploadState,
+  liveState,
 } from 'lib-components';
 import VideoPlayer from 'components/VideoPlayer';
 import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import { VideoWidgetProvider } from 'components/VideoWidgetProvider';
+import { LiveToVODDashboard } from '../LiveToVODDashboard';
 
 interface PublicVODDashboardProps {
   playerType: string;
@@ -31,12 +33,21 @@ export const PublicVODDashboard = ({ playerType }: PublicVODDashboardProps) => {
 
   return (
     <Box background={{ color: 'bg-marsha' }}>
-      <VideoPlayer
-        video={video}
-        playerType={playerType}
-        timedTextTracks={timedTextTracks}
-      />
-
+      <Box>
+        {video.live_state === liveState.ENDED ? (
+          <LiveToVODDashboard
+            video={video}
+            playerType={playerType}
+            timedTextTracks={timedTextTracks}
+          />
+        ) : (
+          <VideoPlayer
+            video={video}
+            playerType={playerType}
+            timedTextTracks={timedTextTracks}
+          />
+        )}
+      </Box>
       <VideoWidgetProvider isLive={false} isTeacher={false} />
     </Box>
   );
