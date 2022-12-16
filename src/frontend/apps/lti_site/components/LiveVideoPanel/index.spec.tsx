@@ -61,7 +61,7 @@ describe('<LiveVideoPanel />', () => {
     });
 
     const { elementContainer: container } = render(
-      wrapInVideo(<LiveVideoPanel />, mockVideo),
+      wrapInVideo(<LiveVideoPanel isLive />, mockVideo),
     );
 
     expect(mockSetPanelVisibility).toBeCalled();
@@ -89,7 +89,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
+    render(wrapInVideo(<LiveVideoPanel isLive />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -126,7 +126,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
+    render(wrapInVideo(<LiveVideoPanel isLive />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -168,7 +168,7 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
+    render(wrapInVideo(<LiveVideoPanel isLive />, mockVideo));
 
     screen.getByRole('tablist');
     screen.getByRole('tab', { name: 'application' });
@@ -196,7 +196,7 @@ describe('<LiveVideoPanel />', () => {
       availableItems: [LivePanelItem.APPLICATION],
     });
 
-    render(wrapInVideo(<LiveVideoPanel />, mockVideo));
+    render(wrapInVideo(<LiveVideoPanel isLive />, mockVideo));
 
     expect(screen.queryByRole('tablist')).not.toBeInTheDocument();
     expect(
@@ -228,7 +228,9 @@ describe('<LiveVideoPanel />', () => {
       ],
     });
 
-    await renderImageSnapshot(wrapInVideo(<LiveVideoPanel />, mockVideo));
+    await renderImageSnapshot(
+      wrapInVideo(<LiveVideoPanel isLive />, mockVideo),
+    );
   });
 
   it('renders with appropriate style on small screen [screenshot]', async () => {
@@ -252,7 +254,7 @@ describe('<LiveVideoPanel />', () => {
     await renderImageSnapshot(
       wrapInVideo(
         <ResponsiveContext.Provider value="small">
-          <LiveVideoPanel />
+          <LiveVideoPanel isLive />
         </ResponsiveContext.Provider>,
         mockVideo,
       ),

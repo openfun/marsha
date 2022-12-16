@@ -13,7 +13,7 @@ import {
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 
-const ContentContainer = styled.div`
+export const ContentContainer = styled.div`
   position: absolute;
   top: 0;
   bottom: 0;
@@ -25,7 +25,11 @@ const RelativeBox = styled(Box)`
   position: relative;
 `;
 
-export const LiveVideoPanel = () => {
+export interface LiveVideoPanelProps {
+  isLive: boolean;
+}
+
+export const LiveVideoPanel = ({ isLive }: LiveVideoPanelProps) => {
   const size = useContext(ResponsiveContext);
   const [context] = useCurrentResourceContext();
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
@@ -81,7 +85,7 @@ export const LiveVideoPanel = () => {
   let content;
   switch (currentItem) {
     case LivePanelItem.CHAT:
-      content = <Chat />;
+      content = <Chat isModerated={!isLive} />;
       break;
     case LivePanelItem.APPLICATION:
       //  TODO : implement this item
