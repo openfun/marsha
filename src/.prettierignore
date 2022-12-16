@@ -4,5 +4,6 @@ node_modules
 frontend/apps/lti_site/translations/*.json
 frontend/apps/lti_site/public-path.js
 frontend/apps/lti_site/apps/.cookiecutter
+frontend/apps/standalone_site/public/*.js
 lib
 build
