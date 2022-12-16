@@ -44,7 +44,7 @@ describe('<Authenticator />', () => {
     localStorage.removeItem('redirect_uri');
     localStorage.removeItem('jwt-storage');
 
-    useJwt.getState().reset();
+    useJwt.getState().resetJwt();
     useCurrentUser.setState({
       currentUser: null,
     });
@@ -141,7 +141,7 @@ describe('<Authenticator />', () => {
     ).toBeInTheDocument();
   });
 
-  it('checks the jwt token persistency: jwt expired from back', async () => {
+  it('redirects to login when access jwt token expired', async () => {
     const { unmount } = render(<WrappedAuthenticator />, {
       routerOptions: {
         history: ['/some/other/path/?some=query2'],
@@ -200,67 +200,5 @@ describe('<Authenticator />', () => {
     });
 
     expect(await screen.findByText('login page')).toBeInTheDocument();
-  });
-
-  it('checks the jwt token persistency: jwt expired from front', async () => {
-    const { unmount } = render(<WrappedAuthenticator />, {
-      routerOptions: {
-        history: ['/some/other/path/?some=query1'],
-      },
-    });
-
-    expect(screen.getByText('login page')).toBeInTheDocument();
-
-    fetchMock.post('/api/auth/challenge/', { access: 'some-access1' });
-
-    fetchMock.get('/api/users/whoami/', {
-      date_joined: 'date_joined',
-      email: 'email',
-      full_name: 'full name',
-      id: 'id',
-      is_staff: false,
-      is_superuser: false,
-      organization_accesses: [],
-    });
-
-    //  unmount components to mock the redirection after authentication (and init the new location)
-    //  this is mandatory to take the new location.search into account
-    onUnmount(unmount);
-
-    const { unmount: unmount2 } = render(<WrappedAuthenticator />, {
-      routerOptions: {
-        history: ['/some/path/?token=some-token1'],
-      },
-    });
-
-    expect(
-      await screen.findByText('/some/other/path/?some=query1'),
-    ).toBeInTheDocument();
-
-    onUnmount(unmount2);
-
-    const { unmount: unmount3 } = render(<WrappedAuthenticator />, {
-      routerOptions: {
-        history: ['/some/other/path/reconnect/'],
-      },
-    });
-
-    expect(
-      await screen.findByText('/some/other/path/reconnect/'),
-    ).toBeInTheDocument();
-
-    onUnmount(unmount3);
-
-    // add a day - to have the token expired
-    const date = new Date();
-    jest.useFakeTimers().setSystemTime(date.setDate(date.getDate() + 1));
-
-    render(<WrappedAuthenticator />, {
-      routerOptions: {
-        history: ['/some/other/path/re-reconnect/'],
-      },
-    });
-
-    expect(screen.getByText('login page')).toBeInTheDocument();
   });
 });
