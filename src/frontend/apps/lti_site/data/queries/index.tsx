@@ -11,31 +11,23 @@ import {
   actionOne,
   APIList,
   createOne,
-  deleteOne,
   fetchList,
   FetchListQueryKey,
   fetchOne,
-  metadata,
   Playlist,
   updateOne,
   useVideo as useVideoStore,
   Document,
   LiveModeType,
   LiveAttendance,
-  LiveSession,
   PortabilityRequest,
-  SharedLiveMedia,
   Thumbnail,
   TimedText,
   Video,
   VideoStats,
   uploadState,
   Organization,
-  modelName,
 } from 'lib-components';
-import { VTTCue, WebVTT } from 'vtt.js';
-
-import { TimedTextMetadata, VideoMetadata } from 'types/metadata';
 
 export const useOrganization = (
   organizationId: string,
@@ -141,92 +133,6 @@ export const useTimedTextTracks = (
   >(key, fetchList, queryConfig);
 };
 
-type UseDeleteTimedTextTrackData = string;
-type UseDeleteTimedTextTrackError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseDeleteTimedTextTrackData]?: string[] }[];
-    };
-type UseDeleteTimedTextTrackOptions = UseMutationOptions<
-  Maybe<TimedText>,
-  UseDeleteTimedTextTrackError,
-  UseDeleteTimedTextTrackData
->;
-export const useDeleteTimedTextTrack = (
-  options?: UseDeleteTimedTextTrackOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    Maybe<TimedText>,
-    UseDeleteTimedTextTrackError,
-    UseDeleteTimedTextTrackData
-  >(
-    (timedTextTrackId) =>
-      deleteOne({
-        name: 'timedtexttracks',
-        id: timedTextTrackId,
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
-type UseDeleteThumbnailData = string;
-type UseDeleteThumbnailError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseDeleteThumbnailData]?: string[] }[];
-    };
-type UseDeleteThumbnailOptions = UseMutationOptions<
-  Maybe<Thumbnail>,
-  UseDeleteThumbnailError,
-  UseDeleteThumbnailData
->;
-export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    Maybe<Thumbnail>,
-    UseDeleteThumbnailError,
-    UseDeleteThumbnailData
-  >(
-    (thumbnailId) =>
-      deleteOne({
-        name: 'thumbnails',
-        id: thumbnailId,
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
 export type LiveAttendancesResponse = APIList<LiveAttendance>;
 export const useLiveAttendances = (
   queryConfig?: UseQueryOptions<
@@ -251,53 +157,6 @@ export const useVideo = (
 ) => {
   const key = ['videos', videoId];
   return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
-};
-
-export const useVideoMetadata = (
-  locale: string,
-  queryConfig?: UseQueryOptions<
-    VideoMetadata,
-    'videos',
-    VideoMetadata,
-    string[]
-  >,
-) => {
-  const key = ['videos', locale];
-  return useQuery<VideoMetadata, 'videos', VideoMetadata, string[]>(
-    key,
-    metadata,
-    {
-      refetchInterval: false,
-      refetchIntervalInBackground: false,
-      refetchOnWindowFocus: false,
-      cacheTime: Infinity,
-      staleTime: Infinity,
-      ...queryConfig,
-    },
-  );
-};
-
-export const useFetchTimedTextTrackLanguageChoices = (
-  queryConfig?: UseQueryOptions<
-    TimedTextMetadata,
-    'timedtexttracks',
-    TimedTextMetadata,
-    string[]
-  >,
-) => {
-  return useQuery<
-    TimedTextMetadata,
-    'timedtexttracks',
-    TimedTextMetadata,
-    string[]
-  >([modelName.TIMEDTEXTTRACKS], metadata, {
-    refetchInterval: false,
-    refetchIntervalInBackground: false,
-    refetchOnWindowFocus: false,
-    cacheTime: Infinity,
-    staleTime: Infinity,
-    ...queryConfig,
-  });
 };
 
 export type UseCreateVideoData = {
@@ -335,40 +194,6 @@ export const useCreateVideo = (options?: UseCreateVideoOptions) => {
   );
 };
 
-type UseUpdateVideoData = Partial<Video>;
-type UseUpdateVideoError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseUpdateVideoData]?: string[] }[];
-    };
-type UseUpdateVideoOptions = UseMutationOptions<
-  Video,
-  UseUpdateVideoError,
-  UseUpdateVideoData
->;
-export const useUpdateVideo = (id: string, options?: UseUpdateVideoOptions) => {
-  const queryClient = useQueryClient();
-  return useMutation<Video, UseUpdateVideoError, UseUpdateVideoData>(
-    (updatedVideo) => updateOne({ name: 'videos', id, object: updatedVideo }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
 type VideosResponse = APIList<Video>;
 type UseVideosParams = Maybe<{ organization?: string; playlist?: string }>;
 export const useVideos = (
@@ -385,45 +210,6 @@ export const useVideos = (
     key,
     fetchList,
     queryConfig,
-  );
-};
-
-type usePairingVideoError = { code: 'exception' };
-type usePairingVideoResponse = {
-  secret: string;
-  expires_in: number;
-};
-type usePairingVideoOptions = UseMutationOptions<
-  usePairingVideoResponse,
-  usePairingVideoError
->;
-export const usePairingVideo = (
-  id: string,
-  options?: usePairingVideoOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<usePairingVideoResponse, usePairingVideoError>(
-    () =>
-      actionOne({
-        name: 'videos',
-        id,
-        action: 'pairing-secret',
-        method: 'GET',
-      }),
-    {
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
   );
 };
 
@@ -513,191 +299,6 @@ export const useCreateDocument = (options?: UseCreateDocumentOptions) => {
     },
   );
 };
-type UseUpdateSharedLiveMediaData = Partial<SharedLiveMedia>;
-type UseUpdateSharedLiveMediaError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseUpdateSharedLiveMediaData]?: string[] }[];
-    };
-type UseUpdateSharedLiveMediaOptions = UseMutationOptions<
-  SharedLiveMedia,
-  UseUpdateSharedLiveMediaError,
-  UseUpdateSharedLiveMediaData
->;
-export const useUpdateSharedLiveMedia = (
-  id: string,
-  options?: UseUpdateSharedLiveMediaOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    SharedLiveMedia,
-    UseUpdateSharedLiveMediaError,
-    UseUpdateSharedLiveMediaData
-  >(
-    (updatedSharedLiveMedia) =>
-      updateOne({
-        name: 'sharedlivemedias',
-        id,
-        object: updatedSharedLiveMedia,
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
-type UseDeleteSharedLiveMediaData = string;
-type UseDeleteSharedLiveMediaError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseUpdateSharedLiveMediaData]?: string[] }[];
-    };
-type UseDeleteSharedLiveMediaOptions = UseMutationOptions<
-  Maybe<SharedLiveMedia>,
-  UseUpdateSharedLiveMediaError,
-  UseDeleteSharedLiveMediaData
->;
-export const useDeleteSharedLiveMedia = (
-  options?: UseDeleteSharedLiveMediaOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    Maybe<SharedLiveMedia>,
-    UseDeleteSharedLiveMediaError,
-    UseDeleteSharedLiveMediaData
-  >(
-    (sharedLiveMediaId) =>
-      deleteOne({
-        name: 'sharedlivemedias',
-        id: sharedLiveMediaId,
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
-type UseStartSharingLiveMediaOptions = UseMutationOptions<
-  SharedLiveMedia,
-  UseUpdateVideoError,
-  { sharedlivemedia: string }
->;
-export const useStartSharingMedia = (
-  videoId: string,
-  options?: UseStartSharingLiveMediaOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<
-    SharedLiveMedia,
-    UseUpdateVideoError,
-    { sharedlivemedia: string }
-  >(
-    (sharedLiveMedia) =>
-      actionOne({
-        name: 'videos',
-        id: videoId,
-        action: 'start-sharing',
-        method: 'PATCH',
-        object: sharedLiveMedia,
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
-type UseStopSharingLiveMediaOptions = UseMutationOptions<
-  SharedLiveMedia,
-  UseUpdateVideoError
->;
-export const useStopSharingMedia = (
-  videoId: string,
-  options?: UseStopSharingLiveMediaOptions,
-) => {
-  const queryClient = useQueryClient();
-  return useMutation<SharedLiveMedia, UseUpdateVideoError>(
-    () =>
-      actionOne({
-        name: 'videos',
-        id: videoId,
-        action: 'end-sharing',
-        method: 'PATCH',
-      }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-      onError: (error, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onError) {
-          options.onError(error, variables, context);
-        }
-      },
-    },
-  );
-};
-
-type LiveSessionsResponse = APIList<LiveSession>;
-type UseLiveSessionsParams = { anonymous_id?: string };
-export const useLiveSessionsQuery = (
-  params: UseLiveSessionsParams,
-  queryConfig?: UseQueryOptions<
-    LiveSessionsResponse,
-    'livesessions',
-    LiveSessionsResponse,
-    FetchListQueryKey
-  >,
-) => {
-  const key: FetchListQueryKey = ['livesessions', params];
-  return useQuery<
-    LiveSessionsResponse,
-    'livesessions',
-    LiveSessionsResponse,
-    FetchListQueryKey
-  >(key, fetchList, queryConfig);
-};
 
 type UseCreatePortabilityRequestData = {
   for_playlist: string;
@@ -741,31 +342,4 @@ export const useCreatePortabilityRequest = (
       },
     },
   );
-};
-
-export const useTranscriptReaderRequest = (
-  url: string,
-  onSuccess: (cue: VTTCue) => void,
-  queryConfig?: UseQueryOptions<string, 'useTranscriptReaderRequest', string>,
-) => {
-  return useQuery({
-    queryKey: ['useTranscriptReaderRequest'],
-    queryFn: async () => {
-      const response = await fetch(url);
-      return await response.text();
-    },
-    onSuccess: (transcriptReader: string) => {
-      if (!transcriptReader) return;
-
-      const parser = new WebVTT.Parser(window, WebVTT.StringDecoder());
-
-      parser.oncue = (cue: VTTCue) => {
-        onSuccess(cue);
-      };
-
-      parser.parse(transcriptReader);
-      parser.flush();
-    },
-    ...queryConfig,
-  });
 };

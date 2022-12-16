@@ -11,11 +11,13 @@ import {
   TimedText,
   uploadState,
   UPLOAD_FORM_ROUTE,
+  ObjectStatusPicker,
 } from 'lib-components';
-import { LanguageChoice } from 'types/SelectOptions';
 import { ActionLink } from '../ActionLink/ActionLink';
-import { ObjectStatusPicker } from '../ObjectStatusPicker';
-import { useFetchTimedTextTrackLanguageChoices } from 'data/queries';
+import {
+  LanguageChoice,
+  useFetchTimedTextTrackLanguageChoices,
+} from 'lib-video';
 
 const messages = defineMessages({
   delete: {

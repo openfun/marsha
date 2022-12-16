@@ -7,19 +7,16 @@ import {
   modelName,
   liveState,
   uploadState,
+  Video,
 } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import { useCurrentVideo } from 'data/stores/useCurrentRessource/useCurrentVideo';
 import render from 'utils/tests/render';
 
 import Dashboard from '.';
 
-const mockUseCurrentVideo = useCurrentVideo;
-jest.mock('components/DashboardVOD', () => ({
-  DashboardVOD: () => {
-    const video = mockUseCurrentVideo();
-
+jest.mock('./DashboardVideoWrapper', () => ({
+  DashboardVideoWrapper: ({ video }: { video: Video }) => {
     return <span title={video.id} />;
   },
 }));
@@ -27,6 +24,7 @@ jest.mock(
   'components/DashboardDocument',
   () => (props: { document: Document }) => <span title={props.document.id} />,
 );
+
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useCurrentResourceContext: () => [
@@ -40,7 +38,6 @@ jest.mock('lib-components', () => ({
   useAppConfig: jest.fn(),
 }));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
-
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<
   typeof useAppConfig
 >;

@@ -1,16 +1,23 @@
 import { Button, Box, Text, ResponsiveContext } from 'grommet';
 import React, { useContext } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect, Route, Switch } from 'react-router-dom';
+import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 
-import { FULL_SCREEN_ERROR_ROUTE, useAppConfig } from 'lib-components';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  modelName,
+  useAppConfig,
+  withLink,
+} from 'lib-components';
+import {
+  ConfigureLiveButton,
+  CreateVOD,
+  WhiteCard,
+  WizardLayout,
+} from 'lib-video';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
-import { ConfigureLiveButton } from 'components/VideoWizard/ConfigureLiveButton';
-import { withLink } from 'components/withLink/withLink';
 
-import CreateVOD from './CreateVOD';
-import { WizardLayout } from './WizardLayout';
-import { WhiteCard } from './WhiteCard';
+import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 
 const messages = defineMessages({
   chooseActionTitle: {
@@ -35,6 +42,7 @@ const CreateVODButton = withLink(Button);
 
 const VideoWizard = () => {
   const intl = useIntl();
+  const history = useHistory();
   const size = useContext(ResponsiveContext);
   const appData = useAppConfig();
 
@@ -48,7 +56,24 @@ const VideoWizard = () => {
       <Switch>
         <Route
           path={VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo)}
-          render={() => <CreateVOD video={video} />}
+          render={() => (
+            <CreateVOD
+              video={video}
+              onUploadSuccess={() => {
+                // If title & license update fails, we still redirect the user to the dashboard
+                // because it will know update has failed (react toast) but he will be able
+                // to update it using the dashboard
+                history.push(DASHBOARD_ROUTE(modelName.VIDEOS));
+              }}
+              onPreviousButtonClick={() => {
+                if (history.length > 1) {
+                  history.goBack();
+                } else {
+                  history.replace(VIDEO_WIZARD_ROUTE());
+                }
+              }}
+            />
+          )}
         />
 
         <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
@@ -72,7 +97,15 @@ const VideoWizard = () => {
               to={VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo)}
             />
 
-            <ConfigureLiveButton video={video} />
+            <ConfigureLiveButton
+              video={video}
+              RenderOnSuccess={
+                <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />
+              }
+              RenderOnError={
+                <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />
+              }
+            />
           </Box>
         </WhiteCard>
       </Switch>

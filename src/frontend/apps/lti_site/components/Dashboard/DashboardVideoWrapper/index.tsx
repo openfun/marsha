@@ -1,13 +1,20 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 
-import { DashboardLive } from 'components/DashboardLive';
-import { DashboardVOD } from 'components/DashboardVOD';
-import { CurrentVideoProvider } from 'data/stores/useCurrentRessource/useCurrentVideo';
-import { JitsiApiProvider } from 'data/stores/useJitsiApi';
-import { LiveModaleConfigurationProvider } from 'data/stores/useLiveModale';
-import { PictureInPictureProvider } from 'data/stores/usePictureInPicture';
-import { useVideo, liveState, uploadState, Video } from 'lib-components';
-import { initVideoWebsocket } from 'data/websocket';
+import {
+  useVideo,
+  uploadState,
+  Video,
+  checkLtiToken,
+  decodeJwt,
+  useJwt,
+} from 'lib-components';
+import {
+  convertVideoToLive,
+  generateVideoWebsocketUrl,
+  getOrInitAnonymousId,
+  LiveTeacherDashboard,
+  VODTeacherDashboard,
+} from 'lib-video';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -17,28 +24,24 @@ export const DashboardVideoWrapper = ({
   video,
 }: DashboardVideoWrapperProps) => {
   const currentVideo = useVideo((state) => state.getVideo(video));
-  initVideoWebsocket(currentVideo);
+  const videoWebsocketUrl = useMemo(() => {
+    return generateVideoWebsocketUrl(currentVideo.id, (url) => {
+      const { jwt } = useJwt.getState();
 
-  if (
-    ![null, liveState.ENDED].includes(currentVideo.live_state) &&
-    currentVideo.upload_state === uploadState.PENDING
-  ) {
-    return (
-      <CurrentVideoProvider value={currentVideo}>
-        <PictureInPictureProvider value={{ reversed: true }}>
-          <JitsiApiProvider value={undefined}>
-            <LiveModaleConfigurationProvider value={null}>
-              <DashboardLive />
-            </LiveModaleConfigurationProvider>
-          </JitsiApiProvider>
-        </PictureInPictureProvider>
-      </CurrentVideoProvider>
-    );
+      if (!checkLtiToken(decodeJwt(jwt))) {
+        const anonymousId = getOrInitAnonymousId();
+        url = `${url}&anonymous_id=${anonymousId}`;
+      }
+      return url;
+    });
+  }, [currentVideo.id]);
+
+  const live = convertVideoToLive(currentVideo);
+  if (live && live.upload_state === uploadState.PENDING) {
+    return <LiveTeacherDashboard live={live} socketUrl={videoWebsocketUrl} />;
   }
 
   return (
-    <CurrentVideoProvider value={currentVideo}>
-      <DashboardVOD />
-    </CurrentVideoProvider>
+    <VODTeacherDashboard video={currentVideo} socketUrl={videoWebsocketUrl} />
   );
 };

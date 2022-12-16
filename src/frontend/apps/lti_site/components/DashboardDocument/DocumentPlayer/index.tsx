@@ -4,11 +4,10 @@ import {
   useCurrentSession,
   useDocument,
   Document,
+  DocumentXapiStatement,
 } from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';
-
-import { DocumentXapiStatement } from 'XAPI/DocumentXapiStatement';
 
 const IconBox = styled.span`
   font-size: 64px;
