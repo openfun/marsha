@@ -4,12 +4,22 @@ import { useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
+import { EServiceworkerAuthAction } from '../model/service-worker';
+
 import { Authenticator } from './Authenticator';
 
 const replace = jest.fn();
 Object.defineProperty(window, 'location', {
   value: {
     replace,
+  },
+});
+
+const mockSWAddEventListener = jest.fn();
+Object.defineProperty(navigator, 'serviceWorker', {
+  value: {
+    addEventListener: mockSWAddEventListener,
+    removeEventListener: jest.fn(),
   },
 });
 
@@ -200,5 +210,164 @@ describe('<Authenticator />', () => {
     });
 
     expect(await screen.findByText('login page')).toBeInTheDocument();
+  });
+
+  it('checks the service workers actions: GET_REFRESH_TOKEN', () => {
+    useJwt.setState({
+      jwt: 'my jwt',
+      refreshJwt: 'my refresh Jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'my user',
+      } as any,
+    });
+
+    const mockPostMessage = jest.fn();
+    mockPostMessage.mockImplementation((response) => {
+      expect(response).toStrictEqual({
+        action: EServiceworkerAuthAction.REFRESH_TOKEN_RESPONSE,
+        valueClient: 'my refresh Jwt',
+        requestId: 'my request id',
+      });
+    });
+
+    mockSWAddEventListener.mockImplementation((event, cb) => {
+      // Verify that the correct event and callback were passed to the function
+      expect(event).toBe('message');
+      expect(cb).toBeDefined();
+
+      // Trigger listener with `GET_REFRESH_TOKEN` action
+      cb({
+        data: {
+          action: EServiceworkerAuthAction.GET_REFRESH_TOKEN,
+          requestId: 'my request id',
+        },
+        source: {
+          postMessage: mockPostMessage,
+        },
+      });
+    });
+
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/'],
+      },
+    });
+
+    expect(screen.getByText('/some/path/')).toBeInTheDocument();
+    expect(mockSWAddEventListener).toHaveBeenCalled();
+    expect(mockPostMessage).toHaveBeenCalled();
+  });
+
+  it('checks the service workers actions: GET_ACCESS_TOKEN', () => {
+    useJwt.setState({
+      jwt: 'my jwt',
+      refreshJwt: 'my refresh Jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'my user',
+      } as any,
+    });
+
+    const mockPostMessage = jest.fn();
+    mockPostMessage.mockImplementation((response) => {
+      expect(response).toStrictEqual({
+        action: EServiceworkerAuthAction.ACCESS_TOKEN_RESPONSE,
+        valueClient: 'my jwt',
+        requestId: 'my request id',
+      });
+    });
+
+    mockSWAddEventListener.mockImplementation((event, cb) => {
+      // Verify that the correct event and callback were passed to the function
+      expect(event).toBe('message');
+      expect(cb).toBeDefined();
+
+      // Trigger listener with `GET_REFRESH_TOKEN` action
+      cb({
+        data: {
+          action: EServiceworkerAuthAction.GET_ACCESS_TOKEN,
+          requestId: 'my request id',
+        },
+        source: {
+          postMessage: mockPostMessage,
+        },
+      });
+    });
+
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/'],
+      },
+    });
+
+    expect(screen.getByText('/some/path/')).toBeInTheDocument();
+    expect(mockSWAddEventListener).toHaveBeenCalled();
+    expect(mockPostMessage).toHaveBeenCalled();
+  });
+
+  it('checks the service workers actions: SET_TOKEN', async () => {
+    useJwt.setState({
+      jwt: 'my jwt',
+      refreshJwt: 'my refresh Jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'my user',
+      } as any,
+    });
+
+    mockSWAddEventListener.mockImplementation((event, cb) => {
+      cb({
+        data: {
+          action: EServiceworkerAuthAction.SET_TOKEN,
+          valueSW: {
+            access: 'my new access',
+            refresh: 'my new refresh',
+          },
+          requestId: 'my request id',
+        },
+      });
+    });
+
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/'],
+      },
+    });
+
+    await waitFor(() => expect(useJwt.getState().jwt).toBe('my new access'));
+    expect(useJwt.getState().refreshJwt).toBe('my new refresh');
+  });
+
+  it('checks the service workers actions: LOGOUT', () => {
+    useJwt.setState({
+      jwt: 'my jwt',
+      refreshJwt: 'my refresh Jwt',
+    });
+    useCurrentUser.setState({
+      currentUser: {
+        username: 'my user',
+      } as any,
+    });
+
+    mockSWAddEventListener.mockImplementation((event, cb) => {
+      cb({
+        data: {
+          action: EServiceworkerAuthAction.LOGOUT,
+          requestId: 'my request id',
+        },
+      });
+    });
+
+    render(<WrappedAuthenticator />, {
+      routerOptions: {
+        history: ['/some/path/'],
+      },
+    });
+
+    expect(screen.getByText('login page')).toBeInTheDocument();
   });
 });
