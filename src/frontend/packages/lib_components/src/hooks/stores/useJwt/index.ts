@@ -6,21 +6,23 @@ import { decodeJwt } from '../../../utils/decodeJwt';
 
 interface JwtStoreInterface {
   jwt?: string;
-  jwtCreateTimestamp?: number;
+  refreshJwt?: string;
   internalDecodedJwt?: DecodedJwt;
   setJwt: (jwt: string) => void;
+  setRefreshJwt: (jwt: string) => void;
   getDecodedJwt: () => DecodedJwt;
-  reset: () => void;
+  resetJwt: () => void;
 }
 
 export const useJwt = create<JwtStoreInterface>()(
   persist(
     (set, get) => ({
       jwt: undefined,
+      refreshJwt: undefined,
       internalDecodedJwt: undefined,
       jwtCreateTimestamp: undefined,
-      setJwt: (jwt) =>
-        set((state) => ({ ...state, jwt, jwtCreateTimestamp: Date.now() })),
+      setJwt: (jwt) => set((state) => ({ ...state, jwt })),
+      setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
       getDecodedJwt: () => {
         const currentValue = get().internalDecodedJwt;
         if (currentValue) {
@@ -31,12 +33,12 @@ export const useJwt = create<JwtStoreInterface>()(
         set((state) => ({ ...state, internalDecodedJwt: decoded }));
         return decoded;
       },
-      reset: () => {
+      resetJwt: () => {
         useJwt.persist.clearStorage();
         set((state) => ({
           ...state,
           jwt: undefined,
-          jwtCreateTimestamp: undefined,
+          refreshJwt: undefined,
         }));
       },
     }),
