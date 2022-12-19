@@ -58,14 +58,16 @@ const AppRoutes = () => {
       >
         <VisitorAuthenticator>
           <MainLayout Header={HeaderLight} direction="column">
-            <Suspense fallback={<ContentSpinner />}>
+            <Suspense
+              fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+            >
               <ContentsRouter />
             </Suspense>
           </MainLayout>
         </VisitorAuthenticator>
       </Route>
       <Route path={routes.LOGIN.path} exact>
-        <Suspense fallback={<ContentSpinner />}>
+        <Suspense fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}>
           <Login />
         </Suspense>
       </Route>
