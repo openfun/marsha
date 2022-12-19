@@ -40,7 +40,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
             content_type="application/json",
             data=json.dumps(
                 {
-                    "uidb64": urlsafe_base64_encode(force_bytes(uuid.uuid4())),
+                    "uid": urlsafe_base64_encode(force_bytes(uuid.uuid4())),
                     "token": default_token_generator.make_token(self.user),
                     "new_password1": "unused",
                     "new_password2": "unused",
@@ -51,7 +51,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
         self.assertEqual(response.status_code, 400)
         self.assertDictEqual(
             response.json(),
-            {"uidb64": ["Invalid value"]},
+            {"uid": ["Invalid value"]},
         )
 
     def test_password_reset_confirm_bad_token(self):
@@ -62,7 +62,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
             content_type="application/json",
             data=json.dumps(
                 {
-                    "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)),
+                    "uid": urlsafe_base64_encode(force_bytes(self.user.pk)),
                     "token": "wrong-token",
                     "new_password1": "unused",
                     "new_password2": "unused",
@@ -84,7 +84,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
             content_type="application/json",
             data=json.dumps(
                 {
-                    "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)),
+                    "uid": urlsafe_base64_encode(force_bytes(self.user.pk)),
                     "token": default_token_generator.make_token(self.user),
                     "new_password1": "some complex pass 1",
                     "new_password2": "some complex pass 2",
@@ -95,7 +95,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
         self.assertEqual(response.status_code, 400)  # Bad request
         self.assertDictEqual(
             response.json(),
-            {"non_field_errors": ["The two password fields didn't match."]},
+            {"new_password2": ["The two password fields didn’t match."]},
         )
 
     def test_password_reset_confirm_success(self):
@@ -105,7 +105,7 @@ class PasswordResetConfirmAPIViewTest(TestCase):
             content_type="application/json",
             data=json.dumps(
                 {
-                    "uidb64": urlsafe_base64_encode(force_bytes(self.user.pk)),
+                    "uid": urlsafe_base64_encode(force_bytes(self.user.pk)),
                     "token": default_token_generator.make_token(self.user),
                     "new_password1": "some complex pass #465498745",
                     "new_password2": "some complex pass #465498745",

@@ -1,65 +1,13 @@
 """Declare API endpoints with Django RestFramework viewsets."""
-from django.contrib.auth.forms import PasswordResetForm
-from django.contrib.auth.tokens import default_token_generator
 from django.urls import reverse
 
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK
 from rest_framework.views import APIView
 from social_django.utils import load_backend, load_strategy
 from social_edu_federation.django.metadata_store import CachedMetadataStore
 from social_edu_federation.django.views import SocialBackendViewMixin
-
-from marsha.account.serializers import SetPasswordSerializer
-
-
-class PasswordResetAPIView(APIView):
-    """
-    Ask the user's email and send an email with password reset link.
-    """
-
-    subject_template_name = "registration/password_reset_subject.txt"
-    email_template_name = "account/password_reset_email.html"
-
-    permission_classes = (AllowAny,)
-
-    def post(self, request, *args, **kwargs):
-        """Handle POST requests: instantiate a form instance with the passed
-        POST variables and then check if it's valid.
-        """
-        form = PasswordResetForm(request.data)
-        if form.is_valid():
-            form.save(
-                use_https=self.request.is_secure(),
-                token_generator=default_token_generator,
-                from_email=None,
-                email_template_name=self.email_template_name,
-                subject_template_name=self.subject_template_name,
-                request=self.request,
-                html_email_template_name=None,
-                extra_email_context=None,
-            )
-            return Response(
-                {"detail": "Password reset e-mail has been sent."},
-                status=HTTP_200_OK,
-            )
-
-        return Response(form.errors, status=HTTP_400_BAD_REQUEST)
-
-
-class PasswordResetConfirmAPIView(APIView):
-    """Set the new password for the user."""
-
-    def post(self, request, *args, **kwargs):
-        """Manage posted data to set the new password."""
-        serializer = SetPasswordSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(
-            {"detail": "Password has been reset with the new password."},
-            status=HTTP_200_OK,
-        )
 
 
 class SamlFerIdpListAPIView(SocialBackendViewMixin, APIView):
