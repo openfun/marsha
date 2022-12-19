@@ -234,6 +234,7 @@ class Base(Configuration):
     }
 
     # Django Rest Auth
+    REST_SESSION_LOGIN = False
     REST_USE_JWT = True
     REST_AUTH_TOKEN_MODEL = None
     REST_AUTH_SERIALIZERS = {
