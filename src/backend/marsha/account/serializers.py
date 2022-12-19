@@ -2,19 +2,23 @@
 from urllib.parse import urlparse
 
 from django.conf import settings
+from django.contrib.auth import get_user_model
 from django.utils.encoding import iri_to_uri
 from django.utils.http import url_has_allowed_host_and_scheme
 
 from dj_rest_auth.serializers import (
+    PasswordChangeSerializer as DjRestAuthPasswordChangeSerializer,
     PasswordResetSerializer as DjRestAuthPasswordResetSerializer,
 )
 from rest_framework import serializers
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
+from rest_framework_simplejwt.models import TokenUser
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
     TokenRefreshSerializer as BaseTokenRefreshSerializer,
 )
 
+from marsha.core.simple_jwt.authentication import TokenResource
 from marsha.core.simple_jwt.tokens import MarshaRefreshToken, UserRefreshToken
 
 
@@ -59,6 +63,30 @@ class PasswordResetSerializer(DjRestAuthPasswordResetSerializer):
             "from_email": None,
             "html_email_template_name": None,
         }
+
+
+class PasswordChangeSerializer(DjRestAuthPasswordChangeSerializer):
+    """
+    Serializer for requesting a password change.
+
+    We override this serializer to convert the `TokenUser` into a "real" user.
+    This serializer also completes the `IsAuthenticated` permission check from the
+    `dj_rest_auth` view, which allows us not to override the view and only
+    use the `PASSWORD_CHANGE_SERIALIZER` setting to configure the view.
+    """
+
+    def __init__(self, *args, **kwargs):
+        """Instantiate the serializer and make the `TokenUser` to `User` conversion."""
+        super().__init__(*args, **kwargs)
+        if isinstance(self.user, TokenUser) and not isinstance(
+            self.user, TokenResource
+        ):
+            # May raise 500 here but this is not expected so let it raise
+            self.user = get_user_model().objects.get(pk=self.user.pk)
+        else:
+            # In this case, either we are using a ResourceToken or we did not
+            # went through the expected authentication backend.
+            raise AuthenticationFailed({"detail": "Wrong authentication method."})
 
 
 class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
