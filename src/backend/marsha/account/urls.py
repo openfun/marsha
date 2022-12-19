@@ -2,7 +2,12 @@
 from django.conf import settings
 from django.urls import include, path
 
-from dj_rest_auth.views import LogoutView, PasswordResetConfirmView, PasswordResetView
+from dj_rest_auth.views import (
+    LogoutView,
+    PasswordChangeView,
+    PasswordResetConfirmView,
+    PasswordResetView,
+)
 from rest_framework_simplejwt.views import (
     TokenBlacklistView,
     TokenObtainPairView,
@@ -74,6 +79,11 @@ urlpatterns = [
     ),
     # - partial import of dj_rest_auth.urls
     path("api/logout/", LogoutView.as_view(), name="rest_logout"),
+    path(
+        "api/password/change/",
+        PasswordChangeView.as_view(),
+        name="rest_password_change",
+    ),
     path(
         "api/password/reset/", PasswordResetView.as_view(), name="rest_password_reset"
     ),

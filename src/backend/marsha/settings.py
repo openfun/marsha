@@ -234,10 +234,12 @@ class Base(Configuration):
     }
 
     # Django Rest Auth
-    REST_SESSION_LOGIN = False
+    OLD_PASSWORD_FIELD_ENABLED = True
+    REST_SESSION_LOGIN = False  # consider LOGOUT_ON_PASSWORD_CHANGE if changing this
     REST_USE_JWT = True
     REST_AUTH_TOKEN_MODEL = None
     REST_AUTH_SERIALIZERS = {
+        "PASSWORD_CHANGE_SERIALIZER": "marsha.account.serializers.PasswordChangeSerializer",
         "PASSWORD_RESET_SERIALIZER": "marsha.account.serializers.PasswordResetSerializer",
     }
 
