@@ -1,12 +1,18 @@
 import { Box } from 'grommet';
+import { useJwt } from 'lib-components';
 import React, { Fragment, ReactNode, useEffect, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
+import { useHistory } from 'react-router-dom';
 
 import imageLeft from 'assets/img/telescope.png';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
 import { WhiteCard } from 'components/Cards';
+import { ContentSpinner } from 'components/Spinner';
 import { HeaderLight } from 'features/Header';
 import { useResponsive } from 'hooks/useResponsive';
+import { routes } from 'routes';
+
+import { refreshToken } from '../api/refreshToken';
 
 import { LoginForm } from './LoginForm';
 import { RenaterAuthenticator } from './RenaterAuthenticator';
@@ -81,10 +87,44 @@ const ResponsiveBox = ({ children }: { children: ReactNode }) => {
 };
 
 export const Login = () => {
+  const history = useHistory();
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
   const isSmallerXsmedium = isSmallerBreakpoint(breakpoint, 'xsmedium');
   const isSmallerMedium = isSmallerBreakpoint(breakpoint, 'medium');
   const isSmallerSmall = isSmallerBreakpoint(breakpoint, 'small');
+  const { refreshJwt, resetJwt, setJwt, setRefreshJwt } = useJwt();
+  const [isUserChecked, setIsUserChecked] = useState(false);
+
+  // If the user is already logged in, redirect to the homepage
+  useEffect(() => {
+    if (!refreshJwt || isUserChecked) {
+      setIsUserChecked(true);
+      return;
+    }
+
+    const controller = new AbortController();
+    (async () => {
+      try {
+        const token = await refreshToken(refreshJwt, controller.signal);
+
+        setIsUserChecked(true);
+        setJwt(token.access);
+        setRefreshJwt(token.refresh);
+        history.push(routes.HOMEPAGE.path);
+      } catch (error) {
+        setIsUserChecked(true);
+        resetJwt();
+      }
+    })();
+
+    return () => {
+      controller.abort();
+    };
+  }, [history, isUserChecked, refreshJwt, resetJwt, setJwt, setRefreshJwt]);
+
+  if (refreshJwt) {
+    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+  }
 
   return (
     <Box
