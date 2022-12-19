@@ -2,7 +2,7 @@
 from django.conf import settings
 from django.urls import include, path
 
-from dj_rest_auth.views import PasswordResetConfirmView, PasswordResetView
+from dj_rest_auth.views import LogoutView, PasswordResetConfirmView, PasswordResetView
 from rest_framework_simplejwt.views import (
     TokenBlacklistView,
     TokenObtainPairView,
@@ -13,7 +13,7 @@ from social_edu_federation.django.views import EduFedMetadataView
 from .api import SamlFerIdpListAPIView
 from .views import (
     LoginView,
-    LogoutView,
+    LogoutView as BackendLogoutView,
     PasswordResetCompleteView,
     PasswordResetConfirmView as BackendPasswordResetConfirmView,
     PasswordResetDoneView,
@@ -28,7 +28,7 @@ app_name = "account"
 urlpatterns = [
     # Authentication
     path("login/", LoginView.as_view(), name="login"),
-    path("logout/", LogoutView.as_view(), name="logout"),
+    path("logout/", BackendLogoutView.as_view(), name="logout"),
     path("password_reset/", BackendPasswordResetView.as_view(), name="password_reset"),
     path(
         "password_reset/done/",
@@ -73,6 +73,7 @@ urlpatterns = [
         name="api_saml_fer_idp_list",
     ),
     # - partial import of dj_rest_auth.urls
+    path("api/logout/", LogoutView.as_view(), name="rest_logout"),
     path(
         "api/password/reset/", PasswordResetView.as_view(), name="rest_password_reset"
     ),
