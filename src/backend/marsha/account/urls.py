@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.urls import include, path
 
+from dj_rest_auth.views import PasswordResetConfirmView, PasswordResetView
 from rest_framework_simplejwt.views import (
     TokenBlacklistView,
     TokenObtainPairView,
@@ -9,18 +10,14 @@ from rest_framework_simplejwt.views import (
 )
 from social_edu_federation.django.views import EduFedMetadataView
 
-from .api import (
-    PasswordResetAPIView,
-    PasswordResetConfirmAPIView,
-    SamlFerIdpListAPIView,
-)
+from .api import SamlFerIdpListAPIView
 from .views import (
     LoginView,
     LogoutView,
     PasswordResetCompleteView,
-    PasswordResetConfirmView,
+    PasswordResetConfirmView as BackendPasswordResetConfirmView,
     PasswordResetDoneView,
-    PasswordResetView,
+    PasswordResetView as BackendPasswordResetView,
     RedirectToFrontendView,
 )
 from .views.social_edu_federation_saml_auth import MarshaEduFederationIdpChoiceView
@@ -32,7 +29,7 @@ urlpatterns = [
     # Authentication
     path("login/", LoginView.as_view(), name="login"),
     path("logout/", LogoutView.as_view(), name="logout"),
-    path("password_reset/", PasswordResetView.as_view(), name="password_reset"),
+    path("password_reset/", BackendPasswordResetView.as_view(), name="password_reset"),
     path(
         "password_reset/done/",
         PasswordResetDoneView.as_view(),
@@ -40,7 +37,7 @@ urlpatterns = [
     ),
     path(
         "reset/<uidb64>/<token>/",
-        PasswordResetConfirmView.as_view(),
+        BackendPasswordResetConfirmView.as_view(),
         name="password_reset_confirm",
     ),
     path(
@@ -71,19 +68,18 @@ urlpatterns = [
     path("api/token/refresh/", TokenRefreshView.as_view(), name="token_refresh"),
     path("api/token/blacklist/", TokenBlacklistView.as_view(), name="token_blacklist"),
     path(
-        "api/password/reset/",
-        PasswordResetAPIView.as_view(),
-        name="api_password_reset",
-    ),
-    path(
-        "api/password/reset/confirm/",
-        PasswordResetConfirmAPIView.as_view(),
-        name="api_password_reset_confirm",
-    ),
-    path(
         "api/saml/renater_fer_idp_list/",
         SamlFerIdpListAPIView.as_view(),
         name="api_saml_fer_idp_list",
+    ),
+    # - partial import of dj_rest_auth.urls
+    path(
+        "api/password/reset/", PasswordResetView.as_view(), name="rest_password_reset"
+    ),
+    path(
+        "api/password/reset/confirm/",
+        PasswordResetConfirmView.as_view(),
+        name="rest_password_reset_confirm",
     ),
 ]
 

@@ -121,6 +121,7 @@ class Base(Configuration):
         "drf_spectacular",
         "corsheaders",
         "channels",
+        "dj_rest_auth",  # authentication through DRF
         "parler",  # django-parler, for translated models
         "rest_framework_simplejwt.token_blacklist",
         "social_django.apps.PythonSocialAuthConfig",  # python-social-auth for Django
@@ -216,6 +217,9 @@ class Base(Configuration):
             "anon": values.Value(
                 "3/minute", environ_name="REST_FRAMEWORK_ANON_THROTTLE_RATE"
             ),
+            "dj_rest_auth": values.Value(
+                "3/minute", environ_name="REST_FRAMEWORK_REST_AUTH_THROTTLE_RATE"
+            ),
             "live_session": values.Value(
                 "3/minute", environ_name="REST_FRAMEWORK_LIVE_SESSION_THROTTLE_RATE"
             ),
@@ -227,6 +231,13 @@ class Base(Configuration):
     SPECTACULAR_SETTINGS = {
         "TITLE": "Marsha API",
         "SERVE_INCLUDE_SCHEMA": False,
+    }
+
+    # Django Rest Auth
+    REST_USE_JWT = True
+    REST_AUTH_TOKEN_MODEL = None
+    REST_AUTH_SERIALIZERS = {
+        "PASSWORD_RESET_SERIALIZER": "marsha.account.serializers.PasswordResetSerializer",
     }
 
     # WAFFLE
