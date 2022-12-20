@@ -16,40 +16,12 @@ from rest_framework_simplejwt.views import (
 from social_edu_federation.django.views import EduFedMetadataView
 
 from .api import SamlFerIdpListAPIView
-from .views import (
-    LoginView,
-    LogoutView as BackendLogoutView,
-    PasswordResetCompleteView,
-    PasswordResetConfirmView as BackendPasswordResetConfirmView,
-    PasswordResetDoneView,
-    PasswordResetView as BackendPasswordResetView,
-    RedirectToFrontendView,
-)
-from .views.social_edu_federation_saml_auth import MarshaEduFederationIdpChoiceView
+from .views import RedirectToFrontendView
 
 
 app_name = "account"
 
 urlpatterns = [
-    # Authentication
-    path("login/", LoginView.as_view(), name="login"),
-    path("logout/", BackendLogoutView.as_view(), name="logout"),
-    path("password_reset/", BackendPasswordResetView.as_view(), name="password_reset"),
-    path(
-        "password_reset/done/",
-        PasswordResetDoneView.as_view(),
-        name="password_reset_done",
-    ),
-    path(
-        "reset/<uidb64>/<token>/",
-        BackendPasswordResetConfirmView.as_view(),
-        name="password_reset_confirm",
-    ),
-    path(
-        "reset/done/",
-        PasswordResetCompleteView.as_view(),
-        name="password_reset_complete",
-    ),
     # Django social auth
     path(
         "login/complete/",
@@ -62,11 +34,6 @@ urlpatterns = [
         "saml/metadata/",
         EduFedMetadataView.as_view(backend_name="saml_fer"),
         name="saml_fer_metadata",
-    ),
-    path(
-        "saml/renater_fer_idp_choice/",
-        MarshaEduFederationIdpChoiceView.as_view(backend_name="saml_fer"),
-        name="saml_fer_idp_choice",
     ),
     # API
     path("api/token/", TokenObtainPairView.as_view(), name="token_obtain_pair"),
