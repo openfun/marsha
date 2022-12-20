@@ -248,7 +248,6 @@ class Base(Configuration):
 
     # User login base Django settings
     LOGIN_REDIRECT_URL = "account:login_complete_redirect"
-    LOGIN_URL = "account:login"
 
     FRONTEND_HOME_URL = values.URLValue("http://localhost:3000/")
     CHALLENGE_TOKEN_LIFETIME = timedelta(
