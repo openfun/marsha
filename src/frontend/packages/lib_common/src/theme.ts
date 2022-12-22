@@ -347,9 +347,15 @@ export const theme: ThemeType = {
           border-radius: 4px;
           margin: 0.125rem 0 0.125rem 1%;
         }
+        & button > div {
+          padding: 1rem;
+        }
         & button:hover {
           background-color: ${colorsGeneric['blue-hover-light']};
           color: inherit;
+        }
+        & button span[aria-live='polite'] {
+          font-size: 14px;
         }
       `,
     },
