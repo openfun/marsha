@@ -75,6 +75,8 @@ enum ERouteNames {
   ORGANIZATION = 'ORGANIZATION',
   CONTENTS = 'CONTENTS',
   LOGIN = 'LOGIN',
+
+  PASSWORD_RESET = 'PASSWORD_RESET',
 }
 enum EMyContentsSubRouteNames {
   //VIDEO = 'VIDEO',
@@ -131,6 +133,9 @@ export const routes: Routes = {
   },
   LOGIN: {
     path: `/login`,
+  },
+  PASSWORD_RESET: {
+    path: `/auth/password-reset`,
   },
   PORTABILITY_REQUESTS: {
     path: `/portability-requests/:state?`,
