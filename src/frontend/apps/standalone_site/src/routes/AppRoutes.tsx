@@ -13,7 +13,7 @@ import { routes } from './routes';
 
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
-const { Login, PasswordReset } = lazyImport(
+const { Login, PasswordReset, PasswordResetConfirm } = lazyImport(
   () => import('features/Authentication'),
 );
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
@@ -76,6 +76,11 @@ const AppRoutes = () => {
       <Route path={routes.PASSWORD_RESET.path} exact>
         <Suspense fallback={<ContentSpinner />}>
           <PasswordReset />
+        </Suspense>
+      </Route>
+      <Route path={routes.PASSWORD_RESET_CONFIRM.path} exact>
+        <Suspense fallback={<ContentSpinner />}>
+          <PasswordResetConfirm />
         </Suspense>
       </Route>
       <Route>
