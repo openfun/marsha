@@ -108,7 +108,7 @@ export const FormHelpText = ({
   textProps,
   disabled,
 }: PropsWithChildren<FormHelpTextProps>) => (
-  <Box pad={{ left: 'small' }} {...boxProps}>
+  <Box pad={{ left: 'small' }} margin={{ vertical: '2px' }} {...boxProps}>
     <Text
       size="xsmall"
       {...textProps}
