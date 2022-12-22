@@ -13,7 +13,9 @@ import { routes } from './routes';
 
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
-const { Login } = lazyImport(() => import('features/Authentication'));
+const { Login, PasswordReset } = lazyImport(
+  () => import('features/Authentication'),
+);
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
@@ -69,6 +71,11 @@ const AppRoutes = () => {
       <Route path={routes.LOGIN.path} exact>
         <Suspense fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}>
           <Login />
+        </Suspense>
+      </Route>
+      <Route path={routes.PASSWORD_RESET.path} exact>
+        <Suspense fallback={<ContentSpinner />}>
+          <PasswordReset />
         </Suspense>
       </Route>
       <Route>
