@@ -2,11 +2,12 @@
 import json
 
 from django.core import mail
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from marsha.core.factories import UserFactory
 
 
+@override_settings(ALLOWED_HOSTS=["*", "localhost:3000"])
 class PasswordResetAPIViewTest(TestCase):
     """Testcase for the account password reset API."""
 
@@ -43,6 +44,7 @@ class PasswordResetAPIViewTest(TestCase):
             data=json.dumps(
                 {
                     "email": "not-existing@example.org",
+                    "confirm_url": "http://localhost:3000/auth/password-reset/confirm/",
                 }
             ),
         )
@@ -63,6 +65,7 @@ class PasswordResetAPIViewTest(TestCase):
             data=json.dumps(
                 {
                     "email": "not-an-email",
+                    "confirm_url": "http://localhost:3000/auth/password-reset/confirm/",
                 }
             ),
         )
@@ -73,8 +76,9 @@ class PasswordResetAPIViewTest(TestCase):
             {"email": ["Enter a valid email address."]},
         )
 
-    def test_password_reset_success(self):
-        """A request with an existing email returns a 200."""
+    def test_password_reset_missing_confirm_url(self):
+        """A request with a missing confirm_url parameter return a 400 error."""
+
         response = self.client.post(
             "/account/api/password/reset/",
             content_type="application/json",
@@ -85,10 +89,51 @@ class PasswordResetAPIViewTest(TestCase):
             ),
         )
 
+        self.assertEqual(response.status_code, 400)  # Bad request
+        self.assertDictEqual(
+            response.json(),
+            {"confirm_url": ["This field is required."]},
+        )
+
+    def test_password_reset_bad_confirm_url(self):
+        """A request with a non-allowed confirm_url parameter return a 400 error."""
+
+        response = self.client.post(
+            "/account/api/password/reset/",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "email": "marsha@example.org",
+                    "confirm_url": "https://i-am-bad.com/auth/password-reset/confirm/",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 400)  # Bad request
+        self.assertDictEqual(
+            response.json(),
+            {"confirm_url": ["Unallowed URL"]},
+        )
+
+    def test_password_reset_success(self):
+        """A request with an existing email returns a 200."""
+        response = self.client.post(
+            "/account/api/password/reset/",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "email": "marsha@example.org",
+                    "confirm_url": "http://localhost:3000/auth/password-reset/confirm/",
+                }
+            ),
+        )
+
         self.assertEqual(response.status_code, 200)
         self.assertDictEqual(
             response.json(),
             {"detail": "Password reset e-mail has been sent."},
         )
         self.assertEqual(len(mail.outbox), 1)
-        self.assertIn("http://example.com/account/reset/", mail.outbox[0].body)
+        self.assertIn(
+            "http://localhost:3000/auth/password-reset/confirm/", mail.outbox[0].body
+        )
