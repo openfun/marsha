@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -40,21 +40,13 @@ const messages = defineMessages({
 
 export const ToggleSubtitlesAsTranscript = () => {
   const intl = useIntl();
-
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
-
   const video = useCurrentVideo();
-
   const [toggleUseTranscript, setToggleUseTranscript] = useState(
     video.should_use_subtitle_as_transcript,
   );
-
-  useEffect(() => {
-    setToggleUseTranscript(video.should_use_subtitle_as_transcript);
-  }, [video.should_use_subtitle_as_transcript]);
-
   const [disabledToggle, setDisabledToggle] = useState(false);
 
   const videoMutation = useUpdateVideo(video.id, {
@@ -92,22 +84,68 @@ export const ToggleSubtitlesAsTranscript = () => {
     });
   }, [video.should_use_subtitle_as_transcript, videoMutation]);
 
-  // if there is no timed text track, do not display this component.
-  if (timedTextTracks.length === 0) {
-    return null;
-  }
+  const transcripts = useMemo(
+    () =>
+      timedTextTracks
+        .filter((track) => track.is_ready_to_show)
+        .filter((track) => timedTextMode.TRANSCRIPT === track.mode),
+    [timedTextTracks],
+  );
 
-  const transcripts = timedTextTracks
-    .filter((track) => track.is_ready_to_show)
-    .filter((track) => timedTextMode.TRANSCRIPT === track.mode);
+  const subtitles = useMemo(
+    () =>
+      timedTextTracks
+        .filter((track) => track.is_ready_to_show)
+        .filter((track) => timedTextMode.SUBTITLE === track.mode),
+    [timedTextTracks],
+  );
 
-  const subtitles = timedTextTracks
-    .filter((track) => track.is_ready_to_show)
-    .filter((track) => timedTextMode.SUBTITLE === track.mode);
+  // Sync toggle with value in the back
+  useEffect(() => {
+    setToggleUseTranscript(video.should_use_subtitle_as_transcript);
+  }, [video.should_use_subtitle_as_transcript]);
 
-  if (transcripts.length > 0 || subtitles.length === 0) {
-    return null;
-  }
+  // Disable and uncheck toggle if there is no subtitle to use as a transcript
+  useEffect(() => {
+    if (subtitles.length === 0) {
+      if (!disabledToggle) {
+        setDisabledToggle(true);
+        if (video.should_use_subtitle_as_transcript) {
+          onToggleChange();
+        }
+      }
+    }
+  }, [
+    subtitles,
+    video.should_use_subtitle_as_transcript,
+    disabledToggle,
+    onToggleChange,
+  ]);
+
+  // Disable and uncheck toggle if there is already an uploaded file for transcript
+  useEffect(() => {
+    if (transcripts.length > 0) {
+      if (!disabledToggle) {
+        setDisabledToggle(true);
+        if (video.should_use_subtitle_as_transcript) {
+          onToggleChange();
+        }
+      }
+    }
+  }, [
+    transcripts,
+    video.should_use_subtitle_as_transcript,
+    disabledToggle,
+    onToggleChange,
+  ]);
+
+  // Enable toggle if there is at least one subtitle file that can be used as transcript
+  // and no existing transcript file
+  useEffect(() => {
+    if (timedTextTracks.length > 0 && transcripts.length === 0) {
+      setDisabledToggle(false);
+    }
+  }, [transcripts, timedTextTracks, disabledToggle]);
 
   return (
     <ToggleInput
