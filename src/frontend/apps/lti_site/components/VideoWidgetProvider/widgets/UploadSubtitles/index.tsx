@@ -8,7 +8,9 @@ import { ToggleSubtitlesAsTranscript } from './ToggleSubtitlesAsTranscript';
 
 const messages = defineMessages({
   info: {
-    defaultMessage: 'This widget allows you upload subtitles for the video.',
+    defaultMessage: `This widget allows you upload subtitles for the video.
+    Toggle to use as transcripts can be disabled because there
+    is no subtitle or at least one transcript exists.`,
     description: 'Info of the widget used for uploading subtitles.',
     id: 'components.UploadSubtitles.info',
   },

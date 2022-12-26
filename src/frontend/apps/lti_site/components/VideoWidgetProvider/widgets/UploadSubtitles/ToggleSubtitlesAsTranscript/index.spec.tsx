@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -22,6 +22,11 @@ const mockedTimedTextTrackSubtitle = timedTextMockFactory({
   language: 'fr-FR',
   is_ready_to_show: true,
   mode: timedTextMode.SUBTITLE,
+});
+const mockedTimedTextTrackTranscript = timedTextMockFactory({
+  language: 'fr-FR',
+  is_ready_to_show: true,
+  mode: timedTextMode.TRANSCRIPT,
 });
 
 jest.mock('data/stores/useInfoWidgetModal', () => ({
@@ -50,19 +55,13 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
   });
 
   it('check component render depend the timedTextTrack state', async () => {
-    const mockedTimedTextTrackTranscript = timedTextMockFactory({
-      language: 'fr-FR',
-      is_ready_to_show: true,
-      mode: timedTextMode.TRANSCRIPT,
-    });
-
     render(wrapInVideo(<ToggleSubtitlesAsTranscript />, mockedVideo));
 
     expect(
       screen.queryByRole('checkbox', {
         name: toggleLabel,
       }),
-    ).not.toBeInTheDocument();
+    ).toBeDisabled();
 
     // Update the state with a timed text track in subtitle mode
     act(() => {
@@ -84,12 +83,10 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       screen.queryByRole('checkbox', {
         name: toggleLabel,
       }),
-    ).not.toBeInTheDocument();
+    ).toBeDisabled();
   });
 
   it('check disable attribute', async () => {
-    const toggleFailLabel = 'Update failed, try again.';
-
     render(wrapInVideo(<ToggleSubtitlesAsTranscript />, mockedVideo));
 
     // Update the state with a timed text track in subtitle mode
@@ -97,19 +94,22 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       useTimedTextTrack.getState().addResource(mockedTimedTextTrackSubtitle);
     });
 
-    const toggle = screen.getByRole('checkbox', {
-      name: toggleLabel,
+    expect(
+      screen.queryByRole('checkbox', {
+        name: toggleLabel,
+      }),
+    ).not.toBeDisabled();
+
+    // Update the state with a timed text track in transcript mode
+    act(() => {
+      useTimedTextTrack.getState().addResource(mockedTimedTextTrackTranscript);
     });
 
-    userEvent.click(toggle);
-
-    await waitFor(() => {
-      expect(toggle).toBeDisabled();
-    });
-
-    expect(await screen.findByText(toggleFailLabel)).toBeInTheDocument();
-
-    expect(toggle).not.toBeDisabled();
+    expect(
+      screen.queryByRole('checkbox', {
+        name: toggleLabel,
+      }),
+    ).toBeDisabled();
   });
 
   it('check failed update', async () => {
@@ -176,13 +176,10 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       ...mockedVideoSubAsTrans,
       should_use_subtitle_as_transcript: false,
     });
+    // Update the state with a timed text track in subtitle mode
+    useTimedTextTrack.getState().addResource(mockedTimedTextTrackSubtitle);
 
     render(wrapInVideo(<ToggleSubtitlesAsTranscript />, mockedVideoSubAsTrans));
-
-    // Update the state with a timed text track in subtitle mode
-    act(() => {
-      useTimedTextTrack.getState().addResource(mockedTimedTextTrackSubtitle);
-    });
 
     const toggle = screen.getByRole('checkbox', {
       name: toggleLabel,
