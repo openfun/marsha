@@ -42,7 +42,9 @@ export const useLivePanelState = create<State>((set) => ({
   availableItems: [],
   currentItem: undefined,
   isPanelVisible: false,
-  setAvailableItems: (items, itemToSelect) =>
+  setAvailableItems: (items, itemToSelect) => {
+    console.log('available:', items);
+    console.log('selected:', itemToSelect);
     set((state) => ({
       //  update available items
       availableItems: Array.from(new Set(items)),
@@ -57,24 +59,21 @@ export const useLivePanelState = create<State>((set) => ({
             itemToSelect
           : //  else try current item
           state.currentItem && items.includes(state.currentItem)
-          ? //  select it
+          ? //  if possible, select it
             state.currentItem
-          : //  else try available items
-          items.length > 0
-          ? //  select it
-            items[0]
-          : //  else the current item doesn't change
-            state.currentItem,
-    })),
+          : //  else unset currentItem
+            undefined,
+    }));
+  },
   setPanelVisibility: (isVisible, itemToSelect) =>
     set((state) => ({
       //  update panel visibility
       isPanelVisible: isVisible,
       //  check item to select is within available items
       //  this is an invariant for components using the store
-      currentItem:
-        itemToSelect && state.availableItems.includes(itemToSelect)
-          ? itemToSelect
-          : state.currentItem,
+      currentItem: undefined,
+      // itemToSelect && state.availableItems.includes(itemToSelect)
+      //   ? itemToSelect
+      //   : state.currentItem,
     })),
 }));

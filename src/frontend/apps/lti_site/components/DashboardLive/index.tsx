@@ -1,5 +1,11 @@
-import { Box, Stack } from 'grommet';
-import React, { Fragment, useEffect, useRef, useState } from 'react';
+import { Box, ResponsiveContext, Stack } from 'grommet';
+import React, {
+  Fragment,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { toast } from 'react-hot-toast';
 import { Redirect } from 'react-router-dom';
 
@@ -47,6 +53,7 @@ export const DashboardLive = () => {
   const video = useCurrentVideo();
   const appData = useAppConfig();
   const [showPanelTrigger, setShowPanelTrigger] = useState(true);
+  const isMobileView = useContext(ResponsiveContext) === 'small';
 
   const { isPanelVisible, configPanel, currentItem, setPanelVisibility } =
     useLivePanelState((state) => ({
@@ -75,8 +82,7 @@ export const DashboardLive = () => {
       items.push(LivePanelItem.VIEWERS_LIST);
       configPanel(
         items,
-        // If the panel has a previous selected tab, it is this one which is used
-        currentItem ? currentItem : LivePanelItem.CHAT,
+        isMobileView ? currentItem : currentItem || LivePanelItem.CHAT,
       );
     }
     // if the xmpp object becomes unavailable, panel is uninitialized (but selected tab stays unchanged)

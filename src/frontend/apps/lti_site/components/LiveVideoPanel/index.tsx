@@ -28,13 +28,14 @@ const RelativeBox = styled(Box)`
 export const LiveVideoPanel = () => {
   const size = useContext(ResponsiveContext);
   const [context] = useCurrentResourceContext();
-  const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
-    (state) => ({
+  const { currentItem, availableItems, setAvailableItems, setPanelVisibility } =
+    useLivePanelState((state) => ({
       currentItem: state.currentItem,
       availableItems: state.availableItems,
+      setAvailableItems: state.setAvailableItems,
       setPanelVisibility: state.setPanelVisibility,
-    }),
-  );
+    }));
+  const isMobileView = useContext(ResponsiveContext) === 'small';
 
   const extendedTheme: ThemeType = {
     tabs: {
@@ -49,28 +50,34 @@ export const LiveVideoPanel = () => {
   };
   const canUpdate = context.permissions.can_update;
 
+  useEffect(() => {
+    if (!currentItem && !isMobileView) {
+      setAvailableItems(availableItems, availableItems[0]);
+    }
+  }, []);
+
   //  close panel if there is nothing to display
   useEffect(() => {
-    if (!currentItem) {
-      setPanelVisibility(false);
-    }
+    // if (!currentItem) {
+    //   setPanelVisibility(false);
+    // }
   }, [currentItem]);
 
   if (!currentItem) {
-    return <React.Fragment />;
+    return <Fragment />;
   }
 
   let header = <Fragment />;
   if (availableItems.length > 1) {
     header = (
       <Tabs
-        activeIndex={availableItems.indexOf(currentItem)}
+        activeIndex={currentItem ? availableItems.indexOf(currentItem) : 0}
         onActive={(index) => setPanelVisibility(true, availableItems[index])}
       >
-        {availableItems.map((item) => (
+        {availableItems.map((item, index) => (
           <LiveVideoTabPanel
             item={item}
-            selected={item === currentItem}
+            selected={currentItem ? item === currentItem : index === 0}
             key={`tab_${item}`}
           />
         ))}

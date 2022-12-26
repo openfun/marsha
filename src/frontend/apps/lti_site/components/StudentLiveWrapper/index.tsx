@@ -1,6 +1,6 @@
-import { Box, Layer } from 'grommet';
+import { Box, Layer, ResponsiveContext } from 'grommet';
 import { Nullable } from 'lib-common';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 
@@ -49,6 +49,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   const appData = useAppConfig();
   const live = useCurrentLive();
   const mainElementRef = useRef<Nullable<HTMLDivElement>>(null);
+  const isMobileView = useContext(ResponsiveContext) === 'small';
 
   const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
     (state) => ({
@@ -90,8 +91,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
       items.push(LivePanelItem.VIEWERS_LIST);
       configPanel(
         items,
-        // if the panel has a previous selected tab, it is this one which is used
-        currentItem ? currentItem : LivePanelItem.CHAT,
+        isMobileView ? currentItem : currentItem || LivePanelItem.CHAT,
       );
     }
     // if the xmpp object becomes unavailable, panel is uninitialized (but selected tab stays unchanged)
