@@ -28,7 +28,6 @@ export const toolbarButtons = [
   'filmstrip',
   'fullscreen',
   'fodeviceselection',
-  'hangup',
   'help',
   'microphone',
   'mute-everyone',
