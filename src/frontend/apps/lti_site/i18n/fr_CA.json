@@ -235,6 +235,10 @@
     "description": "Alt message for a shared document page",
     "message": "Shared document page {url}"
   },
+  "component.LiveInfoBar.nbViewers": {
+    "description": "Number of user connected on the live",
+    "message": "{numberOfStudents, plural, =0 {No viewers connected.} one {# viewer connected.} other {# viewers connected}}"
+  },
   "component.LiveJoinMode.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
     "message": "Video update has failed !"
@@ -358,6 +362,26 @@
   "component.PlaylistPortability.updatePlaylistSuccess": {
     "description": "Message when playlist update is successful.",
     "message": "Playlist updated."
+  },
+  "component.PortabilityRequest.pleaseMakeRequest": {
+    "description": "Message displayed when a portability request is possible and not already existing.",
+    "message": "Please make a request to the playlist owner."
+  },
+  "component.PortabilityRequest.portabilityRequestFailed": {
+    "description": "Message displayed when the creation of the portability request failed.",
+    "message": "Portability request failed"
+  },
+  "component.PortabilityRequest.requestBtnLabel": {
+    "description": "Label for the button to request access to a resource (portability request).",
+    "message": "Request access"
+  },
+  "component.PortabilityRequest.resourcePortabilityAlreadyRequested": {
+    "description": "Message displayed when a portability request has already been made.",
+    "message": "A request for portability has already been made to enabled access."
+  },
+  "component.PortabilityRequest.resourceRequiresPortability": {
+    "description": "Message displayed when the resource is not available for the current LTI context.",
+    "message": "The requested resource is not available for this context."
   },
   "component.RetryUploadButton.buttonLabel": {
     "description": "The label of the retry button.",
@@ -523,18 +547,6 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
-  "component.TitleAndRecordConfigWidget.updateTitleBlank": {
-    "description": "Message displayed when the user tried to enter a blank title.",
-    "message": "Title can't be blank !"
-  },
-  "component.TitleAndRecordConfigWidget.updateVideoFail": {
-    "description": "Message displayed when video update has failed.",
-    "message": "Video update has failed !"
-  },
-  "component.TitleAndRecordConfigWidget.updateVideoSuccess": {
-    "description": "Message displayed when video is successfully updated.",
-    "message": "Video updated."
-  },
   "component.TitleDisplayer.noFilenameUploadFailed": {
     "description": "A message displayed when upload has failed, and so the file hasn't any filename.",
     "message": "Upload has failed"
@@ -542,6 +554,10 @@
   "component.ToggleSubtitlesAsTranscript.useTranscriptToggleLabel": {
     "description": "Label of the toggle used to use subtitles as transcripts.",
     "message": "Use subtitles as transcripts"
+  },
+  "component.ToolsAndApplications.liveRecordingToggleLabel": {
+    "description": "The label associated to the toggle button reponsible of live recording activation / deactivation.",
+    "message": "Activate live recording"
   },
   "component.ToolsAndApplications.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
@@ -930,6 +946,26 @@
   "components.LicenseSelect.selectLicenseLabel": {
     "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
     "message": "Select the license under which you want to publish your video"
+  },
+  "components.LiveInfoBar.noTitle": {
+    "description": "Title placeholder when no title is defined for this live",
+    "message": "No title"
+  },
+  "components.LiveInfoBar.placeholderTitleInput": {
+    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
+    "message": "Enter title of your live here"
+  },
+  "components.LiveInfoBar.updateTitleBlank": {
+    "description": "Message displayed when the user tried to enter a blank title.",
+    "message": "Title can't be blank !"
+  },
+  "components.LiveInfoBar.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "components.LiveInfoBar.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
   },
   "components.LiveJoinMode.approvalLabel": {
     "description": "The label associated to the approval join mode.",
@@ -1335,10 +1371,6 @@
     "description": "Text title to inform that the event has started",
     "message": "Live has started"
   },
-  "components.StudentLiveWrapper.defaultLiveTitle": {
-    "description": "Default live title for students (if the live has no title set)",
-    "message": "No title"
-  },
   "components.StudentShowAppsButton.apps": {
     "description": "Label for the show apps button",
     "message": "Apps"
@@ -1398,10 +1430,6 @@
   "components.SubscribScheduledVideoEmail.form.title": {
     "description": "Title presented at the top of the subscription form.",
     "message": "I want to subscribe to this webinar"
-  },
-  "components.TeacherLiveInfobar.noTitle": {
-    "description": "Title placeholder when no title is defined for this live",
-    "message": "No title"
   },
   "components.ThumbnailDisplayer.thumbnailAlt": {
     "description": "Accessibility text for the live video thumbnail in the Dashboard.",
@@ -1479,22 +1507,6 @@
     "description": "Title of the widget used for setting VOD title and activate recording.",
     "message": "General"
   },
-  "components.TitleAndRecordConfigWidget.info": {
-    "description": "Info of the widget used for setting title and live recording.",
-    "message": "This widget allows you to set the title of your live, alongside activate / deactivate recording of it."
-  },
-  "components.TitleAndRecordConfigWidget.liveRecordingToggleLabel": {
-    "description": "The label associated to the toggle button reponsible of live recording activation / deactivation.",
-    "message": "Activate live recording"
-  },
-  "components.TitleAndRecordConfigWidget.placeholderTitleInput": {
-    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
-    "message": "Enter title of your live here"
-  },
-  "components.TitleAndRecordConfigWidget.title": {
-    "description": "Title of the widget used for setting live title and activate recording.",
-    "message": "General"
-  },
   "components.ToggleSubtitlesAsTranscript.unuseTranscriptToggleSuccess": {
     "description": "Message displayed when unuse subtitles as transcripts succeded.",
     "message": "Use subtitles as transcripts deactivated."
@@ -1541,7 +1553,7 @@
   },
   "components.UploadSubtitles.info": {
     "description": "Info of the widget used for uploading subtitles.",
-    "message": "This widget allows you upload subtitles for the video."
+    "message": "This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists."
   },
   "components.UploadSubtitles.title": {
     "description": "Title of the widget used for uploading subtitles.",
@@ -1662,6 +1674,10 @@
   "components.VODCreation.title": {
     "description": "Title of the widget used for live VOD.",
     "message": "VOD"
+  },
+  "components.VideoCreateForm.createAnotherVideo": {
+    "description": "Label button to create another video",
+    "message": "Create another video"
   },
   "components.VideoCreateForm.createVideo": {
     "description": "Button text for the button to submit the video creation form.",
