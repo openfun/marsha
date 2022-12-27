@@ -47,11 +47,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Adapt lib-classroom with eslint rules
 - The full name replaces the first and last names in the
   user's profile API
-- Always show the "use subtitle as transcript" toggle in the 
+- Always show the "use subtitle as transcript" toggle in the
   UploadSubtitles widget
 
 ### Fixed
 
+- Fix overlap display of the modal to end live on mobile view
 - Fix recording button bugs
 - Fix recording button bug on small display
 - Change permission on retrieve endpoints
