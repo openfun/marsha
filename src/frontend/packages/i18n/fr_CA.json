@@ -1,4 +1,8 @@
 {
+  "common.UploadField.ariaLabel": {
+    "description": "Aria Label Dropzone.",
+    "message": "File Upload"
+  },
   "component.ClassroomForm.descriptionLabel": {
     "description": "Label for description in classroom creation form.",
     "message": "Description"
@@ -90,6 +94,14 @@
   "component.DashboardClassroomInstructor.joinedAs": {
     "description": "Message when user has joined the classroom.",
     "message": "You have joined the classroom as {joinedAs}."
+  },
+  "component.DashboardClassroomInstructor.shareLinkLabel": {
+    "description": "Label input shareable link with student.",
+    "message": "Invite someone with this link:"
+  },
+  "component.DashboardClassroomInstructor.toastCopiedClipboardSuccess": {
+    "description": "Toast message when link copied to clipboard.",
+    "message": "Url copied in clipboard !"
   },
   "component.DashboardClassroomJoin.joinLinkLabel": {
     "description": "Label for link used to join a classroom.",

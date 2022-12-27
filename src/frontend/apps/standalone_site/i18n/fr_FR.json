@@ -1,86 +1,290 @@
 {
-  "HomePage.HomePage.HomePage": {
-    "description": "HomePage title",
-    "message": "Homepage"
+  "components.ManageAPIState.Error": {
+    "description": "Text when there is an error.",
+    "message": "Désolé, une erreur est survenue."
   },
-  "HomePage.HomePage.SeeEverything": {
+  "components.ManageAPIState.NoThing": {
+    "description": "Text when there is nothing to display.",
+    "message": "Aucune ressource à afficher."
+  },
+  "components.Modal.ButtonCancelModal": {
+    "description": "Label for cancel button in modal.",
+    "message": "Annuler"
+  },
+  "components.Modal.closeButtonTitle": {
+    "description": "Accessibility title for close modal button title.",
+    "message": "Fermer la fenêtre"
+  },
+  "components.SortableTable.sortByAscendingCreationDate": {
+    "description": "Sort table objects by ascending creation date",
+    "message": "Date de création"
+  },
+  "components.SortableTable.sortByAscendingTitle": {
+    "description": "Sort table objects by ascending title.",
+    "message": "Titre"
+  },
+  "components.SortableTable.sortByDescendingCreationDate": {
+    "description": "Sort table objects by descending creation date",
+    "message": "Date de création (décroissante)"
+  },
+  "components.SortableTable.sortByDescendingTitle": {
+    "description": "Sort table objects by descending title.",
+    "message": "Titre (décroissant)"
+  },
+  "feature.Playlist.CreatePlaylistForm.createPlaylistButtonTitle": {
+    "description": "Create playlist button title to submit create form.",
+    "message": "Créer un cours"
+  },
+  "feature.Playlist.CreatePlaylistForm.errorOrganizations": {
+    "description": "Message displayed in case an error occured while fetching organizations.",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "feature.Playlist.CreatePlaylistForm.formTitle": {
+    "description": "Create playlist modale title",
+    "message": "Créer un cours"
+  },
+  "feature.Playlist.CreatePlaylistForm.organizationFieldLabel": {
+    "description": "Organization field label in create playlist form.",
+    "message": "Organisation"
+  },
+  "feature.Playlist.CreatePlaylistForm.organizationHelper": {
+    "description": "Organization field in create playlist form helper.",
+    "message": "Si vous ne trouvez pas votre organisation, merci de contacter l'administrateur en charge de votre organisation."
+  },
+  "feature.Playlist.CreatePlaylistForm.playlistNameFieldLabel": {
+    "description": "Playlist name field label in create playlist form.",
+    "message": "Nom"
+  },
+  "feature.Playlist.CreatePlaylistForm.playlistNameHelper": {
+    "description": "Playlist name helper in create playlist form.",
+    "message": "Ce nom sera utilisé pour rechercher votre cours"
+  },
+  "feature.Playlist.CreatePlaylistForm.requiredField": {
+    "description": "Message when playlist field is missing.",
+    "message": "Ce champ est requis pour créer le cours."
+  },
+  "feature.Playlist.CreatePlaylistForm.retryOrganizations": {
+    "description": "Retry button title to fetch again organizations in case of error.",
+    "message": "Réessayer"
+  },
+  "features.Authentication.Login.altLogo": {
+    "description": "Accessible description for the Marsha logo",
+    "message": "Logo Marsha"
+  },
+  "features.Authentication.components.LoginForm.error": {
+    "description": "Error when trying to login",
+    "message": "Une erreur est survenue"
+  },
+  "features.Authentication.components.LoginForm.labelSubmit": {
+    "description": "Label submit button",
+    "message": "Ok"
+  },
+  "features.Authentication.components.LoginForm.requiredField": {
+    "description": "Message when classroom field is missing.",
+    "message": "Ce champ est obligatoire pour se connecter."
+  },
+  "features.Authentication.components.RenaterAuthenticator.labelSelectRenater": {
+    "description": "Label for select box for Renater login",
+    "message": "Sélectionner un établissement"
+  },
+  "features.Authentication.components.RenaterAuthenticator.textConnectWith": {
+    "description": "Text above select box for Renater login",
+    "message": "OU SE CONNECTER AVEC"
+  },
+  "features.Contents.Contents.MyClassrooms": {
+    "description": "HomePage title",
+    "message": "Mes classes virtuelles"
+  },
+  "features.Contents.Contents.SeeEverything": {
     "description": "Label to see all the cards",
-    "message": "See Everything"
+    "message": "Tout voir"
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.Error": {
+    "description": "Text when there is an error.",
+    "message": "Une erreur s'est produite, veuillez réessayer."
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.descriptionLabel": {
+    "description": "Label for description in classroom creation form.",
+    "message": "Description"
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.requiredField": {
+    "description": "Message when classroom field is missing.",
+    "message": "Ce champs est requis pour créer une classe virtuelle."
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.selectPlaylistLabel": {
+    "description": "Label select playlist.",
+    "message": "Choisir un cours."
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.submitLabel": {
+    "description": "Label for button submit in classroom creation form.",
+    "message": "Ajouter une classe virtuelle"
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.titleLabel": {
+    "description": "Label for title in classroom creation form.",
+    "message": "Titre"
+  },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.welcomeTextLabel": {
+    "description": "Label for welcome text in classroom creation form.",
+    "message": "Texte de bienvenue"
+  },
+  "features.Contents.features.ClassRooms.Create.ClassroomTitle": {
+    "description": "Classrooms title",
+    "message": "Classes virtuelles"
+  },
+  "features.Contents.features.ClassRooms.Create.CreateClassroomLabel": {
+    "description": "Text heading create classroom.",
+    "message": "Créer une classe virtuelle"
+  },
+  "features.Contents.features.ClassRooms.NoClassroom": {
+    "description": "Text when there is no classroom to display.",
+    "message": "Il n'y a pas de classe virtuelle à afficher."
+  },
+  "features.HomePage.HomePage": {
+    "description": "HomePage title",
+    "message": "Page d’accueil"
+  },
+  "features.HomePage.SeeEverything": {
+    "description": "Label to see all the cards",
+    "message": "Tout voir"
+  },
+  "features.Menu.menuTypeContentLabel": {
+    "description": "Label types of content in the menu",
+    "message": "Type de contenu"
   },
   "features.Playlist.create": {
     "description": "Create playlist button title",
-    "message": "Create playlist"
+    "message": "Créer un cours"
   },
   "features.Playlist.error": {
     "description": "Error message on loading playlists",
-    "message": "An error occurred, please try again later."
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
   },
   "features.Playlist.noPlaylists": {
     "description": "Message displayed when the user has not playlist yet.",
-    "message": "You have no playlist yet."
+    "message": "Vous n'avez pas encore de cours."
   },
   "features.Playlist.retry": {
     "description": "Retry button title",
-    "message": "Retry"
-  },
-  "features.Playlist.reversedSort": {
-    "description": "Indicator to show current selection is reversed.",
-    "message": "(reversed)"
-  },
-  "features.Playlist.sortByCreateOn": {
-    "description": "Button title to sort by creation date.",
-    "message": "Creation date"
-  },
-  "features.Playlist.sortByTitle": {
-    "description": "Button title to sort by title.",
-    "message": "Title"
+    "message": "Réessayer"
   },
   "features.Playlist.tableTitle": {
     "description": "Playlist table title.",
-    "message": "{item_count, plural, =0 {no playlist} one {# playlist} other {# playlists}}"
+    "message": "{item_count, plural, =0 {pas de cours} one {# cours} other {# cours}}"
   },
   "features.Playlist.title": {
     "description": "Playlist page title",
-    "message": "My Playlists"
+    "message": "Mes cours"
+  },
+  "features.PortabilityRequestStateTag.acceptedState": {
+    "description": "Accepted display state",
+    "message": "accepté"
+  },
+  "features.PortabilityRequestStateTag.pendingState": {
+    "description": "Pending display state",
+    "message": "en attente"
+  },
+  "features.PortabilityRequestStateTag.rejectedState": {
+    "description": "Rejected display state",
+    "message": "rejeté"
+  },
+  "features.PortabilityRequests.ItemTableRow.acceptPortabilityRequest": {
+    "description": "Accessibility text for portability request accept button",
+    "message": "Accepter"
+  },
+  "features.PortabilityRequests.ItemTableRow.actionFailed": {
+    "description": "Displayed error when the API request failed (for both accept or reject)",
+    "message": "Erreur lors de la modification de la demande de portabilité. Veuillez réessayer"
+  },
+  "features.PortabilityRequests.ItemTableRow.rejectPortabilityRequest": {
+    "description": "Accessibility text for portability request reject button",
+    "message": "Refuser"
+  },
+  "features.PortabilityRequests.ItemTableRow.requestFromLtiUser": {
+    "description": "Value displayed in the table when the request is from an LTI user",
+    "message": "Créé par un utilisateur LTI"
+  },
+  "features.PortabilityRequests.ItemTableRow.rowPlaylistText": {
+    "description": "Row text displayed in the table to display the playlists involved in the request",
+    "message": "{from_playlist} veut accéder à {for_playlist}"
+  },
+  "features.PortabilityRequests.error": {
+    "description": "Error message on loading portability requests",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "features.PortabilityRequests.hooks.useLtiUserAssociationJwtQueryParam.ltiUserAssociationFailure": {
+    "description": "Displayed message in toast when the LTI user association API call has failed.",
+    "message": "Une erreur s'est produite pendant la liaison de votre compte aux identifiants de votre LMS. Veuillez rafraichir la page."
+  },
+  "features.PortabilityRequests.hooks.useLtiUserAssociationJwtQueryParam.ltiUserAssociationSuccess": {
+    "description": "Displayed message in toast when the LTI user association API call has been successfully created.",
+    "message": "Votre compte a été lié avec succès aux identifiants du LMS."
+  },
+  "features.PortabilityRequests.noPortabilityRequest": {
+    "description": "Message displayed when there is no portability request to display",
+    "message": "Vous n'avez pas de demande de portabilité."
+  },
+  "features.PortabilityRequests.retry": {
+    "description": "Retry button title",
+    "message": "Réessayer"
+  },
+  "features.PortabilityRequests.tableTitle": {
+    "description": "Portability requests table title.",
+    "message": "{item_count, plural, =0 {aucune demande de portabilité} one {# demande de portabilité} other {# demandes de portabilité}}"
+  },
+  "features.PortabilityRequests.title": {
+    "description": "PortabilityRequests title",
+    "message": "Demandes de portabilité"
+  },
+  "routes.AppRoutes.metaDescription": {
+    "description": "Meta description website",
+    "message": "Marsha"
+  },
+  "routes.AppRoutes.metaTitle": {
+    "description": "Meta title website",
+    "message": "Marsha"
+  },
+  "routes.routes.menuContentsClassroomsCreateLabel": {
+    "description": "Label for the Create Classrooms link",
+    "message": "Créer une classe virtuelle"
+  },
+  "routes.routes.menuContentsClassroomsLabel": {
+    "description": "Label for the Classroom link in the content navigation menu",
+    "message": "Classes virtuelles"
   },
   "routes.routes.menuContentsLessonsLabel": {
     "description": "Label for the Lessons link in the content navigation menu",
-    "message": "Lessons"
+    "message": "Leçons"
   },
   "routes.routes.menuContentsLivesLabel": {
     "description": "Label for the lives link in the content navigation menu",
-    "message": "Lives"
+    "message": "Webinaires"
   },
   "routes.routes.menuContentsVideosLabel": {
     "description": "Label for the video link in the content navigation menu",
-    "message": "Videos"
-  },
-  "routes.routes.menuContentsVirtualClassesLabel": {
-    "description": "Label for the Virtual Classes link in the content navigation menu",
-    "message": "Virtual Classes"
+    "message": "Vidéos"
   },
   "routes.routes.menuFavoritesLabel": {
     "description": "Label for the favorites link in the main navigation menu",
-    "message": "Favorites"
+    "message": "Favoris"
   },
   "routes.routes.menuHomePageLabel": {
     "description": "Label for the homepage link in the main navigation menu",
-    "message": "Dashboard"
+    "message": "Tableau de bord"
   },
   "routes.routes.menuMyContentsLabel": {
     "description": "Label for the MyContents link in the main navigation menu",
-    "message": "My Contents"
+    "message": "Mes contenus"
   },
   "routes.routes.menuMyOrganizationsLabel": {
     "description": "Label for the My Organizations link in the main navigation menu",
-    "message": "My Organizations"
+    "message": "Mes organisations"
   },
   "routes.routes.menuMyProfileLabel": {
     "description": "Label for the My Profile link in the main navigation menu",
-    "message": "My Profile"
+    "message": "Mon profil"
   },
   "routes.routes.menuPlaylistLabel": {
     "description": "Label for the My playlists link in the main navigation menu",
-    "message": "My playlists"
+    "message": "Mes cours"
   }
 }
