@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.12] - 2022-12-28
+
 ### Added
 
 - standalone website:
@@ -1368,7 +1370,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.11...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.12...master
+[4.0.0-beta.12]: https://github.com/openfun/marsha/compare/v4.0.0-beta.11...v4.0.0-beta.12
 [4.0.0-beta.11]: https://github.com/openfun/marsha/compare/v4.0.0-beta.10...v4.0.0-beta.11
 [4.0.0-beta.10]: https://github.com/openfun/marsha/compare/v4.0.0-beta.9...v4.0.0-beta.10
 [4.0.0-beta.9]: https://github.com/openfun/marsha/compare/v4.0.0-beta.8...v4.0.0-beta.9
