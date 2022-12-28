@@ -53,6 +53,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Fixed
 
+- Remove hangup button
 - Fix overlap display of the modal to end live on mobile view
 - Fix recording button bugs
 - Fix recording button bug on small display
