@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
@@ -80,6 +80,11 @@ export const ToolsAndApplications = () => {
       has_chat: !video.has_chat,
     });
   };
+
+  useEffect(() => {
+    setChatActive(video.has_chat);
+    setIsAllowRecordingActive(video.allow_recording);
+  }, [video.has_chat, video.allow_recording]);
 
   const onAllowRecordingActiveChange = () => {
     setIsAllowRecordingActive(!video.allow_recording);

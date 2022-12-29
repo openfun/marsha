@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -98,6 +98,10 @@ export const TitleAndDescriptionWidget = () => {
   const handleChange = (updatedVideoProperty: Partial<Video>) => {
     debouncedUpdatedVideo(updatedVideoProperty);
   };
+
+  useEffect(() => {
+    setTitle(video.title);
+  }, [video.title]);
 
   return (
     <FoldableItem

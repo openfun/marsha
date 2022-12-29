@@ -1,6 +1,6 @@
 import { Box, Collapsible } from 'grommet';
 import { report, CopyClipboard } from 'lib-components';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
 
@@ -74,6 +74,10 @@ export const VisibilityAndInteraction = () => {
       });
     },
   });
+
+  useEffect(() => {
+    setVisibilityChecked(video.is_public);
+  }, [video.is_public]);
 
   const onToggleChange = () => {
     setVisibilityChecked(!video.is_public);
