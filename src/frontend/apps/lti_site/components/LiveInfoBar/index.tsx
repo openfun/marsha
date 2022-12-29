@@ -1,6 +1,12 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import { Nullable } from 'lib-common';
-import React, { Fragment, useCallback, useMemo, useState } from 'react';
+import React, {
+  Fragment,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import { DateTime } from 'luxon';
 import { EditionSVG, report, Video } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
@@ -115,6 +121,10 @@ export const LiveInfoBar = ({ isTeacher, startDate }: LiveInfoBarProps) => {
     },
     [videoMutation.mutate, video.title],
   );
+
+  useEffect(() => {
+    setTitle(video.title || intl.formatMessage(messages.noTitle));
+  }, [video.title]);
 
   const handleChange = (inputText: string) => {
     setTitle(inputText);
