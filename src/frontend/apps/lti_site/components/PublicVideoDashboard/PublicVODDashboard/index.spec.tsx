@@ -190,6 +190,7 @@ describe('<PublicVODDashboard />', () => {
           1080: 'https://example.com/thumbnail/1080p.jpg',
         },
       },
+      shared_live_medias: [mockedSharedLiveMedia],
     });
 
     render(wrapInVideo(<PublicVODDashboard playerType="videojs" />, video));

@@ -1,6 +1,6 @@
 import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
-import React, { useRef } from 'react';
+import React, { useRef, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { FoldableItem } from 'components/graphicals/FoldableItem';
@@ -60,10 +60,23 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
   const intl = useIntl();
   const retryUploadIdRef = useRef<Nullable<string>>(null);
   const { addUpload, uploadManagerState } = useUploadManager();
-  const { sharedLiveMedias } = useSharedLiveMedia((state) => ({
+  const { sharedLiveMedias, removeResource } = useSharedLiveMedia((state) => ({
     sharedLiveMedias: state.getSharedLiveMedias(),
+    removeResource: state.removeResource,
   }));
   const hiddenFileInput = React.useRef<Nullable<HTMLInputElement>>(null);
+
+  useEffect(() => {
+    if (sharedLiveMedias.length > video.shared_live_medias.length) {
+      const ressourcesToRemove = sharedLiveMedias.filter(
+        (media) =>
+          !video.shared_live_medias.find(
+            (newMedia) => media.id === newMedia.id,
+          ),
+      );
+      ressourcesToRemove.forEach((ressource) => removeResource(ressource));
+    }
+  }, [video.shared_live_medias]);
 
   const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     let sharedLiveMediaId;

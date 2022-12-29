@@ -1,7 +1,7 @@
 import { DateTime, Duration } from 'luxon';
 import { Box, Grommet, Text } from 'grommet';
 import { DashedBoxCustom } from 'lib-components';
-import React, { Fragment, useCallback, useState } from 'react';
+import React, { Fragment, useCallback, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -89,6 +89,10 @@ export const SchedulingAndDescription = () => {
     }),
     [debounce, videoMutation.mutate],
   );
+
+  useEffect(() => {
+    setDescription(video.description);
+  }, [video.description]);
 
   const handleChange = (updatedVideoProperty: Partial<Video>) => {
     debouncedUpdatedVideo(updatedVideoProperty);

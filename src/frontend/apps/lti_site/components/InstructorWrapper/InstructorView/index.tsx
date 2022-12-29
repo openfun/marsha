@@ -23,7 +23,7 @@ const messages = defineMessages({
     defaultMessage:
       'This video is read-only because it belongs to another course: {lti_id}',
     description:
-      'Text explaining that the ivdeo is in read_only mode and the dashboard is not available',
+      'Text explaining that the video is in read_only mode and the dashboard is not available',
     id: 'components.InstructorView.disabledDashboard',
   },
   maintenance: {

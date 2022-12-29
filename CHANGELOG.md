@@ -9,7 +9,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Fixed
-- set unique storage name for useJwt hook for LTI
+
+- Set unique storage name for useJwt hook for LTI
+- Live parameters sync between users
 
 ## [4.0.0-beta.12] - 2022-12-28
 

@@ -257,6 +257,7 @@ describe('<VideoWidgetProvider />', () => {
       description: 'An example description',
       thumbnail: mockedThumbnail,
       has_transcript: true,
+      shared_live_medias: [mockedSharedLiveMedia],
     });
 
     useThumbnail.getState().addResource(mockedThumbnail);
