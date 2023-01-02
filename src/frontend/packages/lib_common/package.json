@@ -38,7 +38,7 @@
     "cross-env": "7.0.3",
     "grommet": "*",
     "prettier": "2.8.1",
-    "rollup": "3.8.1",
+    "rollup": "3.9.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-polyfill-node": "0.11.0",
     "rollup-plugin-typescript2": "0.34.1",
