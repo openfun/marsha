@@ -1,5 +1,6 @@
 import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { useCurrentUser, userMockFactory } from 'lib-components';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 
@@ -14,6 +15,12 @@ const consoleWarn = jest
 window.scrollTo = jest.fn();
 
 describe('<App />', () => {
+  beforeEach(() => {
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
+  });
+
   afterEach(() => {
     fetchMock.restore();
     consoleWarn.mockClear();
@@ -21,6 +28,11 @@ describe('<App />', () => {
   });
 
   test('renders <App />', async () => {
+    useCurrentUser.setState({
+      currentUser: userMockFactory({
+        full_name: 'John Doe',
+      }),
+    });
     render(<App />);
 
     expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
@@ -31,6 +43,11 @@ describe('<App />', () => {
   });
 
   test('renders with another language', async () => {
+    useCurrentUser.setState({
+      currentUser: userMockFactory({
+        full_name: 'John Doe',
+      }),
+    });
     jest.mock(
       'translations/fr_FR.json',
       () => ({
@@ -44,8 +61,9 @@ describe('<App />', () => {
 
     render(<App />);
 
+    expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
     expect(
-      await screen.findByRole(/menuitem/i, { name: /Mon Tableau de bord/i }),
+      screen.getByRole(/menuitem/i, { name: /Mon Tableau de bord/i }),
     ).toBeInTheDocument();
   });
 });

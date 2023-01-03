@@ -397,6 +397,7 @@ export const userMockFactory = (user: Partial<User> = {}): User => {
     is_staff: false,
     is_superuser: false,
     organization_accesses: [],
+    full_name: `${faker.name.firstName()} ${faker.name.lastName()}`,
     ...user,
   };
 };
