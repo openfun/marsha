@@ -12,6 +12,11 @@ if (!domElementToParse) {
   throw new Error('Appdata are missing from DOM.');
 }
 const { jwt, ...appConfig } = parseDataElements(domElementToParse);
+
+useJwt.persist.setOptions({
+  name: `jwt-store-${appConfig.modelName}-${appConfig.resource?.id || ''}`,
+});
+
 useJwt.setState({ jwt });
 
 export const App = () => {
