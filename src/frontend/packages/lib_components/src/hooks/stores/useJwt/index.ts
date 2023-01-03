@@ -10,17 +10,21 @@ interface JwtStoreInterface {
   internalDecodedJwt?: DecodedJwt;
   setJwt: (jwt: string) => void;
   getDecodedJwt: () => DecodedJwt;
-  reset: () => void;
+  reset?: () => void;
 }
 
-export const useJwt = create<JwtStoreInterface>()(
+const useJwtPersist = create<JwtStoreInterface>()(
   persist(
     (set, get) => ({
       jwt: undefined,
       internalDecodedJwt: undefined,
       jwtCreateTimestamp: undefined,
       setJwt: (jwt) =>
-        set((state) => ({ ...state, jwt, jwtCreateTimestamp: Date.now() })),
+        set((state) => ({
+          ...state,
+          jwt,
+          jwtCreateTimestamp: Date.now(),
+        })),
       getDecodedJwt: () => {
         const currentValue = get().internalDecodedJwt;
         if (currentValue) {
@@ -32,7 +36,7 @@ export const useJwt = create<JwtStoreInterface>()(
         return decoded;
       },
       reset: () => {
-        useJwt.persist.clearStorage();
+        useJwtPersist.persist.clearStorage();
         set((state) => ({
           ...state,
           jwt: undefined,
@@ -45,3 +49,22 @@ export const useJwt = create<JwtStoreInterface>()(
     },
   ),
 );
+
+export const useJwt =
+  process.env.REACT_APP_TOKEN_WITH_PERSIST === 'true'
+    ? useJwtPersist
+    : create<JwtStoreInterface>((set, get) => ({
+        jwt: undefined,
+        internalDecodedJwt: undefined,
+        setJwt: (jwt) => set((state) => ({ ...state, jwt })),
+        getDecodedJwt: () => {
+          const currentValue = get().internalDecodedJwt;
+          if (currentValue) {
+            return currentValue;
+          }
+
+          const decoded = decodeJwt(get().jwt);
+          set((state) => ({ ...state, internalDecodedJwt: decoded }));
+          return decoded;
+        },
+      }));
