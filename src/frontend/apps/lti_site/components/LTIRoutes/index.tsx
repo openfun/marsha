@@ -115,6 +115,7 @@ const Routes = () => {
                 webinars={appData.webinars}
                 new_document_url={appData.new_document_url}
                 new_video_url={appData.new_video_url}
+                new_webinar_url={appData.new_webinar_url}
                 lti_select_form_action_url={appData.lti_select_form_action_url!}
                 lti_select_form_data={appData.lti_select_form_data!}
                 targeted_resource={appData.targeted_resource}

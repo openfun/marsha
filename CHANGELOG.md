@@ -15,7 +15,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Set unique storage name for useJwt hook for LTI
-- Live parameters sync between users
+- lti_site:
+  - Live parameters sync between users
+  - Display valid webinar url when creating one with LTI select content
 
 ## [4.0.0-beta.12] - 2022-12-28
 
