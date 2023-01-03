@@ -1,10 +1,21 @@
 import { render, screen, fireEvent } from '@testing-library/react';
-import React from 'react';
+import { useCurrentUser, userMockFactory } from 'lib-components';
 
 import Header from './Header';
 
 describe('<Header />', () => {
+  beforeEach(() => {
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
+  });
+
   test('renders Header', () => {
+    useCurrentUser.setState({
+      currentUser: userMockFactory({
+        full_name: 'John Doe',
+      }),
+    });
     render(<Header />);
     expect(screen.getByRole(/menubar/i)).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();

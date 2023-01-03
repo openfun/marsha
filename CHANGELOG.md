@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- standalone website:
+  - Display current user full name instead of John Doe
+
 ### Changed
 
 - Remove deprecated params from BBB API calls
