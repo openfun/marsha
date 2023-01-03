@@ -1,6 +1,7 @@
 import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
+import { AnonymousUser, useCurrentUser } from 'lib-components';
 import { forwardRef, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -33,6 +34,18 @@ const HeaderBox = styled(Box)<PropsExtended>`
 const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
   const [isScrollTop, setIsScrollTop] = useState(true);
   const { isDesktop } = useResponsive();
+  const { currentUser } = useCurrentUser((state) => ({
+    currentUser: state.currentUser,
+  }));
+  const [fullName, setFullName] = useState<Nullable<string>>();
+
+  useEffect(() => {
+    if (currentUser === AnonymousUser.ANONYMOUS) {
+      return;
+    }
+
+    setFullName(currentUser?.full_name);
+  }, [currentUser, setFullName]);
 
   useEffect(() => {
     const onScroll = () => {
@@ -64,7 +77,7 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         <LogoIcon width={117} height={80} />
       </Box>
       <Box direction="row" align="center" gap="small" justify="end">
-        <Text>John Doe</Text>
+        <Text>{fullName}</Text>
         <AvatarIcon width={42} height={42} />
       </Box>
     </HeaderBox>
