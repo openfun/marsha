@@ -1,8 +1,21 @@
 import create from 'zustand';
 import { persist } from 'zustand/middleware';
 
+import { AppData } from '../../../types/AppData';
 import { DecodedJwt } from '../../../types/jwt';
 import { decodeJwt } from '../../../utils/decodeJwt';
+
+const domElementToParse = document.getElementById('marsha-frontend-data');
+let storageName = 'jwt-storage';
+if (domElementToParse) {
+  const dataContext = domElementToParse.getAttribute('data-context');
+  if (dataContext) {
+    const context = JSON.parse(dataContext) as AppData;
+    storageName = `jwt-store-${context.modelName}-${
+      context.resource?.id || ''
+    }`;
+  }
+}
 
 interface JwtStoreInterface {
   jwt?: string;
@@ -41,7 +54,7 @@ export const useJwt = create<JwtStoreInterface>()(
       },
     }),
     {
-      name: 'jwt-storage',
+      name: storageName,
     },
   ),
 );

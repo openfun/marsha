@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- create unique storage name for useJwt hook
+
 ## [4.0.0-beta.12] - 2022-12-28
 
 ### Added
