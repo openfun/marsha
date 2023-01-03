@@ -150,6 +150,7 @@ interface SelectContentTargetedResourceProps {
   webinars?: Live[];
   new_document_url?: string;
   new_video_url?: string;
+  new_webinar_url?: string;
   lti_select_form_data: {
     [key: string]: string;
   };
@@ -164,6 +165,7 @@ export const SelectContentTargetedResource = ({
   webinars,
   new_document_url,
   new_video_url,
+  new_webinar_url,
   lti_select_form_data,
   setContentItemsValue,
   targeted_resource,
@@ -201,7 +203,7 @@ export const SelectContentTargetedResource = ({
       content = (
         <SelectContentVideo
           videos={webinars!}
-          new_video_url={new_video_url!}
+          new_video_url={new_webinar_url!}
           playlist={playlist!}
           lti_select_form_data={lti_select_form_data}
           setContentItemsValue={setContentItemsValue}

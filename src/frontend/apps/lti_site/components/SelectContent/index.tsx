@@ -35,6 +35,7 @@ interface SelectContentProps {
   webinars?: Live[];
   new_document_url?: string;
   new_video_url?: string;
+  new_webinar_url?: string;
   lti_select_form_action_url: string;
   lti_select_form_data: {
     [key: string]: string;
@@ -49,6 +50,7 @@ export const SelectContent = ({
   webinars,
   new_document_url,
   new_video_url,
+  new_webinar_url,
   lti_select_form_action_url,
   lti_select_form_data,
   targeted_resource,
@@ -107,6 +109,7 @@ export const SelectContent = ({
           webinars={webinars}
           new_document_url={new_document_url}
           new_video_url={new_video_url}
+          new_webinar_url={new_webinar_url}
           lti_select_form_data={lti_select_form_data}
           setContentItemsValue={setContentItemsValue}
           targeted_resource={targeted_resource}
