@@ -57,6 +57,7 @@ export interface AppConfig {
   appName?: appNames;
   new_document_url?: string;
   new_video_url?: string;
+  new_webinar_url?: string;
   lti_select_form_action_url?: string;
   lti_select_form_data?: {
     [key: string]: string;
