@@ -11,7 +11,9 @@ jest.mock('features/Contents', () => ({
 describe('<HomePage />', () => {
   test('renders HomePage', () => {
     render(<HomePage />);
-    expect(screen.getByText(/Homepage/i)).toBeInTheDocument();
     expect(screen.getByText(/My ContentsShuffle/i)).toBeInTheDocument();
+    expect(
+      screen.getByRole('link', { name: '› See Everything' }),
+    ).toBeInTheDocument();
   });
 });
