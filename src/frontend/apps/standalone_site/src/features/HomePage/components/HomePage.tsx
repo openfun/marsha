@@ -9,11 +9,6 @@ import { ContentsShuffle } from 'features/Contents';
 import { routes } from 'routes';
 
 const messages = defineMessages({
-  HomePage: {
-    defaultMessage: 'Homepage',
-    description: 'HomePage title',
-    id: 'features.HomePage.HomePage',
-  },
   SeeEverything: {
     defaultMessage: 'See Everything',
     description: 'Label to see all the cards',
@@ -38,8 +33,7 @@ const HomePage = () => {
         <Image src={banner} alt="Homepage Banner" width="100%" />
       </BlockBox>
       <Box margin={{ top: 'medium' }}>
-        <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
-          <Text weight="bolder">{intl.formatMessage(messages.HomePage)}</Text>
+        <BoxText direction="row" justify="end" margin={{ bottom: 'small' }}>
           <Text weight="bolder">
             <StyledLink to={`${routes.CONTENTS.path}`}>
               › {intl.formatMessage(messages.SeeEverything)}

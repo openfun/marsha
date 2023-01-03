@@ -23,8 +23,7 @@ describe('<App />', () => {
   test('renders <App />', async () => {
     render(<App />);
 
-    expect(await screen.findByText(/Homepage/i)).toBeInTheDocument();
-    expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
+    expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
     expect(
       screen.getByRole(/menuitem/i, { name: /My playlists/i }),
     ).toBeInTheDocument();
@@ -45,9 +44,8 @@ describe('<App />', () => {
 
     render(<App />);
 
-    expect(await screen.findByText(/Mon Accueil/i)).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Mon Tableau de bord/i }),
+      await screen.findByRole(/menuitem/i, { name: /Mon Tableau de bord/i }),
     ).toBeInTheDocument();
   });
 });
