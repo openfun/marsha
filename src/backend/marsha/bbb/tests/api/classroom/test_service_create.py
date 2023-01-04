@@ -116,8 +116,6 @@ class ClassroomServiceCreateAPITest(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         mock_get_meeting_infos.return_value = {"returncode": "SUCCESS"}

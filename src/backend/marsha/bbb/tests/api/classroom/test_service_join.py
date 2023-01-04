@@ -1,7 +1,6 @@
 """Tests for the classroom API."""
 import json
 from unittest import mock
-from urllib.parse import quote_plus
 
 from django.test import TestCase, override_settings
 
@@ -74,8 +73,6 @@ class ClassroomServiceJoinAPITest(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         jwt_token = StudentLtiTokenFactory(
@@ -94,8 +91,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={quote_plus(classroom.attendee_password)}&"
-            "userID=consumer_site_user_id&redirect=true",
+            "role=viewer&userID=consumer_site_user_id&redirect=true",
             response.data.get("url"),
         )
 
@@ -106,8 +102,6 @@ class ClassroomServiceJoinAPITest(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
         other_classroom = ClassroomFactory()
 
@@ -130,8 +124,6 @@ class ClassroomServiceJoinAPITest(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(
@@ -150,8 +142,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={quote_plus(classroom.moderator_password)}&"
-            "userID=consumer_site_user_id&redirect=true",
+            f"role=moderator&userID=consumer_site_user_id&redirect=true",
             response.data.get("url"),
         )
 
@@ -160,8 +151,6 @@ class ClassroomServiceJoinAPITest(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
@@ -212,8 +201,7 @@ class ClassroomServiceJoinAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={quote_plus(classroom.moderator_password)}&"
-            f"userID={organization_access.user_id}&redirect=true",
+            f"role=moderator&userID={organization_access.user_id}&redirect=true",
             response.data.get("url"),
         )
 
@@ -234,7 +222,6 @@ class ClassroomServiceJoinAPITest(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={quote_plus(classroom.moderator_password)}&"
-            f"userID={playlist_access.user_id}&redirect=true",
+            f"role=moderator&userID={playlist_access.user_id}&redirect=true",
             response.data.get("url"),
         )

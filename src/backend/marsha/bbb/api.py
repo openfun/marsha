@@ -353,14 +353,7 @@ class ClassroomViewSet(
             HttpResponse with the serialized classroom.
         """
         try:
-            if request.resource:
-                roles = request.resource.roles
-                moderator = "administrator" in roles or "instructor" in roles
-            else:
-                # Assume that the user is a moderator
-                # as he is an admin of the organization or the playlist
-                moderator = True
-            response = end(classroom=self.get_object(), moderator=moderator)
+            response = end(classroom=self.get_object())
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}
