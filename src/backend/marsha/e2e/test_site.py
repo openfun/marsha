@@ -1,7 +1,7 @@
 """e2e tests for site."""
 from django.test import override_settings
 
-from playwright.sync_api import Page
+from playwright.sync_api import BrowserContext, Page
 import pytest
 from pytest_django.live_server_helper import LiveServer
 from waffle.testutils import override_switch
@@ -22,10 +22,12 @@ def site_settings(live_server: LiveServer):
 
 # @pytest.mark.django_db()
 @pytest.fixture(scope="function")
-def user_logged_in(page: Page, live_server: LiveServer):
+def user_logged_in(context: BrowserContext, live_server: LiveServer):
     """Create a user and log him in."""
     user = factories.UserFactory(username="jane")
     user.set_password("password")
+
+    page = context.new_page()
     page.goto(live_server.url)
     page.fill("input[name=username]", "jane")
     page.fill("input[name=password]", "password")
@@ -42,6 +44,17 @@ def test_site_login(page: Page, live_server: LiveServer):
     page.fill("input[name=username]", "john")
     page.fill("input[name=password]", "password")
     page.click("text=OK")
+
+    page.wait_for_selector("text=Dashboard")
+    page.wait_for_selector("text=My Playlists")
+    page.wait_for_selector("text=My Contents")
+
+
+@pytest.mark.usefixtures("user_logged_in")
+def test_site_logged_in(context: BrowserContext, live_server: LiveServer):
+    """Test site already logged in."""
+    page = context.new_page()
+    page.goto(live_server.url)
 
     page.wait_for_selector("text=Dashboard")
     page.wait_for_selector("text=My Playlists")
