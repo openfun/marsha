@@ -49,8 +49,6 @@ class ClassroomServiceTestCase(TestCase):
         """Create a classroom in current classroom related server."""
         classroom = ClassroomFactory(
             title="Classroom 001",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
 
@@ -60,158 +58,12 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "attendeePW": "9#R1kuUl3R",
-                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
+                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
-                        "welcome": "Welcome!",
                         "record": True,
-                    }
-                )
-            ],
-            body=f"""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <meetingID>{classroom.id}</meetingID>
-                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
-                <parentMeetingID>bbb-none</parentMeetingID>
-                <attendeePW>{classroom.attendee_password}</attendeePW>
-                <moderatorPW>{classroom.moderator_password}</moderatorPW>
-                <createTime>1628693645640</createTime>
-                <voiceBridge>83267</voiceBridge>
-                <dialNumber>613-555-1234</dialNumber>
-                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
-                <hasUserJoined>false</hasUserJoined>
-                <duration>0</duration>
-                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
-                <messageKey></messageKey>
-                <message></message>
-            </response>
-            """,
-            status=200,
-        )
-
-        api_response = create(classroom)
-
-        self.assertDictEqual(
-            {
-                "attendeePW": classroom.attendee_password,
-                "createDate": "Wed Aug 11 14:54:05 UTC 2021",
-                "createTime": "1628693645640",
-                "dialNumber": "613-555-1234",
-                "duration": "0",
-                "hasBeenForciblyEnded": "false",
-                "hasUserJoined": "false",
-                "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
-                "meetingID": str(classroom.id),
-                "message": "Meeting created.",
-                "messageKey": None,
-                "moderatorPW": classroom.moderator_password,
-                "parentMeetingID": "bbb-none",
-                "returncode": "SUCCESS",
-                "voiceBridge": "83267",
-            },
-            api_response,
-        )
-        self.assertEqual(classroom.started, True)
-        self.assertEqual(classroom.ended, False)
-
-    @responses.activate
-    @override_settings(BBB_ENABLE_RECORD=False)
-    def test_bbb_create_new_classroom_record_disabled(self):
-        """Create a classroom in current classroom related server."""
-        classroom = ClassroomFactory(
-            title="Classroom 001",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
-            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
-        )
-
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/create",
-            match=[
-                responses.matchers.query_param_matcher(
-                    {
-                        "attendeePW": "9#R1kuUl3R",
-                        "checksum": "9f67744c41124aefce0cc7d6b2e071ee06c67c7b",
-                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "moderatorPW": "0$C7Aaz0o",
-                        "name": "Classroom 001",
+                        "role": "moderator",
                         "welcome": "Welcome!",
-                        "record": False,
-                    }
-                )
-            ],
-            body=f"""
-            <response>
-                <returncode>SUCCESS</returncode>
-                <meetingID>{classroom.id}</meetingID>
-                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
-                <parentMeetingID>bbb-none</parentMeetingID>
-                <attendeePW>{classroom.attendee_password}</attendeePW>
-                <moderatorPW>{classroom.moderator_password}</moderatorPW>
-                <createTime>1628693645640</createTime>
-                <voiceBridge>83267</voiceBridge>
-                <dialNumber>613-555-1234</dialNumber>
-                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
-                <hasUserJoined>false</hasUserJoined>
-                <duration>0</duration>
-                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
-                <messageKey></messageKey>
-                <message></message>
-            </response>
-            """,
-            status=200,
-        )
-
-        api_response = create(classroom)
-
-        self.assertDictEqual(
-            {
-                "attendeePW": classroom.attendee_password,
-                "createDate": "Wed Aug 11 14:54:05 UTC 2021",
-                "createTime": "1628693645640",
-                "dialNumber": "613-555-1234",
-                "duration": "0",
-                "hasBeenForciblyEnded": "false",
-                "hasUserJoined": "false",
-                "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
-                "meetingID": str(classroom.id),
-                "message": "Meeting created.",
-                "messageKey": None,
-                "moderatorPW": classroom.moderator_password,
-                "parentMeetingID": "bbb-none",
-                "returncode": "SUCCESS",
-                "voiceBridge": "83267",
-            },
-            api_response,
-        )
-        self.assertEqual(classroom.started, True)
-        self.assertEqual(classroom.ended, False)
-
-    @responses.activate
-    def test_bbb_create_new_classroom_no_passwords(self):
-        """When starting a classroom, if no passwords exists,
-        BBB generates them, and they are stored in classroom instance."""
-        classroom = ClassroomFactory(
-            title="Classroom 001",
-            attendee_password=None,
-            moderator_password=None,
-            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
-        )
-        responses.add(
-            responses.GET,
-            "https://10.7.7.1/bigbluebutton/api/create",
-            match=[
-                responses.matchers.query_param_matcher(
-                    {
-                        "checksum": "d198c1846dd058c9d030fafff557be74a2a276ba",
-                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "name": "Classroom 001",
-                        "welcome": "Welcome!",
-                        "record": True,
                     }
                 )
             ],
@@ -260,16 +112,14 @@ class ClassroomServiceTestCase(TestCase):
             api_response,
         )
         self.assertEqual(classroom.started, True)
-        self.assertEqual(classroom.attendee_password, "attendee_password")
-        self.assertEqual(classroom.moderator_password, "moderator_password")
+        self.assertEqual(classroom.ended, False)
 
     @responses.activate
-    def test_bbb_create_existing_classroom(self):
-        """Create a meeting in current classroom related server."""
+    @override_settings(BBB_ENABLE_RECORD=False)
+    def test_bbb_create_new_classroom_record_disabled(self):
+        """Create a classroom in current classroom related server."""
         classroom = ClassroomFactory(
             title="Classroom 001",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
 
@@ -279,13 +129,82 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "attendeePW": "9#R1kuUl3R",
-                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
+                        "checksum": "01c0736414261a66835624c3a3fe9fa0221e45fe",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
+                        "record": False,
+                        "role": "moderator",
                         "welcome": "Welcome!",
+                    }
+                )
+            ],
+            body=f"""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <meetingID>{classroom.id}</meetingID>
+                <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
+                <parentMeetingID>bbb-none</parentMeetingID>
+                <attendeePW>attendee_password</attendeePW>
+                <moderatorPW>moderator_password</moderatorPW>
+                <createTime>1628693645640</createTime>
+                <voiceBridge>83267</voiceBridge>
+                <dialNumber>613-555-1234</dialNumber>
+                <createDate>Wed Aug 11 14:54:05 UTC 2021</createDate>
+                <hasUserJoined>false</hasUserJoined>
+                <duration>0</duration>
+                <hasBeenForciblyEnded>false</hasBeenForciblyEnded>
+                <messageKey></messageKey>
+                <message></message>
+            </response>
+            """,
+            status=200,
+        )
+
+        api_response = create(classroom)
+
+        self.assertDictEqual(
+            {
+                "attendeePW": "attendee_password",
+                "createDate": "Wed Aug 11 14:54:05 UTC 2021",
+                "createTime": "1628693645640",
+                "dialNumber": "613-555-1234",
+                "duration": "0",
+                "hasBeenForciblyEnded": "false",
+                "hasUserJoined": "false",
+                "internalMeetingID": "232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640",
+                "meetingID": str(classroom.id),
+                "message": "Meeting created.",
+                "messageKey": None,
+                "moderatorPW": "moderator_password",
+                "parentMeetingID": "bbb-none",
+                "returncode": "SUCCESS",
+                "voiceBridge": "83267",
+            },
+            api_response,
+        )
+        self.assertEqual(classroom.started, True)
+        self.assertEqual(classroom.ended, False)
+
+    @responses.activate
+    def test_bbb_create_existing_classroom(self):
+        """Create a meeting in current classroom related server."""
+        classroom = ClassroomFactory(
+            title="Classroom 001",
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/create",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "name": "Classroom 001",
                         "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
                     }
                 )
             ],
@@ -314,8 +233,6 @@ class ClassroomServiceTestCase(TestCase):
         classroom = ClassroomFactory(
             id="9b3df0bd-240c-49fe-85e0-caa47420f3eb",
             title="Classroom 001",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
         ClassroomDocumentFactory(
@@ -333,13 +250,12 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "attendeePW": "9#R1kuUl3R",
-                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
+                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
-                        "welcome": "Welcome!",
                         "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
                     }
                 ),
             ],
@@ -349,8 +265,8 @@ class ClassroomServiceTestCase(TestCase):
                 <meetingID>{classroom.id}</meetingID>
                 <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
                 <parentMeetingID>bbb-none</parentMeetingID>
-                <attendeePW>{classroom.attendee_password}</attendeePW>
-                <moderatorPW>{classroom.moderator_password}</moderatorPW>
+                <attendeePW>attendee_password</attendeePW>
+                <moderatorPW>moderator_password</moderatorPW>
                 <createTime>1628693645640</createTime>
                 <voiceBridge>83267</voiceBridge>
                 <dialNumber>613-555-1234</dialNumber>
@@ -381,7 +297,7 @@ class ClassroomServiceTestCase(TestCase):
 
         self.assertDictEqual(
             {
-                "attendeePW": classroom.attendee_password,
+                "attendeePW": "attendee_password",
                 "createDate": "Wed Aug 11 14:54:05 UTC 2021",
                 "createTime": "1628693645640",
                 "dialNumber": "613-555-1234",
@@ -392,7 +308,7 @@ class ClassroomServiceTestCase(TestCase):
                 "meetingID": str(classroom.id),
                 "message": "Meeting created.",
                 "messageKey": None,
-                "moderatorPW": classroom.moderator_password,
+                "moderatorPW": "moderator_password",
                 "parentMeetingID": "bbb-none",
                 "returncode": "SUCCESS",
                 "voiceBridge": "83267",
@@ -409,8 +325,6 @@ class ClassroomServiceTestCase(TestCase):
         classroom = ClassroomFactory(
             id="9b3df0bd-240c-49fe-85e0-caa47420f3eb",
             title="Classroom 001",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
             meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa",
         )
         ClassroomDocumentFactory(
@@ -436,13 +350,12 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "attendeePW": "9#R1kuUl3R",
-                        "checksum": "6471127292c7f4c0676b0ce7ef76f9589276ab60",
+                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
-                        "moderatorPW": "0$C7Aaz0o",
                         "name": "Classroom 001",
-                        "welcome": "Welcome!",
                         "record": True,
+                        "role": "moderator",
+                        "welcome": "Welcome!",
                     }
                 ),
             ],
@@ -452,8 +365,8 @@ class ClassroomServiceTestCase(TestCase):
                 <meetingID>{classroom.id}</meetingID>
                 <internalMeetingID>232a8ab5dbfde4d33a2bd9d5bbc08bd74d04e163-1628693645640</internalMeetingID>
                 <parentMeetingID>bbb-none</parentMeetingID>
-                <attendeePW>{classroom.attendee_password}</attendeePW>
-                <moderatorPW>{classroom.moderator_password}</moderatorPW>
+                <attendeePW>attendee_password</attendeePW>
+                <moderatorPW>moderator_password</moderatorPW>
                 <createTime>1628693645640</createTime>
                 <voiceBridge>83267</voiceBridge>
                 <dialNumber>613-555-1234</dialNumber>
@@ -490,7 +403,7 @@ class ClassroomServiceTestCase(TestCase):
 
         self.assertDictEqual(
             {
-                "attendeePW": classroom.attendee_password,
+                "attendeePW": "attendee_password",
                 "createDate": "Wed Aug 11 14:54:05 UTC 2021",
                 "createTime": "1628693645640",
                 "dialNumber": "613-555-1234",
@@ -501,7 +414,7 @@ class ClassroomServiceTestCase(TestCase):
                 "meetingID": str(classroom.id),
                 "message": "Meeting created.",
                 "messageKey": None,
-                "moderatorPW": classroom.moderator_password,
+                "moderatorPW": "moderator_password",
                 "parentMeetingID": "bbb-none",
                 "returncode": "SUCCESS",
                 "voiceBridge": "83267",
@@ -517,8 +430,6 @@ class ClassroomServiceTestCase(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         # initial end request
@@ -528,9 +439,8 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
+                        "checksum": "a0759ad31f4361995954347c6aa14dc6e62b7b84",
                         "meetingID": "21e6634f-ab6f-4c77-a665-4229c61b479a",
-                        "password": classroom.moderator_password,
-                        "checksum": "3e7b6970d927f542261f18d6c2c10b5d94bcb55c",
                     }
                 )
             ],
@@ -567,7 +477,7 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = end(classroom, moderator=True)
+        api_response = end(classroom)
         self.assertDictEqual(
             {
                 "message": "A request to end the meeting was sent.",
@@ -585,8 +495,6 @@ class ClassroomServiceTestCase(TestCase):
         classroom = ClassroomFactory(
             meeting_id="21e6634f-ab6f-4c77-a665-4229c61b479a",
             title="Classroom 1",
-            attendee_password="9#R1kuUl3R",
-            moderator_password="0$C7Aaz0o",
         )
 
         responses.add(
@@ -595,9 +503,8 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
+                        "checksum": "a0759ad31f4361995954347c6aa14dc6e62b7b84",
                         "meetingID": "21e6634f-ab6f-4c77-a665-4229c61b479a",
-                        "password": classroom.attendee_password,
-                        "checksum": "471ac2a7f199c26fe9e58bf42145ea0d7ea7a3ec",
                     }
                 )
             ],
@@ -611,7 +518,7 @@ class ClassroomServiceTestCase(TestCase):
         )
 
         with self.assertRaises(ApiMeetingException) as context:
-            end(classroom, moderator=False)
+            end(classroom)
         self.assertEqual(
             str(context.exception),
             "You must supply the moderator password for this call.",
@@ -624,7 +531,7 @@ class ClassroomServiceTestCase(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={classroom.attendee_password}&userID=a_1&redirect=true",
+            "role=viewer&userID=a_1&redirect=true",
             api_response.get("url"),
         )
 

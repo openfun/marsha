@@ -23,13 +23,6 @@ class ApiMeetingException(Exception):
         super().__init__(api_response.get("message"))
 
 
-def _password(classroom: Classroom, moderator=False):
-    """Return password for moderator or attendee."""
-    if moderator:
-        return classroom.moderator_password
-    return classroom.attendee_password
-
-
 def sign_parameters(action, parameters):
     """Add a checksum to parameters."""
     request = requests.Request(
@@ -108,8 +101,7 @@ def create(classroom: Classroom):
     parameters = {
         "meetingID": str(classroom.meeting_id),
         "name": classroom.title,
-        "attendeePW": classroom.attendee_password,
-        "moderatorPW": classroom.moderator_password,
+        "role": "moderator",
         "welcome": classroom.welcome_text,
         "record": settings.BBB_ENABLE_RECORD,
     }
@@ -132,9 +124,7 @@ def create(classroom: Classroom):
     if not api_response.get("message"):
         api_response["message"] = "Meeting created."
     classroom.started = True
-    classroom.moderator_password = api_response["moderatorPW"]
-    classroom.attendee_password = api_response["attendeePW"]
-    classroom.save(update_fields=["started", "moderator_password", "attendee_password"])
+    classroom.save(update_fields=["started"])
     return api_response
 
 
@@ -143,18 +133,17 @@ def join(classroom: Classroom, consumer_site_user_id, fullname, moderator=False)
     parameters = {
         "fullName": fullname,
         "meetingID": str(classroom.meeting_id),
-        "password": _password(classroom, moderator),
+        "role": "moderator" if moderator else "viewer",
         "userID": consumer_site_user_id,
         "redirect": "true",
     }
     return request_api("join", parameters, prepare=True)
 
 
-def end(classroom: Classroom, moderator=False):
+def end(classroom: Classroom):
     """Call BBB API to end a meeting."""
     parameters = {
         "meetingID": str(classroom.meeting_id),
-        "password": _password(classroom, moderator),
     }
     api_response = request_api("end", parameters)
     classroom.started = False
