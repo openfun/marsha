@@ -13,6 +13,7 @@ describe.only('utils/parseDataElements', () => {
 
       const data = parseDataElements(dataElement);
       expect(data.video).toEqual(context.resource);
+      expect(data.resource_id).toEqual(data.video!.id);
       expect(data.resource).toEqual(undefined);
     });
 
@@ -26,10 +27,11 @@ describe.only('utils/parseDataElements', () => {
 
       const data = parseDataElements(dataElement);
       expect(data.document).toEqual(context.resource);
+      expect(data.resource_id).toEqual(data.document!.id);
       expect(data.resource).toEqual(undefined);
     });
 
-    it('leaves the context unmodified when the model is unknown', () => {
+    it('adds the resource_id parameter when the model is unknown', () => {
       const dataElement = document.createElement('div');
       const context = {
         modelName: modelName.THUMBNAILS,
@@ -38,7 +40,10 @@ describe.only('utils/parseDataElements', () => {
       dataElement.setAttribute('data-context', JSON.stringify(context));
 
       const data = parseDataElements(dataElement);
-      expect(data).toEqual(context);
+      expect(data).toEqual({
+        resource_id: 'thumbnail',
+        ...context,
+      });
     });
   });
 });
