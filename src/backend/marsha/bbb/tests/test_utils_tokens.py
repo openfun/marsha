@@ -2,7 +2,6 @@
 from datetime import datetime, timedelta
 import json
 from unittest import mock
-from urllib.parse import quote_plus
 
 from django.test import TestCase, override_settings
 from django.utils import timezone
@@ -188,7 +187,6 @@ class CreateStableInviteJwtTestCase(TestCase):
         self.assertIn(
             "https://10.7.7.1/bigbluebutton/api/join?"
             f"fullName=John+Doe&meetingID={classroom.meeting_id}&"
-            f"password={quote_plus(classroom.attendee_password)}&"
-            "userID=None_None&redirect=true",
+            "role=viewer&userID=None_None&redirect=true",
             response.data.get("url"),
         )

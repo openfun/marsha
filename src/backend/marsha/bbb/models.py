@@ -74,27 +74,6 @@ class Classroom(BaseModel):
         default=uuid.uuid4,
         editable=False,
     )
-
-    attendee_password = models.CharField(
-        max_length=50,
-        verbose_name=_("Attendee Password"),
-        help_text=_(
-            "The password that the join URL can later provide as its password parameter "
-            "to indicate the user will join as a viewer."
-        ),
-        blank=True,
-        null=True,
-    )
-    moderator_password = models.CharField(
-        max_length=50,
-        verbose_name=_("Moderator Password"),
-        help_text=_(
-            "The password that the join URL can later provide as its password parameter "
-            "to indicate the user will join as a moderator."
-        ),
-        blank=True,
-        null=True,
-    )
     welcome_text = models.TextField(
         default=_("Welcome!"),
         verbose_name=_(

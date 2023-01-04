@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Remove deprecated params from BBB API calls
+
 ### Fixed
 
 - Set unique storage name for useJwt hook for LTI
