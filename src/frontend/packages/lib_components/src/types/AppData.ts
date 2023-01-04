@@ -3,7 +3,13 @@ import { Nullable } from 'lib-common';
 
 import { Document } from 'types/file';
 import { modelName } from 'types/models';
-import { AppDataRessource, Live, Playlist, Video } from 'types/tracks';
+import {
+  AppDataRessource,
+  Live,
+  Playlist,
+  Resource,
+  Video,
+} from 'types/tracks';
 
 export enum appState {
   ERROR = 'error',
@@ -53,6 +59,7 @@ export interface AppConfig {
   document?: Nullable<Document>;
   documents?: Document[];
   resource?: AppDataRessource;
+  resource_id?: Resource['id'];
   modelName: modelName.VIDEOS | modelName.DOCUMENTS;
   appName?: appNames;
   new_document_url?: string;

@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Remove deprecated params from BBB API calls
+- Keep resource property in AppData
 
 ### Fixed
 
