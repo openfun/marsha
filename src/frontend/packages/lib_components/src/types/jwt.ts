@@ -16,3 +16,8 @@ export interface DecodedJwt extends ResourceContext {
   session_id: string;
   user?: DecodedJwtUser;
 }
+
+export interface TokenResponse {
+  access: string;
+  refresh: string;
+}

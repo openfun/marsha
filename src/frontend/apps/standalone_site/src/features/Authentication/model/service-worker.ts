@@ -1,4 +1,4 @@
-import { TokenResponse } from './response';
+import { TokenResponse } from 'lib-components';
 
 export enum EServiceworkerAuthAction {
   GET_REFRESH_TOKEN = 'GET_REFRESH_TOKEN',
