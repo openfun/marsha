@@ -1,4 +1,4 @@
-import { TokenResponse } from 'features/Authentication/model/response';
+import { TokenResponse } from 'types/jwt';
 
 const isValidate = (response: unknown): response is TokenResponse => {
   if (response && typeof response === 'object') {

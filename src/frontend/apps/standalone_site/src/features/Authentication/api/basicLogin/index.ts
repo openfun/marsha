@@ -1,7 +1,5 @@
-import { useJwt } from 'lib-components';
+import { useJwt, TokenResponse } from 'lib-components';
 import { useMutation, UseMutationOptions } from 'react-query';
-
-import { TokenResponse } from 'features/Authentication/model/response';
 
 type UseBasicLoginData = {
   username: string;

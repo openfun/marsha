@@ -1,13 +1,11 @@
 import { Box } from 'grommet';
-import { useJwt } from 'lib-components';
+import { useJwt, refreshToken } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { ContentSpinner } from 'components/Spinner';
 import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
-
-import { refreshToken } from '../api/refreshToken';
 
 import { LoginForm } from './LoginForm';
 import { RenaterAuthenticator } from './RenaterAuthenticator';
