@@ -1,10 +1,10 @@
 import 'public-path';
+import { serviceWorkerRegistration } from 'lib-components';
 import React from 'react';
 import ReactDOM from 'react-dom';
 
 import './index.css';
 import App from './App';
-import * as serviceWorkerRegistration from './utils/serviceWorkerRegistration';
 
 ReactDOM.render(
   <React.StrictMode>
@@ -13,4 +13,6 @@ ReactDOM.render(
   document.getElementById('root') as HTMLElement,
 );
 
-serviceWorkerRegistration.register();
+serviceWorkerRegistration.register({
+  swId: process.env.REACT_APP_BUILD_ID,
+});
