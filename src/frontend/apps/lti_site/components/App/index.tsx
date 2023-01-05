@@ -14,7 +14,7 @@ if (!domElementToParse) {
 const { jwt, ...appConfig } = parseDataElements(domElementToParse);
 
 useJwt.persist.setOptions({
-  name: `jwt-store-${appConfig.modelName}-${appConfig.resource?.id || ''}`,
+  name: `jwt-store-${appConfig.modelName}-${appConfig.resource_id || ''}`,
 });
 
 useJwt.setState({ jwt });
