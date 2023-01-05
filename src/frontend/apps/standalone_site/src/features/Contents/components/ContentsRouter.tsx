@@ -3,7 +3,7 @@ import { Route, Switch } from 'react-router-dom';
 import { ClassRoomRouter } from 'features/Contents';
 import { routes } from 'routes';
 
-import Contents from './Contents';
+import Contents from './Contents/Contents';
 
 const ContentsRouter = () => {
   return (
