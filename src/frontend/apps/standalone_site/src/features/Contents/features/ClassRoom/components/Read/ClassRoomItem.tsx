@@ -6,7 +6,7 @@ import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
-import { ContentCard } from 'components/Cards';
+import { ContentCard } from 'features/Contents/';
 import { routes } from 'routes';
 import { localDate } from 'utils/date';
 
