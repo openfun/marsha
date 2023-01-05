@@ -11,6 +11,8 @@ import {
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
+import { useResponsive } from 'hooks/useResponsive';
+
 const CardBox = styled(Box)`
   gap: 1.7rem;
 `;
@@ -18,8 +20,16 @@ export const ContentCards = ({
   children,
   ...boxProps
 }: PropsWithChildren<BoxExtendedProps>) => {
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
+  const isSmallerXsmedium = isSmallerBreakpoint(breakpoint, 'smedium');
+
   return (
-    <CardBox direction="row" wrap={true} justify="start" {...boxProps}>
+    <CardBox
+      direction="row"
+      wrap={true}
+      justify={isSmallerXsmedium ? 'center' : 'start'}
+      {...boxProps}
+    >
       {children}
     </CardBox>
   );

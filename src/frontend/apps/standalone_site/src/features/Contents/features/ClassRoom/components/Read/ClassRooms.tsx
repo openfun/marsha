@@ -3,9 +3,9 @@ import { useClassrooms } from 'lib-classroom';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ContentCards } from 'components/Cards';
 import ManageAPIState from 'components/ManageAPIState/';
 import { ITEM_PER_PAGE } from 'conf/global';
+import { ContentCards } from 'features/Contents/';
 
 import ClassRoomItem from './ClassRoomItem';
 
