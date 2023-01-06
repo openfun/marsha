@@ -70,14 +70,11 @@ class LTISelectFormAccessToken(AccessToken):
     """
     LTI select form access JWT.
 
-    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
-    setting).
-
-    Note: not usable through our authentication backend since it doesn't provide the
-    `api_settings.USER_ID_CLAIM` information in payload.
+    This token has its own lifetime define with the setting LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME.
     """
 
     token_type = "lti_select_form_access"  # nosec
+    lifetime = settings.LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME
 
     PAYLOAD_FORM_DATA = "lti_select_form_data"
 
@@ -419,12 +416,11 @@ class LTIUserToken(AccessToken):
     limited to below cases:
      - Authenticate a portability request creation
      - Provide this JWT to the frontend to create an LTI/marsha site association
-
-    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
-    setting).
+    This token has its own lifetime define with the setting LTI_USER_TOKEN_LIFETIME.
     """
 
     token_type = "lti_user_access"  # nosec
+    lifetime = settings.LTI_USER_TOKEN_LIFETIME
 
     def verify(self):
         """Performs additional validation steps to test payload content."""
@@ -443,19 +439,16 @@ class LTIUserToken(AccessToken):
     def for_lti(cls, lti):
         """
         Generates token from lti context.
-
         Parameters
         ----------
         lti: Type[LTI]
             LTI request.
-
         Returns
         -------
         LTIUserToken
             JWT containing:
             - lti_consumer_site
             - lti_user_id
-
         Raises
         ------
         TokenError
