@@ -1,5 +1,6 @@
 """Tests for the obtain token pair (access/refresh) API."""
 import json
+import uuid
 
 from django.test import TestCase
 
@@ -7,6 +8,8 @@ from rest_framework_simplejwt.exceptions import TokenError
 
 from marsha.core.factories import UserFactory
 from marsha.core.simple_jwt.tokens import (
+    ResourceAccessToken,
+    ResourceRefreshToken,
     UserAccessToken,
     UserRefreshToken,
 )
@@ -76,6 +79,44 @@ class TokenObtainPairViewTest(TestCase):
 
         self.assertEqual(new_token.payload["token_type"], "user_access")
         self.assertEqual(new_refresh_token.payload["access_token_type"], "user_access")
+
+        # Assert old refresh token is blacklisted ...
+        with self.assertRaises(TokenError):
+            refresh_token.verify()
+        # ... and new refresh token is not
+        new_refresh_token.verify()
+
+    def test_success_resource_access(self):
+        """
+        A request with a correct resource refresh token should return a 200 with a new token pair.
+        """
+        session_id = str(uuid.uuid4())
+        resource_id = str(uuid.uuid4())
+        refresh_token = ResourceRefreshToken.for_resource_id(resource_id, session_id)
+
+        response = self.client.post(
+            "/account/api/token/refresh/",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "refresh": str(refresh_token),
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertIn("access", response_data)
+        self.assertIn("refresh", response_data)
+
+        # Verify tokens
+        new_token = ResourceAccessToken(response_data["access"])
+        new_refresh_token = ResourceRefreshToken(response_data["refresh"])
+
+        self.assertEqual(new_token.payload["token_type"], "resource_access")
+        self.assertEqual(
+            new_refresh_token.payload["access_token_type"], "resource_access"
+        )
 
         # Assert old refresh token is blacklisted ...
         with self.assertRaises(TokenError):
