@@ -12,7 +12,7 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from waffle.testutils import override_switch
 
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
 
 from ..defaults import (
     DELETED,
@@ -90,6 +90,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
@@ -242,6 +243,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -420,6 +422,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -589,6 +592,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -743,6 +747,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -855,6 +860,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(
             jwt_token.payload["permissions"],
             {"can_access_dashboard": True, "can_update": False},
@@ -983,6 +989,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1119,6 +1126,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1229,6 +1237,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1367,6 +1376,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -1507,6 +1517,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
@@ -1641,6 +1652,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
 
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
