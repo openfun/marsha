@@ -99,6 +99,7 @@ export interface AppConfig {
 
 export interface AuthenticatedUser {
   jwt?: string;
+  refresh_token?: string;
 }
 
 export type AppData = AppConfig & AuthenticatedUser;

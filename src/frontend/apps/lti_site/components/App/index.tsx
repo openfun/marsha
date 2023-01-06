@@ -1,4 +1,5 @@
 import React, { lazy, Suspense } from 'react';
+import { createJSONStorage } from 'zustand/middleware';
 
 import { Loader, useJwt, AppConfigProvider } from 'lib-components';
 import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
@@ -11,13 +12,15 @@ const domElementToParse = document.getElementById('marsha-frontend-data');
 if (!domElementToParse) {
   throw new Error('Appdata are missing from DOM.');
 }
-const { jwt, ...appConfig } = parseDataElements(domElementToParse);
+const { jwt, refresh_token, ...appConfig } =
+  parseDataElements(domElementToParse);
 
 useJwt.persist.setOptions({
   name: `jwt-store-${appConfig.modelName}-${appConfig.resource_id || ''}`,
+  storage: createJSONStorage(() => sessionStorage),
 });
 
-useJwt.setState({ jwt });
+useJwt.setState({ jwt, refreshJwt: refresh_token });
 
 export const App = () => {
   return (
