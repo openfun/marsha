@@ -109,31 +109,11 @@ class LTISelectFormAccessToken(AccessToken):
             raise TokenError(_("Malformed LTI form token"))
 
 
-class ResourceAccessToken(AccessToken):
+class ResourceAccessMixin:
     """
-    Resource dedicated access JWT.
-
-    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
-    setting).
-
-    Note: `api_settings.USER_ID_CLAIM` is currently `resource_id`.
+    Methods dedicated to access JWT. They are both used by the ResourceAccessToken
+    and the ResourceRefreshToken classes.
     """
-
-    token_type = "resource_access"  # nosec
-
-    def set_jti(self, jti=None):
-        """
-        Populates the configured jti claim of a token with a string where there
-        is a negligible probability that the same string will be chosen at a
-        later time.
-
-        See here:
-        https://tools.ietf.org/html/rfc7519#section-4.1.7
-        """
-        if not jti:
-            super().set_jti()
-        else:
-            self.payload[api_settings.JTI_CLAIM] = jti
 
     def verify(self):
         """Performs additional validation steps to test payload content."""
@@ -400,6 +380,38 @@ class ResourceAccessToken(AccessToken):
         return token
 
 
+class ResourceAccessToken(ResourceAccessMixin, AccessToken):
+    """
+    Resource dedicated access JWT.
+
+    This token has the same lifetime as the default AccessToken (see `ACCESS_TOKEN_LIFETIME`
+    setting).
+    """
+
+    token_type = "resource_access"  # nosec
+
+    def set_jti(self, jti=None):
+        """
+        Populates the configured jti claim of a token with a string where there
+        is a negligible probability that the same string will be chosen at a
+        later time.
+
+        See here:
+        https://tools.ietf.org/html/rfc7519#section-4.1.7
+        """
+        if not jti:
+            super().set_jti()
+        else:
+            self.payload[api_settings.JTI_CLAIM] = jti
+
+
+class ResourceRefreshToken(ResourceAccessMixin, MarshaRefreshToken):
+    """Refresh token for resource access which relies on `ResourceAccessToken`"""
+
+    access_token_class = ResourceAccessToken
+    access_token_type = ResourceAccessToken.token_type
+
+
 class LTIUserToken(AccessToken):
     """
     JWT dedicated to authenticate an LTI user.
@@ -508,7 +520,8 @@ class UserAccessToken(AccessToken):
             raise TokenError(_("Malformed user token"))
 
 
-class UserRefreshToken(RefreshToken):
+class UserRefreshToken(MarshaRefreshToken):
     """Refresh token for user authentication, which relies on our own `UserAccessToken`."""
 
     access_token_class = UserAccessToken
+    access_token_type = UserAccessToken.token_type

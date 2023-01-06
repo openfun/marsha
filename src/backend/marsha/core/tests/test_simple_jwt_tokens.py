@@ -11,6 +11,7 @@ from marsha.core.models import INSTRUCTOR, NONE, STUDENT
 from marsha.core.simple_jwt.tokens import (
     LTISelectFormAccessToken,
     ResourceAccessToken,
+    ResourceRefreshToken,
     UserAccessToken,
 )
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
@@ -60,6 +61,8 @@ class LTISelectFormAccessTokenTestCase(TestCase):
 class ResourceAccessTokenTestCase(TestCase):
     """Test suite for the ResourceAccessToken"""
 
+    maxDiff = None
+
     def make_lti_instance(self, resource_id=None, role=None):
         """Helper to init some LTI context."""
         url = f"http://testserver/lti/videos/{resource_id or uuid.uuid4()}"
@@ -88,9 +91,13 @@ class ResourceAccessTokenTestCase(TestCase):
         session_id = str(uuid.uuid4())
         resource_id = str(uuid.uuid4())
 
-        token = ResourceAccessToken.for_resource_id(resource_id, session_id)
+        refresh_token = ResourceRefreshToken.for_resource_id(resource_id, session_id)
+        token = refresh_token.access_token
 
+        refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
+        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
+        self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["resource_id"], resource_id)
         self.assertListEqual(token.payload["roles"], [NONE])
@@ -135,9 +142,13 @@ class ResourceAccessTokenTestCase(TestCase):
         resource_id = str(uuid.uuid4())
         lti, passport = self.make_lti_instance(resource_id=resource_id)
 
-        token = ResourceAccessToken.for_lti(lti, permissions, session_id)
+        refresh_token = ResourceRefreshToken.for_lti(lti, permissions, session_id)
+        token = refresh_token.access_token
 
+        refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
+        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
+        self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["resource_id"], resource_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
@@ -165,14 +176,18 @@ class ResourceAccessTokenTestCase(TestCase):
         lti, passport = self.make_lti_instance(resource_id=resource_id)
 
         playlist_id = str(uuid.uuid4())
-        token = ResourceAccessToken.for_lti(
+        refresh_token = ResourceRefreshToken.for_lti(
             lti,
             permissions,
             session_id,
             playlist_id=playlist_id,
         )
+        token = refresh_token.access_token
 
+        refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
+        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
+        self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["resource_id"], resource_id)
         self.assertEqual(token.payload["roles"], [INSTRUCTOR])
@@ -210,6 +225,14 @@ class ResourceAccessTokenTestCase(TestCase):
                 playlist_id=playlist_id,
             )
 
+        with self.assertRaises(AssertionError):
+            ResourceRefreshToken.for_lti(
+                lti,
+                permissions,
+                session_id,
+                playlist_id=playlist_id,
+            )
+
     def test_for_live_session_anonymous(self):
         """Test JWT initialization from `for_live_session` method with public session."""
         permissions = {"can_access_dashboard": False, "can_update": False}
@@ -220,9 +243,13 @@ class ResourceAccessTokenTestCase(TestCase):
             email="chantal@test-fun-mooc.fr",
         )
 
-        token = ResourceAccessToken.for_live_session(live_session, session_id)
+        refresh_token = ResourceRefreshToken.for_live_session(live_session, session_id)
+        token = refresh_token.access_token
 
+        refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
+        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
+        self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
@@ -254,9 +281,13 @@ class ResourceAccessTokenTestCase(TestCase):
 
         self.assertTrue(live_session.is_from_lti_connection)
 
-        token = ResourceAccessToken.for_live_session(live_session, session_id)
+        refresh_token = ResourceRefreshToken.for_live_session(live_session, session_id)
+        token = refresh_token.access_token
 
+        refresh_token.verify()  # Must not raise
         token.verify()  # Must not raise
+        self.assertEqual(refresh_token.payload["access_token_type"], "resource_access")
+        self.assertEqual(token.payload["token_type"], "resource_access")
         self.assertEqual(token.payload["session_id"], session_id)
         self.assertEqual(token.payload["locale"], "en_US")  # settings.REACT_LOCALES[0]
         self.assertDictEqual(token.payload["permissions"], permissions)
