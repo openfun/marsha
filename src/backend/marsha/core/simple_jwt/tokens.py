@@ -15,6 +15,50 @@ from marsha.core.utils.react_locales_utils import react_locale
 from .permissions import ResourceAccessPermissions
 
 
+class MarshaRefreshToken(RefreshToken):
+    """
+    Refresh token made especially for Marsha. In this token, we also set the access token type.
+    We will use later when the access token is generated. Instead of picking the token type from
+    the access token class, we will use the one set in the refresh token payload. This avoid to
+    have a view/serializer for each refresh token type we are managing.
+
+    The token_type property must not be overridden and we must keep the one defined in RefreshToken
+    class
+    """
+
+    access_token_type = RefreshToken.access_token_class.token_type
+
+    no_copy_claims = RefreshToken.no_copy_claims + ("access_token_type",)
+
+    def __init__(self, token=None, verify=True):
+        """
+        Once the parent init made, in the case this is a new generated token, we set
+        in the payload the access_token_type property.
+        """
+        super().__init__(token=token, verify=verify)
+
+        if token is None:
+            # new token
+            self.payload.update(
+                {
+                    "access_token_type": self.access_token_type,
+                }
+            )
+
+    @property
+    def access_token(self):
+        """
+        We delegate the creation of the access token to the parent property and then replace
+        the token_type by the one set in the refresh token payload.
+        """
+        access = super().access_token
+        access.payload.update(
+            {api_settings.TOKEN_TYPE_CLAIM: self.payload["access_token_type"]}
+        )
+
+        return access
+
+
 class ChallengeToken(Token):
     """Very short lifetime token to allow frontend authentication."""
 

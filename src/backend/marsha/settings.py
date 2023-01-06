@@ -685,7 +685,7 @@ class Base(Configuration):
             "TOKEN_OBTAIN_SERIALIZER": "marsha.account.serializers.UserTokenObtainPairSerializer",
             "ROTATE_REFRESH_TOKENS": True,
             "BLACKLIST_AFTER_ROTATION": True,
-            "TOKEN_REFRESH_SERIALIZER": "marsha.account.serializers.UserTokenRefreshSerializer",
+            "TOKEN_REFRESH_SERIALIZER": "marsha.account.serializers.TokenRefreshSerializer",
         }
 
     # pylint: disable=invalid-name
