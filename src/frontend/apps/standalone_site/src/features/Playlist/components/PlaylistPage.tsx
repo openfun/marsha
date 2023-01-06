@@ -213,9 +213,17 @@ export const PlaylistPage = () => {
                 >
                   {(item) => (
                     <Box flex direction="row" align="center">
-                      <Box basis="30%">{item.title}</Box>
-                      <Box basis="50%">{item.lti_id}</Box>
-                      <Box basis="20%">{item.consumer_site?.domain}</Box>
+                      <Box basis="30%">
+                        <Text wordBreak="break-word">{item.title}</Text>
+                      </Box>
+                      <Box basis="50%">
+                        <Text wordBreak="break-word">{item.lti_id}</Text>
+                      </Box>
+                      <Box basis="20%">
+                        <Text wordBreak="break-word">
+                          {item.consumer_site?.domain}
+                        </Text>
+                      </Box>
                     </Box>
                   )}
                 </SortableTable>
