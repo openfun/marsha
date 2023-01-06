@@ -6,7 +6,10 @@ from django.test import TestCase
 from rest_framework_simplejwt.exceptions import TokenError
 
 from marsha.core.factories import UserFactory
-from marsha.core.simple_jwt.tokens import UserAccessToken, UserRefreshToken
+from marsha.core.simple_jwt.tokens import (
+    UserAccessToken,
+    UserRefreshToken,
+)
 
 
 class TokenObtainPairViewTest(TestCase):
@@ -46,7 +49,7 @@ class TokenObtainPairViewTest(TestCase):
 
         self.assertEqual(response.status_code, 401)  # Unauthorized
 
-    def test_success(self):
+    def test_success_user_access(self):
         """
         A request with a correct refresh token should return a 200 response with new token pair.
         """
@@ -68,8 +71,11 @@ class TokenObtainPairViewTest(TestCase):
         self.assertIn("refresh", response_data)
 
         # Verify tokens
-        UserAccessToken(response_data["access"])
+        new_token = UserAccessToken(response_data["access"])
         new_refresh_token = UserRefreshToken(response_data["refresh"])
+
+        self.assertEqual(new_token.payload["token_type"], "user_access")
+        self.assertEqual(new_refresh_token.payload["access_token_type"], "user_access")
 
         # Assert old refresh token is blacklisted ...
         with self.assertRaises(TokenError):

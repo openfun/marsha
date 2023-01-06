@@ -1,10 +1,10 @@
 """Account API serializers."""
 from rest_framework_simplejwt.serializers import (
     TokenObtainPairSerializer,
-    TokenRefreshSerializer,
+    TokenRefreshSerializer as BaseTokenRefreshSerializer,
 )
 
-from marsha.core.simple_jwt.tokens import UserRefreshToken
+from marsha.core.simple_jwt.tokens import MarshaRefreshToken, UserRefreshToken
 
 
 class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
@@ -13,7 +13,7 @@ class UserTokenObtainPairSerializer(TokenObtainPairSerializer):
     token_class = UserRefreshToken
 
 
-class UserTokenRefreshSerializer(TokenRefreshSerializer):
-    """Serializer for the user token refresh API using our own refresh token."""
+class TokenRefreshSerializer(BaseTokenRefreshSerializer):
+    """Serializer to use our own refresh token."""
 
-    token_class = UserRefreshToken
+    token_class = MarshaRefreshToken
