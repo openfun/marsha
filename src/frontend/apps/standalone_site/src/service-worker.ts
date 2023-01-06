@@ -1,12 +1,18 @@
 /// <reference lib="webworker" />
 // See https://developers.google.com/web/tools/workbox/modules
-import { serviceWorkerRefreshToken } from 'lib-components';
-import { setCacheNameDetails, clientsClaim } from 'workbox-core';
+import {
+  serviceWorkerRefreshToken,
+  serviceWorkerForceInstall,
+} from 'lib-components';
+import { clientsClaim } from 'workbox-core/clientsClaim';
+import { setCacheNameDetails } from 'workbox-core/setCacheNameDetails';
 import 'workbox-precaching';
 
 declare const self: ServiceWorkerGlobalScope;
 
 import pkg from '../package.json';
+
+self.__WB_MANIFEST;
 
 setCacheNameDetails({
   prefix: pkg.name,
@@ -15,22 +21,5 @@ setCacheNameDetails({
 
 clientsClaim();
 
-self.__WB_MANIFEST;
-
-self.addEventListener('install', function (event) {
-  event.waitUntil(self.skipWaiting());
-});
-self.addEventListener('activate', function (event) {
-  event.waitUntil(self.clients.claim());
-});
-
-// This allows the web app to trigger skipWaiting via
-// registration.waiting.postMessage({type: 'SKIP_WAITING'})
-self.addEventListener('message', (event) => {
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-  if (event.data && event.data.type === 'SKIP_WAITING') {
-    self.skipWaiting();
-  }
-});
-
+serviceWorkerForceInstall.init(self);
 serviceWorkerRefreshToken.init(self);
