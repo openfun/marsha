@@ -11,7 +11,7 @@ from django.test import TestCase
 
 from pylti.common import LTIException
 
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
 
 from ..defaults import STATE_CHOICES
 from ..factories import (
@@ -71,6 +71,7 @@ class DocumentLTIViewTestCase(TestCase):
 
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -135,6 +136,7 @@ class DocumentLTIViewTestCase(TestCase):
 
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],
@@ -195,6 +197,7 @@ class DocumentLTIViewTestCase(TestCase):
 
         context = json.loads(html.unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
         self.assertEqual(jwt_token.payload["resource_id"], str(document.id))
         self.assertEqual(
             jwt_token.payload["user"],

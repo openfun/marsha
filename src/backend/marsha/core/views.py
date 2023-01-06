@@ -38,7 +38,7 @@ from marsha.core.lti.user_association import get_user_from_lti
 from marsha.core.simple_jwt.tokens import (
     LTISelectFormAccessToken,
     LTIUserToken,
-    ResourceAccessToken,
+    ResourceRefreshToken,
 )
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
@@ -489,13 +489,14 @@ class BaseLTIView(BaseModelResourceView, ABC):
                     "redirect_to": redirect_to,
                     "portability_request_exists": portability_request_exists,
                 }
-                app_data["jwt"] = str(
-                    ResourceAccessToken.for_lti_portability_request(
-                        lti=self.lti,
-                        session_id=session_id,
-                        playlist_id=str(destination_playlist.pk),
-                    )
+                refresh_token = ResourceRefreshToken.for_lti_portability_request(
+                    lti=self.lti,
+                    session_id=session_id,
+                    playlist_id=str(destination_playlist.pk),
                 )
+                jwt_token = refresh_token.access_token
+                app_data["jwt"] = str(jwt_token)
+                app_data["refresh_token"] = str(refresh_token)
                 return app_data
 
             permissions = {
@@ -518,12 +519,14 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 cache.set(self.cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            jwt_token = ResourceAccessToken.for_lti(
+            refresh_token = ResourceRefreshToken.for_lti(
                 lti=self.lti,
                 permissions=permissions,
                 session_id=session_id,
             )
+            jwt_token = refresh_token.access_token
             app_data["jwt"] = str(jwt_token)
+            app_data["refresh_token"] = str(refresh_token)
 
         return app_data
 
@@ -581,11 +584,13 @@ class BaseView(BaseModelResourceView, ABC):
             cache.set(self.cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
         if app_data["resource"] is not None:
-            jwt_token = ResourceAccessToken.for_resource_id(
+            refresh_token = ResourceRefreshToken.for_resource_id(
                 resource_id=app_data["resource"]["id"],
                 session_id=session_id,
             )
+            jwt_token = refresh_token.access_token
             app_data["jwt"] = str(jwt_token)
+            app_data["refresh_token"] = str(refresh_token)
 
         return app_data
 
@@ -688,8 +693,10 @@ class VideoView(BaseView):
             )
             cache.set(cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
 
-        jwt_token = ResourceAccessToken.for_live_session(livesession, session_id)
+        refresh_token = ResourceRefreshToken.for_live_session(livesession, session_id)
+        jwt_token = refresh_token.access_token
         app_data["jwt"] = str(jwt_token)
+        app_data["refresh_token"] = str(refresh_token)
 
         return self.render_to_response(self._build_context_data(app_data))
 
@@ -860,6 +867,13 @@ class LTISelectView(BaseResourceView):
         if self.request.POST.get("title") != settings.LTI_CONFIG_TITLE:
             activity_title = self.request.POST.get("title")
 
+        refresh_token = ResourceRefreshToken.for_lti(
+            lti=self.lti,
+            permissions={"can_access_dashboard": False, "can_update": True},
+            session_id=str(uuid.uuid4()),
+            playlist_id=str(playlist.id),
+        )
+
         app_data.update(
             {
                 "lti_select_form_action_url": reverse("respond_lti_view"),
@@ -869,19 +883,9 @@ class LTISelectView(BaseResourceView):
                     "activity_description": self.request.POST.get("text"),
                 },
                 "playlist": PlaylistLiteSerializer(playlist).data,
+                "jwt": str(refresh_token.access_token),
+                "refresh_token": str(refresh_token),
             }
-        )
-
-        session_id = str(uuid.uuid4())
-        permissions = {"can_access_dashboard": False, "can_update": True}
-
-        app_data["jwt"] = str(
-            ResourceAccessToken.for_lti(
-                lti=self.lti,
-                permissions=permissions,
-                session_id=session_id,
-                playlist_id=str(playlist.id),
-            )
         )
 
         return app_data
