@@ -243,6 +243,19 @@ class Base(Configuration):
             environ_name="CHALLENGE_TOKEN_LIFETIME",
         ),
     )
+    # Specfic access token lifetime
+    LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME = timedelta(
+        seconds=values.IntegerValue(
+            default=86400,
+            environ_name="LTI_SELECT_FORM_ACCESS_TOKEN_LIFETIME",
+        ),
+    )
+    LTI_USER_TOKEN_LIFETIME = timedelta(
+        seconds=values.IntegerValue(
+            default=86400,
+            environ_name="LTI_USER_TOKEN_LIFETIME",
+        ),
+    )
 
     # Password validation
     # https://docs.djangoproject.com/en/2.0/ref/settings/#auth-password-validators
