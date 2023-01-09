@@ -1,9 +1,13 @@
 """Declare development views."""
 from logging import getLogger
+import mimetypes
+import os
+from pathlib import Path
 from urllib.parse import urlparse
 import uuid
 
 from django.conf import settings
+from django.http import FileResponse, Http404
 from django.urls import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -139,3 +143,30 @@ class DevelopmentLTIView(TemplateView):
 
         """
         return self.render_to_response({"content_selected": self.request.POST})
+
+
+def service_worker_view(request):
+    """
+    View only serving the service worker at the marsha root domain in development
+    only.
+    """
+    service_worker_path = Path(
+        os.path.join(
+            settings.BASE_STATIC_DIR,
+            "js",
+            "build",
+            "lti_site",
+            "service-worker.js",
+        )
+    )
+
+    if not service_worker_path.exists():
+        raise Http404("service-worker.js is not built. Built front LTI app first")
+
+    content_type, encoding = mimetypes.guess_type(str(service_worker_path))
+
+    response = FileResponse(service_worker_path.open("rb"), content_type=content_type)
+    if encoding:
+        response.headers["Content-Encoding"] = encoding
+
+    return response
