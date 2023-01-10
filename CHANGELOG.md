@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - Display current user full name instead of John Doe
   - service worker 401 reconnect
+  - Password reset views & API
 
 ### Changed
 
