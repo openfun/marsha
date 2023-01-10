@@ -4,11 +4,12 @@ import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
+import fs from 'fs';
+import path from 'path';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'rollup-plugin-dts';
 import { replaceTscAliasPaths } from 'tsc-alias';
-import copy from 'rollup-plugin-copy';
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
@@ -23,25 +24,30 @@ const pluginImportAbsoluteToRelative = () => ({
   },
 });
 
+/**
+ * Append a string injection to a file.
+ * This is used to append the typescript declaration files to the main types file.
+ * @param {string} file
+ * @param {string} injection
+ */
+const pluginModuleInjection = (file, injection) => ({
+  name: 'module-injection',
+  closeBundle() {
+    fs.appendFile(path.join(process.cwd(), file), '\n' + injection, (err) => {
+      if (err) throw err;
+    });
+
+    return null;
+  },
+});
+
 export default [
-  {
-    input: 'src/types/libs/converse/index.d.ts',
-    output: [{ file: 'lib/declaration/converse.d.ts', format: 'es' }],
-    plugins: [dts({ compilerOptions: tsconfig.compilerOptions })],
-  },
-  {
-    input: 'src/types/libs/JitsiMeetExternalAPI/index.d.ts',
-    output: [
-      { file: 'lib/declaration/JitsiMeetExternalAPI.d.ts', format: 'es' },
-    ],
-    plugins: [dts()],
-  },
   {
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.main,
         format: 'cjs',
+        dir: path.dirname(pkg.main),
         exports: 'named',
         sourcemap: true,
         esModule: true,
@@ -53,19 +59,29 @@ export default [
         inlineDynamicImports: true,
       },
       {
-        file: pkg.module,
         format: 'es',
+        dir: path.dirname(pkg.module),
         exports: 'named',
+        preserveModules: true,
+        preserveModulesRoot: 'src',
         sourcemap: true,
-        inlineDynamicImports: true,
       },
     ],
     makeAbsoluteExternalsRelative: true,
     preserveEntrySignatures: 'strict',
     external: [
+      '@babel/runtime',
+      '@sentry/browser',
+      'clipboard',
+      'faker',
       'grommet',
+      'grommet-icons',
+      'grommet-styles',
+      'jwt-decode',
       'react',
       'react-dom',
+      'react-dropzone',
+      'react-intl',
       'react-router',
       'react-router-dom',
       'styled-components',
@@ -75,19 +91,18 @@ export default [
       'uuid',
       /jest/,
       'zustand',
-      'react-intl',
     ],
     plugins: [
       external([
         'grommet',
         'react',
         'react-dom',
+        'react-intl',
         'react-router',
         'react-router-dom',
         'styled-components',
         /@babel\/runtime/,
         'zustand',
-        'react-intl',
       ]),
       json(),
       commonjs({
@@ -111,15 +126,32 @@ export default [
         exclude: [/node_modules/],
       }),
       pluginImportAbsoluteToRelative(),
-      copy({
-        targets: [
-          {
-            src: './root-declaration.txt',
-            dest: './lib',
-            rename: 'index.d.ts',
-          },
-        ],
-      }),
+    ],
+  },
+  {
+    input: 'src/types/libs/converse/index.d.ts',
+    output: [
+      { file: path.dirname(pkg.types) + '/converse.d.ts', format: 'es' },
+    ],
+    plugins: [
+      dts({ compilerOptions: tsconfig.compilerOptions }),
+      pluginModuleInjection(pkg.types, "export * from './converse'"),
+    ],
+  },
+  {
+    input: 'src/types/libs/JitsiMeetExternalAPI/index.d.ts',
+    output: [
+      {
+        file: path.dirname(pkg.types) + '/JitsiMeetExternalAPI.d.ts',
+        format: 'es',
+      },
+    ],
+    plugins: [
+      dts({ compilerOptions: tsconfig.compilerOptions }),
+      pluginModuleInjection(
+        pkg.types,
+        "export * from './JitsiMeetExternalAPI'",
+      ),
     ],
   },
 ];
