@@ -1,3 +1,0 @@
-export * from './declaration';
-export * from './declaration/converse';
-export * from './declaration/JitsiMeetExternalAPI';
