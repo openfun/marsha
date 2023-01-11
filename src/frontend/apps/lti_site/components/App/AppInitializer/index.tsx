@@ -8,6 +8,7 @@ import {
   useTimedTextTrack,
   useThumbnail,
   useSharedLiveMedia,
+  useServiceWorkerRefreshToken,
   useDocument,
   useAppConfig,
   flags,
@@ -25,6 +26,7 @@ import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);
+  useServiceWorkerRefreshToken();
 
   const appConfig = useAppConfig();
   const jwt = useJwt((state) => state.jwt);
@@ -42,7 +44,12 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
 
   const isFeatureEnabled = useIsFeatureEnabled();
 
-  const decodedJwt = useMemo(() => decodeJwt(jwt), [jwt]);
+  const decodedJwt = useMemo(() => {
+    if (jwt) {
+      return decodeJwt(jwt);
+    }
+    return null;
+  }, [jwt]);
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
@@ -57,55 +64,63 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
 
       setIsSentryReady(true);
     }
-  }, [appConfig, setIsSentryReady, isFeatureEnabled]);
+  }, [
+    appConfig.sentry_dsn,
+    appConfig.environment,
+    appConfig.release,
+    setIsSentryReady,
+    isFeatureEnabled,
+  ]);
 
   useEffect(() => {
     if (appConfig.video) {
       addVideo(appConfig.video);
     }
-  }, [appConfig, addVideo]);
+  }, [appConfig.video, addVideo]);
 
   useEffect(() => {
     if (
-      appConfig.video &&
-      appConfig.video.timed_text_tracks &&
+      appConfig.video?.timed_text_tracks &&
       appConfig.video.timed_text_tracks.length > 0
     ) {
       addMultipleTimedTextTrack(appConfig.video.timed_text_tracks);
     }
-  }, [appConfig, addMultipleTimedTextTrack]);
+  }, [appConfig.video?.timed_text_tracks, addMultipleTimedTextTrack]);
 
   useEffect(() => {
-    if (appConfig.video && appConfig.video.thumbnail) {
+    if (appConfig.video?.thumbnail) {
       addThumbnail(appConfig.video.thumbnail);
     }
-  }, [appConfig, addThumbnail]);
+  }, [appConfig.video?.thumbnail, addThumbnail]);
 
   useEffect(() => {
     if (
-      appConfig.video &&
-      appConfig.video.shared_live_medias &&
+      appConfig.video?.shared_live_medias &&
       appConfig.video.shared_live_medias.length > 0
     ) {
       addMultipleSharedLiveMedia(appConfig.video.shared_live_medias);
     }
-  }, [appConfig, addMultipleSharedLiveMedia]);
+  }, [appConfig.video?.shared_live_medias, addMultipleSharedLiveMedia]);
 
   useEffect(() => {
     if (appConfig.document) {
       addDocument(appConfig.document);
     }
-  }, [appConfig, addDocument]);
+  }, [appConfig.document, addDocument]);
 
   useEffect(() => {
     setAttendanceDelay(appConfig.attendanceDelay);
-  }, [appConfig, setAttendanceDelay]);
+  }, [appConfig.attendanceDelay, setAttendanceDelay]);
 
   useEffect(() => {
+    if (!decodedJwt?.maintenance) {
+      return;
+    }
+
     useMaintenance.setState({
-      isActive: decodedJwt.maintenance,
+      isActive: decodedJwt?.maintenance,
     });
-  }, [decodedJwt]);
+  }, [decodedJwt?.maintenance]);
 
   //  call this effect last to configure all stores first
   useEffect(() => {
