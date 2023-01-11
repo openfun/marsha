@@ -40,6 +40,9 @@ jest.mock('lib-components', () => ({
   decodeJwt: () => ({
     maintenance: true,
   }),
+  useJwt: () => ({
+    jwt: 'some jwt',
+  }),
 }));
 
 describe('<AppInitializer />', () => {
