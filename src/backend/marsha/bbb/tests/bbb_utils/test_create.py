@@ -808,3 +808,4 @@ class ClassroomServiceTestCase(TestCase):
             get_meeting_infos(classroom)
         classroom.refresh_from_db()
         self.assertEqual(classroom.started, False)
+ 
