@@ -19,6 +19,7 @@ import React, {
   lazy,
   LazyExoticComponent,
   Suspense,
+  useEffect,
   useMemo,
 } from 'react';
 import { Toaster } from 'react-hot-toast';
@@ -26,13 +27,26 @@ import { ErrorBoundary } from 'react-error-boundary';
 import { createIntlCache, createIntl, RawIntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { GlobalStyles } from 'utils/theme/baseStyles';
 import { colors, theme } from 'utils/theme/theme';
 
-const jwt = useJwt.getState().jwt;
+const messages = defineMessages({
+  errorJwtEmpty: {
+    defaultMessage: 'Please reload your page',
+    description:
+      'JWT empty, can be from the service worker and the refresh token expired',
+    id: 'components.App.AppContentLoader.errorJwtEmpty',
+  },
+  errorAppSet: {
+    defaultMessage: 'Application and frontend are not properly set',
+    description: 'Application and frontend are not properly set',
+    id: 'components.App.AppContentLoader.errorAppSet',
+  },
+});
 
-const decodedJwt: DecodedJwt = decodeJwt(jwt);
+const decodedJwt: DecodedJwt = decodeJwt(useJwt.getState().jwt);
 let localeCode: string;
 let locale: string;
 try {
@@ -110,14 +124,29 @@ Object.values(appNames).forEach((app) => {
   appsContent[app] = lazy(() => import(`apps/${app}/components/Routes`));
 });
 
-const AppContentLoader = () => {
+const AppContent = () => {
   const appConfig = useAppConfig();
-  const queryClient = useMemo(() => new QueryClient(), []);
+  const { jwt } = useJwt();
+  const intlShape = useIntl();
 
   let Content: LazyExoticComponent<ComponentType<any>>;
   if (appConfig.appName) Content = appsContent[appConfig.appName];
   else if (appConfig.frontend) Content = appsContent[appConfig.frontend];
-  else throw new Error('application and frontend are not properly set');
+  else throw new Error(intlShape.formatMessage(messages.errorAppSet));
+
+  useEffect(() => {
+    if (jwt) {
+      return;
+    }
+
+    throw new Error(intlShape.formatMessage(messages.errorJwtEmpty));
+  }, [jwt]);
+
+  return <Content />;
+};
+
+const AppContentLoader = () => {
+  const queryClient = useMemo(() => new QueryClient(), []);
 
   return (
     <CurrentResourceContextProvider value={resourceContext}>
@@ -147,7 +176,7 @@ const AppContentLoader = () => {
                 }}
               />
               <Suspense fallback={<Loader />}>
-                <Content />
+                <AppContent />
               </Suspense>
               <GlobalStyles />
             </ErrorBoundary>

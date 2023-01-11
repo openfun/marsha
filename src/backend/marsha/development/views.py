@@ -155,7 +155,6 @@ def service_worker_view(request):
             settings.BASE_STATIC_DIR,
             "js",
             "build",
-            "lti_site",
             "service-worker.js",
         )
     )

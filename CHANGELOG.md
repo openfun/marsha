@@ -19,6 +19,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Select an organization by default in create playlist form
 - Allow instructors to download recorded BBB classroom sessions
 
+- lti:
+  - service worker 401 reconnect
+
 ### Changed
 
 - Remove deprecated params from BBB API calls
