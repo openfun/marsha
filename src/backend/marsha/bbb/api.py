@@ -18,6 +18,7 @@ from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
+from .metadata import ClassroomDocumentMetadata
 from .models import Classroom, ClassroomDocument
 from .permissions import (
     IsClassroomPlaylistOrOrganizationAdmin,
@@ -375,6 +376,7 @@ class ClassroomDocumentViewSet(
 
     queryset = ClassroomDocument.objects.all()
     serializer_class = serializers.ClassroomDocumentSerializer
+    metadata_class = ClassroomDocumentMetadata
 
     permission_classes = [
         permissions.IsTokenResourceRouteObjectRelatedClassroom

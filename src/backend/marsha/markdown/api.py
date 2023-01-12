@@ -18,6 +18,7 @@ from ..core.models import ADMINISTRATOR
 from ..core.utils.s3_utils import create_presigned_post
 from .defaults import LTI_ROUTE
 from .forms import MarkdownDocumentForm
+from .metadata import MarkdownImageMetadata
 from .models import MarkdownDocument, MarkdownImage
 from .permissions import IsRelatedMarkdownDocumentPlaylistOrOrganizationAdmin
 from .utils.converter import LatexConversionException, render_latex_to_image
@@ -272,6 +273,7 @@ class MarkdownImageViewSet(
 
     permission_classes = [core_permissions.NotAllowed]
     serializer_class = serializers.MarkdownImageSerializer
+    metadata_class = MarkdownImageMetadata
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
