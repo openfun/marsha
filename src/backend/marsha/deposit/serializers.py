@@ -155,8 +155,16 @@ class DepositedFileSerializer(
 class DepositedFileInitiateUploadSerializer(InitiateUploadSerializer):
     """An initiate-upload serializer dedicated to deposited file."""
 
+    def validate_size(self, value):
+        if value > settings.DEPOSITED_FILE_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                f"file too large, max size allowed is {settings.DEPOSITED_FILE_SOURCE_MAX_SIZE} Bytes"
+            )
+
+        return value
+
     def validate(self, attrs):
-        """Validate if the mimetype is allowed or not."""
+        """Validate if the mimetype is allowed or not, and if the size is coherent with django settings."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
             attrs["extension"] = mimetypes.guess_extension(attrs["mimetype"])
