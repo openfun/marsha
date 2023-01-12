@@ -10,6 +10,7 @@ from rest_framework.response import Response
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, permissions, serializers
+from ..metadata import SharedLiveMediaMetadata
 from ..models import SharedLiveMedia
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
@@ -24,6 +25,7 @@ class SharedLiveMediaViewSet(
     permission_classes = [permissions.NotAllowed]
     queryset = SharedLiveMedia.objects.all()
     serializer_class = serializers.SharedLiveMediaSerializer
+    metadata_class = SharedLiveMediaMetadata
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""

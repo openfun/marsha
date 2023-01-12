@@ -181,9 +181,7 @@ class InitiateUploadSerializer(serializers.Serializer):
         """Validate if the size is coherent with django settings."""
         if value > settings.DOCUMENT_SOURCE_MAX_SIZE:
             raise serializers.ValidationError(
-                {
-                    "size": f"file too large, max size allowed is {settings.DOCUMENT_SOURCE_MAX_SIZE} Bytes"
-                }
+                f"file too large, max size allowed is {settings.DOCUMENT_SOURCE_MAX_SIZE} Bytes"
             )
 
         return value
@@ -195,9 +193,7 @@ class SharedLiveMediaUploadSerializer(InitiateUploadSerializer):
     def validate_size(self, value):
         if value > settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE:
             raise serializers.ValidationError(
-                {
-                    "size": f"file too large, max size allowed is {settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE} Bytes"
-                }
+                f"file too large, max size allowed is {settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE} Bytes"
             )
 
         return value
@@ -233,9 +229,7 @@ class ThumbailUploadSerializer(InitiateUploadSerializer):
         """Validate if the size is coherent with django settings."""
         if value > settings.THUMBNAIL_SOURCE_MAX_SIZE:
             raise serializers.ValidationError(
-                {
-                    "size": f"file too large, max size allowed is {settings.THUMBNAIL_SOURCE_MAX_SIZE} Bytes"
-                }
+                f"file too large, max size allowed is {settings.THUMBNAIL_SOURCE_MAX_SIZE} Bytes"
             )
 
         return value
@@ -246,9 +240,7 @@ class TimedTextTrackUploadSerializer(InitiateUploadSerializer):
         """Validate if the size is coherent with django settings."""
         if value > settings.SUBTITLE_SOURCE_MAX_SIZE:
             raise serializers.ValidationError(
-                {
-                    "size": f"file too large, max size allowed is {settings.SUBTITLE_SOURCE_MAX_SIZE} Bytes"
-                }
+                f"file too large, max size allowed is {settings.SUBTITLE_SOURCE_MAX_SIZE} Bytes"
             )
 
         return value
@@ -259,9 +251,7 @@ class VideoUploadSerializer(InitiateUploadSerializer):
         """Validate if the size is coherent with django settings."""
         if value > settings.VIDEO_SOURCE_MAX_SIZE:
             raise serializers.ValidationError(
-                {
-                    "size": f"file too large, max size allowed is {settings.VIDEO_SOURCE_MAX_SIZE} Bytes"
-                }
+                f"file too large, max size allowed is {settings.VIDEO_SOURCE_MAX_SIZE} Bytes"
             )
 
         return value

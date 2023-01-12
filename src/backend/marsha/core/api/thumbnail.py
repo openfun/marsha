@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers
+from ..metadata import ThumbnailMetadata
 from ..models import Thumbnail
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
@@ -26,6 +27,7 @@ class ThumbnailViewSet(
 
     permission_classes = [permissions.NotAllowed]
     serializer_class = serializers.ThumbnailSerializer
+    metadata_class = ThumbnailMetadata
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
