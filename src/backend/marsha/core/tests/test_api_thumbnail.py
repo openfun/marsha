@@ -364,6 +364,7 @@ class ThumbnailApiTest(TestCase):
 
         response = self.client.post(
             f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+            {"filename": "thumbail_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -387,6 +388,7 @@ class ThumbnailApiTest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -436,7 +438,65 @@ class ThumbnailApiTest(TestCase):
 
         response = self.client.post(
             f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+            {"filename": "thumbail_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_api_thumbnail_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        video = VideoFactory(
+            id="c10b79b6-9ecc-4aba-bf9d-5aab4765fd40", upload_state="ready"
+        )
+        thumbnail = ThumbnailFactory(
+            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        # Get the upload policy for this thumbnail
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": ""},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
+    def test_api_thumbnail_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        video = VideoFactory(
+            id="c10b79b6-9ecc-4aba-bf9d-5aab4765fd40", upload_state="ready"
+        )
+        thumbnail = ThumbnailFactory(
+            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb", video=video, upload_state="ready"
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        # Get the upload policy for this thumbnail
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )

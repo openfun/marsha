@@ -133,9 +133,7 @@ class SharedLiveMediaViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
-        serializer = serializers.SharedLiveMediaInitiateUploadSerializer(
-            data=request.data
-        )
+        serializer = serializers.SharedLiveMediaUploadSerializer(data=request.data)
 
         if serializer.is_valid() is not True:
             return Response(serializer.errors, status=400)

@@ -175,13 +175,35 @@ class InitiateUploadSerializer(serializers.Serializer):
 
     filename = serializers.CharField()
     mimetype = serializers.CharField(allow_blank=True)
+    size = serializers.IntegerField()
+
+    def validate_size(self, value):
+        """Validate if the size is coherent with django settings."""
+        if value > settings.DOCUMENT_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {
+                    "size": f"file too large, max size allowed is {settings.DOCUMENT_SOURCE_MAX_SIZE} Bytes"
+                }
+            )
+
+        return value
 
 
-class SharedLiveMediaInitiateUploadSerializer(InitiateUploadSerializer):
+class SharedLiveMediaUploadSerializer(InitiateUploadSerializer):
     """An initiate-upload serializer dedicated to shared live media."""
 
+    def validate_size(self, value):
+        if value > settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {
+                    "size": f"file too large, max size allowed is {settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE} Bytes"
+                }
+            )
+
+        return value
+
     def validate(self, attrs):
-        """Validate if the mimetype is allowed or not."""
+        """Validate if the mimetype is allowed or not, and if the size is coherent with django settings."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
             if attrs["mimetype"] not in settings.ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES:
@@ -204,3 +226,42 @@ class SharedLiveMediaInitiateUploadSerializer(InitiateUploadSerializer):
             attrs["mimetype"] = mimetype
 
         return attrs
+
+
+class ThumbailUploadSerializer(InitiateUploadSerializer):
+    def validate_size(self, value):
+        """Validate if the size is coherent with django settings."""
+        if value > settings.THUMBNAIL_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {
+                    "size": f"file too large, max size allowed is {settings.THUMBNAIL_SOURCE_MAX_SIZE} Bytes"
+                }
+            )
+
+        return value
+
+
+class TimedTextTrackUploadSerializer(InitiateUploadSerializer):
+    def validate_size(self, value):
+        """Validate if the size is coherent with django settings."""
+        if value > settings.SUBTITLE_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {
+                    "size": f"file too large, max size allowed is {settings.SUBTITLE_SOURCE_MAX_SIZE} Bytes"
+                }
+            )
+
+        return value
+
+
+class VideoUploadSerializer(InitiateUploadSerializer):
+    def validate_size(self, value):
+        """Validate if the size is coherent with django settings."""
+        if value > settings.VIDEO_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                {
+                    "size": f"file too large, max size allowed is {settings.VIDEO_SOURCE_MAX_SIZE} Bytes"
+                }
+            )
+
+        return value

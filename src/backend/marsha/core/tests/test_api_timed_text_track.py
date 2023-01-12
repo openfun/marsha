@@ -1777,7 +1777,8 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track = TimedTextTrackFactory()
 
         response = self.client.post(
-            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
+            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+            {"filename": "thumbail_file", "mimetype": "", "size": 100},
         )
 
         self.assertEqual(response.status_code, 401)
@@ -1817,6 +1818,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -1862,12 +1864,72 @@ class TimedTextTrackAPITest(TestCase):
         # Try initiating an upload for a timed_text_track linked to another video
         response = self.client.post(
             f"/api/timedtexttracks/{other_ttt_for_other_video.id}/initiate-upload/",
+            {"filename": "thumbail_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
         content = json.loads(response.content)
         self.assertEqual(
             content, {"detail": "You do not have permission to perform this action."}
+        )
+
+    def test_api_timed_text_track_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        timed_text_track = TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": ""},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(SUBTITLE_SOURCE_MAX_SIZE=10)
+    def test_api_timed_text_track_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        timed_text_track = TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
+
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
         )
 
     def test_api_timed_text_track_initiate_upload_staff_or_user(self):
@@ -1880,12 +1942,13 @@ class TimedTextTrackAPITest(TestCase):
         ]:
             self.client.login(username=user.username, password="test")
             response = self.client.post(
-                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
+                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
             )
             self.assertEqual(response.status_code, 401)
-            content = json.loads(response.content)
             self.assertEqual(
-                content, {"detail": "Authentication credentials were not provided."}
+                response.json(),
+                {"detail": "Authentication credentials were not provided."},
             )
 
     def test_api_timed_text_track_instructor_initiate_upload_in_read_only(self):
@@ -1899,6 +1962,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+            {"filename": "thumbail_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -1930,6 +1994,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -1967,6 +2032,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -2006,6 +2072,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -2075,6 +2142,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -2115,6 +2183,7 @@ class TimedTextTrackAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                {"filename": "thumbail_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)

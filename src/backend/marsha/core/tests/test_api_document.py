@@ -400,7 +400,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -452,7 +452,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo", "mimetype": "application/pdf"},
+                {"filename": "foo", "mimetype": "application/pdf", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -504,7 +504,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo", "mimetype": ""},
+                {"filename": "foo", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -538,4 +538,57 @@ class DocumentAPITest(TestCase):
                     ),
                 },
             },
+        )
+
+    def test_api_document_document_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        document = DocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/documents/{document.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(DOCUMENT_SOURCE_MAX_SIZE=10)
+    def test_api_document_document_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        document = DocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/documents/{document.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
         )

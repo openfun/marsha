@@ -230,6 +230,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             HttpResponse carrying the upload policy as a JSON object.
 
         """
+        serializer = serializers.VideoUploadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         response = storage.get_initiate_backend().initiate_video_upload(request, pk)
 
         # Reset the upload state of the video
