@@ -264,8 +264,16 @@ class ClassroomDocumentSerializer(
 class ClassroomDocumentInitiateUploadSerializer(InitiateUploadSerializer):
     """An initiate-upload serializer dedicated to classroom document."""
 
-    def validate(self, attrs):
-        """Validate if the mimetype is allowed or not."""
+    def validate_size(self, value):
+        if value > settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                f"file too large, max size allowed is {settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE} Bytes"
+            )
+
+        return value
+
+    def validate_mimetype(self, attrs):
+        """Validate if the mimetype is allowed or not, and if the size is coherent with django settings."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
             if attrs["mimetype"] not in settings.ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES:

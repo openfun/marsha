@@ -440,9 +440,7 @@ class ClassroomDocumentViewSet(
         serializer = serializers.ClassroomDocumentInitiateUploadSerializer(
             data=request.data
         )
-
-        if serializer.is_valid() is not True:
-            return Response(serializer.errors, status=400)
+        serializer.is_valid(raise_exception=True)
 
         now = timezone.now()
         stamp = to_timestamp(now)
