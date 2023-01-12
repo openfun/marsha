@@ -119,7 +119,7 @@ class MarkdownImageUploadSerializer(InitiateUploadSerializer):
     """An initiate-upload serializer dedicated to Markdown image."""
 
     def validate(self, attrs):
-        """Validate if the mimetype is allowed or not."""
+        """Validate if the mimetype is allowed or not, and if the size is coherent with django settings."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
             attrs["extension"] = mimetypes.guess_extension(attrs["mimetype"])
@@ -139,6 +139,14 @@ class MarkdownImageUploadSerializer(InitiateUploadSerializer):
             )
 
         return attrs
+
+    def validate_size(self, value):
+        if value > settings.MARKDOWN_IMAGE_SOURCE_MAX_SIZE:
+            raise serializers.ValidationError(
+                f"file too large, max size allowed is {settings.MARKDOWN_IMAGE_SOURCE_MAX_SIZE} Bytes"
+            )
+
+        return value
 
 
 class MarkdownPreviewSerializer(serializers.Serializer):

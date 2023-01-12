@@ -3,7 +3,7 @@ from datetime import datetime
 import json
 from unittest import mock
 
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from marsha.core.factories import (
     OrganizationAccessFactory,
@@ -66,7 +66,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
-                data={"filename": "not_used.png", "mimetype": "image/png"},
+                data={"filename": "not_used.png", "mimetype": "image/png", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -106,6 +106,69 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
         self.assertEqual(markdown_image.upload_state, "pending")
         self.assertEqual(markdown_image.extension, ".png")
 
+    def test_api_deposited_file_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        markdown_document = MarkdownDocumentFactory(
+            id="c10b79b6-9ecc-4aba-bf9d-5aab4765fd40",
+        )
+        markdown_image = MarkdownImageFactory(
+            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb",
+            markdown_document=markdown_document,
+            upload_state="ready",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+
+        # Get the upload policy for this Markdown image
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+                data={"filename": "not_used.png", "mimetype": "image/png"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(MARKDOWN_IMAGE_SOURCE_MAX_SIZE=10)
+    def test_api_deposited_file_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        markdown_document = MarkdownDocumentFactory(
+            id="c10b79b6-9ecc-4aba-bf9d-5aab4765fd40",
+        )
+        markdown_image = MarkdownImageFactory(
+            id="4ab8079e-ff4d-4d06-9922-4929e4f7a6eb",
+            markdown_document=markdown_document,
+            upload_state="ready",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
+
+        # Get the upload policy for this Markdown image
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
+                data={"filename": "not_used.png", "mimetype": "image/png", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )
+
     def test_api_markdown_image_initiate_upload_instructor_read_only(self):
         """Instructor should not be able to initiate Markdown images upload in a read_only mode."""
         markdown_image = MarkdownImageFactory()
@@ -117,7 +180,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
 
         response = self.client.post(
             f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
-            data={"filename": "not_used.gif", "mimetype": "image/gif"},
+            data={"filename": "not_used.gif", "mimetype": "image/gif", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -161,7 +224,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
-                data={"filename": "not_used.png", "mimetype": "image/png"},
+                data={"filename": "not_used.png", "mimetype": "image/png", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -222,7 +285,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/markdown-images/{markdown_image.id}/initiate-upload/",
-                data={"filename": "not_used.png", "mimetype": "image/png"},
+                data={"filename": "not_used.png", "mimetype": "image/png", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
