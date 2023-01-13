@@ -11,7 +11,7 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from marsha.bbb.models import Classroom, ClassroomDocument
+from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     get_meeting_infos,
@@ -24,6 +24,32 @@ from marsha.core.serializers import (
 )
 from marsha.core.serializers.base import ReadOnlyModelSerializer
 from marsha.core.serializers.playlist import PlaylistLiteSerializer
+
+
+class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
+    """A serializer to display a ClassroomRecording resource."""
+
+    class Meta:  # noqa
+        model = ClassroomRecording
+        fields = (
+            "id",
+            "classroom",
+            "record_id",
+            "started_at",
+            "video_file_url",
+        )
+        read_only_fields = (
+            "id",
+            "classroom",
+            "record_id",
+            "started_at",
+            "video_file_url",
+        )
+
+    # Make sure classroom UUID is converted to a string during serialization
+    classroom = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -43,6 +69,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "ended",
             "starting_at",
             "estimated_duration",
+            "recordings",
             # specific generated fields
             "infos",
             "invite_token",
@@ -54,12 +81,15 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "meeting_id",
             "started",
             "ended",
+            "recordings",
             "infos",
         )
 
     playlist = PlaylistLiteSerializer(read_only=True)
+    recordings = ClassroomRecordingSerializer(many=True, read_only=True)
     infos = serializers.SerializerMethodField()
     invite_token = serializers.SerializerMethodField()
+    recordings = serializers.SerializerMethodField()
 
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
@@ -73,6 +103,17 @@ class ClassroomSerializer(serializers.ModelSerializer):
         if self.context.get("is_admin", False):
             return str(create_classroom_stable_invite_jwt(obj))
         return None
+
+    def get_recordings(self, obj):
+        """Get the recordings for the classroom.
+
+        Only available for admins.
+        """
+        if self.context.get("is_admin", True):
+            return ClassroomRecordingSerializer(
+                obj.recordings.all(), many=True, context=self.context
+            ).data
+        return []
 
     def update(self, instance, validated_data):
         if any(
