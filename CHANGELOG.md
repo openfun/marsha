@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Renater IdP's logo display on login page
   - Allow organization instructors to create playlists
   - Select an organization by default in create playlist form
+- Allow instructors to download recorded BBB classroom sessions
 
 ### Changed
 
