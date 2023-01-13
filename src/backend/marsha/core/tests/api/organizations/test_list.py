@@ -31,46 +31,51 @@ class OrganizationListAPITest(TestCase):
         self.assertEqual(response.json()["count"], 0)
         self.assertEqual(response.json()["results"], [])
 
-    def test_list_organizations_by_admin(self):
-        """Organization admins cannot list organizations."""
-        user = factories.UserFactory()
-        created_on = timezone.now()
-        organization = factories.OrganizationFactory(created_on=created_on)
-        factories.OrganizationAccessFactory(
-            user=user, organization=organization, role=models.ADMINISTRATOR
-        )
+    def test_list_organizations_by_admin_or_instructor(self):
+        """Organization admins and instructors can list organizations they belong to."""
+        for role in [models.ADMINISTRATOR, models.INSTRUCTOR]:
+            with self.subTest(role=role):
+                user = factories.UserFactory()
+                created_on = timezone.now()
+                organization = factories.OrganizationFactory(created_on=created_on)
 
-        # Other organization not linked to the current user
-        factories.OrganizationFactory()
+                factories.OrganizationAccessFactory(
+                    user=user,
+                    organization=organization,
+                    role=role,
+                )
 
-        # Other organization linked to the current user but not as admin
-        factories.OrganizationAccessFactory(
-            user=user,
-            role=models.INSTRUCTOR,
-        )
+                # Other organization not linked to the current user
+                factories.OrganizationFactory()
 
-        jwt_token = UserAccessTokenFactory(user=user)
+                # Other organization linked to the current user but not as admin
+                factories.OrganizationAccessFactory(
+                    user=user,
+                    role=models.STUDENT,
+                )
 
-        response = self.client.get(
-            "/api/organizations/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 1)
-        self.assertEqual(
-            response.json()["results"],
-            [
-                {
-                    "consumer_sites": [],
-                    # remove offset in number and replace with Z like DRF serializer did
-                    "created_on": created_on.isoformat()[:-6] + "Z",
-                    "id": str(organization.pk),
-                    "name": organization.name,
-                    "users": [str(user.pk)],
-                }
-            ],
-        )
+                jwt_token = UserAccessTokenFactory(user=user)
+
+                response = self.client.get(
+                    "/api/organizations/",
+                    HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                    content_type="application/json",
+                )
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.json()["count"], 1)
+                self.assertEqual(
+                    response.json()["results"],
+                    [
+                        {
+                            "consumer_sites": [],
+                            # remove offset in number and replace with Z like DRF serializer did
+                            "created_on": created_on.isoformat()[:-6] + "Z",
+                            "id": str(organization.pk),
+                            "name": organization.name,
+                            "users": [str(user.pk)],
+                        }
+                    ],
+                )
 
     def test_list_organizations_not_duplicated(self):
         """
@@ -96,7 +101,7 @@ class OrganizationListAPITest(TestCase):
         # Other organization linked to the current user but not as admin
         factories.OrganizationAccessFactory(
             user=user,
-            role=models.INSTRUCTOR,
+            role=models.STUDENT,
         )
 
         # In case we also add a consumer site admin to access organization
