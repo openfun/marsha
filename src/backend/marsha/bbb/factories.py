@@ -33,3 +33,15 @@ class ClassroomDocumentFactory(DjangoModelFactory):
 
     classroom = factory.SubFactory(ClassroomFactory)
     filename = factory.Faker("file_name")
+
+
+class ClassroomRecordingFactory(DjangoModelFactory):
+    """Factory for the ClassroomRecording model."""
+
+    class Meta:
+        model = models.ClassroomRecording
+
+    classroom = factory.SubFactory(ClassroomFactory)
+    record_id = factory.Faker("uuid4")
+    started_at = factory.Faker("date_time")
+    video_file_url = factory.Faker("url")
