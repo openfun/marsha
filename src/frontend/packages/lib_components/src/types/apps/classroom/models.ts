@@ -15,6 +15,7 @@ export interface Classroom extends Resource {
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;
   invite_token: Nullable<string>;
+  recordings: ClassroomRecording[];
 }
 
 export type ClassroomLite = Omit<Classroom, 'infos' | 'playlist'>;
@@ -118,4 +119,10 @@ export interface ClassroomDocument extends Resource {
   upload_state: uploadState;
   uploaded_on: string;
   url: string;
+}
+
+export interface ClassroomRecording extends Resource {
+  classroom: string;
+  video_file_url: string;
+  started_at: string;
 }

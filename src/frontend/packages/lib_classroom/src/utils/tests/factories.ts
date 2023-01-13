@@ -5,6 +5,7 @@ import {
   Classroom,
   ClassroomDocument,
   ClassroomInfos,
+  ClassroomRecording,
 } from 'lib-components';
 
 const { READY } = uploadState;
@@ -26,6 +27,7 @@ export const classroomMockFactory = (
     starting_at: null,
     estimated_duration: null,
     invite_token: null,
+    recordings: [],
     ...classroom,
   };
 };
@@ -76,5 +78,17 @@ export const classroomDocumentMockFactory = (
     uploaded_on: faker.date.recent().toISOString(),
     url: faker.internet.url(),
     ...classroomDocument,
+  };
+};
+
+export const classroomRecordingMockFactory = (
+  classroomRecording: Partial<ClassroomRecording> = {},
+): ClassroomRecording => {
+  return {
+    classroom: faker.datatype.uuid(),
+    id: faker.datatype.uuid(),
+    started_at: faker.date.recent().toISOString(),
+    video_file_url: faker.internet.url(),
+    ...classroomRecording,
   };
 };
