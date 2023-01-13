@@ -105,7 +105,10 @@ class ClassroomServiceCreateAPITest(TestCase):
         classroom.refresh_from_db()
         self.assertEqual("new title", classroom.title)
         self.assertEqual("Hello", classroom.welcome_text)
-        mock_create_request.assert_called_with(classroom=classroom)
+        mock_create_request.assert_called_with(
+            classroom=classroom,
+            recording_ready_callback_url="http://testserver/api/classrooms/recording-ready/",
+        )
 
     @mock.patch.object(api, "create")
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -137,7 +140,10 @@ class ClassroomServiceCreateAPITest(TestCase):
             response.data,
             {"message": "A classroom already exists with that classroom ID."},
         )
-        mock_create_request.assert_called_with(classroom=classroom)
+        mock_create_request.assert_called_with(
+            classroom=classroom,
+            recording_ready_callback_url="http://testserver/api/classrooms/recording-ready/",
+        )
 
     @mock.patch.object(api, "create")
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -188,7 +194,10 @@ class ClassroomServiceCreateAPITest(TestCase):
             },
             response.data,
         )
-        mock_create_request.assert_called_with(classroom=classroom)
+        mock_create_request.assert_called_with(
+            classroom=classroom,
+            recording_ready_callback_url="http://testserver/api/classrooms/recording-ready/",
+        )
 
     @mock.patch.object(api, "create")
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -214,4 +223,7 @@ class ClassroomServiceCreateAPITest(TestCase):
             },
             response.data,
         )
-        mock_create_request.assert_called_with(classroom=classroom)
+        mock_create_request.assert_called_with(
+            classroom=classroom,
+            recording_ready_callback_url="http://testserver/api/classrooms/recording-ready/",
+        )

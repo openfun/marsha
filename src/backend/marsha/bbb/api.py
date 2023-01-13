@@ -2,6 +2,7 @@
 from django.conf import settings
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
+from django.urls import reverse
 from django.utils import timezone
 
 import django_filters
@@ -286,7 +287,12 @@ class ClassroomViewSet(
         self.update(request, *args, **kwargs)
 
         try:
-            response = create(classroom=self.get_object())
+            response = create(
+                classroom=self.get_object(),
+                recording_ready_callback_url=request.build_absolute_uri(
+                    reverse("classroom:classrooms-recording-ready")
+                ),
+            )
             status = 200
         except ApiMeetingException as exception:
             response = {"message": str(exception)}

@@ -96,7 +96,7 @@ def get_url(obj):
     )
 
 
-def create(classroom: Classroom):
+def create(classroom: Classroom, recording_ready_callback_url: str):
     """Call BBB API to create a meeting."""
     parameters = {
         "meetingID": str(classroom.meeting_id),
@@ -104,6 +104,7 @@ def create(classroom: Classroom):
         "role": "moderator",
         "welcome": classroom.welcome_text,
         "record": settings.BBB_ENABLE_RECORD,
+        "meta_bbb-recording-ready-url": recording_ready_callback_url,
     }
 
     documents = classroom.classroom_documents.filter(upload_state="ready")
