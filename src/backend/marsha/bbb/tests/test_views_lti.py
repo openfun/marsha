@@ -295,6 +295,7 @@ class ClassroomLTIViewTestCase(TestCase):
                 "welcome_text": classroom.welcome_text,
                 "starting_at": None,
                 "estimated_duration": None,
+                "recordings": [],
                 # "invite_token" is tested separately
             },
             resource_data,
@@ -641,6 +642,7 @@ class MeetingLTIViewTestCase(TestCase):
                 "welcome_text": classroom.welcome_text,
                 "starting_at": None,
                 "estimated_duration": None,
+                "recordings": [],
                 # "invite_token" is tested separately
             },
             resource_data,

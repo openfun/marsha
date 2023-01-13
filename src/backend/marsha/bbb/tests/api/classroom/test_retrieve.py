@@ -7,7 +7,7 @@ import zoneinfo
 from django.test import TestCase, override_settings
 
 from marsha.bbb import serializers
-from marsha.bbb.factories import ClassroomFactory
+from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -78,6 +78,57 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "invite_token": None,
+                "recordings": [],
+            },
+            content,
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_student_with_recordings(self, mock_get_meeting_infos):
+        """Existing recordings should not be retrieved by students."""
+        classroom = ClassroomFactory()
+        ClassroomRecordingFactory(
+            classroom=classroom,
+            started_at="2019-08-21T15:00:02Z",
+        )
+        ClassroomRecordingFactory(
+            classroom=classroom,
+            started_at="2019-08-21T11:00:02Z",
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = StudentLtiTokenFactory(resource=classroom)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "recordings": [],
+                "invite_token": None,
             },
             content,
         )
@@ -141,6 +192,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
                 "invite_token": None,
+                "recordings": [],
             },
             content,
         )
@@ -182,6 +234,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                "recordings": [],
                 # invite_token is tested below
             },
             content,
@@ -255,6 +308,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                "recordings": [],
                 # invite_token is tested below
             },
             content,
@@ -308,6 +362,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 },
                 "starting_at": None,
                 "estimated_duration": None,
+                "recordings": [],
                 # invite_token is tested below
             },
             content,
@@ -330,3 +385,77 @@ class ClassroomRetrieveAPITest(TestCase):
         invite_token_2 = content.pop("invite_token")
 
         self.assertEqual(str(invite_token), str(invite_token_2))
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_with_recordings(self, mock_get_meeting_infos):
+        """Existing recordings should be retrieved."""
+        classroom = ClassroomFactory()
+        classroom_recording_1 = ClassroomRecordingFactory(
+            classroom=classroom,
+            started_at="2019-08-21T15:00:02Z",
+        )
+        classroom_recording_2 = ClassroomRecordingFactory(
+            classroom=classroom,
+            started_at="2019-08-21T11:00:02Z",
+        )
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        content = json.loads(response.content)
+        invite_token = content.pop("invite_token")
+        self.assertDictEqual(
+            {
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": str(classroom.lti_id),
+                "title": classroom.title,
+                "description": classroom.description,
+                "started": False,
+                "ended": False,
+                "meeting_id": str(classroom.meeting_id),
+                "welcome_text": classroom.welcome_text,
+                "playlist": {
+                    "id": str(classroom.playlist.id),
+                    "title": classroom.playlist.title,
+                    "lti_id": classroom.playlist.lti_id,
+                },
+                "starting_at": None,
+                "estimated_duration": None,
+                "recordings": [
+                    {
+                        "classroom": str(classroom.id),
+                        "id": str(classroom_recording_2.id),
+                        "record_id": str(classroom_recording_2.record_id),
+                        "started_at": "2019-08-21T11:00:02Z",
+                        "video_file_url": classroom_recording_2.video_file_url,
+                    },
+                    {
+                        "classroom": str(classroom.id),
+                        "id": str(classroom_recording_1.id),
+                        "record_id": str(classroom_recording_1.record_id),
+                        "started_at": "2019-08-21T15:00:02Z",
+                        "video_file_url": classroom_recording_1.video_file_url,
+                    },
+                ],
+                # invite_token is tested below
+            },
+            content,
+        )
+
+        decoded_invite_token = ResourceAccessToken(invite_token)
+        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
+        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
+        self.assertEqual(
+            decoded_invite_token.payload["permissions"],
+            {"can_update": False, "can_access_dashboard": False},
+        )
