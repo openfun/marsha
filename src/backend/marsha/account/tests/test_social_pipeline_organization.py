@@ -11,7 +11,7 @@ from marsha.account.social_pipeline.organization import create_organization_from
 from marsha.account.tests.utils import override_saml_fer_settings
 from marsha.core.factories import OrganizationFactory, UserFactory
 from marsha.core.models import (
-    INSTRUCTOR,
+    ADMINISTRATOR,
     NONE,
     STUDENT,
     Organization,
@@ -165,7 +165,7 @@ class OrganizationPipelineTestCase(TestCase):
             )
 
         # Test results
-        self.assertLatestOrganizationAccessIsConsistent(role=INSTRUCTOR)
+        self.assertLatestOrganizationAccessIsConsistent(role=ADMINISTRATOR)
 
         # Call pipeline step again
         with self.assertNumQueries(2):  # @atomic(): 2 savepoints
@@ -179,7 +179,7 @@ class OrganizationPipelineTestCase(TestCase):
             )
 
         # Test results are still unique
-        self.assertLatestOrganizationAccessIsConsistent(role=INSTRUCTOR)
+        self.assertLatestOrganizationAccessIsConsistent(role=ADMINISTRATOR)
 
         # Edge case: assert we don't fail if `new_association` with already existing data
         create_organization_from_saml(
@@ -190,7 +190,7 @@ class OrganizationPipelineTestCase(TestCase):
             response=self.saml_response,
             new_association=True,
         )
-        self.assertLatestOrganizationAccessIsConsistent(role=INSTRUCTOR)
+        self.assertLatestOrganizationAccessIsConsistent(role=ADMINISTRATOR)
 
     def test_create_organization_from_saml_student_or_unknown_new(self):
         """Assert new student from new organization initializes properly."""
@@ -273,7 +273,7 @@ class OrganizationPipelineTestCase(TestCase):
             )
 
         # Test results
-        self.assertLatestOrganizationAccessIsConsistent(role=INSTRUCTOR)
+        self.assertLatestOrganizationAccessIsConsistent(role=ADMINISTRATOR)
 
         # Call pipeline step again
         with self.assertNumQueries(2):  # @atomic(): 2 savepoints
@@ -287,7 +287,7 @@ class OrganizationPipelineTestCase(TestCase):
             )
 
         # Test results are still unique
-        self.assertLatestOrganizationAccessIsConsistent(role=INSTRUCTOR)
+        self.assertLatestOrganizationAccessIsConsistent(role=ADMINISTRATOR)
 
     def test_create_organization_from_saml_student_existing_organization(self):
         """

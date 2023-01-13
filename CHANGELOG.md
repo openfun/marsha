@@ -19,6 +19,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove deprecated params from BBB API calls
 - Keep resource property in AppData
 - Create a lib to handle all components for video (VOD and live)
+- User created from shibboleth with TEACHER affiliation are now Administrator
+  in their organization
 
 ### Fixed
 

@@ -5,7 +5,7 @@ from django.db.transaction import atomic
 from social_edu_federation.defaults import EduPersonAffiliationEnum
 
 from marsha.account.models import IdpOrganizationAssociation
-from marsha.core.models import INSTRUCTOR, STUDENT, Organization, OrganizationAccess
+from marsha.core.models import ADMINISTRATOR, STUDENT, Organization, OrganizationAccess
 
 
 @atomic()
@@ -121,7 +121,7 @@ def create_organization_from_saml(
         OrganizationAccess.objects.create(
             user=user,
             organization=association.organization,
-            role=INSTRUCTOR
+            role=ADMINISTRATOR
             if (
                 details.get("roles", None)
                 and EduPersonAffiliationEnum.TEACHER.value in details["roles"]
