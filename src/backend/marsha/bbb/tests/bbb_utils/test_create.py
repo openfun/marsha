@@ -32,8 +32,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
+                        "checksum": "cdd04259644640f009860f4d5daaf6e35ea6d244",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
                         "name": "Classroom 001",
                         "record": True,
                         "role": "moderator",
@@ -63,7 +66,9 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(classroom)
+        api_response = create(
+            classroom, "https://example.com/api/classrooms/recording-ready/"
+        )
 
         self.assertDictEqual(
             {
@@ -103,8 +108,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "01c0736414261a66835624c3a3fe9fa0221e45fe",
+                        "checksum": "f13b9e5bb900b2e33065ef05a2a88c6da1341436",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
                         "name": "Classroom 001",
                         "record": False,
                         "role": "moderator",
@@ -134,7 +142,9 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(classroom)
+        api_response = create(
+            classroom, "https://example.com/api/classrooms/recording-ready/"
+        )
 
         self.assertDictEqual(
             {
@@ -173,8 +183,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
+                        "checksum": "cdd04259644640f009860f4d5daaf6e35ea6d244",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
                         "name": "Classroom 001",
                         "record": True,
                         "role": "moderator",
@@ -193,7 +206,7 @@ class ClassroomServiceTestCase(TestCase):
         )
 
         with self.assertRaises(ApiMeetingException) as exception:
-            create(classroom)
+            create(classroom, "https://example.com/api/classrooms/recording-ready/")
         self.assertEqual(
             str(exception.exception), "A meeting already exists with that meeting ID."
         )
@@ -224,8 +237,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
+                        "checksum": "cdd04259644640f009860f4d5daaf6e35ea6d244",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
                         "name": "Classroom 001",
                         "record": True,
                         "role": "moderator",
@@ -255,7 +271,9 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(classroom)
+        api_response = create(
+            classroom, "https://example.com/api/classrooms/recording-ready/"
+        )
 
         self.assertEqual(
             responses.calls[0].request.body,
@@ -324,8 +342,11 @@ class ClassroomServiceTestCase(TestCase):
             match=[
                 responses.matchers.query_param_matcher(
                     {
-                        "checksum": "fcdfd7531d2b8a3df44a69175ca767d7647cd725",
+                        "checksum": "cdd04259644640f009860f4d5daaf6e35ea6d244",
                         "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "meta_bbb-recording-ready-url": (
+                            "https://example.com/api/classrooms/recording-ready/"
+                        ),
                         "name": "Classroom 001",
                         "record": True,
                         "role": "moderator",
@@ -355,7 +376,9 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = create(classroom)
+        api_response = create(
+            classroom, "https://example.com/api/classrooms/recording-ready/"
+        )
 
         self.assertEqual(
             responses.calls[0].request.body,
