@@ -370,6 +370,7 @@ class Base(Configuration):
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()
     BBB_API_SECRET = values.Value(None)
+    BBB_API_CALLBACK_SECRET = values.Value(None)
     BBB_API_TIMEOUT = values.PositiveIntegerValue(10)
     BBB_ENABLE_RECORD = values.BooleanValue(False)
     ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES = values.ListValue(["application/pdf"])
