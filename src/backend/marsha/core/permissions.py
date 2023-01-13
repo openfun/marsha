@@ -1,7 +1,7 @@
 """Custom permission classes for the Marsha project."""
 import uuid
 
-from django.core.exceptions import ObjectDoesNotExist
+from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db.models import Q
 
 from rest_framework import permissions
@@ -204,29 +204,87 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             return False
 
 
-class IsParamsOrganizationAdmin(permissions.BasePermission):
+class HasAdminRoleMixIn:
     """
-    Allow a request to proceed. Permission class.
+    Mixin to check if the user has an admin role.
 
-    Only if the user provides the ID for an existing organization,
-    and is a member of this organization with an administrator role.
+    To be combined with one of the Base...Role classes below.
     """
+
+    role_filter = {"role": ADMINISTRATOR}
+
+
+class HasInstructorRoleMixIn:
+    """
+    Mixin to check if the user has an instructor role.
+
+    To be combined with one of the Base...Role classes below.
+    """
+
+    role_filter = {"role": INSTRUCTOR}
+
+
+class HasAdminOrInstructorRoleMixIn:
+    """
+    Mixin to check if the user has an admin or instructor role.
+
+    To be combined with one of the Base...Role classes below.
+    """
+
+    role_filter = {"role__in": [ADMINISTRATOR, INSTRUCTOR]}
+
+
+class BaseIsOrganizationRole(permissions.BasePermission):
+    """Base permission class for organization roles."""
+
+    role_filter = {}
+
+    def get_organization_id(self, request, view):
+        """Get the organization id."""
+        # Avoid making extra requests to get the organization id through get_object
+        return view.get_object_pk()
 
     def has_permission(self, request, view):
         """
         Allow the request.
 
-        Only if the organization from the params of body of the request exists
-        and the current logged in user is one of its administrators.
+        Only if the organization exists and the current logged in user
+        has the proper role.
         """
-        organization_id = request.data.get("organization") or request.query_params.get(
+        if not self.role_filter:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__} must define a `role_filter`."
+            )
+
+        return models.OrganizationAccess.objects.filter(
+            **self.role_filter,
+            organization_id=self.get_organization_id(request, view),
+            user_id=request.user.id,
+        ).exists()
+
+
+class IsOrganizationAdmin(HasAdminRoleMixIn, BaseIsOrganizationRole):
+    """Permission class to check if the user is one of the organization admin."""
+
+
+class BaseIsParamsOrganizationRole(BaseIsOrganizationRole):
+    """Base permission class to check for organization roles."""
+
+    def get_organization_id(self, request, view):
+        """Get the organization id."""
+        # Avoid making extra requests to get the organization id through get_object
+        return request.data.get("organization") or request.query_params.get(
             "organization"
         )
-        return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            organization__id=organization_id,
-            user__id=request.user.id,
-        ).exists()
+
+
+class IsParamsOrganizationInstructorOrAdmin(
+    HasAdminOrInstructorRoleMixIn,
+    BaseIsParamsOrganizationRole,
+):
+    """
+    Allow access to user with admin or instructor role on the organization provided in parameters.
+    """
 
 
 class IsParamsPlaylistAdmin(permissions.BasePermission):
@@ -333,29 +391,6 @@ class IsParamsVideoAdminThroughPlaylist(permissions.BasePermission):
         return models.PlaylistAccess.objects.filter(
             role=ADMINISTRATOR,
             playlist__videos__id=video_id,
-            user__id=request.user.id,
-        ).exists()
-
-
-class IsOrganizationAdmin(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Only if the user is a member of the organization in the path, with
-    an administrator role.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Only if the organization exists and the current logged in user is one
-        of its administrators.
-        """
-        return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            # Avoid making extra requests to get the organization id through get_object
-            organization__id=view.get_object_pk(),
             user__id=request.user.id,
         ).exists()
 
@@ -562,7 +597,7 @@ class BasePortabilityRequestAdministratorAccessPermission(BaseObjectPermission):
         return self.access_model.objects.filter(
             role=ADMINISTRATOR,
             user_id=request.user.id,
-            **{self.playlist_lookup: portability_request.for_playlist_id}
+            **{self.playlist_lookup: portability_request.for_playlist_id},
         ).exists()
 
 

@@ -2,11 +2,12 @@
 from collections import OrderedDict
 
 from django.core.exceptions import ValidationError
+from django.db.transaction import atomic
 from django.utils.translation import gettext_lazy as _
 
 from rest_framework import serializers
 
-from ..models import ConsumerSite, Organization, Playlist
+from ..models import ADMINISTRATOR, ConsumerSite, Organization, Playlist, PlaylistAccess
 from .account import ConsumerSiteSerializer, OrganizationLiteSerializer
 from .base import ReadWritePrimaryKeyRelatedField
 
@@ -90,6 +91,24 @@ class PlaylistSerializer(serializers.ModelSerializer):
                 )
             value.update({"portable_to": reachable_from_playlist_ids})
         return value
+
+    @atomic
+    def create(self, validated_data):
+        """Create a new Playlist instance."""
+        if self.context["request"].resource is not None:
+            raise ValidationError(
+                "PlaylistSerializer create should not be called in LTI context"
+            )
+
+        validated_data["created_by_id"] = self.context["request"].user.id
+        instance = super().create(validated_data)
+
+        PlaylistAccess.objects.create(
+            playlist=instance,
+            user_id=self.context["request"].user.id,
+            role=ADMINISTRATOR,
+        )
+        return instance
 
 
 class PlaylistLiteSerializer(serializers.ModelSerializer):
