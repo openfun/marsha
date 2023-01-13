@@ -302,7 +302,7 @@
       </iframe>
       <script src="{% static 'js/iframeResizer.min.js' %}"></script>
       <script>
-        const baseUrl = "http://{{ domain }}/lti";
+        const baseUrl = "//{{ domain }}/lti";
         document.addEventListener('DOMContentLoaded', function () {
           const forms = document.querySelectorAll('form.resource');
           for (let i = 0; i < forms.length; i++) {
@@ -314,7 +314,7 @@
           }
         });
         iFrameResize({
-          checkOrigin: ["http://{{ domain }}"],
+          checkOrigin: ["http://{{ domain }}", "https://{{ domain }}"],
         });
       </script>
     </section>
