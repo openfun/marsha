@@ -5,7 +5,7 @@ import django_filters
 from rest_framework import filters, viewsets
 
 from .. import permissions, serializers
-from ..models import ADMINISTRATOR, Playlist
+from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist
 from .base import APIViewMixin, ObjectPkMixin
 
 
@@ -44,8 +44,8 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             permission_classes = [permissions.UserIsAuthenticated]
         elif self.action in ["retrieve"]:
             permission_classes = [
-                # users who are playlist administrators
-                permissions.IsPlaylistAdmin
+                # users who are playlist administrators or instructor
+                permissions.IsPlaylistAdminOrInstructor
                 # or users who are administrators of the playlist organization
                 | permissions.IsPlaylistOrganizationAdmin
                 # or
@@ -86,7 +86,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 )
                 | Q(
                     user_accesses__user_id=self.request.user.id,
-                    user_accesses__role=ADMINISTRATOR,
+                    user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
                 )
             )
             .distinct()

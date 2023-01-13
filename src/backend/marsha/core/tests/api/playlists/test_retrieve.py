@@ -48,7 +48,7 @@ class PlaylistRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
     def test_retrieve_playlist_through_video_token_instructor(self):
         """Playlist instructors can retrieve playlists through video token."""
