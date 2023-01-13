@@ -1,4 +1,4 @@
-import { Box, FormField, Select, Text } from 'grommet';
+import { Box, FormField, Image, Select, Text } from 'grommet';
 import React, { useEffect } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
@@ -29,6 +29,21 @@ export const RenaterAuthenticator = () => {
   >([]);
   const [options, setOptions] = React.useState<RenaterSamlFerIdp[]>([]);
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
+
+  const renderOption = (option: RenaterSamlFerIdp) => (
+    <Box align="center" direction="row">
+      <Image
+        src={
+          option.logo ||
+          'data:image/gif;base64,R0lGODlhAQABAIAAAP///wAAACH5BAEAAAAALAAAAAABAAEAAAICRAEAOw==' // 1x1 transparent gif
+        }
+        height="16"
+        width="16"
+        margin={{ right: 'small' }}
+      />
+      <Text size="small">{option.display_name}</Text>
+    </Box>
+  );
 
   useEffect(() => {
     const controller = new AbortController();
@@ -81,7 +96,6 @@ export const RenaterAuthenticator = () => {
       <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
         <Select
           size="medium"
-          labelKey="display_name"
           options={options}
           onChange={({ option }: { option: RenaterSamlFerIdp }) => {
             window.location.replace(option.login_url);
@@ -97,7 +111,9 @@ export const RenaterAuthenticator = () => {
             const exp = new RegExp(escapedText, 'i');
             setOptions(optionsDefault.filter((o) => exp.test(o.display_name))); // defaultOptions
           }}
-        />
+        >
+          {renderOption}
+        </Select>
       </FormField>
     </Box>
   );

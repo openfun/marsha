@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Display current user full name instead of John Doe
   - service worker 401 reconnect
   - Password reset views & API
+  - Renater IdP's logo display on login page
 
 ### Changed
 
