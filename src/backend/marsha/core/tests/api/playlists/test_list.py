@@ -197,9 +197,9 @@ class PlaylistListAPITest(TestCase):
             ],
         )
 
-    def test_list_playlist_user_access_administrator(self):
+    def test_list_playlist_user_access_administrator_or_instructor(self):
         """
-        A user can list all the playlist he has ADMINISTRATOR role
+        A user can list all the playlist he has ADMINISTRATOR or INSTRUCTOR role
         no matter the organization role.
         """
         user = factories.UserFactory()
@@ -226,13 +226,22 @@ class PlaylistListAPITest(TestCase):
             playlist=playlist_3, user=user, role=models.ADMINISTRATOR
         )
 
-        # Orphan playlist, not in an organization, the use has access to.
+        # Orphan playlist, not in an organization, the user has access to it.
         playlist_4 = factories.PlaylistFactory(
             lti_id="playlist#four", title="Fourth playlist"
         )
         factories.PlaylistAccessFactory(
             playlist=playlist_4, user=user, role=models.ADMINISTRATOR
         )
+
+        playlist_5 = factories.PlaylistFactory(
+            lti_id="playlist#five", title="Fifth playlist"
+        )
+        factories.PlaylistAccessFactory(
+            playlist=playlist_5, user=user, role=models.INSTRUCTOR
+        )
+
+        # User has instructor role to this playlist and can access it.
 
         jwt_token = UserAccessTokenFactory(user=user)
 
@@ -242,10 +251,29 @@ class PlaylistListAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["count"], 3)
+        self.assertEqual(response.json()["count"], 4)
         self.assertEqual(
             response.json()["results"],
             [
+                {
+                    "consumer_site": {
+                        "id": str(playlist_5.consumer_site.id),
+                        "domain": playlist_5.consumer_site.domain,
+                        "name": playlist_5.consumer_site.name,
+                    },
+                    "created_by": None,
+                    "duplicated_from": None,
+                    "id": str(playlist_5.id),
+                    "is_portable_to_consumer_site": False,
+                    "is_portable_to_playlist": True,
+                    "is_public": False,
+                    "lti_id": "playlist#five",
+                    "organization": None,
+                    "portable_to": [],
+                    "title": "Fifth playlist",
+                    "users": [str(user.id)],
+                    "can_edit": True,
+                },
                 {
                     "consumer_site": {
                         "id": str(playlist_4.consumer_site.id),
