@@ -208,3 +208,47 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
 
         stamp = stamp or to_timestamp(self.uploaded_on)
         return f"{self.classroom.pk}/classroomdocument/{self.pk}/{stamp}{extension}"
+
+
+class ClassroomRecording(BaseModel):
+    """Model representing a recording in a classroom."""
+
+    classroom = models.ForeignKey(
+        to=Classroom,
+        related_name="recordings",
+        verbose_name=_("classroom recording"),
+        help_text=_("classroom to which this recording belongs"),
+        # don't allow hard deleting a classroom if it still contains a recording
+        on_delete=models.PROTECT,
+    )
+
+    record_id = models.CharField(
+        unique=True,
+        max_length=255,
+        verbose_name=_("BBB record id"),
+        help_text=_("BBB meeting id"),
+        editable=False,
+    )
+
+    video_file_url = models.CharField(
+        max_length=255,
+        verbose_name=_("video url"),
+        help_text=_("url of the classroom recording"),
+        null=True,
+        blank=True,
+    )
+
+    started_at = models.DateTimeField(
+        blank=True,
+        verbose_name=_("Recording started at date and time"),
+        help_text=_("Start date and time of the record."),
+        null=True,
+    )
+
+    class Meta:
+        """Options for the ``ClassroomRecording`` model."""
+
+        db_table = "classroom_recording"
+        ordering = ["-created_on"]
+        verbose_name = _("Classroom recording")
+        verbose_name_plural = _("Classroom recordings")
