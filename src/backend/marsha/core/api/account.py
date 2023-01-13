@@ -8,7 +8,7 @@ from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from .. import permissions, serializers
-from ..models import ADMINISTRATOR, Organization
+from ..models import ADMINISTRATOR, INSTRUCTOR, Organization
 from ..serializers import ChallengeTokenSerializer
 from .base import APIViewMixin, ObjectPkMixin
 
@@ -109,7 +109,7 @@ class OrganizationViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 .get_queryset()
                 .filter(
                     user_accesses__user_id=self.request.user.id,
-                    user_accesses__role=ADMINISTRATOR,
+                    user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
                 )
             )
 
