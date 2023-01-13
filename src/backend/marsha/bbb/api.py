@@ -1,14 +1,24 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 from django.conf import settings
 from django.db.models import Q
+from django.shortcuts import get_object_or_404
 from django.utils import timezone
 
 import django_filters
+import jwt
 from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 
-from marsha.bbb.utils.bbb_utils import ApiMeetingException, create, end, join
+from marsha.bbb.utils.bbb_utils import (
+    ApiMeetingException,
+    create,
+    end,
+    get_recordings,
+    join,
+    process_recordings,
+)
 from marsha.core import defaults, permissions as core_permissions
 from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
@@ -359,6 +369,54 @@ class ClassroomViewSet(
             response = {"message": str(exception)}
             status = 400
         return Response(response, status=status)
+
+    @action(
+        methods=["post"],
+        detail=False,
+        url_path="recording-ready",
+        permission_classes=[AllowAny],
+    )
+    def recording_ready(self, request, *args, **kwargs):
+        """Method called by BBB when a recording is ready.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint, it should contain a payload with the following field:
+            - signed_parameters: a jwt containing the signed parameters sent by BBB:
+                - meeting_id: the id of the meeting
+                - record_id: the id of the recording
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse acknowledging the success or failure of the operation.
+        """
+        signed_parameters = request.data.get("signed_parameters")
+        if not signed_parameters:
+            return Response(status=400)
+        try:
+            decoded_parameters = jwt.decode(
+                jwt=signed_parameters,
+                key=settings.BBB_API_CALLBACK_SECRET,
+                algorithms=["HS256"],
+            )
+        except jwt.exceptions.InvalidSignatureError:
+            return Response(status=401)
+
+        meeting_id = decoded_parameters.get("meeting_id")
+        record_id = decoded_parameters.get("record_id")
+        if not meeting_id or not record_id:
+            return Response(status=400)
+
+        classroom = get_object_or_404(Classroom, meeting_id=meeting_id)
+
+        try:
+            api_response = get_recordings(classroom=classroom, record_id=record_id)
+            process_recordings(classroom, api_response, record_id)
+        except ApiMeetingException:
+            return Response(status=400)
+        return Response({"message": "success"}, status=200)
 
 
 class ClassroomDocumentViewSet(
