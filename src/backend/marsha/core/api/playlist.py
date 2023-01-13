@@ -57,7 +57,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 )
             ]
         elif self.action in ["create"]:
-            permission_classes = [permissions.IsParamsOrganizationAdmin]
+            permission_classes = [permissions.IsParamsOrganizationInstructorOrAdmin]
         elif self.action in ["partial_update", "update"]:
             permission_classes = [
                 # requests made with a JWT token granting instructor or administrator
