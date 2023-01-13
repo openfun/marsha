@@ -174,6 +174,7 @@ class ClassroomUpdateAPITest(TestCase):
                 .isoformat()
                 .replace("+00:00", "Z"),
                 "estimated_duration": "00:01:00",
+                "recordings": [],
                 # invite_token is tested below
             },
             content,
@@ -294,6 +295,7 @@ class ClassroomUpdateAPITest(TestCase):
                 },
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
+                "recordings": [],
                 # invite_token is tested below
             },
             content,
