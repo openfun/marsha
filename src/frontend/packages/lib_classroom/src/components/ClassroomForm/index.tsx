@@ -1,6 +1,12 @@
 import { Box, Form, FormField, Text, TextArea, TextInput } from 'grommet';
 import { Maybe } from 'lib-common';
-import { SchedulingFields, UploadManager, Classroom } from 'lib-components';
+import {
+  SchedulingFields,
+  UploadManager,
+  Classroom,
+  ClassroomRecording,
+  ItemList,
+} from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
@@ -46,6 +52,21 @@ const messages = defineMessages({
     defaultMessage: 'Title is required to launch the classroom.',
     description: 'Message when classroom title is missing.',
     id: 'component.ClassroomForm.requiredTitle',
+  },
+  recordingsLabel: {
+    defaultMessage: 'Recordings',
+    description: 'Label for recordings in classroom creation form.',
+    id: 'component.ClassroomForm.recordingsLabel',
+  },
+  noRecordingsAvailable: {
+    defaultMessage: 'No recordings available',
+    description: 'Message when no recordings are available.',
+    id: 'component.ClassroomForm.noRecordingsAvailable',
+  },
+  downloadRecordingLabel: {
+    defaultMessage: 'Download recording',
+    description: 'Label for download recording button.',
+    id: 'component.ClassroomForm.downloadRecordingLabel',
   },
 });
 
@@ -190,6 +211,50 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
         />
       </Form>
       <UploadDocuments classroomId={classroom.id} />
+
+      <Box direction="column" gap="small" margin={{ top: 'medium' }}>
+        <Box direction="row" gap="small">
+          <Text size="medium">
+            {intl.formatMessage(messages.recordingsLabel)}
+          </Text>
+        </Box>
+        <ItemList
+          itemList={classroom.recordings}
+          noItemsMessage={intl.formatMessage(messages.noRecordingsAvailable)}
+        >
+          {(recording: ClassroomRecording) => (
+            <Box
+              key={recording.id}
+              direction="row"
+              align="center"
+              fill="horizontal"
+              height="60px"
+              gap="medium"
+              pad="small"
+            >
+              <a
+                title={intl.formatMessage(messages.downloadRecordingLabel)}
+                href={recording.video_file_url}
+                target="_blank"
+                rel="noreferrer noopener"
+              >
+                {intl.formatDate(recording.started_at, {
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric',
+                  weekday: 'long',
+                }) +
+                  ' - ' +
+                  intl.formatDate(recording.started_at, {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                  })}
+              </a>
+            </Box>
+          )}
+        </ItemList>
+      </Box>
+
       {classroom.invite_token && (
         <Box margin={{ top: 'medium' }}>
           <DashboardCopyClipboard inviteToken={classroom.invite_token} />
