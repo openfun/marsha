@@ -8,7 +8,7 @@ from django.conf import settings
 import requests
 import xmltodict
 
-from marsha.bbb.models import Classroom
+from marsha.bbb.models import Classroom, ClassroomRecording
 from marsha.core.utils import time_utils
 
 
@@ -177,3 +177,56 @@ def get_meeting_infos(classroom: Classroom):
         classroom.started = False
         classroom.save(update_fields=["started"])
         raise exception
+
+
+def get_recordings(classroom: Classroom, record_id: str = None):
+    """Call BBB API to retrieve recordings and update them in the classroom."""
+    parameters = {
+        "meetingID": classroom.meeting_id,
+    }
+    if record_id:
+        parameters["recordID"] = record_id
+
+    api_response = request_api("getRecordings", parameters)
+
+    # simplify recordings list:
+    # - removes attendee level
+    # - always wrap attendee into a list
+    if api_response.get("recordings"):
+        recordings = api_response.get("recordings").get("recording")
+        if isinstance(recordings, list):
+            api_response["recordings"] = recordings
+        else:
+            api_response["recordings"] = [recordings]
+
+    return api_response
+
+
+def process_recording(classroom, recording_data):
+    """Creates or update a recording from BBB API."""
+    if recording_data.get("published"):
+        for recording_format in recording_data.get("playback").get("format"):
+            if recording_format.get("type") == "video":
+                (classroom_recording, _,) = ClassroomRecording.objects.get_or_create(
+                    classroom=classroom,
+                    record_id=recording_data.get("recordID"),
+                )
+                classroom_recording.video_file_url = recording_format.get("url")
+                classroom_recording.started_at = time_utils.to_datetime(
+                    int(recording_data.get("startTime")) / 1000
+                )
+                classroom_recording.save(update_fields=["video_file_url", "started_at"])
+
+
+def process_recordings(classroom, recordings_data, record_id=None):
+    """Process recordings for a given classroom."""
+    if not recordings_data.get("recordings"):
+        logger.info("No recording found.")
+        if record_id:
+            logger.info("Recording %s not anymore available.", record_id)
+            logger.info("Deleting recording %s.", record_id)
+            classroom.recordings.filter(record_id=record_id).delete()
+        return
+    for recording in recordings_data.get("recordings"):
+        logger.info("Recording found.")
+        process_recording(classroom, recording)
