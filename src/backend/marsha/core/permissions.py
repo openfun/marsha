@@ -395,7 +395,31 @@ class IsParamsVideoAdminThroughPlaylist(permissions.BasePermission):
         ).exists()
 
 
-class IsPlaylistAdmin(permissions.BasePermission):
+class BaseIsPlaylistRole(permissions.BasePermission):
+    """Base permission class for playlist roles."""
+
+    role_filter = {}
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Allow the request.
+
+        Only if the organization exists and the current logged in user
+        has the proper role.
+        """
+        if not self.role_filter:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__} must define a `role_filter`."
+            )
+
+        return models.PlaylistAccess.objects.filter(
+            **self.role_filter,
+            playlist=obj,
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsPlaylistAdmin(HasAdminRoleMixIn, BaseIsPlaylistRole):
     """
     Allow a request to proceed. Permission class.
 
@@ -403,42 +427,58 @@ class IsPlaylistAdmin(permissions.BasePermission):
     an administrator role.
     """
 
-    def has_permission(self, request, view):
-        """
-        Allow the request.
 
-        Only if the playlist exists and the current logged in user is one
-        of its administrator.
-        """
-        return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
-            # Avoid making extra requests to get the playlist id through get_object
-            playlist__id=view.get_object_pk(),
-            user__id=request.user.id,
-        ).exists()
-
-
-class IsPlaylistOrganizationAdmin(permissions.BasePermission):
+class IsPlaylistInstructor(HasInstructorRoleMixIn, BaseIsPlaylistRole):
     """
     Allow a request to proceed. Permission class.
 
-    Only if the user is a member of the organization related to the playlist
-    in the path, with an administrator role.
+    Only if the user has an access to the playlist in the path, with
+    an instructor role.
     """
 
-    def has_permission(self, request, view):
+
+class IsPlaylistAdminOrInstructor(HasAdminOrInstructorRoleMixIn, BaseIsPlaylistRole):
+    """
+    Allow a request to proceed. Permission class.
+
+    Only if the user has an access to the playlist in the path, with
+    an admin or instructor role.
+    """
+
+
+class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
+    """Base permission class for playlist's organization roles."""
+
+    role_filter = {}
+
+    def has_object_permission(self, request, view, obj):
         """
         Allow the request.
 
-        Only if the playlist exists and the current logged in user is one
-        of the administrators of its related organization.
+        Only if the organization exists and the current logged in user
+        has the proper role.
         """
+        if not self.role_filter:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__} must define a `role_filter`."
+            )
+
         return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            # Avoid making extra requests to get the playlist id through get_object
-            organization__playlists__id=view.get_object_pk(),
+            **self.role_filter,
+            organization__playlists=obj,
             user__id=request.user.id,
         ).exists()
+
+
+class IsPlaylistOrganizationAdmin(HasAdminRoleMixIn, BaseIsPlaylistOrganizationRole):
+    """Permission class to check if the user is one of the playlist's organization admin."""
+
+
+class IsPlaylistOrganizationInstructor(
+    HasInstructorRoleMixIn,
+    BaseIsPlaylistOrganizationRole,
+):
+    """Permission class to check if the user is one of the playlist's organization instructor."""
 
 
 class IsVideoPlaylistAdmin(permissions.BasePermission):
