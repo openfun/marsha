@@ -694,7 +694,18 @@ class Base(Configuration):
         The JWT_SIGNING_KEY must be evaluated late as the jwt library check for string type.
         """
         return {
-            "ACCESS_TOKEN_LIFETIME": timedelta(days=1),
+            "ACCESS_TOKEN_LIFETIME": timedelta(
+                seconds=values.IntegerValue(
+                    default=300,
+                    environ_name="ACCESS_TOKEN_LIFETIME",
+                ),
+            ),
+            "REFRESH_TOKEN_LIFETIME": timedelta(
+                seconds=values.IntegerValue(
+                    default=86400,
+                    environ_name="REFRESH_TOKEN_LIFETIME",
+                ),
+            ),
             "ALGORITHM": "HS256",
             "SIGNING_KEY": str(self.JWT_SIGNING_KEY),
             "AUTH_TOKEN_CLASSES": (
