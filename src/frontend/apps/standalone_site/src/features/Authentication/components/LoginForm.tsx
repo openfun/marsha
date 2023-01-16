@@ -1,8 +1,8 @@
-import { Anchor, Box, Button, Form, FormField, Text, TextInput } from 'grommet';
+import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
 import { Hide, FormView, Alert } from 'grommet-icons';
 import React, { useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { Link, useHistory } from 'react-router-dom';
 
 import { routes } from 'routes/routes';
 
@@ -97,14 +97,16 @@ export const LoginForm = () => {
           />
         </Box>
       </FormField>
-      <Anchor
-        color="blue-active"
-        weight="normal"
-        style={{ textDecoration: 'underline' }}
-        label={intl.formatMessage(messages.passwordLost)}
-        href={routes.PASSWORD_RESET.path}
-        size="xsmall"
-      />
+      <Link to={routes.PASSWORD_RESET.path}>
+        <Text
+          color="blue-active"
+          weight="normal"
+          style={{ textDecoration: 'underline' }}
+          size="xsmall"
+        >
+          {intl.formatMessage(messages.passwordLost)}
+        </Text>
+      </Link>
       {message && (
         <Box
           direction="row"

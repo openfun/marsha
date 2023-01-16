@@ -9,6 +9,10 @@ import { BaseAuthenticationPage } from './BaseAuthenticationPage';
 
 const fullTheme = getFullThemeExtend();
 
+jest.mock('features/Header', () => ({
+  HeaderLight: () => <div>My HeaderLight</div>,
+}));
+
 describe('<BaseAuthenticationPage />', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -41,6 +45,7 @@ describe('<BaseAuthenticationPage />', () => {
     );
 
     expect(screen.queryByLabelText(/Marsha logo/i)).not.toBeInTheDocument();
+    expect(screen.getByText(/My HeaderLight/i)).toBeInTheDocument();
     expect(screen.getByText(/My content/i)).toBeInTheDocument();
   });
 });
