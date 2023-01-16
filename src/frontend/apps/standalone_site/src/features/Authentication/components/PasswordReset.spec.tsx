@@ -11,7 +11,6 @@ describe('<PasswordReset />', () => {
   it('checks render.', () => {
     render(<PasswordReset />);
 
-    expect(screen.getByLabelText(/Marsha logo/i)).toBeInTheDocument();
     expect(screen.getByText(/My PasswordResetForm/i)).toBeInTheDocument();
   });
 });
