@@ -11,11 +11,9 @@ import { Menu } from 'features/Menu';
 
 import { routes } from './routes';
 
+const { AuthRouter } = lazyImport(() => import('features/Authentication'));
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
-const { Login, PasswordReset, PasswordResetConfirm } = lazyImport(
-  () => import('features/Authentication'),
-);
 const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
@@ -68,19 +66,16 @@ const AppRoutes = () => {
           </MainLayout>
         </VisitorAuthenticator>
       </Route>
-      <Route path={routes.LOGIN.path} exact>
+      <Route
+        path={[
+          routes.LOGIN.path,
+          routes.PASSWORD_RESET.path,
+          routes.PASSWORD_RESET_CONFIRM.path,
+        ]}
+        exact
+      >
         <Suspense fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}>
-          <Login />
-        </Suspense>
-      </Route>
-      <Route path={routes.PASSWORD_RESET.path} exact>
-        <Suspense fallback={<ContentSpinner />}>
-          <PasswordReset />
-        </Suspense>
-      </Route>
-      <Route path={routes.PASSWORD_RESET_CONFIRM.path} exact>
-        <Suspense fallback={<ContentSpinner />}>
-          <PasswordResetConfirm />
+          <AuthRouter />
         </Suspense>
       </Route>
       <Route>

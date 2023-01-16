@@ -9,7 +9,6 @@ import { routes } from 'routes';
 
 import { refreshToken } from '../api/refreshToken';
 
-import { BaseAuthenticationPage } from './BaseAuthenticationPage';
 import { LoginForm } from './LoginForm';
 import { RenaterAuthenticator } from './RenaterAuthenticator';
 
@@ -53,34 +52,32 @@ export const Login = () => {
   }
 
   return (
-    <BaseAuthenticationPage>
-      <React.Fragment>
-        <Box
-          width={{
-            max: 'large',
-            width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '80%',
-          }}
-          pad={{
-            horizontal:
-              breakpoint === 'xsmedium'
-                ? 'medium'
-                : isSmallerMedium
-                ? 'large'
-                : 'xlarge',
-          }}
-        >
-          <LoginForm />
-        </Box>
-        <Box
-          width={{
-            max: 'large',
-            width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '80%',
-          }}
-          margin={{ top: 'large' }}
-        >
-          <RenaterAuthenticator />
-        </Box>
-      </React.Fragment>
-    </BaseAuthenticationPage>
+    <React.Fragment>
+      <Box
+        width={{
+          max: 'large',
+          width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '80%',
+        }}
+        pad={{
+          horizontal:
+            breakpoint === 'xsmedium'
+              ? 'medium'
+              : isSmallerMedium
+              ? 'large'
+              : 'xlarge',
+        }}
+      >
+        <LoginForm />
+      </Box>
+      <Box
+        width={{
+          max: 'large',
+          width: isSmallerSmall || breakpoint === 'xsmedium' ? '90%' : '80%',
+        }}
+        margin={{ top: 'large' }}
+      >
+        <RenaterAuthenticator />
+      </Box>
+    </React.Fragment>
   );
 };
