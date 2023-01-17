@@ -4,7 +4,7 @@ import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
-import { useVideoMetadata } from '.';
+import { useSharedLiveMediaMetadata } from '.';
 
 setLogger({
   log: console.log,
@@ -20,7 +20,7 @@ jest.mock('lib-components', () => ({
 
 let Wrapper: WrapperComponent<Element>;
 
-describe('useVideoMetadata', () => {
+describe('useSharedLiveMediaMetadata', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
@@ -44,31 +44,29 @@ describe('useVideoMetadata', () => {
     jest.resetAllMocks();
   });
 
-  it('requests the video metadata', async () => {
-    const videoMetadata = {
-      name: 'Video List',
-      description: 'Viewset for the API of the video object.',
+  it('requests the shared live media metadata', async () => {
+    const sharedLiveMediaMetadata = {
+      name: 'document',
+      description: 'Viewset for the API of the document object.',
       renders: ['application/json', 'text/html'],
       parses: [
         'application/json',
         'application/x-www-form-urlencoded',
         'multipart/form-data',
       ],
-      live: {
-        segment_duration_seconds: 4,
-      },
-      vod: {
-        upload_max_size_bytes: 100,
-      },
+      upload_max_size_bytes: 100,
     };
-    fetchMock.mock(`/api/videos/`, videoMetadata);
+    fetchMock.mock(`/api/sharedlivemedias/`, sharedLiveMediaMetadata);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('fr'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useSharedLiveMediaMetadata('fr'),
+      {
+        wrapper: Wrapper,
+      },
+    );
     await waitFor(() => result.current.isSuccess);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/sharedlivemedias/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -77,20 +75,23 @@ describe('useVideoMetadata', () => {
       },
       method: 'OPTIONS',
     });
-    expect(result.current.data).toEqual(videoMetadata);
+    expect(result.current.data).toEqual(sharedLiveMediaMetadata);
     expect(result.current.status).toEqual('success');
   });
 
-  it('fails to get the video metadata', async () => {
-    fetchMock.mock(`/api/videos/`, 404);
+  it('fails to get the shared live media metadata', async () => {
+    fetchMock.mock(`/api/sharedlivemedias/`, 404);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('en'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useSharedLiveMediaMetadata('en'),
+      {
+        wrapper: Wrapper,
+      },
+    );
 
     await waitFor(() => result.current.isError);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/sharedlivemedias/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',

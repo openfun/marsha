@@ -4,7 +4,7 @@ import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
-import { useVideoMetadata } from '.';
+import { useThumbnailMetadata } from '.';
 
 setLogger({
   log: console.log,
@@ -20,7 +20,7 @@ jest.mock('lib-components', () => ({
 
 let Wrapper: WrapperComponent<Element>;
 
-describe('useVideoMetadata', () => {
+describe('useThumbnailMetadata', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'some token',
@@ -44,31 +44,26 @@ describe('useVideoMetadata', () => {
     jest.resetAllMocks();
   });
 
-  it('requests the video metadata', async () => {
-    const videoMetadata = {
-      name: 'Video List',
-      description: 'Viewset for the API of the video object.',
+  it('requests the thumbnail metadata', async () => {
+    const thumbnailMetadata = {
+      name: 'picture',
+      description: 'Viewset for the API of the thumbnail object.',
       renders: ['application/json', 'text/html'],
       parses: [
         'application/json',
         'application/x-www-form-urlencoded',
         'multipart/form-data',
       ],
-      live: {
-        segment_duration_seconds: 4,
-      },
-      vod: {
-        upload_max_size_bytes: 100,
-      },
+      upload_max_size_bytes: 100,
     };
-    fetchMock.mock(`/api/videos/`, videoMetadata);
+    fetchMock.mock(`/api/thumbnails/`, thumbnailMetadata);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('fr'), {
+    const { result, waitFor } = renderHook(() => useThumbnailMetadata('fr'), {
       wrapper: Wrapper,
     });
     await waitFor(() => result.current.isSuccess);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -77,20 +72,20 @@ describe('useVideoMetadata', () => {
       },
       method: 'OPTIONS',
     });
-    expect(result.current.data).toEqual(videoMetadata);
+    expect(result.current.data).toEqual(thumbnailMetadata);
     expect(result.current.status).toEqual('success');
   });
 
-  it('fails to get the video metadata', async () => {
-    fetchMock.mock(`/api/videos/`, 404);
+  it('fails to get the thumbnail metadata', async () => {
+    fetchMock.mock(`/api/thumbnails/`, 404);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('en'), {
+    const { result, waitFor } = renderHook(() => useThumbnailMetadata('en'), {
       wrapper: Wrapper,
     });
 
     await waitFor(() => result.current.isError);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
