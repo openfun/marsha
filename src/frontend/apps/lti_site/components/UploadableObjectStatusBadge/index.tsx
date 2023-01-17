@@ -112,6 +112,13 @@ export const UploadableObjectStatusBadge = ({
             </Badge>
           );
 
+        case UploadManagerStatus.ERR_SIZE:
+          return (
+            <Badge role="status" background="status-error">
+              <FormattedMessage {...messages[uploadState.ERROR]} />
+            </Badge>
+          );
+
         case UploadManagerStatus.SUCCESS:
           return (
             <Badge role="status" background="brand">

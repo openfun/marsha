@@ -25,6 +25,7 @@ describe('sideEffects/initiateUpload', () => {
       '42',
       'foo.pdf',
       'application/pdf',
+      10,
     );
 
     expect(policy).toEqual({ some: 'policy' });
@@ -41,17 +42,62 @@ describe('sideEffects/initiateUpload', () => {
     );
 
     await expect(
-      initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
+      initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf', 10),
     ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to trigger the initiate-upload (API error)', async () => {
     fetchMock.mock('/api/videos/42/initiate-upload/', 400);
+    let thrownError;
+    try {
+      await initiateUpload(
+        modelName.VIDEOS,
+        '42',
+        'foo.pdf',
+        'application/pdf',
+        10,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
 
-    await expect(
-      initiateUpload(modelName.VIDEOS, '42', 'foo.pdf', 'application/pdf'),
-    ).rejects.toThrow(
-      'Failed to trigger initiate-upload on the API for videos/42.',
+    expect(thrownError).toEqual({
+      type: 'ApiError',
+      data: {
+        message: 'Failed to trigger initiate-upload on the API for videos/42.',
+      },
+    });
+  });
+
+  it('throws when it fails to trigger the initiate-upload (Size Error)', async () => {
+    fetchMock.mock(
+      '/api/videos/42/initiate-upload/',
+      Promise.reject({
+        type: 'SizeError',
+        data: {
+          size: 'file too large, max size allowed is 1Gb',
+        },
+      }),
     );
+
+    let thrownError;
+    try {
+      await initiateUpload(
+        modelName.VIDEOS,
+        '42',
+        'foo.pdf',
+        'application/pdf',
+        10,
+      );
+    } catch (error) {
+      thrownError = error;
+    }
+
+    expect(thrownError).toEqual({
+      type: 'SizeError',
+      data: {
+        size: 'file too large, max size allowed is 1Gb',
+      },
+    });
   });
 });

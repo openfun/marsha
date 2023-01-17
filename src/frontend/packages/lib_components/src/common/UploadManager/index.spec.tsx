@@ -124,7 +124,12 @@ describe('<UploadManager />', () => {
     );
 
     xhrMock.post('https://s3.aws.example.com/', () => {
-      throw new Error('upload file should not be called');
+      throw {
+        type: 'ApiError',
+        data: {
+          message: `Failed to trigger initiate-upload on the API for ${objectType}/${objectId}.`,
+        },
+      };
     });
 
     render(
@@ -166,6 +171,72 @@ describe('<UploadManager />', () => {
           file,
           progress: 0,
           status: UploadManagerStatus.ERR_POLICY,
+        },
+      });
+    }
+  });
+
+  it('Throws a size error if the API returns a File too large error', async () => {
+    const objectType = modelName.VIDEOS;
+    const objectId = uuidv4();
+    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
+
+    const initiateUploadDeferred = new Deferred();
+    const mockInitiateUpload = fetchMock.mock(
+      `/api/videos/${objectId}/initiate-upload/`,
+      initiateUploadDeferred.promise,
+      {
+        method: 'POST',
+      },
+    );
+
+    render(
+      <UploadManager>
+        <TestComponent />
+      </UploadManager>,
+    );
+
+    {
+      const { addUpload, uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({});
+      act(() => addUpload(objectType, objectId, file));
+    }
+    {
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.INIT,
+        },
+      });
+      expect(mockInitiateUpload.calls()).toHaveLength(1);
+    }
+    {
+      await act(async () => {
+        initiateUploadDeferred.resolve(() => {
+          throw {
+            type: 'SizeError',
+            data: {
+              size: 'file too large, max size allowed is 1Gb',
+            },
+          };
+        });
+
+        // We need to wait for the upload to complete before we can check the state
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      });
+      const { uploadManagerState } = getLatestHookValues();
+      expect(uploadManagerState).toEqual({
+        [objectId]: {
+          objectId,
+          objectType,
+          file,
+          progress: 0,
+          status: UploadManagerStatus.ERR_SIZE,
+          message: 'file too large, max size allowed is 1Gb',
         },
       });
     }
