@@ -99,6 +99,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "Second playlist",
                     "users": [],
+                    "can_edit": True,
                 },
                 {
                     "consumer_site": {
@@ -120,6 +121,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [],
+                    "can_edit": True,
                 },
             ],
         )
@@ -193,6 +195,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [],
+                    "can_edit": True,
                 },
             ],
         )
@@ -291,6 +294,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "Fourth playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
                 {
                     "consumer_site": {
@@ -312,6 +316,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "Third playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
                 {
                     "consumer_site": {
@@ -333,6 +338,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
             ],
         )
@@ -448,6 +454,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "First playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
                 {
                     "consumer_site": {
@@ -469,6 +476,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "Third playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
                 {
                     "consumer_site": {
@@ -487,6 +495,7 @@ class PlaylistListAPITest(TestCase):
                     "portable_to": [],
                     "title": "Fourth playlist",
                     "users": [str(user.id)],
+                    "can_edit": True,
                 },
             ],
         )

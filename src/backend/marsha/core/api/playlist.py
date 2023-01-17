@@ -3,6 +3,7 @@ from django.db.models import Q
 
 import django_filters
 from rest_framework import filters, viewsets
+from rest_framework.exceptions import ValidationError
 
 from .. import permissions, serializers
 from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist
@@ -13,10 +14,23 @@ class PlaylistFilter(django_filters.FilterSet):
     """Filter for Playlist."""
 
     organization = django_filters.UUIDFilter(field_name="organization__id")
+    can_edit = django_filters.BooleanFilter(method="filter_can_edit")
 
     class Meta:
         model = Playlist
         fields = []
+
+    def filter_can_edit(self, queryset, name, value):
+        """Filter playlists where the user has edit access."""
+        if not value:
+            return queryset
+
+        if not isinstance(value, bool):
+            raise ValidationError(
+                f"Invalid value for {name} filter, must be a boolean."
+            )
+
+        return queryset.filter(can_edit=value)
 
 
 class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
@@ -89,6 +103,7 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
                 )
             )
+            .annotate_can_edit(self.request.user.id)
             .distinct()
         )
 
