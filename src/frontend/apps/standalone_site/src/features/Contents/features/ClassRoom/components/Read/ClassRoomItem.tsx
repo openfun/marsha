@@ -1,7 +1,7 @@
 import { Text, Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
 import { ClassroomLite, StyledLink } from 'lib-components';
-import React, { Fragment } from 'react';
+import { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 

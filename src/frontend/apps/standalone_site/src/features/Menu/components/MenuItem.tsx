@@ -1,7 +1,7 @@
 import { Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import React, { PropsWithChildren, Fragment } from 'react';
+import { PropsWithChildren, Fragment } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 

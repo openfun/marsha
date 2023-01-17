@@ -18,6 +18,7 @@ const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
 );
+const { ProfileRouter } = lazyImport(() => import('features/Profile'));
 
 const messages = defineMessages({
   metaTitle: {
@@ -78,6 +79,7 @@ const AppRoutes = () => {
           <AuthRouter />
         </Suspense>
       </Route>
+
       <Route>
         <Authenticator>
           <MainLayout Header={Header} menu={<Menu />}>
@@ -87,19 +89,28 @@ const AppRoutes = () => {
                   <HomePage />
                 </Suspense>
               </Route>
+
               <Route path={routes.PLAYLIST.path}>
                 <Suspense fallback={<ContentSpinner />}>
                   <PlaylistPage />
                 </Suspense>
               </Route>
+
               <Route path={routes.CONTENTS.path}>
                 <Suspense fallback={<ContentSpinner />}>
                   <ContentsRouter />
                 </Suspense>
               </Route>
+
               <Route path={routes.PORTABILITY_REQUESTS.path} exact>
                 <Suspense fallback={<ContentSpinner />}>
                   <PortabilityRequestsRouteComponent />
+                </Suspense>
+              </Route>
+
+              <Route path={routes.PROFILE.path}>
+                <Suspense fallback={<ContentSpinner />}>
+                  <ProfileRouter />
                 </Suspense>
               </Route>
             </Switch>

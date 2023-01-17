@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Password reset views & API
   - Renater IdP's logo display on login page
   - Allow organization instructors to create playlists
+  - profile page and update password form in settings
   - Select an organization by default in create playlist form
 - Allow instructors to download recorded BBB classroom sessions
 
