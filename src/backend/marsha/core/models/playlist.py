@@ -1,11 +1,52 @@
 """This module holds the model for playlist resources."""
 from django.db import models
+from django.db.models import Q
 from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE
+from safedelete.managers import SafeDeleteManager
+from safedelete.queryset import SafeDeleteQueryset
 
-from .account import INSTRUCTOR, ROLE_CHOICES
+from .account import ADMINISTRATOR, INSTRUCTOR, ROLE_CHOICES
 from .base import BaseModel
+
+
+class PlaylistQueryset(SafeDeleteQueryset):
+    """A queryset to provide helper for querying playlist."""
+
+    def annotate_can_edit(self, user_id):
+        """
+        Annotate the queryset with a boolean indicating if the user can act
+        on the playlist.
+
+        Parameters
+        ----------
+        user_id : str
+            The user ID to who is concerned by the permission.
+            We use the user ID here because it can be provided from UserToken
+
+        Returns
+        -------
+        QuerySet
+            The annotated queryset.
+        """
+        return self.annotate(
+            can_edit=models.Case(
+                models.When(
+                    Q(
+                        user_accesses__user_id=user_id,
+                        user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
+                    )
+                    | Q(
+                        organization__user_accesses__user_id=user_id,
+                        organization__user_accesses__role=ADMINISTRATOR,
+                    ),
+                    then=models.Value(True),
+                ),
+                default=models.Value(False),
+                output_field=models.BooleanField(),
+            )
+        )
 
 
 class Playlist(BaseModel):
@@ -88,6 +129,8 @@ class Playlist(BaseModel):
         related_name="reachable_from",
         blank=True,
     )
+
+    objects = SafeDeleteManager(PlaylistQueryset)
 
     class Meta:
         """Options for the ``Playlist`` model."""
