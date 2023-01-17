@@ -1,6 +1,5 @@
 import { Box, Text } from 'grommet';
 import { StyledLink } from 'lib-components';
-import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 

@@ -1,5 +1,6 @@
-import { render, screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import { useCurrentUser, userMockFactory } from 'lib-components';
+import { render } from 'lib-tests';
 
 import Header from './Header';
 
