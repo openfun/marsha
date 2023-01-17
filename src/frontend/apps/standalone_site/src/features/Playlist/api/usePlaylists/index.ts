@@ -18,6 +18,7 @@ type UsePlaylistsParams = {
   limit: string;
   offset: string;
   ordering?: PlaylistOrderType;
+  can_edit?: 'true' | 'false'; // boolean as string
 };
 
 export const usePlaylists = (

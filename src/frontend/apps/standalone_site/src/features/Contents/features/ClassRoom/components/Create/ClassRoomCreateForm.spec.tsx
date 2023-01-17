@@ -20,7 +20,7 @@ describe('<ClassRoomCreateForm />', () => {
 
   beforeEach(() => {
     fetchMock.get(
-      '/api/playlists/?limit=20&offset=0&ordering=-created_on',
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
       deferred.promise,
     );
   });

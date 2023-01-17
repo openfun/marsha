@@ -68,6 +68,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
       offset: `${currentPlaylistPage * ITEM_PER_PAGE}`,
       limit: `${ITEM_PER_PAGE}`,
       ordering: PlaylistOrderType.BY_CREATED_ON_REVERSED,
+      can_edit: 'true',
     },
     { keepPreviousData: true, staleTime: 20000 },
   );
