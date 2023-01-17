@@ -10,3 +10,4 @@ export * from './XAPI/DocumentXapiStatement';
 export * from './useFetchButton';
 export * from './useResizeBox';
 export * from './useResizer';
+export * from './formatSizeErrorScale';
