@@ -1,5 +1,3 @@
-import React from 'react';
-
 import { ClassRooms } from 'features/Contents';
 
 const ContentsShuffle = () => {

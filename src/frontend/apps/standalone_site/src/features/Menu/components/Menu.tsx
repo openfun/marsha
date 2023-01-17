@@ -46,7 +46,7 @@ const Menu = () => {
   const intl = useIntl();
   const { isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
-  const topRoutes: Route[] = [routes.HOMEPAGE];
+  const topRoutes: Route[] = [routes.HOMEPAGE, routes.PROFILE];
   const contents: Route[] = [routes.PLAYLIST, routes.CONTENTS];
 
   return (

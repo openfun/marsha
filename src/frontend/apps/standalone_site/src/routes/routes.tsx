@@ -71,6 +71,7 @@ enum ERouteNames {
   FAVORITE = 'FAVORITE',
   PORTABILITY_REQUESTS = 'PORTABILITY_REQUESTS',
   PROFILE = 'PROFILE',
+
   PLAYLIST = 'PLAYLIST',
   ORGANIZATION = 'ORGANIZATION',
   CONTENTS = 'CONTENTS',
@@ -83,6 +84,9 @@ enum EMyContentsSubRouteNames {
   //LIVE = 'LIVE',
   CLASSROOM = 'CLASSROOM',
   //LESSON = 'LESSON',
+}
+enum EMyProfileSubRoutesNames {
+  PROFILE_SETTINGS = 'PROFILE_SETTINGS',
 }
 
 type BasicRoute = Omit<Route, 'subRoutes'>;
@@ -97,11 +101,19 @@ export interface Route {
 }
 
 type Routes = {
-  [key in ERouteNames as Exclude<ERouteNames, 'CONTENTS'>]: BasicRoute;
+  [key in ERouteNames as Exclude<
+    ERouteNames,
+    'CONTENTS' | 'PROFILE'
+  >]: BasicRoute;
 } & {
   [ERouteNames.CONTENTS]: Route & {
     subRoutes: {
       [key in EMyContentsSubRouteNames]: Route;
+    };
+  };
+  [ERouteNames.PROFILE]: Route & {
+    subRoutes: {
+      [key in EMyProfileSubRoutesNames]: Route;
     };
   };
 };
@@ -144,6 +156,7 @@ export const routes: Routes = {
     path: `/portability-requests/:state?`,
   },
   PROFILE: {
+    isNavStrict: true,
     label: <FormattedMessage {...messages.menuMyProfileLabel} />,
     path: `/my-profile`,
     menuIcon: (
@@ -154,7 +167,13 @@ export const routes: Routes = {
         aria-label="svg-menu-my-profile"
       />
     ),
+    subRoutes: {
+      PROFILE_SETTINGS: {
+        path: '/my-profile/settings',
+      },
+    },
   },
+
   PLAYLIST: {
     label: <FormattedMessage {...messages.menuPlaylistLabel} />,
     path: `/my-playlists`,
