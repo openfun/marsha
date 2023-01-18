@@ -418,7 +418,9 @@ class ClassroomViewSet(
         classroom = get_object_or_404(Classroom, meeting_id=meeting_id)
 
         try:
-            api_response = get_recordings(classroom=classroom, record_id=record_id)
+            api_response = get_recordings(
+                meeting_id=classroom.meeting_id, record_id=record_id
+            )
             process_recordings(classroom, api_response, record_id)
         except ApiMeetingException:
             return Response(status=400)
