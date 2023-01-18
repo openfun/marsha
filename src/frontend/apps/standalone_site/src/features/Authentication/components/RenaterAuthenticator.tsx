@@ -1,5 +1,5 @@
 import { Box, FormField, Image, Select, Text } from 'grommet';
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
 import { useResponsive } from 'hooks/useResponsive';
@@ -24,11 +24,17 @@ const messages = defineMessages({
 
 export const RenaterAuthenticator = () => {
   const intl = useIntl();
-  const [optionsDefault, setOptionsDefault] = React.useState<
-    RenaterSamlFerIdp[]
-  >([]);
-  const [options, setOptions] = React.useState<RenaterSamlFerIdp[]>([]);
+  const [optionsDefault, setOptionsDefault] = useState<RenaterSamlFerIdp[]>([]);
+  const [options, setOptions] = useState<RenaterSamlFerIdp[]>([]);
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
+  const refSelect = useRef<HTMLInputElement>(null);
+  const [selectDropWidth, setSelectDropWidth] = useState(0);
+  const [selectDropPosition, setSelectDropPosition] = useState<{
+    bottom?: 'bottom' | 'top';
+    top?: 'bottom' | 'top';
+  }>({ bottom: 'top' });
+
+  const selectDropHeight = 400; // px
 
   const renderOption = (option: RenaterSamlFerIdp) => (
     <Box align="center" direction="row">
@@ -60,6 +66,25 @@ export const RenaterAuthenticator = () => {
 
     return () => {
       controller.abort();
+    };
+  }, []);
+
+  useEffect(() => {
+    function handleResize() {
+      setSelectDropWidth(refSelect.current?.clientWidth || 0);
+      setSelectDropPosition(
+        window.innerHeight - (refSelect.current?.offsetTop || 0) <
+          selectDropHeight
+          ? { bottom: 'top' }
+          : { top: 'bottom' },
+      );
+    }
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
     };
   }, []);
 
@@ -95,10 +120,16 @@ export const RenaterAuthenticator = () => {
       </Box>
       <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
         <Select
+          ref={refSelect}
           size="medium"
           options={options}
           onChange={({ option }: { option: RenaterSamlFerIdp }) => {
             window.location.replace(option.login_url);
+          }}
+          dropAlign={{ ...selectDropPosition, left: 'left' }}
+          dropHeight={`${selectDropHeight}px}`}
+          dropProps={{
+            width: `${selectDropWidth}px`,
           }}
           onSearch={(text) => {
             // The line below escapes regular expression special characters:
