@@ -11,14 +11,15 @@ const UploadSuccessHandler = ({
 }: {
   objectState: UploadManagerState[string];
 }) => {
+  const { status, file, objectId, objectType } = objectState;
+
   //  once upload on S3 is finished, push new state to backend
   useEffect(() => {
     (async () => {
-      if (objectState.status !== UploadManagerStatus.SUCCESS) {
+      if (status !== UploadManagerStatus.SUCCESS) {
         return;
       }
 
-      const { file, objectId, objectType } = objectState;
       const object = await getStoreResource(objectType, objectId);
 
       if (object && 'title' in object && !object.title) {
@@ -39,19 +40,18 @@ const UploadSuccessHandler = ({
         );
       }
     })();
-  }, [objectState]);
+  }, [file.name, objectId, objectType, status]);
 
   //  update the ressource beeing uploaded
   useEffect(() => {
     (async () => {
-      if (objectState.status !== UploadManagerStatus.UPLOADING) {
+      if (status !== UploadManagerStatus.UPLOADING) {
         return;
       }
 
-      const { objectId, objectType } = objectState;
       await fetchResource(objectType, objectId);
     })();
-  }, [objectState]);
+  }, [objectId, objectType, status]);
 
   return null;
 };
