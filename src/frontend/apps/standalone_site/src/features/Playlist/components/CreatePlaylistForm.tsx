@@ -81,15 +81,35 @@ export const CreatePlaylistForm = () => {
     Partial<CreatePlaylistFormValues>
   >({ organizationId: undefined, name: '' });
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
+  const [isInitOrganization, setIsInitOrganization] = useState(false);
   const {
     isLoading,
     isError,
     data: organizationResponse,
     refetch,
-  } = useOrganizations({
-    offset: `${currentOrganizationPage * ITEM_PER_PAGE}`,
-    limit: `${ITEM_PER_PAGE}`,
-  });
+  } = useOrganizations(
+    {
+      offset: `${currentOrganizationPage * ITEM_PER_PAGE}`,
+      limit: `${ITEM_PER_PAGE}`,
+    },
+    {
+      onSuccess: (data) => {
+        if (isInitOrganization) {
+          return;
+        }
+
+        if (!data || data.count === 0) {
+          return;
+        }
+
+        setFormValues((currentValue) => ({
+          ...currentValue,
+          organizationId: data.results[0].id,
+        }));
+        setIsInitOrganization(true);
+      },
+    },
+  );
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const { mutate, isLoading: isCreating } = useCreatePlaylist({
     onSuccess: () => {

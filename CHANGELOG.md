@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Password reset views & API
   - Renater IdP's logo display on login page
   - Allow organization instructors to create playlists
+  - Select an organization by default in create playlist form
 
 ### Changed
 
