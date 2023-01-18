@@ -18,6 +18,7 @@ import { makeFormData } from 'utils/makeFormData/makeFormData';
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',
   ERR_UPLOAD = 'upload_error',
+  ERR_SIZE = 'size_error',
   INIT = 'initialization',
   SUCCESS = 'success',
   UPLOADING = 'uploading',
@@ -29,10 +30,16 @@ export interface UploadingObject {
   objectId: string;
   progress: number;
   status: UploadManagerStatus;
+  message?: string;
 }
 
 export interface UploadManagerState {
   [key: string]: UploadingObject;
+}
+
+export interface ApiException {
+  type: string;
+  data: { [key: string]: string };
 }
 
 // Initialize the context with empty values and a setter that just throws.
@@ -84,8 +91,21 @@ export const UploadManager = ({
               objectId,
               file.name,
               file.type,
+              file.size,
             );
           } catch (error) {
+            if ((error as ApiException).type === 'SizeError') {
+              setUploadState((state) => ({
+                ...state,
+                [objectId]: {
+                  ...state[objectId],
+                  status: UploadManagerStatus.ERR_SIZE,
+                  message: (error as ApiException).data['size'],
+                },
+              }));
+              return;
+            }
+
             setUploadState((state) => ({
               ...state,
               [objectId]: {

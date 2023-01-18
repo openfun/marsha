@@ -159,6 +159,9 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
     case UploadManagerStatus.ERR_POLICY:
       return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
 
+    case UploadManagerStatus.ERR_SIZE:
+      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('fileTooLarge')} />;
+
     case UploadManagerStatus.ERR_UPLOAD:
       return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
 
