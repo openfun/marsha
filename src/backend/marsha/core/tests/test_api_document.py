@@ -400,7 +400,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -452,7 +452,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo", "mimetype": "application/pdf"},
+                {"filename": "foo", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -504,7 +504,7 @@ class DocumentAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/documents/{document.id}/initiate-upload/",
-                {"filename": "foo", "mimetype": ""},
+                {"filename": "foo", "mimetype": "", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )

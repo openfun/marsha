@@ -19,7 +19,7 @@ from marsha.bbb.utils.bbb_utils import (
 )
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.serializers import (
-    InitiateUploadSerializer,
+    BaseInitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
 )
 from marsha.core.serializers.base import ReadOnlyModelSerializer
@@ -302,8 +302,18 @@ class ClassroomDocumentSerializer(
         return None
 
 
-class ClassroomDocumentInitiateUploadSerializer(InitiateUploadSerializer):
+class ClassroomDocumentInitiateUploadSerializer(BaseInitiateUploadSerializer):
     """An initiate-upload serializer dedicated to classroom document."""
+
+    @property
+    def max_upload_file_size(self):
+        """return the class room document max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE
 
     def validate(self, attrs):
         """Validate if the mimetype is allowed or not."""
