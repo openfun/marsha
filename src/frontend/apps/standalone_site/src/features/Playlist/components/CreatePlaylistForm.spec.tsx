@@ -26,6 +26,13 @@ const organizationResult = {
       users: [],
       consumer_sites: ['consumer site 1'],
     },
+    {
+      id: 'other-id',
+      name: 'other-org',
+      created_on: 'some days',
+      users: [],
+      consumer_sites: ['consumer site 1'],
+    },
   ],
 };
 
@@ -94,16 +101,19 @@ describe('<CreatePlaylistForm />', () => {
 
     expect(await screen.findByText('Create a playlist')).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Open Drop' }));
+    userEvent.click(
+      screen.getByRole('button', { name: 'Open Drop; Selected: id' }),
+    );
 
-    userEvent.click(await screen.findByRole('option', { name: 'org' }));
+    userEvent.click(await screen.findByRole('option', { name: 'other-org' }));
 
     expect(
       await screen.findByRole('button', {
-        name: 'Open Drop; Selected: id',
+        name: 'Open Drop; Selected: other-id',
       }),
     ).toBeInTheDocument();
-    expect(screen.getByDisplayValue('org')).toBeInTheDocument();
+    expect(screen.getByDisplayValue('other-org')).toBeInTheDocument();
+    expect(screen.queryByDisplayValue('org')).not.toBeInTheDocument();
 
     userEvent.type(
       screen.getByRole('textbox', { name: 'Name required' }),
