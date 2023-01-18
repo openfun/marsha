@@ -1,3 +1,4 @@
+import { useVideoMetadata } from 'api';
 import { Nullable } from 'lib-common';
 import {
   UploadManagerStatus,
@@ -5,6 +6,7 @@ import {
   uploadState,
 } from 'lib-components';
 import React, { useState } from 'react';
+import { useIntl } from 'react-intl';
 
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
 
@@ -22,7 +24,9 @@ export const UploadVideoForm = ({
   onRetry,
   setVideoFile,
 }: UploadVideoFormProps) => {
+  const intl = useIntl();
   const video = useCurrentVideo();
+  const metadata = useVideoMetadata(intl.locale);
   const { resetUpload, uploadManagerState } = useUploadManager();
   const [src, setSrc] = useState<Nullable<string>>(null);
 
@@ -41,6 +45,19 @@ export const UploadVideoForm = ({
     uploadManagerState[video.id] &&
     uploadManagerState[video.id].status !== UploadManagerStatus.SUCCESS
   ) {
+    if (uploadManagerState[video.id].status === UploadManagerStatus.ERR_SIZE) {
+      return (
+        <UploadVideoRetry
+          onClickRetry={() => {
+            setVideoFile(null);
+            setSrc(null);
+            resetUpload(video.id);
+            onRetry();
+          }}
+          maxSize={metadata.data?.vod.upload_max_size_bytes}
+        />
+      );
+    }
     if (
       uploadManagerState[video.id].status === UploadManagerStatus.ERR_UPLOAD ||
       video.upload_state === uploadState.ERROR
