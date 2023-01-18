@@ -171,6 +171,7 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
             onChange={(e) => {
               handleChange({ description: e.target.value });
             }}
+            resize="vertical"
           />
         </FormField>
         <FormField
@@ -187,6 +188,7 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
             onChange={(e) => {
               handleChange({ welcome_text: e.target.value });
             }}
+            resize="vertical"
           />
         </FormField>
         <SchedulingFields
