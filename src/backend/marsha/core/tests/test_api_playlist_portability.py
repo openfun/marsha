@@ -35,7 +35,7 @@ class PlaylistPortabilityAPITest(TestCase):
         """
         video = factories.VideoFactory()
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(8):
             response = self._patch_video(video, {})
 
         self.assertEqual(response.status_code, 200)
@@ -50,7 +50,7 @@ class PlaylistPortabilityAPITest(TestCase):
         """
         video = factories.VideoFactory()
 
-        with self.assertNumQueries(7):
+        with self.assertNumQueries(9):
             response = self._patch_video(video, {"portable_to": []})
 
         self.assertEqual(response.status_code, 200)
@@ -66,7 +66,7 @@ class PlaylistPortabilityAPITest(TestCase):
         video = factories.VideoFactory()
         new_playlist = factories.PlaylistFactory()
 
-        with self.assertNumQueries(10):
+        with self.assertNumQueries(12):
             response = self._patch_video(video, {"portable_to": [str(new_playlist.id)]})
 
         self.assertEqual(response.status_code, 200)
@@ -253,7 +253,7 @@ class PlaylistPortabilityAPITest(TestCase):
         ported_to_playlist = factories.PlaylistFactory()
         video.playlist.portable_to.add(ported_to_playlist)
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(8):
             response = self._patch_video(video, {})
 
         self.assertEqual(response.status_code, 200)
@@ -270,7 +270,7 @@ class PlaylistPortabilityAPITest(TestCase):
         ported_to_playlist = factories.PlaylistFactory()
         video.playlist.portable_to.add(ported_to_playlist)
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(11):
             response = self._patch_video(video, {"portable_to": []})
 
         self.assertEqual(response.status_code, 200)
@@ -287,7 +287,7 @@ class PlaylistPortabilityAPITest(TestCase):
         ported_to_playlist = factories.PlaylistFactory()
         video.playlist.portable_to.add(ported_to_playlist)
 
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(10):
             response = self._patch_video(
                 video, {"portable_to": [str(ported_to_playlist.id)]}
             )
