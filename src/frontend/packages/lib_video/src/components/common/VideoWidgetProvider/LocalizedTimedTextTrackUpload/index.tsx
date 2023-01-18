@@ -38,32 +38,15 @@ export const LocalizedTimedTextTrackUpload = ({
   timedTextModeWidget,
 }: UploadWidgetGenericProps) => {
   const intl = useIntl();
-
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
   );
-
   const filteredTimedTextTracks = timedTextTracks.filter(
     (track) => track.mode === timedTextModeWidget,
   );
-
-  // When an upload is over and successful, it is deleted from the uploadManagerState, in order
-  // to be able to perform a consecutive upload
-  useEffect(() => {
-    filteredTimedTextTracks.forEach((timedText) => {
-      if (
-        timedText.upload_state === uploadState.READY &&
-        uploadManagerState[timedText.id]
-      ) {
-        resetUpload(timedText.id);
-      }
-    });
-  }, [filteredTimedTextTracks, resetUpload, uploadManagerState]);
-
   const hiddenFileInput = useRef<Nullable<HTMLInputElement>>(null);
   const retryUploadIdRef = useRef<Nullable<string>>(null);
-
   const [selectedLanguage, setSelectedLanguage] =
     useState<Nullable<LanguageChoice>>(null);
 
@@ -99,6 +82,24 @@ export const LocalizedTimedTextTrackUpload = ({
       hiddenFileInput.current.click();
     }
   };
+
+  // When an upload is over and successful, it is deleted from the uploadManagerState, in order
+  // to be able to perform a consecutive upload
+  useEffect(() => {
+    filteredTimedTextTracks.forEach((timedText) => {
+      if (
+        timedText.upload_state === uploadState.READY &&
+        uploadManagerState[timedText.id]
+      ) {
+        resetUpload(timedText.id);
+      }
+    });
+  }, [
+    resetUpload,
+    timedTextModeWidget,
+    filteredTimedTextTracks,
+    uploadManagerState,
+  ]);
 
   return (
     <Box direction="column" gap="small" margin={{ top: 'small' }}>
