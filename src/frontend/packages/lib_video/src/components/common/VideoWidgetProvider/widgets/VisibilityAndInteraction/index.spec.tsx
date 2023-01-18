@@ -192,13 +192,15 @@ describe('<VisibilityAndInteraction />', () => {
       ),
     );
 
+    await waitFor(() =>
+      expect(
+        screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
+      ).not.toBeInTheDocument(),
+    );
     expect(
       screen.queryByRole('button', {
         name: "A button to copy the video's publicly available url in clipboard",
       }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
     ).not.toBeInTheDocument();
   });
 
