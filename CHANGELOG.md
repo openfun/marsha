@@ -67,6 +67,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Set unique storage name for useJwt hook for LTI
+- Fix BBB resizable text areas that could overlap with the image
 - lti_site:
   - Live parameters sync between users
   - Display valid webinar url when creating one with LTI select content
