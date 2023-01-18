@@ -1,6 +1,6 @@
 import { Box, Layer, LayerProps } from 'grommet';
-import { FormClose } from 'grommet-icons';
 import { normalizeColor } from 'grommet/utils';
+import { FormClose } from 'grommet-icons';
 import { Nullable, theme } from 'lib-common';
 import {
   forwardRef,
