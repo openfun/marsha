@@ -16,6 +16,7 @@ export const initiateUpload = async (
   objectId: UploadableObject['id'],
   filename: string,
   mimetype: string,
+  size: number,
 ) => {
   const response = await fetch(
     `${API_ENDPOINT}/${objectType}/${objectId}/initiate-upload/`,
@@ -23,6 +24,7 @@ export const initiateUpload = async (
       body: JSON.stringify({
         filename,
         mimetype,
+        size,
       }),
       headers: {
         Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
@@ -33,9 +35,23 @@ export const initiateUpload = async (
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to trigger initiate-upload on the API for ${objectType}/${objectId}.`,
-    );
+    const contentType = response.headers.get('content-type');
+    if (
+      response.status === 400 &&
+      contentType &&
+      contentType.indexOf('application/json') !== -1
+    ) {
+      const error = (await response.json()) as { [key: string]: string };
+      if (error.hasOwnProperty('size')) {
+        throw { type: 'SizeError', data: error };
+      }
+    }
+    throw {
+      type: 'ApiError',
+      data: {
+        message: `Failed to trigger initiate-upload on the API for ${objectType}/${objectId}.`,
+      },
+    };
   }
 
   return (await response.json()) as AWSPresignedPost;

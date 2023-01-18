@@ -20,7 +20,8 @@ export interface ErrorComponentsProps {
     | 'liveInit'
     | 'liveToVod'
     | 'liveStopped'
-    | 'videoDeleted';
+    | 'videoDeleted'
+    | 'fileTooLarge';
 }
 
 const FullScreenErrorStyled = styled(LayoutMainArea)`
@@ -173,6 +174,18 @@ const messages = {
       description:
         'Title for a user accessing a deleted video (or a live ended without any record).',
       id: 'components.ErrorComponents.videoDeleted.title',
+    },
+  },
+  fileTooLarge: {
+    text: {
+      defaultMessage: 'This file is too large to be uploaded.',
+      description: 'Text explaining that the file provided is too large.',
+      id: 'components.ErrorComponents.fileTooLarge.text',
+    },
+    title: {
+      defaultMessage: 'This file is too large',
+      description: 'Title for a user trying to upload a too large file.',
+      id: 'components.ErrorComponents.fileTooLarge.title',
     },
   },
 };
