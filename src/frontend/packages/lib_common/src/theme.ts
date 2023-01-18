@@ -283,7 +283,9 @@ export const theme: ThemeType = {
         font-size: 1rem;
       }
       & label {
-        position: absolute;
+        height: 0.1px;
+        margin: 0 1rem 0;
+        transform: translateY(0.3rem);
       }
       & label span[aria-label='required'] {
         font-size: 0.688rem;
