@@ -114,7 +114,7 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = get_recordings(classroom)
+        api_response = get_recordings(classroom.meeting_id)
 
         self.assertDictEqual(
             {
@@ -224,7 +224,7 @@ class ClassroomServiceTestCase(TestCase):
             status=200,
         )
 
-        api_response = get_recordings(classroom)
+        api_response = get_recordings(classroom.meeting_id)
 
         self.assertDictEqual(
             {
@@ -297,7 +297,7 @@ class ClassroomServiceTestCase(TestCase):
         )
 
         api_response = get_recordings(
-            classroom,
+            classroom.meeting_id,
             record_id="c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493",
         )
 
@@ -381,7 +381,7 @@ class ClassroomServiceTestCase(TestCase):
         )
 
         api_response = get_recordings(
-            classroom, record_id=classroom_recording.record_id
+            classroom.meeting_id, record_id=classroom_recording.record_id
         )
 
         self.assertDictEqual(
