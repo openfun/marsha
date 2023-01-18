@@ -19,7 +19,9 @@ class PlaylistUpdateAPITest(TestCase):
         """Anonymous users cannot update playlists."""
         playlist = factories.PlaylistFactory(title="existing title")
         response = self.client.put(
-            f"/api/playlists/{playlist.id}/", {"title": "new playlist title"}
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new playlist title"},
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, 401)
@@ -37,13 +39,14 @@ class PlaylistUpdateAPITest(TestCase):
             f"/api/playlists/{playlist.id}/",
             {"title": "new playlist title"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
         playlist.refresh_from_db()
         self.assertEqual(playlist.title, "existing title")
 
     def test_update_playlist_by_playlist_admin(self):
-        """Playlist administrators cannot update playlists."""
+        """Playlist administrators can update playlists."""
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory(title="existing title")
         factories.PlaylistAccessFactory(
@@ -56,11 +59,81 @@ class PlaylistUpdateAPITest(TestCase):
             f"/api/playlists/{playlist.id}/",
             {"title": "new playlist title"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "new playlist title")
+
+    def test_update_playlist_by_playlist_instructor(self):
+        """Playlist instructors can update playlists."""
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory(title="title for instructor")
+        factories.PlaylistAccessFactory(
+            user=user, playlist=playlist, role=models.INSTRUCTOR
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new title for instructor"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "new title for instructor")
+
+    def test_update_playlist_by_orga_administrator(self):
+        """Organization admin can update playlists in their organization."""
+        user = factories.UserFactory()
+        org_1 = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_1, role=models.ADMINISTRATOR
+        )
+        playlist = factories.PlaylistFactory(
+            title="title for orga admin", organization=org_1
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new title for orga admin"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        playlist.refresh_from_db()
+        self.assertEqual(playlist.title, "new title for orga admin")
+
+    def test_update_playlist_by_orga_instructor(self):
+        """Organization instructors can not update playlists in their organization."""
+        user = factories.UserFactory()
+        org_1 = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            user=user, organization=org_1, role=models.INSTRUCTOR
+        )
+        playlist = factories.PlaylistFactory(
+            title="title for orga instructor", organization=org_1
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            f"/api/playlists/{playlist.id}/",
+            {"title": "new title for orga instructor"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
 
         self.assertEqual(response.status_code, 403)
         playlist.refresh_from_db()
-        self.assertEqual(playlist.title, "existing title")
+        self.assertEqual(playlist.title, "title for orga instructor")
 
     def test_update_playlist_through_video_token_instructor(self):
         """Playlist instructors or admins can update playlists through video token."""
