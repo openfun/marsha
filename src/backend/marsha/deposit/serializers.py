@@ -9,7 +9,7 @@ from django.urls import reverse
 from rest_framework import serializers
 
 from marsha.core.serializers import (
-    InitiateUploadSerializer,
+    BaseInitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
     get_resource_cloudfront_url_params,
 )
@@ -152,8 +152,18 @@ class DepositedFileSerializer(
         return url
 
 
-class DepositedFileInitiateUploadSerializer(InitiateUploadSerializer):
+class DepositedFileInitiateUploadSerializer(BaseInitiateUploadSerializer):
     """An initiate-upload serializer dedicated to deposited file."""
+
+    @property
+    def max_upload_file_size(self):
+        """return the deposited max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.DEPOSITED_FILE_SOURCE_MAX_SIZE
 
     def validate(self, attrs):
         """Validate if the mimetype is allowed or not."""

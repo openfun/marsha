@@ -57,7 +57,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -120,7 +120,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -185,7 +185,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -247,7 +247,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
-                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 10},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
