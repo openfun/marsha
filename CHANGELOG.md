@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - lti:
   - service worker 401 reconnect
+- Add a check on video file size when uploading content 
 
 ### Changed
 

@@ -1998,7 +1998,11 @@ class SharedLiveMediaAPITest(TestCase):
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-            {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+            {
+                "filename": "python extensions.pdf",
+                "mimetype": "application/pdf",
+                "size": 10,
+            },
             content_type="application/json",
         )
 
@@ -2013,7 +2017,11 @@ class SharedLiveMediaAPITest(TestCase):
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-            {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+            {
+                "filename": "python extensions.pdf",
+                "mimetype": "application/pdf",
+                "size": 10,
+            },
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -2037,7 +2045,11 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+                {
+                    "filename": "python extensions.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -2095,7 +2107,11 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions", "mimetype": "application/pdf"},
+                {
+                    "filename": "python extensions",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -2153,7 +2169,7 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions", "mimetype": ""},
+                {"filename": "python extensions", "mimetype": "", "size": 10},
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -2182,7 +2198,11 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions", "mimetype": "application/wrong-type"},
+                {
+                    "filename": "python extensions",
+                    "mimetype": "application/wrong-type",
+                    "size": 10,
+                },
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
@@ -2204,7 +2224,11 @@ class SharedLiveMediaAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+                {
+                    "filename": "python extensions.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
                 content_type="application/json",
             )
             self.assertEqual(response.status_code, 401)
@@ -2222,7 +2246,11 @@ class SharedLiveMediaAPITest(TestCase):
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-            {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+            {
+                "filename": "python extensions.pdf",
+                "mimetype": "application/pdf",
+                "size": 10,
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -2247,7 +2275,11 @@ class SharedLiveMediaAPITest(TestCase):
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-            {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+            {
+                "filename": "python extensions.pdf",
+                "mimetype": "application/pdf",
+                "size": 10,
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -2286,7 +2318,11 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+                {
+                    "filename": "python extensions.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )
@@ -2349,7 +2385,11 @@ class SharedLiveMediaAPITest(TestCase):
 
         response = self.client.post(
             f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-            {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+            {
+                "filename": "python extensions.pdf",
+                "mimetype": "application/pdf",
+                "size": 10,
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -2392,7 +2432,11 @@ class SharedLiveMediaAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
-                {"filename": "python extensions.pdf", "mimetype": "application/pdf"},
+                {
+                    "filename": "python extensions.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
             )

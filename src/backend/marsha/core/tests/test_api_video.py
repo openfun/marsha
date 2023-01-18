@@ -3908,12 +3908,14 @@ class VideoAPITest(TestCase):
         """Anonymous users are not allowed to initiate an upload."""
         video = factories.VideoFactory()
 
-        response = self.client.post(f"/api/videos/{video.id}/initiate-upload/")
+        response = self.client.post(
+            f"/api/videos/{video.id}/initiate-upload/",
+            {"filename": "video_file", "mimetype": "", "size": 100},
+        )
 
         self.assertEqual(response.status_code, 401)
-        content = json.loads(response.content)
         self.assertEqual(
-            content, {"detail": "Authentication credentials were not provided."}
+            response.json(), {"detail": "Authentication credentials were not provided."}
         )
 
     def test_api_video_instructor_initiate_upload_in_read_only(self):
@@ -3926,6 +3928,7 @@ class VideoAPITest(TestCase):
 
         response = self.client.post(
             f"/api/videos/{video.id}/initiate-upload/",
+            {"filename": "video_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -3952,6 +3955,7 @@ class VideoAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -3997,6 +4001,7 @@ class VideoAPITest(TestCase):
         # Try initiating an upload for the other video
         response = self.client.post(
             f"/api/videos/{other_video.id}/initiate-upload/",
+            {"filename": "video_file", "mimetype": "", "size": 100},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -4011,7 +4016,10 @@ class VideoAPITest(TestCase):
             self.client.login(username=user.username, password="test")
             video = factories.VideoFactory()
 
-            response = self.client.post(f"/api/videos/{video.id}/initiate-upload/")
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
+            )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -4043,6 +4051,7 @@ class VideoAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -4080,6 +4089,7 @@ class VideoAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -4142,6 +4152,7 @@ class VideoAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -4177,6 +4188,7 @@ class VideoAPITest(TestCase):
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
                 f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -4214,6 +4226,55 @@ class VideoAPITest(TestCase):
         # The upload state of the video has been reset
         video.refresh_from_db()
         self.assertEqual(video.upload_state, "pending")
+
+    def test_api_video_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": ""},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(VIDEO_SOURCE_MAX_SIZE=10)
+    def test_api_video_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        video = factories.VideoFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/videos/{video.id}/initiate-upload/",
+                {"filename": "video_file", "mimetype": "", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )
 
     def test_api_video_initiate_live_anonymous_user(self):
         """Anonymous users are not allowed to initiate a live."""

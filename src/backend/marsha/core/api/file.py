@@ -77,10 +77,9 @@ class DocumentViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
-        serializer = serializers.InitiateUploadSerializer(data=request.data)
+        serializer = serializers.DocumentUploadSerializer(data=request.data)
 
-        if serializer.is_valid() is not True:
-            return Response(serializer.errors, status=400)
+        serializer.is_valid(raise_exception=True)
 
         extension = splitext(serializer.validated_data["filename"])[
             1

@@ -5,6 +5,7 @@ from os.path import splitext
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.core.exceptions import ImproperlyConfigured
 from django.urls import reverse
 from django.utils import timezone
 
@@ -170,18 +171,56 @@ class DocumentSelectLTISerializer(serializers.ModelSerializer):
         )
 
 
-class InitiateUploadSerializer(serializers.Serializer):
+class BaseInitiateUploadSerializer(serializers.Serializer):
     """A serializer to validate data submitted on the initiate-upload API endoint."""
 
     filename = serializers.CharField()
     mimetype = serializers.CharField(allow_blank=True)
+    size = serializers.IntegerField()
+
+    def validate_size(self, value):
+        """Validate if the size is coherent with django settings."""
+        if not self.max_upload_file_size:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__} must define a `max_upload_file_size`."
+            )
+
+        if value > self.max_upload_file_size:
+            raise serializers.ValidationError(
+                f"file too large, max size allowed is {self.max_upload_file_size} Bytes"
+            )
+
+        return value
 
 
-class SharedLiveMediaInitiateUploadSerializer(InitiateUploadSerializer):
+class DocumentUploadSerializer(BaseInitiateUploadSerializer):
+    """An initiate-upload serializer dedicated to Document."""
+
+    @property
+    def max_upload_file_size(self):
+        """return the document max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.DOCUMENT_SOURCE_MAX_SIZE
+
+
+class SharedLiveMediaInitiateUploadSerializer(BaseInitiateUploadSerializer):
     """An initiate-upload serializer dedicated to shared live media."""
 
+    @property
+    def max_upload_file_size(self):
+        """return the shared live media max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.SHARED_LIVE_MEDIA_SOURCE_MAX_SIZE
+
     def validate(self, attrs):
-        """Validate if the mimetype is allowed or not."""
         # mimetype is provided, we directly check it
         if attrs["mimetype"] != "":
             if attrs["mimetype"] not in settings.ALLOWED_SHARED_LIVE_MEDIA_MIME_TYPES:
@@ -204,3 +243,17 @@ class SharedLiveMediaInitiateUploadSerializer(InitiateUploadSerializer):
             attrs["mimetype"] = mimetype
 
         return attrs
+
+
+class VideoUploadSerializer(BaseInitiateUploadSerializer):
+    """An initiate-upload serializer dedicated to videos"""
+
+    @property
+    def max_upload_file_size(self):
+        """return the video max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.VIDEO_SOURCE_MAX_SIZE
