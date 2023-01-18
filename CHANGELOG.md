@@ -28,6 +28,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - lti_site:
   - Live parameters sync between users
   - Display valid webinar url when creating one with LTI select content
+- standalone website:
+  - fix renater select box on smaller screens
 
 ## [4.0.0-beta.12] - 2022-12-28
 
