@@ -1,4 +1,5 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render, Deferred } from 'lib-tests';
 
@@ -8,7 +9,10 @@ const playlistsResponse = {
   count: 1,
   next: null,
   previous: null,
-  results: [{ id: 'some-playlist-id', title: 'some playlist title' }],
+  results: [
+    { id: 'some-playlist-id', title: 'some playlist title' },
+    { id: 'an-other-playlist', title: 'an other title' },
+  ],
 };
 
 const consoleError = jest
@@ -47,7 +51,7 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
   });
 
-  test('field mandatory', async () => {
+  it('field mandatory', async () => {
     render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
 
     deferred.resolve(playlistsResponse);
@@ -58,19 +62,21 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    fireEvent.click(
-      screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
+    userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.; Selected: some-playlist-id',
+      }),
     );
 
-    // Wait for the mocked playlist to be fetched
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { selected: false }),
-      ).toBeInTheDocument();
-    });
+    userEvent.click(
+      await screen.findByRole('option', { name: 'an other title' }),
+    );
 
-    // Select the mocked playlist
-    fireEvent.click(screen.getByRole('option', { selected: false }));
+    expect(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.; Selected: an-other-playlist',
+      }),
+    ).toBeInTheDocument();
 
     expect(button).not.toBeDisabled();
   });
@@ -91,19 +97,21 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my description' },
     });
 
-    fireEvent.click(
-      screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
+    userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.; Selected: some-playlist-id',
+      }),
     );
 
-    // Wait for the mocked playlist to be fetched
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { selected: false }),
-      ).toBeInTheDocument();
-    });
+    userEvent.click(
+      await screen.findByRole('option', { name: 'an other title' }),
+    );
 
-    // Select the mocked playlist
-    fireEvent.click(screen.getByRole('option', { selected: false }));
+    expect(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.; Selected: an-other-playlist',
+      }),
+    ).toBeInTheDocument();
 
     fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
 
@@ -115,9 +123,9 @@ describe('<ClassRoomCreateForm />', () => {
       headers: { 'Content-Type': 'application/json' },
       method: 'POST',
       body: JSON.stringify({
+        playlist: 'an-other-playlist',
         title: 'my title',
         description: 'my description',
-        playlist: 'some-playlist-id',
       }),
     });
 
