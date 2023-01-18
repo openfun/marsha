@@ -63,6 +63,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
   const intl = useIntl();
   const history = useHistory();
   const [currentPlaylistPage, setCurrentPlaylistPage] = useState(0);
+  const [isPlaylistInit, setIsPlaylistInit] = useState(false);
   const { data: playlistResponse, error: errorPlaylist } = usePlaylists(
     {
       offset: `${currentPlaylistPage * ITEM_PER_PAGE}`,
@@ -70,7 +71,25 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
       ordering: PlaylistOrderType.BY_CREATED_ON_REVERSED,
       can_edit: 'true',
     },
-    { keepPreviousData: true, staleTime: 20000 },
+    {
+      keepPreviousData: true,
+      staleTime: 20000,
+      onSuccess: (data) => {
+        if (isPlaylistInit) {
+          return;
+        }
+
+        if (!data || data.count === 0) {
+          return;
+        }
+
+        setIsPlaylistInit(true);
+        setClassroom((value) => ({
+          ...value,
+          playlist: data.results[0].id,
+        }));
+      },
+    },
   );
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
   const {
@@ -122,13 +141,14 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
       )}
       <Form
         onSubmitError={() => ({})}
-        onSubmit={() => createClassroom(classroom)}
+        onSubmit={({ value }) => createClassroom(value)}
         onChange={(values) => {
-          setClassroom(values as ClassroomCreate);
+          setClassroom(values);
         }}
         messages={{
           required: intl.formatMessage(messages.requiredField),
         }}
+        value={classroom}
       >
         <FormField
           label={intl.formatMessage(messages.titleLabel)}
@@ -138,6 +158,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
         >
           <TextInput size="1rem" name="title" id="title-id" />
         </FormField>
+
         <FormField
           label={intl.formatMessage(messages.selectPlaylistLabel)}
           htmlFor="select-playlist-id"
@@ -164,6 +185,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
             dropHeight="medium"
           />
         </FormField>
+
         <FormField
           label={intl.formatMessage(messages.descriptionLabel)}
           htmlFor="description-id"
@@ -176,6 +198,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
             id="description-id"
           />
         </FormField>
+
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
