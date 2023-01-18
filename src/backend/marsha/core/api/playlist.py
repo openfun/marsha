@@ -74,10 +74,17 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             permission_classes = [permissions.IsParamsOrganizationInstructorOrAdmin]
         elif self.action in ["partial_update", "update"]:
             permission_classes = [
-                # requests made with a JWT token granting instructor or administrator
-                (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                # and to an object related to the playlist
-                & permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                # users who are playlist administrators or instructor
+                permissions.IsPlaylistAdminOrInstructor
+                # or users who are administrators of the playlist organization
+                | permissions.IsPlaylistOrganizationAdmin
+                # or
+                | (
+                    # requests made with a JWT token granting instructor or administrator
+                    (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+                    # and to an object related to the playlist
+                    & permissions.IsTokenResourceRouteObjectRelatedPlaylist
+                )
             ]
         else:
             try:
