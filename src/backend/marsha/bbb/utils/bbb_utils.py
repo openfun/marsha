@@ -1,10 +1,12 @@
 """Utils for requesting BBB API"""
+from datetime import timezone
 import hashlib
 import logging
 from os.path import splitext
 
 from django.conf import settings
 
+from dateutil.parser import parse
 import requests
 import xmltodict
 
@@ -180,11 +182,11 @@ def get_meeting_infos(classroom: Classroom):
         raise exception
 
 
-def get_recordings(classroom: Classroom, record_id: str = None):
-    """Call BBB API to retrieve recordings and update them in the classroom."""
-    parameters = {
-        "meetingID": classroom.meeting_id,
-    }
+def get_recordings(meeting_id: str = None, record_id: str = None):
+    """Call BBB API to retrieve recordings."""
+    parameters = {}
+    if meeting_id:
+        parameters["meetingID"] = meeting_id
     if record_id:
         parameters["recordID"] = record_id
 
@@ -208,7 +210,7 @@ def process_recording(classroom, recording_data):
     if recording_data.get("published"):
         for recording_format in recording_data.get("playback").get("format"):
             if recording_format.get("type") == "video":
-                (classroom_recording, _,) = ClassroomRecording.objects.get_or_create(
+                classroom_recording, created = ClassroomRecording.objects.get_or_create(
                     classroom=classroom,
                     record_id=recording_data.get("recordID"),
                 )
@@ -217,9 +219,22 @@ def process_recording(classroom, recording_data):
                     int(recording_data.get("startTime")) / 1000
                 )
                 classroom_recording.save(update_fields=["video_file_url", "started_at"])
+                logger.info(
+                    "%s recording started at %s with url %s",
+                    "Created" if created else "Updated",
+                    classroom_recording.started_at.isoformat(),
+                    classroom_recording.video_file_url,
+                )
 
 
-def process_recordings(classroom, recordings_data, record_id=None):
+def process_recordings(  # pylint: disable=too-many-arguments
+    classroom,
+    recordings_data,
+    record_id=None,
+    record_ids_to_skip=None,
+    before=None,
+    after=None,
+):
     """Process recordings for a given classroom."""
     if not recordings_data.get("recordings"):
         logger.info("No recording found.")
@@ -229,5 +244,16 @@ def process_recordings(classroom, recordings_data, record_id=None):
             classroom.recordings.filter(record_id=record_id).delete()
         return
     for recording in recordings_data.get("recordings"):
-        logger.info("Recording found.")
+        if record_ids_to_skip and recording.get("recordID") in record_ids_to_skip:
+            continue
+
+        recording_started_at = time_utils.to_datetime(
+            int(recording.get("startTime")) / 1000
+        )
+        if before and recording_started_at > parse(before).replace(tzinfo=timezone.utc):
+            continue
+        if after and recording_started_at < parse(after).replace(tzinfo=timezone.utc):
+            continue
+
+        logger.info("Recording %s found.", recording.get("recordID"))
         process_recording(classroom, recording)
