@@ -57,6 +57,9 @@ describe('useVideoMetadata', () => {
       live: {
         segment_duration_seconds: 4,
       },
+      vod: {
+        upload_max_size_bytes: 100,
+      },
     };
     fetchMock.mock(`/api/videos/`, videoMetadata);
 
