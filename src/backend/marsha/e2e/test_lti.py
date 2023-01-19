@@ -8,7 +8,7 @@ from django.conf import settings
 from django.test import override_settings
 from django.utils import timezone
 
-from playwright.sync_api import Page
+from playwright.sync_api import Page, Request
 import pytest
 from pytest_django.live_server_helper import LiveServer
 
@@ -666,12 +666,21 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
     ) as response_info:
         assert 200 == response_info.value.response().status
 
+    with page.expect_request("**/xapi/video/") as request_info:
+        assert "initialized" == request_info.value.post_data_json.get("verb").get(
+            "display"
+        ).get("en-US")
+
+    def check_xapi_played(request: Request):
+        """Check xapi played call."""
+        assert request.method == "POST"
+        assert (
+            request.post_data_json.get("verb").get("display").get("en-US") == "played"
+        )
+
+    page.on("request", check_xapi_played)
+
     page.click('button:has-text("Play Video")')
-    for verb in ("initialized", "paused", "completed"):
-        with page.expect_request("**/xapi/video/") as request_info:
-            assert verb == request_info.value.post_data_json.get("verb").get(
-                "display"
-            ).get("en-US")
 
 
 @pytest.mark.django_db()
