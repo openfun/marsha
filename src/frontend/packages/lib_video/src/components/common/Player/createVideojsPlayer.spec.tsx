@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
-import { render, waitFor } from '@testing-library/react';
+import { waitFor } from '@testing-library/react';
 import {
   useJwt,
   videoMockFactory,
@@ -12,7 +12,7 @@ import {
   VideoXAPIStatementInterface,
   XAPIStatement,
 } from 'lib-components';
-import { wrapInIntlProvider } from 'lib-tests';
+import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';
 
@@ -111,13 +111,6 @@ const mockVideo = videoMockFactory({
   ],
 });
 
-jest.mock('hooks/useTimedTextTrackLanguageChoices', () => ({
-  useTimedTextTrackLanguageChoices: () => ({
-    getChoices: jest.fn(),
-    choices: [],
-  }),
-}));
-
 describe('createVideoJsPlayer', () => {
   beforeEach(() => {
     useJwt.setState({
@@ -146,13 +139,11 @@ describe('createVideoJsPlayer', () => {
     mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType="videojs"
-          timedTextTracks={[]}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType="videojs"
+        timedTextTracks={[]}
+      />,
     );
 
     await waitFor(() =>
@@ -198,13 +189,11 @@ describe('createVideoJsPlayer', () => {
     mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType="videojs"
-          timedTextTracks={[]}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType="videojs"
+        timedTextTracks={[]}
+      />,
     );
 
     await waitFor(() =>
@@ -288,9 +277,7 @@ describe('createVideoJsPlayer', () => {
       live_state: liveState.RUNNING,
     });
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-      ),
+      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
 
     await waitFor(() =>
@@ -312,13 +299,11 @@ describe('createVideoJsPlayer', () => {
 
   it('sends xapi events', async () => {
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType="videojs"
-          timedTextTracks={[]}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType="videojs"
+        timedTextTracks={[]}
+      />,
     );
 
     await waitFor(() =>
@@ -375,9 +360,7 @@ describe('createVideoJsPlayer', () => {
     const video = videoMockFactory();
 
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-      ),
+      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
 
     await waitFor(() =>
@@ -416,9 +399,7 @@ describe('createVideoJsPlayer', () => {
       live_state: liveState.RUNNING,
     });
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-      ),
+      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
 
     await waitFor(() =>
@@ -476,9 +457,7 @@ describe('createVideoJsPlayer', () => {
       live_state: liveState.RUNNING,
     });
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
-      ),
+      <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
     );
 
     await waitFor(() =>
@@ -504,13 +483,11 @@ describe('createVideoJsPlayer', () => {
     mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
-      wrapInIntlProvider(
-        <VideoPlayer
-          video={mockVideo}
-          playerType="videojs"
-          timedTextTracks={[]}
-        />,
-      ),
+      <VideoPlayer
+        video={mockVideo}
+        playerType="videojs"
+        timedTextTracks={[]}
+      />,
     );
 
     await waitFor(() =>
