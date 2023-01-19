@@ -88,8 +88,8 @@ describe('<VisibilityAndInteraction />', () => {
       }),
     ).toBe(null);
     expect(
-      screen.getByText('https://localhost/videos/'.concat(mockedVideo.id)),
-    ).toBeInTheDocument();
+      screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
+    ).not.toBeInTheDocument();
 
     userEvent.click(visibilityToggleButton);
 
@@ -156,7 +156,9 @@ describe('<VisibilityAndInteraction />', () => {
       name: 'Make the video publicly available',
     });
     expect(visibilityToggleButton).toBeChecked();
-    screen.getByText('https://localhost/videos/'.concat(mockedVideo.id));
+    expect(
+      screen.getByText('https://localhost/videos/'.concat(mockedVideo.id)),
+    ).toBeInTheDocument();
     const copyButton = screen.getByRole('button', {
       name: "A button to copy the video's publicly available url in clipboard",
     });
@@ -191,13 +193,13 @@ describe('<VisibilityAndInteraction />', () => {
     );
 
     expect(
-      screen.getByRole('button', {
+      screen.queryByRole('button', {
         name: "A button to copy the video's publicly available url in clipboard",
       }),
-    ).toBeInTheDocument();
+    ).not.toBeInTheDocument();
     expect(
-      screen.getByText('https://localhost/videos/'.concat(mockedVideo.id)),
-    ).toBeInTheDocument();
+      screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
+    ).not.toBeInTheDocument();
   });
 
   it('clicks on the toggle button to make the video publicly available, but backend returns an error', async () => {
