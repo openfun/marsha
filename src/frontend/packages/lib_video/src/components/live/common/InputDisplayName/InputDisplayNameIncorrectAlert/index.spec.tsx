@@ -17,7 +17,7 @@ describe('<InputDisplayNameIncorrectAlert />', () => {
 
   it('displays the component and compares it with previous render. [screenshot]', async () => {
     await renderImageSnapshot(
-      <InputDisplayNameIncorrectAlert alertMsg="This is an example alert message.'" />,
+      <InputDisplayNameIncorrectAlert alertMsg="This is an example alert message." />,
     );
 
     expect(
