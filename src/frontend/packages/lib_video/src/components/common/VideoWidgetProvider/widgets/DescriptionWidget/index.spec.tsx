@@ -1,21 +1,21 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, report } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
 import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
-import { TitleAndDescriptionWidget } from '.';
+import { DescriptionWidget } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 
-describe('<TitleAndDescriptionWidget />', () => {
+describe('<DescriptionWidget />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -42,149 +42,19 @@ describe('<TitleAndDescriptionWidget />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
+          <DescriptionWidget />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
     );
 
-    screen.getByText('General');
-
-    const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your VOD here',
-    });
-    expect(textInput).toHaveValue('An example title');
-    screen.getByPlaceholderText('Enter title of your VOD here');
+    screen.getByText('Description');
 
     const textArea = screen.getByRole('textbox', {
-      name: 'Description...',
+      name: 'Write a description to your video here.',
     });
     expect(textArea).toHaveValue('An example description');
-    screen.getByPlaceholderText('Description...');
-  });
-
-  it('types some text in an empty title input text', async () => {
-    const mockedVideo = videoMockFactory({
-      title: null,
-    });
-
-    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
-      ...mockedVideo,
-      title: 'An example text',
-    });
-
-    render(
-      wrapInVideo(
-        <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
-        </InfoWidgetModalProvider>,
-        mockedVideo,
-      ),
-    );
-
-    const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your VOD here',
-    });
-    screen.getByPlaceholderText('Enter title of your VOD here');
-    expect(textInput).toHaveValue('');
-
-    userEvent.type(textInput, 'An example text');
-    expect(textInput).toHaveValue('An example text');
-
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
-    expect(fetchMock.lastCall()![1]).toEqual({
-      headers: {
-        Authorization: 'Bearer json web token',
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: 'An example text',
-      }),
-    });
-    expect(textInput).toHaveValue('An example text');
-    expect(report).not.toHaveBeenCalled();
-    screen.getByText('Video updated.');
-  });
-
-  it('clears the title input text', async () => {
-    const mockedVideo = videoMockFactory({
-      title: 'An existing title',
-    });
-
-    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, {
-      title: ['This field may not be blank.'],
-    });
-
-    render(
-      wrapInVideo(
-        <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
-        </InfoWidgetModalProvider>,
-        mockedVideo,
-      ),
-    );
-
-    const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your VOD here',
-    });
-    expect(textInput).toHaveValue('An existing title');
-
-    userEvent.clear(textInput);
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-    expect(fetchMock.calls()).toHaveLength(0);
-    await waitFor(() => expect(textInput).toHaveValue('An existing title'));
-    expect(report).not.toHaveBeenCalled();
-    screen.getByText("Title can't be blank !");
-  });
-
-  it('modifies the title input text, but the backend returns an error', async () => {
-    const mockedVideo = videoMockFactory({
-      title: 'An existing title',
-    });
-
-    fetchMock.patch(`/api/videos/${mockedVideo.id}/`, 500);
-
-    render(
-      wrapInVideo(
-        <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
-        </InfoWidgetModalProvider>,
-        mockedVideo,
-      ),
-    );
-
-    const textInput = screen.getByRole('textbox', {
-      name: 'Enter title of your VOD here',
-    });
-    expect(textInput).toHaveValue('An existing title');
-
-    userEvent.type(textInput, ' and more');
-    act(() => {
-      jest.runOnlyPendingTimers();
-    });
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
-    expect(fetchMock.lastCall()![1]).toEqual({
-      headers: {
-        Authorization: 'Bearer json web token',
-        'Content-Type': 'application/json',
-      },
-      method: 'PATCH',
-      body: JSON.stringify({
-        title: 'An existing title and more',
-      }),
-    });
-    expect(textInput).toHaveValue('An existing title');
-    expect(report).toHaveBeenCalled();
-    screen.getByText('Video update has failed !');
+    screen.getByPlaceholderText('Write a description to your video here.');
   });
 
   it('types some text in an empty text area', async () => {
@@ -201,20 +71,22 @@ describe('<TitleAndDescriptionWidget />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
+          <DescriptionWidget />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
     );
 
     const textArea = screen.getByRole('textbox', {
-      name: 'Description...',
+      name: 'Write a description to your video here.',
     });
-    screen.getByPlaceholderText('Description...');
+    screen.getByPlaceholderText('Write a description to your video here.');
     expect(textArea).toHaveValue('');
 
     userEvent.type(textArea, 'A new description');
     expect(textArea).toHaveValue('A new description');
+
+    jest.runOnlyPendingTimers();
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
@@ -245,18 +117,21 @@ describe('<TitleAndDescriptionWidget />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
+          <DescriptionWidget />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
     );
 
     const textArea = screen.getByRole('textbox', {
-      name: 'Description...',
+      name: 'Write a description to your video here.',
     });
     expect(textArea).toHaveValue('An existing description');
 
     userEvent.clear(textArea);
+
+    jest.runOnlyPendingTimers();
+
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -284,18 +159,22 @@ describe('<TitleAndDescriptionWidget />', () => {
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
-          <TitleAndDescriptionWidget />
+          <DescriptionWidget />
         </InfoWidgetModalProvider>,
         mockedVideo,
       ),
     );
 
     const textArea = screen.getByRole('textbox', {
-      name: 'Description...',
+      name: 'Write a description to your video here.',
     });
+    screen.getByPlaceholderText('Write a description to your video here.');
     expect(textArea).toHaveValue('An existing description');
 
     userEvent.type(textArea, ' and more');
+
+    jest.runOnlyPendingTimers();
+
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
