@@ -572,6 +572,9 @@ jobs:
           name: Run tests on lib-classroom
           command: yarn workspace lib-classroom run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
+          name: Run tests on lib-video
+          command: yarn workspace lib-video run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
           name: Run tests on lti site
           command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
@@ -580,6 +583,8 @@ jobs:
           path: ~/marsha/src/frontend/packages/lib_components/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_classroom/__diff_output__
+      - store_artifacts:
+          path: ~/marsha/src/frontend/packages/lib_video/__diff_output__
 
   test-website:
     docker:
