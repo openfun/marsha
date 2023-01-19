@@ -44,6 +44,7 @@ export const FoldableItem = ({
         boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
         minHeight: '70px',
       }}
+      margin="small"
     >
       <Box pad={{ horizontal: '6px', top: '6px' }}>
         <Button

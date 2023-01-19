@@ -35,6 +35,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - lti_site:
   - Live parameters sync between users
   - Display valid webinar url when creating one with LTI select content
+  - White band under video player on student side
 - standalone website:
   - fix renater select box on smaller screens
 

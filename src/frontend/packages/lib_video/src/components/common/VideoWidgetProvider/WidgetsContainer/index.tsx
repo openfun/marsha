@@ -58,7 +58,6 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
                 direction="column"
                 background="bg-marsha"
                 gap="small"
-                pad="small"
                 key={index}
               >
                 {widget.component}
@@ -68,11 +67,10 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         ? children.component
         : null}
 
-      <Box direction="row" background="bg-marsha" gap="small" pad="small">
+      <Box direction="row" background="bg-marsha">
         {mapper.map((_, indexColumn) => (
           <Box
             direction="column"
-            gap="small"
             key={indexColumn}
             width={`${100 / nbrOfColumns}%`}
           >
