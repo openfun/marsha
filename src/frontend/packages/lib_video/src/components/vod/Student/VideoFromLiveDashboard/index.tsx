@@ -6,8 +6,9 @@ import { useQueryClient } from 'react-query';
 
 import { pushAttendance } from 'api/pushAttendance';
 import { useLiveSessionsQuery } from 'api/useLiveSessions';
-import { VideoPlayer, VideoWebSocketInitializer } from 'components/common';
 import { VideoLayout } from 'components/common/VideoLayout';
+import { VideoPlayer } from 'components/common/VideoPlayer';
+import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
 import { ConverseInitializer } from 'components/live/common/ConverseInitializer';
 import { LiveVideoPanel } from 'components/live/common/LiveVideoPanel';
 import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';

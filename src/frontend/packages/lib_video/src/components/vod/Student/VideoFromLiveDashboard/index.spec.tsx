@@ -1,4 +1,3 @@
-import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   decodeJwt,
@@ -9,8 +8,9 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
+import React, { ReactNode } from 'react';
 
+import { createPlayer } from 'components/common';
 import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
 
 import { VideoFromLiveDashboard } from '.';
@@ -66,14 +66,23 @@ jest.mock('lib-components', () => ({
   decodeJwt: jest.fn(),
 }));
 
-jest.mock('Player/createPlayer', () => ({
+jest.mock('components/common/Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
+const mockedCreatePlayer = createPlayer as jest.MockedFunction<
+  typeof createPlayer
+>;
 
-jest.mock('components/ConverseInitializer', () => ({
+jest.mock('components/live/common/ConverseInitializer', () => ({
   ConverseInitializer: ({ children }: { children: React.ReactNode }) => {
     return children;
   },
+}));
+
+jest.mock('components/common/VideoWebSocketInitializer', () => ({
+  VideoWebSocketInitializer: (props: { children: ReactNode }) => (
+    <span>{props.children}</span>
+  ),
 }));
 
 const mockedUseCurrentResourceContext =
@@ -118,7 +127,7 @@ describe('<LiveToVODDashboard />', () => {
     );
 
     // Displays video
-    expect(screen.getByRole('video')).toBeInTheDocument();
+    expect(mockedCreatePlayer).toHaveBeenCalled();
 
     // Displays Chat and Chat only
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
