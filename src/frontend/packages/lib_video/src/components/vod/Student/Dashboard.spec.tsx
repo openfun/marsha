@@ -52,10 +52,14 @@ jest.mock('components/common/Player/createPlayer', () => ({
   createPlayer: jest.fn(),
 }));
 
-jest.mock('components/ConverseInitializer', () => ({
+jest.mock('components/live/common/ConverseInitializer', () => ({
   ConverseInitializer: ({ children }: { children: React.ReactNode }) => {
     return children;
   },
+}));
+
+jest.mock('api/useLiveSessions', () => ({
+  useLiveSessionsQuery: jest.fn(),
 }));
 
 const mockCreatePlayer = createPlayer as jest.MockedFunction<
@@ -96,6 +100,8 @@ describe('<Dashboard />', () => {
       },
       { method: 'OPTIONS' },
     );
+
+    fetchMock.mock('/api/livesessions/', 200);
   });
 
   afterEach(() => {
