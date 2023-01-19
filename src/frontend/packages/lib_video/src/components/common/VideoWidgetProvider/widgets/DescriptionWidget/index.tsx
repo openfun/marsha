@@ -12,7 +12,7 @@ import { debounce } from '../../utils/widgets';
 const messages = defineMessages({
   info: {
     defaultMessage:
-      'This widget allows you to set the title of your video and its description',
+      'This widget allows you to set the description of your video',
     description:
       'Info of the widget used for setting title and live recording.',
     id: 'components.DescriptionWidget.info',
@@ -21,12 +21,6 @@ const messages = defineMessages({
     defaultMessage: 'Description',
     description: 'Title of the widget used for setting VOD description',
     id: 'components.DescriptionWidget.title',
-  },
-  placeholderTitleInput: {
-    defaultMessage: 'Enter title of your VOD here',
-    description:
-      'A placeholder text indicating the purpose of the input and what it is supposed to received.',
-    id: 'components.DescriptionWidget.placeholderTitleInput',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
