@@ -523,11 +523,11 @@ jobs:
           keys:
             - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       - run:
-          name: Lint code with tslint
-          command: yarn lint
+          name: Lint code with tslint or eslint
+          command: yarn workspaces run lint
       - run:
           name: Lint code with prettier
-          command: yarn prettier
+          command: yarn workspaces run prettier
 
   test-front:
     docker:
