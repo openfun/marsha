@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - service worker 401 reconnect
   - Password reset views & API
   - Renater IdP's logo display on login page
+  - Allow organization instructors to create playlists
 
 ### Changed
 
