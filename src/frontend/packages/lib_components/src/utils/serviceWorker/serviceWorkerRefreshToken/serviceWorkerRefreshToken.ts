@@ -17,8 +17,8 @@ export const init = (
   _routesExclude?: string[],
   _routesInclude?: string[],
 ) => {
-  let routesExclude = ['/account/api/token/'];
-  let routesInclude = ['/api'];
+  let routesExclude = ['/account/api/token/', '/e2e/api/'];
+  let routesInclude = ['/api/', '/xapi/'];
   const fetchEventMap = new Map<
     number,
     {

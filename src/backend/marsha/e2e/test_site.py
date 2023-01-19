@@ -32,6 +32,7 @@ def user_logged_in(context: BrowserContext, live_server: LiveServer):
     page.fill("input[name=username]", "jane")
     page.fill("input[name=password]", "password")
     page.click("text=OK")
+    page.wait_for_timeout(500)
     yield
 
 
