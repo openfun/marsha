@@ -3,9 +3,7 @@ import React from 'react';
 
 import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 
-import { WidgetSize } from '..';
-
-import { WidgetsContainer } from '.';
+import { WidgetsContainer, WidgetSize } from '.';
 
 const GenericComponent1 = () => <p>Generic component 1</p>;
 const GenericComponent2 = () => <p>Generic component 2</p>;
@@ -49,30 +47,30 @@ describe('<WidgetsContainer />', () => {
     expect(parentContainer).not.toBeNull();
 
     // 3 columns and 2 divs used for gap between them
-    expect(parentContainer!.childNodes.length).toEqual(3 + 2);
+    expect(parentContainer!.childNodes.length).toEqual(3);
 
     const column1 = parentContainer!.childNodes[0];
-    const column2 = parentContainer!.childNodes[2];
-    const column3 = parentContainer!.childNodes[4];
+    const column2 = parentContainer!.childNodes[1];
+    const column3 = parentContainer!.childNodes[2];
 
     expect(column1.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 1',
     );
-    expect(column1.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 4',
     );
 
     expect(column2.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 2',
     );
-    expect(column2.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column2.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 5',
     );
 
     expect(column3.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 3',
     );
-    expect(column3.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column3.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 6',
     );
   });
@@ -93,28 +91,28 @@ describe('<WidgetsContainer />', () => {
     const parentContainer = container!.firstChild;
 
     // 2 columns and 1 div used for gap between them
-    expect(parentContainer!.childNodes.length).toEqual(2 + 1);
+    expect(parentContainer!.childNodes.length).toEqual(2);
 
     const column1 = parentContainer!.childNodes[0];
-    const column2 = parentContainer!.childNodes[2];
+    const column2 = parentContainer!.childNodes[1];
 
     expect(column1.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 1',
     );
-    expect(column1.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 3',
     );
-    expect(column1.childNodes[4].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[2].firstChild!.textContent).toEqual(
       'Generic component 5',
     );
 
     expect(column2.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 2',
     );
-    expect(column2.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column2.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 4',
     );
-    expect(column2.childNodes[4].firstChild!.textContent).toEqual(
+    expect(column2.childNodes[2].firstChild!.textContent).toEqual(
       'Generic component 6',
     );
   });
@@ -135,26 +133,26 @@ describe('<WidgetsContainer />', () => {
     const parentContainer = container!.firstChild;
 
     // 1 column and 0 div used for gap between
-    expect(parentContainer!.childNodes.length).toEqual(1 + 0);
+    expect(parentContainer!.childNodes.length).toEqual(1);
 
     const column1 = parentContainer!.childNodes[0];
 
     expect(column1.childNodes[0].firstChild!.textContent).toEqual(
       'Generic component 1',
     );
-    expect(column1.childNodes[2].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[1].firstChild!.textContent).toEqual(
       'Generic component 2',
     );
-    expect(column1.childNodes[4].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[2].firstChild!.textContent).toEqual(
       'Generic component 3',
     );
-    expect(column1.childNodes[6].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[3].firstChild!.textContent).toEqual(
       'Generic component 4',
     );
-    expect(column1.childNodes[8].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[4].firstChild!.textContent).toEqual(
       'Generic component 5',
     );
-    expect(column1.childNodes[10].firstChild!.textContent).toEqual(
+    expect(column1.childNodes[5].firstChild!.textContent).toEqual(
       'Generic component 6',
     );
   });
