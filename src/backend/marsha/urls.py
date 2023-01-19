@@ -148,7 +148,7 @@ if settings.DEBUG:
 if "dummy" in settings.STORAGE_BACKEND:
     urlpatterns += [
         path(
-            "api/video-upload/<uuid:uuid>",
+            "e2e/api/video-upload/<uuid:uuid>",
             local_video_upload,
             name="local-video-upload",
         ),

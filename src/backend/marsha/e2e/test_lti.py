@@ -91,10 +91,10 @@ def _preview_video(live_server, page, video_uploaded=False):
         ):
             lti_resource_page_form.query_selector(
                 f'select[name="{key}"]'
-            ).select_option(value, timeout=100)
+            ).select_option(value, timeout=300)
         else:
             lti_resource_page_form.query_selector(f'input[name="{key}"]').fill(
-                value, timeout=100
+                value, timeout=300
             )
     page.click('#lti_resource_page input[type="submit"]')
 
@@ -674,8 +674,6 @@ def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_st
             ).get("en-US")
 
 
-# TODO: make in work for chromium
-@pytest.mark.skip_browser("chromium")
 @pytest.mark.django_db()
 @pytest.mark.usefixtures("mock_video_cloud_storage")
 def test_lti_video_upload(page: Page, live_server: LiveServer):
@@ -685,13 +683,13 @@ def test_lti_video_upload(page: Page, live_server: LiveServer):
     page.click("text=Create a video")
     page.fill("input[placeholder='Enter title of your video here']", "My video")
 
-    with page.expect_file_chooser() as fc_info:
-        page.click("text=Add a video or drag & drop it")
-    file_chooser = fc_info.value
-    file_chooser.set_files(f"{settings.MEDIA_ROOT}/e2e/big_buck_bunny_480p.mp4")
+    page.set_input_files(
+        "input[type='file']", f"{settings.MEDIA_ROOT}/e2e/big_buck_bunny_480p.mp4"
+    )
+
     page.click("text=Create a video")
 
-    page.wait_for_selector("text=100 %")
+    page.wait_for_selector("text=Visibility and interaction parameters")
     page.wait_for_selector("text=Replace the video")
 
 
