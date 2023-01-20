@@ -1,7 +1,6 @@
 import React, { lazy, Suspense } from 'react';
-import { createJSONStorage } from 'zustand/middleware';
 
-import { Loader, useJwt, AppConfigProvider } from 'lib-components';
+import { Loader, AppConfigProvider } from 'lib-components';
 import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
 
 import { AppInitializer } from './AppInitializer';
@@ -15,17 +14,10 @@ if (!domElementToParse) {
 const { jwt, refresh_token, ...appConfig } =
   parseDataElements(domElementToParse);
 
-useJwt.persist.setOptions({
-  name: `jwt-store-${appConfig.modelName}-${appConfig.resource_id || ''}`,
-  storage: createJSONStorage(() => sessionStorage),
-});
-
-useJwt.setState({ jwt, refreshJwt: refresh_token });
-
 export const App = () => {
   return (
     <AppConfigProvider value={appConfig}>
-      <AppInitializer>
+      <AppInitializer jwt={jwt} refresh_token={refresh_token}>
         <Suspense fallback={<Loader />}>
           <AppContentLoader />
         </Suspense>
