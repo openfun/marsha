@@ -1,5 +1,6 @@
 import { screen } from '@testing-library/react';
 import {
+  useJwt,
   useMaintenance,
   useSentry,
   useVideo,
@@ -40,9 +41,6 @@ jest.mock('lib-components', () => ({
   decodeJwt: () => ({
     maintenance: true,
   }),
-  useJwt: () => ({
-    jwt: 'some jwt',
-  }),
 }));
 
 describe('<AppInitializer />', () => {
@@ -55,9 +53,11 @@ describe('<AppInitializer />', () => {
     expect(useDocument.getState().documents).toEqual({});
     expect(useAttendance.getState().delay).toEqual(10000);
     expect(useMaintenance.getState().isActive).toEqual(false);
+    expect(useJwt.getState().jwt).toBeUndefined();
+    expect(useJwt.getState().refreshJwt).toBeUndefined();
 
     render(
-      <AppInitializer>
+      <AppInitializer jwt="jwt" refresh_token="refresh_token">
         <span>some cool content</span>
       </AppInitializer>,
     );
@@ -82,5 +82,7 @@ describe('<AppInitializer />', () => {
     });
     expect(useAttendance.getState().delay).toEqual(6);
     expect(useMaintenance.getState().isActive).toEqual(true);
+    expect(useJwt.getState().jwt).toEqual('jwt');
+    expect(useJwt.getState().refreshJwt).toEqual('refresh_token');
   });
 });
