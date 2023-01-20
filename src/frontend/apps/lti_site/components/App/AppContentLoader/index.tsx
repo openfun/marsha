@@ -12,7 +12,6 @@ import {
   Loader,
   useAppConfig,
   appNames,
-  report,
 } from 'lib-components';
 import React, {
   ComponentType,
@@ -24,11 +23,12 @@ import React, {
 } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from 'react-error-boundary';
-import { createIntlCache, createIntl, RawIntlProvider } from 'react-intl';
+import { RawIntlProvider } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';
 import { colors, theme } from 'utils/theme/theme';
 
@@ -47,17 +47,6 @@ const messages = defineMessages({
 });
 
 const decodedJwt: DecodedJwt = decodeJwt(useJwt.getState().jwt);
-let localeCode: string;
-let locale: string;
-try {
-  locale = localeCode = decodedJwt.locale;
-  if (localeCode.match(/^.*_.*$/)) {
-    localeCode = localeCode.split('_')[0];
-  }
-} catch (e) {
-  localeCode = 'en';
-  locale = 'en_US';
-}
 
 useCurrentSession.setState({
   sessionId: decodedJwt.session_id,
@@ -79,43 +68,7 @@ useCurrentUser.setState({
 
 const resourceContext: ResourceContext = { ...decodedJwt };
 
-try {
-  if (!window.Intl) {
-    /* tslint:disable no-var-requires */
-    require('intl');
-    /* tslint:disable no-var-requires */
-    require(`intl/locale-data/jsonp/${localeCode}.js`);
-  }
-
-  if (!Intl.PluralRules) {
-    /* tslint:disable no-var-requires */
-    require('intl-pluralrules');
-  }
-  if (!Intl.RelativeTimeFormat) {
-    /* tslint:disable no-var-requires */
-    require('@formatjs/intl-relativetimeformat');
-    // Get `react-intl`/`formatjs` lang specific parameters and data
-    /* tslint:disable no-var-requires */
-    require(`@formatjs/intl-relativetimeformat/locale-data/${localeCode}`);
-  }
-} catch (e) {
-  report(e);
-}
-
-let translatedMessages = null;
-try {
-  /* tslint:disable no-var-requires */
-  translatedMessages = require(`translations/${locale}.json`);
-} catch (e) {}
-
-const cache = createIntlCache();
-const intl = createIntl(
-  {
-    locale: localeCode,
-    messages: translatedMessages,
-  },
-  cache,
-);
+const intl = createIntl(decodedJwt.locale);
 
 const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {
   LTI: lazy(() => import('components/LTIRoutes')),
