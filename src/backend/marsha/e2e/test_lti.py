@@ -155,7 +155,7 @@ def _preview_document(live_server, page, document_uploaded=False):
         lti_parameters=lti_consumer_parameters,
         passport_attributes=passport_attributes,
     )
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_resource_page_form = page.query_selector("#lti_resource_page")
     for key, value in lti_parameters.items():
         if key in (
@@ -271,7 +271,7 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
         uploaded_on=timezone.now(),
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
@@ -413,7 +413,7 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
         uploaded_on=timezone.now(),
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
@@ -551,7 +551,7 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
         uploaded_on=timezone.now(),
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
@@ -830,7 +830,7 @@ def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
         passport_attributes={"consumer_site": video.playlist.consumer_site},
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
