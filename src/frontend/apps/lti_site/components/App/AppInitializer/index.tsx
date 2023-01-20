@@ -21,11 +21,21 @@ import React, {
   useMemo,
   useState,
 } from 'react';
+import { createJSONStorage } from 'zustand/middleware';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
+import { Maybe } from 'lib-common';
 
-export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
+interface AppInitializerProps {
+  jwt: Maybe<string>;
+  refresh_token: Maybe<string>;
+}
+
+export const AppInitializer = (
+  props: PropsWithChildren<AppInitializerProps>,
+) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);
+  const [isJwtInitialized, setIsJwtInitialized] = useState(false);
   useServiceWorkerRefreshToken();
 
   const appConfig = useAppConfig();
@@ -45,11 +55,31 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
   const isFeatureEnabled = useIsFeatureEnabled();
 
   const decodedJwt = useMemo(() => {
-    if (jwt) {
+    if (jwt && isJwtInitialized) {
       return decodeJwt(jwt);
     }
     return null;
-  }, [jwt]);
+  }, [jwt, isJwtInitialized]);
+
+  useEffect(() => {
+    if (isJwtInitialized) {
+      return;
+    }
+
+    useJwt.persist.setOptions({
+      name: `jwt-store-${appConfig.modelName}-${appConfig.resource_id || ''}`,
+      storage: createJSONStorage(() => sessionStorage),
+    });
+
+    useJwt.setState({ jwt: props.jwt, refreshJwt: props.refresh_token });
+    setIsJwtInitialized(true);
+  }, [
+    isJwtInitialized,
+    appConfig.modelName,
+    appConfig.resource_id,
+    props.jwt,
+    props.refresh_token,
+  ]);
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
@@ -131,5 +161,5 @@ export const AppInitializer = ({ children }: PropsWithChildren<{}>) => {
     return null;
   }
 
-  return <Fragment>{children}</Fragment>;
+  return <Fragment>{props.children}</Fragment>;
 };
