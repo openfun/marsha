@@ -41,6 +41,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - White band under video player on student side
 - standalone website:
   - fix renater select box on smaller screens
+- Stabilize flaky e2e tests
 
 ## [4.0.0-beta.12] - 2022-12-28
 

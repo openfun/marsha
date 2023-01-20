@@ -713,7 +713,7 @@ def test_lti_nav_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page, video_uploaded=True)
 
-    assert "What are you willing to do ?" not in page.content()
+    page.wait_for_selector("text=What are you willing to do ?", state="detached")
     assert page.is_enabled('button:has-text("Play Video")')
 
 
@@ -727,8 +727,8 @@ def test_lti_nav_no_video(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_video(live_server, page)
 
-    assert "What are you willing to do ?" in page.content()
-    assert "Preview" not in page.content()
+    page.wait_for_selector("text=What are you willing to do ?")
+    page.wait_for_selector("text=Preview", state="detached")
 
 
 # TODO: make in work for chromium
@@ -747,11 +747,10 @@ def test_lti_document_upload(page: Page, live_server: LiveServer):
     file_chooser.set_files(f"{settings.MEDIA_ROOT}/e2e/big_buck_bunny_480p.jpg")
 
     page.wait_for_selector("text=Your document is ready to display.")
-    assert "Your document is ready to display." in page.content()
 
     page.click("text=Preview")
-    assert "Your document is ready to display." not in page.content()
-    assert "Instructor Preview" in page.content()
+    page.wait_for_selector("text=Your document is ready to display.", state="detached")
+    page.wait_for_selector("text=Instructor Preview")
 
 
 @pytest.mark.django_db()
@@ -764,7 +763,7 @@ def test_lti_nav_document(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_document(live_server, page, document_uploaded=True)
 
-    assert "Your document is ready to display." not in page.content()
+    page.wait_for_selector("text=Your document is ready to display.", state="detached")
 
     page.click("text=Dashboard")
     page.wait_for_selector("text=Your document is ready to display.")
@@ -780,8 +779,8 @@ def test_lti_nav_no_document(page: Page, live_server: LiveServer):
     """
     page, _ = _preview_document(live_server, page)
 
-    assert "There is currently no document to display." in page.content()
-    assert "Preview" not in page.content()
+    page.wait_for_selector("text=There is currently no document to display.")
+    page.wait_for_selector("text=Preview", state="detached")
 
 
 @pytest.mark.django_db()
