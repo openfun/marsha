@@ -14,7 +14,8 @@
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"]
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
+      "vtt.js": ["types/libs/vtt.js"]
     }
   }
 }

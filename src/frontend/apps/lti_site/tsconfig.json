@@ -21,8 +21,7 @@
     "noUnusedParameters": true,
     "paths": {
       "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
-      "intl-pluralrules": ["types/libs/intl-pluralrules"],
-      "vtt.js": ["types/libs/vtt.js"]
+      "intl-pluralrules": ["types/libs/intl-pluralrules"]
     },
     "resolveJsonModule": true,
     "skipLibCheck": true,

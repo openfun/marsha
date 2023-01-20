@@ -1,4 +1,4 @@
-import { fireEvent, screen } from '@testing-library/react';
+import { configure, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -10,14 +10,17 @@ import {
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
+import { VTTCue } from 'vtt.js';
 
 import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { Transcripts } from './index';
 
-const transcriptContent = `
-WEBVTT
+//  force VTTCue intialization in the window
+window.VTTCue = window.VTTCue || VTTCue;
+
+const transcriptContent = `WEBVTT
 
 1
 00:00:00.600 --> 00:00:02.240
@@ -157,6 +160,15 @@ describe('<Transcripts />', () => {
   });
 
   it('shows the transcript when the user selects a language', async () => {
+    configure({
+      getElementError: (message) => {
+        const error = new Error(message || '');
+        error.name = 'TestingLibraryElementError';
+        error.stack = undefined;
+        return error;
+      },
+    });
+
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
     useTimedTextTrack.getState().addMultipleResources(transcripts);
     const mockedVideo = videoMockFactory({
