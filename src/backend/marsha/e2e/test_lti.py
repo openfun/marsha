@@ -698,6 +698,7 @@ def test_lti_video_upload(page: Page, live_server: LiveServer):
 
     page.click("text=Create a video")
 
+    page.wait_for_selector("text=Video creation", state="detached")
     page.wait_for_selector("text=Visibility and interaction parameters")
     page.wait_for_selector("text=Replace the video")
 
