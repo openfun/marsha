@@ -59,7 +59,7 @@ def _preview_classroom(page: Page, live_server: LiveServer):
         lti_parameters=lti_consumer_parameters,
         passport_attributes=passport_attributes,
     )
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_resource_page_form = page.query_selector("#lti_resource_page")
     for key, value in lti_parameters.items():
         if key in (
@@ -138,7 +138,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
         playlist=playlist,
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
@@ -239,7 +239,7 @@ def test_lti_select_bbb_disabled(page: Page, live_server: LiveServer, settings):
         lti_parameters=lti_consumer_parameters,
     )
 
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_select_form = page.query_selector("#lti_select")
     for key, value in lti_parameters.items():
         if key in ("roles",):
