@@ -1,5 +1,5 @@
 import { useQuery, UseQueryOptions } from 'react-query';
-import { WebVTT } from 'vtt.js';
+import { VTTCue, WebVTT } from 'vtt.js';
 
 export const useTranscriptReaderRequest = (
   url: string,
