@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Remove deprecated params from BBB API calls
 - Keep resource property in AppData
 - Create a lib to handle all components for video (VOD and live)
+- Optimize LTI images
 
 ### Fixed
 
@@ -36,6 +37,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - lti_site:
   - Live parameters sync between users
   - Display valid webinar url when creating one with LTI select content
+  - Bundle size polyfill
   - White band under video player on student side
 - standalone website:
   - fix renater select box on smaller screens

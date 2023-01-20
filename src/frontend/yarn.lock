@@ -2304,6 +2304,15 @@
   dependencies:
     tslib "^2.4.0"
 
+"@formatjs/intl-pluralrules@5.1.8":
+  version "5.1.8"
+  resolved "https://registry.yarnpkg.com/@formatjs/intl-pluralrules/-/intl-pluralrules-5.1.8.tgz#11eeca3cde088fd68d258a09b0791b327a8eb019"
+  integrity sha512-uevO916EWoeuueqeNzHjnUzpfWZzXFJibC/sEvPR/ZiZH5btWuOLeJLdb1To4nMH8ZJQlmAf8SDpFf+eWvz5lQ==
+  dependencies:
+    "@formatjs/ecma402-abstract" "1.14.3"
+    "@formatjs/intl-localematcher" "0.2.32"
+    tslib "^2.4.0"
+
 "@formatjs/intl-relativetimeformat@11.1.8":
   version "11.1.8"
   resolved "https://registry.yarnpkg.com/@formatjs/intl-relativetimeformat/-/intl-relativetimeformat-11.1.8.tgz#8bce76cc396d143558cb8335f2b4b12b85259413"
@@ -8968,11 +8977,6 @@ intl-messageformat@9.12.0:
     "@formatjs/fast-memoize" "1.2.1"
     "@formatjs/icu-messageformat-parser" "2.0.19"
     tslib "^2.1.0"
-
-intl-pluralrules@1.3.1:
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/intl-pluralrules/-/intl-pluralrules-1.3.1.tgz#304ec4038a597894f6616633cbf5e66fb3dbee04"
-  integrity sha512-sNYPls1Q4fyN0EGLFVJ7TIuaMWln01LupLozfIBt69rHK0DHehghMSz6ejfnSklgRddnyQSEaQPIU6d9TCKH3w==
 
 intl@1.2.5:
   version "1.2.5"
