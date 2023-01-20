@@ -334,10 +334,12 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
 
     page, _ = _preview_classroom(page, live_server)
 
-    page.fill("text=Title", "Classroom title")
-    page.click("text=Launch the classroom now in BBB")
+    title_input = page.get_by_label("Title")
+    title_input.fill("Classroom title")
+    title_input.blur()
+    page.get_by_role("button", name="Launch the classroom now in BBB").click()
     with page.expect_event("popup") as bbb_classroom_page_info:
-        page.click("text=Join classroom")
+        page.get_by_role("button", name="Join classroom").click()
     bbb_classroom_page = bbb_classroom_page_info.value
     bbb_classroom_page.wait_for_load_state()
 
