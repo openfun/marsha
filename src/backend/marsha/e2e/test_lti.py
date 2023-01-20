@@ -72,7 +72,7 @@ def _preview_video(live_server, page, video_uploaded=False):
         lti_parameters=lti_consumer_parameters,
         passport_attributes=passport_attributes,
     )
-    page.goto(f"{live_server.url}/development/")
+    page.goto(f"{live_server.url}/development/", wait_until="networkidle")
     lti_resource_page_form = page.query_selector("#lti_resource_page")
     for key, value in lti_parameters.items():
         if key in (
