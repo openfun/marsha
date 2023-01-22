@@ -1,5 +1,4 @@
 const isStringArray = (value: unknown): value is string[] => {
-  console.log(value);
   if (value === undefined || value === null || !Array.isArray(value)) {
     return false;
   }
@@ -31,7 +30,6 @@ export const isError = (
     new_password2?: unknown;
   };
 
-  console.log('buzef', casted);
   if (
     (casted.old_password !== undefined &&
       !isStringArray(casted.old_password)) ||
