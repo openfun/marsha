@@ -125,10 +125,15 @@ export const createVideojsPlayer = (
 
   const tracks = player.remoteTextTracks();
 
-  useTranscriptTimeSelector.subscribe(
+  const unsubscribeTranscriptTimeSelector = useTranscriptTimeSelector.subscribe(
     (state) => state.time,
     (time) => player.currentTime(time),
   );
+
+  // When the player is dispose, unsubscribe to the useTranscriptTimeSelector store.
+  player.on('dispose', () => {
+    unsubscribeTranscriptTimeSelector();
+  });
 
   /************************** XAPI **************************/
 

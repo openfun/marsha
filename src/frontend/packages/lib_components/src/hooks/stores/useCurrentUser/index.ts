@@ -1,5 +1,5 @@
 import type { Nullable } from 'lib-common';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import type { User } from '../../../types/User';
 
