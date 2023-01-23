@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon';
-import create from 'zustand';
+import { create } from 'zustand';
 
 import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'conf/chat';
 

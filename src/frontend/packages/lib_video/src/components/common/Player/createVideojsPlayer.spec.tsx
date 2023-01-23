@@ -129,8 +129,6 @@ describe('createVideoJsPlayer', () => {
         player.dispose();
       }
     });
-    // remove all subscribers
-    useTranscriptTimeSelector.destroy();
     jest.runOnlyPendingTimers();
     jest.useRealTimers();
   });

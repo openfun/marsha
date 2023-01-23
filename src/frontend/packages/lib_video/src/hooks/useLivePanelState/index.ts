@@ -1,4 +1,4 @@
-import create from 'zustand';
+import { create } from 'zustand';
 
 export enum LivePanelItem {
   VIEWERS_LIST = 'VIEWERS_LIST',

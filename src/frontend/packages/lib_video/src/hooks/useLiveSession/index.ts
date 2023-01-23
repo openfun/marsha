@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
 import { LiveSession } from 'lib-components';
-import create from 'zustand';
+import { create } from 'zustand';
 
 export type State = {
   liveSession: Maybe<LiveSession>;
