@@ -225,7 +225,7 @@ class Base(Configuration):
                 "3/minute", environ_name="REST_FRAMEWORK_LIVE_SESSION_THROTTLE_RATE"
             ),
         },
-        "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
+        "DEFAULT_SCHEMA_CLASS": "marsha.core.api.schema.MarshaAutoSchema",
     }
 
     # DRF SPECTACULAR
