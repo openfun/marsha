@@ -15,6 +15,18 @@
     "description": "Accessibility title for close modal button title.",
     "message": "Close the modal"
   },
+  "components.Profile.components.SettingsProfilePage.account": {
+    "description": "Account tab title in settings page, to update password and link to other site.",
+    "message": "My account"
+  },
+  "components.Profile.components.SettingsProfilePage.info": {
+    "description": "Info tab title in settings page, to update name and other general infos.",
+    "message": "My informations"
+  },
+  "components.Profile.components.SettingsProfilePage.organizations": {
+    "description": "Organization tab title in settings page, to config organizations.",
+    "message": "My organizations"
+  },
   "components.SortableTable.sortByAscendingCreationDate": {
     "description": "Sort table objects by ascending creation date",
     "message": "Creation date"
@@ -67,6 +79,10 @@
     "description": "Retry button title to fetch again organizations in case of error.",
     "message": "Retry"
   },
+  "feature.Profile.ProfilePage.header": {
+    "description": "Profile page's title.",
+    "message": "My profile"
+  },
   "features.Authentication.Login.altLogo": {
     "description": "Accessible description for the Marsha logo",
     "message": "Marsha logo"
@@ -79,9 +95,77 @@
     "description": "Label submit button",
     "message": "OK"
   },
+  "features.Authentication.components.LoginForm.passwordLabel": {
+    "description": "Label for password field.",
+    "message": "Password"
+  },
+  "features.Authentication.components.LoginForm.passwordLost": {
+    "description": "Message to redirect to password lost page.",
+    "message": "Forgot your password?"
+  },
   "features.Authentication.components.LoginForm.requiredField": {
     "description": "Message when classroom field is missing.",
     "message": "This field is required to login."
+  },
+  "features.Authentication.components.LoginForm.usernameLabel": {
+    "description": "Label for username field.",
+    "message": "Username"
+  },
+  "features.Authentication.components.PasswordResetConfirm.wrongUrlError": {
+    "description": "Error toasts when the URL is wrong.",
+    "message": "Ooops! Something went wrong with the URL. Please check it and try again."
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.error": {
+    "description": "Error when trying to send request",
+    "message": "An error occurred"
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.explainingText": {
+    "description": "Help text for password reset.",
+    "message": "To set your new password, enter the new password twice below."
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.labelSubmit": {
+    "description": "Label submit button",
+    "message": "Reset my password"
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.passwordConfirmLabel": {
+    "description": "Aria label for password confirmation field",
+    "message": "Password confirm"
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.passwordLabel": {
+    "description": "Label for password field",
+    "message": "Password"
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.requiredField": {
+    "description": "Message when required field is missing.",
+    "message": "This field is required."
+  },
+  "features.Authentication.components.PasswordResetConfirmForm.successText": {
+    "description": "Displayed text when password reset request succeeded.",
+    "message": "Password has been successfully reset."
+  },
+  "features.Authentication.components.PasswordResetForm.error": {
+    "description": "Error when trying to send request",
+    "message": "An error occurred"
+  },
+  "features.Authentication.components.PasswordResetForm.explainingText": {
+    "description": "Help text for password reset.",
+    "message": "Forgotten your password? Enter your email address below, and we’ll email instructions for setting a new one."
+  },
+  "features.Authentication.components.PasswordResetForm.labelFieldEmail": {
+    "description": "Email field name",
+    "message": "Email"
+  },
+  "features.Authentication.components.PasswordResetForm.labelSubmit": {
+    "description": "Label submit button",
+    "message": "Reset my password"
+  },
+  "features.Authentication.components.PasswordResetForm.requiredField": {
+    "description": "Message when required field is missing.",
+    "message": "This field is required."
+  },
+  "features.Authentication.components.PasswordResetForm.successText": {
+    "description": "Displayed text when password reset request succeeded.",
+    "message": "Password reset e-mail has been sent."
   },
   "features.Authentication.components.RenaterAuthenticator.labelSelectRenater": {
     "description": "Label for select box for Renater login",
@@ -139,9 +223,17 @@
     "description": "Text when there is no classroom to display.",
     "message": "There is no classroom to display."
   },
-  "features.HomePage.HomePage": {
-    "description": "HomePage title",
-    "message": "Homepage"
+  "features.Header.logout": {
+    "description": "Logout action in header drop.",
+    "message": "Logout"
+  },
+  "features.Header.profile": {
+    "description": "My profile link in header drop.",
+    "message": "My profile"
+  },
+  "features.Header.settings": {
+    "description": "Settings link in header drop.",
+    "message": "Settings"
   },
   "features.HomePage.SeeEverything": {
     "description": "Label to see all the cards",
@@ -234,6 +326,66 @@
   "features.PortabilityRequests.title": {
     "description": "PortabilityRequests title",
     "message": "Portability requests"
+  },
+  "features.Profile.AccountSettings.currentPassword": {
+    "description": "Label for current password text input.",
+    "message": "Current password"
+  },
+  "features.Profile.AccountSettings.defaultError": {
+    "description": "Message displayed when an unknonw error occured while updating the user password.",
+    "message": "An error occurred, please try again later."
+  },
+  "features.Profile.AccountSettings.header": {
+    "description": "Account settings page's title.",
+    "message": "My account"
+  },
+  "features.Profile.AccountSettings.hiddeCurrentPassword": {
+    "description": "A18n label for the hidden current password button.",
+    "message": "Hidde the current password."
+  },
+  "features.Profile.AccountSettings.hiddeNewPassword": {
+    "description": "A18n label for the hidde new password button.",
+    "message": "Hidde new password"
+  },
+  "features.Profile.AccountSettings.hiddePasswordValidation": {
+    "description": "A18n label for the hidde password confirmation button.",
+    "message": "Hidde password confirmation"
+  },
+  "features.Profile.AccountSettings.newPassword": {
+    "description": "Label for new password text input.",
+    "message": "New password"
+  },
+  "features.Profile.AccountSettings.onErrorMessage": {
+    "description": "Message displayed when an error occured while updating user password.",
+    "message": "An error occured, your password has not been changed."
+  },
+  "features.Profile.AccountSettings.onSuccessMessage": {
+    "description": "Message displayed when updating the user password is done with success.",
+    "message": "Your password has been updated with success."
+  },
+  "features.Profile.AccountSettings.passwordValidation": {
+    "description": "Label for password confirmation text input.",
+    "message": "Repeat new password"
+  },
+  "features.Profile.AccountSettings.showCurrentPassword": {
+    "description": "A18n label for the show current password button.",
+    "message": "Show the current password."
+  },
+  "features.Profile.AccountSettings.showNewPassword": {
+    "description": "A18n label for the show new password button.",
+    "message": "Show new password"
+  },
+  "features.Profile.AccountSettings.showPasswordValidation": {
+    "description": "A18n label for the show password confirmation button.",
+    "message": "Show password confirmation"
+  },
+  "features.Profile.AccountSettings.submit": {
+    "description": "Title for the submit button for the bloc in settings to update the password.",
+    "message": "Submit"
+  },
+  "features.Profile.AccountSettings.title": {
+    "description": "Title for the bloc in settings to update the password.",
+    "message": "Update my password"
   },
   "routes.AppRoutes.metaDescription": {
     "description": "Meta description website",
