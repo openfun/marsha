@@ -10,8 +10,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## Fixed
 
-- Authentication renater select crashing the site on scroll
-- Fix firefox chunk CDN invite mode
+- standalone website:
+  - Authentication renater select crashing the site on scroll
+  - Consider local storage is optional depending on browser settings
+  - Fix firefox chunk CDN invite mode
 - Return 404 for missing static files
 
 ## [4.0.0-beta.13] - 2023-01-23
