@@ -1,0 +1,102 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  labels:
+    app: marsha
+    service: nginx
+    version: "{{ marsha_nginx_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: "marsha-nginx-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+spec:
+  replicas: {{ marsha_nginx_replicas }}
+  selector:
+    matchLabels:
+      app: marsha
+      service: nginx
+      version: "{{ marsha_nginx_image_tag }}"
+      deployment: "marsha-nginx-{{ deployment_stamp }}"
+      deployment_stamp: "{{ deployment_stamp }}"
+  template:
+    metadata:
+      labels:
+        app: marsha
+        service: nginx
+        version: "{{ marsha_nginx_image_tag }}"
+        deployment: "marsha-nginx-{{ deployment_stamp }}"
+        deployment_stamp: "{{ deployment_stamp }}"
+    spec:
+      # Prefer running pods on different nodes for redundancy
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: deployment
+                  operator: In
+                  values:
+                  - "marsha-nginx-{{ deployment_stamp }}"
+              topologyKey: kubernetes.io/hostname
+{% set image_pull_secret_name = marsha_nginx_image_pull_secret_name | default(none) or default_image_pull_secret_name %}
+{% if image_pull_secret_name is not none %}
+      imagePullSecrets:
+        - name: "{{ image_pull_secret_name }}"
+{% endif %}
+      containers:
+        - image: "{{ marsha_nginx_image_name }}:{{ marsha_nginx_image_tag }}"
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: marsha-v-nginx
+              readOnly: true
+{% if env_type in trashable_env_types %}
+            - mountPath: /data/media/marsha
+              name: marsha-v-media
+              readOnly: true
+            - mountPath: /data/static/marsha
+              name: marsha-v-static
+              readOnly: true
+{% endif %}
+{% if activate_http_basic_auth or marsha_activate_http_basic_auth %}
+            - mountPath: "{{ http_basic_auth_user_file | dirname }}"
+              name: marsha-htpasswd
+{% endif %}
+
+          livenessProbe:
+            httpGet:
+              path: "{{ marsha_nginx_healthcheck_endpoint }}"
+              port: {{ marsha_nginx_healthcheck_port }}
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: "{{ marsha_nginx_healthcheck_endpoint }}"
+              port: {{ marsha_nginx_healthcheck_port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources: {{ marsha_nginx_resources }}
+      securityContext:
+        runAsUser: {{ container_uid }}
+        runAsGroup: {{ container_gid }}
+      volumes:
+        - name: marsha-v-nginx
+          configMap:
+            name: marsha-nginx-{{ deployment_stamp }}
+{% if env_type in trashable_env_types %}
+        - name: marsha-v-media
+          persistentVolumeClaim:
+            claimName: marsha-pvc-media
+        - name: marsha-v-static
+          persistentVolumeClaim:
+            claimName: marsha-pvc-static
+{% endif %}
+{% if activate_http_basic_auth or marsha_activate_http_basic_auth %}
+        - name: marsha-htpasswd
+          secret:
+            secretName: "{{ marsha_nginx_htpasswd_secret_name }}"
+{% endif %}

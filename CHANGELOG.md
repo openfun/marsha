@@ -20,6 +20,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - LTI link for classroom available in every context
 - standalone website:
   - banner homepage with dynamic text
+- Arnold tray to manage definition directly in marsha repository
+
 
 ### Changed
 

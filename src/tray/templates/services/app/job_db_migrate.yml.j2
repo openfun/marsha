@@ -1,0 +1,53 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: "marsha-app-dbmigrate-{{ job_stamp }}"
+  namespace: "{{ namespace_name }}"
+  labels:
+    app: marsha
+    service: marsha
+    version: "{{ marsha_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+    job_stamp: "{{ job_stamp }}"
+spec:
+  template:
+    metadata:
+      name: "marsha-app-dbmigrate-{{ job_stamp }}"
+      labels:
+        app: marsha
+        service: marsha
+        version: "{{ marsha_image_tag }}"
+        deployment_stamp: "{{ deployment_stamp }}"
+        job_stamp: "{{ job_stamp }}"
+    spec:
+{% set image_pull_secret_name = marsha_image_pull_secret_name | default(none) or default_image_pull_secret_name %}
+{% if image_pull_secret_name is not none %}
+      imagePullSecrets:
+        - name: "{{ image_pull_secret_name }}"
+{% endif %}
+      containers:
+        - name: marsha-dbmigrate
+          image: "{{ marsha_image_name }}:{{ marsha_image_tag }}"
+          imagePullPolicy: Always
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: marsha.settings
+            - name: DJANGO_CONFIGURATION
+              value: "{{ marsha_django_configuration }}"
+            - name: POSTGRES_DB
+              value: "{{ marsha_postgresql_database }}"
+            - name: POSTGRES_HOST
+              value: "marsha-{{ marsha_postgresql_host }}-{{ deployment_stamp }}"
+            - name: POSTGRES_PORT
+              value: "{{ marsha_postgresql_port }}"
+            - name: DJANGO_ALLOWED_HOSTS
+              value: "{{ marsha_host }}"
+          envFrom:
+            - secretRef:
+                name: "{{ marsha_secret_name }}"
+          command: ["python", "manage.py", "migrate"]
+          resources: {{ marsha_app_job_db_migrate_resources }}
+      restartPolicy: Never
+      securityContext:
+        runAsUser: {{ container_uid }}
+        runAsGroup: {{ container_gid }}
