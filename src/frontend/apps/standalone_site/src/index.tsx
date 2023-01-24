@@ -1,3 +1,4 @@
+import 'init';
 import 'public-path';
 import { serviceWorkerRegistration } from 'lib-components';
 import React from 'react';
