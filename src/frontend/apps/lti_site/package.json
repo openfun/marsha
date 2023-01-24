@@ -153,9 +153,6 @@
     "styled-components": "5.3.6",
     "styled-reboot": "5.0.0",
     "uuid": "9.0.0",
-    "video.js": "7.20.3",
-    "videojs-contrib-quality-levels": "3.0.0",
-    "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.6.2",
     "zustand": "4.3.2"

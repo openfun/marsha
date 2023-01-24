@@ -32,8 +32,8 @@
     "react-test-renderer": "*",
     "rollup-plugin-dts": "5.1.1",
     "styled-components": "*",
-    "zustand": "4.3.2",
-    "vtt.js": "0.13.0"
+    "vtt.js": "0.13.0",
+    "zustand": "4.3.2"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
@@ -105,8 +105,8 @@
     "ts-jest": "29.0.5",
     "tsc-alias": "^1.7.0",
     "typescript": "4.9.4",
-    "video.js": "7.20.3",
-    "videojs-contrib-quality-levels": "3.0.0",
+    "video.js": "7.21.1",
+    "videojs-contrib-quality-levels": "2.2.1",
     "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0",
     "xhr-mock": "2.5.1",
