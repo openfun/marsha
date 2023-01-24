@@ -1,4 +1,4 @@
-import { Box, FormField, Image, Select, Text } from 'grommet';
+import { Box, FormField, Image, Select, Text, ThemeContext } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
@@ -118,34 +118,39 @@ export const RenaterAuthenticator = () => {
         </Box>
         <Box background="blue-active" height="1px" width="100%" />
       </Box>
-      <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
-        <Select
-          ref={refSelect}
-          size="medium"
-          options={options}
-          onChange={({ option }: { option: RenaterSamlFerIdp }) => {
-            window.location.replace(option.login_url);
-          }}
-          dropAlign={{ ...selectDropPosition, left: 'left' }}
-          dropHeight={`${selectDropHeight}px}`}
-          dropProps={{
-            width: `${selectDropWidth}px`,
-          }}
-          onSearch={(text) => {
-            // The line below escapes regular expression special characters:
-            // [ \ ^ $ . | ? * + ( )
-            const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
 
-            // Create the regular expression with modified value which
-            // handles escaping special characters. Without escaping special
-            // characters, errors will appear in the console
-            const exp = new RegExp(escapedText, 'i');
-            setOptions(optionsDefault.filter((o) => exp.test(o.display_name))); // defaultOptions
-          }}
-        >
-          {renderOption}
-        </Select>
-      </FormField>
+      <ThemeContext.Extend value={{ select: { step: options.length || 20 } }}>
+        <FormField label={intl.formatMessage(messages.labelSelectRenater)}>
+          <Select
+            ref={refSelect}
+            size="medium"
+            options={options}
+            onChange={({ option }: { option: RenaterSamlFerIdp }) => {
+              window.location.replace(option.login_url);
+            }}
+            dropAlign={{ ...selectDropPosition, left: 'left' }}
+            dropHeight={`${selectDropHeight}px}`}
+            dropProps={{
+              width: `${selectDropWidth}px`,
+            }}
+            onSearch={(text) => {
+              // The line below escapes regular expression special characters:
+              // [ \ ^ $ . | ? * + ( )
+              const escapedText = text.replace(/[-\\^$*+?.()|[\]{}]/g, '\\$&');
+
+              // Create the regular expression with modified value which
+              // handles escaping special characters. Without escaping special
+              // characters, errors will appear in the console
+              const exp = new RegExp(escapedText, 'i');
+              setOptions(
+                optionsDefault.filter((o) => exp.test(o.display_name)),
+              ); // defaultOptions
+            }}
+          >
+            {renderOption}
+          </Select>
+        </FormField>
+      </ThemeContext.Extend>
     </Box>
   );
 };
