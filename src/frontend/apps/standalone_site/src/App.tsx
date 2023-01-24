@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
+import { ContentSpinner } from 'components/Spinner';
 import { DEFAULT_LANGUAGE } from 'conf/global';
 import { AppRoutes } from 'routes';
 import { getFullThemeExtend } from 'styles/theme.extend';
@@ -23,6 +24,7 @@ const App = () => {
   const queryClient = useMemo(() => new QueryClient(), []);
   const [language, setLanguage] = useState<string>();
   const [localCode, setLocalCode] = useState<string>();
+  const [isDomReady, setIsDomReady] = useState(false);
 
   useEffect(() => {
     const language = getLanguage();
@@ -45,6 +47,18 @@ const App = () => {
   useEffect(() => {
     setIsAppInitialized(true);
   }, [setIsAppInitialized]);
+
+  useEffect(() => {
+    const handleCDNLoaded = () => {
+      setIsDomReady(window.isCDNLoaded || false);
+    };
+
+    document.addEventListener('CDNLoaded', handleCDNLoaded);
+    handleCDNLoaded();
+    return () => {
+      document.removeEventListener('CDNLoaded', handleCDNLoaded);
+    };
+  }, []);
 
   if (!isAppInitialized) {
     return null;
@@ -83,7 +97,11 @@ const App = () => {
             }}
           />
           <BrowserRouter>
-            <AppRoutes />
+            {isDomReady ? (
+              <AppRoutes />
+            ) : (
+              <ContentSpinner boxProps={{ height: '100vh' }} />
+            )}
           </BrowserRouter>
         </Grommet>
       </QueryClientProvider>
