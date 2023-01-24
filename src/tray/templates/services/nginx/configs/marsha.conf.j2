@@ -1,0 +1,118 @@
+{% set http_basic_auth_enabled = activate_http_basic_auth or marsha_activate_http_basic_auth %}
+{% set bypass_htaccess = marsha_nginx_bypass_htaccess_ip_whitelist | length > 0 %}
+upstream marsha-backend {
+  server marsha-app-{{ deployment_stamp }}:{{ marsha_django_port }} fail_timeout=0;
+}
+
+upstream marsha-xapi {
+  server marsha-xapi-{{ deployment_stamp }}:{{ marsha_django_port }} fail_timeout=0;
+}
+
+server {
+  listen {{ marsha_nginx_port }};
+  server_name localhost;
+
+{% if http_basic_auth_enabled %}
+{% if bypass_htaccess %}
+  location @basicauth {
+    auth_basic "{{ http_basic_auth_message }}";
+    auth_basic_user_file {{ http_basic_auth_user_file }};
+
+    try_files $uri @proxy_to_marsha_app;
+  }
+{% else %}
+  auth_basic "{{ http_basic_auth_message }}";
+  auth_basic_user_file {{ http_basic_auth_user_file }};
+{% endif %}
+{% endif %}
+
+  client_max_body_size 100M;
+
+  rewrite ^(.*)/favicon.ico$ /static/images/favicon.ico last;
+
+  # Disables server version feedback on pages and in headers
+  server_tokens off;
+  {% block server_extra %}{% endblock %}
+
+  location @proxy_to_marsha_app {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    proxy_redirect off;
+    proxy_pass http://marsha-backend;
+  }
+
+  location @proxy_to_marsha_xapi {
+    proxy_set_header Host $http_host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+
+    proxy_redirect off;
+    proxy_pass http://marsha-xapi;
+  }
+
+  location / {
+{% if http_basic_auth_enabled and bypass_htaccess %}
+    if ($http_x_forwarded_for !~ ^({{ marsha_nginx_bypass_htaccess_ip_whitelist | join("|") }})) {
+      error_page 401 = @basicauth;
+      return 401;
+    }
+{% endif %} 
+
+    try_files $uri @proxy_to_marsha_app;
+  }
+
+  location /ws/ {
+    proxy_pass http://marsha-backend;
+
+    proxy_http_version 1.1;
+    proxy_set_header Connection "Upgrade";
+    proxy_set_header Upgrade $http_upgrade;
+
+    proxy_buffering off;
+    proxy_set_header Host $host;
+    proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+    proxy_set_header X-Forwarded-Proto $scheme;
+  }
+
+  location /xapi {
+{% if http_basic_auth_enabled and bypass_htaccess %}
+    if ($http_x_forwarded_for !~ ^({{ marsha_nginx_bypass_htaccess_ip_whitelist | join("|") }})) {
+      error_page 401 = @basicauth;
+      return 401;
+    }
+{% endif %} 
+
+    try_files $uri @proxy_to_marsha_xapi;
+  }
+
+{% if marsha_nginx_admin_ip_whitelist | length > 0 %}
+  location /admin {
+    {#
+      We want to limit access to a list of whitelisted IP addresses.
+
+      $http_x_forwarded_for variable contains a list of IPs listed from the HTTP_X_FORWARED_FOR
+      header (e.g. w.x.y.z, 10.0.0.1). The first IP corresponds to the client's public address,
+      which is of interest (other ones have been added by subsequent proxies),
+      hence we restrict our comparison with the beginning of this list (this is why our regex starts with a ^).
+    #}
+    if ($http_x_forwarded_for !~ ^({{ marsha_nginx_admin_ip_whitelist | join("|") }})) {
+      return 403;
+    }
+
+    try_files $uri @proxy_to_marsha_app;
+  }
+{% endif %}
+
+  {% if env_type in trashable_env_types %}
+  location ~ ^/static/(?P<file>.*) {
+    access_log off;
+    gzip on;
+    gzip_comp_level 5;
+    gzip_types text/plain text/css text/xml text/javascript application/x-javascript application/xml image/svg+xml;
+    expires {{ marsha_nginx_static_cache_expires }};
+    add_header Cache-Control public;
+    root /data/static/marsha;
+    try_files /$file =404;
+  }
+  {% endif %}
+}

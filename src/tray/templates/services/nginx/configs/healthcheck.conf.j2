@@ -1,0 +1,14 @@
+server {
+  listen {{ marsha_nginx_healthcheck_port }};
+  server_name localhost;
+
+  location {{ marsha_nginx_healthcheck_endpoint }} {
+    add_header Content-Type text/plain;
+    return 200 "OK";
+  }
+
+  location {{ marsha_nginx_status_endpoint }} {
+     stub_status;
+  }
+
+}

@@ -48,7 +48,6 @@ RUN yarn compile-translations && \
     yarn workspace marsha run sass scss/_main.scss /app/marsha/static/css/main.css --style=compressed --load-path=../../node_modules  && \
     mkdir -p /app/marsha/static/css/fonts && cp node_modules/katex/dist/fonts/* /app/marsha/static/css/fonts && \
     yarn build-libs && \
-    yarn build-tests && \
     BUILD_PATH=/app/marsha/static/js/build/site/ DJANGO_STATIC_DIR=/app/marsha/static yarn workspace standalone_site run build && \
     yarn workspace marsha run build --mode=production --output-path /app/marsha/static/js/build/lti_site/
 

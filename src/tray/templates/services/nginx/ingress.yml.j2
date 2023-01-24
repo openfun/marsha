@@ -1,0 +1,33 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  namespace: "{{ namespace_name }}"
+  name: "marsha-nginx-{{ prefix }}"
+  labels:
+    env_type: "{{ env_type }}"
+    customer: "{{ customer }}"
+    app: "marsha"
+    service: "nginx"
+    route_prefix: "{{ prefix }}"
+    route_target_service: "app"
+  annotations:
+{% if prefix in acme_enabled_route_prefix %}
+    cert-manager.io/issuer: "{{ acme_issuer_name }}"
+{% endif %}
+spec:
+  ingressClassName: "{{ marsha_ingress_class_name }}"
+  rules:
+  - host: "{{ marsha_host | blue_green_host(prefix) }}"
+    http:
+      paths:
+      - backend:
+          service:
+            name: "marsha-nginx-{{ prefix }}"
+            port:
+              number: {{ marsha_nginx_port }}
+        path: /
+        pathType: Prefix
+  tls:
+  - hosts:
+    - "{{ marsha_host | blue_green_host(prefix) }}"
+    secretName: "marsha-app-tls-{{ prefix }}-{{ acme_env }}"

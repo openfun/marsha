@@ -1,0 +1,4 @@
+{% set service_variant = "app" %}
+{% set marsha_replicas = marsha_app_replicas %}
+
+{% include "./_deploy_base.yml.j2" with context %}
