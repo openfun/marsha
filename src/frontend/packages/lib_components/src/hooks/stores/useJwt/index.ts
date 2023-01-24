@@ -14,13 +14,40 @@ interface JwtStoreInterface {
   resetJwt: () => void;
 }
 
-export const useJwt = create<JwtStoreInterface>()(
+
+const store = create<JwtStoreInterface>()(
+  (set, get) => ({
+    jwt: undefined,
+    refreshJwt: undefined,
+    internalDecodedJwt: undefined,
+    setJwt: (jwt) => set((state) => ({ ...state, jwt })),
+    setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
+    getDecodedJwt: () => {
+      const currentValue = get().internalDecodedJwt;
+      if (currentValue) {
+        return currentValue;
+      }
+
+      const decoded = decodeJwt(get().jwt);
+      set((state) => ({ ...state, internalDecodedJwt: decoded }));
+      return decoded;
+    },
+    resetJwt: () => {
+      set((state) => ({
+        ...state,
+        jwt: undefined,
+        refreshJwt: undefined,
+      }));
+    },
+  })
+);
+
+const persistentStore = create<JwtStoreInterface>()(
   persist(
     (set, get) => ({
       jwt: undefined,
       refreshJwt: undefined,
       internalDecodedJwt: undefined,
-      jwtCreateTimestamp: undefined,
       setJwt: (jwt) => set((state) => ({ ...state, jwt })),
       setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
       getDecodedJwt: () => {
@@ -47,3 +74,5 @@ export const useJwt = create<JwtStoreInterface>()(
     },
   ),
 );
+
+export const useJwt = window.lti_context ? store : persistentStore;
