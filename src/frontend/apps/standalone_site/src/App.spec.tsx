@@ -13,6 +13,7 @@ const consoleWarn = jest
   .mockImplementation(() => jest.fn());
 
 window.scrollTo = jest.fn();
+window.isCDNLoaded = true;
 
 describe('<App />', () => {
   beforeEach(() => {

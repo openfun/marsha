@@ -17,7 +17,7 @@ export const getMetaPublicValue = () => {
       metaPublicPathValue &&
       metaPublicPathValue !== '{{ static_base_url }}'
     ) {
-      return `${metaPublicPath.getAttribute('value') || ROOT_APP}`;
+      return `${metaPublicPathValue || ROOT_APP}`;
     }
   }
 
