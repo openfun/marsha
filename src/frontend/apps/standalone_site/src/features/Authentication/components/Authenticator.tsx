@@ -1,5 +1,6 @@
 import {
   AnonymousUser,
+  isLocalStorageEnabled,
   Loader,
   useCurrentUser,
   useJwt,
@@ -15,6 +16,13 @@ import { validateChallenge } from '../api/validateChallenge';
 
 const TARGET_URL_STORAGE_KEY = 'redirect_uri';
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
+
+function getLocalStorage() {
+  if (isLocalStorageEnabled()) {
+    return localStorage;
+  }
+  return undefined;
+}
 
 export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
   const { pathname, search } = useLocation();
@@ -41,7 +49,7 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     if (code) {
       fetchJwt(code);
     } else {
-      localStorage.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
+      getLocalStorage()?.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
       history.push(routes.LOGIN.path);
     }
   }, [code, history, jwt, pathname, search, setJwt]);
@@ -61,8 +69,8 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
 
       setCurrentUser(_currentUser);
 
-      const targetUri = localStorage.getItem(TARGET_URL_STORAGE_KEY);
-      localStorage.removeItem(TARGET_URL_STORAGE_KEY);
+      const targetUri = getLocalStorage()?.getItem(TARGET_URL_STORAGE_KEY);
+      getLocalStorage()?.removeItem(TARGET_URL_STORAGE_KEY);
       // redirect to the originally targeted URL (ie before the authentication loop)
       // or the root page if no target was set
       history.replace(targetUri || pathname);

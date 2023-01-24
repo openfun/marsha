@@ -5,6 +5,7 @@ export * from './errors/report';
 export * from './errors/exception';
 export * from './serviceWorker';
 export * from './tests/factories';
+export * from './localstorage';
 export * from './truncateFilename';
 export * from './useFetchButton';
 export * from './useResizeBox';
