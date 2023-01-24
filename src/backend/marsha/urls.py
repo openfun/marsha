@@ -1,4 +1,5 @@
 """Marsha URLs configuration."""
+import re
 
 from django.conf import settings
 from django.contrib import admin
@@ -159,9 +160,15 @@ if "dummy" in settings.STORAGE_BACKEND:
         ),
     ]
 
+static_path = re.escape(settings.STATIC_URL.lstrip("/"))
+media_path = re.escape(settings.MEDIA_URL.lstrip("/"))
+SITE_IGNORE_PREFIX = "|".join([static_path, media_path])
+
 urlpatterns += [
     re_path(
-        ".*",
+        # Catch all URLs that are not handled before
+        # and which do not regard static files or media files
+        rf"^(?!{SITE_IGNORE_PREFIX}).*",
         cache_page(86400, key_prefix=settings.RELEASE)(SiteView.as_view()),
         name="site",
     ),

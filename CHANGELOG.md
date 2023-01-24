@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Authentication renater select crashing the site on scroll
 - Fix firefox chunk CDN invite mode
+- Return 404 for missing static files
 
 ## [4.0.0-beta.13] - 2023-01-23
 
