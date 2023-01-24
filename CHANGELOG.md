@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## Added
+
+- Add a configuration for jwt state preservation with localstorage
+
 ## Fixed
 
 - standalone website:
