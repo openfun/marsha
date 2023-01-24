@@ -21,7 +21,6 @@ import React, {
   useMemo,
   useState,
 } from 'react';
-import { createJSONStorage } from 'zustand/middleware';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { Maybe } from 'lib-common';
@@ -66,20 +65,9 @@ export const AppInitializer = (
       return;
     }
 
-    useJwt.persist.setOptions({
-      name: `jwt-store-${appConfig.modelName}-${appConfig.resource_id || ''}`,
-      storage: createJSONStorage(() => sessionStorage),
-    });
-
     useJwt.setState({ jwt: props.jwt, refreshJwt: props.refresh_token });
     setIsJwtInitialized(true);
-  }, [
-    isJwtInitialized,
-    appConfig.modelName,
-    appConfig.resource_id,
-    props.jwt,
-    props.refresh_token,
-  ]);
+  }, [isJwtInitialized, props.jwt, props.refresh_token]);
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {

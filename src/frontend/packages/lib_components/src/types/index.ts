@@ -11,5 +11,6 @@ export * from './ResourceContext';
 export * from './serviceWorker';
 export * from './tracks';
 export * from './User';
+export * from './window';
 export * from './XMPP';
 export * from './XAPI';
