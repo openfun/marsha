@@ -88,6 +88,9 @@ enum EMyContentsSubRouteNames {
 enum EMyProfileSubRoutesNames {
   PROFILE_SETTINGS = 'PROFILE_SETTINGS',
 }
+enum EPlaylistSubRouteNames {
+  UPDATE_PLAYLIST = 'UPDATE_PLAYLIST',
+}
 
 type BasicRoute = Omit<Route, 'subRoutes'>;
 
@@ -97,23 +100,29 @@ export interface Route {
   alias?: string[];
   menuIcon?: React.ReactNode;
   isNavStrict?: boolean; // if true, all the subroutes will be active in the menu
-  subRoutes?: { [key in string]: Route };
+  subRoutes?: { [key in string]: SubRoute };
 }
+type SubRoute = Route & { hideSubRoute?: boolean };
 
 type Routes = {
   [key in ERouteNames as Exclude<
     ERouteNames,
-    'CONTENTS' | 'PROFILE'
+    'CONTENTS' | 'PROFILE' | 'PLAYLIST'
   >]: BasicRoute;
 } & {
   [ERouteNames.CONTENTS]: Route & {
     subRoutes: {
-      [key in EMyContentsSubRouteNames]: Route;
+      [key in EMyContentsSubRouteNames]: SubRoute;
     };
   };
   [ERouteNames.PROFILE]: Route & {
     subRoutes: {
-      [key in EMyProfileSubRoutesNames]: Route;
+      [key in EMyProfileSubRoutesNames]: SubRoute;
+    };
+  };
+  [ERouteNames.PLAYLIST]: Route & {
+    subRoutes: {
+      [key in EPlaylistSubRouteNames]: SubRoute;
     };
   };
 };
@@ -175,6 +184,7 @@ export const routes: Routes = {
   },
 
   PLAYLIST: {
+    isNavStrict: true,
     label: <FormattedMessage {...messages.menuPlaylistLabel} />,
     path: `/my-playlists`,
     menuIcon: (
@@ -185,6 +195,9 @@ export const routes: Routes = {
         aria-label="svg-menu-my-playlists"
       />
     ),
+    subRoutes: {
+      UPDATE_PLAYLIST: { path: '/my-playlists/:id/update', hideSubRoute: true },
+    },
   },
   ORGANIZATION: {
     label: <FormattedMessage {...messages.menuMyOrganizationsLabel} />,

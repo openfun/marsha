@@ -74,7 +74,7 @@ export interface Playlist extends Resource {
   is_portable_to_consumer_site: boolean;
   is_public: boolean;
   lti_id: string;
-  organization: { name: string; id: string };
+  organization: Nullable<{ name: string; id: string }>;
   portable_to: PlaylistLite[];
   title: string;
   users: string[];

@@ -1,7 +1,25 @@
-import { Box, Button, Stack } from 'grommet';
+import { Box, BoxProps, Button, Stack } from 'grommet';
 import { Spinner } from 'lib-components';
+import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+export const ModalButtonContainer = ({
+  children,
+  ...props
+}: PropsWithChildren<BoxProps>) => {
+  return (
+    <Box
+      direction="row"
+      justify="around"
+      gap="medium"
+      margin={{ top: 'large' }}
+      {...props}
+    >
+      {children}
+    </Box>
+  );
+};
 
 const messages = defineMessages({
   ButtonCancelModal: {
@@ -18,12 +36,18 @@ const ButtonModal = styled(Button)<ButtonModalProps>`
   flex: ${({ flex }) => flex && `${flex}`};
 `;
 
+export enum ModalButtonStyle {
+  DEFAULT = 'DEFAULT',
+  DESTRUCTIVE = 'DESTRUCTIVE',
+}
+
 interface ModalButtonProps {
   label: string;
   isDisabled?: boolean;
   isSubmiting?: boolean;
   onClickSubmit?: () => void;
   onClickCancel?: () => void;
+  style?: ModalButtonStyle;
 }
 
 /**
@@ -40,15 +64,11 @@ const ModalButton = ({
   isSubmiting,
   onClickSubmit,
   onClickCancel,
+  style,
 }: ModalButtonProps) => {
   const intl = useIntl();
   return (
-    <Box
-      direction="row"
-      justify="around"
-      gap="medium"
-      margin={{ top: 'large' }}
-    >
+    <ModalButtonContainer>
       {onClickCancel && (
         <ButtonModal
           primary
@@ -69,6 +89,9 @@ const ModalButton = ({
           label={label}
           onClick={onClickSubmit}
           fill="horizontal"
+          color={
+            style === ModalButtonStyle.DESTRUCTIVE ? 'red-active' : undefined
+          }
         />
         {isSubmiting && (
           <Box fill>
@@ -78,7 +101,7 @@ const ModalButton = ({
           </Box>
         )}
       </Stack>
-    </Box>
+    </ModalButtonContainer>
   );
 };
 

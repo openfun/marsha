@@ -47,6 +47,11 @@ const messages = defineMessages({
     description: 'Retry button title',
     id: 'features.Playlist.retry',
   },
+  updatePlaylist: {
+    defaultMessage: 'Update playlist {playlistName}',
+    description: 'Message for update playlist button.',
+    id: 'features.Playlist.updatePlaylist',
+  },
 });
 
 export const PlaylistPage = () => {
@@ -89,13 +94,12 @@ export const PlaylistPage = () => {
     }
   }, [isLoading]);
 
-  const [shouldDisplayCreateButton, setShouldDisplayCreateButton] =
-    useState(false);
+  const [shouldDisplayActions, setShouldDisplayActions] = useState(false);
   useEffect(() => {
-    if (!shouldDisplayCreateButton && data?.count && hasLoadedOnce) {
-      setShouldDisplayCreateButton(true);
+    if (!shouldDisplayActions && data?.count && hasLoadedOnce) {
+      setShouldDisplayActions(true);
     }
-  }, [hasLoadedOnce, data?.count, shouldDisplayCreateButton]);
+  }, [hasLoadedOnce, data?.count, shouldDisplayActions]);
 
   const shouldDisplayError = (!isLoading && !data) || isError;
   const shouldDisplayNoPlaylistYetMessage =
@@ -125,8 +129,13 @@ export const PlaylistPage = () => {
                 {intl.formatMessage(messages.title)}
               </Heading>
             </Box>
-            {shouldDisplayCreateButton && (
-              <Box flex="shrink" margin={{ vertical: 'auto', left: 'small' }}>
+            {shouldDisplayActions && (
+              <Box
+                flex="shrink"
+                margin={{ vertical: 'auto', left: 'small' }}
+                gap="small"
+                direction="row"
+              >
                 <Button
                   primary
                   a11yTitle={intl.formatMessage(messages.create)}
@@ -212,19 +221,23 @@ export const PlaylistPage = () => {
                   }}
                 >
                   {(item) => (
-                    <Box flex direction="row" align="center">
-                      <Box basis="30%">
-                        <Text wordBreak="break-word">{item.title}</Text>
-                      </Box>
-                      <Box basis="50%">
-                        <Text wordBreak="break-word">{item.lti_id}</Text>
-                      </Box>
-                      <Box basis="20%">
-                        <Text wordBreak="break-word">
-                          {item.consumer_site?.domain}
-                        </Text>
-                      </Box>
-                    </Box>
+                    <Button
+                      plain
+                      a11yTitle={intl.formatMessage(messages.updatePlaylist, {
+                        playlistName: item.title,
+                      })}
+                      title={intl.formatMessage(messages.updatePlaylist, {
+                        playlistName: item.title,
+                      })}
+                      label={
+                        <Box flex>
+                          <Text wordBreak="break-word">{item.title}</Text>
+                        </Box>
+                      }
+                      onClick={() => {
+                        history.push(`/my-playlists/${item.id}/update`);
+                      }}
+                    />
                   )}
                 </SortableTable>
               )}

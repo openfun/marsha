@@ -80,12 +80,14 @@ const Menu = () => {
           <MenuItem key={`menuItemContent-${index}`} route={content}>
             {content.subRoutes && (
               <Box margin={{ left: '2.6rem' }}>
-                {Object.values(content.subRoutes).map((subRoutes, subIndex) => (
-                  <MenuItem
-                    key={`menuItemSubContent-${subIndex}`}
-                    route={subRoutes}
-                  />
-                ))}
+                {Object.values(content.subRoutes)
+                  .filter((subRoute) => !subRoute.hideSubRoute)
+                  .map((subRoutes, subIndex) => (
+                    <MenuItem
+                      key={`menuItemSubContent-${subIndex}`}
+                      route={subRoutes}
+                    />
+                  ))}
               </Box>
             )}
           </MenuItem>
