@@ -1,22 +1,10 @@
-import { report } from 'lib-components';
+import { report, isLocalStorageEnabled } from 'lib-components';
 import { v4 as uuidv4 } from 'uuid';
 
 export const ANONYMOUS_ID_KEY = 'marsha_anonymous_id';
 
-const localStorageEnabled = (): boolean => {
-  try {
-    localStorage.setItem('enabled', '1');
-    localStorage.removeItem('enabled');
-    return true;
-  } catch (e) {
-    return false;
-  }
-};
-
-const isLocaleStorageEnabled = localStorageEnabled();
-
 export const getAnonymousId = (): string => {
-  if (!isLocaleStorageEnabled) {
+  if (!isLocalStorageEnabled()) {
     return uuidv4();
   }
 
@@ -36,7 +24,7 @@ export const getAnonymousId = (): string => {
 };
 
 export const setAnonymousId = (anonymousId: string): void => {
-  if (isLocaleStorageEnabled) {
+  if (isLocalStorageEnabled()) {
     localStorage.setItem(ANONYMOUS_ID_KEY, anonymousId);
   }
 };
