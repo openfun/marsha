@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## Fixed
+
+- Authentication renater select crashing the site on scroll
+
 ## [4.0.0-beta.13] - 2023-01-23
 
 ### Added
@@ -24,7 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - lti:
   - service worker 401 reconnect
-- Add a check on video file size when uploading content 
+- Add a check on video file size when uploading content
 
 ### Changed
 
