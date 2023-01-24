@@ -102,7 +102,7 @@ describe('<CreatePlaylistForm />', () => {
     expect(await screen.findByText('Create a playlist')).toBeInTheDocument();
 
     userEvent.click(
-      screen.getByRole('button', { name: 'Open Drop; Selected: id' }),
+      await screen.findByRole('button', { name: 'Open Drop; Selected: id' }),
     );
 
     userEvent.click(await screen.findByRole('option', { name: 'other-org' }));

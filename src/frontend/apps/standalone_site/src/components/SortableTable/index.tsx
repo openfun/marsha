@@ -12,6 +12,8 @@ import { Spinner } from 'lib-components';
 import { Fragment, ReactNode, useEffect, useState } from 'react';
 import { defineMessages } from 'react-intl';
 
+import { ITEM_PER_PAGE } from 'conf/global';
+
 interface SortByBase {
   label: string;
 }
@@ -206,6 +208,8 @@ export const SortableTable = <
     };
   }, [asyncLoader]);
 
+  const itemPerPage = (props.paginable && props.pageSize) || ITEM_PER_PAGE;
+
   return (
     <Box direction="column" flex gap="small">
       <Box
@@ -300,7 +304,7 @@ export const SortableTable = <
         )}
       </Stack>
 
-      {props.paginable && (
+      {props.paginable && props.numberOfItems > itemPerPage && (
         <Box direction="row" flex key="footer">
           <Box flex="shrink" margin="auto">
             <Pagination
@@ -311,7 +315,7 @@ export const SortableTable = <
                 );
               }}
               page={props.currentPage}
-              step={props.pageSize}
+              step={itemPerPage}
             />
           </Box>
         </Box>

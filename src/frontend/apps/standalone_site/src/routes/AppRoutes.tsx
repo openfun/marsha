@@ -14,7 +14,7 @@ import { routes } from './routes';
 const { AuthRouter } = lazyImport(() => import('features/Authentication'));
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
 const { HomePage } = lazyImport(() => import('features/HomePage'));
-const { PlaylistPage } = lazyImport(() => import('features/Playlist'));
+const { PlaylistRouter } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
 );
@@ -92,7 +92,7 @@ const AppRoutes = () => {
 
               <Route path={routes.PLAYLIST.path}>
                 <Suspense fallback={<ContentSpinner />}>
-                  <PlaylistPage />
+                  <PlaylistRouter />
                 </Suspense>
               </Route>
 
