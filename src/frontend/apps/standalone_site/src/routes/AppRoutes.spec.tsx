@@ -26,7 +26,7 @@ jest.mock('features/Contents/', () => ({
 }));
 
 jest.mock('features/Playlist', () => ({
-  PlaylistPage: () => <div>My Playlist Page</div>,
+  PlaylistRouter: () => <div>My Playlist Page</div>,
 }));
 
 window.scrollTo = jest.fn();
