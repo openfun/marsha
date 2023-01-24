@@ -1,0 +1,18 @@
+{% if endpoint_postgresql_ip | ipaddr != false %}
+apiVersion: v1
+kind: Endpoints
+metadata:
+  labels:
+    app: marsha
+    endpoint: postgresql
+    deployment_stamp: "{{ deployment_stamp }}"
+  # name of the endpoint should be the same as the corresponding service
+  name: "marsha-postgresql-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+subsets:
+  - addresses:
+    - ip: "{{ endpoint_postgresql_ip }}"
+    ports:
+    - port: 5432
+      name: 5432-tcp
+{% endif %}

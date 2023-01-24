@@ -1,0 +1,30 @@
+# customer: {{ customer }}
+# env_type: {{ env_type }}
+
+# postgresql
+{% set postgresql_credentials = databases.postgresql | json_query("[?release=='" ~ marsha_postgresql_version ~ "'].databases | [0][?application=='marsha'].{user: user, password: password} | [0]") %}
+POSTGRESQL_USER: {{ postgresql_credentials.user }}
+POSTGRESQL_PASSWORD: {{ postgresql_credentials.password }}
+
+# marsha environment
+DJANGO_SECRET_KEY: {{ lookup('password', '/dev/null length=50') }}
+# FIXME uncomment this variable and replace with your sentry's credentials
+# DJANGO_SENTRY_DSN: https://super:marsha@sentry.io/foo
+
+# FIXME uncomment this block and replace with your AWS credentials.
+# You can refer to Marsha's documentation to know what are these variables:
+# https://github.com/openfun/marsha/blob/master/docs/env.md#amazon-web-services-related-settings
+# AWS
+# DJANGO_AWS_ACCESS_KEY_ID: yourAwsAccessKeyId
+# DJANGO_AWS_SECRET_ACCESS_KEY: yourAwsSecretAccessKey
+
+# FIXME uncomment this block and replace with your cloudfront credentials
+# You can refer to Marsha's documentation to know what are these variables:
+# https://github.com/openfun/marsha/blob/master/docs/env.md#django_cloudfront_access_key_id
+# CloudFront User (has to be a root user, cannot be an IAM user)
+# DJANGO_CLOUDFRONT_ACCESS_KEY_ID: YourCloudfrontAccessKeyId
+# DJANGO_CLOUDFRONT_URL: https://yourCloudfrontUrl
+# DJANGO_CLOUDFRONT_PRIVATE_KEY:
+
+# JWT Token
+DJANGO_JWT_SIGNING_KEY: {{ lookup('password', '/dev/null length=50') }}

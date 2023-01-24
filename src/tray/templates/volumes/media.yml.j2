@@ -1,0 +1,18 @@
+{% if env_type in trashable_env_types %}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: marsha-pvc-media
+  namespace: "{{ namespace_name }}"
+  labels:
+    app: marsha
+    version: "{{ marsha_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+spec:
+  accessModes:
+  - ReadWriteMany
+  resources:
+    requests:
+      storage: {{ marsha_media_volume_size }}
+  storageClassName: "{{ default_storage_class_rwx }}"
+{% endif %}

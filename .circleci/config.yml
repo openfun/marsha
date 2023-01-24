@@ -1219,6 +1219,105 @@ jobs:
               ./bin/lambda publish latest
             fi
 
+# ---- Tray jobs (k8s) ----
+  tray:
+    machine:
+      image: ubuntu-2004:2022.07.1
+    working_directory: ~/marsha
+    resource_class: large
+    environment:
+      DJANGO_CONFIGURATION: Test
+    steps:
+      - checkout
+      # Generate a version.json file describing app release
+      - <<: *generate-version-file
+      - *docker_login
+      - run:
+         name: Build production image
+         command: |
+           export DOCKER_BUILDKIT=1
+           docker build \
+             -t marsha:${CIRCLE_SHA1} \
+             .
+      - run:
+          name: Check built image availability
+          command: docker images "marsha:${CIRCLE_SHA1}*"
+      - run:
+          name: Install the kubectl client and k3d
+          command: |
+            export KUBECTL_RELEASE="v1.25.2"
+            curl -Lo "${HOME}/bin/kubectl" "https://dl.k8s.io/release/${KUBECTL_RELEASE}/bin/linux/amd64/kubectl"
+            curl -Lo /tmp/kubectl.sha256 "https://dl.k8s.io/${KUBECTL_RELEASE}/bin/linux/amd64/kubectl.sha256"
+            echo "$(</tmp/kubectl.sha256) ${HOME}/bin/kubectl" | sha256sum --check
+            chmod 755 "${HOME}/bin/kubectl"
+            export K3D_RELEASE="v5.4.6"
+            curl -Lo "${HOME}/bin/k3d" "https://github.com/k3d-io/k3d/releases/download/${K3D_RELEASE}/k3d-linux-amd64"
+            # FIXME
+            # Removed checksum checking: https://github.com/k3d-io/k3d/discussions/1037
+            #curl -sL https://github.com/k3d-io/k3d/releases/download/${K3D_RELEASE}/sha256sum.txt | \
+            #  grep _dist/k3d-linux-amd64 | \
+            #  sed "s|_dist/k3d-linux-amd64|${HOME}/bin/k3d|" | \
+            #  sha256sum --check
+            chmod 755 "${HOME}/bin/k3d"
+      - run:
+          name: Run local k3d cluster & configure environment
+          command: |
+            curl -Lo "${HOME}/bin/init-cluster" "https://raw.githubusercontent.com/openfun/arnold/master/bin/init-cluster"
+            chmod +x "${HOME}/bin/init-cluster"
+            # Bootstrap the k3d cluster with the following specific settings :
+            # - use standard HTTP and HTTPS ports
+            # - pre-provision 15 volumes instead of 100
+            MINIMUM_AVAILABLE_RWX_VOLUME=15 \
+            K3D_BIND_HOST_PORT_HTTP=80 \
+            K3D_BIND_HOST_PORT_HTTPS=443 \
+            K3D_REGISTRY_HOST=registry.127.0.0.1.nip.io \
+            K3D_ENABLE_REGISTRY=1 \
+              init-cluster arnold
+            # Set environment variables for the CI
+            echo "export K8S_DOMAIN=$(hostname -I | awk '{print $1}')" >> $BASH_ENV
+            echo 'export ARNOLD_DEFAULT_VAULT_PASSWORD="arnold"' >> $BASH_ENV
+            echo 'export ANSIBLE_VAULT_PASSWORD="${ARNOLD_DEFAULT_VAULT_PASSWORD}"' >> $BASH_ENV
+            echo "export ARNOLD_IMAGE_TAG=master" >> $BASH_ENV
+            echo "export K3D_REGISTRY_NAME=k3d-registry.127.0.0.1.nip.io" >> $BASH_ENV
+            echo "export K3D_REGISTRY_PORT=5000" >> $BASH_ENV
+            source $BASH_ENV
+      - run:
+          name: Install arnold CLI
+          command: |
+            curl -Lo"${HOME}/bin/arnold" "https://raw.githubusercontent.com/openfun/arnold/master/bin/arnold"
+            chmod +x "${HOME}/bin/arnold"
+      - run:
+          name: Setup a new Arnold project
+          command: |
+            env | grep "ARNOLD_"
+            arnold -c marsha -e ci setup
+            arnold -d -c marsha -e ci -a marsha create_db_vault
+            arnold -d -c marsha -e ci -a marsha create_app_vaults
+            arnold -d -c marsha -e ci -- vault -a marsha decrypt
+            sed -i 's/^# DJANGO_/DJANGO_/g' group_vars/customer/marsha/ci/secrets/marsha.vault.yml
+            sed -i '/DJANGO_SENTRY_DSN/d' group_vars/customer/marsha/ci/secrets/marsha.vault.yml
+            arnold -d -c marsha -e ci -- vault -a marsha encrypt
+            VARS_FILE="group_vars/customer/marsha/ci/main.yml"
+            echo "skip_verification: True" > ${VARS_FILE}
+            echo "apps:" >> ${VARS_FILE}
+            echo "  - name: marsha" >> ${VARS_FILE}
+            echo "marsha_image_name: ${K3D_REGISTRY_NAME}:${K3D_REGISTRY_PORT}/ci-marsha/marsha" >> ${VARS_FILE}
+            echo "marsha_image_tag: ${CIRCLE_SHA1}" >> ${VARS_FILE}
+            echo "marsha_app_replicas: 1" >> ${VARS_FILE}
+            echo "marsha_django_configuration: ${DJANGO_CONFIGURATION}" >> ${VARS_FILE}
+            echo "marsha_postgresql_pgdata: /tmp/pgdata" >> ${VARS_FILE}
+      - run:
+          name: Push marsha image to the k8s cluster docker registry
+          command: |
+            docker tag marsha:${CIRCLE_SHA1} "${K3D_REGISTRY_NAME}:${K3D_REGISTRY_PORT}/ci-marsha/marsha:${CIRCLE_SHA1}"
+            docker push "${K3D_REGISTRY_NAME}:${K3D_REGISTRY_PORT}/ci-marsha/marsha:${CIRCLE_SHA1}"
+      - run:
+          name: Bootstrap marsha application
+          command: |
+            arnold -d -c marsha -e ci -a marsha init
+            arnold -d -c marsha -e ci -a marsha deploy
+            kubectl -n ci-marsha get pods -l app=marsha | grep Running
+
 workflows:
   version: 2
 
@@ -1464,3 +1563,11 @@ workflows:
               only: master
             tags:
               only: /^v.*/
+
+      # Tray
+      #
+      # Deploy marsha in a k8s cluster using arnold
+      - tray:
+          filters:
+            tags:
+              only: /.*/

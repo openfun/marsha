@@ -1,0 +1,127 @@
+{%- set dc_name = "marsha-%s" | format(service_variant) -%}
+
+apiVersion: v1
+kind: Deployment
+metadata:
+  labels:
+    app: marsha
+    service: "{{ service_variant }}"
+    version: "{{ marsha_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: "{{ dc_name }}-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+spec:
+  replicas: {{ marsha_replicas }}
+  selector:
+    matchLabels:
+      app: marsha
+      service: "{{ service_variant }}"
+      version: "{{ marsha_image_tag }}"
+      deployment: "{{ dc_name }}-{{ deployment_stamp }}"
+      deployment_stamp: "{{ deployment_stamp }}"
+  template:
+    metadata:
+      labels:
+        app: marsha
+        service: "{{ service_variant }}"
+        version: "{{ marsha_image_tag }}"
+        deployment: "{{ dc_name }}-{{ deployment_stamp }}"
+        deployment_stamp: "{{ deployment_stamp }}"
+    spec:
+      # Prefer running pods on different nodes for redundancy
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+            - weight: 100
+              podAffinityTerm:
+                labelSelector:
+                  matchExpressions:
+                    - key: deployment
+                      operator: In
+                      values:
+                        - "{{ dc_name }}-{{ deployment_stamp }}"
+                topologyKey: kubernetes.io/hostname
+{% set image_pull_secret_name = marsha_image_pull_secret_name | default(none) or default_image_pull_secret_name %}
+{% if image_pull_secret_name is not none %}
+      imagePullSecrets:
+        - name: "{{ image_pull_secret_name }}"
+{% endif %}
+      containers:
+        - name: marsha
+          image: "{{ marsha_image_name }}:{{ marsha_image_tag }}"
+          imagePullPolicy: Always
+          livenessProbe:
+            httpGet:
+              path: /__heartbeat__
+              port: {{ marsha_django_port }}
+              httpHeaders:
+                - name: Host
+                  value: "{{ marsha_host }}"
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: /__lbheartbeat__
+              port: {{ marsha_django_port }}
+              httpHeaders:
+                - name: Host
+                  value: "{{ marsha_host }}"
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          env:
+            - name: DJANGO_SETTINGS_MODULE
+              value: marsha.configs.settings
+            - name: DJANGO_CONFIGURATION
+              value: "{{ marsha_django_configuration }}"
+            - name: POSTGRES_DB
+              value: "{{ marsha_postgresql_database }}"
+            - name: POSTGRES_HOST
+              value: "marsha-{{ marsha_postgresql_host }}-{{ deployment_stamp }}"
+            - name: POSTGRES_PORT
+              value: "{{ marsha_postgresql_port }}"
+            - name: DJANGO_ALLOWED_HOSTS
+              value: "{{ marsha_host | blue_green_hosts }}"
+            - name: DJANGO_CSRF_TRUSTED_ORIGINS
+              value: "{{ marsha_host | blue_green_hosts | split(',') | map('regex_replace', '^(.*)$', 'https://\\1') | join(',') }}"
+            - name: DJANGO_CLOUDFRONT_PRIVATE_KEY_PATH
+              value: "{{ marsha_cloudfront_private_key_path }}"
+          envFrom:
+            - secretRef:
+                name: "{{ marsha_secret_name }}"
+            - configMapRef:
+                name: "marsha-app-dotenv-{{ deployment_stamp }}"
+          resources: {{ marsha_app_resources }}
+          volumeMounts:
+            - name: marsha-configmap
+              mountPath: /app/src/backend/marsha/configs
+{% if env_type in trashable_env_types %}
+            - name: marsha-v-media
+              mountPath: /data/media
+            - name: marsha-v-static
+              mountPath: /data/static
+{% endif %}
+{% if marsha_should_sign_requests %}
+            - mountPath: "{{ marsha_cloudfront_private_key_path | dirname }}"
+              name: marsha-cloudfront-private-key-secret
+{% endif %}
+      securityContext:
+        runAsUser: {{ container_uid }}
+        runAsGroup: {{ container_gid }}
+      volumes:
+        - name: marsha-configmap
+          configMap:
+            defaultMode: 420
+            name: marsha-app-{{ deployment_stamp }}
+{% if env_type in trashable_env_types %}
+        - name: marsha-v-media
+          persistentVolumeClaim:
+            claimName: marsha-pvc-media
+        - name: marsha-v-static
+          persistentVolumeClaim:
+            claimName: marsha-pvc-static
+{% endif %}
+{% if marsha_should_sign_requests %}
+        - name: marsha-cloudfront-private-key-secret
+          secret:
+            secretName: "{{ marsha_cloudfront_private_key_secret_name }}"
+{% endif %}
