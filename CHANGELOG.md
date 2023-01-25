@@ -26,6 +26,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - jwt store initialization concurrency issue with access jwt
 - ui calendar
 
+### Removed
+
+- service worker from lti site and standalone site
+
 ## [4.0.0-beta.14] - 2023-01-25
 
 ### Added

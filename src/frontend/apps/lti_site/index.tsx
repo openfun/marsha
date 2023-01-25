@@ -12,6 +12,4 @@ document.addEventListener('DOMContentLoaded', async () => {
   ReactDOM.render(<App />, document.querySelector('#marsha-frontend-root'));
 });
 
-serviceWorkerRegistration.register({
-  swId: 'marsha-lti',
-});
+serviceWorkerRegistration.unregister();

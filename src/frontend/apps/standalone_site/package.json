@@ -28,8 +28,8 @@
     "web-vitals": "3.1.1"
   },
   "scripts": {
-    "start": "cross-env REACT_TYPE=start node launch",
-    "build": "cross-env REACT_TYPE=build node launch",
+    "start": "react-scripts start",
+    "build": "react-scripts build",
     "postbuild": "./postbuild.sh",
     "test": "cross-env CI=true TZ=UTC react-scripts test",
     "eject": "react-scripts eject",

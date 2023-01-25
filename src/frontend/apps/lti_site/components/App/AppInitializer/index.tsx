@@ -8,7 +8,6 @@ import {
   useTimedTextTrack,
   useThumbnail,
   useSharedLiveMedia,
-  useServiceWorkerRefreshToken,
   useDocument,
   useAppConfig,
   flags,
@@ -35,7 +34,6 @@ export const AppInitializer = (
 ) => {
   const [isAppInitialized, setIsAppInitialized] = useState(false);
   const [isJwtInitialized, setIsJwtInitialized] = useState(false);
-  useServiceWorkerRefreshToken();
 
   const appConfig = useAppConfig();
   const jwt = useJwt((state) => state.jwt);
