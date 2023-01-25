@@ -63,6 +63,6 @@ describe('sideEffects/createClassroomDocument', () => {
         size: file.size,
         classroom: classroomDocument.classroom.id,
       }),
-    ).rejects.toThrow('Failed to create a new classroom document.');
+    ).rejects.toThrow();
   });
 });

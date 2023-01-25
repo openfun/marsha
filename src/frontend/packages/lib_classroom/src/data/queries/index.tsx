@@ -1,3 +1,4 @@
+import { ClassroomDocumentMetadata } from 'lib-classroom/src/types/ClassroomAppData';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -17,6 +18,7 @@ import {
   CreateClassroomActionResponse,
   ClassroomDocument,
   ClassroomModelName,
+  metadata,
 } from 'lib-components';
 import {
   useMutation,
@@ -294,3 +296,28 @@ export const useEndClassroomAction = classroomActionMutation<
   EndClassroomActionResponse,
   EndClassroomActionRequest
 >(MutationClassroomAction.END);
+
+export const useClassroomDocumentMetadata = (
+  locale: string,
+  queryConfig?: UseQueryOptions<
+    ClassroomDocumentMetadata,
+    'classroomdocuments',
+    ClassroomDocumentMetadata,
+    string[]
+  >,
+) => {
+  const key = ['classroomdocuments', locale];
+  return useQuery<
+    ClassroomDocumentMetadata,
+    'classroomdocuments',
+    ClassroomDocumentMetadata,
+    string[]
+  >(key, metadata, {
+    refetchInterval: false,
+    refetchIntervalInBackground: false,
+    refetchOnWindowFocus: false,
+    cacheTime: Infinity,
+    staleTime: Infinity,
+    ...queryConfig,
+  });
+};

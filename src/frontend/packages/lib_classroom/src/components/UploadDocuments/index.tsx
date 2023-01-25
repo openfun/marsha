@@ -8,13 +8,17 @@ import {
   UploadableObjectProgress,
   truncateFilename,
   Classroom,
+  formatSizeErrorScale,
+  report,
 } from 'lib-components';
 import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import Dropzone from 'react-dropzone';
+import { toast } from 'react-hot-toast';
 import { FormattedMessage, useIntl } from 'react-intl';
 
 import {
   useClassroomDocuments,
+  useClassroomDocumentMetadata,
   useUpdateClassroomDocument,
 } from 'data/queries';
 import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
@@ -36,6 +40,16 @@ const messages = {
     description:
       'Help text to warn user not to navigate away during file upload.',
     id: 'apps.classroom.components.DashboardStudent.UploadFiles.uploadingFile',
+  },
+  errorFileTooLarge: {
+    defaultMessage: 'Uploaded files exceeds allowed size of {uploadMaxSize}.',
+    description: 'Error message when file is too big.',
+    id: 'apps.classroom.components.DashboardStudent.UploadFiles.errorFileTooLarge',
+  },
+  errorFileUpload: {
+    defaultMessage: 'An error occurred when uploading your file. Please retry.',
+    description: 'Error message when file upload fails.',
+    id: 'apps.classroom.components.DashboardStudent.UploadFiles.errorFileUpload',
   },
   isDefaultDocument: {
     defaultMessage: 'Default document',
@@ -151,6 +165,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
   const intl = useIntl();
   const { data: classroomDocuments, refetch: refreshClassroomDocuments } =
     useClassroomDocuments(classroomId, {});
+  const metadata = useClassroomDocumentMetadata(intl.locale);
 
   const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
@@ -172,7 +187,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
     [filesToUpload],
   );
 
-  const uploadFiles = useCallback(() => {
+  const uploadFiles = useCallback(async () => {
     if (!filesToUpload.length) {
       setUploading(false);
     }
@@ -183,15 +198,36 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
     }
 
     setUploading(true);
-    createClassroomDocument({
-      filename: file.name,
-      size: file.size,
-      classroom: classroomId,
-    }).then((response) => {
-      addUpload(modelName.CLASSROOM_DOCUMENTS, response.id, file);
+    try {
+      const document = await createClassroomDocument({
+        filename: file.name,
+        size: file.size,
+        classroom: classroomId,
+      });
+      addUpload(modelName.CLASSROOM_DOCUMENTS, document.id, file);
       refreshClassroomDocuments();
-    });
-  }, [addUpload, classroomId, filesToUpload, refreshClassroomDocuments]);
+    } catch (error) {
+      if ((error as object).hasOwnProperty('size') && metadata.data) {
+        toast.error(
+          intl.formatMessage(messages.errorFileTooLarge, {
+            uploadMaxSize: formatSizeErrorScale(
+              metadata.data.upload_max_size_bytes,
+            ),
+          }),
+        );
+      } else {
+        report(error);
+        toast.error(intl.formatMessage(messages.errorFileUpload));
+      }
+    }
+  }, [
+    addUpload,
+    classroomId,
+    filesToUpload,
+    intl,
+    metadata.data,
+    refreshClassroomDocuments,
+  ]);
 
   useEffect(() => {
     if (uploadsSucceeded.length && uploading) {
@@ -304,7 +340,9 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
       {filesToUpload.length > 0 && (
         <Button
           primary
-          onClick={uploadFiles}
+          onClick={() => {
+            void uploadFiles();
+          }}
           label={intl.formatMessage(messages.uploadButtonLabel)}
           color="blue-active"
           margin={{ top: 'small' }}
