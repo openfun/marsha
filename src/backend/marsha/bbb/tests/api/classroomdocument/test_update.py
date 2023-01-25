@@ -40,7 +40,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         """A student user should not be able to update a classroom_document."""
         classroom_document = ClassroomDocumentFactory()
         jwt_token = StudentLtiTokenFactory(resource=classroom_document.classroom)
-        data = {"filename": "updated_name.pdf"}
+        data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
             f"/api/classroomdocuments/{classroom_document.id}/",
@@ -56,7 +56,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(
             resource=classroom_document.classroom
         )
-        data = {"filename": "updated_name.pdf"}
+        data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
             f"/api/classroomdocuments/{classroom_document.id!s}/",
@@ -135,7 +135,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom_document = ClassroomDocumentFactory(classroom__playlist=playlist)
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
-        data = {"filename": "updated_name.pdf"}
+        data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
             f"/api/classroomdocuments/{classroom_document.id!s}/",
@@ -164,7 +164,7 @@ class ClassroomDocumentUpdateAPITest(TestCase):
             classroom__playlist=playlist_access.playlist
         )
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
-        data = {"filename": "updated_name.pdf"}
+        data = {"filename": "updated_name.pdf", "size": 100}
 
         response = self.client.patch(
             f"/api/classroomdocuments/{classroom_document.id!s}/",

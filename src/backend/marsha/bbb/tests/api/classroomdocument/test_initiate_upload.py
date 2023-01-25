@@ -365,3 +365,33 @@ class ClassroomDocumentInitiateUploadAPITest(TestCase):
         classroom_document.refresh_from_db()
         self.assertEqual(classroom_document.filename, "foo.pdf")
         self.assertEqual(classroom_document.upload_state, "pending")
+
+    @override_settings(CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE=10)
+    def test_api_classroom_document_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        classroom_document = ClassroomDocumentFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            classroom__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(
+            resource=classroom_document.classroom
+        )
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/classroomdocuments/{classroom_document.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )
