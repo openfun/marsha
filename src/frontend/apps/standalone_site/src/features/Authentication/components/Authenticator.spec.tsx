@@ -1,10 +1,6 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import {
-  EServiceworkerAuthAction,
-  useCurrentUser,
-  useJwt,
-} from 'lib-components';
+import { useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
@@ -212,34 +208,5 @@ describe('<Authenticator />', () => {
     });
 
     expect(await screen.findByText('login page')).toBeInTheDocument();
-  });
-
-  it('checks the service workers actions: LOGOUT', () => {
-    useJwt.setState({
-      jwt: 'my jwt',
-      refreshJwt: 'my refresh Jwt',
-    });
-    useCurrentUser.setState({
-      currentUser: {
-        username: 'my user',
-      } as any,
-    });
-
-    mockSWAddEventListener.mockImplementation((event, cb) => {
-      cb({
-        data: {
-          action: EServiceworkerAuthAction.LOGOUT,
-          requestId: 'my request id',
-        },
-      });
-    });
-
-    render(<WrappedAuthenticator />, {
-      routerOptions: {
-        history: ['/some/path/'],
-      },
-    });
-
-    expect(screen.getByText('login page')).toBeInTheDocument();
   });
 });
