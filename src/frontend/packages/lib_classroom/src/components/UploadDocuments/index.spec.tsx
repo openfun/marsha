@@ -7,6 +7,7 @@ import {
   uploadState,
   ClassroomDocument,
   ClassroomModelName as modelName,
+  report,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
@@ -24,6 +25,7 @@ jest.mock('lib-components', () => ({
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
   UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
+  report: jest.fn(),
 }));
 
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
@@ -129,6 +131,101 @@ describe('<UploadDocuments />', () => {
     expect(screen.queryByText('Upload')).not.toBeInTheDocument();
   });
 
+  it('rejects files too large and displays a related error message', async () => {
+    mockCreateClassroomDocument.mockRejectedValue({
+      size: ['File too large !'],
+    });
+
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
+    render(<UploadDocuments classroomId="1" />);
+
+    const file = new File(['(⌐□_□)'], 'course.pdf', {
+      type: 'application/pdf',
+    });
+    fireEvent.change(screen.getByLabelText('File Upload'), {
+      target: {
+        files: [file],
+      },
+    });
+    expect(await screen.findByText('course.pdf')).toBeInTheDocument();
+
+    userEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() =>
+      expect(mockCreateClassroomDocument).toHaveBeenCalledTimes(1),
+    );
+
+    expect(screen.queryByText('course.pdf')).not.toBeInTheDocument();
+    expect(screen.queryByText('Upload')).not.toBeInTheDocument();
+    expect(
+      await screen.findByText('Uploaded files exceeds allowed size of 1 GB.'),
+    ).toBeInTheDocument();
+  });
+
+  it('rejects files on error and displays a message', async () => {
+    mockCreateClassroomDocument.mockRejectedValue({
+      type: ['Something went wrong !'],
+    });
+
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
+    render(<UploadDocuments classroomId="1" />);
+
+    const file = new File(['(⌐□_□)'], 'course.pdf', {
+      type: 'application/pdf',
+    });
+    fireEvent.change(screen.getByLabelText('File Upload'), {
+      target: {
+        files: [file],
+      },
+    });
+    expect(await screen.findByText('course.pdf')).toBeInTheDocument();
+
+    userEvent.click(screen.getByRole('button', { name: 'Upload' }));
+
+    await waitFor(() =>
+      expect(mockCreateClassroomDocument).toHaveBeenCalledTimes(1),
+    );
+
+    expect(screen.queryByText('course.pdf')).not.toBeInTheDocument();
+    expect(screen.queryByText('Upload')).not.toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        'An error occurred when uploading your file. Please retry.',
+      ),
+    ).toBeInTheDocument();
+    expect(report).toHaveBeenCalledWith({
+      type: ['Something went wrong !'],
+    });
+  });
+
   it('shows the upload progress when the file is uploading', async () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const classroomDocument = classroomDocumentMockFactory({
@@ -143,6 +240,14 @@ describe('<UploadDocuments />', () => {
       previous: null,
       results: [classroomDocument],
     });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -159,7 +264,7 @@ describe('<UploadDocuments />', () => {
     });
     render(<UploadDocuments classroomId="1" />);
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
     // file exist in both uploadmanager and classrooms.classroomdocuments,
     // but only the uploadmanager one is rendered.
     await screen.findByText(file.name);
@@ -182,6 +287,15 @@ describe('<UploadDocuments />', () => {
       previous: null,
       results: [classroomDocument],
     });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
     render(<UploadDocuments classroomId="1" />);
 
     await screen.findByText('file.txt');
@@ -214,6 +328,14 @@ describe('<UploadDocuments />', () => {
       results: [classroomDocument, classroomDocument2],
     });
 
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
     fetchMock.patch(`/api/classroomdocuments/${classroomDocument.id}/`, {
       status: 200,
     });
@@ -228,7 +350,7 @@ describe('<UploadDocuments />', () => {
     userEvent.click(downloadButton);
 
     await waitFor(() =>
-      expect(fetchMock.lastCall()![1]!.body).toEqual(
+      expect(fetchMock.calls()[2]![1]!.body).toEqual(
         JSON.stringify({ is_default: true }),
       ),
     );
