@@ -5,6 +5,7 @@ from os.path import splitext
 from urllib.parse import quote_plus
 
 from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.urls import reverse
 from django.utils import timezone
@@ -223,6 +224,17 @@ class ClassroomDocumentSerializer(
     classroom = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
+
+    def to_internal_value(self, data):
+        """Validate if the size is coherent with django settings."""
+        max_file_size = settings.CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE
+        if "filename" in data and "size" not in data:
+            raise ValidationError({"size": ["File size is required"]})
+        if "size" in data and data.pop("size") > max_file_size:
+            raise ValidationError(
+                {"size": [f"File too large, max size allowed is {max_file_size} Bytes"]}
+            )
+        return super().to_internal_value(data)
 
     def create(self, validated_data):
         """Force the classroom field to the classroom of the JWT Token if any.
