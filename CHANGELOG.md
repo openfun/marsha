@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- wrapper around fetch to handle 401 errors and refresh the access token
 - configure wantNameId and allowRepeatAttributeName for saml_fer 
   security settings
 - Add a lti link to classroom in the standalone website

@@ -1,4 +1,4 @@
-import { useJwt, TokenResponse } from 'lib-components';
+import { fetchWrapper, useJwt, TokenResponse } from 'lib-components';
 import { useMutation, UseMutationOptions } from 'react-query';
 
 type UseBasicLoginData = {
@@ -18,7 +18,7 @@ const actionLogin = async ({
 }: {
   object: UseBasicLoginData;
 }): Promise<TokenResponse> => {
-  const response = await fetch('/account/api/token/', {
+  const response = await fetchWrapper('/account/api/token/', {
     headers: {
       'Content-Type': 'application/json',
     },

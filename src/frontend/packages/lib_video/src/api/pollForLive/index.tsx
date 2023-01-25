@@ -1,4 +1,4 @@
-import { VideoUrls } from 'lib-components';
+import { fetchWrapper, VideoUrls } from 'lib-components';
 
 import { POLL_FOR_LIVE_TIMEOUT } from 'conf/sideEffects';
 
@@ -7,7 +7,7 @@ export const pollForLive = async (
   timeout: number = POLL_FOR_LIVE_TIMEOUT,
 ): Promise<null> => {
   try {
-    const response = await fetch(urls.manifests.hls);
+    const response = await fetchWrapper(urls.manifests.hls);
     if (response.status === 404) {
       throw new Error('missing manifest');
     }

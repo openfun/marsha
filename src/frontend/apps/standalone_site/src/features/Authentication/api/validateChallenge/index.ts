@@ -1,3 +1,5 @@
+import { fetchWrapper } from 'lib-components';
+
 interface ValidateChallengeResponse {
   access: string;
 }
@@ -16,7 +18,7 @@ const isValidateChallenge = (
 };
 
 export const validateChallenge = async (token: string) => {
-  const response = await fetch('/api/auth/challenge/', {
+  const response = await fetchWrapper('/api/auth/challenge/', {
     headers: {
       'Content-Type': 'application/json',
     },

@@ -1,11 +1,17 @@
-import { useJwt, API_ENDPOINT, modelName, TimedText } from 'lib-components';
+import {
+  useJwt,
+  API_ENDPOINT,
+  modelName,
+  TimedText,
+  fetchWrapper,
+} from 'lib-components';
 
 /**
  * Delete one timedtexttrack record.
  * @param timedtexttrack The timedtexttrack to delete.
  */
 export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {

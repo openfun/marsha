@@ -1,4 +1,9 @@
-import { useJwt, API_ENDPOINT, LiveSession } from 'lib-components';
+import {
+  fetchWrapper,
+  useJwt,
+  API_ENDPOINT,
+  LiveSession,
+} from 'lib-components';
 
 export const setLiveSessionDisplayName = async (
   displayName: string,
@@ -12,14 +17,17 @@ export const setLiveSessionDisplayName = async (
     anonymous_id: anonymousId,
   };
 
-  const response = await fetch(`${API_ENDPOINT}/livesessions/display_name/`, {
-    body: JSON.stringify(body),
-    headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
-      'Content-Type': 'application/json',
+  const response = await fetchWrapper(
+    `${API_ENDPOINT}/livesessions/display_name/`,
+    {
+      body: JSON.stringify(body),
+      headers: {
+        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        'Content-Type': 'application/json',
+      },
+      method: 'PUT',
     },
-    method: 'PUT',
-  });
+  );
 
   if (response.status === 409) {
     return { error: 409 };

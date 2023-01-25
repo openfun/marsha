@@ -4,6 +4,7 @@ import {
   API_ENDPOINT,
   requestStatus,
   Document,
+  fetchWrapper,
   modelName,
   TimedText,
   Video,
@@ -19,7 +20,7 @@ export async function pollForTrack<
   counter: number = 1,
 ): Promise<requestStatus> {
   try {
-    const response = await fetch(
+    const response = await fetchWrapper(
       `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
       {
         headers: {

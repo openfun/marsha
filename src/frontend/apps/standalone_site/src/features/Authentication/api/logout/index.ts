@@ -1,10 +1,10 @@
-import { useJwt } from 'lib-components';
+import { fetchWrapper, useJwt } from 'lib-components';
 
 export const logout = async () => {
   const refreshToken = useJwt.getState().refreshJwt;
   useJwt.getState().resetJwt();
 
-  const response = await fetch('/account/api/logout/', {
+  const response = await fetchWrapper('/account/api/logout/', {
     headers: {
       'Content-Type': 'application/json',
     },

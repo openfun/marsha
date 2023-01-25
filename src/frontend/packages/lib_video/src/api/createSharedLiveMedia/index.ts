@@ -1,7 +1,12 @@
-import { useJwt, API_ENDPOINT, SharedLiveMedia } from 'lib-components';
+import {
+  fetchWrapper,
+  useJwt,
+  API_ENDPOINT,
+  SharedLiveMedia,
+} from 'lib-components';
 
 export const createSharedLiveMedia = async () => {
-  const response = await fetch(`${API_ENDPOINT}/sharedlivemedias/`, {
+  const response = await fetchWrapper(`${API_ENDPOINT}/sharedlivemedias/`, {
     headers: {
       Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
       'Content-Type': 'application/json',

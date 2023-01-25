@@ -1,12 +1,13 @@
 import {
-  useJwt,
   addMultipleResources,
   API_ENDPOINT,
   API_LIST_DEFAULT_PARAMS,
   APIListCommonRequestParams,
-  requestStatus,
+  fetchWrapper,
   modelName,
+  requestStatus,
   report,
+  useJwt,
 } from 'lib-components';
 
 /**
@@ -24,7 +25,7 @@ export const getResourceList = async (
   const endpoint = `${API_ENDPOINT}/${resourceName}/`;
 
   try {
-    const response = await fetch(
+    const response = await fetchWrapper(
       `${endpoint}?limit=${params.limit}&offset=${params.offset}`,
       {
         headers: {

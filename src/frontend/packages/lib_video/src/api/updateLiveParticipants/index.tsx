@@ -1,4 +1,10 @@
-import { useJwt, API_ENDPOINT, Participant, Video } from 'lib-components';
+import {
+  fetchWrapper,
+  useJwt,
+  API_ENDPOINT,
+  Participant,
+  Video,
+} from 'lib-components';
 
 const updateLiveParticipants = async (
   video: Video,
@@ -7,7 +13,7 @@ const updateLiveParticipants = async (
   method: 'POST' | 'DELETE',
   errorMessage: string,
 ): Promise<Video> => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/videos/${video.id}/${participantList}/`,
     {
       body: JSON.stringify(participant),

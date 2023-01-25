@@ -3,10 +3,11 @@ import {
   API_ENDPOINT,
   MarkdownImage,
   MarkdownDocumentModelName as modelName,
+  fetchWrapper,
 } from 'lib-components';
 
 export const createMarkdownImage = async () => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.MARKDOWN_IMAGES}/`,
     {
       headers: {

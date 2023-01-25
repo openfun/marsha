@@ -1,5 +1,5 @@
 import { Nullable } from 'lib-common';
-import { report } from 'lib-components';
+import { fetchWrapper, report } from 'lib-components';
 
 export interface RenaterSamlFerIdp {
   id: string;
@@ -13,12 +13,15 @@ export interface RenaterSamlFerIdp {
 export const getRenaterFerIdpList = async (
   signal?: AbortSignal,
 ): Promise<RenaterSamlFerIdp[]> => {
-  const response = await fetch(`/account/api/saml/renater_fer_idp_list/`, {
-    headers: {
-      'Content-Type': 'application/json',
+  const response = await fetchWrapper(
+    `/account/api/saml/renater_fer_idp_list/`,
+    {
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      signal,
     },
-    signal,
-  });
+  );
 
   if (!response.ok) {
     report(new Error('Failed to fetch Renater SAML FER IDP list'));
