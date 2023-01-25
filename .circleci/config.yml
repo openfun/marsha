@@ -9,11 +9,11 @@ aliases:
     # Nota bene: you'll need to define the following secrets environment vars
     # in CircleCI interface:
     #
-    #   - DOCKER_USER
-    #   - DOCKER_PASS
+    #   - DOCKER_HUB_USER
+    #   - DOCKER_HUB_PASS
     run:
       name: Login to DockerHub
-      command: echo "$DOCKER_PASS" | docker login -u "$DOCKER_USER" --password-stdin
+      command: echo "$DOCKER_HUB_PASS" | docker login -u "$DOCKER_HUB_USER" --password-stdin
 
 # Configuration file anchors
 generate-version-file: &generate-version-file
@@ -48,8 +48,8 @@ jobs:
       # stay in python 3.8
       - image: cimg/python:3.8
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -76,8 +76,8 @@ jobs:
     docker:
       - image: cimg/base:2022.04
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -91,8 +91,8 @@ jobs:
     docker:
       - image: debian:stretch
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -107,8 +107,8 @@ jobs:
     docker:
       - image: renovate/renovate
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -123,8 +123,8 @@ jobs:
     docker:
       - image: cimg/base:2022.04
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -190,8 +190,8 @@ jobs:
     docker:
       - image: cimg/base:2022.04
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
@@ -220,8 +220,8 @@ jobs:
     docker:
       - image: cimg/python:3.10.7
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -242,8 +242,8 @@ jobs:
     docker:
       - image: cimg/python:3.10.7
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           DJANGO_SETTINGS_MODULE: marsha.settings
           PYTHONPATH: /home/circleci/marsha/src/backend
@@ -293,8 +293,8 @@ jobs:
     docker:
       - image: cimg/python:3.10.7
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/backend
     steps:
       - checkout:
@@ -322,8 +322,8 @@ jobs:
     docker:
       - image: cimg/python:3.10.7
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           DJANGO_SETTINGS_MODULE: marsha.settings
           PYTHONPATH: /home/circleci/marsha/src/backend
@@ -345,8 +345,8 @@ jobs:
           DJANGO_MARKDOWN_ENABLED: 1
       - image: cimg/postgres:10.20
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
@@ -385,8 +385,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
     working_directory: ~/marsha/src/frontend
@@ -436,8 +436,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
     working_directory: ~/marsha/src/frontend
@@ -478,8 +478,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/mail
     steps:
       - checkout:
@@ -508,8 +508,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/frontend
     steps:
       - checkout:
@@ -533,8 +533,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/frontend
     parallelism: 4
     resource_class: large
@@ -616,8 +616,8 @@ jobs:
     docker:
       - image: cimg/node:16.15
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha/src/frontend
     resource_class: large
     steps:
@@ -639,8 +639,8 @@ jobs:
     docker:
       - image: mcr.microsoft.com/playwright:focal
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           DJANGO_SETTINGS_MODULE: marsha.settings
           PYTHONPATH: /home/circleci/marsha/src/backend
@@ -666,8 +666,8 @@ jobs:
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
       - image: cimg/postgres:10.20
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
         environment:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
@@ -758,8 +758,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-configure
@@ -785,8 +785,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-complete
@@ -812,8 +812,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-medialive
@@ -838,8 +838,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-mediapackage
@@ -864,8 +864,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-elemental-routing
@@ -890,8 +890,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-configure
@@ -912,8 +912,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-convert
@@ -931,8 +931,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-complete
@@ -953,8 +953,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-medialive
@@ -975,8 +975,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-mediapackage
@@ -997,8 +997,8 @@ jobs:
     docker:
       - image: cimg/node:16.16
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
       # Run on the highest version of node available on AWS Lambda
       # https://docs.aws.amazon.com/lambda/latest/dg/API_CreateFunction.html#SSS-CreateFunction-request-Runtime
     working_directory: ~/marsha/src/aws/lambda-elemental-routing
@@ -1021,8 +1021,8 @@ jobs:
     docker:
       - image: crowdin/cli:3.7.10
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout:
@@ -1038,8 +1038,8 @@ jobs:
     docker:
       - image: cimg/base:2022.04
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       - checkout
@@ -1103,8 +1103,8 @@ jobs:
     docker:
       - image: cimg/base:2022.04
         auth:
-          username: $DOCKER_USER
-          password: $DOCKER_PASS
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
     working_directory: ~/marsha
     steps:
       # Checkout repository sources
