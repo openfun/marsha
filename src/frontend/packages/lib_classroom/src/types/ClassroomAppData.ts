@@ -4,8 +4,8 @@ import {
   ClassroomModelName,
   Classroom,
   ClassroomDocument,
+  ResourceMetadata,
 } from 'lib-components';
-import { ResourceMetadata } from 'lib-video';
 
 export interface ClassroomAppData extends Omit<AppData, 'modelName'> {
   modelName: ClassroomModelName.CLASSROOMS;

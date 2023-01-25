@@ -1,14 +1,4 @@
-import { Resource, TimedText, Video } from 'lib-components';
-
-import { RouteOptions } from './RouteOptions';
-
-export interface ResourceMetadata<T extends Resource> {
-  name: string;
-  description: string;
-  renders: string[];
-  parses: string[];
-  actions: RouteOptions<T>['actions'];
-}
+import { ResourceMetadata, TimedText, Video } from 'lib-components';
 
 export interface VideoMetadata extends ResourceMetadata<Video> {
   live: {
