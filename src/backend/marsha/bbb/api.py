@@ -442,6 +442,7 @@ class ClassroomDocumentViewSet(
 
     queryset = ClassroomDocument.objects.all()
     serializer_class = serializers.ClassroomDocumentSerializer
+    metadata_class = ClassroomDocumentMetadata
 
     permission_classes = [
         permissions.IsTokenResourceRouteObjectRelatedClassroom
@@ -456,6 +457,8 @@ class ClassroomDocumentViewSet(
                 | core_permissions.IsTokenAdmin
                 | IsRelatedClassroomPlaylistOrOrganizationAdmin
             ]
+        elif self.action in ["metadata"]:
+            permission_classes = [core_permissions.UserOrResourceIsAuthenticated]
         else:
             permission_classes = self.permission_classes
         return [permission() for permission in permission_classes]
