@@ -1,7 +1,7 @@
 """Tests for the get_meeting_infos service in the ``bbb`` app of the Marsha project."""
-
 from django.test import TestCase, override_settings
 
+import requests
 import responses
 
 from marsha.bbb.factories import ClassroomFactory
@@ -283,6 +283,60 @@ class ClassroomServiceTestCase(TestCase):
             </response>
             """,
             status=200,
+        )
+
+        with self.assertRaises(ApiMeetingException):
+            get_meeting_infos(classroom)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, False)
+
+    @responses.activate
+    def test_infos_error(self):
+        """When an error is raised on BBB server an exception is raised,
+        and model instance start is set to False."""
+        classroom = ClassroomFactory(
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=True
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            status=500,
+        )
+
+        with self.assertRaises(ApiMeetingException):
+            get_meeting_infos(classroom)
+        classroom.refresh_from_db()
+        self.assertEqual(classroom.started, False)
+
+    @responses.activate
+    def test_infos_timeout(self):
+        """When an timeout is raised on BBB server an exception is raised,
+        and model instance start is set to False."""
+        classroom = ClassroomFactory(
+            meeting_id="7a567d67-29d3-4547-96f3-035733a4dfaa", started=True
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7a567d67-29d3-4547-96f3-035733a4dfaa",
+                        "checksum": "7f13332ec54e7df0a02d07904746cb5b8b330498",
+                    }
+                )
+            ],
+            body=requests.ReadTimeout(),
         )
 
         with self.assertRaises(ApiMeetingException):

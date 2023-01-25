@@ -53,16 +53,26 @@ def request_api(action, parameters, prepare=False, data=None):
         ).prepare()
         return {"url": request.url}
 
-    request = requests.request(
-        "post" if data else "get",
-        url,
-        params=signed_parameters,
-        data=bytes(data, "utf8") if data else None,
-        verify=not settings.DEBUG,
-        timeout=settings.BBB_API_TIMEOUT,
-        headers={"Content-Type": "application/xml"} if data else None,
-    )
-    api_response = xmltodict.parse(request.content).get("response")
+    try:
+        request = requests.request(
+            "post" if data else "get",
+            url,
+            params=signed_parameters,
+            data=bytes(data, "utf8") if data else None,
+            verify=not settings.DEBUG,
+            timeout=settings.BBB_API_TIMEOUT,
+            headers={"Content-Type": "application/xml"} if data else None,
+        )
+    except requests.exceptions.ReadTimeout as error:
+        logger.error("Timeout while requesting BBB API: %s", error)
+        raise ApiMeetingException({"message": str(error)}) from error
+    try:
+        api_response = xmltodict.parse(request.content).get("response")
+    except Exception as error:  # pylint: disable=broad-except
+        logger.error(
+            "Error while parsing XML response from BBB API: %s", request.content
+        )
+        raise ApiMeetingException({"message": str(error)}) from error
     if api_response.get("returncode") == "SUCCESS":
         return api_response
 
