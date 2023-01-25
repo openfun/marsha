@@ -1,17 +1,21 @@
 import { API_ENDPOINT } from 'settings';
 import { Video, VideoJitsiConnectionInfos } from 'types';
 
+import { fetchWrapper } from 'common/queries/fetchWrapper';
 import { useJwt } from 'hooks/stores/useJwt';
 
 export const fetchJitsiInfo = async (
   video: Video,
 ): Promise<VideoJitsiConnectionInfos> => {
-  const response = await fetch(`${API_ENDPOINT}/videos/${video.id}/jitsi/`, {
-    headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
-      'Content-Type': 'application/json',
+  const response = await fetchWrapper(
+    `${API_ENDPOINT}/videos/${video.id}/jitsi/`,
+    {
+      headers: {
+        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        'Content-Type': 'application/json',
+      },
     },
-  });
+  );
 
   if (!response.ok) {
     const errorMessage = await response.text();

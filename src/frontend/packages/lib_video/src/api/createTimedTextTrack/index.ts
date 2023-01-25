@@ -1,4 +1,5 @@
 import {
+  fetchWrapper,
   useJwt,
   API_ENDPOINT,
   modelName,
@@ -15,7 +16,7 @@ export const createTimedTextTrack = async (
   language: string,
   mode: timedTextMode,
 ) => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
     {
       body: JSON.stringify({ language, mode }),

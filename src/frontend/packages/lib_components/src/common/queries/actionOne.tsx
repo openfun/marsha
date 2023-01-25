@@ -1,5 +1,7 @@
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchWrapper } from './fetchWrapper';
+
 /**
  * `react-query` call action on individual item from the Marsha API.
  */
@@ -29,7 +31,7 @@ export const actionOne = async <T, K>({
   if (object) {
     init.body = JSON.stringify(object);
   }
-  const response = await fetch(`/api/${name}/${id}/${action}/`, init);
+  const response = await fetchWrapper(`/api/${name}/${id}/${action}/`, init);
 
   if (!response.ok) {
     if (response.status === 400) {

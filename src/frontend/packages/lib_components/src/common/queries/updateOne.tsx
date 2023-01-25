@@ -1,5 +1,7 @@
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchWrapper } from './fetchWrapper';
+
 interface Variables<K> {
   name: string;
   id: string;
@@ -12,7 +14,7 @@ export const updateOne = async <T, K>({
   object,
 }: Variables<K>): Promise<T> => {
   const jwt = useJwt.getState().jwt;
-  const response = await fetch(`/api/${name}/${id}/`, {
+  const response = await fetchWrapper(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',
       ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),

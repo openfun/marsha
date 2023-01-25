@@ -1,5 +1,5 @@
 import { Maybe } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { fetchWrapper, useJwt } from 'lib-components';
 
 export const resetPassword = async (
   currentPassword: Maybe<string>,
@@ -8,7 +8,7 @@ export const resetPassword = async (
 ) => {
   const jwt = useJwt.getState().jwt;
 
-  const response = await fetch('/account/api/password/change/', {
+  const response = await fetchWrapper('/account/api/password/change/', {
     headers: {
       Authorization: `Bearer ${jwt || ''}`,
       'Content-Type': 'application/json',

@@ -1,4 +1,4 @@
-import { useJwt, API_ENDPOINT, Video } from 'lib-components';
+import { fetchWrapper, useJwt, API_ENDPOINT, Video } from 'lib-components';
 
 /**
  * Post to an action endpoint to stop a live streaming.
@@ -6,7 +6,7 @@ import { useJwt, API_ENDPOINT, Video } from 'lib-components';
  * @param video initiate a live mode on this video
  */
 export const stopLive = async (video: Video): Promise<Video> => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/videos/${video.id}/stop-live/`,
     {
       headers: {
