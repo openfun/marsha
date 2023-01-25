@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.14] - 2023-01-25
+
 ## Added
 
 - Add a configuration for jwt state preservation with localstorage
@@ -1419,7 +1421,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.13...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.14...master
+[4.0.0-beta.14]: https://github.com/openfun/marsha/compare/v4.0.0-beta.13...v4.0.0-beta.14
 [4.0.0-beta.13]: https://github.com/openfun/marsha/compare/v4.0.0-beta.12...v4.0.0-beta.13
 [4.0.0-beta.12]: https://github.com/openfun/marsha/compare/v4.0.0-beta.11...v4.0.0-beta.12
 [4.0.0-beta.11]: https://github.com/openfun/marsha/compare/v4.0.0-beta.10...v4.0.0-beta.11
