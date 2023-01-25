@@ -29,7 +29,7 @@ export const createClassroomDocument = async (file: {
   );
 
   if (!response.ok) {
-    throw new Error('Failed to create a new classroom document.');
+    throw await response.json();
   }
 
   const classroomDocument = (await response.json()) as ClassroomDocument;

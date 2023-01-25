@@ -85,6 +85,13 @@ describe('<DashboardClassroom />', () => {
       previous: null,
       results: [],
     });
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(<DashboardClassroom classroomId="1" />);
 
@@ -110,6 +117,13 @@ describe('<DashboardClassroom />', () => {
       previous: null,
       results: [],
     });
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(<DashboardClassroom classroomId="1" />);
     classroomDeferred.resolve(classroom);
@@ -232,7 +246,6 @@ describe('<DashboardClassroom />', () => {
     fireEvent.click(screen.getByText('Join classroom'));
     expect(window.open).toHaveBeenCalledTimes(1);
   });
-
   it('displays user fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory(
       {},
@@ -264,6 +277,13 @@ describe('<DashboardClassroom />', () => {
       previous: null,
       results: [],
     });
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     fetchMock.patch('/api/classrooms/1/create/', {
       ...classroom,
