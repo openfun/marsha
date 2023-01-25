@@ -52,6 +52,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                 }
             ),
         )
@@ -77,6 +78,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                 }
             ),
         )
@@ -116,6 +118,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test2.pdf",
+                    "size": 100,
                 }
             ),
         )
@@ -154,6 +157,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                 }
             ),
         )
@@ -181,6 +185,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                     "classroom": str(classroom.id),
                 }
             ),
@@ -219,6 +224,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                     "classroom": str(classroom.id),
                 }
             ),
@@ -260,6 +266,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             data=json.dumps(
                 {
                     "filename": "test.pdf",
+                    "size": 100,
                     "classroom": str(classroom.id),
                 }
             ),
@@ -268,3 +275,51 @@ class ClassroomDocumentCreateAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
         self.assertEqual(ClassroomDocument.objects.count(), 0)
         self.assertEqual(classroom.classroom_documents.count(), 0)
+
+    @override_settings(CLASSROOM_DOCUMENT_SOURCE_MAX_SIZE=10)
+    def test_api_classroom_document_create_file_too_large(self):
+        """With a file size too large the request should fail"""
+        classroom = ClassroomFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                    "size": 100,
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
+        self.assertEqual(
+            response.json(),
+            {"size": ["File too large, max size allowed is 10 Bytes"]},
+        )
+
+    def test_api_classroom_document_create_file_no_size(self):
+        """Without file size the request should fail"""
+        classroom = ClassroomFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
+        self.assertEqual(
+            response.json(),
+            {"size": ["File size is required"]},
+        )
