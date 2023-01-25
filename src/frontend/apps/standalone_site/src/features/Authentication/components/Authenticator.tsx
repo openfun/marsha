@@ -4,7 +4,6 @@ import {
   Loader,
   useCurrentUser,
   useJwt,
-  useServiceWorkerRefreshToken,
 } from 'lib-components';
 import { Fragment, PropsWithChildren, useEffect } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
@@ -35,7 +34,6 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     setCurrentUser: state.setCurrentUser,
   }));
   const { jwt, setJwt, resetJwt } = useJwt();
-  useServiceWorkerRefreshToken();
 
   useEffect(() => {
     if (jwt) {

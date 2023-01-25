@@ -14,6 +14,4 @@ ReactDOM.render(
   document.getElementById('root') as HTMLElement,
 );
 
-serviceWorkerRegistration.register({
-  swId: process.env.REACT_APP_BUILD_ID,
-});
+serviceWorkerRegistration.unregister();

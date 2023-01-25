@@ -33,9 +33,8 @@
     "test": "yarn test-libs && yarn test-lib-classroom && yarn test-lti && yarn test-site",
     "build-tests": "yarn workspace lib-common run build && yarn workspace lib-tests run build",
     "build-libs": "yarn build-tests && yarn workspace lib-components run build && yarn workspace lib-classroom run build && yarn workspace lib-video run build",
-    "build-lti": "yarn build-libs && yarn workspace marsha run build && yarn build-service-worker",
+    "build-lti": "yarn build-libs && yarn workspace marsha run build",
     "build-site": "yarn build-libs && yarn workspace standalone_site run build",
-    "build-service-worker": "yarn workspace standalone_site run build",
     "start-site": "yarn build-libs && yarn workspace standalone_site run start",
     "prettier": "yarn workspaces run prettier"
   },
