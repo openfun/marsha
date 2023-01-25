@@ -672,7 +672,7 @@ jobs:
           POSTGRES_DB: marsha
           POSTGRES_USER: marsha_user
           POSTGRES_PASSWORD: pass
-    working_directory: ~/marsha/src/backend
+    working_directory: /home/circleci/marsha/src/frontend
     parameters:
       browser:
         description: "Playwright browser"
@@ -684,7 +684,15 @@ jobs:
         type: string
     steps:
       - checkout:
-          path: ~/marsha
+          path: /home/circleci/marsha
+      - get_last_packages_commit:
+          filename: packages-last-commit.txt
+      - restore_cache:
+          keys:
+            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+      - restore_cache:
+          keys:
+            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
@@ -696,29 +704,20 @@ jobs:
           command: apt-get update && apt-get install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
       - run:
           name: Install e2e dependencies
+          working_directory: /home/circleci/marsha/src/backend
           command: python3.10 -m pip install --user .[dev,e2e]
       - run:
-          name: Install front-end dependencies
-          working_directory: ~/marsha/src/frontend
-          command: yarn install --frozen-lockfile
-      - run:
           name: Build front-end LTI application
-          working_directory: ~/marsha/src/frontend
-          command: yarn build-lti
-      - run:
-          name: Build lib_tests
-          working_directory: ~/marsha/src/frontend
-          command: yarn build-tests
+          command: yarn workspace marsha run build
       - run:
           name: Build front-end site application
-          working_directory: ~/marsha/src/frontend
-          command: yarn build-site
+          command: yarn workspace standalone_site run build
       - run:
           name: Copy iframe resizer
-          working_directory: ~/marsha/src/frontend
           command: yarn workspace marsha run copy-iframe-resizer
       - run:
           name: Ensure << parameters.browser >> browser is installed
+          working_directory: /home/circleci/marsha/src/backend
           command: python3.10 -m playwright install "<< parameters.browser >>"
       - run:
           name: Install dockerize
@@ -730,7 +729,7 @@ jobs:
           name: Copy e2e media files
           command: |
             mkdir -p /data/media \
-            && cp -r marsha/e2e/media /data/media/e2e
+            && cp -r /home/circleci/marsha/src/backend/marsha/e2e/media /data/media/e2e
       - when:
           condition:
             equal: [chrome, << parameters.browser_channel >>]
@@ -740,9 +739,11 @@ jobs:
                 command: apt update
             - run:
                 name: Install chrome
+                working_directory: ~/marsha/src/backend
                 command: python3.10 -m playwright install chrome
       - run:
           name: Run e2e tests
+          working_directory: /home/circleci/marsha/src/backend
           command: |
             dockerize \
               -wait tcp://localhost:5432 \
@@ -751,7 +752,7 @@ jobs:
                 --browser-channel "<< parameters.browser_channel >>" \
                 --browser "<< parameters.browser >>" marsha/e2e
       - store_artifacts:
-          path: ~/marsha/src/backend/test-results
+          path: /home/circleci/marsha/src/backend/test-results
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
@@ -1381,6 +1382,8 @@ workflows:
               only: /.*/
       - test-e2e:
           name: test-e2e-firefox
+          requires:
+            - build-libs
           browser: firefox
           browser_channel: firefox
           filters:
@@ -1388,6 +1391,8 @@ workflows:
               only: /.*/
       - test-e2e:
           name: test-e2e-chromium
+          requires:
+            - build-libs
           browser: chromium
           browser_channel: chrome
           filters:
@@ -1395,6 +1400,8 @@ workflows:
               only: /.*/
       - test-e2e:
           name: test-e2e-webkit
+          requires:
+            - build-libs
           browser: webkit
           browser_channel: webkit
           filters:
