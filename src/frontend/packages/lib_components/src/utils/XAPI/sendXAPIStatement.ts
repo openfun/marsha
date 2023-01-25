@@ -1,6 +1,7 @@
 import { XAPI_ENDPOINT } from 'settings';
 import { v4 as uuidv4 } from 'uuid';
 
+import { fetchWrapper } from 'common/queries/fetchWrapper';
 import { DataPayload, XapiResourceType } from 'types/XAPI';
 
 export const sendXAPIStatement = (
@@ -8,7 +9,7 @@ export const sendXAPIStatement = (
   jwt: string,
   resourceType: XapiResourceType,
 ) => {
-  void fetch(`${XAPI_ENDPOINT}/${resourceType}/`, {
+  void fetchWrapper(`${XAPI_ENDPOINT}/${resourceType}/`, {
     body: JSON.stringify({
       ...data,
       id: uuidv4(),

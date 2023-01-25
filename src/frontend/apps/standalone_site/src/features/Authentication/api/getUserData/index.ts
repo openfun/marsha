@@ -1,4 +1,4 @@
-import { AnonymousUser, User } from 'lib-components';
+import { AnonymousUser, fetchWrapper, User } from 'lib-components';
 
 const isPresentWithType = (value: unknown, type: 'string' | 'boolean') => {
   return value !== null && value !== undefined && typeof value === type;
@@ -27,7 +27,7 @@ const isUser = (user: unknown): user is User => {
 export const getCurrentUser = async (
   jwt: string,
 ): Promise<User | AnonymousUser> => {
-  const response = await fetch(`/api/users/whoami/`, {
+  const response = await fetchWrapper(`/api/users/whoami/`, {
     headers: {
       Authorization: `Bearer ${jwt}`,
       'Content-Type': 'application/json',

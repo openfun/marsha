@@ -4,6 +4,7 @@ import {
   ClassroomDocument,
   ClassroomModelName,
   Classroom,
+  fetchWrapper,
 } from 'lib-components';
 
 export const createClassroomDocument = async (file: {
@@ -16,7 +17,7 @@ export const createClassroomDocument = async (file: {
     throw new Error('No JWT found');
   }
 
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/${String(ClassroomModelName.CLASSROOM_DOCUMENTS)}/`,
     {
       headers: {

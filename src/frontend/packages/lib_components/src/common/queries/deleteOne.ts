@@ -1,5 +1,7 @@
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchWrapper } from './fetchWrapper';
+
 export const deleteOne = async ({
   name,
   id,
@@ -8,7 +10,7 @@ export const deleteOne = async ({
   id: string;
 }): Promise<undefined> => {
   const jwt = useJwt.getState().jwt;
-  const response = await fetch(`/api/${name}/${id}/`, {
+  const response = await fetchWrapper(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',
       ...(jwt ? { Authorization: `Bearer ${jwt}` } : {}),

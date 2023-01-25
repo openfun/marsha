@@ -1,3 +1,4 @@
+import { fetchWrapper } from 'lib-components';
 import { useMutation, UseMutationOptions } from 'react-query';
 
 type UsePasswordResetConfirmData = {
@@ -26,7 +27,7 @@ const actionPasswordResetConfirm = async ({
 }: {
   object: UsePasswordResetConfirmData;
 }): Promise<UsePasswordResetConfirmResponseData> => {
-  const response = await fetch('/account/api/password/reset/confirm/', {
+  const response = await fetchWrapper('/account/api/password/reset/confirm/', {
     headers: {
       'Content-Type': 'application/json',
     },

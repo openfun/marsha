@@ -3,6 +3,8 @@ import { QueryFunctionContext } from 'react-query';
 
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchWrapper } from './fetchWrapper';
+
 export type FetchListQueryKey =
   | [string, Maybe<{ [key in string]: Maybe<string> }>]
   | [string];
@@ -23,7 +25,7 @@ export const fetchList = async <T,>({
     (key) => queryParams[key] === undefined && delete queryParams[key],
   );
 
-  const response = await fetch(
+  const response = await fetchWrapper(
     `/api/${name}/?${new URLSearchParams({
       limit: '999',
       ...queryParams,

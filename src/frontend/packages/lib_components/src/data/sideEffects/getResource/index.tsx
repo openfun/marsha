@@ -1,5 +1,6 @@
 import { API_ENDPOINT } from 'settings';
 
+import { fetchWrapper } from 'common/queries/fetchWrapper';
 import { addResource } from 'data/stores/generics';
 import { useJwt } from 'hooks/stores/useJwt';
 import { requestStatus } from 'types/api';
@@ -20,7 +21,7 @@ export async function getResource(
   const endpoint = `${API_ENDPOINT}/${resourceName}/${resourceId}/`;
 
   try {
-    const response = await fetch(endpoint, {
+    const response = await fetchWrapper(endpoint, {
       headers: {
         Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
         'Content-Type': 'application/json',

@@ -1,4 +1,10 @@
-import { useJwt, API_ENDPOINT, LiveModeType, Video } from 'lib-components';
+import {
+  fetchWrapper,
+  useJwt,
+  API_ENDPOINT,
+  LiveModeType,
+  Video,
+} from 'lib-components';
 
 /**
  * Post to an action endpoint that declares the beginning of live video.
@@ -9,7 +15,7 @@ export const initiateLive = async (
   video: Video,
   type: LiveModeType,
 ): Promise<Video> => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/videos/${video.id}/initiate-live/`,
     {
       headers: {

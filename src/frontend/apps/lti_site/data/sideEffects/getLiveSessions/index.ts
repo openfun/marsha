@@ -1,4 +1,9 @@
-import { useJwt, API_ENDPOINT, LiveSession } from 'lib-components';
+import {
+  useJwt,
+  API_ENDPOINT,
+  LiveSession,
+  fetchWrapper,
+} from 'lib-components';
 
 export const getLiveSessions = async (
   anonymousId?: string,
@@ -11,7 +16,7 @@ export const getLiveSessions = async (
     endpoint = `${endpoint}?anonymous_id=${anonymousId}`;
   }
 
-  const response = await fetch(endpoint, {
+  const response = await fetchWrapper(endpoint, {
     headers: {
       Authorization: `Bearer ${useJwt.getState().jwt}`,
       'Content-Type': 'application/json',

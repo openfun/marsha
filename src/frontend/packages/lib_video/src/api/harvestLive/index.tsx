@@ -1,7 +1,7 @@
-import { useJwt, Video, API_ENDPOINT } from 'lib-components';
+import { fetchWrapper, useJwt, Video, API_ENDPOINT } from 'lib-components';
 
 export const harvestLive = async (video: Video) => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/videos/${video.id}/harvest-live/`,
     {
       headers: {

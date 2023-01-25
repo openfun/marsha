@@ -1,5 +1,6 @@
 import { API_ENDPOINT } from 'settings';
 
+import { fetchWrapper } from 'common/queries/fetchWrapper';
 import { useJwt } from 'hooks/stores';
 import { AWSPresignedPost } from 'types/AWSPresignedPost';
 import { uploadableModelName } from 'types/models';
@@ -18,7 +19,7 @@ export const initiateUpload = async (
   mimetype: string,
   size: number,
 ) => {
-  const response = await fetch(
+  const response = await fetchWrapper(
     `${API_ENDPOINT}/${objectType}/${objectId}/initiate-upload/`,
     {
       body: JSON.stringify({
