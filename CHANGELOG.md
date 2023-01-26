@@ -20,13 +20,18 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - banner homepage with dynamic text
 
+### Fixed
+
+- lti:
+  - jwt store initialization concurrency issue with access jwt
+
 ## [4.0.0-beta.14] - 2023-01-25
 
-## Added
+### Added
 
 - Add a configuration for jwt state preservation with localstorage
 
-## Fixed
+### Fixed
 
 - standalone website:
   - Authentication renater select crashing the site on scroll

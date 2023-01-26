@@ -1,7 +1,6 @@
 import { Grommet } from 'grommet';
 import {
   CurrentResourceContextProvider,
-  DecodedJwt,
   decodeJwt,
   useJwt,
   useCurrentSession,
@@ -9,9 +8,9 @@ import {
   ResourceContext,
   User,
   BoundaryScreenError,
-  Loader,
   useAppConfig,
   appNames,
+  Loader,
 } from 'lib-components';
 import React, {
   ComponentType,
@@ -20,6 +19,7 @@ import React, {
   Suspense,
   useEffect,
   useMemo,
+  useState,
 } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from 'react-error-boundary';
@@ -45,30 +45,6 @@ const messages = defineMessages({
     id: 'components.App.AppContentLoader.errorAppSet',
   },
 });
-
-const decodedJwt: DecodedJwt = decodeJwt(useJwt.getState().jwt);
-
-useCurrentSession.setState({
-  sessionId: decodedJwt.session_id,
-});
-
-const currentUser: User = {
-  anonymous_id: decodedJwt.user?.anonymous_id,
-  email: decodedJwt.user?.email || undefined,
-  id: decodedJwt.user?.id,
-  username: decodedJwt.user?.username || undefined,
-  full_name: decodedJwt.user?.user_fullname,
-  is_staff: false,
-  is_superuser: false,
-  organization_accesses: [],
-};
-useCurrentUser.setState({
-  currentUser,
-});
-
-const resourceContext: ResourceContext = { ...decodedJwt };
-
-const intl = createIntl(decodedJwt.locale);
 
 const appsContent: Record<string, LazyExoticComponent<ComponentType<any>>> = {
   LTI: lazy(() => import('components/LTIRoutes')),
@@ -99,7 +75,42 @@ const AppContent = () => {
 };
 
 const AppContentLoader = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
   const queryClient = useMemo(() => new QueryClient(), []);
+
+  //  load it from the store to prevent having a dependancy and recompute decodedJwt
+  const decodedJwt = useMemo(() => decodeJwt(useJwt.getState().jwt), []);
+  const resourceContext: ResourceContext = useMemo(
+    () => ({ ...decodedJwt }),
+    [decodedJwt],
+  );
+  const intl = useMemo(() => createIntl(decodedJwt.locale), [decodedJwt]);
+
+  useEffect(() => {
+    useCurrentSession.setState({
+      sessionId: decodedJwt.session_id,
+    });
+
+    const currentUser: User = {
+      anonymous_id: decodedJwt.user?.anonymous_id,
+      email: decodedJwt.user?.email || undefined,
+      id: decodedJwt.user?.id,
+      username: decodedJwt.user?.username || undefined,
+      full_name: decodedJwt.user?.user_fullname,
+      is_staff: false,
+      is_superuser: false,
+      organization_accesses: [],
+    };
+    useCurrentUser.setState({
+      currentUser,
+    });
+
+    setIsLoaded(true);
+  }, [decodedJwt]);
+
+  if (!isLoaded) {
+    return null;
+  }
 
   return (
     <CurrentResourceContextProvider value={resourceContext}>
