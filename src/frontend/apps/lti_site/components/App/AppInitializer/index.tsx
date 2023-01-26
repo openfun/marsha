@@ -142,8 +142,12 @@ export const AppInitializer = (
 
   //  call this effect last to configure all stores first
   useEffect(() => {
+    if (!isJwtInitialized) {
+      return;
+    }
+
     setIsAppInitialized(true);
-  }, [setIsAppInitialized]);
+  }, [isJwtInitialized, setIsAppInitialized]);
 
   if (!isAppInitialized) {
     return null;
