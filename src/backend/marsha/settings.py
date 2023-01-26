@@ -599,6 +599,14 @@ class Base(Configuration):
             default=True,
             environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_REJECT_DEPRECATED_ALGORITHM",
         ),
+        "wantNameId": values.BooleanValue(
+            default=True,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_WANT_NAME_ID",
+        ),
+        "allowRepeatAttributeName": values.BooleanValue(
+            default=False,
+            environ_name="SOCIAL_AUTH_SAML_FER_SECURITY_CONFIG_ALLOW_REPEAT_ATTRIBUTE_NAME",
+        ),
     }
 
     # SOCIAL_AUTH_SAML_FER_SP_ENTITY_ID should be a URL that includes a domain name you own

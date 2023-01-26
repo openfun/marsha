@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- configure wantNameId and allowRepeatAttributeName for saml_fer 
+  security settings
+
 ## [4.0.0-beta.14] - 2023-01-25
 
 ## Added
