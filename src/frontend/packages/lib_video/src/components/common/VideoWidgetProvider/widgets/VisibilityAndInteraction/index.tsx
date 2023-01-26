@@ -104,6 +104,7 @@ export const VisibilityAndInteraction = () => {
         />
         <Collapsible open={visibilityChecked}>
           <CopyClipboard
+            copyId={`publicVideoUrl-${video.id}`}
             isActive={video.is_public}
             text={publicVideoUrl}
             title={intl.formatMessage(messages.copyButtonTitle)}

@@ -21,6 +21,7 @@ describe('<CopyClipboard />', () => {
   it('checks the renders and interaction with success', () => {
     render(
       <CopyClipboard
+        copyId="my-id"
         text="my_link.html"
         title="button title"
         withLabel={true}
@@ -51,6 +52,7 @@ describe('<CopyClipboard />', () => {
   it('checks the component inactive', () => {
     render(
       <CopyClipboard
+        copyId="my-id"
         text="my_link.html"
         title="button title"
         withLabel={true}
@@ -79,6 +81,7 @@ describe('<CopyClipboard />', () => {
   it('checks the component without label', () => {
     render(
       <CopyClipboard
+        copyId="my-id"
         text="my_link.html"
         title="button title"
         onSuccess={() => {
