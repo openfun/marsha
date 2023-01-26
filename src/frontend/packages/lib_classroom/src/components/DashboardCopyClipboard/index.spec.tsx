@@ -64,14 +64,14 @@ describe('<DashboardCopyClipboard />', () => {
   it('checks with isFromWebsite false', () => {
     mockedUseCurrentResource.mockReturnValue([
       {
-        isFromWebsite: true,
+        isFromWebsite: false,
       },
     ] as any);
 
     render(<DashboardCopyClipboard inviteToken="my-token" />);
 
     expect(
-      screen.queryByText('You can share this link with your students:'),
+      screen.queryByText('Invite someone with this link:'),
     ).not.toBeInTheDocument();
   });
 });
