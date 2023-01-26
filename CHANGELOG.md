@@ -12,6 +12,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - configure wantNameId and allowRepeatAttributeName for saml_fer 
   security settings
+- Add a lti link to classroom in the standalone website
+- Invite link for BBB available in every context
 
 ## [4.0.0-beta.14] - 2023-01-25
 

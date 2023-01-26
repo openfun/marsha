@@ -1,3 +1,5 @@
+import { Box } from 'grommet';
+import { Nullable } from 'lib-common';
 import { CopyClipboard, useCurrentResourceContext } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
@@ -14,14 +16,26 @@ const messages = defineMessages({
     description: 'Toast message when link copied to clipboard.',
     id: 'component.DashboardClassroomInstructor.toastCopiedClipboardSuccess',
   },
+  ltiLinkLabel: {
+    defaultMessage: 'LTI link for this classroom:',
+    description: 'Label for LTI classroom link.',
+    id: 'component.DashboardCopyLtiUrl.ltiLinkLabel',
+  },
+  ltiLinkCopiedSuccess: {
+    defaultMessage: 'Url copied in clipboard !',
+    description: 'Toast message when link copied to clipboard.',
+    id: 'component.DashboardCopyLtiUrl.ltiLinkCopiedSuccess',
+  },
 });
 
 interface DashboardCopyClipboardProps {
-  inviteToken: string;
+  inviteToken?: Nullable<string>;
+  classroomId: string;
 }
 
 const DashboardCopyClipboard = ({
   inviteToken,
+  classroomId,
 }: DashboardCopyClipboardProps) => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
@@ -31,24 +45,49 @@ const DashboardCopyClipboard = ({
     return null;
   }
 
-  const inviteLink = `${window.location.href}/invite/${inviteToken}`;
+  let inviteLink = '';
+  if (inviteToken) {
+    inviteLink = `${window.location.href}/invite/${inviteToken}`;
+  }
+  const ltiLink = `${window.location.origin}/lti/classrooms/${classroomId}`;
 
   return (
-    <CopyClipboard
-      text={inviteLink}
-      title={intl.formatMessage(messages.shareLinkLabel)}
-      withLabel={true}
-      onSuccess={() => {
-        toast(intl.formatMessage(messages.toastCopiedClipboardSuccess), {
-          icon: '📋',
-        });
-      }}
-      onError={(event) => {
-        toast.error(event.text, {
-          position: 'bottom-center',
-        });
-      }}
-    />
+    <Box gap="medium">
+      {inviteLink && (
+        <CopyClipboard
+          copyId={`inviteLink-${classroomId}`}
+          text={inviteLink}
+          title={intl.formatMessage(messages.shareLinkLabel)}
+          withLabel={true}
+          onSuccess={() => {
+            toast(intl.formatMessage(messages.toastCopiedClipboardSuccess), {
+              icon: '📋',
+            });
+          }}
+          onError={(event) => {
+            toast.error(event.text, {
+              position: 'bottom-center',
+            });
+          }}
+        />
+      )}
+      <CopyClipboard
+        copyId={`ltiLink-${classroomId}`}
+        text={ltiLink}
+        title={intl.formatMessage(messages.ltiLinkLabel)}
+        withLabel={true}
+        onSuccess={() => {
+          toast(intl.formatMessage(messages.ltiLinkCopiedSuccess), {
+            icon: '📋',
+          });
+        }}
+        onError={(event) => {
+          toast.error(event.text, {
+            position: 'bottom-center',
+          });
+        }}
+      />
+    </Box>
   );
 };
 

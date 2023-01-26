@@ -40,7 +40,7 @@ describe('<DashboardCopyClipboard />', () => {
       },
     ] as any);
 
-    render(<DashboardCopyClipboard inviteToken="my-token" />);
+    render(<DashboardCopyClipboard inviteToken="my-token" classroomId="1" />);
 
     const copyButton = screen.getByRole('button', {
       name: 'Invite someone with this link:',
@@ -68,10 +68,13 @@ describe('<DashboardCopyClipboard />', () => {
       },
     ] as any);
 
-    render(<DashboardCopyClipboard inviteToken="my-token" />);
+    render(<DashboardCopyClipboard inviteToken="my-token" classroomId="1" />);
 
     expect(
       screen.queryByText('Invite someone with this link:'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('LTI link for this classroom:'),
     ).not.toBeInTheDocument();
   });
 });

@@ -23,9 +23,18 @@ describe('<DashboardClassroomInfos />', () => {
   });
 
   it('displays the content for classroom infos', () => {
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
     const classroomInfos = classroomInfosMockFactory();
     render(
-      <DashboardClassroomInfos inviteToken={null} infos={classroomInfos} />,
+      <DashboardClassroomInfos
+        inviteToken={null}
+        infos={classroomInfos}
+        classroomId="1"
+      />,
     );
 
     expect(screen.getByText('Moderators')).toBeInTheDocument();
@@ -39,6 +48,9 @@ describe('<DashboardClassroomInfos />', () => {
     expect(
       screen.queryByText('Invite someone with this link:'),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('LTI link for this classroom:'),
+    ).not.toBeInTheDocument();
   });
 
   it('displays invite link', () => {
@@ -47,12 +59,18 @@ describe('<DashboardClassroomInfos />', () => {
         isFromWebsite: true,
       },
     ] as any);
-    render(<DashboardClassroomInfos inviteToken="my-token" />);
+    render(<DashboardClassroomInfos inviteToken="my-token" classroomId="1" />);
 
     expect(
       screen.getByText('Invite someone with this link:'),
     ).toBeInTheDocument();
-
     expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByText('LTI link for this classroom:'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('https://localhost/lti/classrooms/1'),
+    ).toBeInTheDocument();
   });
 });

@@ -48,11 +48,13 @@ const DashboardClassroomInfosItem = ({
 interface DashboardClassroomInfosProps {
   inviteToken: Nullable<string>;
   infos?: ClassroomInfos;
+  classroomId: string;
 }
 
 const DashboardClassroomInfos = ({
   infos,
   inviteToken,
+  classroomId,
 }: DashboardClassroomInfosProps) => {
   return (
     <Fragment>
@@ -82,11 +84,12 @@ const DashboardClassroomInfos = ({
           />
         </Grid>
       </Box>
-      {inviteToken && (
-        <Box margin={{ top: 'large' }}>
-          <DashboardCopyClipboard inviteToken={inviteToken} />
-        </Box>
-      )}
+      <Box margin={{ top: 'large' }}>
+        <DashboardCopyClipboard
+          inviteToken={inviteToken}
+          classroomId={classroomId}
+        />
+      </Box>
     </Fragment>
   );
 };
