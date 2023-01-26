@@ -55,6 +55,11 @@ describe('<ClassroomForm />', () => {
 
   it('creates a classroom with updated values', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
@@ -140,6 +145,11 @@ describe('<ClassroomForm />', () => {
       .set({ second: 0, millisecond: 0 });
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -289,6 +299,11 @@ describe('<ClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -363,6 +378,11 @@ describe('<ClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -412,6 +432,11 @@ describe('<ClassroomForm />', () => {
 
   it('shows an error when classroom title is missing', () => {
     const classroom = classroomMockFactory({ title: null, id: '1' });
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
@@ -432,7 +457,7 @@ describe('<ClassroomForm />', () => {
     expect(titleError).not.toBeInTheDocument();
   });
 
-  it('displays invite link', () => {
+  it('displays invite and lti link', () => {
     const classroom = classroomMockFactory({
       title: null,
       id: '1',
@@ -449,6 +474,13 @@ describe('<ClassroomForm />', () => {
       screen.getByText('Invite someone with this link:'),
     ).toBeInTheDocument();
     expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
+
+    expect(
+      screen.getByText('LTI link for this classroom:'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('https://localhost/lti/classrooms/1'),
+    ).toBeInTheDocument();
   });
 
   it('displays a list of available recordings', () => {
@@ -465,6 +497,11 @@ describe('<ClassroomForm />', () => {
         ).toISO(),
       }),
     ];
+    mockedUseCurrentResource.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
 
     const { rerender } = render(<ClassroomForm classroom={classroom} />);
 

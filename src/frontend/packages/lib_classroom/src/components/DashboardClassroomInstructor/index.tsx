@@ -96,6 +96,7 @@ const DashboardClassroomInstructor = ({
         <DashboardClassroomInfos
           infos={classroom.infos}
           inviteToken={classroom.invite_token}
+          classroomId={classroom.id}
         />
       </React.Fragment>
     );
@@ -114,6 +115,7 @@ const DashboardClassroomInstructor = ({
         <DashboardClassroomInfos
           infos={classroom.infos}
           inviteToken={classroom.invite_token}
+          classroomId={classroom.id}
         />
       </Box>
     );
