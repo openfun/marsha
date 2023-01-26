@@ -1,4 +1,6 @@
 """Marsha's specific Python Social Auth pipeline steps for Organization"""
+import logging
+
 from django.db import IntegrityError
 from django.db.transaction import atomic
 
@@ -6,6 +8,9 @@ from social_edu_federation.defaults import EduPersonAffiliationEnum
 
 from marsha.account.models import IdpOrganizationAssociation
 from marsha.core.models import INSTRUCTOR, STUDENT, Organization, OrganizationAccess
+
+
+logger = logging.getLogger(__name__)
 
 
 @atomic()
@@ -117,6 +122,12 @@ def create_organization_from_saml(
 
     # Don't fail if `new_association` but the OrganizationAccess already exists.
     # Spare 3 requests by not using get_or_create, as we don't need the get
+    logger.info(
+        "Creating OrganizationAccess for user %s and organization %s with role %s",
+        user.pk,
+        association.organization,
+        details.get("roles", None),
+    )
     try:
         OrganizationAccess.objects.create(
             user=user,
