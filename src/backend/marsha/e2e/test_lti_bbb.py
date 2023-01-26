@@ -6,15 +6,27 @@ import uuid
 
 from django.test import override_settings
 
-from playwright.sync_api import Page
+from playwright.sync_api import Error, Page, expect
 import pytest
 from pytest_django.live_server_helper import LiveServer
 import responses
+from waffle.testutils import override_switch
 
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.models import Classroom
 from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+
+
+@pytest.mark.django_db()
+@pytest.fixture(scope="function", autouse=True)
+def site_settings(live_server: LiveServer):
+    """Override frontend settings."""
+    with override_settings(
+        CORS_ALLOWED_ORIGINS=[live_server.url],
+        FRONTEND_HOME_URL=live_server.url,
+    ), override_switch("site", active=True):
+        yield
 
 
 def _preview_classroom(page: Page, live_server: LiveServer):
@@ -344,3 +356,22 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
     bbb_classroom_page.wait_for_load_state()
 
     assert "BBB classroom joined!" in bbb_classroom_page.content()
+    bbb_classroom_page.close()
+
+    invite_link_button = page.get_by_role(
+        "button", name="Invite someone with this link:"
+    )
+    invite_link_button.click()
+    expect(page.get_by_text("Url copied in clipboard !")).to_be_visible()
+
+    invite_page = page.context.new_page()
+    # tries to get the clipboard content, if it fails, it uses the data-clipboard-text
+    # attribute of the button
+    # see https://github.com/microsoft/playwright/issues/8114
+    try:
+        page.context.grant_permissions(["clipboard-read", "clipboard-write"])
+        invite_link = page.evaluate("navigator.clipboard.readText()")
+    except Error:
+        invite_link = invite_link_button.get_attribute("data-clipboard-text")
+    invite_page.goto(invite_link)
+    expect(invite_page.get_by_text("Classroom not started yet.")).to_be_visible()

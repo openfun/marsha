@@ -41,14 +41,9 @@ const DashboardCopyClipboard = ({
   const [context] = useCurrentResourceContext();
   const { isFromWebsite } = context;
 
-  if (!isFromWebsite) {
-    return null;
-  }
-
-  let inviteLink = '';
-  if (inviteToken) {
-    inviteLink = `${window.location.href}/invite/${inviteToken}`;
-  }
+  const inviteLink = inviteToken
+    ? `${window.location.origin}/my-contents/classroom/${classroomId}/invite/${inviteToken}`
+    : '';
   const ltiLink = `${window.location.origin}/lti/classrooms/${classroomId}`;
 
   return (
@@ -71,22 +66,24 @@ const DashboardCopyClipboard = ({
           }}
         />
       )}
-      <CopyClipboard
-        copyId={`ltiLink-${classroomId}`}
-        text={ltiLink}
-        title={intl.formatMessage(messages.ltiLinkLabel)}
-        withLabel={true}
-        onSuccess={() => {
-          toast(intl.formatMessage(messages.ltiLinkCopiedSuccess), {
-            icon: '📋',
-          });
-        }}
-        onError={(event) => {
-          toast.error(event.text, {
-            position: 'bottom-center',
-          });
-        }}
-      />
+      {isFromWebsite && (
+        <CopyClipboard
+          copyId={`ltiLink-${classroomId}`}
+          text={ltiLink}
+          title={intl.formatMessage(messages.ltiLinkLabel)}
+          withLabel={true}
+          onSuccess={() => {
+            toast(intl.formatMessage(messages.ltiLinkCopiedSuccess), {
+              icon: '📋',
+            });
+          }}
+          onError={(event) => {
+            toast.error(event.text, {
+              position: 'bottom-center',
+            });
+          }}
+        />
+      )}
     </Box>
   );
 };
