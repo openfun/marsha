@@ -210,6 +210,14 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
           }}
         />
       </Form>
+
+      <Box margin={{ top: 'medium' }}>
+        <DashboardCopyClipboard
+          inviteToken={classroom.invite_token}
+          classroomId={classroom.id}
+        />
+      </Box>
+
       <UploadDocuments classroomId={classroom.id} />
 
       <Box direction="column" gap="small" margin={{ top: 'medium' }}>
@@ -254,12 +262,6 @@ export const ClassroomForm = ({ classroom }: ClassroomFormProps) => {
           )}
         </ItemList>
       </Box>
-
-      {classroom.invite_token && (
-        <Box margin={{ top: 'medium' }}>
-          <DashboardCopyClipboard inviteToken={classroom.invite_token} />
-        </Box>
-      )}
     </UploadManager>
   );
 };
