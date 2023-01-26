@@ -213,6 +213,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
           <Box align="center" direction="row" pad={{ top: 'small' }}>
             <Text role="heading" margin="small">
               <CopyClipboard
+                copyId={`playlist-${playlist?.id}`}
                 text={
                   <FormattedMessage
                     {...messages.playlistTitle}

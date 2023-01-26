@@ -70,6 +70,7 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
             <ul>
               <li>
                 <CopyClipboard
+                  copyId={`url-${matches[2]}`}
                   text={
                     <Fragment>
                       <FormattedMessage {...messages.url} />
@@ -93,6 +94,7 @@ const DashboardLiveRaw = ({ video }: DashboardLiveRawProps) => {
               </li>
               <li>
                 <CopyClipboard
+                  copyId={`key-${matches[2]}`}
                   text={
                     <Fragment>
                       <FormattedMessage {...messages.streamKey} />

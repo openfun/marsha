@@ -6,6 +6,7 @@ import { DashedBoxCustom } from 'common/DashedBoxCustom';
 import { CopySVG } from 'common/SVGIcons/CopySVG';
 
 interface Props {
+  copyId: string;
   text: string | ReactElement;
   title: string;
   onSuccess: (e: ClipboardJS.Event) => void;
@@ -16,6 +17,7 @@ interface Props {
 }
 
 export const CopyClipboard = ({
+  copyId,
   text,
   title,
   onSuccess,
@@ -29,11 +31,11 @@ export const CopyClipboard = ({
       return;
     }
 
-    const clipboard = new ClipboardJS('.copy');
+    const clipboard = new ClipboardJS(`#${copyId}`);
     clipboard.on('success', onSuccess);
     clipboard.on('error', onError);
     return () => clipboard.destroy();
-  }, [isActive, onError, onSuccess]);
+  }, [copyId, isActive, onError, onSuccess]);
 
   return (
     <Fragment>
@@ -57,7 +59,7 @@ export const CopyClipboard = ({
         </Text>
         <Button
           a11yTitle={title}
-          className="copy"
+          id={copyId}
           data-clipboard-text={textToCopy || text}
           plain
           style={{ display: 'flex', padding: 0 }}
