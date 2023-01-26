@@ -69,6 +69,7 @@ export const SelectContent = ({
     <Box pad="medium">
       <Box justify="center" align="center" direction="row">
         <CopyClipboard
+          copyId={`key-${playlist?.id}`}
           text={
             <FormattedMessage
               {...messages.playlistTitle}
