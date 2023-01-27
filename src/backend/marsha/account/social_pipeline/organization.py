@@ -1,10 +1,9 @@
 """Marsha's specific Python Social Auth pipeline steps for Organization"""
 import logging
 
+from django.conf import settings
 from django.db import IntegrityError
 from django.db.transaction import atomic
-
-from social_edu_federation.defaults import EduPersonAffiliationEnum
 
 from marsha.account.models import IdpOrganizationAssociation
 from marsha.core.models import INSTRUCTOR, STUDENT, Organization, OrganizationAccess
@@ -135,7 +134,10 @@ def create_organization_from_saml(
             role=INSTRUCTOR
             if (
                 details.get("roles", None)
-                and EduPersonAffiliationEnum.TEACHER.value in details["roles"]
+                and any(
+                    role in details["roles"]
+                    for role in settings.SOCIAL_AUTH_SAML_FER_TEACHER_ROLES
+                )
             )
             else STUDENT,
         )
