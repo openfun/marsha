@@ -20,9 +20,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - LTI link for classroom available in every context
 - standalone website:
   - banner homepage with dynamic text
+  - add "playlist access" management API endpoints
 - Arnold tray to manage definition directly in marsha repository
 - Install and configure scoutapm
-
 
 ### Changed
 
@@ -39,6 +39,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - service worker from lti site and standalone site
+
 
 ## [4.0.0-beta.14] - 2023-01-25
 
