@@ -400,6 +400,10 @@ class BaseIsPlaylistRole(permissions.BasePermission):
 
     role_filter = {}
 
+    def get_playlist_id(self, request, view, obj):  # pylint: disable=unused-argument
+        """Get the playlist id."""
+        return obj.pk
+
     def has_object_permission(self, request, view, obj):
         """
         Allow the request.
@@ -414,7 +418,7 @@ class BaseIsPlaylistRole(permissions.BasePermission):
 
         return models.PlaylistAccess.objects.filter(
             **self.role_filter,
-            playlist=obj,
+            playlist_id=self.get_playlist_id(request, view, obj),
             user__id=request.user.id,
         ).exists()
 
@@ -446,10 +450,30 @@ class IsPlaylistAdminOrInstructor(HasAdminOrInstructorRoleMixIn, BaseIsPlaylistR
     """
 
 
+class BaseIsObjectPlaylistRole(BaseIsPlaylistRole):
+    """
+    Base permission class for resource's playlist roles.
+
+    Example: test whether a user has admin role one to a video's playlist.
+    """
+
+    def get_playlist_id(self, request, view, obj):
+        """Get the playlist id."""
+        return obj.playlist_id
+
+
+class IsObjectPlaylistAdmin(HasAdminRoleMixIn, BaseIsObjectPlaylistRole):
+    """Allow request when the user has admin role on the object's playlist."""
+
+
 class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
     """Base permission class for playlist's organization roles."""
 
     role_filter = {}
+
+    def get_playlist_id(self, request, view, obj):  # pylint: disable=unused-argument
+        """Get the playlist id."""
+        return obj.pk
 
     def has_object_permission(self, request, view, obj):
         """
@@ -465,7 +489,7 @@ class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
 
         return models.OrganizationAccess.objects.filter(
             **self.role_filter,
-            organization__playlists=obj,
+            organization__playlists__id=self.get_playlist_id(request, view, obj),
             user__id=request.user.id,
         ).exists()
 
@@ -479,6 +503,25 @@ class IsPlaylistOrganizationInstructor(
     BaseIsPlaylistOrganizationRole,
 ):
     """Permission class to check if the user is one of the playlist's organization instructor."""
+
+
+class BaseIsObjectPlaylistOrganizationRole(BaseIsPlaylistOrganizationRole):
+    """Base permission class for object's playlist's organization roles."""
+
+    def get_playlist_id(self, request, view, obj):
+        """Get the playlist id."""
+        # Note, use select_related to avoid making extra requests to get the playlist id
+        return obj.playlist_id
+
+
+class IsObjectPlaylistOrganizationAdmin(
+    HasAdminRoleMixIn,
+    BaseIsObjectPlaylistOrganizationRole,
+):
+    """
+    Permission class to check if the user is one of
+    the object's playlist's organization admin.
+    """
 
 
 class IsVideoPlaylistAdmin(permissions.BasePermission):
