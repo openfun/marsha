@@ -8,6 +8,7 @@ from .lti_user_association import *  # noqa isort:skip
 from .pairing_challenge import *  # noqa isort:skip
 from .portability_request import *  # noqa isort:skip
 from .playlist import *  # noqa isort:skip
+from .playlist_access import *  # noqa isort:skip
 from .shared_live_media import *  # noqa isort:skip
 from .thumbnail import *  # noqa isort:skip
 from .timed_text_track import *  # noqa isort:skip
