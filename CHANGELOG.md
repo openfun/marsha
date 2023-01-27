@@ -13,9 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - configure wantNameId and allowRepeatAttributeName for saml_fer 
   security settings
 - Add a lti link to classroom in the standalone website
-- Invite link for BBB available in every context
+- Invite link for classroom available in every context
 - Add a check on classroom document file size when uploading content
 - Configure teachers role lookup to create organization access
+- LTI link for classroom available in every context
 
 ## [4.0.0-beta.14] - 2023-01-25
 

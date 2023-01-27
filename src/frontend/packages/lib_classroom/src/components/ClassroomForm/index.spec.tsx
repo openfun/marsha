@@ -1,7 +1,6 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useCurrentResourceContext } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
 import React from 'react';
@@ -26,13 +25,7 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
-  useCurrentResourceContext: jest.fn(),
 }));
-
-const mockedUseCurrentResource =
-  useCurrentResourceContext as jest.MockedFunction<
-    typeof useCurrentResourceContext
-  >;
 
 jest.mock('components/UploadDocuments', () => ({
   UploadDocuments: () => <p>Upload Documents.</p>,
@@ -55,11 +48,6 @@ describe('<ClassroomForm />', () => {
 
   it('creates a classroom with updated values', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
@@ -145,11 +133,6 @@ describe('<ClassroomForm />', () => {
       .set({ second: 0, millisecond: 0 });
     const estimatedDuration = Duration.fromObject({ minutes: 30 });
     const classroom = classroomMockFactory({ id: '1', started: false });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -299,11 +282,6 @@ describe('<ClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -378,11 +356,6 @@ describe('<ClassroomForm />', () => {
       starting_at: startingAt.toISO(),
       estimated_duration: estimatedDuration.toFormat('hh:mm:ss'),
     });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/', deferredPatch.promise);
@@ -432,11 +405,6 @@ describe('<ClassroomForm />', () => {
 
   it('shows an error when classroom title is missing', () => {
     const classroom = classroomMockFactory({ title: null, id: '1' });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/create/', deferredPatch.promise);
@@ -463,11 +431,6 @@ describe('<ClassroomForm />', () => {
       id: '1',
       invite_token: 'my-token',
     });
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: true,
-      },
-    ] as any);
     render(<ClassroomForm classroom={classroom} />);
 
     expect(
@@ -497,11 +460,6 @@ describe('<ClassroomForm />', () => {
         ).toISO(),
       }),
     ];
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        isFromWebsite: false,
-      },
-    ] as any);
 
     const { rerender } = render(<ClassroomForm classroom={classroom} />);
 

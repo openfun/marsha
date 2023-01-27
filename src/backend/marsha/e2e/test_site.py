@@ -155,6 +155,7 @@ def test_site_classroom_invite_link(context: BrowserContext, live_server: LiveSe
     page.wait_for_selector("text=My Contents")
     page.get_by_text("Classroom test").click()
 
+    expect(page.get_by_text("LTI link for this classroom:")).to_be_visible()
     invite_link_button = page.get_by_role(
         "button", name="Invite someone with this link:"
     )

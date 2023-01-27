@@ -1,9 +1,5 @@
 import { fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import {
-  useCurrentResourceContext,
-  ltiInstructorTokenMockFactory,
-} from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
@@ -24,13 +20,7 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
-  useCurrentResourceContext: jest.fn(),
 }));
-
-const mockedUseCurrentResource =
-  useCurrentResourceContext as jest.MockedFunction<
-    typeof useCurrentResourceContext
-  >;
 
 jest.mock('components/DashboardClassroomForm', () => {
   const DashboardClassroomForm = () => <p>classroom form</p>;
@@ -122,13 +112,6 @@ describe('<DashboardClassroomInstructor />', () => {
   });
 
   it('Displays invite link depend state', () => {
-    mockedUseCurrentResource.mockReturnValue([
-      {
-        ...ltiInstructorTokenMockFactory(),
-        isFromWebsite: true,
-      },
-    ] as any);
-
     const classroom = classroomMockFactory({
       id: '1',
       started: true,
