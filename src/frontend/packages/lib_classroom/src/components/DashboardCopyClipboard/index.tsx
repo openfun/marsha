@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { CopyClipboard, useCurrentResourceContext } from 'lib-components';
+import { CopyClipboard } from 'lib-components';
 import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -38,8 +38,6 @@ const DashboardCopyClipboard = ({
   classroomId,
 }: DashboardCopyClipboardProps) => {
   const intl = useIntl();
-  const [context] = useCurrentResourceContext();
-  const { isFromWebsite } = context;
 
   const inviteLink = inviteToken
     ? `${window.location.origin}/my-contents/classroom/${classroomId}/invite/${inviteToken}`
@@ -66,24 +64,22 @@ const DashboardCopyClipboard = ({
           }}
         />
       )}
-      {isFromWebsite && (
-        <CopyClipboard
-          copyId={`ltiLink-${classroomId}`}
-          text={ltiLink}
-          title={intl.formatMessage(messages.ltiLinkLabel)}
-          withLabel={true}
-          onSuccess={() => {
-            toast(intl.formatMessage(messages.ltiLinkCopiedSuccess), {
-              icon: '📋',
-            });
-          }}
-          onError={(event) => {
-            toast.error(event.text, {
-              position: 'bottom-center',
-            });
-          }}
-        />
-      )}
+      <CopyClipboard
+        copyId={`ltiLink-${classroomId}`}
+        text={ltiLink}
+        title={intl.formatMessage(messages.ltiLinkLabel)}
+        withLabel={true}
+        onSuccess={() => {
+          toast(intl.formatMessage(messages.ltiLinkCopiedSuccess), {
+            icon: '📋',
+          });
+        }}
+        onError={(event) => {
+          toast.error(event.text, {
+            position: 'bottom-center',
+          });
+        }}
+      />
     </Box>
   );
 };
