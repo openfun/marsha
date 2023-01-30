@@ -18,6 +18,7 @@ const colorsGeneric = {
   'bg-menu-hover': '#CDDEF5',
   'bg-select': '#e5eefa',
   'blue-active': '#055fd2',
+  'blue-content': '#002c84',
   'blue-focus': '#031963',
   'blue-hover': '#2d76d3',
   'blue-hover-light': '#E5F1F8',
