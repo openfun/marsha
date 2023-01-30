@@ -21,6 +21,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - banner homepage with dynamic text
 
+### Changed
+
+- change xapi endpoints status code when no LRS from 501 to 200 
+
 ### Fixed
 
 - lti:
