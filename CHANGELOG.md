@@ -17,6 +17,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a check on classroom document file size when uploading content
 - Configure teachers role lookup to create organization access
 - LTI link for classroom available in every context
+- standalone website:
+  - banner homepage with dynamic text
 
 ## [4.0.0-beta.14] - 2023-01-25
 
