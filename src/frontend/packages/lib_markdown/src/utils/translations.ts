@@ -6,7 +6,7 @@ export const getMarkdownDocumentTranslatedContent = (
   language: string,
   defaultValue?: string,
 ) => {
-  const translation = markdownDocument!.translations.find(
+  const translation = markdownDocument.translations.find(
     (value) => value.language_code === language,
   );
   return translation ? translation[content] : defaultValue || '';

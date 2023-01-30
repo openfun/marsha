@@ -34,7 +34,7 @@ const MarkdownViewer = () => {
     );
 
     // Update image URL to use fresh signature
-    markdownDocument.images.map((value) => {
+    markdownDocument.images.map((value: { url: any; id: string }) => {
       if (!value.url) return;
       const imageUrlRegex = new RegExp(
         'src="https?://[^"]+/' +
@@ -54,7 +54,7 @@ const MarkdownViewer = () => {
   }, [language]);
 
   const availableLanguages = markdownDocument.translations.map(
-    (translation) => translation.language_code,
+    (translation: { language_code: any }) => translation.language_code,
   );
 
   if (htmlContent === null) {

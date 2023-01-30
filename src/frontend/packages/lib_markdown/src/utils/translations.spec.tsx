@@ -6,7 +6,7 @@ import {
 import { getMarkdownDocumentTranslatedContent } from './translations';
 
 describe('getMarkdownDocumentTranslatedContent', () => {
-  it('returns the existing translation', async () => {
+  it('returns the existing translation', () => {
     const enTranslations = markdownTranslationMockFactory({
       language_code: 'en',
     });
@@ -47,7 +47,7 @@ describe('getMarkdownDocumentTranslatedContent', () => {
     ).toEqual(enTranslations.rendered_content);
   });
 
-  it('returns the default value for missing translations', async () => {
+  it('returns the default value for missing translations', () => {
     const markdownDocument = markdownDocumentMockFactory({});
 
     expect(
