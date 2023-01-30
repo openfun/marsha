@@ -11,7 +11,7 @@ import {
   markdownDocumentMockFactory,
   markdownImageMockFactory,
   markdownTranslationMockFactory,
-} from 'apps/markdown/utils/tests/factories';
+} from 'lib-markdown';
 
 import MarkdownEditor from '.';
 import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';

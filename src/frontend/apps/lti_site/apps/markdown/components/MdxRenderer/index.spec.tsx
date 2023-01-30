@@ -9,7 +9,7 @@ import render from 'utils/tests/render';
 
 import MdxRenderer from '.';
 import { useJwt } from 'lib-components';
-import { markdownImageMockFactory } from 'apps/markdown/utils/tests/factories';
+import { markdownImageMockFactory } from 'lib-markdown';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

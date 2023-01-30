@@ -1,6 +1,6 @@
 import { escapeMarkdown } from './escapeMarkdown';
 
-describe('apps/markdown/utils/escapeMarkdown', () => {
+describe('escapeMarkdown', () => {
   it('escapes asterisks', async () => {
     expect(escapeMarkdown('some text with *')).toEqual('some text with \\*');
   });
