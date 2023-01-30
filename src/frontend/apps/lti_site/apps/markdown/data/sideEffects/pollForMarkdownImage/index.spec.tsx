@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { report } from 'lib-components';
 
 import { pollForMarkdownImage } from '.';
-import { markdownImageMockFactory } from '../../../utils/tests/factories';
+import { markdownImageMockFactory } from 'lib-markdown';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

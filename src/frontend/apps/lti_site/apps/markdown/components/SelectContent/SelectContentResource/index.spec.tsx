@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import React from 'react';
 
-import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
+import { markdownDocumentMockFactory } from 'lib-markdown';
 import { playlistMockFactory } from 'lib-components';
 import render from 'utils/tests/render';
 

@@ -1,7 +1,7 @@
 import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
-} from 'apps/markdown/utils/tests/factories';
+} from 'utils/tests/factories';
 
 import { getMarkdownDocumentTranslatedContent } from './translations';
 
