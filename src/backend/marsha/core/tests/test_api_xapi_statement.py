@@ -27,7 +27,7 @@ class XAPIStatementApiTest(TestCase):
         )
 
     def test_xapi_statement_with_no_lrs_configured(self):
-        """If no LRS configured a 501 status code should be returned."""
+        """If no LRS configured a 200 status code should be returned."""
         video = VideoFactory()
         jwt_token = StudentLtiTokenFactory(resource=video)
 
@@ -48,7 +48,7 @@ class XAPIStatementApiTest(TestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 501)
+        self.assertEqual(response.status_code, 200)
 
     def test_xapi_statement_api_with_invalid_payload(self):
         """Payload should follow a given pattern."""
@@ -133,7 +133,7 @@ class XAPIStatementApiTest(TestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 501)
+        self.assertEqual(response.status_code, 500)
         self.assertEqual(
             response.json().get("status"), "Impossible to send xAPI request to LRS."
         )

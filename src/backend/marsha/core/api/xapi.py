@@ -79,10 +79,8 @@ class XAPIStatementView(APIViewMixin, APIView):
         xapi_logger.info(json.dumps(xapi_statement.get_statement()))
 
         if not consumer_site.lrs_url or not consumer_site.lrs_auth_token:
-            return Response(
-                {"reason": "LRS is not configured. This endpoint is not usable."},
-                status=501,
-            )
+            logger.info("LRS is not configured.")
+            return Response(status=200)
 
         xapi = XAPI(
             consumer_site.lrs_url,
@@ -99,6 +97,6 @@ class XAPIStatementView(APIViewMixin, APIView):
                 message,
                 extra={"response": e.response.text, "status": e.response.status_code},
             )
-            return Response({"status": message}, status=501)
+            return Response({"status": message}, status=500)
 
         return Response(status=204)
