@@ -422,6 +422,7 @@ jobs:
             - ./packages/lib_components/node_modules
             - ./packages/lib_classroom/node_modules
             - ./packages/lib_video/node_modules
+            - ./packages/lib_markdown/node_modules
           key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
       - save_cache:
           paths:
@@ -430,6 +431,7 @@ jobs:
             - ./packages/lib_components/lib
             - ./packages/lib_classroom/lib
             - ./packages/lib_video/lib
+            - ./packages/lib_markdown/lib
           key: front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
 
   build-front:
@@ -601,6 +603,9 @@ jobs:
           name: Run tests on lib-video
           command: yarn workspace lib-video run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - run:
+          name: Run tests on lib-markdown
+          command: yarn workspace lib-markdown run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
+      - run:
           name: Run tests on lti site
           command: yarn workspace marsha run test -w 3 --shard "$(($CIRCLE_NODE_INDEX + 1))/$CIRCLE_NODE_TOTAL"
       - store_artifacts:
@@ -611,6 +616,8 @@ jobs:
           path: ~/marsha/src/frontend/packages/lib_classroom/__diff_output__
       - store_artifacts:
           path: ~/marsha/src/frontend/packages/lib_video/__diff_output__
+      - store_artifacts:
+          path: ~/marsha/src/frontend/packages/lib_markdown/__diff_output__
 
   test-website:
     docker:

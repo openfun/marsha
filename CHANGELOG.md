@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - remove lib folder before rollup build to avoid stale files
 - Add stats page on VOD
+- Create lib-markdown package
 
 ### Changed
 
