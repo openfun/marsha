@@ -6,7 +6,7 @@ import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
   markdownImageMockFactory,
-} from 'apps/markdown/utils/tests/factories';
+} from 'lib-markdown';
 import { useJwt } from 'lib-components';
 import render from 'utils/tests/render';
 

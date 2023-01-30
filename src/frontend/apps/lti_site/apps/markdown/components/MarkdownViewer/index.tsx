@@ -6,7 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
+import { getMarkdownDocumentTranslatedContent } from 'lib-markdown';
 
 const messages = defineMessages({
   // Messages

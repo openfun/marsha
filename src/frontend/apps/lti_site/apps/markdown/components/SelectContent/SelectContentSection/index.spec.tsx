@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import React from 'react';
 
-import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
+import { markdownDocumentMockFactory } from 'lib-markdown';
 import render from 'utils/tests/render';
 
 import { SelectContentSection } from '.';

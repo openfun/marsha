@@ -12,6 +12,8 @@ import {
 } from 'apps/markdown/components/CodeMirrorEditor';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
+  escapeMarkdown,
+  getMarkdownDocumentTranslatedContent,
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
@@ -22,10 +24,8 @@ import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOp
 import ScreenDispositionSelector, {
   ScreenDisposition,
 } from 'apps/markdown/components/ScreenDispositionSelector';
-import { getMarkdownDocumentTranslatedContent } from 'apps/markdown/utils/translations';
 import MarkdownImageDropzone from '../MarkdownImageDropzone';
 import { useImageUploadManager } from '../useImageUploadManager';
-import { escapeMarkdown } from '../../utils/escapeMarkdown';
 
 const messages = defineMessages({
   // Inputs

@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { useJwt } from 'lib-components';
 
-import { markdownDocumentMockFactory } from 'apps/markdown/utils/tests/factories';
+import { markdownDocumentMockFactory } from 'lib-markdown';
 
 import {
   markdownRenderLatex,
