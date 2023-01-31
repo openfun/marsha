@@ -5,11 +5,13 @@
   "directories": {
     "lib": "lib"
   },
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "jsnext:main": "lib/index.es.js",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "jsnext:main": "lib/esm/index.js",
+  "types": "lib/dts/index.d.ts",
   "scripts": {
     "build": "rollup -c",
+    "build:watch": "yarn build --watch",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",

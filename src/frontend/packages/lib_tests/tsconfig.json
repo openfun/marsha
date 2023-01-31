@@ -2,15 +2,16 @@
   "include": ["src"],
   "extends": "../../tsconfig.json",
   "compilerOptions": {
-    "outDir": "lib",
-    "module": "ES2015",
+    "baseUrl": "./src",
+    "declaration": true,
+    "declarationDir": "lib/dts",
     "esModuleInterop": true,
-    "moduleResolution": "node",
     "jsx": "react",
+    "module": "esnext",
+    "moduleResolution": "node",
     "noUnusedLocals": false,
     "noUnusedParameters": false,
-    "declaration": true,
-    "rootDir": "src",
-    "baseUrl": "."
+    "outDir": "lib",
+    "rootDir": "./src"
   }
 }
