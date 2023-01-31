@@ -16,7 +16,7 @@ from django.utils.module_loading import import_string
 from boto3.exceptions import Boto3Error
 from rest_framework import status, viewsets
 from rest_framework.decorators import action
-from rest_framework.exceptions import APIException
+from rest_framework.exceptions import APIException, MethodNotAllowed
 from rest_framework.response import Response
 
 from marsha.core.defaults import JITSI
@@ -67,12 +67,10 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
     def get_permissions(self):
         """
-        Manage permissions for built-in DRF methods.
-
-        Default to the actions' self defined permissions if applicable or
-        to the ViewSet's default permissions.
+        Retrieve the action related permissions to determine whether
+        the current user has the authorization to access endpoint.
         """
-        if self.action in ["partial_update", "update", "jitsi_info"]:
+        if self.action in ["partial_update", "update", "initiate_upload", "jitsi_info"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObject
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
@@ -101,15 +99,44 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 permissions.IsObjectPlaylistAdmin
                 | permissions.IsObjectPlaylistOrganizationAdmin
             ]
-        else:
-            try:
-                permission_classes = (
-                    getattr(self, self.action).kwargs.get("permission_classes")
-                    if self.action
-                    else self.permission_classes
+        elif self.action in ["initiate_live"]:
+            permission_classes = [
+                (
+                    permissions.IsTokenResourceRouteObject
+                    & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 )
-            except AttributeError:
-                permission_classes = self.permission_classes
+                | permissions.HasPlaylistToken
+            ]
+        elif self.action in [
+            "start_live",
+            "stop_live",
+            "harvest_live",
+            "live_to_vod",
+            "pairing_secret",
+            "start_sharing",
+            "navigate_sharing",
+            "end_sharing",
+            "participants_asking_to_join",
+            "participants_in_discussion",
+            "start_recording",
+            "stop_recording",
+            "stats",
+        ]:
+            permission_classes = [
+                permissions.IsTokenResourceRouteObject
+                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+            ]
+        elif self.action in ["update_live_state"]:
+            # This endpoint is only used by the AWS lambda function
+            permission_classes = []
+        elif self.action is None:
+            if self.request.method not in self.allowed_methods:
+                raise MethodNotAllowed(self.request.method)
+            permission_classes = self.permission_classes
+        else:
+            # When here it means we forgot to define a permission for a new action
+            # We enforce the permission definition in this method to have a clearer view
+            raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
     def get_serializer_context(self):
@@ -200,17 +227,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="initiate-upload",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-            | permissions.IsObjectPlaylistAdmin
-            | permissions.IsObjectPlaylistOrganizationAdmin
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
     def initiate_upload(self, request, pk=None):
         """Get an upload policy for a video.
@@ -245,22 +262,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(response)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="initiate-live",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-            | permissions.HasPlaylistToken
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="initiate-live")
     # pylint: disable=unused-argument
-    def initiate_live(
-        self,
-        request,
-        pk=None,
-    ):
+    def initiate_live(self, request, pk=None):
         """Create a live stack on AWS ready to stream.
 
         Parameters
@@ -294,15 +298,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="start-live",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="start-live")
     # pylint: disable=unused-argument
     def start_live(self, request, pk=None):
         """Start a medialive channel on AWS.
@@ -395,15 +391,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="stop-live",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="stop-live")
     # pylint: disable=unused-argument
     def stop_live(self, request, pk=None):
         """Stop a medialive channel on AWS.
@@ -444,15 +432,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="harvest-live",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="harvest-live")
     # pylint: disable=unused-argument
     def harvest_live(self, request, pk=None):
         """harvest a medialive channel on AWS and delete its stack.
@@ -521,15 +501,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(serializer.data)
 
-    @action(
-        methods=["post"],
-        detail=True,
-        url_path="live-to-vod",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-        ],
-    )
+    @action(methods=["post"], detail=True, url_path="live-to-vod")
     # pylint: disable=unused-argument
     def live_to_vod(self, request, pk=None):
         """Transforms an harvested live to a VOD.
@@ -571,18 +543,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="update-live-state",
-        permission_classes=[],
-    )
+    @action(methods=["patch"], detail=True, url_path="update-live-state")
     # pylint: disable=unused-argument
-    def update_live_state(
-        self,
-        request,
-        pk=None,
-    ):
+    def update_live_state(self, request, pk=None):
         """View handling AWS POST request to update the video live state.
 
         Parameters
@@ -667,21 +630,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response({"success": True})
 
-    @action(
-        methods=["get"],
-        detail=True,
-        url_path="pairing-secret",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["get"], detail=True, url_path="pairing-secret")
     # pylint: disable=unused-argument
-    def pairing_secret(
-        self,
-        request,
-        pk=None,
-    ):
+    def pairing_secret(self, request, pk=None):
         """Generate a secret for pairing an external device to a live stream.
 
         Deletes expired LivePairing objects.
@@ -722,21 +673,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = serializers.LivePairingSerializer(instance=live_pairing)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="start-sharing",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["patch"], detail=True, url_path="start-sharing")
     # pylint: disable=unused-argument
-    def start_sharing(
-        self,
-        request,
-        pk=None,
-    ):
+    def start_sharing(self, request, pk=None):
         """Starts a media live sharing in a live stream.
 
         Broadcasts a xmpp message to all users in the video room.
@@ -773,21 +712,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="navigate-sharing",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["patch"], detail=True, url_path="navigate-sharing")
     # pylint: disable=unused-argument
-    def navigate_sharing(
-        self,
-        request,
-        pk=None,
-    ):
+    def navigate_sharing(self, request, pk=None):
         """Changes page of the media live shared in a live stream.
 
         Broadcasts a xmpp message to all users in the video room.
@@ -824,21 +751,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="end-sharing",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["patch"], detail=True, url_path="end-sharing")
     # pylint: disable=unused-argument
-    def end_sharing(
-        self,
-        request,
-        pk=None,
-    ):
+    def end_sharing(self, request, pk=None):
         """Ends the media live sharing in a live stream.
 
         Broadcasts a xmpp message to all users in the video room.
@@ -871,17 +786,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         methods=["post", "delete"],
         detail=True,
         url_path="participants-asking-to-join",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
     )
     # pylint: disable=unused-argument
-    def participants_asking_to_join(
-        self,
-        request,
-        pk=None,
-    ):
+    def participants_asking_to_join(self, request, pk=None):
         """Adds and deletes a participant asking to join a live stream.
 
         Broadcasts a xmpp message to all users in the video room.
@@ -926,17 +833,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         methods=["post", "delete"],
         detail=True,
         url_path="participants-in-discussion",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
     )
     # pylint: disable=unused-argument
-    def participants_in_discussion(
-        self,
-        request,
-        pk=None,
-    ):
+    def participants_in_discussion(self, request, pk=None):
         """Adds and deletes a participant who have joined a live stream.
 
         Broadcasts a xmpp message to all users in the video room.
@@ -978,21 +877,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="start-recording",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["patch"], detail=True, url_path="start-recording")
     # pylint: disable=unused-argument
-    def start_recording(
-        self,
-        request,
-        pk=None,
-    ):
+    def start_recording(self, request, pk=None):
         """Starts video recording.
 
         Parameters
@@ -1018,21 +905,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["patch"],
-        detail=True,
-        url_path="stop-recording",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["patch"], detail=True, url_path="stop-recording")
     # pylint: disable=unused-argument
-    def stop_recording(
-        self,
-        request,
-        pk=None,
-    ):
+    def stop_recording(self, request, pk=None):
         """Stops video recording.
 
         Parameters
@@ -1058,15 +933,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
         return Response(serializer.data)
 
-    @action(
-        methods=["get"],
-        detail=True,
-        url_path="stats",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject
-            & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-        ],
-    )
+    @action(methods=["get"], detail=True, url_path="stats")
     # pylint: disable=unused-argument
     def stats(self, request, pk=None):
         """
@@ -1089,11 +956,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(data=data, content_type="application/json")
 
-    @action(
-        methods=["get"],
-        detail=True,
-        url_path="jitsi",
-    )
+    @action(methods=["get"], detail=True, url_path="jitsi")
     # pylint: disable=unused-argument
     def jitsi_info(self, request, pk=None):
         """

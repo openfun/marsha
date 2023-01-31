@@ -196,7 +196,7 @@ class VideoDestroyAPITest(TestCase):
 
         response = self.client.delete("/api/videos/")
 
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 405)
         self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_token_user(self):
@@ -210,7 +210,7 @@ class VideoDestroyAPITest(TestCase):
         response = self.client.delete(
             "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 405)
         self.assertTrue(models.Video.objects.filter(id=video.id).exists())
 
     def test_api_video_delete_list_staff_or_user(self):
@@ -221,5 +221,5 @@ class VideoDestroyAPITest(TestCase):
 
             response = self.client.delete("/api/videos/")
 
-            self.assertEqual(response.status_code, 401)
+            self.assertEqual(response.status_code, 405)
         self.assertTrue(models.Video.objects.filter(id=video.id).exists())
