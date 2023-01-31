@@ -50,8 +50,8 @@ class Command(BaseCommand):
                 continue
             # the channel name contains the environment, the primary key and the created_at
             # stamp. Here we want to use the primary key
-            _environment, pk, _stamp = medialive_channel["Name"].split("_")
-            live = Video.objects.get(pk=pk)
+            _environment, live_pk, _stamp = medialive_channel["Name"].split("_")
+            live = Video.objects.get(pk=live_pk)
             self.stdout.write(f"Checking video {live.id}")
 
             if live.starting_at:

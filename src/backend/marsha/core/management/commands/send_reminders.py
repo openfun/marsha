@@ -50,13 +50,15 @@ class Command(BaseCommand):
             )
         )
 
+    # pylint: disable=too-many-arguments
     def send_reminders_and_update_livesessions_step(
-        self, livesessions, step, mail_object, trans_vars={}, template="reminder"
+        self, livesessions, step, mail_object, trans_context=None, template="reminder"
     ):
         """Send email with template and update reminders field."""
+        trans_context = trans_context or {}
 
         for livesession in livesessions:
-            """For each livesession we send the email"""
+            # For each livesession we send the email
 
             # if record was updated
             if self.query_to_update_step(livesession, step) == 1:
@@ -66,7 +68,7 @@ class Command(BaseCommand):
                         f"for video {livesession.video.id} step {step}"
                     )
                     # send email with the appropriate template and object
-                    vars = {
+                    context = {
                         "cancel_reminder_url": livesession.cancel_reminder_url,
                         "email": livesession.email,
                         "time_zone": settings.TIME_ZONE,
@@ -74,12 +76,16 @@ class Command(BaseCommand):
                         "video": livesession.video,
                         "video_access_url": livesession.video_access_reminder_url,
                     }
-                    if trans_vars:
-                        vars = vars | {
-                            key: _(value) for key, value in trans_vars.items()
+                    if trans_context:
+                        context = context | {
+                            key: _(value) for key, value in trans_context.items()
                         }
-                    msg_plain = render_to_string(f"core/mail/text/{template}.txt", vars)
-                    msg_html = render_to_string(f"core/mail/html/{template}.html", vars)
+                    msg_plain = render_to_string(
+                        f"core/mail/text/{template}.txt", context
+                    )
+                    msg_html = render_to_string(
+                        f"core/mail/html/{template}.html", context
+                    )
 
                     try:
                         send_mail(
@@ -139,7 +145,7 @@ class Command(BaseCommand):
         # step was only used not to update simultaneously the same record
         date_updated = dateformat.format(timezone.now(), "Y-m-d H:i")
         for livesession in livesessions:
-            """For each livesession we reinit this step, so new update can be send"""
+            # For each livesession we reinit this step, so new update can be send
             livesession.reminders.remove(settings.REMINDER_DATE_UPDATED)
             # keep the trace of this reminder
             livesession.reminders.append(
