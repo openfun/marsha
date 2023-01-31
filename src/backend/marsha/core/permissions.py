@@ -321,20 +321,18 @@ class IsParamsOrganizationInstructorOrAdmin(
     """
 
 
-class IsParamsPlaylistAdmin(permissions.BasePermission):
+class BaseIsParamsPlaylistRole(permissions.BasePermission):
     """
-    Allow a request to proceed. Permission class.
-
     Permission to allow a request to proceed only if the user provides the ID for an existing
-    playlist, and has an access to this playlist with an administrator role.
+    playlist, and has access to this playlist with a specific role.
     """
+
+    role_filter = {}
 
     def has_permission(self, request, view):
         """
-        Allow the request.
-
         Allow the request only if the playlist from the params of body of the request exists
-        and the current logged in user is one of its administrators.
+        and the current logged-in user has a specific role.
         """
         try:
             uuid.UUID(request.user.id)
@@ -345,10 +343,25 @@ class IsParamsPlaylistAdmin(permissions.BasePermission):
             "playlist"
         )
         return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
+            **self.role_filter,
             playlist__id=playlist_id,
             user__id=request.user.id,
         ).exists()
+
+
+class IsParamsPlaylistAdmin(HasAdminRoleMixIn, BaseIsParamsPlaylistRole):
+    """
+    Allow access to user with admin role on the playlist provided in parameters.
+    """
+
+
+class IsParamsPlaylistAdminOrInstructor(
+    HasAdminOrInstructorRoleMixIn,
+    BaseIsParamsPlaylistRole,
+):
+    """
+    Allow access to user with admin or instructor role on the playlist provided in parameters.
+    """
 
 
 class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
@@ -498,6 +511,13 @@ class BaseIsObjectPlaylistRole(BaseIsPlaylistRole):
 
 class IsObjectPlaylistAdmin(HasAdminRoleMixIn, BaseIsObjectPlaylistRole):
     """Allow request when the user has admin role on the object's playlist."""
+
+
+class IsObjectPlaylistAdminOrInstructor(
+    HasAdminOrInstructorRoleMixIn,
+    BaseIsObjectPlaylistRole,
+):
+    """Allow request when the user has admin or instructor role on the object's playlist."""
 
 
 class BaseIsPlaylistOrganizationRole(permissions.BasePermission):

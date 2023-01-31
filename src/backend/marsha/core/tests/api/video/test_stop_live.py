@@ -6,7 +6,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import api, factories
+from marsha.core import api, factories, models
 from marsha.core.api import timezone
 from marsha.core.defaults import (
     LIVE_CHOICES,
@@ -19,6 +19,7 @@ from marsha.core.defaults import (
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -27,6 +28,68 @@ class VideoAPITest(TestCase):
     """Test the API of the video object."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = factories.OrganizationFactory()
+        cls.some_video = factories.WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+    def assert_user_cannot_stop_live(self, user, video):
+        """Assert the user cannot stop the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.post(
+            f"/api/videos/{video.pk}/stop-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=False)
+    def assert_user_can_stop_live(self, user, video):
+        """Assert the user can stop the live."""
+        self.assertNotEqual(video.live_state, STOPPING)
+
+        with mock.patch.object(api.video, "stop_live_channel"), mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.post(
+                f"/api/videos/{video.id}/stop-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(content["live_state"], STOPPING)
 
     def test_api_video_stop_live_anonymous_user(self):
         """Anonymous users are not allowed to stop a live."""
@@ -39,6 +102,74 @@ class VideoAPITest(TestCase):
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
+
+    def test_stop_live_by_random_user(self):
+        """Authenticated user without access cannot stop a live."""
+        user = factories.UserFactory()
+
+        self.assert_user_cannot_stop_live(user, self.some_video)
+
+    def test_stop_live_by_organization_student(self):
+        """Organization students cannot stop a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_stop_live(organization_access.user, self.some_video)
+
+    def test_stop_live_by_organization_instructor(self):
+        """Organization instructors cannot stop a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_stop_live(organization_access.user, self.some_video)
+
+    def test_stop_live_by_organization_administrator(self):
+        """Organization administrators can stop a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_stop_live(organization_access.user, self.some_video)
+
+    def test_stop_live_by_consumer_site_any_role(self):
+        """Consumer site roles cannot stop a live."""
+        consumer_site_access = factories.ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_stop_live(consumer_site_access.user, self.some_video)
+
+    def test_stop_live_by_playlist_student(self):
+        """Playlist student cannot stop a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_stop_live(playlist_access.user, self.some_video)
+
+    def test_stop_live_by_playlist_instructor(self):
+        """Playlist instructor cannot stop a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_can_stop_live(playlist_access.user, self.some_video)
+
+    def test_stop_live_by_playlist_admin(self):
+        """Playlist administrator can stop a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_stop_live(playlist_access.user, self.some_video)
 
     def test_api_video_instructor_stop_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to stop a live."""

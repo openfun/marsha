@@ -6,12 +6,13 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import api, factories
+from marsha.core import api, factories, models
 from marsha.core.api import timezone
 from marsha.core.defaults import HARVESTING, IDLE, JITSI, LIVE_CHOICES, PENDING, STOPPED
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.utils.medialive_utils import ManifestMissingException
 from marsha.core.utils.time_utils import to_timestamp
@@ -21,6 +22,79 @@ class VideoHarvestLiveAPITest(TestCase):
     """Test the "harvest live" API of the video object."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = factories.OrganizationFactory()
+        cls.some_video = factories.WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            recording_slices=[
+                {"start": to_timestamp(timezone.now() - timedelta(minutes=10))},
+            ],
+            live_state=STOPPED,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "channel": {"id": "channel1"},
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+    def assert_user_cannot_harvest_live(self, user, video):
+        """Assert the user cannot harvest the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.post(
+            f"/api/videos/{video.pk}/harvest-live/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_harvest_live(self, user, video):
+        """Assert the user can harvest the live."""
+        self.assertNotEqual(video.live_state, HARVESTING)
+
+        with mock.patch.object(
+            api.video, "delete_aws_element_stack"
+        ) as mock_delete_aws_element_stack, mock.patch.object(
+            api.video, "create_mediapackage_harvest_job"
+        ) as mock_create_mediapackage_harvest_job, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.post(
+                f"/api/videos/{video.id}/harvest-live/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_delete_aws_element_stack.assert_called_once()
+            mock_create_mediapackage_harvest_job.assert_called_once()
+            mock_dispatch_video_to_groups.assert_has_calls(
+                [mock.call(video), mock.call(video)]
+            )
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+
+        self.assertEqual(content["live_state"], HARVESTING)
 
     def test_api_video_harvest_live_anonymous_user(self):
         """Anonymous users are not allowed to harvest a live."""
@@ -33,6 +107,74 @@ class VideoHarvestLiveAPITest(TestCase):
         self.assertEqual(
             content, {"detail": "Authentication credentials were not provided."}
         )
+
+    def test_harvest_live_by_random_user(self):
+        """Authenticated user without access cannot harvest a live."""
+        user = factories.UserFactory()
+
+        self.assert_user_cannot_harvest_live(user, self.some_video)
+
+    def test_harvest_live_by_organization_student(self):
+        """Organization students cannot harvest a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_harvest_live(organization_access.user, self.some_video)
+
+    def test_harvest_live_by_organization_instructor(self):
+        """Organization instructors cannot harvest a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_harvest_live(organization_access.user, self.some_video)
+
+    def test_harvest_live_by_organization_administrator(self):
+        """Organization administrators can harvest a live."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_harvest_live(organization_access.user, self.some_video)
+
+    def test_harvest_live_by_consumer_site_any_role(self):
+        """Consumer site roles cannot harvest a live."""
+        consumer_site_access = factories.ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_harvest_live(consumer_site_access.user, self.some_video)
+
+    def test_harvest_live_by_playlist_student(self):
+        """Playlist student cannot harvest a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_harvest_live(playlist_access.user, self.some_video)
+
+    def test_harvest_live_by_playlist_instructor(self):
+        """Playlist instructor cannot harvest a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_can_harvest_live(playlist_access.user, self.some_video)
+
+    def test_harvest_live_by_playlist_admin(self):
+        """Playlist administrator can harvest a live."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_harvest_live(playlist_access.user, self.some_video)
 
     def test_api_video_instructor_harvest_live_in_read_only(self):
         """An instructor with read_only set to true should not be able to harvest a live."""
