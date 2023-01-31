@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
+import path from 'path';
 import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
@@ -15,8 +16,8 @@ export default {
   input: 'src/index.ts',
   output: [
     {
-      file: pkg.main,
       format: 'cjs',
+      dir: path.dirname(pkg.main),
       exports: 'named',
       sourcemap: true,
       esModule: true,
@@ -25,11 +26,14 @@ export default {
       },
       interop: 'compat',
       systemNullSetters: false,
+      inlineDynamicImports: true,
     },
     {
-      file: pkg.module,
       format: 'es',
+      dir: path.dirname(pkg.module),
       exports: 'named',
+      preserveModules: true,
+      preserveModulesRoot: 'src',
       sourcemap: true,
     },
   ],
@@ -56,7 +60,6 @@ export default {
     commonjs({
       include: /node_modules/,
     }),
-    // nodePolyfills(),
     resolve({
       browser: true,
     }),
@@ -64,6 +67,8 @@ export default {
       tsconfigOverride: {
         exclude: ['**/*.spec.*'],
       },
+      clean: true,
+      useTsconfigDeclarationDir: true,
     }),
     babel({
       babelrc: false,
