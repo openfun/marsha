@@ -558,51 +558,6 @@ class IsObjectPlaylistOrganizationAdmin(
     """
 
 
-class IsVideoPlaylistAdmin(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Permission to allow a request to proceed only if the user is an admin for the playlist
-    the video is a part of.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Allow the request only if there is a video id in the path of the request, which exists,
-        and if the current user is an admin for the playlist this video is a part of.
-        """
-        return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
-            playlist__videos__id=view.get_object_pk(),
-            user__id=request.user.id,
-        ).exists()
-
-
-class IsVideoOrganizationAdmin(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Permission to allow a request to proceed only if the user is an admin for the organization
-    linked to the playlist the video is a part of.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Allow the request only if there is a video id in the path of the request, which exists,
-        and if the current user is an admin for the organization linked to the playlist this video
-        is a part of.
-        """
-        return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            organization__playlists__videos__id=view.get_object_pk(),
-            user__id=request.user.id,
-        ).exists()
-
-
 class IsRelatedVideoPlaylistAdmin(permissions.BasePermission):
     """
     Allow a request to proceed. Permission class.

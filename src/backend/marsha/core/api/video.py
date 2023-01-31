@@ -76,14 +76,14 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             permission_classes = [
                 permissions.IsTokenResourceRouteObject
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                | permissions.IsVideoPlaylistAdmin
-                | permissions.IsVideoOrganizationAdmin
+                | permissions.IsObjectPlaylistAdmin
+                | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["retrieve"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObject
-                | permissions.IsVideoPlaylistAdmin
-                | permissions.IsVideoOrganizationAdmin
+                | permissions.IsObjectPlaylistAdmin
+                | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["list", "metadata"]:
             permission_classes = [permissions.UserOrResourceIsAuthenticated]
@@ -98,7 +98,8 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             ]
         elif self.action in ["destroy"]:
             permission_classes = [
-                permissions.IsVideoPlaylistAdmin | permissions.IsVideoOrganizationAdmin
+                permissions.IsObjectPlaylistAdmin
+                | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         else:
             try:
@@ -206,8 +207,8 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         permission_classes=[
             permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
             | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-            | permissions.IsVideoPlaylistAdmin
-            | permissions.IsVideoOrganizationAdmin
+            | permissions.IsObjectPlaylistAdmin
+            | permissions.IsObjectPlaylistOrganizationAdmin
         ],
     )
     # pylint: disable=unused-argument
@@ -230,12 +231,16 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             HttpResponse carrying the upload policy as a JSON object.
 
         """
+        # Ensure object exists and user has access to it
+        self.get_object()
+
         serializer = serializers.VideoUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         response = storage.get_initiate_backend().initiate_video_upload(request, pk)
 
-        # Reset the upload state of the video
+        # Reset the upload state of the video (don't use get_object()
+        # as it does not lock the row)
         Video.objects.filter(pk=pk).update(upload_state=defaults.PENDING)
 
         return Response(response)
