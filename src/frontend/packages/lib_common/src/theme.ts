@@ -286,9 +286,14 @@ export const theme: ThemeType = {
         height: 0.1px;
         margin: 0 1rem 0;
         transform: translateY(0.3rem);
+        z-index: 1;
       }
-      & label span[aria-label='required'] {
+      & label span[aria-hidden='true'] {
         font-size: 0.688rem;
+      }
+      & input:-webkit-autofill,
+      & input:-webkit-autofill:focus {
+        transition: background-color 600000s 0s, color 600000s 0s;
       }
       & svg {
         color: ${colorsGeneric['blue-active']};

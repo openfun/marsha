@@ -26,6 +26,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - lti:
   - jwt store initialization concurrency issue with access jwt
 - ui calendar
+- standalone website:
+  - prefill input label hidden
 
 ### Removed
 
