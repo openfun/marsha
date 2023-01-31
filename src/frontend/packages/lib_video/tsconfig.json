@@ -10,12 +10,11 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "declaration": true,
-    "declarationDir": "lib/",
+    "declarationDir": "lib/dts",
     "rootDir": "./src",
     "baseUrl": "./src",
     "paths": {
-      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
-      "vtt.js": ["types/libs/vtt.js"]
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"]
     }
   }
 }
