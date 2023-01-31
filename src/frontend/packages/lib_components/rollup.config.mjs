@@ -71,7 +71,7 @@ export default [
     makeAbsoluteExternalsRelative: true,
     preserveEntrySignatures: 'strict',
     external: [
-      '@babel/runtime',
+      /@babel\/runtime/,
       '@sentry/browser',
       'clipboard',
       'faker',

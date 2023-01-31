@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import 'altamoon-robust-websocket';
 
 declare module 'altamoon-robust-websocket' {

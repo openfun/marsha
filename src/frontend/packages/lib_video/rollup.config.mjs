@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
+import path from 'path';
 import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
@@ -27,8 +28,8 @@ export default [
     input: 'src/index.ts',
     output: [
       {
-        file: pkg.main,
         format: 'cjs',
+        dir: path.dirname(pkg.main),
         exports: 'named',
         sourcemap: true,
         esModule: true,
@@ -40,34 +41,41 @@ export default [
         inlineDynamicImports: true,
       },
       {
-        file: pkg.module,
         format: 'es',
+        dir: path.dirname(pkg.module),
         exports: 'named',
+        preserveModules: true,
+        preserveModulesRoot: 'src',
         sourcemap: true,
-        inlineDynamicImports: true,
       },
     ],
     makeAbsoluteExternalsRelative: true,
     preserveEntrySignatures: 'strict',
     external: [
+      /@babel\/runtime/,
+      '@formatjs/intl',
+      /jest/,
       'grommet',
-      'react',
-      'react-dom',
-      'react-router-dom',
-      'styled-components',
-      'styled-reboot',
+      'grommet-icons',
       'lib-common',
       'lib-components',
       'lib-tests',
-      'uuid',
-      /jest/,
-      'zustand',
-      'react-hot-toast',
-      'altamoon-robust-websocket',
+      'linkifyjs',
       'luxon',
+      'm3u8-parser',
+      'react',
+      'react-icalendar-link',
+      'react-dom',
       'react-dropzone',
-      'vtt.js',
       'react-hot-toast',
+      'react-router-dom',
+      'styled-components',
+      'styled-reboot',
+      'uuid',
+      'video.js',
+      'videojs-contrib-quality-levels',
+      'videojs-http-source-selector',
+      'zustand',
     ],
     plugins: [
       external([
@@ -82,15 +90,15 @@ export default [
         'altamoon-robust-websocket',
         'luxon',
         'react-dropzone',
-        'vtt.js',
         'react-hot-toast',
       ]),
-      css(),
+      css({
+        output: 'style.css',
+      }),
       json(),
       commonjs({
         include: /node_modules/,
       }),
-      // nodePolyfills(),
       resolve({
         browser: true,
       }),
