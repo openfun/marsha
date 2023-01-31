@@ -35,7 +35,7 @@ class Command(BaseCommand):
             ):
                 # the channel name contains the environment, the primary key and the created_at
                 # stamp. Here we want to use the timestamp
-                environment, pk, stamp = medialive_channel["Name"].split("_")
+                _environment, _pk, stamp = medialive_channel["Name"].split("_")
                 created_at = to_datetime(stamp)
 
                 if (

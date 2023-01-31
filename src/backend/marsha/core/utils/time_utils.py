@@ -49,5 +49,5 @@ def to_datetime(value):
         return None
     try:
         return datetime.utcfromtimestamp(int(value)).replace(tzinfo=timezone.utc)
-    except (ValueError, TypeError):
-        raise ValidationError("{:s} is not a valid Unix timestamp.".format(value))
+    except (ValueError, TypeError) as exc:
+        raise ValidationError(f"{value:s} is not a valid Unix timestamp.") from exc

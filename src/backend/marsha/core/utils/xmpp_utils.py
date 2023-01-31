@@ -1,16 +1,15 @@
-"""Utils for XMPP server."""
+"""
+Utils for XMPP server.
+
+The XEP used to manage a Multi User Chat is XEP-0045 aka MUC.
+Spec are available at https://xmpp.org/extensions/xep-0045.html
+"""
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from django.conf import settings
 
 import jwt
 import xmpp
-
-
-"""
-The XEP used to manage a Multi User Chat is XEP-0045 aka MUC.
-Spec are available at https://xmpp.org/extensions/xep-0045.html
-"""
 
 
 def _connect():

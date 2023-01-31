@@ -37,6 +37,7 @@ def generate_expired_date():
     return datetime.now(tz=timezone.utc) - timedelta(minutes=25)
 
 
+# pylint: disable=too-many-locals
 class Command(BaseCommand):
     """Check every live streaming running state on AWS."""
 
@@ -57,12 +58,10 @@ class Command(BaseCommand):
 
         videos = Video.objects.filter(live_state=RUNNING)
         for video in videos:
-            """
-            For each running live video, we query cloudwatch on the current live
-            to search messages having detail.alert_type set to `RTMP Has No Audio/Video`.
-            This alert tell us there is no stream and the live can be stopped if the message is
-            older than 25 minutes.
-            """
+            # For each running live video, we query cloudwatch on the current live
+            # to search messages having detail.alert_type set to `RTMP Has No Audio/Video`.
+            # This alert tell us there is no stream and the live can be stopped if the message is
+            # older than 25 minutes.
             self.stdout.write(f"Checking video {video.id}")
             live_info = video.live_info
             logs = logs_client.filter_log_events(
@@ -80,18 +79,17 @@ class Command(BaseCommand):
             pipelines_queue = {"0": [], "1": []}
 
             for event in logs["events"]:
-                """
-                All events must be parsed to extract the JSON message. When an alert is added,
-                the `alarm_state` property value is `SET` and when the alert is removed,
-                the `alarm_state` property value is `CLEARED`.
-                We have 2 pipelines, a live is over when the 2 pipeline have `SET` value
-                in `alarm_state`.
-                Alarm state act like a list with all the event history. It means a `CLEARED` event
-                is related to a `SET` one. So we have to look over all events, put in a list all
-                `SET` events and remove it if a `CLEARED` event is here. At the end if we have
-                2 `SET` events, the live has no activity and we have to check the time of the
-                last `SET` event. If this time is older than 25 minutes we stop the channel.
-                """
+                # All events must be parsed to extract the JSON message. When an alert is added,
+                # the `alarm_state` property value is `SET` and when the alert is removed,
+                # the `alarm_state` property value is `CLEARED`.
+                # We have 2 pipelines, a live is over when the 2 pipeline have `SET` value
+                # in `alarm_state`.
+                # Alarm state act like a list with all the event history. It means a `CLEARED`
+                # event is related to a `SET` one. So we have to look over all events, put in
+                # a list all `SET` events and remove it if a `CLEARED` event is here. At the
+                # end if we have 2 `SET` events, the live has no activity and we have to check
+                # the time of the last `SET` event. If this time is older than 25 minutes we
+                # stop the channel.
                 log = extract_message_regex.match(event["message"])
                 message = json.loads(log.group("message"))
 
@@ -101,10 +99,8 @@ class Command(BaseCommand):
                     pipelines_queue[message["detail"]["pipeline"]].pop()
 
             if len(pipelines_queue["0"]) == 1 and len(pipelines_queue["1"]) == 1:
-                """
-                Both pipelines receive no stream, we have to check the more recent one
-                and if the time is older than 25 minutes we stop the channel.
-                """
+                # Both pipelines receive no stream, we have to check the more recent one
+                # and if the time is older than 25 minutes we stop the channel.
                 datetime_pipeline0 = parse_iso_date(pipelines_queue["0"][0]["time"])
                 datetime_pipeline1 = parse_iso_date(pipelines_queue["1"][0]["time"])
                 expired_date = generate_expired_date()
@@ -113,7 +109,7 @@ class Command(BaseCommand):
                     datetime_pipeline0 < expired_date
                     or datetime_pipeline1 < expired_date
                 ):
-                    """Stop this channel."""
+                    # Stop this channel
                     self.stdout.write(
                         f"Stopping channel with id {live_info['medialive']['channel']['id']}"
                     )
