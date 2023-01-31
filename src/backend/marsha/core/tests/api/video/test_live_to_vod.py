@@ -5,15 +5,148 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import api, factories
+from marsha.core import api, factories, models
 from marsha.core.defaults import ENDED, HARVESTED, JITSI, LIVE_CHOICES, PENDING, READY
-from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    UserAccessTokenFactory,
+)
 
 
 class VideoLivetoVodAPITest(TestCase):
     """Test the "live to VOD" API of the video object."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = factories.OrganizationFactory()
+        cls.some_video = factories.WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            upload_state=PENDING,
+            live_state=HARVESTED,
+        )
+
+    def assert_user_cannot_call_live_to_vod(self, user, video):
+        """Assert the user cannot convert the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.post(
+            f"/api/videos/{video.pk}/live-to-vod/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_call_live_to_vod(self, user, video):
+        """Assert the user can convert the live."""
+        self.assertNotEqual(video.upload_state, READY)
+
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "reopen_room_for_vod"
+        ) as mock_reopen_room, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.post(
+                f"/api/videos/{video.id}/live-to-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+            mock_reopen_room.assert_called_once_with(video.id)
+
+        self.assertEqual(response.status_code, 200)
+        content = json.loads(response.content)
+        self.assertEqual(content["upload_state"], READY)
+
+    def test_live_to_vod_by_anonymous_user(self):
+        """Anonymous users cannot convert live to VOD."""
+        response = self.client.post(f"/api/videos/{self.some_video.pk}/live-to-vod/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_live_to_vod_by_random_user(self):
+        """Authenticated user without access cannot convert live to VOD."""
+        user = factories.UserFactory()
+
+        self.assert_user_cannot_call_live_to_vod(user, self.some_video)
+
+    def test_live_to_vod_by_organization_student(self):
+        """Organization students cannot convert live to VOD."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_call_live_to_vod(
+            organization_access.user,
+            self.some_video,
+        )
+
+    def test_live_to_vod_by_organization_instructor(self):
+        """Organization instructors cannot convert live to VOD."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_call_live_to_vod(
+            organization_access.user,
+            self.some_video,
+        )
+
+    def test_live_to_vod_by_organization_administrator(self):
+        """Organization administrators can convert live to VOD."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_call_live_to_vod(organization_access.user, self.some_video)
+
+    def test_live_to_vod_by_consumer_site_any_role(self):
+        """Consumer site roles cannot convert live to VOD."""
+        consumer_site_access = factories.ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_call_live_to_vod(
+            consumer_site_access.user,
+            self.some_video,
+        )
+
+    def test_live_to_vod_by_playlist_student(self):
+        """Playlist student cannot convert live to VOD."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_call_live_to_vod(playlist_access.user, self.some_video)
+
+    def test_live_to_vod_by_playlist_instructor(self):
+        """Playlist instructor cannot convert live to VOD."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_can_call_live_to_vod(playlist_access.user, self.some_video)
+
+    def test_live_to_vod_by_playlist_admin(self):
+        """Playlist administrator can convert live to VOD."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_call_live_to_vod(playlist_access.user, self.some_video)
 
     @override_settings(LIVE_CHAT_ENABLED=True)
     @override_settings(XMPP_BOSH_URL="https://xmpp-server.com/http-bind")

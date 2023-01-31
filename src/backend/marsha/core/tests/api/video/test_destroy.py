@@ -101,7 +101,7 @@ class VideoDestroyAPITest(TestCase):
         """
         Delete video by playlist instructor.
 
-        Users with an instructor role on a playlist should not be able to delete videos.
+        Users with an instructor role on a playlist should be able to delete videos.
         """
         user = factories.UserFactory()
         playlist = factories.PlaylistFactory()
@@ -119,8 +119,8 @@ class VideoDestroyAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(models.Video.objects.count(), 1)
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 204)
 
     def test_api_video_delete_by_organization_admin(self):
         """

@@ -70,44 +70,53 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Retrieve the action related permissions to determine whether
         the current user has the authorization to access endpoint.
         """
-        if self.action in ["partial_update", "update", "initiate_upload", "jitsi_info"]:
+        if self.action in ["retrieve"]:
             permission_classes = [
+                # With LTI: anyone with a valid token for the video can access
                 permissions.IsTokenResourceRouteObject
-                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                | permissions.IsObjectPlaylistAdmin
-                | permissions.IsObjectPlaylistOrganizationAdmin
-            ]
-        elif self.action in ["retrieve"]:
-            permission_classes = [
-                permissions.IsTokenResourceRouteObject
-                | permissions.IsObjectPlaylistAdmin
+                # With standalone site, only playlist admin or organization admin can access
+                | permissions.IsObjectPlaylistAdminOrInstructor
                 | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["list", "metadata"]:
+            # Anyone authenticated can list videos (results are filtered in action)
+            # or access metadata
             permission_classes = [permissions.UserOrResourceIsAuthenticated]
         elif self.action in ["create"]:
             permission_classes = [
-                permissions.IsParamsPlaylistAdmin
+                # With standalone site, only playlist admin or organization admin can access
+                permissions.IsParamsPlaylistAdminOrInstructor
                 | permissions.IsParamsPlaylistAdminThroughOrganization
+                # With LTI: playlist admin or instructor admin can access
                 | (
                     permissions.HasPlaylistToken
                     & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 )
             ]
         elif self.action in ["destroy"]:
+            # Not available in LTI
+            # For standalone site, only playlist admin or organization admin can access
             permission_classes = [
-                permissions.IsObjectPlaylistAdmin
+                permissions.IsObjectPlaylistAdminOrInstructor
                 | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["initiate_live"]:
             permission_classes = [
+                # With LTI: playlist admin or instructor admin or playlist access can access
                 (
                     permissions.IsTokenResourceRouteObject
                     & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 )
                 | permissions.HasPlaylistToken
+                # With standalone site, only playlist admin or instructor
+                # and organization admin can access
+                | permissions.IsObjectPlaylistAdminOrInstructor
+                | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in [
+            "partial_update",
+            "update",
+            "initiate_upload",
             "start_live",
             "stop_live",
             "harvest_live",
@@ -121,10 +130,15 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             "start_recording",
             "stop_recording",
             "stats",
+            "jitsi_info",
         ]:
             permission_classes = [
+                # With LTI: playlist admin or instructor admin can access
                 permissions.IsTokenResourceRouteObject
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+                # With standalone site, playlist admin or instructor can access
+                | permissions.IsObjectPlaylistAdminOrInstructor
+                | permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["update_live_state"]:
             # This endpoint is only used by the AWS lambda function
@@ -279,12 +293,12 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Type[rest_framework.response.Response]
             HttpResponse with the serialized video.
         """
+        video = self.get_object()  # test permissions at the beginning
+
         serializer = serializers.InitLiveStateSerializer(data=request.data)
 
         if not serializer.is_valid():
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-        video = self.get_object()
 
         video.live_type = serializer.validated_data["type"]
         video.upload_state = defaults.PENDING
@@ -649,9 +663,10 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Type[rest_framework.response.Response]
             HttpResponse with the generated secret.
         """
+        video = self.get_object()  # test permissions at the beginning
+
         LivePairing.objects.delete_expired()
 
-        video = self.get_object()
         if video.live_type != JITSI:
             return Response(
                 {"detail": "Matching video is not a Jitsi Live."}, status=400
@@ -805,6 +820,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Type[rest_framework.response.Response]
             HttpResponse with the serialized video.
         """
+        video = self.get_object()  # test permissions at the beginning
 
         participant_serializer = serializers.ParticipantSerializer(data=request.data)
         if not participant_serializer.is_valid():
@@ -812,7 +828,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 participant_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
-        video = self.get_object()
         try:
             if request.method == "POST":
                 add_participant_asking_to_join(
@@ -852,6 +867,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         Type[rest_framework.response.Response]
             HttpResponse with the serialized video.
         """
+        video = self.get_object()  # test permissions at the beginning
 
         participant_serializer = serializers.ParticipantSerializer(data=request.data)
 
@@ -860,7 +876,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 participant_serializer.errors, status=status.HTTP_400_BAD_REQUEST
             )
 
-        video = self.get_object()
         try:
             if request.method == "POST":
                 move_participant_to_discussion(

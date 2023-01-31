@@ -1092,9 +1092,9 @@ class VideoUpdateAPITest(TestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.title, "existing title")
+        self.assertEqual(video.title, "updated title")
 
     def test_api_video_patch_by_playlist_admin(self):
         """Playlist admins can patch videos on the API."""
@@ -1182,9 +1182,9 @@ class VideoUpdateAPITest(TestCase):
             content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
         video.refresh_from_db()
-        self.assertEqual(video.title, "existing title")
+        self.assertEqual(video.title, "updated title")
 
     def test_api_video_put_by_playlist_admin(self):
         """Playlist admins can update videos on the API."""

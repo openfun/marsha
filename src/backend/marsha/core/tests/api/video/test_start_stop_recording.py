@@ -7,12 +7,281 @@ from django.test import TestCase, override_settings
 
 from marsha.core.api import timezone
 from marsha.core.defaults import JITSI, LIVE_CHOICES, PENDING, RUNNING
-from marsha.core.factories import UserFactory, VideoFactory
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    UserFactory,
+    VideoFactory,
+    WebinarVideoFactory,
+)
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.utils.time_utils import to_timestamp
+
+
+class ApiVideoStartRecordingTestCase(TestCase):
+    """Tests for the Video start recording API."""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+        )
+
+    def assert_user_cannot_start_recording(self, user, video):
+        """Assert the user cannot start the recording."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.patch(
+            f"/api/videos/{video.pk}/start-recording/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_start_recording(self, user, video):
+        """Assert the user can start the recording."""
+        self.assertEqual(video.recording_slices, [])
+
+        with mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/start-recording/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        video.refresh_from_db()
+
+        self.assertLessEqual(
+            video.recording_slices[0]["start"], to_timestamp(timezone.now())
+        )
+
+    def test_start_recording_by_random_user(self):
+        """Authenticated user without access cannot start a recording."""
+        user = UserFactory()
+
+        self.assert_user_cannot_start_recording(user, self.some_video)
+
+    def test_start_recording_by_organization_student(self):
+        """Organization students cannot start a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_start_recording(
+            organization_access.user, self.some_video
+        )
+
+    def test_start_recording_by_organization_instructor(self):
+        """Organization instructors cannot start a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_start_recording(
+            organization_access.user, self.some_video
+        )
+
+    def test_start_recording_by_organization_administrator(self):
+        """Organization administrators can start a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_start_recording(organization_access.user, self.some_video)
+
+    def test_start_recording_by_consumer_site_any_role(self):
+        """Consumer site roles cannot start a recording."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_start_recording(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_start_recording_by_playlist_student(self):
+        """Playlist student cannot start a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_start_recording(playlist_access.user, self.some_video)
+
+    def test_start_recording_by_playlist_instructor(self):
+        """Playlist instructor cannot start a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_start_recording(playlist_access.user, self.some_video)
+
+    def test_start_recording_by_playlist_admin(self):
+        """Playlist administrator can start a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_start_recording(playlist_access.user, self.some_video)
+
+
+class ApiVideoStopRecordingTestCase(TestCase):
+    """Tests for the Video stop recording API."""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+            recording_slices=[
+                {"start": to_timestamp(timezone.now() - timedelta(minutes=10))}
+            ],
+        )
+
+    def assert_user_cannot_stop_recording(self, user, video):
+        """Assert the user cannot stop the recording."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.patch(
+            f"/api/videos/{video.pk}/stop-recording/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_stop_recording(self, user, video):
+        """Assert the user can stop the recording."""
+        self.assertIsNone(video.recording_slices[-1].get("stop"))
+
+        with mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode, mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/stop-recording/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        video.refresh_from_db()
+
+        self.assertLessEqual(
+            video.recording_slices[-1]["stop"], to_timestamp(timezone.now())
+        )
+
+    def test_stop_recording_by_random_user(self):
+        """Authenticated user without access cannot stop a recording."""
+        user = UserFactory()
+
+        self.assert_user_cannot_stop_recording(user, self.some_video)
+
+    def test_stop_recording_by_organization_student(self):
+        """Organization students cannot stop a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_stop_recording(
+            organization_access.user, self.some_video
+        )
+
+    def test_stop_recording_by_organization_instructor(self):
+        """Organization instructors cannot stop a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_stop_recording(
+            organization_access.user, self.some_video
+        )
+
+    def test_stop_recording_by_organization_administrator(self):
+        """Organization administrators can stop a recording."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_stop_recording(organization_access.user, self.some_video)
+
+    def test_stop_recording_by_consumer_site_any_role(self):
+        """Consumer site roles cannot stop a recording."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_stop_recording(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_stop_recording_by_playlist_student(self):
+        """Playlist student cannot stop a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_stop_recording(playlist_access.user, self.some_video)
+
+    def test_stop_recording_by_playlist_instructor(self):
+        """Playlist instructor cannot stop a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_stop_recording(playlist_access.user, self.some_video)
+
+    def test_stop_recording_by_playlist_admin(self):
+        """Playlist administrator can stop a recording."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_stop_recording(playlist_access.user, self.some_video)
 
 
 class TestApiVideoRecording(TestCase):

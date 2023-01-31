@@ -66,7 +66,7 @@ Among other things, they can:
 - 🚧 Create and manage (read/write) all the organization's access control.
 - Manage (read/write) all the users of the organization.
 - Create and manage (read/write) all the playlists of the organization.
-- Create and manage (read/write) all the videos of the organization.
+- Create and manage (read/write) all the videos of the organization and perform related video actions.
 - Create and manage (read/write) all the classrooms of the organization.
 - Create and manage (read/write) all the classroom documents of the organization.
 - 🚧 Create and manage (read/write) all the documents of the organization.
@@ -118,7 +118,7 @@ When creating a playlist, the user is automatically assigned the `ADMIN` role fo
 A playlist administrator can:
 
 - 🚧 Create and manage (read/write) all the playlist's access control.
-- Create and manage (read/write) all the videos of the playlist.
+- Create and manage (read/write) all the videos of the playlist and perform related video actions.
 - Create and manage (read/write) all the timed text track of the playlist's videos.
 - Create and manage (read/write) all the classrooms of the playlist.
 - Create and manage (read/write) all the classroom documents of the playlist.
@@ -132,7 +132,7 @@ A playlist administrator can:
 The playlist instructor is added by a playlist administrator. They can:
 
 - 🚧 Read all the playlist's access control.
-- 🚧 Read all the videos of the playlist.
+- Create and manage (read/write) all the videos of the playlist and perform related video actions.
 - 🚧 Read all the timed text track of the playlist's videos.
 - 🚧 Read all the classrooms of the playlist.
 - 🚧 Read all the classroom documents of the playlist.
