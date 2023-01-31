@@ -50,11 +50,9 @@ class Command(BaseCommand):
             ),
         )
         for video in videos:
-            """
-            For each video ready we check the updated_at value and if it's
-            setting.NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS old, the video must be put offline and
-            all related objects on aws removed.
-            """
+            # For each video ready we check the updated_at value and if it's
+            # setting.NB_DAYS_BEFORE_DELETING_LIVE_RECORDINGS old, the video must be put
+            # offline and all related objects on aws removed.
             self.stdout.write(f"Processing video {video.id}")
             self._delete_video_objects(video)
             video.upload_state = DELETED
@@ -72,7 +70,7 @@ class Command(BaseCommand):
         data = s3_client.list_objects_v2(**params)
 
         if data.get("KeyCount") == 0:
-            return None
+            return
 
         s3_objects = []
         for s3_object in data.get("Contents"):

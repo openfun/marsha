@@ -15,8 +15,6 @@ from marsha.core.defaults import PROCESSING
 class ManifestMissingException(Exception):
     """Exception used when a mediapackage manifest is missing."""
 
-    pass
-
 
 aws_credentials = {
     "aws_access_key_id": settings.AWS_ACCESS_KEY_ID,
@@ -180,7 +178,10 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
         Dictionary returned by the AWS API once a medialive channel is created
     """
     dir_path = os.path.dirname(os.path.realpath(__file__))
-    with open(f"{dir_path}/medialive_profiles/medialive-720p.json") as encoding:
+    with open(
+        f"{dir_path}/medialive_profiles/medialive-720p.json",
+        encoding="utf-8",
+    ) as encoding:
         encoder_settings = json.load(encoding)
 
     # update encoder settings with marsha settings
@@ -205,6 +206,7 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
                 "Id": "destination1",
                 "Settings": [
                     {
+                        # pylint: disable=consider-using-f-string
                         "PasswordParam": "{environment}_{username}".format(
                             environment=settings.AWS_BASE_NAME,
                             username=mediapackage_channel["HlsIngest"][
@@ -219,6 +221,7 @@ def create_medialive_channel(key, medialive_input, mediapackage_channel):
                         ][0]["Username"],
                     },
                     {
+                        # pylint: disable=consider-using-f-string
                         "PasswordParam": "{environment}_{username}".format(
                             environment=settings.AWS_BASE_NAME,
                             username=mediapackage_channel["HlsIngest"][
@@ -308,7 +311,10 @@ def stop_live_channel(channel_id):
 
 def create_mediapackage_harvest_job(video):
     """Create a mediapackage harvest job."""
-    request = requests.get(video.get_mediapackage_endpoints().get("hls").get("url"))
+    request = requests.get(
+        video.get_mediapackage_endpoints().get("hls").get("url"),
+        timeout=settings.AWS_MEDIAPACKAGE_HARVEST_JOB_TIMEOUT,
+    )
     if request.status_code == 404:
         raise ManifestMissingException
 

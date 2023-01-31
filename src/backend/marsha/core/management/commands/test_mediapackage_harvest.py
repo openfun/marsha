@@ -75,11 +75,13 @@ class Command(BaseCommand):
         self.stdout.write(f"\nvideo harvested {video.id} {video.title}")
 
     def reset_slices(self, video):
+        """Reset slices for a video."""
         self.stdout.write("\nForcing slices re-creation")
         video.recording_slices = []
         video.save()
 
     def wait_seconds(self, seconds):
+        """Wait for `seconds` seconds."""
         print("")
         for seconds_left in range(seconds, 0, -1):
             self.stdout.write(f"Waiting {seconds_left} seconds...", ending="\r")
@@ -87,6 +89,7 @@ class Command(BaseCommand):
         print("")
 
     def wait_video_state(self, video, attribute, expected_state, delay=0):
+        """Wait for a video to be in a specific state."""
         self.stdout.write(
             f"\nWaiting for the video {attribute} to be {expected_state}..."
         )
@@ -106,6 +109,7 @@ class Command(BaseCommand):
             self.wait_seconds(delay)
 
     def manual_slices(self, video):
+        """Create slices manually."""
         self.stdout.write("\nCreating recording slices from user inputs...")
         while True:
             manual_start_recording = input("\nStart recording? (y/N)")
@@ -121,6 +125,7 @@ class Command(BaseCommand):
                 break
 
     def automatic_slices(self, video, slices, length, wait):
+        """Create slices automatically."""
         self.stdout.write(
             f"\nCreating {slices} slices of {length} seconds each "
             f"with a wait of {wait} seconds between slices..."
@@ -137,6 +142,7 @@ class Command(BaseCommand):
             self.wait_seconds(wait)
 
     def wait_slices_harvesting(self, video):
+        """Wait for the slices to be harvested."""
         self.stdout.write("\nWaiting for the slices to be harvested...")
         status = ""
         while True:

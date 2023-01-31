@@ -1,8 +1,9 @@
+"""Throttle Decorator module."""
 from datetime import datetime, timedelta
 from functools import wraps
 
 
-class throttle(object):
+class throttle:  # pylint: disable=invalid-name
     """
     Throttle Decorator
     Limit execution of a function to a defined interval
@@ -31,5 +32,7 @@ class throttle(object):
             if elapsed_since_last_call > self.throttle_interval:
                 self.time_of_last_call = now
                 return callback(*args, **kwargs)
+
+            return None
 
         return wrapper

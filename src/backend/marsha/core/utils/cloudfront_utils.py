@@ -17,8 +17,6 @@ from cryptography.hazmat.primitives.asymmetric import padding
 class MissingRSAKey(Exception):
     """Exception raised when an RSA key is missing."""
 
-    pass
-
 
 def rsa_signer(message):
     """Sign a message with an rsa key pair found on the file system for CloudFront signed urls.
@@ -39,8 +37,8 @@ def rsa_signer(message):
             private_key = serialization.load_pem_private_key(
                 key_file.read(), password=None, backend=default_backend()
             )
-    except FileNotFoundError:
-        raise MissingRSAKey()
+    except FileNotFoundError as exc:
+        raise MissingRSAKey() from exc
 
     # The following line is excluded from bandit security check because cloudfront supports
     # only sha1 hash for signed URLs.
