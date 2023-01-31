@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/ban-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 declare module 'vtt.js' {
   export namespace WebVTT {
     export function StringDecoder(): TextDecoder;
@@ -14,8 +12,8 @@ declare module 'vtt.js' {
     ): void;
 
     export class Parser {
-      onflush: () => {};
-      onparsingerror: (error: Error) => {};
+      onflush: () => unknown;
+      onparsingerror: (error: Error) => unknown;
       constructor(window: Window, stringDecoder: TextDecoder);
       parse(data: string): void;
       flush(): void;
