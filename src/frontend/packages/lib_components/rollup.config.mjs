@@ -109,7 +109,6 @@ export default [
       commonjs({
         include: /node_modules/,
       }),
-      // nodePolyfills(),
       resolve({
         browser: true,
       }),
