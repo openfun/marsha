@@ -698,7 +698,9 @@ jobs:
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install pip for Python 3.10
-          command: curl -sS https://bootstrap.pypa.io/get-pip.py | python3.10
+          command: |
+            curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py
+            python3.10 get-pip.py "pip < 23.0"
       - run:
           name: Install xmlsec1 requirements
           command: apt-get update && apt-get install -y pkg-config libxml2-dev libxmlsec1-openssl libxmlsec1-dev
