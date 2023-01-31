@@ -10,7 +10,7 @@
     "noUnusedLocals": false,
     "noUnusedParameters": false,
     "declaration": true,
-    "declarationDir": "lib/",
+    "declarationDir": "lib/dts",
     "rootDir": "./src",
     "baseUrl": "./src"
   }
