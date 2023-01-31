@@ -15,7 +15,7 @@ from corsheaders.middleware import (
 )
 from faker import Faker
 
-from marsha.core import factories
+from marsha.core import factories, models
 from marsha.core.api import timezone
 from marsha.core.defaults import IDLE, JITSI
 from marsha.core.factories import DeviceFactory, LivePairingFactory
@@ -23,6 +23,7 @@ from marsha.core.models import Device, LivePairing, Video
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 
 
@@ -37,6 +38,42 @@ class PairingDeviceAPITest(TestCase):
         """
         cache.clear()
 
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = factories.OrganizationFactory()
+        cls.some_video = factories.WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_type=JITSI,
+        )
+
+    def assert_user_cannot_request_pairing_secret(self, user, video):
+        """Assert the user cannot request a live pairing secret."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.get(
+            f"/api/videos/{video.pk}/pairing-secret/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_request_pairing_secret(self, user, video):
+        """Assert the user can request a live pairing secret."""
+        self.assertIsNone(getattr(video, "live_pairing", None))
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/pairing-secret/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        video.refresh_from_db()
+        self.assertEqual(str(video.live_pairing.secret), response.json().get("secret"))
+
     def test_api_video_pairing_secret_anonymous_user(self):
         """Anonymous users are not allowed to request a live pairing secret."""
         video = factories.VideoFactory()
@@ -46,6 +83,88 @@ class PairingDeviceAPITest(TestCase):
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
             {"detail": "Authentication credentials were not provided."}, response.json()
+        )
+
+    def test_pairing_secret_by_random_user(self):
+        """Authenticated user without access cannot request a live pairing secret."""
+        user = factories.UserFactory()
+
+        self.assert_user_cannot_request_pairing_secret(user, self.some_video)
+
+    def test_pairing_secret_by_organization_student(self):
+        """Organization students cannot request a live pairing secret."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_request_pairing_secret(
+            organization_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_organization_instructor(self):
+        """Organization instructors cannot request a live pairing secret."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_request_pairing_secret(
+            organization_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_organization_administrator(self):
+        """Organization administrators can request a live pairing secret."""
+        organization_access = factories.OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_request_pairing_secret(
+            organization_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_consumer_site_any_role(self):
+        """Consumer site roles cannot request a live pairing secret."""
+        consumer_site_access = factories.ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_request_pairing_secret(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_playlist_student(self):
+        """Playlist student cannot request a live pairing secret."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.STUDENT,
+        )
+
+        self.assert_user_cannot_request_pairing_secret(
+            playlist_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_playlist_instructor(self):
+        """Playlist instructor cannot request a live pairing secret."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.INSTRUCTOR,
+        )
+
+        self.assert_user_can_request_pairing_secret(
+            playlist_access.user, self.some_video
+        )
+
+    def test_pairing_secret_by_playlist_admin(self):
+        """Playlist administrator can request a live pairing secret."""
+        playlist_access = factories.PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=models.ADMINISTRATOR,
+        )
+
+        self.assert_user_can_request_pairing_secret(
+            playlist_access.user, self.some_video
         )
 
     def test_api_video_student_pairing_secret(self):
@@ -280,7 +399,7 @@ class PairingDeviceAPITest(TestCase):
         )
         self.assertEqual(LivePairing.objects.count(), 0)
         self.assertEqual(Device.objects.count(), 1)
-        self.assertEqual(Video.objects.count(), 1)
+        self.assertEqual(Video.objects.count(), 2)  # video + self.some_video
         device = Device.objects.first()
         self.assertEqual(device.id, box_id)
 

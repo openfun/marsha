@@ -5,10 +5,20 @@ from django.test import TestCase
 
 from marsha.core.api.video import channel_layers_utils
 from marsha.core.defaults import DENIED
-from marsha.core.factories import UserFactory, VideoFactory
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    UserFactory,
+    VideoFactory,
+    WebinarVideoFactory,
+)
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 
 
@@ -16,6 +26,183 @@ class VideoParticipantsJoinedAPITest(TestCase):
     """Tests API for persisting the list of participants who have joined a live."""
 
     maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            participants_asking_to_join=[
+                {
+                    "id": "1",
+                    "name": "Student",
+                },
+            ],
+        )
+
+    def assert_user_cannot_manage_participants(self, user, video):
+        """Assert the user cannot manage participants (POST and DELETE)."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        # Test POST
+        response = self.client.post(
+            f"/api/videos/{video.id}/participants-in-discussion/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            data={
+                "id": "1",
+                "name": "Student",
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+        # Test DELETE
+        response = self.client.delete(
+            f"/api/videos/{video.id}/participants-in-discussion/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            data={
+                "id": "1",
+                "name": "Student",
+            },
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_manage_participants(self, user, video):
+        """Assert the user can manage participants (POST and DELETE)."""
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            jwt_token = UserAccessTokenFactory(user=user)
+
+            # Test POST
+            response = self.client.post(
+                f"/api/videos/{video.id}/participants-in-discussion/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "id": "1",
+                    "name": "Student",
+                },
+                content_type="application/json",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+            self.assertEqual(response.status_code, 200)
+
+            content = response.json()
+
+            self.assertListEqual(
+                content["participants_in_discussion"],
+                [
+                    {
+                        "id": "1",
+                        "name": "Student",
+                    }
+                ],
+            )
+
+            # Test DELETE
+            mock_dispatch_video_to_groups.reset_mock()
+            response = self.client.delete(
+                f"/api/videos/{video.id}/participants-in-discussion/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "id": "1",
+                    "name": "Student",
+                },
+                content_type="application/json",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+            self.assertEqual(response.status_code, 200)
+
+            content = response.json()
+            self.assertListEqual(content["participants_in_discussion"], [])
+
+    def test_manage_participants_by_random_user(self):
+        """Authenticated user without access cannot manage participants."""
+        user = UserFactory()
+
+        self.assert_user_cannot_manage_participants(user, self.some_video)
+
+    def test_manage_participants_by_organization_student(self):
+        """Organization students cannot manage participants."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_manage_participants(
+            organization_access.user, self.some_video
+        )
+
+    def test_manage_participants_by_organization_instructor(self):
+        """Organization instructors cannot manage participants."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_manage_participants(
+            organization_access.user, self.some_video
+        )
+
+    def test_manage_participants_by_organization_administrator(self):
+        """Organization administrators can manage participants."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_manage_participants(
+            organization_access.user, self.some_video
+        )
+
+    def test_manage_participants_by_consumer_site_any_role(self):
+        """Consumer site roles cannot manage participants."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_manage_participants(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_manage_participants_by_playlist_student(self):
+        """Playlist student cannot manage participants."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_manage_participants(
+            playlist_access.user, self.some_video
+        )
+
+    def test_manage_participants_by_playlist_instructor(self):
+        """Playlist instructor cannot manage participants."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_manage_participants(playlist_access.user, self.some_video)
+
+    def test_manage_participants_by_playlist_admin(self):
+        """Playlist administrator can manage participants."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_manage_participants(playlist_access.user, self.some_video)
 
     def test_api_video_participants_post_joined_anonymous(self):
         """An anonymous user can not set participants."""

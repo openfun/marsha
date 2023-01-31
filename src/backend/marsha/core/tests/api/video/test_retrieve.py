@@ -1127,7 +1127,50 @@ class VideoRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_public": False,
+                "is_ready_to_show": False,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "live_info": {},
+                "live_state": None,
+                "live_type": None,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": None,
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
 
     def test_api_video_read_detail_by_playlist_admin(self):
         """Playlist admins can get individual videos."""

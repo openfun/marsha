@@ -15,15 +15,482 @@ from marsha.core.defaults import (
     READY,
     RUNNING,
 )
-from marsha.core.factories import SharedLiveMediaFactory, UserFactory, VideoFactory
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    SharedLiveMediaFactory,
+    UserFactory,
+    VideoFactory,
+    WebinarVideoFactory,
+)
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 
 
 # This file may be split between start-sharing, navigate-sharing and end-sharing
 # pylint: disable=too-many-lines,too-many-public-methods
+
+
+class VideoSharedLiveMediaStartTestCase(TestCase):
+    """Tests for the Video SharedLiveMedia start sharing API"""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+        )
+        cls.some_shared_live_media = SharedLiveMediaFactory(
+            extension="pdf",
+            title="slides",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            nb_pages=3,
+            video=cls.some_video,
+        )
+
+    def assert_user_cannot_shared_live_media_start(
+        self, user, video, shared_live_media
+    ):
+        """Assert the user cannot start sharing the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.patch(
+            f"/api/videos/{video.pk}/start-sharing/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            data={"sharedlivemedia": str(shared_live_media.pk)},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_shared_live_media_start(self, user, video, shared_live_media):
+        """Assert the user can start sharing the live."""
+        self.assertIsNone(video.active_shared_live_media_id)
+
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.patch(
+                f"/api/videos/{video.pk}/start-sharing/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={"sharedlivemedia": str(shared_live_media.pk)},
+                content_type="application/json",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+            self.assertEqual(response.status_code, 200)
+
+            content = response.json()
+
+        self.assertEqual(
+            content["active_shared_live_media"]["id"], str(shared_live_media.pk)
+        )
+        self.assertEqual(video.active_shared_live_media_id, shared_live_media.pk)
+
+    def test_shared_live_media_start_by_random_user(self):
+        """Authenticated user without access cannot start sharing a live."""
+        user = UserFactory()
+
+        self.assert_user_cannot_shared_live_media_start(
+            user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_organization_student(self):
+        """Organization students cannot start sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_shared_live_media_start(
+            organization_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_organization_instructor(self):
+        """Organization instructors cannot start sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_shared_live_media_start(
+            organization_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_organization_administrator(self):
+        """Organization administrators can start sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_shared_live_media_start(
+            organization_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_consumer_site_any_role(self):
+        """Consumer site roles cannot start sharing a live."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_shared_live_media_start(
+            consumer_site_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_playlist_student(self):
+        """Playlist student cannot start sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_shared_live_media_start(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_playlist_instructor(self):
+        """Playlist instructor cannot start sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_shared_live_media_start(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_start_by_playlist_admin(self):
+        """Playlist administrator can start sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_shared_live_media_start(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+
+class VideoSharedLiveMediaNavigateTestCase(TestCase):
+    """Tests for the Video SharedLiveMedia navigate sharing API"""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+        )
+        cls.some_shared_live_media = SharedLiveMediaFactory(
+            extension="pdf",
+            title="slides",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            nb_pages=3,
+            video=cls.some_video,
+        )
+
+        cls.some_video.active_shared_live_media = cls.some_shared_live_media
+        cls.some_video.active_shared_live_media_page = 1
+        cls.some_video.save()
+
+    def assert_user_cannot_navigate_shared_live_media(self, user, video):
+        """Assert the user cannot navigate sharing the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.patch(
+            f"/api/videos/{video.pk}/navigate-sharing/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            data={"target_page": 2},
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_navigate_shared_live_media(
+        self, user, video, shared_live_media
+    ):
+        """Assert the user can navigate sharing the live."""
+        self.assertNotEqual(video.active_shared_live_media_page, 2)
+
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/navigate-sharing/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={"target_page": 2},
+                content_type="application/json",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+            self.assertEqual(response.status_code, 200)
+
+            content = response.json()
+
+        self.assertEqual(content["active_shared_live_media_page"], 2)
+        self.assertEqual(video.active_shared_live_media_id, shared_live_media.pk)
+
+    def test_shared_live_media_navigate_by_random_user(self):
+        """Authenticated user without access cannot navigate sharing a live."""
+        user = UserFactory()
+
+        self.assert_user_cannot_navigate_shared_live_media(user, self.some_video)
+
+    def test_shared_live_media_navigate_by_organization_student(self):
+        """Organization students cannot navigate sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_navigate_shared_live_media(
+            organization_access.user, self.some_video
+        )
+
+    def test_shared_live_media_navigate_by_organization_instructor(self):
+        """Organization instructors cannot navigate sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_navigate_shared_live_media(
+            organization_access.user, self.some_video
+        )
+
+    def test_shared_live_media_navigate_by_organization_administrator(self):
+        """Organization administrators can navigate sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_navigate_shared_live_media(
+            organization_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_navigate_by_consumer_site_any_role(self):
+        """Consumer site roles cannot navigate sharing a live."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_navigate_shared_live_media(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_shared_live_media_navigate_by_playlist_student(self):
+        """Playlist student cannot navigate sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_navigate_shared_live_media(
+            playlist_access.user, self.some_video
+        )
+
+    def test_shared_live_media_navigate_by_playlist_instructor(self):
+        """Playlist instructor cannot navigate sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_navigate_shared_live_media(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_navigate_by_playlist_admin(self):
+        """Playlist administrator can navigate sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_navigate_shared_live_media(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+
+class VideoSharedLiveMediaEndTestCase(TestCase):
+    """Tests for the Video SharedLiveMedia end sharing API"""
+
+    maxDiff = None
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = WebinarVideoFactory(
+            playlist__organization=cls.some_organization,
+            live_state=RUNNING,
+        )
+        cls.some_shared_live_media = SharedLiveMediaFactory(
+            extension="pdf",
+            title="slides",
+            upload_state=READY,
+            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            nb_pages=3,
+            video=cls.some_video,
+        )
+
+        cls.some_video.active_shared_live_media = cls.some_shared_live_media
+        cls.some_video.active_shared_live_media_page = 1
+        cls.some_video.save()
+
+    def assert_user_cannot_end_shared_live_media(self, user, video):
+        """Assert the user cannot end sharing the live."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+        response = self.client.patch(
+            f"/api/videos/{video.pk}/end-sharing/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    @override_settings(LIVE_CHAT_ENABLED=True)
+    def assert_user_can_end_shared_live_media(self, user, video, shared_live_media):
+        """Assert the user can end sharing the live."""
+        self.assertEqual(video.active_shared_live_media_id, shared_live_media.pk)
+
+        with mock.patch.object(
+            channel_layers_utils, "dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups, mock.patch(
+            "marsha.core.serializers.xmpp_utils.generate_jwt"
+        ) as mock_jwt_encode:
+            mock_jwt_encode.return_value = "xmpp_jwt"
+
+            jwt_token = UserAccessTokenFactory(user=user)
+            response = self.client.patch(
+                f"/api/videos/{video.id}/end-sharing/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            video.refresh_from_db()
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+            self.assertEqual(response.status_code, 200)
+
+            content = response.json()
+
+        self.assertIsNone(content["active_shared_live_media"])
+        self.assertIsNone(video.active_shared_live_media_id)
+
+    def test_shared_live_media_end_by_random_user(self):
+        """Authenticated user without access cannot end sharing a live."""
+        user = UserFactory()
+
+        self.assert_user_cannot_end_shared_live_media(user, self.some_video)
+
+    def test_shared_live_media_end_by_organization_student(self):
+        """Organization students cannot end sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_end_shared_live_media(
+            organization_access.user, self.some_video
+        )
+
+    def test_shared_live_media_end_by_organization_instructor(self):
+        """Organization instructors cannot end sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_end_shared_live_media(
+            organization_access.user, self.some_video
+        )
+
+    def test_shared_live_media_end_by_organization_administrator(self):
+        """Organization administrators can end sharing a live."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_end_shared_live_media(
+            organization_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_end_by_consumer_site_any_role(self):
+        """Consumer site roles cannot end sharing a live."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_end_shared_live_media(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_shared_live_media_end_by_playlist_student(self):
+        """Playlist student cannot end sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_end_shared_live_media(
+            playlist_access.user, self.some_video
+        )
+
+    def test_shared_live_media_end_by_playlist_instructor(self):
+        """Playlist instructor cannot end sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_end_shared_live_media(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
+
+    def test_shared_live_media_end_by_playlist_admin(self):
+        """Playlist administrator can end sharing a live."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_end_shared_live_media(
+            playlist_access.user, self.some_video, self.some_shared_live_media
+        )
 
 
 class TestVideoSharedLiveMedia(TestCase):
