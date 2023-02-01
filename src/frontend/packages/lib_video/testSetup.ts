@@ -20,3 +20,5 @@ global.ResizeObserver = ResizeObserver;
 // During tests we want queries to be silent
 // see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
 setLogger({ log: console.log, warn: console.warn, error: () => {} });
+
+global.Request = require('node-fetch').Request;
