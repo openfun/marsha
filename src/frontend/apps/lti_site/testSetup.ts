@@ -21,3 +21,6 @@ global.ResizeObserver = ResizeObserver;
 // see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
 // tslint:disable-next-line:no-console
 setLogger({ log: console.log, warn: console.warn, error: () => {} });
+
+// tslint:disable-next-line:no-var-requires
+global.Request = require('node-fetch').Request;
