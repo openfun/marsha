@@ -19,7 +19,6 @@ def migrate_anonymous(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0030_auto_20211215_1224"),
     ]

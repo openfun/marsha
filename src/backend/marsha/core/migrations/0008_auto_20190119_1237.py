@@ -20,7 +20,6 @@ def id_to_resource_id(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("core", "0007_auto_20190122_1135")]
 
     operations = [migrations.RunPython(resource_id_to_id, id_to_resource_id)]

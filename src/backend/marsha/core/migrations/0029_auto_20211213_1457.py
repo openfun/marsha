@@ -18,7 +18,6 @@ def migrate_lti_id(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0028_auto_20211129_1843"),
     ]

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bbb", "0002_remove_meeting_started_on_meeting_ended_and_more"),
     ]

@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bbb", "0003_alter_meeting_moderator_password_and_more"),
     ]

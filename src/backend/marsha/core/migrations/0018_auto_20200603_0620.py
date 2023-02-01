@@ -16,7 +16,6 @@ def initialize_video_resolutions(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0017_auto_20200221_1433"),
     ]

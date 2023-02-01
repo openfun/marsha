@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bbb", "0007_classroom_rename_meeting_to_classroom"),
     ]

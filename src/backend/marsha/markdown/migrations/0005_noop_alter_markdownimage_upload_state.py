@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("markdown", "0004_alter_markdowndocument_deleted_and_more"),
     ]

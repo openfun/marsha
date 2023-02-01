@@ -8,7 +8,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("markdown", "0002_markdowndocument_deleted_by_cascade"),
     ]

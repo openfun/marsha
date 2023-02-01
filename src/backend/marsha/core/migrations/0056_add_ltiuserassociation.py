@@ -8,7 +8,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0055_noop_alter_audiotrack_upload_state_and_more"),
     ]

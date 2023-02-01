@@ -4,7 +4,6 @@ from django.db import migrations, models
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bbb", "0004_meeting_estimated_duration_meeting_starting_at_and_more"),
     ]
