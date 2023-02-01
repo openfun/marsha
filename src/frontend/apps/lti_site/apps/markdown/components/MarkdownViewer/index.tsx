@@ -4,9 +4,11 @@ import { Loader } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import { getMarkdownDocumentTranslatedContent } from 'lib-markdown';
+import {
+  getMarkdownDocumentTranslatedContent,
+  LanguageSelector,
+} from 'lib-markdown';
 
 const messages = defineMessages({
   // Messages

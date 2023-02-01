@@ -1,18 +1,17 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import render from 'utils/tests/render';
-
-import LanguageSelector from '.';
+import { LanguageSelector } from './index';
 
 describe('<LanguageSelector />', () => {
-  it('displays languages', async () => {
+  it('displays languages', () => {
     const onLanguageChange = jest.fn();
 
     const { rerender } = render(
       <LanguageSelector
-        currentLanguage={'en'}
+        currentLanguage="en"
         onLanguageChange={onLanguageChange}
         disabled={false}
       />,
@@ -29,7 +28,7 @@ describe('<LanguageSelector />', () => {
 
     rerender(
       <LanguageSelector
-        currentLanguage={'fr'}
+        currentLanguage="fr"
         onLanguageChange={onLanguageChange}
         disabled={false}
       />,
@@ -42,12 +41,12 @@ describe('<LanguageSelector />', () => {
     expect(onLanguageChange).toHaveBeenLastCalledWith('en');
   });
 
-  it('displays available languages', async () => {
+  it('displays available languages', () => {
     const onLanguageChange = jest.fn();
 
     render(
       <LanguageSelector
-        currentLanguage={'en'}
+        currentLanguage="en"
         onLanguageChange={onLanguageChange}
         disabled={false}
         availableLanguages={['en']}
@@ -59,12 +58,12 @@ describe('<LanguageSelector />', () => {
     expect(screen.queryByText('French')).not.toBeInTheDocument();
   });
 
-  it('displays available languages if current language is not', async () => {
+  it('displays available languages if current language is not', () => {
     const onLanguageChange = jest.fn();
 
     render(
       <LanguageSelector
-        currentLanguage={'en'}
+        currentLanguage="en"
         onLanguageChange={onLanguageChange}
         disabled={false}
         availableLanguages={['fr']}
