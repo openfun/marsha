@@ -165,7 +165,6 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
 
         """
         if obj.uploaded_on:
-
             url = self._generate_url(obj, "timedtext", extension="vtt")
 
             # Sign the url only if the functionality is activated

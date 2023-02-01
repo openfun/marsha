@@ -5,7 +5,6 @@ import django.db.models.deletion
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0049_noop_run_missing_migrations"),
         ("bbb", "0005_meeting_deleted_by_cascade"),

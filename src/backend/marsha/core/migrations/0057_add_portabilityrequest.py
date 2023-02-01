@@ -8,7 +8,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0056_add_ltiuserassociation"),
     ]

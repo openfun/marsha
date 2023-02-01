@@ -12,7 +12,6 @@ import parler.models
 
 
 class Migration(migrations.Migration):
-
     initial = True
 
     dependencies = [

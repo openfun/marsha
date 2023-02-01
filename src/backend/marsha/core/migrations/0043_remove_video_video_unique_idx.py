@@ -8,7 +8,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0042_remove_video_resource_id_livesession_must_notify_and_more"),
     ]

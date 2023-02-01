@@ -29,7 +29,6 @@ def migrate_live_attendance(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0051_migrate_live_state"),
     ]
