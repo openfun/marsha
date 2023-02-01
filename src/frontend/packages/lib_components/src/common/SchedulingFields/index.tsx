@@ -1,6 +1,13 @@
-import { Box, DateInput, FormField, Text, TextInput } from 'grommet';
+import {
+  Box,
+  DateInput,
+  FormField,
+  Text,
+  TextInput,
+  ThemeContext,
+} from 'grommet';
 import { MarginType } from 'grommet/utils';
-import { Nullable } from 'lib-common';
+import { calendarTheme, Nullable } from 'lib-common';
 import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -220,22 +227,30 @@ export const SchedulingFields = ({
             height="80%"
             disabled={disabled}
           >
-            <DateInput
-              dropProps={{ align: { bottom: 'top' } }}
-              id="starting_at_date"
-              format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
-              value={currentStartingAtDate || undefined}
-              onChange={onStartingAtDateInputChange}
-              calendarProps={{
-                bounds: [
-                  DateTime.local().toISO(),
-                  DateTime.local().plus({ years: 1 }).toISO(),
-                ],
-              }}
-              // TODO : calendar icon still clickable even when component is disabled
-              // need to open an issue on grommet's github
-              disabled={disabled}
-            />
+            <ThemeContext.Extend value={calendarTheme}>
+              <DateInput
+                dropProps={{
+                  align: { top: 'bottom', left: 'left' },
+                  style: {
+                    borderRadius: '4px',
+                    boxShadow: 'rgb(0 0 0 / 23%) 4px 5px 17px',
+                  },
+                }}
+                id="starting_at_date"
+                format={intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}
+                value={currentStartingAtDate || undefined}
+                onChange={onStartingAtDateInputChange}
+                calendarProps={{
+                  bounds: [
+                    DateTime.local().toISO(),
+                    DateTime.local().plus({ years: 1 }).toISO(),
+                  ],
+                }}
+                // TODO : calendar icon still clickable even when component is disabled
+                // need to open an issue on grommet's github
+                disabled={disabled}
+              />
+            </ThemeContext.Extend>
           </FormField>
           <FormHelpText>
             {intl.locale === 'fr' ? 'dd/mm/yyyy' : 'yyyy/mm/dd'}

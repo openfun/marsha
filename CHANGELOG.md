@@ -24,6 +24,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - lti:
   - jwt store initialization concurrency issue with access jwt
+- ui calendar
 
 ## [4.0.0-beta.14] - 2023-01-25
 
