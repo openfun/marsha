@@ -1,10 +1,9 @@
 import fetchMock from 'fetch-mock';
-
 import { useJwt } from 'lib-components';
 
-import { createMarkdownImage } from '.';
+import { createMarkdownImage } from './index';
 
-describe('apps/markdown/sideEffects/createMarkdownImage', () => {
+describe('createMarkdownImage', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'token',
@@ -50,7 +49,7 @@ describe('apps/markdown/sideEffects/createMarkdownImage', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(createMarkdownImage()).rejects.toThrowError(
+    await expect(createMarkdownImage()).rejects.toThrow(
       'Failed to perform the request',
     );
   });
@@ -58,7 +57,7 @@ describe('apps/markdown/sideEffects/createMarkdownImage', () => {
   it('throws when it fails to create the Markdown image (API error)', async () => {
     fetchMock.mock('/api/markdown-images/', 400);
 
-    await expect(createMarkdownImage()).rejects.toThrowError(
+    await expect(createMarkdownImage()).rejects.toThrow(
       'Failed to create a new markdown image.',
     );
   });

@@ -8,8 +8,7 @@ import {
   MarkdownDocumentModelName as modelName,
 } from 'lib-components';
 
-import { createMarkdownImage } from 'apps/markdown/data/sideEffects/createMarkdownImage';
-import { pollForMarkdownImage } from 'apps/markdown/data/sideEffects/pollForMarkdownImage';
+import { createMarkdownImage, pollForMarkdownImage } from 'lib-markdown';
 import MarkdownImageProgressToast from '../MarkdownImageProgressToast';
 
 const messages = defineMessages({
