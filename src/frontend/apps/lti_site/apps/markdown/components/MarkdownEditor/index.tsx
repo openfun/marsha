@@ -14,8 +14,8 @@ import {
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
+  LanguageSelector,
 } from 'lib-markdown';
-import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
 import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOptionsSelector';
 import ScreenDispositionSelector, {
