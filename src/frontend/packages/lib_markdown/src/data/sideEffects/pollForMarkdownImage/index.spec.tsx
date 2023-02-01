@@ -1,17 +1,16 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-
+import { markdownImageMockFactory } from 'index';
 import { report } from 'lib-components';
 
-import { pollForMarkdownImage } from '.';
-import { markdownImageMockFactory } from 'lib-markdown';
+import { pollForMarkdownImage } from './index';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
 
-describe('apps/markdown/sideEffects/pollForMarkdownImage', () => {
+describe('pollForMarkdownImage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
     jest.useFakeTimers();

@@ -9,7 +9,7 @@ import { commonMessages } from 'apps/markdown/components/SelectContent/commonMes
 import { SelectContentSection } from 'apps/markdown/components/SelectContent/SelectContentSection';
 import { browserLanguage } from 'apps/markdown/components/SelectContent/utils';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import { useCreateMarkdownDocument } from 'apps/markdown/data/queries';
+import { useCreateMarkdownDocument } from 'lib-markdown';
 
 const SelectContentResource = ({
   playlist,

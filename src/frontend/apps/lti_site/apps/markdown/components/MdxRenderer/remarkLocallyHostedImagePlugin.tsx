@@ -1,6 +1,6 @@
 import { visit } from 'unist-util-visit';
 
-import { fetchOneMarkdownImage } from 'apps/markdown/data/queries';
+import { fetchOneMarkdownImage } from 'lib-markdown';
 import { Image } from 'mdast';
 import { MarkdownImageCache } from './types';
 

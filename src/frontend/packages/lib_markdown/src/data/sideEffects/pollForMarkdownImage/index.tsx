@@ -1,10 +1,14 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { MarkdownImage, report } from 'lib-components';
-import { fetchOneMarkdownImage } from 'apps/markdown/data/queries';
+
+import { fetchOneMarkdownImage } from 'data/queries';
 
 export async function pollForMarkdownImage(
   resourceId: string,
-  timer: number = 15,
-  counter: number = 1,
+  timer = 15,
+  counter = 1,
 ): Promise<MarkdownImage> {
   try {
     const image = await fetchOneMarkdownImage(resourceId);

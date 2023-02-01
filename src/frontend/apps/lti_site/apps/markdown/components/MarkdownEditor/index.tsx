@@ -17,7 +17,7 @@ import {
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
-} from 'apps/markdown/data/queries';
+} from 'lib-markdown';
 import LanguageSelector from 'apps/markdown/components/LanguageSelector';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
 import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOptionsSelector';

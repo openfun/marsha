@@ -1,11 +1,10 @@
+/* eslint-disable testing-library/render-result-naming-convention */
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
+import { markdownDocumentMockFactory } from 'index';
+import { useJwt } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
-
-import { useJwt } from 'lib-components';
-
-import { markdownDocumentMockFactory } from 'lib-markdown';
 
 import {
   markdownRenderLatex,
@@ -13,7 +12,7 @@ import {
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
-} from '.';
+} from './index';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -115,7 +114,7 @@ describe('queries', () => {
       );
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
-        title: markdownDocument.translations[0].title!,
+        title: markdownDocument.translations[0].title,
       });
       await waitFor(() => result.current.isSuccess);
 
@@ -147,7 +146,7 @@ describe('queries', () => {
       );
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
-        title: markdownDocument.translations[0].title!,
+        title: markdownDocument.translations[0].title,
       });
 
       await waitFor(() => result.current.isError);
