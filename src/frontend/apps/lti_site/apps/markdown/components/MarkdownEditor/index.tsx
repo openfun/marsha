@@ -6,10 +6,7 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import {
-  CodeMirrorEditor,
-  useCodemirrorEditor,
-} from 'apps/markdown/components/CodeMirrorEditor';
+import { CodeMirrorEditor, useCodemirrorEditor } from 'lib-markdown';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
   escapeMarkdown,
