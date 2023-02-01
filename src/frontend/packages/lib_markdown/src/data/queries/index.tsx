@@ -1,11 +1,4 @@
-import {
-  useMutation,
-  UseMutationOptions,
-  useQuery,
-  useQueryClient,
-  UseQueryOptions,
-} from 'react-query';
-
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   actionOne,
   createOne,
@@ -15,6 +8,13 @@ import {
   MarkdownSaveTranslationsRequest,
   MarkdownSaveTranslationsResponse,
 } from 'lib-components';
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+  useQueryClient,
+  UseQueryOptions,
+} from 'react-query';
 
 interface MarkdownDocumentsSelectResponse {
   new_url: string;
@@ -180,15 +180,17 @@ const markdownDocumentActionMutation =
       {
         ...options,
         onSuccess: (data, variables, context) => {
-          if (!doNotInvalidateQueries)
+          if (!doNotInvalidateQueries) {
             queryClient.invalidateQueries('markdown-documents');
+          }
           if (options?.onSuccess) {
             options.onSuccess(data, variables, context);
           }
         },
         onError: (error, variables, context) => {
-          if (!doNotInvalidateQueries)
+          if (!doNotInvalidateQueries) {
             queryClient.invalidateQueries('markdown-documents');
+          }
           if (options?.onError) {
             options.onError(error, variables, context);
           }
