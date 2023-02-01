@@ -9,7 +9,7 @@ type LanguageSelectorProps = {
   availableLanguages?: string[];
 };
 
-const LanguageSelector = ({
+export const LanguageSelector = ({
   currentLanguage,
   onLanguageChange,
   disabled,
@@ -59,5 +59,3 @@ const LanguageSelector = ({
     />
   );
 };
-
-export default LanguageSelector;
