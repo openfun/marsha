@@ -1,12 +1,12 @@
 import { defaultKeymap, indentWithTab } from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
 import { languages } from '@codemirror/language-data';
+import { RegExpCursor } from '@codemirror/search';
 import { EditorState, Text } from '@codemirror/state';
 import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
 import { basicSetup } from 'codemirror';
 import { Nullable } from 'lib-common';
-import React, { useCallback, useEffect } from 'react';
-import { RegExpCursor } from '@codemirror/search';
+import React, { useCallback, useEffect, useRef } from 'react';
 
 type CodeMirrorRef = {
   // This store values for the `useCodemirrorEditor` hook.
@@ -25,11 +25,14 @@ export const CodeMirrorEditor = ({
   codemirrorEditor,
 }: EditorProps) => {
   const editorDivRef = React.useRef<HTMLDivElement>(null);
+  const initialValues = useRef(initialContent);
 
   useEffect(() => {
-    if (editorDivRef.current === null) return;
+    if (editorDivRef.current === null) {
+      return;
+    }
     const state = EditorState.create({
-      doc: initialContent,
+      doc: initialValues.current,
       extensions: [
         basicSetup,
         keymap.of([...defaultKeymap, indentWithTab]),
@@ -52,7 +55,7 @@ export const CodeMirrorEditor = ({
       view.destroy();
       codemirrorEditor.current = null;
     };
-  }, [editorDivRef.current]);
+  }, [codemirrorEditor, initialValues, onEditorContentChange]);
 
   return <div style={{ maxHeight: '100%' }} ref={editorDivRef} />;
 };
@@ -61,7 +64,9 @@ export const useCodemirrorEditor = () => {
   const codemirrorEditor = React.useRef<Nullable<CodeMirrorRef>>(null);
 
   const replaceEditorWholeContent = useCallback((content: string | Text) => {
-    if (!codemirrorEditor.current) return;
+    if (!codemirrorEditor.current) {
+      return;
+    }
 
     const update = codemirrorEditor.current.view.state.update({
       changes: {
@@ -80,8 +85,9 @@ export const useCodemirrorEditor = () => {
   }, []);
 
   const insertText = useCallback((text: string | Text) => {
-    if (!codemirrorEditor.current)
+    if (!codemirrorEditor.current) {
       throw new Error('CodeMirrorEditor is not yet available');
+    }
     codemirrorEditor.current.view.dispatch(
       codemirrorEditor.current.view.state.update(
         codemirrorEditor.current.view.state.replaceSelection(text),
@@ -91,8 +97,9 @@ export const useCodemirrorEditor = () => {
 
   const replaceOnceInDocument = useCallback(
     (contentToReplace: string, newContent: string) => {
-      if (!codemirrorEditor.current)
+      if (!codemirrorEditor.current) {
         throw new Error('CodeMirrorEditor is not yet available');
+      }
       const cursor = new RegExpCursor(
         codemirrorEditor.current.view.state.doc,
         contentToReplace,
@@ -100,7 +107,9 @@ export const useCodemirrorEditor = () => {
 
       cursor.next();
 
-      if (cursor.value.from === -1 || cursor.value.to === -1) return;
+      if (cursor.value.from === -1 || cursor.value.to === -1) {
+        return;
+      }
 
       const update = codemirrorEditor.current.view.state.update({
         changes: {
