@@ -1,7 +1,8 @@
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
 import { screen } from '@testing-library/react';
+import { render } from 'lib-tests';
 import React from 'react';
-
-import render from 'utils/tests/render';
 
 import { CodeMirrorEditor, useCodemirrorEditor } from '.';
 
@@ -30,7 +31,7 @@ describe('<CodeMirrorEditor>', () => {
     jest.resetAllMocks();
   });
 
-  it('initializes the hook properly', async () => {
+  it('initializes the hook properly', () => {
     const HookOnlyComponent = () => {
       const codemirrorEditorHooks = useCodemirrorEditor();
       getLatestHookValues = () => codemirrorEditorHooks;
@@ -43,19 +44,19 @@ describe('<CodeMirrorEditor>', () => {
     expect(codemirrorEditor.current).toBeNull();
   });
 
-  it('renders the editor', async () => {
+  it('renders the editor', () => {
     render(<TestComponent initialContent={'Some content\nNo big deal'} />);
 
-    expect(screen.getByText('Some content'));
-    expect(screen.getByText('No big deal'));
+    expect(screen.getByText('Some content')).toBeInTheDocument();
+    expect(screen.getByText('No big deal')).toBeInTheDocument();
 
     const { codemirrorEditor } = getLatestHookValues();
     expect(codemirrorEditor.current).not.toBeNull();
   });
 
-  it('inserts text in place', async () => {
+  it('inserts text in place', () => {
     const { container } = render(
-      <TestComponent initialContent={'Initial content'} />,
+      <TestComponent initialContent="Initial content" />,
     );
 
     const { codemirrorEditor, insertText } = getLatestHookValues();
@@ -74,9 +75,9 @@ describe('<CodeMirrorEditor>', () => {
     expect(setLocalMarkdownContent).toHaveBeenCalledWith(expectedContent);
   });
 
-  it('replaces text once', async () => {
+  it('replaces text once', () => {
     const { container } = render(
-      <TestComponent initialContent={'Initial content and other content'} />,
+      <TestComponent initialContent="Initial content and other content" />,
     );
 
     const { codemirrorEditor, replaceOnceInDocument } = getLatestHookValues();
@@ -95,7 +96,7 @@ describe('<CodeMirrorEditor>', () => {
     expect(setLocalMarkdownContent).toHaveBeenCalledWith(expectedContent);
   });
 
-  it('replaces whole content', async () => {
+  it('replaces whole content', () => {
     const { container } = render(
       <TestComponent
         initialContent={
