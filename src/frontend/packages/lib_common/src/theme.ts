@@ -461,3 +461,29 @@ export const theme: ThemeType = {
     },
   },
 };
+
+export const calendarTheme: ThemeType = {
+  button: {
+    default: {
+      border: false,
+    },
+    extend: css`
+      & {
+        padding: 0;
+      }
+      &:has(svg) {
+        padding: 12px;
+      }
+    `,
+  },
+  calendar: {
+    heading: {
+      level: '5',
+    },
+    extend: css`
+      & div[role='grid'] {
+        box-shadow: none;
+      }
+    `,
+  },
+};
