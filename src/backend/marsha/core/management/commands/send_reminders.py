@@ -60,7 +60,6 @@ class Command(BaseCommand):
 
             # if record was updated
             if self.query_to_update_step(livesession, step) == 1:
-
                 with override(livesession.language):
                     self.stdout.write(
                         f"Sending email for livesession {livesession.id} "

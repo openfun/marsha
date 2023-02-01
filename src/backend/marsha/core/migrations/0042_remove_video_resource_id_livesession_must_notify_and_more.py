@@ -8,7 +8,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0041_livesession_registered_at"),
     ]

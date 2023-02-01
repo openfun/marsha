@@ -158,7 +158,6 @@ class BaseModel(SafeDeleteModel):
         ]
 
         for field in m2m_fields:
-
             # ignore if defined in a model outside of the scope
             if fields_by_model[field.name]._meta.app_label not in CHECKED_APPS:
                 continue

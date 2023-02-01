@@ -17,7 +17,6 @@ def migrate_live_type(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0022_make_lti_id_optional"),
     ]

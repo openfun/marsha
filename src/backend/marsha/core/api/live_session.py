@@ -336,7 +336,7 @@ class LiveSessionViewSet(
 
         try:
             video = Video.objects.get(pk=self.request.resource.id)
-        except (Video.DoesNotExist) as exception:
+        except Video.DoesNotExist as exception:
             raise Http404("No resource matches the given query.") from exception
 
         # we only want livesessions that are registered or with live_attendance not empty

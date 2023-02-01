@@ -9,7 +9,6 @@ import marsha.core.models.video
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0034_auto_20220119_0955"),
     ]

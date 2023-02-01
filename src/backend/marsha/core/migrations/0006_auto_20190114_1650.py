@@ -10,7 +10,6 @@ import marsha.core.models.base
 
 
 class Migration(migrations.Migration):
-
     dependencies = [("core", "0005_auto_20190112_1046")]
 
     operations = [

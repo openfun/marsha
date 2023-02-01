@@ -13,7 +13,6 @@ def migrate_is_registered(apps, schema_editor):
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("core", "0029_auto_20211213_1457"),
     ]

@@ -7,7 +7,6 @@ import django.utils.timezone
 
 
 class Migration(migrations.Migration):
-
     dependencies = [
         ("bbb", "0006_alter_meeting_moderator_password_and_more"),
     ]
