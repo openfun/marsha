@@ -2,7 +2,12 @@
 /* eslint-disable testing-library/no-container */
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { liveState, useJwt, videoMockFactory } from 'lib-components';
+import {
+  liveState,
+  uploadState,
+  useJwt,
+  videoMockFactory,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -14,6 +19,8 @@ const mockedVideo = videoMockFactory({
   id: 'video_id',
   title: 'Title of the video',
   description: 'An example description',
+  live_state: null,
+  upload_state: uploadState.READY,
 });
 
 jest.mock('lib-components', () => ({
@@ -66,7 +73,7 @@ describe('<Dashboard />', () => {
     fetchMock.restore();
   });
 
-  it('renders the DashboardVOD without tabs if video does not come from a live session', () => {
+  it('renders the DashboardVOD with stats tab if video does not come from a live session', () => {
     const { container } = render(
       <Dashboard video={mockedVideo} socketUrl="some_url" />,
     );
@@ -82,12 +89,8 @@ describe('<Dashboard />', () => {
     screen.getByDisplayValue('Title of the video');
 
     // DashboardControlPane
-    expect(
-      screen.queryByRole('tab', { name: 'configuration' }),
-    ).not.toBeInTheDocument();
-    expect(
-      screen.queryByRole('tab', { name: 'attendances' }),
-    ).not.toBeInTheDocument();
+    screen.getByRole('tab', { name: 'configuration' });
+    screen.getByRole('tab', { name: 'statistics' });
 
     // VideoWidgetProvider
     screen.getByText('VideoWidgetProvider');

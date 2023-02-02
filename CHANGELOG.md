@@ -9,14 +9,16 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ## [Unreleased]
 
 ### Added
+
 - remove lib folder before rollup build to avoid stale files
+- Add stats page on VOD
 
 ## [4.0.0-beta.15] - 2023-02-02
 
 ### Added
 
 - wrapper around fetch to handle 401 errors and refresh the access token
-- configure wantNameId and allowRepeatAttributeName for saml_fer 
+- configure wantNameId and allowRepeatAttributeName for saml_fer
   security settings
 - Add a lti link to classroom in the standalone website
 - Invite link for classroom available in every context
@@ -31,7 +33,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
-- change xapi endpoints status code when no LRS from 501 to 200 
+- change xapi endpoints status code when no LRS from 501 to 200
 
 ### Fixed
 
@@ -44,7 +46,6 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Removed
 
 - service worker from lti site and standalone site
-
 
 ## [4.0.0-beta.14] - 2023-01-25
 

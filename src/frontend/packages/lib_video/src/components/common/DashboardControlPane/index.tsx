@@ -7,6 +7,12 @@ import { defineMessages, useIntl } from 'react-intl';
 import { VideoWidgetProvider } from 'components/common/VideoWidgetProvider';
 
 import { DashboardLiveTabAttendance } from './DashboardLiveTabAttendance';
+import { DashboardTabStatistics } from './DashboardTabStatistics/DashboardTabStatistics';
+
+export const enum PaneTabs {
+  STATS = 'statistics',
+  ATTENDANCE = 'attendance',
+}
 
 const messages = defineMessages({
   titleConfiguration: {
@@ -21,13 +27,23 @@ const messages = defineMessages({
       'Title of the tab used to watch attendance of the live in capital letters',
     id: 'components.DashboardLiveControlPane.titleAttendance',
   },
+  titleStats: {
+    defaultMessage: 'statistics',
+    description:
+      'Title of the tab used to monitor statistics about the video diffusion',
+    id: 'components.DashboardLiveControlPane.titleStats',
+  },
 });
 
 export interface DashboarControlPaneParams {
   isLive: boolean;
+  tabs?: PaneTabs[];
 }
 
-export const DashboardControlPane = ({ isLive }: DashboarControlPaneParams) => {
+export const DashboardControlPane = ({
+  isLive,
+  tabs = [PaneTabs.ATTENDANCE],
+}: DashboarControlPaneParams) => {
   const intl = useIntl();
   const extendedTheme = {
     tabs: {
@@ -63,9 +79,16 @@ export const DashboardControlPane = ({ isLive }: DashboarControlPaneParams) => {
           <Tab title={intl.formatMessage(messages.titleConfiguration)}>
             <VideoWidgetProvider isLive={isLive} isTeacher />
           </Tab>
-          <Tab title={intl.formatMessage(messages.titleAttendance)}>
-            <DashboardLiveTabAttendance />
-          </Tab>
+          {tabs.includes(PaneTabs.STATS) && (
+            <Tab title={intl.formatMessage(messages.titleStats)}>
+              <DashboardTabStatistics />
+            </Tab>
+          )}
+          {tabs.includes(PaneTabs.ATTENDANCE) && (
+            <Tab title={intl.formatMessage(messages.titleAttendance)}>
+              <DashboardLiveTabAttendance />
+            </Tab>
+          )}
         </Tabs>
       </ThemeContext.Extend>
     </Box>
