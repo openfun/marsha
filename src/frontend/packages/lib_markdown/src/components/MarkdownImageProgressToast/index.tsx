@@ -6,14 +6,14 @@ interface MarkdownImageProgressToastProps {
   progress: number;
 }
 
-const MarkdownImageProgressToast = ({
+export const MarkdownImageProgressToast = ({
   filename,
   progress,
 }: MarkdownImageProgressToastProps) => {
   const progressPercent = `${progress}%`;
 
   return (
-    <Box direction="row" gap={'medium'}>
+    <Box direction="row" gap="medium">
       <Text>{filename}</Text>
       <Box align="center" pad="none">
         <Stack anchor="center">
@@ -32,5 +32,3 @@ const MarkdownImageProgressToast = ({
     </Box>
   );
 };
-
-export default MarkdownImageProgressToast;

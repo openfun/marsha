@@ -8,8 +8,11 @@ import {
   MarkdownDocumentModelName as modelName,
 } from 'lib-components';
 
-import { createMarkdownImage, pollForMarkdownImage } from 'lib-markdown';
-import MarkdownImageProgressToast from '../MarkdownImageProgressToast';
+import {
+  createMarkdownImage,
+  MarkdownImageProgressToast,
+  pollForMarkdownImage,
+} from 'lib-markdown';
 
 const messages = defineMessages({
   uploaded: {
