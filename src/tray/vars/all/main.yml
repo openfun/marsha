@@ -54,22 +54,29 @@ marsha_prefetch_saml_fer_metadata_cronjob_schedule: "0 */6 * * *"
 marsha_media_volume_size: 2Gi
 marsha_static_volume_size: 2Gi
 
+marsha_app_resources:
+  requests:
+    cpu: 50m
+    memory: 500Mi
+  limits:
+    cpu: 1
+    memory: 2.5Gi
+
 # -- resources
-{% set app_resources = {
+{% set job_resources = {
   "requests": {
     "cpu": "50m",
     "memory": "500Mi"
   }
 } %}
 
-marsha_app_resources: "{{ app_resources }}"
-marsha_app_job_db_migrate_resources: "{{ app_resources }}"
-marsha_app_cronjob_check_harvested_resources: "{{ app_resources }}"
-marsha_app_cronjob_check_live_idle_resources: "{{ app_resources }}"
-marsha_app_cronjob_check_live_state_resources: "{{ app_resources }}"
-marsha_app_cronjob_clean_mediapackages_resources: "{{ app_resources }}"
-marsha_app_cronjob_clean_aws_elemental_stack_resources: "{{ app_resources }}"
-marsha_app_cronjob_prefetch_saml_fer_metadata_resources: "{{ app_resources }}"
+marsha_app_job_db_migrate_resources: "{{ job_resources }}"
+marsha_app_cronjob_check_harvested_resources: "{{ job_resources }}"
+marsha_app_cronjob_check_live_idle_resources: "{{ job_resources }}"
+marsha_app_cronjob_check_live_state_resources: "{{ job_resources }}"
+marsha_app_cronjob_clean_mediapackages_resources: "{{ job_resources }}"
+marsha_app_cronjob_clean_aws_elemental_stack_resources: "{{ job_resources }}"
+marsha_app_cronjob_prefetch_saml_fer_metadata_resources: "{{ job_resources }}"
 
 marsha_nginx_resources:
   requests:
