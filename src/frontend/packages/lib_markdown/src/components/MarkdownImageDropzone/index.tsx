@@ -1,12 +1,11 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import { DropzoneIcon } from 'lib-components';
 import React from 'react';
-import { defineMessages, useIntl } from 'react-intl';
-
 import Dropzone, { DropzoneOptions, DropzoneRootProps } from 'react-dropzone';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
-import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   uploadImageInDocument: {
@@ -36,7 +35,7 @@ const DropzoneOverlay = styled.div`
 
 type MarkdownImageDropzoneProps = Pick<DropzoneOptions, 'onDropAccepted'>;
 
-const MarkdownImageDropzone = ({
+export const MarkdownImageDropzone = ({
   onDropAccepted,
   children,
 }: React.PropsWithChildren<MarkdownImageDropzoneProps>) => {
@@ -84,5 +83,3 @@ const MarkdownImageDropzone = ({
     </Dropzone>
   );
 };
-
-export default MarkdownImageDropzone;
