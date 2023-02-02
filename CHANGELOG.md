@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - banner homepage with dynamic text
 - Arnold tray to manage definition directly in marsha repository
+- Install and configure scoutapm
 
 
 ### Changed
