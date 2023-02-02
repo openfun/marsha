@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-20 11:19+0000\n"
-"PO-Revision-Date: 2023-01-23 08:23\n"
+"POT-Creation-Date: 2023-02-02 11:51+0000\n"
+"PO-Revision-Date: 2023-02-02 14:42\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: backend.pot\n"
 "X-Crowdin-File-ID: 6\n"
 
-#: marsha/account/apps.py:12
+#: marsha/account/apps.py:15
 msgid "Account"
 msgstr ""
 
@@ -506,7 +506,7 @@ msgstr ""
 msgid "All rights reserved"
 msgstr ""
 
-#: marsha/core/management/commands/send_reminders.py:134
+#: marsha/core/management/commands/send_reminders.py:139
 msgid "Webinar has been updated."
 msgstr ""
 
@@ -1703,35 +1703,35 @@ msgstr ""
 msgid "image"
 msgstr ""
 
-#: marsha/settings.py:302
+#: marsha/settings.py:303
 msgid "english"
 msgstr ""
 
-#: marsha/settings.py:302
+#: marsha/settings.py:303
 msgid "french"
 msgstr ""
 
-#: marsha/settings.py:518
+#: marsha/settings.py:520
 msgid "5 minutes"
 msgstr ""
 
-#: marsha/settings.py:522
+#: marsha/settings.py:524
 msgid "Live starts in less than 5 minutes"
 msgstr ""
 
-#: marsha/settings.py:525
+#: marsha/settings.py:527
 msgid "3 hours"
 msgstr ""
 
-#: marsha/settings.py:531
+#: marsha/settings.py:533
 msgid "Live starts in less than 3 hours"
 msgstr ""
 
-#: marsha/settings.py:534
+#: marsha/settings.py:536
 msgid "3 days"
 msgstr ""
 
-#: marsha/settings.py:539
+#: marsha/settings.py:541
 msgid "Live starts in less than 3 days"
 msgstr ""
 
