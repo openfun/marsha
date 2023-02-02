@@ -14,12 +14,13 @@ import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
 import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
-import { MARKDOWN_NOT_FOUND_ROUTE } from './MarkdownNotFoundView/route';
+import { MARKDOWN_NOT_FOUND_ROUTE } from 'lib-markdown';
 import { MARKDOWN_VIEWER_ROUTE } from './MarkdownViewer/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
+import { lazyImport } from 'lib-common';
 
-const MarkdownNotFoundView = lazy(() => import('./MarkdownNotFoundView'));
+const { MarkdownNotFoundView } = lazyImport(() => import('lib-markdown'));
 const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
 const MarkdownViewer = lazy(() => import('./MarkdownViewer'));
 

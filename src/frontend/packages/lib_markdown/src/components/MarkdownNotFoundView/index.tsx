@@ -21,7 +21,7 @@ const messages = {
   }),
 };
 
-const MarkdownNotFoundView = () => {
+export const MarkdownNotFoundView = () => {
   const intl = useIntl();
 
   return (
@@ -36,5 +36,3 @@ const MarkdownNotFoundView = () => {
     </Box>
   );
 };
-
-export default MarkdownNotFoundView;
