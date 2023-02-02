@@ -255,6 +255,14 @@
     "description": "Message when user has joined the classroom.",
     "message": "You have joined the classroom as {joinedAs}."
   },
+  "component.DashboardCopyLtiUrl.ltiLinkCopiedSuccess": {
+    "description": "Toast message when link copied to clipboard.",
+    "message": "Url copied in clipboard !"
+  },
+  "component.DashboardCopyLtiUrl.ltiLinkLabel": {
+    "description": "Label for LTI classroom link.",
+    "message": "LTI link for this classroom:"
+  },
   "component.DashboardLive.manageRequestBtnLabel": {
     "description": "Label of the button used for opening the manage on-stage request tab.",
     "message": "Manage requests"

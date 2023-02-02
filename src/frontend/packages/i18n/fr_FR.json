@@ -255,6 +255,14 @@
     "description": "Message when user has joined the classroom.",
     "message": "Vous avez rejoint la classe virtuelle en tant que {joinedAs}."
   },
+  "component.DashboardCopyLtiUrl.ltiLinkCopiedSuccess": {
+    "description": "Toast message when link copied to clipboard.",
+    "message": "Url copiée dans le presse-papier !"
+  },
+  "component.DashboardCopyLtiUrl.ltiLinkLabel": {
+    "description": "Label for LTI classroom link.",
+    "message": "Lien LTI pour cette classe virtuelle :"
+  },
   "component.DashboardLive.manageRequestBtnLabel": {
     "description": "Label of the button used for opening the manage on-stage request tab.",
     "message": "Gérer les demandes"

@@ -235,6 +235,18 @@
     "description": "Settings link in header drop.",
     "message": "Settings"
   },
+  "features.HomePage.BannerAlt": {
+    "description": "Alt banner homepage",
+    "message": "Homepage Banner"
+  },
+  "features.HomePage.BannerDesc": {
+    "description": "Desc banner homepage",
+    "message": "Online courses to discover, learn, progress and succeed"
+  },
+  "features.HomePage.BannerTitle": {
+    "description": "Title banner homepage",
+    "message": "Learn freely"
+  },
   "features.HomePage.SeeEverything": {
     "description": "Label to see all the cards",
     "message": "See Everything"
