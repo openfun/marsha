@@ -94,6 +94,13 @@ class DepositedFileCreateAPITest(TestCase):
 
         response = self.client.post(
             "/api/depositedfiles/",
+            data=json.dumps(
+                {
+                    "size": 123,
+                    "filename": "test.pdf",
+                    "file_depository": str(file_depository.id),
+                }
+            ),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -119,6 +126,13 @@ class DepositedFileCreateAPITest(TestCase):
 
         response = self.client.post(
             "/api/depositedfiles/",
+            data=json.dumps(
+                {
+                    "size": 123,
+                    "filename": "test.pdf",
+                    "file_depository": str(file_depository.id),
+                }
+            ),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )

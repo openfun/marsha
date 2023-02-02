@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add stats page on VOD
 - Create lib-markdown package
 - Add a check on timedtexttrack file size when uploading content
+- Add a check on deposited file size when uploading content 
 
 ### Changed
 
@@ -40,7 +41,6 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   security settings
 - Add a lti link to classroom in the standalone website
 - Invite link for classroom available in every context
-- Add a check on classroom document file size when uploading content
 - Configure teachers role lookup to create organization access
 - LTI link for classroom available in every context
 - standalone website:
@@ -96,7 +96,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - lti:
   - service worker 401 reconnect
-- Add a check on video file size when uploading content
+  - Add a check on video file size when uploading content 
 
 ### Changed
 

@@ -21,7 +21,9 @@ from .models import DepositedFile, FileDepository
 
 
 class DepositedFileSerializer(
-    UploadableFileWithExtensionSerializerMixin, serializers.ModelSerializer
+    UploadableFileWithExtensionSerializerMixin,
+    serializers.ModelSerializer,
+    BaseInitiateUploadSerializer,
 ):
     """A serializer to display a deposited file."""
 
@@ -53,6 +55,16 @@ class DepositedFileSerializer(
     file_depository = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
+
+    @property
+    def max_upload_file_size(self):
+        """return the deposited max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.DEPOSITED_FILE_SOURCE_MAX_SIZE
 
     def create(self, validated_data):
         """Force the file depository field to the file depository of the JWT Token if any,
