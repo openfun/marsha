@@ -1,8 +1,9 @@
 import { Box, Button, Paragraph, Text } from 'grommet';
 import Dropzone from 'react-dropzone';
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { DateTime } from 'luxon';
+import { toast } from 'react-hot-toast';
 
 import {
   PlusSVG,
@@ -11,12 +12,15 @@ import {
   FileDepositoryModelName as modelName,
   UploadableObjectProgress,
   truncateFilename,
+  formatSizeErrorScale,
+  report,
 } from 'lib-components';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
+import { useDepositedFileMetadata } from 'apps/deposit/api/useDepositedFileMetadata';
 
 const messages = defineMessages({
   dropzonePlaceholder: {
@@ -36,6 +40,16 @@ const messages = defineMessages({
       'Help text to warn user not to navigate away during file upload.',
     id: 'apps.deposit.components.DashboardStudent.UploadFiles.uploadingFile',
   },
+  errorFileTooLarge: {
+    defaultMessage: 'Uploaded files exceeds allowed size of {uploadMaxSize}.',
+    description: 'Error message when file is too big.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge',
+  },
+  errorFileUpload: {
+    defaultMessage: 'An error occurred when uploading your file. Please retry.',
+    description: 'Error message when file upload fails.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
+  },
 });
 
 export const UploadFiles = () => {
@@ -48,6 +62,7 @@ export const UploadFiles = () => {
   const { addUpload, uploadManagerState } = useUploadManager();
   const [filesToUpload, setFilesToUpload] = useState<File[]>([]);
   const [uploading, setUploading] = useState(false);
+  const metadata = useDepositedFileMetadata(intl.locale);
 
   const uploadsInProgress = Object.values(uploadManagerState).filter((state) =>
     [UploadManagerStatus.INIT, UploadManagerStatus.UPLOADING].includes(
@@ -62,21 +77,38 @@ export const UploadFiles = () => {
     setFilesToUpload(filesToUpload.concat(files));
   };
 
-  const uploadFiles = () => {
+  const uploadFiles = useCallback(async () => {
+    if (!filesToUpload.length) {
+      setUploading(false);
+    }
     const file = filesToUpload.shift();
     if (!file) {
       return;
     }
 
     setUploading(true);
-    createDepositedFile({
-      size: file.size,
-      filename: file.name,
-    }).then((response) => {
-      addUpload(modelName.DepositedFiles, response.id, file);
+    try {
+      const depositedFile = await createDepositedFile({
+        size: file.size,
+        filename: file.name,
+      });
+      addUpload(modelName.DepositedFiles, depositedFile.id, file);
       refreshDepositedFiles();
-    });
-  };
+    } catch (error) {
+      if ((error as object).hasOwnProperty('size') && metadata.data) {
+        toast.error(
+          intl.formatMessage(messages.errorFileTooLarge, {
+            uploadMaxSize: formatSizeErrorScale(
+              metadata.data.upload_max_size_bytes,
+            ),
+          }),
+        );
+      } else {
+        report(error);
+        toast.error(intl.formatMessage(messages.errorFileUpload));
+      }
+    }
+  }, [addUpload, filesToUpload, intl, metadata.data, refreshDepositedFiles]);
 
   useEffect(() => {
     if (uploading) {
@@ -86,7 +118,7 @@ export const UploadFiles = () => {
         setUploading(false);
       }
     }
-  }, [uploadsSucceeded.length]);
+  }, [uploadsSucceeded.length, uploading, uploadFiles]);
 
   return (
     <Box>
@@ -179,7 +211,9 @@ export const UploadFiles = () => {
 
       <Button
         primary
-        onClick={uploadFiles}
+        onClick={() => {
+          void uploadFiles();
+        }}
         label={intl.formatMessage(messages.uploadButtonLabel)}
         color="blue-active"
         margin={{ bottom: 'large' }}

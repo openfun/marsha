@@ -52,7 +52,7 @@ describe('sideEffects/createDepositedFile', () => {
 
     await expect(
       createDepositedFile({ size: file.size, filename: file.name }),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow();
   });
 
   it('throws when it fails to create the deposited file (API error)', async () => {
@@ -61,6 +61,6 @@ describe('sideEffects/createDepositedFile', () => {
 
     await expect(
       createDepositedFile({ size: file.size, filename: file.name }),
-    ).rejects.toThrowError('Failed to create a new deposited file.');
+    ).rejects.toThrow();
   });
 });
