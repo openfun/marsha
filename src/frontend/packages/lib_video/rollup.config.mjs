@@ -4,6 +4,7 @@ import babel from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
+import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import css from 'rollup-plugin-import-css';
@@ -107,6 +108,7 @@ export default [
         exclude: [/node_modules/],
       }),
       pluginImportAbsoluteToRelative(),
+      del({ targets: pkg.directories.lib + '/*', runOnce: true }),
     ],
   },
 ];

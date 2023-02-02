@@ -2,6 +2,9 @@
   "name": "lib-common",
   "version": "4.0.0-beta.15",
   "license": "MIT",
+  "directories": {
+    "lib": "lib"
+  },
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "jsnext:main": "lib/index.es.js",
@@ -39,6 +42,7 @@
     "grommet": "*",
     "prettier": "2.8.3",
     "rollup": "3.10.0",
+    "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-polyfill-node": "0.11.0",
     "rollup-plugin-typescript2": "0.34.1",
