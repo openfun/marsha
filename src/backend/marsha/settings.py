@@ -107,6 +107,7 @@ class Base(Configuration):
     # Application definition
 
     INSTALLED_APPS = [
+        "scout_apm.django",
         "django.contrib.auth",
         "django.contrib.contenttypes",
         "django.contrib.sessions",
@@ -674,6 +675,13 @@ class Base(Configuration):
     )
 
     SOCIAL_AUTH_SAML_FER_PIPELINE = MARSHA_DEFAULT_AUTH_PIPELINE
+
+    # Scout settings
+    SCOUT_MONITOR = values.BooleanValue(False)
+    SCOUT_KEY = values.Value()
+    SCOUT_NAME = values.Value()
+    # If you'd like to utilize Error Monitoring:
+    SCOUT_ERRORS_ENABLED = values.BooleanValue(False)
 
     # pylint: disable=invalid-name
     @property
