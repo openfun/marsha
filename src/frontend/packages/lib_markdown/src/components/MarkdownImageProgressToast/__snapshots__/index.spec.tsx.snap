@@ -3,7 +3,7 @@
 exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
 <div>
   <div
-    class="StyledGrommet-sc-19lkkz7-0 ioQEen"
+    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
   >
     <div
       style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
@@ -12,7 +12,7 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
       data-testid="test-component-container"
     >
       <div
-        class="StyledBox-sc-13pk1d4-0 hkQcyB"
+        class="StyledBox-sc-13pk1d4-0 dQhdfU"
       >
         <span
           class="StyledText-sc-1sadyjn-0 jbJJSg"
@@ -23,7 +23,7 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
           class="StyledBox__StyledBoxGap-sc-13pk1d4-1 iISQcM"
         />
         <div
-          class="StyledBox-sc-13pk1d4-0 dgOpeV"
+          class="StyledBox-sc-13pk1d4-0 hRkWLs"
         >
           <div
             class="StyledStack-sc-ajspsk-0 RUPca"
@@ -41,7 +41,7 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
                 <path
                   d="M 0,12 L 384,12"
                   fill="none"
-                  stroke="#F2F2F2"
+                  stroke="#eeeeef"
                   stroke-linecap="square"
                   stroke-opacity="0.4"
                   stroke-width="24"
@@ -49,7 +49,7 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
                 <path
                   d="M 0,12 L 307.2,12"
                   fill="none"
-                  stroke="#7D4CDB"
+                  stroke="#007bff"
                   stroke-linecap="butt"
                   stroke-width="24"
                 />
