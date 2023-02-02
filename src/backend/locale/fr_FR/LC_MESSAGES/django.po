@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-01-20 11:19+0000\n"
-"PO-Revision-Date: 2023-01-23 08:23\n"
+"POT-Creation-Date: 2023-02-02 11:51+0000\n"
+"PO-Revision-Date: 2023-02-02 14:42\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -17,7 +17,7 @@ msgstr ""
 "X-Crowdin-File: backend.pot\n"
 "X-Crowdin-File-ID: 6\n"
 
-#: marsha/account/apps.py:12
+#: marsha/account/apps.py:15
 msgid "Account"
 msgstr "Compte"
 
@@ -507,7 +507,7 @@ msgstr "Domaine Public "
 msgid "All rights reserved"
 msgstr "Tous droits réservés"
 
-#: marsha/core/management/commands/send_reminders.py:134
+#: marsha/core/management/commands/send_reminders.py:139
 msgid "Webinar has been updated."
 msgstr "Votre webinaire a été mis à jour."
 
@@ -1704,35 +1704,35 @@ msgstr "extension de l'image (ex : \"png\", \"jpg\", etc)."
 msgid "image"
 msgstr "image"
 
-#: marsha/settings.py:302
+#: marsha/settings.py:303
 msgid "english"
 msgstr "anglais"
 
-#: marsha/settings.py:302
+#: marsha/settings.py:303
 msgid "french"
 msgstr "français"
 
-#: marsha/settings.py:518
+#: marsha/settings.py:520
 msgid "5 minutes"
 msgstr "5 minutes"
 
-#: marsha/settings.py:522
+#: marsha/settings.py:524
 msgid "Live starts in less than 5 minutes"
 msgstr "Le webinaire va démarrer dans moins de 5 minutes"
 
-#: marsha/settings.py:525
+#: marsha/settings.py:527
 msgid "3 hours"
 msgstr "3 heures"
 
-#: marsha/settings.py:531
+#: marsha/settings.py:533
 msgid "Live starts in less than 3 hours"
 msgstr "Le webinaire va débuter dans moins de 3 heures"
 
-#: marsha/settings.py:534
+#: marsha/settings.py:536
 msgid "3 days"
 msgstr "3 jours"
 
-#: marsha/settings.py:539
+#: marsha/settings.py:541
 msgid "Live starts in less than 3 days"
 msgstr "Le webinaire va débuter dans moins de 3 jours"
 
