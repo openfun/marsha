@@ -29,7 +29,7 @@ const messages = defineMessages({
   BannerDesc: {
     defaultMessage: 'Online courses to discover, learn, progress and succeed',
     description: 'Desc banner homepage',
-    id: 'features.HomePage.BannerTitle',
+    id: 'features.HomePage.BannerDesc',
   },
 });
 
