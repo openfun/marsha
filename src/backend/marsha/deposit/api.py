@@ -17,6 +17,7 @@ from . import permissions, serializers
 from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from .defaults import LTI_ROUTE
 from .forms import FileDepositoryForm
+from .metadata import DepositedFileMetadata
 from .models import DepositedFile, FileDepository
 from .permissions import (
     IsFileDepositoryPlaylistOrOrganizationAdmin,
@@ -258,6 +259,7 @@ class DepositedFileViewSet(
 
     queryset = DepositedFile.objects.all()
     serializer_class = serializers.DepositedFileSerializer
+    metadata_class = DepositedFileMetadata
 
     permission_classes = [
         permissions.IsTokenResourceRouteObjectRelatedFileDepository
@@ -273,7 +275,7 @@ class DepositedFileViewSet(
                 | core_permissions.IsTokenStudent
                 | core_permissions.UserIsAuthenticated
             ]
-        elif self.action in ["create", "list"]:
+        elif self.action in ["create", "list", "metadata"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin

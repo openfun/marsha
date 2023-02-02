@@ -1,5 +1,6 @@
 """Tests for the deposited files initiate-upload API."""
 from datetime import datetime
+import json
 import random
 from unittest import mock
 
@@ -96,6 +97,60 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         deposited_file.refresh_from_db()
         self.assertEqual(deposited_file.filename, "foo.pdf")
         self.assertEqual(deposited_file.upload_state, "pending")
+
+    def test_api_deposited_file_initiate_upload_file_without_size(self):
+        "With no size field provided, the request should fail"
+        deposited_file = DepositedFileFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["This field is required."]},
+        )
+
+    @override_settings(DEPOSITED_FILE_SOURCE_MAX_SIZE=10)
+    def test_api_deposited_file_initiate_upload_file_too_large(self):
+        """With a file size too large the request should fail"""
+        deposited_file = DepositedFileFactory(
+            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
+            upload_state=random.choice(["ready", "error"]),
+            file_depository__id="ed08da34-7447-4141-96ff-5740315d7b99",
+        )
+        jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/depositedfiles/{deposited_file.id}/initiate-upload/",
+                {"filename": "foo.pdf", "mimetype": "application/pdf", "size": 100},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )
 
     def test_api_deposited_file_initiate_upload_user_access_token(self):
         """
