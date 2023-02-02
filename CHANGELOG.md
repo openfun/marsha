@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.15] - 2023-02-02
+
 ### Added
 
 - wrapper around fetch to handle 401 errors and refresh the access token
@@ -1456,7 +1458,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.14...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.15...master
+[4.0.0-beta.15]: https://github.com/openfun/marsha/compare/v4.0.0-beta.14...v4.0.0-beta.15
 [4.0.0-beta.14]: https://github.com/openfun/marsha/compare/v4.0.0-beta.13...v4.0.0-beta.14
 [4.0.0-beta.13]: https://github.com/openfun/marsha/compare/v4.0.0-beta.12...v4.0.0-beta.13
 [4.0.0-beta.12]: https://github.com/openfun/marsha/compare/v4.0.0-beta.11...v4.0.0-beta.12

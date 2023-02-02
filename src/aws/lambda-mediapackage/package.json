@@ -1,7 +1,7 @@
 {
   "author": "France Université Numérique",
   "name": "aws-marsha-mediapackage",
-  "version": "4.0.0-beta.14",
+  "version": "4.0.0-beta.15",
   "engines": {
     "node": "16"
   },
