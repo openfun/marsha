@@ -3,6 +3,9 @@
   "version": "4.0.0-beta.15",
   "description": "",
   "license": "ISC",
+  "directories": {
+    "lib": "lib"
+  },
   "main": "lib/index.js",
   "module": "lib/index.es.js",
   "jsnext:main": "lib/index.es.js",
@@ -94,7 +97,9 @@
     "react-test-renderer": "17.0.2",
     "rollup": "3.10.0",
     "rollup-jest": "3.1.0",
+    "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-dts": "5.1.1",
+    "rollup-plugin-import-css": "3.1.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-polyfill-node": "0.11.0",
     "rollup-plugin-typescript2": "0.34.1",
@@ -111,8 +116,5 @@
     "vtt.js": "0.13.0",
     "xhr-mock": "2.5.1",
     "zustand": "4.3.2"
-  },
-  "dependencies": {
-    "rollup-plugin-import-css": "^3.1.0"
   }
 }

@@ -6,6 +6,7 @@ import json from '@rollup/plugin-json';
 import resolve from '@rollup/plugin-node-resolve';
 import fs from 'fs';
 import path from 'path';
+import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import dts from 'rollup-plugin-dts';
@@ -126,6 +127,7 @@ export default [
         exclude: [/node_modules/],
       }),
       pluginImportAbsoluteToRelative(),
+      del({ targets: pkg.directories.lib + '/*', runOnce: true }),
     ],
   },
   {

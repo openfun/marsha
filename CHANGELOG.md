@@ -8,6 +8,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+- remove lib folder before rollup build to avoid stale files
+
 ## [4.0.0-beta.15] - 2023-02-02
 
 ### Added
