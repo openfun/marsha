@@ -23,7 +23,7 @@ export const createDepositedFile = async (file: {
   );
 
   if (!response.ok) {
-    throw new Error('Failed to create a new deposited file.');
+    throw await response.json();
   }
 
   const depositedFile: DepositedFile = await response.json();
