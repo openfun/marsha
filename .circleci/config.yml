@@ -2,6 +2,11 @@
 #
 # Reference: https://circleci.com/docs/2.0/configuration-reference/
 
+parameters:
+  cache-version:
+    type: string
+    default: "{{ .Environment.CACHE_VERSION }}.0"
+
 aliases:
   - &docker_login
     # Login to DockerHub
@@ -397,10 +402,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -423,7 +428,7 @@ jobs:
             - ./packages/lib_classroom/node_modules
             - ./packages/lib_video/node_modules
             - ./packages/lib_markdown/node_modules
-          key: front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+          key: front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - save_cache:
           paths:
             - ./packages/lib_common/lib
@@ -432,7 +437,7 @@ jobs:
             - ./packages/lib_classroom/lib
             - ./packages/lib_video/lib
             - ./packages/lib_markdown/lib
-          key: front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+          key: front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
 
   build-front:
     docker:
@@ -450,10 +455,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -520,10 +525,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Lint code with tslint or eslint
           command: yarn workspaces run lint
@@ -547,10 +552,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Install Puppeteer dependencies for visual regression testing
           command: |
@@ -634,10 +639,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Run test on standalone site
           command: yarn workspace standalone_site run test --watchAll=false --maxWorkers=2
@@ -696,10 +701,10 @@ jobs:
           filename: packages-last-commit.txt
       - restore_cache:
           keys:
-            - front-dependencies-{{ .Environment.CACHE_VERSION }}-{{ checksum "yarn.lock" }}
+            - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-{{ .Environment.CACHE_VERSION }}-{{ checksum "packages-last-commit.txt" }}
+            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
