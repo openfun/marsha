@@ -24,7 +24,6 @@ import {
   Thumbnail,
   TimedText,
   Video,
-  VideoStats,
   uploadState,
   Organization,
 } from 'lib-components';
@@ -257,14 +256,6 @@ export const useStopLiveRecording = (id: string, onError: () => void) => {
       },
     },
   );
-};
-
-export const useStatsVideo = (
-  videoId: string,
-  queryConfig?: UseQueryOptions<VideoStats, 'videos', VideoStats>,
-) => {
-  const key = ['videos', videoId, 'stats'];
-  return useQuery<VideoStats, 'videos'>(key, fetchOne, queryConfig);
 };
 
 type UseCreateDocumentData = {
