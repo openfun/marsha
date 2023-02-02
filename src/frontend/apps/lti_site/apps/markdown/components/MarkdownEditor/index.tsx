@@ -6,22 +6,23 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import { CodeMirrorEditor, useCodemirrorEditor } from 'lib-markdown';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
+  CodeMirrorEditor,
+  LanguageSelector,
+  MarkdownImageDropzone,
   escapeMarkdown,
   getMarkdownDocumentTranslatedContent,
+  useCodemirrorEditor,
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
-  LanguageSelector,
 } from 'lib-markdown';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
 import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOptionsSelector';
 import ScreenDispositionSelector, {
   ScreenDisposition,
 } from 'apps/markdown/components/ScreenDispositionSelector';
-import MarkdownImageDropzone from '../MarkdownImageDropzone';
 import { useImageUploadManager } from '../useImageUploadManager';
 
 const messages = defineMessages({

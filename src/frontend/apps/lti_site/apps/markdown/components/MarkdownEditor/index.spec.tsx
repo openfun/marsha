@@ -3,7 +3,7 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt, uploadState, UploadManager } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { createDtWithFiles, createFile, Deferred, render } from 'lib-tests';
 import React from 'react';
 import xhrMock, { MockResponse } from 'xhr-mock';
 
@@ -14,7 +14,6 @@ import {
 } from 'lib-markdown';
 
 import MarkdownEditor from '.';
-import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

@@ -1,9 +1,12 @@
+/* eslint-disable react/no-unescaped-entities */
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
+
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import { createDtWithFiles, createFile, render } from 'lib-tests';
 import React from 'react';
 
-import { createDtWithFiles, createFile } from 'utils/tests/reactDropzone';
-import render from 'utils/tests/render';
-import MarkdownImageDropzone from '.';
+import { MarkdownImageDropzone } from '.';
 
 describe('<MarkdownImageDropzone />', () => {
   const ChildElement = () => {
