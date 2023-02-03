@@ -1,7 +1,7 @@
 # Marsha, a FUN LTI video provider
 
 # ---- base image to inherit from ----
-FROM python:3.10-bullseye as base
+FROM python:3.10-slim-bullseye as base
 
 # ---- back-end builder image ----
 FROM base as back-builder
@@ -18,7 +18,11 @@ COPY src/backend/setup.* /builder/
 # Needs to be kept before the `pip install`
 RUN apt-get update && \
     apt-get install -y \
-    libxmlsec1-dev && \
+        pkg-config \
+        gcc \
+        libxml2-dev \
+        libxmlsec1-dev \
+        libxmlsec1-openssl && \
     rm -rf /var/lib/apt/lists/*
 
 RUN mkdir /install && \
@@ -72,8 +76,10 @@ ARG MARSHA_STATIC_ROOT=/data/static
 # Install rdfind & libxmlsec1 (required to run django)
 RUN apt-get update && \
     apt-get install -y \
-    rdfind \
-    libxmlsec1-dev libxmlsec1-openssl && \
+        rdfind \
+        libxml2-dev \
+        libxmlsec1-dev \
+        libxmlsec1-openssl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies
@@ -101,7 +107,12 @@ ARG MARSHA_STATIC_ROOT=/data/static
 # Also reinstall xmlsec1 dependency to provide .so required for runtime (SAML)
 RUN apt-get update && \
     apt-get install -y \
-    gettext texlive-latex-extra dvisvgm libxmlsec1 libxmlsec1-openssl && \
+        gettext \
+        texlive-latex-extra \
+        dvisvgm \
+        libxml2-dev \
+        libxmlsec1-dev \
+        libxmlsec1-openssl && \
     rm -rf /var/lib/apt/lists/*
 
 # Copy installed python dependencies
