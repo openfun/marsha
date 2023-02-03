@@ -116,7 +116,7 @@ class UserSerializer(serializers.ModelSerializer):
     than we'd like to expose on the API.
     """
 
-    organization_accesses = OrganizationAccessSerializer(many=True)
+    organization_accesses = OrganizationAccessSerializer(many=True, read_only=True)
     full_name = serializers.CharField(source="get_full_name", read_only=True)
 
     class Meta:
@@ -131,6 +131,22 @@ class UserSerializer(serializers.ModelSerializer):
             "is_staff",
             "is_superuser",
             "organization_accesses",
+        ]
+
+
+class UserLiteSerializer(serializers.ModelSerializer):
+    """Same as regular user serializer with fewer data."""
+
+    full_name = serializers.CharField(source="get_full_name", read_only=True)
+
+    class Meta:
+        """Meta for UserSerializer."""
+
+        model = get_user_model()
+        fields = [
+            "email",
+            "full_name",
+            "id",
         ]
 
 

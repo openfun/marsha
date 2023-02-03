@@ -64,7 +64,7 @@ The organization administrator should be able to do "everything" regarding the o
 Among other things, they can: 
 
 - 🚧 Create and manage (read/write) all the organization's access control.
-- 🚧 Manage (read/write) all the users of the organization.
+- Manage (read/write) all the users of the organization.
 - Create and manage (read/write) all the playlists of the organization.
 - Create and manage (read/write) all the videos of the organization.
 - Create and manage (read/write) all the classrooms of the organization.
@@ -79,6 +79,7 @@ Among other things, they can:
 The organization instructor can:
 
 - Create new playlists.
+- List users of the organization.
 
 ##### Organization student
 

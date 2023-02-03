@@ -1,16 +1,21 @@
 """Declare API endpoints for user and organisation with Django RestFramework viewsets."""
 from django.contrib.auth import get_user_model
+from django.db.models import Q
 
-from rest_framework import status, viewsets
+import django_filters
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
 from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 
 from .. import permissions, serializers
-from ..models import ADMINISTRATOR, INSTRUCTOR, Organization
+from ..models import ADMINISTRATOR, INSTRUCTOR, Organization, OrganizationAccess
 from ..serializers import ChallengeTokenSerializer
 from .base import APIViewMixin, ObjectPkMixin
+
+
+User = get_user_model()
 
 
 class ChallengeAuthenticationView(GenericAPIView):
@@ -37,20 +42,127 @@ class ChallengeAuthenticationView(GenericAPIView):
         return Response(serializer.validated_data, status=status.HTTP_200_OK)
 
 
-class UserViewSet(APIViewMixin, viewsets.GenericViewSet):
+class UserFilter(django_filters.FilterSet):
+    """Filter for User model."""
+
+    full_name__icontains = django_filters.CharFilter(method="filter_full_name")
+    organization_id = django_filters.UUIDFilter(
+        field_name="organization_accesses__organization_id"
+    )
+    fullname_or_email__icontains = django_filters.CharFilter(
+        method="filter_fullname_or_email", label="Full name or email"
+    )
+
+    class Meta:
+        model = User
+        fields = {
+            "first_name": ["exact", "iexact", "contains", "icontains"],
+            "last_name": ["exact", "iexact", "contains", "icontains"],
+            "email": ["exact", "iexact", "contains", "icontains"],
+        }
+
+    def filter_full_name(self, queryset, _name, value):
+        """Filter on full name."""
+        return queryset.filter(
+            Q(first_name__icontains=value) | Q(last_name__icontains=value)
+        )
+
+    def filter_fullname_or_email(self, queryset, _name, value):
+        """Filter on full name or email."""
+        return queryset.filter(
+            Q(first_name__icontains=value)
+            | Q(last_name__icontains=value)
+            | Q(email__icontains=value)
+        )
+
+
+class UserViewSet(
+    APIViewMixin,
+    mixins.RetrieveModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    viewsets.GenericViewSet,
+):
     """ViewSet for all user-related interactions."""
 
+    permission_classes = [permissions.NotAllowed]
+    queryset = User.objects.all().prefetch_related(
+        "organization_accesses",
+        "organization_accesses__organization",
+    )
     serializer_class = serializers.UserSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "last_name", "email"]
+    ordering = ["created_on"]
+    filterset_class = UserFilter
 
-    @action(detail=False, permission_classes=[])
+    def get_permissions(self):
+        """Manage permissions for all the endpoint actions."""
+        if self.action in ["list", "retrieve"]:
+            # The queryset is filtered afterwards, see `get_queryset`
+            permission_classes = [permissions.UserIsAuthenticated]
+        elif self.action in ["partial_update", "update"]:
+            # Only allow organization admin to update users
+            permission_classes = [
+                permissions.UserIsAuthenticated & permissions.IsUserOrganizationAdmin
+            ]
+        elif self.action in ["whoami"]:
+            # The `whoami` action manages its own permissions to return a 401
+            # if the user is not authenticated
+            permission_classes = []
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        """
+        Redefine the queryset to use based on the current action.
+
+        For list, retrieve, update, it returns only the user belonging to the organizations
+        the user is an administrator or instructor of.
+        """
+        queryset = super().get_queryset()
+
+        if self.action in ["list", "retrieve", "partial_update", "update"]:
+            user_organization_pks = OrganizationAccess.objects.filter(
+                user_id=self.request.user.id, role__in=[ADMINISTRATOR, INSTRUCTOR]
+            ).values_list("organization_id", flat=True)
+            if not user_organization_pks:
+                return queryset.none()
+
+            return queryset.filter(
+                organization_accesses__organization_id__in=user_organization_pks
+            ).distinct()
+
+        if self.action in ["whoami"]:
+            # Make explicit the `whoami` action manages its own queryset
+            return queryset
+
+        return queryset
+
+    def get_serializer_class(self):
+        """
+        Return the serializer class to use.
+
+        For list, it returns a lite version of the serializer.
+        For all other actions (including `whoami`), it returns the default full serializer.
+        """
+        if self.action in ["list"]:
+            return serializers.UserLiteSerializer
+
+        return super().get_serializer_class()
+
+    @action(detail=False, methods=["get"])
     def whoami(self, request):
         """
         Get information on the current user.
 
-        This is the only implemented user-related endpoint.
+        If the user is not logged in, the request has no object:
+        return a 401 so the caller knows they need to log in first.
         """
-        # If the user is not logged in, the request has no object. Return a 401 so the caller
-        # knows they need to log in first.
         if (
             not request.user.is_authenticated
             or (request.user.id is None)
@@ -60,11 +172,8 @@ class UserViewSet(APIViewMixin, viewsets.GenericViewSet):
 
         # Get an actual user object from the TokenUser id
         # pylint: disable=invalid-name
-        User = get_user_model()
         try:
-            user = User.objects.prefetch_related(
-                "organization_accesses", "organization_accesses__organization"
-            ).get(id=request.user.id)
+            user = self.get_queryset().get(id=request.user.id)
         except User.DoesNotExist:
             return Response(status=401)
 
