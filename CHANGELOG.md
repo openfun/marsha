@@ -13,6 +13,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - remove lib folder before rollup build to avoid stale files
 - Add stats page on VOD
 
+### Changed
+
+- mutualize all CronJob in a CronJobList
+
 ## [4.0.0-beta.15] - 2023-02-02
 
 ### Added
