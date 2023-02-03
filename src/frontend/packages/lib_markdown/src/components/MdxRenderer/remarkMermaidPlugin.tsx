@@ -1,3 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
 import { fromParse5 } from 'hast-util-from-parse5';
 import { Code } from 'mdast';
 import mermaid from 'mermaid';
@@ -26,7 +31,7 @@ const remarkMermaidPlugin = () => {
       { type: 'code', lang: 'mermaid' },
       (node) => {
         const mermaidText = node.value;
-        mermaid.render(`mermaid-id-${uuidv4()}`, mermaidText!, (svgCode) => {
+        mermaid.render(`mermaid-id-${uuidv4()}`, mermaidText, (svgCode) => {
           node.children = [{ type: 'html', svgCode }];
           node.data = { hChildren: [fromParse5(parseFragment(svgCode))] };
         });

@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable array-callback-return */
 import { evaluate } from '@mdx-js/mdx2';
 import DOMPurify from 'dompurify';
 import langLatex from 'highlight.js/lib/languages/latex'; // Support LaTeX code highlighting.
@@ -9,8 +15,8 @@ import {
 } from 'lib-components';
 import { debounce } from 'lodash';
 import React from 'react';
-import ReactDOMServer from 'react-dom/server';
 import * as runtime from 'react/jsx-runtime.js';
+import ReactDOMServer from 'react-dom/server';
 import rehypeHighlight from 'rehype-highlight'; // Support code highlighting.
 import rehypeKatex from 'rehype-katex'; // Render math with KaTeX.
 import rehypeMathjax from 'rehype-mathjax'; // Render math with Mathjax.
@@ -20,8 +26,8 @@ import { PluggableList } from 'unified';
 
 import { debouncingTime } from './constants';
 import remarkLatexPlugin from './remarkLatexPlugin'; // Support backend LaTeX rendering
-import remarkMermaidPlugin from './remarkMermaidPlugin'; // Support Mermaid
 import remarkLocallyHostedImagePlugin from './remarkLocallyHostedImagePlugin';
+import remarkMermaidPlugin from './remarkMermaidPlugin'; // Support Mermaid
 import { MarkdownImageCache } from './types';
 
 const additionalHighlightLanguages = {
@@ -43,7 +49,7 @@ type MdxRendererProps = {
   mardownImages: MarkdownImage[];
 };
 
-const MdxRenderer = ({
+export const MdxRenderer = ({
   markdownText,
   markdownDocumentId,
   onRenderedContentChange,
@@ -59,7 +65,9 @@ const MdxRenderer = ({
   // Init the image URL cache as best effort
   // (use what is available, the rest will be filled on the fly)
   mardownImages.map((value) => {
-    if (!value.url) return;
+    if (!value.url) {
+      return;
+    }
     localImagesUrlCache.current[value.id] = {
       url: value.url,
       expiration: Date.now() + 15 * 60 * 1000, // 15 minutes
@@ -196,9 +204,11 @@ const MdxRenderer = ({
   }, [debouncedRendering]);
 
   React.useEffect(() => {
-    if (markdownText === null) return;
+    if (markdownText === null) {
+      return;
+    }
     debouncedRendering(markdownText, renderingOptions);
-  }, [markdownText, renderingOptions]);
+  }, [debouncedRendering, markdownText, renderingOptions]);
 
   return !loading && renderedText !== null ? (
     <div // div required as grommet.Box does not allow dangerouslySetInnerHTML
@@ -210,5 +220,3 @@ const MdxRenderer = ({
     <Spinner size="large" />
   );
 };
-
-export default MdxRenderer;
