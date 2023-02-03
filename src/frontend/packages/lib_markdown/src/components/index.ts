@@ -4,3 +4,4 @@ export * from './MarkdownImageDropzone';
 export * from './MarkdownImageProgressToast';
 export * from './MarkdownNotFoundView';
 export * from './MarkdownNotFoundView/route';
+export * from './MdxRenderingOptionsSelector';

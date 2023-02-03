@@ -1,10 +1,9 @@
 import { CheckBox, DropButton, Form } from 'grommet';
-import { SettingsOption } from 'grommet-icons';
 import { CheckBoxExtendedProps } from 'grommet/components/CheckBox';
+import { SettingsOption } from 'grommet-icons';
+import { MarkdownDocumentRenderingOptions } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { MarkdownDocumentRenderingOptions } from 'lib-components';
 
 const messages = defineMessages({
   settings: {
@@ -74,7 +73,7 @@ type MdxRenderingOptionsSelectorProps = {
   ) => void;
 };
 
-const MdxRenderingOptionsSelector = ({
+export const MdxRenderingOptionsSelector = ({
   renderingOptions,
   setRenderingOptions,
 }: MdxRenderingOptionsSelectorProps) => {
@@ -88,14 +87,14 @@ const MdxRenderingOptionsSelector = ({
       dropContent={
         <Form>
           <ToggleCheckBox
-            optionName={'useMdx'}
+            optionName="useMdx"
             enabledLabel={intl.formatMessage(messages.mdxEnabled)}
             disabledLabel={intl.formatMessage(messages.mdxDisabled)}
             renderingOptions={renderingOptions}
             setRenderingOptions={setRenderingOptions}
           />
           <ToggleCheckBox
-            optionName={'useMathjax'}
+            optionName="useMathjax"
             enabledLabel={intl.formatMessage(messages.mathjaxEnabled)}
             disabledLabel={intl.formatMessage(messages.mathjaxDisabled)}
             renderingOptions={renderingOptions}
@@ -106,5 +105,3 @@ const MdxRenderingOptionsSelector = ({
     />
   );
 };
-
-export default MdxRenderingOptionsSelector;
