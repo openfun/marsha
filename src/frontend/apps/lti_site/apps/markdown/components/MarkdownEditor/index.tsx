@@ -11,6 +11,7 @@ import {
   CodeMirrorEditor,
   LanguageSelector,
   MarkdownImageDropzone,
+  MdxRenderer,
   MdxRenderingOptionsSelector,
   ScreenDisposition,
   ScreenDispositionSelector,
@@ -22,7 +23,6 @@ import {
   useSaveTranslations,
   useUpdateMarkdownDocument,
 } from 'lib-markdown';
-import MdxRenderer from 'apps/markdown/components/MdxRenderer';
 
 const messages = defineMessages({
   // Inputs

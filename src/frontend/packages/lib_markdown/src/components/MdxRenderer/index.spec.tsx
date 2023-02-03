@@ -1,15 +1,18 @@
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+/* eslint-disable jest/expect-expect */
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
 import * as fs from 'fs';
 import path from 'path';
 
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { markdownImageMockFactory } from 'index';
+import { useJwt } from 'lib-components';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import render from 'utils/tests/render';
-
-import MdxRenderer from '.';
-import { useJwt } from 'lib-components';
-import { markdownImageMockFactory } from 'lib-markdown';
+import { MdxRenderer } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -19,7 +22,7 @@ jest.mock('lib-components', () => ({
   },
 }));
 
-jest.mock('apps/markdown/components/MdxRenderer/constants', () => ({
+jest.mock('./constants', () => ({
   debouncingTime: 0, // override the debouncing time to make tests twice faster
 }));
 
@@ -96,11 +99,7 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', { level: 3, name: 'An h3 header' }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', { level: 3, name: 'An h3 header' });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -124,11 +123,7 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', { level: 1, name: 'This is a {title}' }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', { level: 1, name: 'This is a {title}' });
   });
 
   it('renders markdown with math to KaTeX', async () => {
@@ -155,14 +150,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'This is a math content',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'This is a math content',
+    });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -193,14 +184,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'This is a math content',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'This is a math content',
+    });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -238,14 +225,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'This is a MDX content',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'This is a MDX content',
+    });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -271,14 +254,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'This is a Mermaid content',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'This is a Mermaid content',
+    });
 
     // Can't match full snapshot here, because content may vary from a tiny pixel.
     // We look for the rendered SVG having title "A Gantt Diagram"
@@ -308,14 +287,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'This is a LaTex rendered content',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'This is a LaTex rendered content',
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/markdown-documents/${markdownDocumentId}/latex-rendering/`,
@@ -358,14 +333,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'XSS',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'XSS',
+    });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -383,14 +354,10 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', {
-          level: 1,
-          name: 'XSS',
-        }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', {
+      level: 1,
+      name: 'XSS',
+    });
 
     expect(
       container.getElementsByClassName('markdown-body')[0],
@@ -436,11 +403,7 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', { level: 1, name: 'An h1 header' }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', { level: 1, name: 'An h1 header' });
 
     // Cool cat external image remains the same
     const coolCat = container.getElementsByTagName('img')[0];

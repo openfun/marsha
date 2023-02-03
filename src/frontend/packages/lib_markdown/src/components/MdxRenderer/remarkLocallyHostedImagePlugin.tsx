@@ -1,7 +1,13 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
+/* eslint-disable @typescript-eslint/no-unsafe-member-access */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { Image } from 'mdast';
 import { visit } from 'unist-util-visit';
 
-import { fetchOneMarkdownImage } from 'lib-markdown';
-import { Image } from 'mdast';
+import { fetchOneMarkdownImage } from 'data/queries';
+
 import { MarkdownImageCache } from './types';
 
 const remarkLocallyHostedImagePlugin = (
