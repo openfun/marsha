@@ -72,6 +72,10 @@ build: ## build the app container
 	@$(COMPOSE_BUILD) e2e;
 .PHONY: build
 
+build-backend-dev: ## build the app container
+	@$(COMPOSE_BUILD) app;
+.PHONY: build-backend-dev
+
 build-lambda-dev: ## build all aws lambda
 	@bin/lambda build dev development
 .PHONY: build-lambda-dev
