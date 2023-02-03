@@ -1,4 +1,4 @@
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense } from 'react';
 import { MemoryRouter, Route } from 'react-router-dom';
 
 import {
@@ -13,15 +13,19 @@ import {
 import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
-import { MARKDOWN_EDITOR_ROUTE } from './MarkdownEditor/route';
-import { MARKDOWN_NOT_FOUND_ROUTE, MARKDOWN_VIEWER_ROUTE } from 'lib-markdown';
+import {
+  MARKDOWN_EDITOR_ROUTE,
+  MARKDOWN_NOT_FOUND_ROUTE,
+  MARKDOWN_VIEWER_ROUTE,
+} from 'lib-markdown';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 import { lazyImport } from 'lib-common';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 
-const { MarkdownNotFoundView, MarkdownViewer } = lazyImport(() => import('lib-markdown'));
-const MarkdownEditor = lazy(() => import('./MarkdownEditor'));
+const { MarkdownEditor, MarkdownNotFoundView, MarkdownViewer } = lazyImport(
+  () => import('lib-markdown'),
+);
 
 const Routes = () => {
   const appData = useAppConfig();
@@ -34,13 +38,17 @@ const Routes = () => {
           <Route
             exact
             path={MARKDOWN_EDITOR_ROUTE()}
-            render={() => <MarkdownEditor />}
+            render={() => (
+              <MarkdownEditor markdownDocumentId={markdownDocument.id} />
+            )}
           />
 
           <Route
             exact
             path={MARKDOWN_VIEWER_ROUTE()}
-            render={() => <MarkdownViewer markdownDocument={markdownDocument} />}
+            render={() => (
+              <MarkdownViewer markdownDocument={markdownDocument} />
+            )}
           />
 
           <Route

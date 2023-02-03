@@ -1,3 +1,25 @@
+/* eslint-disable @typescript-eslint/no-misused-promises */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
+/* eslint-disable @typescript-eslint/require-await */
+/* eslint-disable react-hooks/exhaustive-deps */
+import {
+  CodeMirrorEditor,
+  useCodemirrorEditor,
+} from 'components/CodeMirrorEditor';
+import { LanguageSelector } from 'components/LanguageSelector';
+import { MarkdownImageDropzone } from 'components/MarkdownImageDropzone';
+import { MdxRenderer } from 'components/MdxRenderer';
+import { MdxRenderingOptionsSelector } from 'components/MdxRenderingOptionsSelector';
+import {
+  ScreenDisposition,
+  ScreenDispositionSelector,
+} from 'components/ScreenDispositionSelector';
+import { useImageUploadManager } from 'components/useImageUploadManager';
+import {
+  useMarkdownDocument,
+  useSaveTranslations,
+  useUpdateMarkdownDocument,
+} from 'data';
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
@@ -5,24 +27,7 @@ import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
-
-import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import {
-  CodeMirrorEditor,
-  LanguageSelector,
-  MarkdownImageDropzone,
-  MdxRenderer,
-  MdxRenderingOptionsSelector,
-  ScreenDisposition,
-  ScreenDispositionSelector,
-  escapeMarkdown,
-  getMarkdownDocumentTranslatedContent,
-  useCodemirrorEditor,
-  useImageUploadManager,
-  useMarkdownDocument,
-  useSaveTranslations,
-  useUpdateMarkdownDocument,
-} from 'lib-markdown';
+import { escapeMarkdown, getMarkdownDocumentTranslatedContent } from 'utils';
 
 const messages = defineMessages({
   // Inputs
@@ -65,7 +70,11 @@ const messages = defineMessages({
   },
 });
 
-const MarkdownEditor = () => {
+type MarkdownEditorProps = {
+  markdownDocumentId: string;
+};
+
+export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
   const intl = useIntl();
 
   const [language, setLanguage] = React.useState(intl.locale);
@@ -116,7 +125,6 @@ const MarkdownEditor = () => {
 
   // note: we don't want to fetch the markdown document regularly to prevent
   // any editor update while the user has not saved her document.
-  const markdownDocumentId = MarkdownAppData.markdownDocument.id;
   const queryClient = useQueryClient();
   const { data: markdownDocument } = useMarkdownDocument(markdownDocumentId, {
     refetchInterval: false,
@@ -142,7 +150,9 @@ const MarkdownEditor = () => {
 
   // Initialization hook
   useEffect(() => {
-    if (!markdownDocument) return;
+    if (!markdownDocument) {
+      return;
+    }
     const translatedTitle = getMarkdownDocumentTranslatedContent(
       markdownDocument,
       'title',
@@ -227,7 +237,9 @@ const MarkdownEditor = () => {
   };
 
   // Don't try to load components while the document has not been fetched
-  if (!markdownDocument) return <Loader />;
+  if (!markdownDocument) {
+    return <Loader />;
+  }
 
   return (
     <Box pad="xsmall">
@@ -371,5 +383,3 @@ const MarkdownEditor = () => {
     </Box>
   );
 };
-
-export default MarkdownEditor;

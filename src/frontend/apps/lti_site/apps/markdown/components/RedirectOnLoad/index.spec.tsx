@@ -14,8 +14,11 @@ import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityReques
 import render from 'utils/tests/render';
 
 import { RedirectOnLoad } from '.';
-import { MARKDOWN_NOT_FOUND_ROUTE, MARKDOWN_VIEWER_ROUTE } from 'lib-markdown';
-import { MARKDOWN_EDITOR_ROUTE } from '../MarkdownEditor/route';
+import {
+  MARKDOWN_EDITOR_ROUTE,
+  MARKDOWN_NOT_FOUND_ROUTE,
+  MARKDOWN_VIEWER_ROUTE,
+} from 'lib-markdown';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

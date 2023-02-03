@@ -13,8 +13,11 @@ import {
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
-import { MARKDOWN_NOT_FOUND_ROUTE, MARKDOWN_VIEWER_ROUTE } from 'lib-markdown';
-import { MARKDOWN_EDITOR_ROUTE } from '../MarkdownEditor/route';
+import {
+  MARKDOWN_EDITOR_ROUTE,
+  MARKDOWN_NOT_FOUND_ROUTE,
+  MARKDOWN_VIEWER_ROUTE,
+} from 'lib-markdown';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
