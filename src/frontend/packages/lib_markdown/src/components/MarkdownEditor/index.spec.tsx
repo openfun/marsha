@@ -1,5 +1,12 @@
-import { within } from '@testing-library/dom';
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+/* eslint-disable testing-library/no-container */
+/* eslint-disable testing-library/no-node-access */
+import {
+  within,
+  act,
+  fireEvent,
+  screen,
+  waitFor,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt, uploadState, UploadManager } from 'lib-components';
@@ -11,9 +18,9 @@ import {
   markdownDocumentMockFactory,
   markdownImageMockFactory,
   markdownTranslationMockFactory,
-} from 'lib-markdown';
+} from 'utils/tests/factories';
 
-import MarkdownEditor from '.';
+import { MarkdownEditor } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -25,16 +32,7 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
-jest.mock('apps/markdown/data/MarkdownAppData', () => ({
-  MarkdownAppData: {
-    modelName: 'markdown_documents',
-    markdownDocument: {
-      id: '1',
-    },
-  },
-}));
-
-jest.mock('apps/markdown/components/MdxRenderer/constants', () => ({
+jest.mock('components/MdxRenderer/constants', () => ({
   debouncingTime: 0, // override the debouncing time to make tests twice faster
 }));
 
@@ -77,7 +75,9 @@ describe('<MarkdownEditor />', () => {
     const documentDeferred = new Deferred();
     fetchMock.get('/api/markdown-documents/1/', documentDeferred.promise);
 
-    const { container } = render(<MarkdownEditor />);
+    const { container } = render(
+      <MarkdownEditor markdownDocumentId={markdownDocument.id} />,
+    );
 
     act(() => documentDeferred.resolve(markdownDocument));
 
@@ -122,21 +122,17 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    act(() => {
-      userEvent.click(saveButton);
-    });
+    userEvent.click(saveButton);
 
     await waitFor(() => {
       expect(saveButton).toBeDisabled();
     });
     expect(publishButton).not.toBeDisabled();
 
-    act(() => {
-      userEvent.type(
-        screen.getByRole('textbox', { name: 'Title' }),
-        ' is changed',
-      );
-    });
+    userEvent.type(
+      screen.getByRole('textbox', { name: 'Title' }),
+      ' is changed',
+    );
     await waitFor(() => expect(saveButton).not.toBeDisabled());
     expect(publishButton).toBeDisabled();
   });
@@ -149,7 +145,7 @@ describe('<MarkdownEditor />', () => {
     });
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    render(<MarkdownEditor />);
+    render(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     // Wait for rendered content: all loaders gone
     await waitFor(() =>
@@ -179,7 +175,9 @@ describe('<MarkdownEditor />', () => {
     });
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container } = render(<MarkdownEditor />);
+    const { container } = render(
+      <MarkdownEditor markdownDocumentId={markdownDocument.id} />,
+    );
 
     // Wait for rendered content
     await waitFor(() =>
@@ -212,18 +210,14 @@ describe('<MarkdownEditor />', () => {
       },
       { overwriteRoutes: true },
     );
-    act(() => {
-      userEvent.click(screen.getByRole('button', { name: 'Save' }));
-    });
+    userEvent.click(screen.getByRole('button', { name: 'Save' }));
     await waitFor(() =>
       expect(screen.getByRole('button', { name: 'Save' })).toBeDisabled(),
     );
 
     // Change language to fr
     userEvent.click(screen.getByRole('button', { name: 'English' }));
-    act(() => {
-      userEvent.click(screen.getByText('French'));
-    });
+    userEvent.click(screen.getByText('French'));
 
     await waitFor(() =>
       expect(
@@ -240,7 +234,7 @@ describe('<MarkdownEditor />', () => {
     });
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    render(<MarkdownEditor />);
+    render(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     // Wait for rendered content
     await waitFor(() =>
@@ -298,14 +292,12 @@ describe('<MarkdownEditor />', () => {
     });
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container, rerender } = render(<MarkdownEditor />);
+    const { container, rerender } = render(
+      <MarkdownEditor markdownDocumentId={markdownDocument.id} />,
+    );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', { level: 1, name: 'MDX' }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', { level: 1, name: 'MDX' });
 
     // Assert the MDX is not rendered properly
     within(screen.getByTestId('renderer_container')).getByText(
@@ -359,9 +351,7 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    act(() => {
-      userEvent.click(saveButton);
-    });
+    userEvent.click(saveButton);
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 
@@ -380,7 +370,7 @@ describe('<MarkdownEditor />', () => {
       }),
     });
 
-    rerender(<MarkdownEditor />);
+    rerender(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
@@ -402,7 +392,9 @@ describe('<MarkdownEditor />', () => {
     });
     fetchMock.get('/api/markdown-documents/1/', markdownDocument);
 
-    const { container, rerender } = render(<MarkdownEditor />);
+    const { container, rerender } = render(
+      <MarkdownEditor markdownDocumentId={markdownDocument.id} />,
+    );
 
     // Wait for rendered content & assert the math are displayed using KaTeX
     await waitFor(() =>
@@ -451,9 +443,7 @@ describe('<MarkdownEditor />', () => {
       { overwriteRoutes: true },
     );
 
-    act(() => {
-      userEvent.click(saveButton);
-    });
+    userEvent.click(saveButton);
 
     await waitFor(() => expect(saveButton).toBeDisabled());
 
@@ -472,7 +462,7 @@ describe('<MarkdownEditor />', () => {
       }),
     });
 
-    rerender(<MarkdownEditor />);
+    rerender(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
@@ -498,16 +488,12 @@ describe('<MarkdownEditor />', () => {
 
     const { container } = render(
       <UploadManager>
-        <MarkdownEditor />
+        <MarkdownEditor markdownDocumentId={markdownDocument.id} />
       </UploadManager>,
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(
-        screen.getByRole('heading', { level: 1, name: 'Heading' }),
-      ).toBeInTheDocument(),
-    );
+    await screen.findByRole('heading', { level: 1, name: 'Heading' });
 
     const dropzoneInput = container.querySelector('input[type="file"]')!;
 
@@ -540,9 +526,7 @@ describe('<MarkdownEditor />', () => {
     );
 
     const catFile = createFile('cats.gif', 1234, 'image/gif');
-    act(() => {
-      fireEvent.drop(dropzoneInput, createDtWithFiles([catFile]));
-    });
+    fireEvent.drop(dropzoneInput, createDtWithFiles([catFile]));
 
     await waitFor(() =>
       expect(
@@ -562,7 +546,7 @@ describe('<MarkdownEditor />', () => {
       }),
     );
 
-    await act(() => {
+    act(() => {
       fileUploadDeferred.resolve(
         new MockResponse().body('form data body').status(204),
       );
