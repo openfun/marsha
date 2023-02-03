@@ -12,6 +12,8 @@ import {
   LanguageSelector,
   MarkdownImageDropzone,
   MdxRenderingOptionsSelector,
+  ScreenDisposition,
+  ScreenDispositionSelector,
   escapeMarkdown,
   getMarkdownDocumentTranslatedContent,
   useCodemirrorEditor,
@@ -20,9 +22,6 @@ import {
   useUpdateMarkdownDocument,
 } from 'lib-markdown';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
-import ScreenDispositionSelector, {
-  ScreenDisposition,
-} from 'apps/markdown/components/ScreenDispositionSelector';
 import { useImageUploadManager } from '../useImageUploadManager';
 
 const messages = defineMessages({
