@@ -267,6 +267,40 @@ class IsOrganizationAdmin(HasAdminRoleMixIn, BaseIsOrganizationRole):
     """Permission class to check if the user is one of the organization admin."""
 
 
+class BaseIsUserOrganizationRole(permissions.BasePermission):
+    """
+    Base permission class to check for organization roles against
+    a specific user's organization (a user may belong to several organizations)."""
+
+    role_filter = {}
+
+    def has_object_permission(self, request, view, obj):
+        """
+        Allow the request if the requesting user as a specific
+        role in one of the `obj` user organization.
+        """
+        if not self.role_filter:
+            raise ImproperlyConfigured(
+                f"{self.__class__.__name__} must define a `role_filter`."
+            )
+
+        return models.OrganizationAccess.objects.filter(
+            **self.role_filter,
+            organization_id__in=obj.organization_accesses.values_list(
+                "organization_id",
+                flat=True,
+            ),
+            user_id=request.user.id,
+        ).exists()
+
+
+class IsUserOrganizationAdmin(HasAdminRoleMixIn, BaseIsUserOrganizationRole):
+    """
+    Permission class to check if the user is one of the organization admin
+    of the aimed user (for the user management API).
+    """
+
+
 class BaseIsParamsOrganizationRole(BaseIsOrganizationRole):
     """Base permission class to check for organization roles."""
 
