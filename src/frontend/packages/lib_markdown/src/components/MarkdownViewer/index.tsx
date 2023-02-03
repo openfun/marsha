@@ -1,14 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/restrict-template-expressions */
+/* eslint-disable array-callback-return */
+import { LanguageSelector } from 'components/LanguageSelector';
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
-import { Loader } from 'lib-components';
+import { Loader, MarkdownDocument } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import {
-  getMarkdownDocumentTranslatedContent,
-  LanguageSelector,
-} from 'lib-markdown';
+import { getMarkdownDocumentTranslatedContent } from 'utils';
 
 const messages = defineMessages({
   // Messages
@@ -19,10 +19,12 @@ const messages = defineMessages({
   },
 });
 
-const MarkdownViewer = () => {
-  const intl = useIntl();
+type MarkdownViewerProps = {
+  markdownDocument: MarkdownDocument;
+};
 
-  const markdownDocument = MarkdownAppData.markdownDocument;
+export const MarkdownViewer = ({ markdownDocument }: MarkdownViewerProps) => {
+  const intl = useIntl();
 
   const [language, setLanguage] = React.useState(intl.locale);
   const [htmlContent, setHtmlContent] = React.useState<Nullable<string>>(null);
@@ -37,7 +39,9 @@ const MarkdownViewer = () => {
 
     // Update image URL to use fresh signature
     markdownDocument.images.map((value: { url: any; id: string }) => {
-      if (!value.url) return;
+      if (!value.url) {
+        return;
+      }
       const imageUrlRegex = new RegExp(
         'src="https?://[^"]+/' +
           markdownDocument.id +
@@ -53,7 +57,7 @@ const MarkdownViewer = () => {
     });
 
     setHtmlContent(documentTranslatedContent);
-  }, [language]);
+  }, [intl, language, markdownDocument]);
 
   const availableLanguages = markdownDocument.translations.map(
     (translation: { language_code: any }) => translation.language_code,
@@ -87,5 +91,3 @@ const MarkdownViewer = () => {
     </Box>
   );
 };
-
-export default MarkdownViewer;

@@ -1,26 +1,15 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
-
 import {
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
   markdownImageMockFactory,
-} from 'lib-markdown';
+} from 'index';
 import { useJwt } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
+import React from 'react';
 
-import MarkdownViewer from '.';
-
-jest.mock('apps/markdown/data/MarkdownAppData', () => ({
-  MarkdownAppData: {
-    modelName: 'markdown_documents',
-    markdownDocument: null,
-  },
-}));
-const MarkdownAppDataMock = jest.requireMock(
-  'apps/markdown/data/MarkdownAppData',
-);
+import { MarkdownViewer } from '.';
 
 describe('<MarkdownViewer />', () => {
   beforeEach(() => {
@@ -48,18 +37,15 @@ describe('<MarkdownViewer />', () => {
         }),
       ],
     });
-    MarkdownAppDataMock.MarkdownAppData.markdownDocument = markdownDocument;
 
-    render(<MarkdownViewer />);
+    render(<MarkdownViewer markdownDocument={markdownDocument} />);
 
     expect(screen.queryByText('Some english title')).not.toBeInTheDocument();
     await screen.findByText('English document content.');
 
     // Change language to fr
     userEvent.click(screen.getByRole('button', { name: 'English' }));
-    act(() => {
-      userEvent.click(screen.getByText('French'));
-    });
+    userEvent.click(screen.getByText('French'));
 
     expect(screen.queryByText('Un titre en français')).not.toBeInTheDocument();
     await screen.findByText('Du contenu écrit en français.');
@@ -78,17 +64,14 @@ describe('<MarkdownViewer />', () => {
         ),
       ],
     });
-    MarkdownAppDataMock.MarkdownAppData.markdownDocument = markdownDocument;
 
-    render(<MarkdownViewer />);
+    render(<MarkdownViewer markdownDocument={markdownDocument} />);
 
     await screen.findByText('Translation not found');
 
     // Change language to fr
     userEvent.click(screen.getByRole('button', { name: 'English' }));
-    act(() => {
-      userEvent.click(screen.getByText('French'));
-    });
+    userEvent.click(screen.getByText('French'));
 
     await screen.findByText('Contenu en français.');
     expect(screen.queryByText('Un titre en français')).not.toBeInTheDocument();
@@ -126,9 +109,8 @@ describe('<MarkdownViewer />', () => {
         }),
       ],
     });
-    MarkdownAppDataMock.MarkdownAppData.markdownDocument = markdownDocument;
 
-    render(<MarkdownViewer />);
+    render(<MarkdownViewer markdownDocument={markdownDocument} />);
 
     const markdownImageEn = await screen.findByRole('img');
     expect(markdownImageEn).toHaveAttribute('src', 'http://some-en-image.png');
@@ -137,9 +119,7 @@ describe('<MarkdownViewer />', () => {
 
     // Change language to fr
     userEvent.click(screen.getByRole('button', { name: 'English' }));
-    act(() => {
-      userEvent.click(screen.getByText('French'));
-    });
+    userEvent.click(screen.getByText('French'));
 
     const markdownImageFr = await screen.findByRole('img');
     expect(markdownImageFr).toHaveAttribute('src', 'http://some-fr-image.png');
