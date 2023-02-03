@@ -1,13 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import render from 'utils/tests/render';
-
-import MdxRenderingOptionsSelector from '.';
+import { MdxRenderingOptionsSelector } from '.';
 
 describe('<MdxRenderingOptionsSelector />', () => {
-  it('send options change', async () => {
+  it('send options change', () => {
     const setRenderingOptions = jest.fn();
 
     const { rerender } = render(

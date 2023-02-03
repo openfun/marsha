@@ -11,6 +11,7 @@ import {
   CodeMirrorEditor,
   LanguageSelector,
   MarkdownImageDropzone,
+  MdxRenderingOptionsSelector,
   escapeMarkdown,
   getMarkdownDocumentTranslatedContent,
   useCodemirrorEditor,
@@ -19,7 +20,6 @@ import {
   useUpdateMarkdownDocument,
 } from 'lib-markdown';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
-import MdxRenderingOptionsSelector from 'apps/markdown/components/MdxRenderingOptionsSelector';
 import ScreenDispositionSelector, {
   ScreenDisposition,
 } from 'apps/markdown/components/ScreenDispositionSelector';
