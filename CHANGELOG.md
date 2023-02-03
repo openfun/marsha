@@ -21,6 +21,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - mutualize all CronJob in a CronJobList
 - make all packages shakeable
 - use lib-common theme in LTI
+- change docker base image to use a debian lite one
 
 ### Fixed
 
