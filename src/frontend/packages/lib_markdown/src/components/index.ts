@@ -1,5 +1,7 @@
 export * from './CodeMirrorEditor';
 export * from './LanguageSelector';
+export * from './MarkdownEditor';
+export * from './MarkdownEditor/route';
 export * from './MarkdownImageDropzone';
 export * from './MarkdownImageProgressToast';
 export * from './MarkdownNotFoundView';
