@@ -6,3 +6,4 @@ export * from './MarkdownNotFoundView';
 export * from './MarkdownNotFoundView/route';
 export * from './MdxRenderingOptionsSelector';
 export * from './ScreenDispositionSelector';
+export * from './useImageUploadManager';

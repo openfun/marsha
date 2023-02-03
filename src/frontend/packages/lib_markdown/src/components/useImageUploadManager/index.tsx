@@ -1,18 +1,13 @@
-import React, { useCallback, useEffect } from 'react';
-import toast from 'react-hot-toast';
-import { defineMessages, useIntl } from 'react-intl';
-
+import { MarkdownImageProgressToast } from 'components/MarkdownImageProgressToast';
+import { createMarkdownImage, pollForMarkdownImage } from 'data';
 import {
   UploadManagerStatus,
   useUploadManager,
   MarkdownDocumentModelName as modelName,
 } from 'lib-components';
-
-import {
-  createMarkdownImage,
-  MarkdownImageProgressToast,
-  pollForMarkdownImage,
-} from 'lib-markdown';
+import React, { useCallback, useEffect } from 'react';
+import toast from 'react-hot-toast';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   uploaded: {
@@ -43,6 +38,7 @@ export const useImageUploadManager = (
   const { addUpload, uploadManagerState, resetUpload } = useUploadManager();
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-misused-promises
     Object.entries(uploadManagerState).forEach(async (entry) => {
       const [imageId, uploadingObject] = entry;
 
@@ -69,7 +65,7 @@ export const useImageUploadManager = (
                 imageName: uploadingObject.file.name,
               });
             },
-            error: (err) =>
+            error: (err: Error) =>
               intl.formatMessage(messages.error, {
                 imageName: uploadingObject.file.name,
                 error: err.toString(),
@@ -86,14 +82,17 @@ export const useImageUploadManager = (
         resetUpload(imageId);
       }
     });
-  }, [uploadManagerState]);
+  }, [intl, onImageUploadFinished, resetUpload, uploadManagerState]);
 
-  const addImageUpload = useCallback(async (file: File) => {
-    const response = await createMarkdownImage();
-    const markdownImageId = response.id;
-    addUpload(modelName.MARKDOWN_IMAGES, markdownImageId, file);
-    return markdownImageId;
-  }, []);
+  const addImageUpload = useCallback(
+    async (file: File) => {
+      const response = await createMarkdownImage();
+      const markdownImageId = response.id;
+      addUpload(modelName.MARKDOWN_IMAGES, markdownImageId, file);
+      return markdownImageId;
+    },
+    [addUpload],
+  );
 
   return { addImageUpload };
 };
