@@ -17,12 +17,12 @@ import {
   escapeMarkdown,
   getMarkdownDocumentTranslatedContent,
   useCodemirrorEditor,
+  useImageUploadManager,
   useMarkdownDocument,
   useSaveTranslations,
   useUpdateMarkdownDocument,
 } from 'lib-markdown';
 import MdxRenderer from 'apps/markdown/components/MdxRenderer';
-import { useImageUploadManager } from '../useImageUploadManager';
 
 const messages = defineMessages({
   // Inputs

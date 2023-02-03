@@ -1,11 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
-import { v4 as uuidv4 } from 'uuid';
-import xhrMock, { MockResponse } from 'xhr-mock';
-
-import { useImageUploadManager } from '.';
+import { markdownImageMockFactory } from 'index';
 import {
   UploadManager,
   UploadManagerStatus,
@@ -13,14 +8,19 @@ import {
   MarkdownDocumentModelName as modelName,
   uploadState,
 } from 'lib-components';
-import { markdownImageMockFactory } from 'lib-markdown';
+import { render, Deferred } from 'lib-tests';
+import React from 'react';
+import { v4 as uuidv4 } from 'uuid';
+import xhrMock, { MockResponse } from 'xhr-mock';
+
+import { useImageUploadManager } from './index';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppConfig: () => ({}),
 }));
 
-describe('apps/markdown/components/useImageUploadManager', () => {
+describe('useImageUploadManager', () => {
   let getLatestUseImageUploadManagerHookValues: () => any = () => {};
   let getLatestUseUploadManagerHookValues: () => any = () => {};
   const onImageUploadFinished = jest.fn();
@@ -105,6 +105,7 @@ describe('apps/markdown/components/useImageUploadManager', () => {
       ).toHaveLength(1);
     }
     {
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         initiateUploadDeferred.resolve({
           fields: {
@@ -137,6 +138,7 @@ describe('apps/markdown/components/useImageUploadManager', () => {
 
     jest.useFakeTimers();
     {
+      // eslint-disable-next-line @typescript-eslint/require-await
       await act(async () => {
         fileUploadDeferred.resolve(
           new MockResponse().body('form data body').status(204),
@@ -158,7 +160,7 @@ describe('apps/markdown/components/useImageUploadManager', () => {
     }
 
     {
-      await act(async () => {
+      act(() => {
         fetchMock.get(
           `/api/markdown-images/${objectId}/`,
           markdownImageMockFactory({
