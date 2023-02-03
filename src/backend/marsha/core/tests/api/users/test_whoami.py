@@ -1,13 +1,12 @@
 """Tests for the User API of the Marsha project."""
 from django.test import TestCase
 
+from marsha.core import factories
 from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
-from .. import factories
 
-
-class UserAPITest(TestCase):
-    """Test the API for user objects."""
+class UserWhoAmIAPITest(TestCase):
+    """Test the API endpoint to get the current user."""
 
     # WHOAMI TESTS
     def test_whoami_by_anonymous_user(self):

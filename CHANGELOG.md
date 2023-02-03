@@ -43,6 +43,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - banner homepage with dynamic text
   - add "playlist access" management API endpoints
+  - add "user" management API endpoints
 - Arnold tray to manage definition directly in marsha repository
 - Install and configure scoutapm
 
