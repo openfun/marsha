@@ -1,13 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import render from 'utils/tests/render';
-
-import ScreenDispositionSelector, { ScreenDisposition } from '.';
+import { ScreenDisposition, ScreenDispositionSelector } from '.';
 
 describe('<ScreenDispositionSelector />', () => {
-  it('send disposition changes', async () => {
+  it('send disposition changes', () => {
     const setScreenDisposition = jest.fn();
 
     // split -> editor only

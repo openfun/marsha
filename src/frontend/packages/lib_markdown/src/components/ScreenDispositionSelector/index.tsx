@@ -32,7 +32,7 @@ type ScreenDispositionSelectorProps = {
   setScreenDisposition: (newDisposition: ScreenDisposition) => void;
 };
 
-const ScreenDispositionSelector = ({
+export const ScreenDispositionSelector = ({
   screenDisposition,
   setScreenDisposition,
 }: ScreenDispositionSelectorProps) => {
@@ -88,5 +88,3 @@ const ScreenDispositionSelector = ({
     </Nav>
   );
 };
-
-export default ScreenDispositionSelector;
