@@ -662,6 +662,7 @@ jobs:
           DOCKERIZE_VERSION: v0.6.1
           DJANGO_ALLOW_ASYNC_UNSAFE: 1
           DJANGO_BBB_ENABLED: 1
+          DJANGO_MARKDOWN_ENABLED: 1
           DEBUG: pw:browser*
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
       - image: cimg/postgres:10.20
