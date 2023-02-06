@@ -100,8 +100,9 @@ def _preview_markdown(page: Page, live_server: LiveServer):
     DEBUG=True,
     X_FRAME_OPTIONS="",
 )
-def test_render(page: Page, live_server: LiveServer) -> None:
+def test_render(page: Page, live_server: LiveServer, settings) -> None:
     """Test that the markdown is rendered."""
+    settings.MARKDOWN_ENABLED = True
     page, _ = _preview_markdown(page, live_server)
 
     editor_container = page.get_by_test_id("editor_container")
