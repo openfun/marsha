@@ -5,9 +5,10 @@
   "directories": {
     "lib": "lib"
   },
-  "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "types": "lib/index.d.ts",
+  "main": "lib/cjs/index.js",
+  "module": "lib/esm/index.js",
+  "jsnext:main": "lib/esm/index.js",
+  "types": "lib/dts/index.d.ts",
   "scripts": {
     "build": "rollup -c",
     "build:watch": "yarn build --watch",
