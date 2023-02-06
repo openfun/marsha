@@ -16,8 +16,7 @@ from marsha.core.simple_jwt.factories import (
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.core.tests.test_api_video import RSA_KEY_MOCK
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.utils import RSA_KEY_MOCK, reload_urlconf
 from marsha.deposit.factories import DepositedFileFactory, FileDepositoryFactory
 
 

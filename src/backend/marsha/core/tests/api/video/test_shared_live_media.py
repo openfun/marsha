@@ -5,15 +5,25 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-# pylint: disable=too-many-public-methods,too-many-lines
+from marsha.core.api.video import channel_layers_utils
+from marsha.core.defaults import (
+    DELETED,
+    ERROR,
+    JITSI,
+    PENDING,
+    PROCESSING,
+    READY,
+    RUNNING,
+)
+from marsha.core.factories import SharedLiveMediaFactory, UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )
 
-from ..api.video import channel_layers_utils
-from ..defaults import DELETED, ERROR, JITSI, PENDING, PROCESSING, READY, RUNNING
-from ..factories import SharedLiveMediaFactory, UserFactory, VideoFactory
+
+# This file may be split between start-sharing, navigate-sharing and end-sharing
+# pylint: disable=too-many-lines,too-many-public-methods
 
 
 class TestVideoSharedLiveMedia(TestCase):

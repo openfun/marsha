@@ -3,10 +3,10 @@ from unittest import mock
 
 from django.test import TestCase
 
-from ..api.video import channel_layers_utils
-from ..defaults import DENIED
-from ..factories import UserFactory, VideoFactory
-from ..simple_jwt.factories import (
+from marsha.core.api.video import channel_layers_utils
+from marsha.core.defaults import DENIED
+from marsha.core.factories import UserFactory, VideoFactory
+from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )

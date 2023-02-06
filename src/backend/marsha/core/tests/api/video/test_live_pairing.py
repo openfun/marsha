@@ -15,16 +15,15 @@ from corsheaders.middleware import (
 )
 from faker import Faker
 
+from marsha.core import factories
+from marsha.core.api import timezone
 from marsha.core.defaults import IDLE, JITSI
+from marsha.core.factories import DeviceFactory, LivePairingFactory
+from marsha.core.models import Device, LivePairing, Video
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )
-
-from .. import factories
-from ..api import timezone
-from ..factories import DeviceFactory, LivePairingFactory
-from ..models import Device, LivePairing, Video
 
 
 class PairingDeviceAPITest(TestCase):
