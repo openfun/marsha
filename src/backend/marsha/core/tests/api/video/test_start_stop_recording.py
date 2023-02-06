@@ -5,15 +5,14 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core.api import timezone
+from marsha.core.defaults import JITSI, LIVE_CHOICES, PENDING, RUNNING
+from marsha.core.factories import UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )
-
-from ..api import timezone
-from ..defaults import JITSI, LIVE_CHOICES, PENDING, RUNNING
-from ..factories import UserFactory, VideoFactory
-from ..utils.time_utils import to_timestamp
+from marsha.core.utils.time_utils import to_timestamp
 
 
 class TestApiVideoRecording(TestCase):
