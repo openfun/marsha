@@ -8,6 +8,7 @@ import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
 import external from 'rollup-plugin-peer-deps-external';
 import { replaceTscAliasPaths } from 'tsc-alias';
+import path from "path";
 
 const require = createRequire(import.meta.url);
 const pkg = require('./package.json');
@@ -25,8 +26,8 @@ export default {
   input: 'src/index.ts',
   output: [
     {
-      file: pkg.main,
       format: 'cjs',
+      dir: path.dirname(pkg.main),
       exports: 'named',
       sourcemap: true,
       esModule: true,
@@ -38,11 +39,12 @@ export default {
       inlineDynamicImports: true,
     },
     {
-      file: pkg.module,
       format: 'es',
+      dir: path.dirname(pkg.module),
       exports: 'named',
+      preserveModules: true,
+      preserveModulesRoot: 'src',
       sourcemap: true,
-      inlineDynamicImports: true,
     },
   ],
   makeAbsoluteExternalsRelative: true,
