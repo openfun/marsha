@@ -6936,3 +6936,4 @@ class VideoAPITest(TestCase):
         response = self.client.options("/api/videos/")
 
         self.assertEqual(response.status_code, 401)
+ 
