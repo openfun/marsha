@@ -1,5 +1,5 @@
 """Tests for the Schema endpoint on the API of the Marsha project."""
-from django.test import TestCase
+from django.test import TestCase, override_settings
 
 from rest_framework.permissions import BasePermission
 
@@ -8,10 +8,19 @@ from marsha.core.api.schema import (
     extract_permission_docstring,
     format_permissions_and_docstring,
 )
+from marsha.core.tests.utils import reload_urlconf
 
 
+@override_settings(DEBUG=True)
 class SchemaAPITest(TestCase):
     """Test the API route for the schema."""
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
+        # Force URLs reload to use DEBUG=true settings in this test suite.
+        reload_urlconf()
 
     def test_api_schema(self):
         """The API has a schema route that answers."""

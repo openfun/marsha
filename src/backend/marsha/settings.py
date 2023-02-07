@@ -232,6 +232,10 @@ class Base(Configuration):
     SPECTACULAR_SETTINGS = {
         "TITLE": "Marsha API",
         "SERVE_INCLUDE_SCHEMA": False,
+        "ENABLE_DJANGO_DEPLOY_CHECK": values.BooleanValue(
+            default=False,
+            environ_name="SPECTACULAR_SETTINGS_ENABLE_DJANGO_DEPLOY_CHECK",
+        ),
     }
 
     # Django Rest Auth
