@@ -57,7 +57,6 @@ export const ConfigureLiveButton = ({
       {status === 'pending' && <Loader />}
       <Button
         a11yTitle={intl.formatMessage(messages.startLiveButtonLabel)}
-        color="blue-active"
         fill="horizontal"
         label={intl.formatMessage(messages.startLiveButtonLabel)}
         onClick={() => void configureLive()}

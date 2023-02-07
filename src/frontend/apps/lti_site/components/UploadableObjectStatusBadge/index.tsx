@@ -1,4 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
@@ -9,7 +10,6 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'lib-components';
-import { theme } from '../../utils/theme/theme';
 
 const messages = defineMessages({
   [uploadState.DELETED]: {

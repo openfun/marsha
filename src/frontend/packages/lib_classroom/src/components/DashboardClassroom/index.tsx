@@ -1,5 +1,4 @@
-import { Box, Spinner, ThemeContext } from 'grommet';
-import { theme } from 'lib-common';
+import { Box } from 'grommet';
 import {
   AnonymousUser,
   Loader,
@@ -143,10 +142,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     case 'loading':
     default:
       content = (
-        <Spinner
-          size="large"
-          message={intl.formatMessage(messages.loadingClassroom)}
-        />
+        <Loader aria-label={intl.formatMessage(messages.loadingClassroom)} />
       );
       break;
 
@@ -213,11 +209,9 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
   }
 
   return (
-    <ThemeContext.Extend value={theme}>
-      <Box align="center">
-        <Suspense fallback={<Loader />}>{content}</Suspense>
-      </Box>
-    </ThemeContext.Extend>
+    <Box align="center">
+      <Suspense fallback={<Loader />}>{content}</Suspense>
+    </Box>
   );
 };
 

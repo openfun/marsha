@@ -1,4 +1,5 @@
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import {
   useCurrentResourceContext,
   useMaintenance,
@@ -10,8 +11,6 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { LTINav } from 'components/LTINav';
-
-import { theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   btnDashboard: {

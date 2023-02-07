@@ -144,7 +144,7 @@ export const theme: ThemeType = {
     },
     secondary: {
       background: { color: 'transparent' },
-      border: { color: 'brand' },
+      border: { color: 'brand', width: '1px' },
       color: 'blue-active',
       padding: { vertical: 'xsmall', horizontal: 'small' },
     },
@@ -269,8 +269,7 @@ export const theme: ThemeType = {
         background-color: white;
         transition: all 0.2s linear;
       }
-      & input,
-      & textarea {
+      & input {
         margin-top: 1rem;
       }
       & input::placeholder {
@@ -308,8 +307,7 @@ export const theme: ThemeType = {
         box-shadow: 0 0 0 2px ${colorsGeneric['blue-focus']};
       }
       &:focus-within input,
-      &:focus-within label,
-      &:focus-within textarea {
+      &:focus-within label {
         color: ${colorsGeneric['blue-focus']};
       }
       &:focus-within svg {
@@ -333,6 +331,17 @@ export const theme: ThemeType = {
       & div[aria-label='error-form-field'] span {
         color: white;
         font-size: 1rem;
+      }
+    `,
+  },
+  textArea: {
+    extend: css`
+      & {
+        margin-top: 1rem;
+        padding: 0.5rem 1rem;
+      }
+      &:focus-within {
+        color: ${colorsGeneric['blue-focus']};
       }
     `,
   },
@@ -365,6 +374,12 @@ export const theme: ThemeType = {
         & button span[aria-live='polite'] {
           font-size: 14px;
         }
+        & button[aria-selected='true'] {
+          background-color: ${colorsMain['brand']};
+        }
+        & button[aria-selected='true'] span {
+          color: white;
+        }
       `,
     },
     options: {
@@ -373,6 +388,7 @@ export const theme: ThemeType = {
       },
       text: {
         size: '0.875rem',
+        color: 'blue-active',
       },
     },
   },
@@ -437,13 +453,6 @@ export const theme: ThemeType = {
       size: '1.5rem',
     },
   },
-  textArea: {
-    extend: css`
-      & {
-        padding: 0.5rem 1rem;
-      }
-    `,
-  },
   textInput: {
     extend: 'padding: 0.5rem 1rem;',
   },
@@ -465,22 +474,6 @@ export const theme: ThemeType = {
       },
     },
   },
-};
-
-export const calendarTheme: ThemeType = {
-  button: {
-    default: {
-      border: false,
-    },
-    extend: css`
-      & {
-        padding: 0;
-      }
-      &:has(svg) {
-        padding: 12px;
-      }
-    `,
-  },
   calendar: {
     heading: {
       level: '5',
@@ -488,6 +481,12 @@ export const calendarTheme: ThemeType = {
     extend: css`
       & div[role='grid'] {
         box-shadow: none;
+      }
+      & button {
+        border: none;
+      }
+      & button:has(svg) {
+        padding: 0.75rem;
       }
     `,
   },

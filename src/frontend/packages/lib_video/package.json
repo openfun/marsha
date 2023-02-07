@@ -11,7 +11,7 @@
   "jsnext:main": "lib/index.es.js",
   "scripts": {
     "build": "rollup -c",
-    "build:watch": "yarn run build -- --watch",
+    "build:watch": "yarn build --watch",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",

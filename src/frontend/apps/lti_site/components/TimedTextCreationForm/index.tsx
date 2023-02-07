@@ -1,6 +1,14 @@
 import { Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Maybe, Nullable } from 'lib-common';
+import { Maybe, Nullable, theme } from 'lib-common';
+import {
+  useTimedTextTrack,
+  modelName,
+  timedTextMode,
+  report,
+  FULL_SCREEN_ERROR_ROUTE,
+  UPLOAD_FORM_ROUTE,
+} from 'lib-components';
 import {
   createTimedTextTrack,
   useFetchTimedTextTrackLanguageChoices,
@@ -10,16 +18,6 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Redirect } from 'react-router-dom';
 import Select, { ActionMeta } from 'react-select';
 import styled from 'styled-components';
-
-import {
-  useTimedTextTrack,
-  modelName,
-  timedTextMode,
-  report,
-  FULL_SCREEN_ERROR_ROUTE,
-  UPLOAD_FORM_ROUTE,
-} from 'lib-components';
-import { theme } from '../../utils/theme/theme';
 
 const messages = defineMessages({
   addTrackBtn: {

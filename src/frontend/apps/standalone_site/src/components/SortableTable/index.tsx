@@ -126,6 +126,7 @@ export const SortableTable = <
     SortMenu = (
       <Menu
         secondary
+        style={{ borderWidth: '0' }}
         a11yTitle="Sort item in the table"
         margin={{ left: 'auto', vertical: 'auto' }}
         label={sortCurrentItem.label}

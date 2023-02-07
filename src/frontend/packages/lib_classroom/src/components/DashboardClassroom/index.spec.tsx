@@ -61,7 +61,11 @@ describe('<DashboardClassroom />', () => {
 
     render(<DashboardClassroom classroomId="1" />);
 
-    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
+    expect(
+      screen.getByRole('status', {
+        hidden: false,
+      }),
+    ).toBeInTheDocument();
     classroomDeferred.resolve(classroom);
     expect(
       await screen.findByText('Classroom not started yet.'),
@@ -95,7 +99,11 @@ describe('<DashboardClassroom />', () => {
 
     render(<DashboardClassroom classroomId="1" />);
 
-    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
+    expect(
+      screen.getByRole('status', {
+        hidden: false,
+      }),
+    ).toBeInTheDocument();
     classroomDeferred.resolve(classroom);
     expect(
       await screen.findByText('Launch the classroom now in BBB'),
@@ -348,7 +356,11 @@ describe('<DashboardClassroom />', () => {
       queryOptions: { client: queryClient },
     });
 
-    expect(screen.getByText('Loading classroom...')).toBeInTheDocument();
+    expect(
+      screen.getByRole('status', {
+        hidden: false,
+      }),
+    ).toBeInTheDocument();
     classroomDeferred.resolve(500);
     expect(
       await screen.findByText(

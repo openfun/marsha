@@ -71,7 +71,7 @@ describe('<SchedulingAndDescription />', () => {
       name: 'Description...',
     });
     expect(textArea).toHaveValue('An example description');
-    screen.getByPlaceholderText('Description...');
+    expect(screen.getByText('Description...')).toBeInTheDocument();
   });
 
   it('schedules a meeting', async () => {
@@ -289,7 +289,7 @@ describe('<SchedulingAndDescription />', () => {
     const textArea = screen.getByRole('textbox', {
       name: 'Description...',
     });
-    screen.getByPlaceholderText('Description...');
+    expect(screen.getByText('Description...')).toBeInTheDocument();
     expect(textArea).toHaveValue('');
 
     userEvent.type(textArea, 'A new description');

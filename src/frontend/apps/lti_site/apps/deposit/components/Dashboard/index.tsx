@@ -1,10 +1,9 @@
 import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
+import { theme } from 'lib-common';
 import { useCurrentResourceContext, UploadManager } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-
-import { theme } from 'utils/theme/theme';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useFileDepository } from 'apps/deposit/data/queries';

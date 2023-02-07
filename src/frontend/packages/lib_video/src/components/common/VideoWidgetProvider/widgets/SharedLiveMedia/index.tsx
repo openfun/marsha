@@ -161,7 +161,6 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
             />
             <Button
               a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
-              color="blue-active"
               fill="horizontal"
               label={intl.formatMessage(messages.uploadButtonLabel)}
               onClick={() => {
@@ -182,7 +181,6 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
             1 && (
             <Button
               a11yTitle={intl.formatMessage(messages.downloadAllLabel)}
-              color="blue-active"
               fill="horizontal"
               label={intl.formatMessage(messages.downloadAllLabel)}
               onClick={downloadAllMedia}

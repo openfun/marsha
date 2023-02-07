@@ -137,7 +137,6 @@ export const LocalizedTimedTextTrackUpload = ({
       />
       <Button
         a11yTitle={intl.formatMessage(messages.uploadButtonLabel)}
-        color="blue-active"
         fill="horizontal"
         label={intl.formatMessage(messages.uploadButtonLabel)}
         onClick={() => {
