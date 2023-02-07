@@ -62,6 +62,7 @@ describe('<UploadSubtitles />', () => {
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
       title: 'Subtitles',
       text: 'This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists.',
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 });

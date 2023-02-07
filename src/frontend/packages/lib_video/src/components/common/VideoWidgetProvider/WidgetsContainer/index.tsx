@@ -46,6 +46,7 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         <InfoModal
           text={infoWidgetModal.text}
           title={infoWidgetModal.title}
+          refWidget={infoWidgetModal.refWidget}
           onModalClose={() => setInfoWidgetModal(null)}
         />
       )}

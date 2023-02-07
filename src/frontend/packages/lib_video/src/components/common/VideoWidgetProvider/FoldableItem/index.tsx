@@ -1,6 +1,6 @@
 import { Box, Button, Collapsible, Text } from 'grommet';
 import { DownArrowSVG, InfoCircleSVG } from 'lib-components';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
@@ -34,9 +34,11 @@ export const FoldableItem = ({
   const intl = useIntl();
   const [open, setOpen] = useState(initialOpenValue);
   const [_, setInfoWidgetModalProvider] = useInfoWidgetModal();
+  const refWidget = useRef<HTMLDivElement>(null);
 
   return (
     <Box
+      ref={refWidget}
       background="white"
       direction="column"
       round="6px"
@@ -59,6 +61,7 @@ export const FoldableItem = ({
             setInfoWidgetModalProvider({
               text: infoText,
               title,
+              refWidget: refWidget.current,
             });
           }}
           plain

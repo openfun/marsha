@@ -4,6 +4,7 @@ import { createStore } from 'lib-components';
 interface InformativeModal {
   title: string;
   text: string;
+  refWidget?: HTMLDivElement | null;
 }
 
 const store = createStore<Nullable<InformativeModal>>(

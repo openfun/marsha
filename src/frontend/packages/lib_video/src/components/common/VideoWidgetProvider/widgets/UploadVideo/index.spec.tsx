@@ -83,6 +83,7 @@ describe('<UploadVideo />', () => {
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: 'Video',
       text: 'This widget allows you to upload a video to replace the current one.',
+      refWidget: expect.any(HTMLDivElement),
     });
 
     screen.getByText('Video available');

@@ -88,6 +88,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: 'Thumbnail',
       text: 'This widget allows you to change the default thumbnail used for your live. The uploaded image should have a 16:9 ratio.',
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 
@@ -310,6 +311,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: 'Thumbnail',
       text: 'This widget allows you to change the default thumbnail used for your VOD. The uploaded image should have a 16:9 ratio.',
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 });

@@ -59,6 +59,7 @@ describe('<UploadClosedCaptions />', () => {
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
       title: 'Closed captions',
       text: 'This widget allows you upload closed captions for the video.',
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 });
