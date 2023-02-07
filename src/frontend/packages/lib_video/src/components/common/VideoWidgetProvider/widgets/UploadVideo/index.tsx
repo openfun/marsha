@@ -140,7 +140,6 @@ export const UploadVideo = () => {
         />
         <Button
           a11yTitle={intl.formatMessage(messages.replaceVideoButtonLabel)}
-          color="blue-active"
           fill="horizontal"
           label={intl.formatMessage(messages.replaceVideoButtonLabel)}
           onClick={() =>

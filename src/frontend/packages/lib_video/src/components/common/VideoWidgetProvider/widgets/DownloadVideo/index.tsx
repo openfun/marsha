@@ -192,7 +192,6 @@ export const DownloadVideo = ({ isTeacher }: DownloadVideoProps) => {
         />
         <StyledAnchorButton
           a11yTitle={intl.formatMessage(messages.downloadButtonLabel)}
-          color="blue-active"
           download
           disabled={isResolutionsEmpty}
           fill="horizontal"

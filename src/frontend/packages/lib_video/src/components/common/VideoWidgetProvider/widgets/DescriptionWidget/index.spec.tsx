@@ -54,7 +54,9 @@ describe('<DescriptionWidget />', () => {
       name: 'Write a description to your video here.',
     });
     expect(textArea).toHaveValue('An example description');
-    screen.getByPlaceholderText('Write a description to your video here.');
+    expect(
+      screen.getByText('Write a description to your video here.'),
+    ).toBeInTheDocument();
   });
 
   it('types some text in an empty text area', async () => {
@@ -80,7 +82,9 @@ describe('<DescriptionWidget />', () => {
     const textArea = screen.getByRole('textbox', {
       name: 'Write a description to your video here.',
     });
-    screen.getByPlaceholderText('Write a description to your video here.');
+    expect(
+      screen.getByText('Write a description to your video here.'),
+    ).toBeInTheDocument();
     expect(textArea).toHaveValue('');
 
     userEvent.type(textArea, 'A new description');
@@ -168,7 +172,9 @@ describe('<DescriptionWidget />', () => {
     const textArea = screen.getByRole('textbox', {
       name: 'Write a description to your video here.',
     });
-    screen.getByPlaceholderText('Write a description to your video here.');
+    expect(
+      screen.getByText('Write a description to your video here.'),
+    ).toBeInTheDocument();
     expect(textArea).toHaveValue('An existing description');
 
     userEvent.type(textArea, ' and more');

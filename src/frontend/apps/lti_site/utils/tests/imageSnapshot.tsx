@@ -1,12 +1,12 @@
 import { cleanup, render } from '@testing-library/react';
 import { generateImage, GenerateImageOptions } from 'jsdom-screenshot';
 import { Grommet } from 'grommet';
+import { theme } from 'lib-common';
 import React from 'react';
 import path from 'path';
 
 import { wrapInIntlProvider } from './intl';
 import { wrapInRouter } from './router';
-import { theme } from '../theme/theme';
 import { GlobalStyles } from '../theme/baseStyles';
 
 const checkSnapshot = () => {
