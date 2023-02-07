@@ -245,6 +245,22 @@ watch-front: ## Build front application and activate watch mode
 	@$(YARN) build-lti --watch
 .PHONY: watch-front
 
+clean-front-modules: ## Clean front application modules
+	rm -rf src/frontend/node_modules
+	rm -rf src/frontend/apps/lti_site/node_modules
+	rm -rf src/frontend/apps/standalone_site/node_modules
+	rm -rf src/frontend/packages/lib_*/node_modules
+.PHONY: clean-front
+
+clean-front-libs: ## Clean front application libs
+	rm -fr src/frontend/packages/lib_*/lib/*
+.PHONY: clean-front
+
+clean-front: ## Clean front application
+	@$(MAKE) clean-front-modules
+	@$(MAKE) clean-front-libs
+.PHONY: clean-front
+
 ## -- AWS
 
 lambda-install-dev-dependencies: ## Install all lambda dependencies
