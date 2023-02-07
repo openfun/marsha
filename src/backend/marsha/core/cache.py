@@ -53,16 +53,16 @@ class RedisCacheWithFallback(BaseCache):
             logger.warning("[DEGRADED CACHE MODE] - Switch to fallback cache")
             logger.exception(exception)
             return self._call_fallback_cache(method, args, kwargs)
-        else:
-            self._invalidate_fallback_cache()
-            return next_cache_state
+
+        self._invalidate_fallback_cache()
+        return next_cache_state
 
     @throttle(FALLBACK_CACHE_INVALIDATION_INTERVAL)  # 60 seconds
     def _invalidate_fallback_cache(self):
         """
         Clear asynchronously cache in the fallback cache.
         """
-        self._fallback_cache.aclear()
+        self._fallback_cache.clear()
 
     def _call_redis_cache(self, method, args, kwargs):
         """
