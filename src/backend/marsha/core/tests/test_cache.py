@@ -109,7 +109,7 @@ class RedisCacheWithFallbackTestCase(TestCase):
             },
         }
     )
-    @mock.patch.object(DummyCache, "aclear")
+    @mock.patch.object(DummyCache, "clear")
     @mock.patch.object(RedisCacheWithFallback, "_call_redis_cache")
     def test_invalidate_fallback_cache(self, redis_cache_mock, clear_mock):
         """
