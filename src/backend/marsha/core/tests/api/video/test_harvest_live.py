@@ -1,5 +1,5 @@
 """Tests for the Video harvest live API of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import timedelta
 import json
 import random
 from unittest import mock
@@ -8,17 +8,7 @@ from django.test import TestCase, override_settings
 
 from marsha.core import api, factories
 from marsha.core.api import timezone
-from marsha.core.defaults import (
-    HARVESTING,
-    IDLE,
-    JITSI,
-    LIVE_CHOICES,
-    PENDING,
-    RAW,
-    RUNNING,
-    STOPPED,
-    STOPPING,
-)
+from marsha.core.defaults import HARVESTING, IDLE, JITSI, LIVE_CHOICES, PENDING, STOPPED
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -243,127 +233,6 @@ class VideoHarvestLiveAPITest(TestCase):
                     "jid": "conference.xmpp-server.com",
                     "websocket_url": None,
                 },
-                "tags": [],
-                "license": None,
-            },
-        )
-        video.refresh_from_db()
-        self.assertEqual(
-            video.recording_slices,
-            [
-                {
-                    "start": to_timestamp(start),
-                    "stop": to_timestamp(stop),
-                    "status": PENDING,
-                }
-            ],
-        )
-
-    @override_settings(LIVE_CHAT_ENABLED=False)
-    def test_api_video_instructor_stop_live_recording_slice(self):
-        """When a video is stopped during recording, recording should be stopped."""
-        start = datetime(2021, 11, 16, tzinfo=timezone.utc)
-        stop = start + timedelta(minutes=10)
-        video = factories.VideoFactory(
-            id="27a23f52-3379-46a2-94fa-697b59cfe3c7",
-            playlist__title="foo bar",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
-            recording_slices=[{"start": to_timestamp(start)}],
-            upload_state=PENDING,
-            live_state=RUNNING,
-            live_info={
-                "medialive": {
-                    "input": {
-                        "id": "medialive_input_1",
-                        "endpoints": [
-                            "https://live_endpoint1",
-                            "https://live_endpoint2",
-                        ],
-                    },
-                    "channel": {"id": "medialive_channel_1"},
-                },
-                "mediapackage": {
-                    "id": "mediapackage_channel_1",
-                    "endpoints": {
-                        "hls": {
-                            "id": "endpoint1",
-                            "url": "https://channel_endpoint1/live.m3u8",
-                        },
-                    },
-                },
-            },
-            live_type=RAW,
-        )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
-
-        # stop a live video,
-        with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
-            api.video, "stop_live_channel"
-        ), mock.patch(
-            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
-            response = self.client.post(
-                f"/api/videos/{video.id}/stop-live/",
-                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            )
-            mock_dispatch_video_to_groups.assert_called_once_with(video)
-        self.assertEqual(response.status_code, 200)
-        content = json.loads(response.content)
-
-        self.assertEqual(
-            content,
-            {
-                "active_shared_live_media": None,
-                "active_shared_live_media_page": None,
-                "allow_recording": True,
-                "description": video.description,
-                "estimated_duration": None,
-                "has_chat": True,
-                "has_live_media": True,
-                "id": str(video.id),
-                "title": video.title,
-                "active_stamp": None,
-                "is_public": False,
-                "is_ready_to_show": True,
-                "is_recording": False,
-                "is_scheduled": False,
-                "join_mode": "approval",
-                "show_download": True,
-                "starting_at": None,
-                "upload_state": PENDING,
-                "thumbnail": None,
-                "timed_text_tracks": [],
-                "urls": {
-                    "manifests": {
-                        "hls": "https://channel_endpoint1/live.m3u8",
-                    },
-                    "mp4": {},
-                    "thumbnails": {},
-                },
-                "should_use_subtitle_as_transcript": False,
-                "has_transcript": False,
-                "participants_asking_to_join": [],
-                "participants_in_discussion": [],
-                "playlist": {
-                    "id": str(video.playlist.id),
-                    "title": "foo bar",
-                    "lti_id": "course-v1:ufr+mathematics+00001",
-                },
-                "recording_time": 600,
-                "shared_live_medias": [],
-                "live_state": STOPPING,
-                "live_info": {
-                    "medialive": {
-                        "input": {
-                            "endpoints": [
-                                "https://live_endpoint1",
-                                "https://live_endpoint2",
-                            ],
-                        }
-                    },
-                },
-                "live_type": RAW,
-                "xmpp": None,
                 "tags": [],
                 "license": None,
             },
