@@ -53,4 +53,47 @@ describe('<InfoModal />', () => {
 
     expect(mockModalOnClose).toHaveBeenCalledTimes(1);
   });
+
+  it('renders the modal above the calling components', () => {
+    const ref = {
+      current: {
+        offsetTop: 100,
+      },
+    };
+
+    render(
+      <InfoModal
+        text={genericContent}
+        title={genericTitle}
+        onModalClose={mockModalOnClose}
+        refWidget={ref.current as unknown as HTMLDivElement}
+      />,
+    );
+
+    expect(screen.getByTestId('info-modal')).toHaveStyle('margin-top: -100px');
+  });
+
+  it('renders the modal on the top if Firefox browser', () => {
+    jest
+      .spyOn(window.navigator, 'userAgent', 'get')
+      .mockReturnValue(
+        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0',
+      );
+    const ref = {
+      current: {
+        offsetTop: 100,
+      },
+    };
+
+    render(
+      <InfoModal
+        text={genericContent}
+        title={genericTitle}
+        onModalClose={mockModalOnClose}
+        refWidget={ref.current as unknown as HTMLDivElement}
+      />,
+    );
+
+    expect(screen.getByTestId('info-modal')).toHaveStyle('margin-top: 200px');
+  });
 });

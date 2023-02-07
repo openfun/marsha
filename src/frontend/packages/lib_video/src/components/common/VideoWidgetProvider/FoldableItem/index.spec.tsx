@@ -84,6 +84,7 @@ describe('<FoldableItem />', () => {
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: genericTitle,
       text: genericInfoText,
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 });

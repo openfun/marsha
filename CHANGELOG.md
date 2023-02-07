@@ -15,6 +15,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- lti:
+  - position modal above tooltip
 - mutualize all CronJob in a CronJobList
 
 ## [4.0.0-beta.15] - 2023-02-02
