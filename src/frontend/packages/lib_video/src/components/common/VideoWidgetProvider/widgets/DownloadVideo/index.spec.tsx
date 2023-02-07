@@ -53,6 +53,7 @@ describe('<InstructorDownloadVideo />', () => {
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: 'Download video',
       text: 'This widget allows you to download the video, with the available quality you desire.',
+      refWidget: expect.any(HTMLDivElement),
     });
 
     const button = screen.getByRole('button', {

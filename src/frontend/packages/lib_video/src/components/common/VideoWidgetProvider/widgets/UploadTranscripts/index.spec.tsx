@@ -60,6 +60,7 @@ describe('<UploadTranscripts />', () => {
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
       title: 'Transcripts',
       text: 'This widget allows you upload transcripts for the video.',
+      refWidget: expect.any(HTMLDivElement),
     });
   });
 });
