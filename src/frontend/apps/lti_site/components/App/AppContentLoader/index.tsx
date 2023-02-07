@@ -1,4 +1,5 @@
 import { Grommet } from 'grommet';
+import { colors, theme } from 'lib-common';
 import {
   CurrentResourceContextProvider,
   decodeJwt,
@@ -30,7 +31,6 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';
-import { colors, theme } from 'utils/theme/theme';
 
 const messages = defineMessages({
   errorJwtEmpty: {

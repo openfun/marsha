@@ -29,7 +29,7 @@ describe('<TextAreaInput />', () => {
       />,
     );
 
-    screen.getByPlaceholderText('An example placeholder');
+    expect(screen.getByText('An example placeholder')).toBeInTheDocument();
 
     const textInput = screen.getByRole('textbox', { name: 'An example title' });
     userEvent.type(textInput, 'An example typed text');
@@ -50,6 +50,6 @@ describe('<TextAreaInput />', () => {
 
     const textInput = screen.getByRole('textbox', { name: 'An example title' });
     expect(textInput).toHaveValue('An example typed text');
-    screen.getByPlaceholderText('An example placeholder');
+    expect(screen.getByText('An example placeholder')).toBeInTheDocument();
   });
 });

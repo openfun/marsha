@@ -1,5 +1,4 @@
-import { Box, Text, ThemeContext } from 'grommet';
-import { theme } from 'lib-common';
+import { Box, Text } from 'grommet';
 import {
   DashedBoxCustom,
   SchedulingFields,
@@ -106,24 +105,22 @@ export const SchedulingAndDescription = () => {
       title={intl.formatMessage(messages.title)}
     >
       <Box direction="column" gap="small">
-        <ThemeContext.Extend value={theme}>
-          <SchedulingFields
-            estimatedDuration={video.estimated_duration}
-            disabled={video.live_state !== liveState.IDLE}
-            margin="none"
-            onEstimatedDurationChange={(estimatedDuration) => {
-              debouncedUpdatedVideo({
-                estimated_duration: estimatedDuration,
-              });
-            }}
-            onStartingAtChange={(startingAt) => {
-              debouncedUpdatedVideo({
-                starting_at: startingAt,
-              });
-            }}
-            startingAt={video.starting_at}
-          />
-        </ThemeContext.Extend>
+        <SchedulingFields
+          estimatedDuration={video.estimated_duration}
+          disabled={video.live_state !== liveState.IDLE}
+          margin="none"
+          onEstimatedDurationChange={(estimatedDuration) => {
+            debouncedUpdatedVideo({
+              estimated_duration: estimatedDuration,
+            });
+          }}
+          onStartingAtChange={(startingAt) => {
+            debouncedUpdatedVideo({
+              starting_at: startingAt,
+            });
+          }}
+          startingAt={video.starting_at}
+        />
 
         <DashedBoxCustom>
           {video.starting_at ? (

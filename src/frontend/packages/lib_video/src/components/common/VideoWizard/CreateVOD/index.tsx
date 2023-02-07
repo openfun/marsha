@@ -202,7 +202,6 @@ export const CreateVOD = ({
         >
           <Button
             a11yTitle={intl.formatMessage(messages.goBackButtonLabel)}
-            color="blue-active"
             disabled={formState !== FormState.WAITING_FOR_SUBMIT}
             label={intl.formatMessage(messages.goBackButtonLabel)}
             secondary
@@ -213,7 +212,6 @@ export const CreateVOD = ({
 
           <Button
             a11yTitle={intl.formatMessage(messages.createVideoButtonLabel)}
-            color="blue-active"
             disabled={!canValid || formState !== FormState.WAITING_FOR_SUBMIT}
             label={intl.formatMessage(messages.createVideoButtonLabel)}
             onClick={() => {

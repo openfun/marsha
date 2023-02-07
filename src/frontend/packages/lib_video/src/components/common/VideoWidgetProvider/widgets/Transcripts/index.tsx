@@ -172,7 +172,6 @@ export const Transcripts = () => {
         <Box width="50%">
           <Button
             a11yTitle={intl.formatMessage(messages.transcriptDownload)}
-            color="blue-active"
             download
             disabled={!selectedTranscript.transcript}
             label={intl.formatMessage(messages.transcriptDownload)}

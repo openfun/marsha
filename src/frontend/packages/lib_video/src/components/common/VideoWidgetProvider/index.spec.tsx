@@ -127,7 +127,7 @@ describe('<VideoWidgetProvider />', () => {
       name: 'Description...',
     });
     expect(textArea).toHaveValue('An example description');
-    screen.getByPlaceholderText('Description...');
+    expect(screen.getByText('Description...')).toBeInTheDocument();
 
     // LivePairing
     const openButton = screen.getByRole('button', {
