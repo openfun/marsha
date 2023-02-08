@@ -25,7 +25,9 @@
         "react-dom",
         "react-intl",
         "react-router-dom",
-        "react-test-renderer"
+        "react-test-renderer",
+        "video.js",
+        "videojs-contrib-quality-levels"
       ]
     },
     {
