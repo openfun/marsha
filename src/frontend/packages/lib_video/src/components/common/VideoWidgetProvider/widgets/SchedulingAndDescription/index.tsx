@@ -8,7 +8,7 @@ import {
   report,
 } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
-import React, { Fragment, useEffect, useState } from 'react';
+import React, { Fragment, useRef, useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -69,6 +69,7 @@ const messages = defineMessages({
 export const SchedulingAndDescription = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
+  const descriptionInit = useRef(video.description);
   const [description, setDescription] = useState(video.description);
 
   const videoMutation = useUpdateVideo(video.id, {
@@ -92,11 +93,17 @@ export const SchedulingAndDescription = () => {
     (updatedVideoProperty: Partial<Video>) => {
       videoMutation.mutate(updatedVideoProperty);
     },
+    1000,
   );
 
   useEffect(() => {
-    setDescription(video.description);
-  }, [video.description]);
+    const isIdle = descriptionInit.current === description;
+    const isWriting = description !== video.description;
+    if (isIdle || !isWriting) {
+      setDescription(video.description);
+      descriptionInit.current = video.description;
+    }
+  }, [description, video.description]);
 
   return (
     <FoldableItem
