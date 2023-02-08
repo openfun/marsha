@@ -24,8 +24,6 @@ import {
   useThumbnail,
   useTimedTextTracks,
   useUpdatePlaylist,
-  useVideo,
-  useVideos,
 } from '.';
 
 setLogger({
@@ -512,99 +510,6 @@ describe('queries', () => {
           playlist: video.playlist.id,
           title: video.title,
         }),
-      });
-      expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-    });
-  });
-
-  describe('useVideo', () => {
-    it('requests the resource', async () => {
-      const video = videoMockFactory();
-      fetchMock.mock(`/api/videos/${video.id}/`, video);
-
-      const { result, waitFor } = renderHook(() => useVideo(video.id), {
-        wrapper: Wrapper,
-      });
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-      });
-      expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-    });
-
-    it('fails to get the resource', async () => {
-      const video = videoMockFactory();
-      fetchMock.mock(`/api/videos/${video.id}/`, 404);
-
-      const { result, waitFor } = renderHook(() => useVideo(video.id), {
-        wrapper: Wrapper,
-      });
-
-      await waitFor(() => result.current.isError);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${video.id}/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-      });
-      expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-    });
-  });
-
-  describe('useVideos', () => {
-    it('requests the resource list', async () => {
-      const videos = Array(4).fill(videoMockFactory());
-      fetchMock.mock('/api/videos/?limit=999&organization=1', videos);
-
-      const { result, waitFor } = renderHook(
-        () => useVideos({ organization: '1' }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/videos/?limit=999&organization=1',
-      );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-      });
-      expect(result.current.data).toEqual(videos);
-      expect(result.current.status).toEqual('success');
-    });
-
-    it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/videos/?limit=999&organization=1', 404);
-
-      const { result, waitFor } = renderHook(
-        () => useVideos({ organization: '1' }),
-        { wrapper: Wrapper },
-      );
-
-      await waitFor(() => result.current.isError);
-
-      expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/videos/?limit=999&organization=1',
-      );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
