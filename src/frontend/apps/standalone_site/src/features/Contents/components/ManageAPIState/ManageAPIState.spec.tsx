@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 
-import ManageAPIState from '.';
+import ManageAPIState from './ManageAPIState';
 
 describe('<ManageAPIState/>', () => {
   test('state without content default', () => {
