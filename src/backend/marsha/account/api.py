@@ -85,7 +85,7 @@ class SamlFerIdpListAPIView(SocialBackendViewMixin, APIView):
         # Sort the IdPs by display name
         available_idps = sorted(
             available_idps,
-            key=lambda idp: idp["edu_fed_data"]["display_name"],
+            key=lambda idp: idp["edu_fed_data"]["display_name"].casefold(),
         )
 
         base_login_url = request.build_absolute_uri(
