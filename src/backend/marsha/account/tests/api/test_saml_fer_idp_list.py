@@ -54,7 +54,7 @@ class MetadataUrlOpenMock:
             ),
         ),
         generate_idp_metadata(
-            ui_info_display_names=format_mdui_display_name("Local accepting IdP"),
+            ui_info_display_names=format_mdui_display_name("local accepting IdP"),
             organization_names=format_md_organization_name("Local organization name"),
             organization_display_names=format_md_organization_display_name(
                 "Local organization display name"
@@ -115,7 +115,7 @@ class SamlFerIdpListAPIViewTest(TestCase):
                 },
                 {
                     "id": "local-accepting-idp",
-                    "display_name": "Local accepting IdP",
+                    "display_name": "local accepting IdP",
                     "organization_name": "Local organization name",
                     "organization_display_name": "Local organization display name",
                     "logo": DEFAULT_LOGO,
@@ -149,7 +149,7 @@ class SamlFerIdpListAPIViewTest(TestCase):
             [
                 {
                     "id": "local-accepting-idp",
-                    "display_name": "Local accepting IdP",
+                    "display_name": "local accepting IdP",
                     "organization_name": "Local organization name",
                     "organization_display_name": "Local organization display name",
                     "logo": DEFAULT_LOGO,
