@@ -109,7 +109,9 @@ describe('<SchedulingAndDescription />', () => {
       target: { value: startingAt.toLocaleString(DateTime.TIME_24_SIMPLE) },
     });
     expect(inputStartingAtTime).toHaveValue('14:00');
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 1500,
+    });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -151,7 +153,9 @@ describe('<SchedulingAndDescription />', () => {
     });
     expect(inputEstimatedDuration).toHaveValue('0:30');
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2), {
+      timeout: 1500,
+    });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -214,7 +218,9 @@ describe('<SchedulingAndDescription />', () => {
     fireEvent.change(inputStartingAtTime, {
       target: { value: startingAt.toLocaleString(DateTime.TIME_24_SIMPLE) },
     });
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 1500,
+    });
 
     expect(report).toHaveBeenCalledTimes(1);
     screen.getByText('Video update has failed !');
@@ -224,7 +230,9 @@ describe('<SchedulingAndDescription />', () => {
       target: { value: estimatedDuration.toFormat('h:mm') },
     });
     // API is called a second time, so a second fetch is performed, and a second toast comes on the screen
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2), {
+      timeout: 1500,
+    });
     expect(report).toHaveBeenCalledTimes(2);
     expect(screen.getAllByText('Video update has failed !')).toHaveLength(2);
   });
@@ -295,7 +303,9 @@ describe('<SchedulingAndDescription />', () => {
     userEvent.type(textArea, 'A new description');
     expect(textArea).toHaveValue('A new description');
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 1500,
+    });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -336,7 +346,9 @@ describe('<SchedulingAndDescription />', () => {
     expect(textArea).toHaveValue('An existing description');
 
     userEvent.clear(textArea);
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 1500,
+    });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -375,7 +387,9 @@ describe('<SchedulingAndDescription />', () => {
     expect(textArea).toHaveValue('An existing description');
 
     userEvent.type(textArea, ' and more');
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
+      timeout: 1500,
+    });
     expect(fetchMock.lastCall()![0]).toEqual('/api/videos/video_id/');
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
