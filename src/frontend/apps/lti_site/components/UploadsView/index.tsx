@@ -6,10 +6,10 @@ import {
   useUploadManager,
   UploadableObjectProgress,
 } from 'lib-components';
+import { useVideo } from 'lib-video';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { useVideo } from 'data/queries';
 import { Icon } from 'components/Icon';
 
 const messages = defineMessages({

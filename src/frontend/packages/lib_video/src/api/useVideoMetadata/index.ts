@@ -1,15 +1,7 @@
-import { fetchOne, metadata, Video } from 'lib-components';
+import { metadata } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { VideoMetadata } from 'types/metadata';
-
-export const useVideo = (
-  videoId: string,
-  queryConfig?: UseQueryOptions<Video, 'videos', Video>,
-) => {
-  const key = ['videos', videoId];
-  return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
-};
 
 export const useVideoMetadata = (
   locale: string,
