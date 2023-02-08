@@ -150,14 +150,6 @@ export const useLiveAttendances = (
   >(key, fetchList, queryConfig);
 };
 
-export const useVideo = (
-  videoId: string,
-  queryConfig?: UseQueryOptions<Video, 'videos', Video>,
-) => {
-  const key = ['videos', videoId];
-  return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
-};
-
 export type UseCreateVideoData = {
   playlist: string;
   title: string;
@@ -190,25 +182,6 @@ export const useCreateVideo = (options?: UseCreateVideoOptions) => {
         }
       },
     },
-  );
-};
-
-type VideosResponse = APIList<Video>;
-type UseVideosParams = Maybe<{ organization?: string; playlist?: string }>;
-export const useVideos = (
-  params: UseVideosParams,
-  queryConfig?: UseQueryOptions<
-    VideosResponse,
-    'videos',
-    VideosResponse,
-    FetchListQueryKey
-  >,
-) => {
-  const key: FetchListQueryKey = ['videos', params];
-  return useQuery<VideosResponse, 'videos', VideosResponse, FetchListQueryKey>(
-    key,
-    fetchList,
-    queryConfig,
   );
 };
 

@@ -26,3 +26,4 @@ export * from './useStopLiveRecording';
 export * from './useStopSharingMedia';
 export * from './usePairingVideo';
 export * from './useVideoMetadata';
+export * from './useVideos';
