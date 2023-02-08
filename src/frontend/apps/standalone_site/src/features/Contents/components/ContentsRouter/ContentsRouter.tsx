@@ -1,9 +1,9 @@
 import { Route, Switch } from 'react-router-dom';
 
-import { ClassRoomRouter } from 'features/Contents';
+import { ClassRoomRouter, VideoRouter } from 'features/Contents';
 import { routes } from 'routes';
 
-import Contents from './Contents/Contents';
+import Contents from '../Contents/Contents';
 
 const ContentsRouter = () => {
   return (
@@ -13,6 +13,9 @@ const ContentsRouter = () => {
       </Route>
       <Route path={routes.CONTENTS.subRoutes.CLASSROOM.path}>
         <ClassRoomRouter />
+      </Route>
+      <Route path={routes.CONTENTS.subRoutes.VIDEO.path}>
+        <VideoRouter />
       </Route>
     </Switch>
   );
