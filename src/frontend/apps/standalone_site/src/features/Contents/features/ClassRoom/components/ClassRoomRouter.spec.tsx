@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 
-import ClassRoom from './ClassRoomRouter';
+import ClassRoomRouter from './ClassRoomRouter';
 
 jest.mock('./Read/ClassRooms', () => ({
   __esModule: true,
@@ -18,13 +18,13 @@ jest.mock('./Update/ClassRoomUpdate', () => ({
   ),
 }));
 
-describe('<ClassRoom/>', () => {
+describe('<ClassRoomRouter/>', () => {
   afterEach(() => {
     jest.resetAllMocks();
   });
 
   test('render classroom', () => {
-    render(<ClassRoom />, {
+    render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom'] },
     });
     expect(screen.getByText('Classrooms')).toBeInTheDocument();
@@ -35,7 +35,9 @@ describe('<ClassRoom/>', () => {
   });
 
   test('render classroom no match', () => {
-    render(<ClassRoom />, { routerOptions: { history: ['/some/bad/route'] } });
+    render(<ClassRoomRouter />, {
+      routerOptions: { history: ['/some/bad/route'] },
+    });
     expect(
       screen.getByRole('button', { name: 'Create Classroom' }),
     ).toBeInTheDocument();
@@ -43,7 +45,7 @@ describe('<ClassRoom/>', () => {
   });
 
   test('render create classroom', async () => {
-    render(<ClassRoom />, {
+    render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/create'] },
     });
     expect(screen.getByText('Classrooms')).toBeInTheDocument();
@@ -57,7 +59,7 @@ describe('<ClassRoom/>', () => {
   });
 
   test('render update classroom', () => {
-    render(<ClassRoom />, {
+    render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/123456'] },
     });
     expect(screen.getByText('My ClassRoomUpdate')).toBeInTheDocument();
@@ -65,7 +67,7 @@ describe('<ClassRoom/>', () => {
   });
 
   test('render invite classroom', () => {
-    render(<ClassRoom />, {
+    render(<ClassRoomRouter />, {
       routerOptions: {
         history: ['/my-contents/classroom/123456/invite/123456'],
       },
@@ -75,7 +77,7 @@ describe('<ClassRoom/>', () => {
   });
 
   test('render invite classroom without inviteId', () => {
-    render(<ClassRoom />, {
+    render(<ClassRoomRouter />, {
       routerOptions: {
         history: ['/my-contents/classroom/123456/invite/'],
       },

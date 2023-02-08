@@ -3,6 +3,7 @@ import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 //import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
+import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
@@ -80,7 +81,7 @@ enum ERouteNames {
   PASSWORD_RESET_CONFIRM = 'PASSWORD_RESET_CONFIRM',
 }
 enum EMyContentsSubRouteNames {
-  //VIDEO = 'VIDEO',
+  VIDEO = 'VIDEO',
   //LIVE = 'LIVE',
   CLASSROOM = 'CLASSROOM',
   //LESSON = 'LESSON',
@@ -272,18 +273,34 @@ export const routes: Routes = {
     path: `/my-contents`,
     menuIcon: <ContentIconSvg />,
     subRoutes: {
-      // VIDEO: {
-      //   label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
-      //   path: `/my-contents/videos`,
-      //   menuIcon: (
-      //     <CheckListIcon
-      //       width={30}
-      //       height={30}
-      //       role="img"
-      //       aria-label="svg-menu-my-contents-videos"
-      //     />
-      //   ),
-      // },
+      VIDEO: {
+        label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
+        path: `/my-contents/videos`,
+        menuIcon: (
+          <VideoIcon
+            width={24}
+            height={24}
+            role="img"
+            aria-label="svg-menu-my-contents-videos"
+          />
+        ),
+        subRoutes: {
+          CREATE: {
+            label: (
+              <FormattedMessage
+                {...messages.menuContentsClassroomCreateLabel}
+              />
+            ),
+            path: `/my-contents/videos/create`,
+          },
+          UPDATE: {
+            path: `/my-contents/videos/:videoId`,
+          },
+          INVITE: {
+            path: `/my-contents/videos/:videoId/invite/:inviteId`,
+          },
+        },
+      },
       // LIVE: {
       //   label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
       //   path: `/my-contents/lives`,
