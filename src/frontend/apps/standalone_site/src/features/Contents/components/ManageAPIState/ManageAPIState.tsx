@@ -3,7 +3,7 @@ import { Alert } from 'grommet-icons';
 import { Fragment, PropsWithChildren, ReactElement, ReactNode } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import { ReactComponent as ContentsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { ContentSpinner } from 'components/Spinner';
 
 const messages = defineMessages({
@@ -51,7 +51,7 @@ const ManageAPIState = ({
 
   let content = (
     <ContainerInfo>
-      <ClassroomsIcon width={80} height={80} />
+      <ContentsIcon width={80} height={80} />
       <Text weight="bold">
         {typeof nothingToDisplay === 'string'
           ? nothingToDisplay
