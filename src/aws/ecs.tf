@@ -30,7 +30,7 @@ resource "aws_ecs_task_definition" "marsha_ffmpeg_transmux_definition" {
       "secretOptions": null,
       "options": {
         "awslogs-group": "/ecs/${terraform.workspace}-fargate-ffmpeg-transmux",
-        "awslogs-region": "eu-west-1",
+        "awslogs-region": "${data.aws_region.current.name}",
         "awslogs-stream-prefix": "ecs"
       }
     },
