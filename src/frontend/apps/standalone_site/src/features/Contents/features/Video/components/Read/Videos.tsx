@@ -2,8 +2,7 @@ import { useVideos, VideosOrderType } from 'lib-video';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ITEM_PER_PAGE } from 'conf/global';
-import { ContentsWrapper } from 'features/Contents/';
+import { ContentsWrapper, useContentPerPage } from 'features/Contents/';
 
 import Video from './Video';
 
@@ -23,11 +22,12 @@ interface VideosProps {
 const Videos = ({ withPagination = true, limit }: VideosProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
+  const contentPerPage = useContentPerPage();
 
   const apiResponse = useVideos(
     {
-      offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
-      limit: `${limit || ITEM_PER_PAGE}`,
+      offset: `${(currentPage - 1) * contentPerPage}`,
+      limit: `${limit || contentPerPage}`,
       ordering: VideosOrderType.BY_CREATED_ON_REVERSED,
     },
     { keepPreviousData: true, staleTime: 20000 },
