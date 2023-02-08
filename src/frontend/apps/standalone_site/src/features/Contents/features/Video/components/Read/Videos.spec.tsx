@@ -1,10 +1,15 @@
 import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { ResponsiveContext } from 'grommet';
 import { useJwt, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
+import { getFullThemeExtend } from 'styles/theme.extend';
+
 import Videos from './Videos';
+
+const fullTheme = getFullThemeExtend();
 
 const mockGetDecodedJwt = jest.fn();
 
@@ -138,5 +143,25 @@ describe('<Videos/>', () => {
     render(<Videos withPagination={false} limit={1} />);
 
     expect(await screen.findByText(/New video title/)).toBeInTheDocument();
+  });
+
+  test('api limit depend the responsive', async () => {
+    fetchMock.get('/api/videos/?limit=4&offset=0&ordering=-created_on', {
+      ...someResponse,
+      count: 111,
+    });
+
+    render(
+      <ResponsiveContext.Provider value="xxsmall">
+        <Videos />
+      </ResponsiveContext.Provider>,
+      {
+        grommetOptions: {
+          theme: fullTheme,
+        },
+      },
+    );
+
+    expect(await screen.findByText('New video title')).toBeInTheDocument();
   });
 });
