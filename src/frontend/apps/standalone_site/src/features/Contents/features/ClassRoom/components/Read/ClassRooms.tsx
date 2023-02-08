@@ -1,11 +1,9 @@
-import { Pagination } from 'grommet';
 import { useClassrooms } from 'lib-classroom';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import ManageAPIState from 'components/ManageAPIState/';
 import { ITEM_PER_PAGE } from 'conf/global';
-import { ContentCards } from 'features/Contents/';
+import { ContentsWrapper } from 'features/Contents/';
 
 import ClassRoomItem from './ClassRoomItem';
 
@@ -26,11 +24,7 @@ const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
 
-  const {
-    isLoading,
-    isError,
-    data: classRooms,
-  } = useClassrooms(
+  const apiResponse = useClassrooms(
     {
       offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
       limit: `${limit || ITEM_PER_PAGE}`,
@@ -39,33 +33,19 @@ const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
   );
 
   return (
-    <ManageAPIState
-      isError={isError}
-      isLoading={isLoading}
-      itemsLength={classRooms?.results.length || 0}
-      nothingToDisplay={intl.formatMessage(messages.NoClassroom)}
-    >
-      <ContentCards>
-        {classRooms?.results.map((classroom) => (
-          <ClassRoomItem
-            key={`classroom-${classroom.id}`}
-            classroom={classroom}
-          />
-        ))}
-      </ContentCards>
-      {(classRooms?.count || 0) > ITEM_PER_PAGE && withPagination && (
-        <Pagination
-          numberItems={classRooms?.count || 0}
-          onChange={({ page: newPage }: { page: number }) => {
-            setCurrentPage(newPage);
-          }}
-          page={currentPage}
-          step={ITEM_PER_PAGE}
-          alignSelf="center"
-          margin={{ top: 'medium' }}
+    <ContentsWrapper
+      apiResponse={apiResponse}
+      dataComponent={(classroom, index) => (
+        <ClassRoomItem
+          key={`classroom-${classroom.id}-${index}`}
+          classroom={classroom}
         />
       )}
-    </ManageAPIState>
+      currentPage={currentPage}
+      setCurrentPage={(page) => setCurrentPage(page)}
+      noContentMessage={intl.formatMessage(messages.NoClassroom)}
+      withPagination={withPagination}
+    />
   );
 };
 

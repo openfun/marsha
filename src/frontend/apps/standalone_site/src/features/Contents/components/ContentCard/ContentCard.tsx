@@ -15,6 +15,7 @@ import { useResponsive } from 'hooks/useResponsive';
 
 const CardBox = styled(Box)`
   gap: 1.7rem;
+  transition: all 0.3s;
 `;
 export const ContentCards = ({
   children,
@@ -40,7 +41,7 @@ interface CardLayoutPropsExtended {
 }
 const CardLayout = styled(GrommetCard)<CardLayoutPropsExtended>`
   opacity: ${(props) => props.opacity};
-  transition: opacity 0.6s;
+  transition: opacity 0.3s;
   cursor: pointer;
 `;
 
