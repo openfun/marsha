@@ -2,7 +2,7 @@ import { Pagination } from 'grommet';
 import { APIList } from 'lib-components';
 import { UseQueryResult } from 'react-query';
 
-import { ITEM_PER_PAGE } from 'conf/global';
+import { useContentPerPage } from 'features/Contents';
 
 import { ContentCards } from '../ContentCard/ContentCard';
 import ManageAPIState from '../ManageAPIState/ManageAPIState';
@@ -25,6 +25,7 @@ const ContentsWrapper = <ContentType,>({
   withPagination = true,
 }: ContentsWrapperProps<ContentType>) => {
   const { isLoading, isFetching, isError, data: dataset } = apiResponse;
+  const contentPerPage = useContentPerPage();
 
   return (
     <ManageAPIState
@@ -36,7 +37,7 @@ const ContentsWrapper = <ContentType,>({
       <ContentCards style={isFetching ? { filter: 'blur(8px)' } : {}}>
         {dataset?.results.map((data, index) => dataComponent(data, index))}
       </ContentCards>
-      {(dataset?.count || 0) > ITEM_PER_PAGE && withPagination && (
+      {(dataset?.count || 0) > contentPerPage && withPagination && (
         <Pagination
           numberItems={dataset?.count || 0}
           onChange={({ page: newPage }: { page: number }) => {
@@ -49,9 +50,9 @@ const ContentsWrapper = <ContentType,>({
             }, 200);
           }}
           page={currentPage}
-          step={ITEM_PER_PAGE}
+          step={contentPerPage}
           alignSelf="center"
-          margin={{ top: 'medium' }}
+          margin={{ top: '2rem' }}
         />
       )}
     </ManageAPIState>

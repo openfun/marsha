@@ -2,8 +2,7 @@ import { useClassrooms } from 'lib-classroom';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ITEM_PER_PAGE } from 'conf/global';
-import { ContentsWrapper } from 'features/Contents/';
+import { ContentsWrapper, useContentPerPage } from 'features/Contents/';
 
 import ClassRoomItem from './ClassRoomItem';
 
@@ -23,11 +22,12 @@ interface ClassRoomsProps {
 const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
+  const contentPerPage = useContentPerPage();
 
   const apiResponse = useClassrooms(
     {
-      offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
-      limit: `${limit || ITEM_PER_PAGE}`,
+      offset: `${(currentPage - 1) * contentPerPage}`,
+      limit: `${limit || contentPerPage}`,
     },
     { keepPreviousData: true, staleTime: 20000 },
   );

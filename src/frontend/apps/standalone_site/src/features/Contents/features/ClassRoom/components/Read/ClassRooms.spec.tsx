@@ -1,10 +1,15 @@
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
+import { ResponsiveContext } from 'grommet';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
+import { getFullThemeExtend } from 'styles/theme.extend';
+
 import ClassRooms from './ClassRooms';
+
+const fullTheme = getFullThemeExtend();
 
 const mockGetDecodedJwt = jest.fn();
 
@@ -62,11 +67,9 @@ describe('<ClassRooms/>', () => {
     });
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Sorry, an error has occurred./i),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByText(/Sorry, an error has occurred./i),
+    ).toBeInTheDocument();
     expect(consoleError).toHaveBeenCalled();
   });
 
@@ -81,11 +84,9 @@ describe('<ClassRooms/>', () => {
 
     render(<ClassRooms />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
-    await waitFor(() => {
-      expect(
-        screen.getByText(/There is no classroom to display./i),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByText(/There is no classroom to display./i),
+    ).toBeInTheDocument();
   });
 
   test('render ClassRooms', async () => {
@@ -93,9 +94,7 @@ describe('<ClassRooms/>', () => {
 
     render(<ClassRooms />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
-    await waitFor(() => {
-      expect(screen.getByText(/some title/i)).toBeInTheDocument();
-    });
+    expect(await screen.findByText(/some title/i)).toBeInTheDocument();
     expect(screen.getByText(/some description/i)).toBeInTheDocument();
     expect(screen.getByText(/some welcome text/i)).toBeInTheDocument();
     expect(
@@ -117,11 +116,9 @@ describe('<ClassRooms/>', () => {
 
     render(<ClassRooms />);
 
-    await waitFor(() => {
-      expect(
-        screen.getByLabelText('Pagination Navigation'),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByLabelText('Pagination Navigation'),
+    ).toBeInTheDocument();
   });
 
   test('render without pagination', async () => {
@@ -148,5 +145,25 @@ describe('<ClassRooms/>', () => {
 
     expect(await screen.findByText(/some description/i)).toBeInTheDocument();
     expect(screen.getByText(/some welcome text/i)).toBeInTheDocument();
+  });
+
+  test('api limit depend the responsive', async () => {
+    fetchMock.get('/api/classrooms/?limit=4&offset=0', {
+      ...someResponse,
+      count: 111,
+    });
+
+    render(
+      <ResponsiveContext.Provider value="xxsmall">
+        <ClassRooms />
+      </ResponsiveContext.Provider>,
+      {
+        grommetOptions: {
+          theme: fullTheme,
+        },
+      },
+    );
+
+    expect(await screen.findByText('some welcome text')).toBeInTheDocument();
   });
 });
