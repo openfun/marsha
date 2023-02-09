@@ -1,9 +1,6 @@
 'use strict';
 const endpoint = 'https://example.com/recording-slices-state/';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 jest.mock('node-fetch', () => require('fetch-mock-jest').sandbox());
 const fetchMock = require('node-fetch');
 
@@ -56,9 +53,10 @@ const harvest = require('./harvest');
 
 describe('harvest', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
     fetchMock.restore();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('throws an error when the job status is not succeeded', async () => {

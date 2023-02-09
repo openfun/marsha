@@ -1,8 +1,5 @@
 process.env.S3_DESTINATION_BUCKET = 'destination bucket';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock the AWS SDK calls used in encodeTimedTextTrack
 const mockGetObject = jest.fn();
 const mockPutObject = jest.fn();
@@ -25,8 +22,9 @@ const resizeThumbnails = require('./resizeThumbnails');
 
 describe('lambda-convert/src/resizeThumbnails', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
   it('resizes uploaded image', async () => {
     mockGetObject.mockReturnValue({
