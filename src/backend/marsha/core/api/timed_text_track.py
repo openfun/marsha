@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers
+from ..metadata import TimedTextMetadata
 from ..models import TimedTextTrack
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
@@ -21,6 +22,7 @@ class TimedTextTrackViewSet(
     permission_classes = [permissions.NotAllowed]
     queryset = TimedTextTrack.objects.all()
     serializer_class = serializers.TimedTextTrackSerializer
+    metadata_class = TimedTextMetadata
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""

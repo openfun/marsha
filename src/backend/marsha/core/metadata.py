@@ -16,3 +16,13 @@ class VideoMetadata(SimpleMetadata):
         metadata["vod"] = {"upload_max_size_bytes": settings.VIDEO_SOURCE_MAX_SIZE}
 
         return metadata
+
+
+class TimedTextMetadata(SimpleMetadata):
+    """Metadata class dedicated to timedtexttrack model."""
+
+    def determine_metadata(self, request, view):
+        metadata = super().determine_metadata(request, view)
+        metadata["upload_max_size_bytes"] = settings.SUBTITLE_SOURCE_MAX_SIZE
+
+        return metadata
