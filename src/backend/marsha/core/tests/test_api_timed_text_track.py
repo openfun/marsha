@@ -832,7 +832,7 @@ class TimedTextTrackAPITest(TestCase):
         video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
-        data = {"language": "fr"}
+        data = {"language": "fr", "size": 10}
         response = self.client.post(
             "/api/timedtexttracks/",
             data,
@@ -855,6 +855,45 @@ class TimedTextTrackAPITest(TestCase):
                 "url": None,
                 "video": "f8c30d0d-2bb4-440d-9e8d-f4b231511f1f",
             },
+        )
+
+    def test_api_timed_text_create_token_user_track_no_size(self):
+        """A token user shouldn't be able to create a track if size param is not specified"""
+        video = VideoFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        data = {"language": "fr"}
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"size": ["File size is required"]},
+        )
+
+    @override_settings(SUBTITLE_SOURCE_MAX_SIZE=10)
+    def test_api_timed_text_track_create_token_user_file_too_large(self):
+        """A token user shouldn't be able to create a timed text track with a too large size"""
+        video = VideoFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        data = {"language": "fr", "video": str(video.pk), "size": 100}
+        response = self.client.post(
+            "/api/timedtexttracks/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content)
+        self.assertEqual(
+            content,
+            {"size": ["File too large, max size allowed is 10 Bytes"]},
         )
 
     def test_api_timed_text_track_create_instructor_in_read_only(self):
@@ -892,7 +931,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             "/api/timedtexttracks/",
-            {"language": "fr", "video": str(video.id)},
+            {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -918,7 +957,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             "/api/timedtexttracks/",
-            {"language": "fr", "video": str(video.id)},
+            {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -944,7 +983,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             "/api/timedtexttracks/",
-            {"language": "fr", "video": str(video.id)},
+            {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -986,7 +1025,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             "/api/timedtexttracks/",
-            {"language": "fr", "video": str(video.id)},
+            {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1013,7 +1052,7 @@ class TimedTextTrackAPITest(TestCase):
 
         response = self.client.post(
             "/api/timedtexttracks/",
-            {"language": "fr", "video": str(video.id)},
+            data={"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1038,7 +1077,7 @@ class TimedTextTrackAPITest(TestCase):
     def test_api_timed_text_track_update_detail_anonymous(self):
         """Anonymous users should not be allowed to update a timed_text_track through the API."""
         timed_text_track = TimedTextTrackFactory(language="fr")
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
         response = self.client.put(
             f"/api/timedtexttracks/{timed_text_track.id}/",
             json.dumps(data),
@@ -1398,7 +1437,7 @@ class TimedTextTrackAPITest(TestCase):
         timed_text_track_update = TimedTextTrackFactory(language="en")
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=other_video)
 
-        data = {"language": "fr"}
+        data = {"language": "fr", "size": 10}
         response = self.client.put(
             f"/api/timedtexttracks/{timed_text_track_update.id}/",
             json.dumps(data),
@@ -1435,7 +1474,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory()
 
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
 
         response = self.client.patch(
             f"/api/timedtexttracks/{track.id}/",
@@ -1465,7 +1504,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
 
         response = self.client.patch(
             f"/api/timedtexttracks/{track.id}/",
@@ -1495,7 +1534,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
 
         response = self.client.patch(
             f"/api/timedtexttracks/{track.id}/",
@@ -1526,7 +1565,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
 
         response = self.client.patch(
             f"/api/timedtexttracks/{track.id}/",
@@ -1557,7 +1596,7 @@ class TimedTextTrackAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        data = {"language": "en"}
+        data = {"language": "en", "size": 10}
 
         response = self.client.patch(
             f"/api/timedtexttracks/{track.id}/",
@@ -1818,6 +1857,11 @@ class TimedTextTrackAPITest(TestCase):
             response = self.client.post(
                 f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 10,
+                },
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2007,6 +2051,11 @@ class TimedTextTrackAPITest(TestCase):
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 10,
+                },
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2116,6 +2165,11 @@ class TimedTextTrackAPITest(TestCase):
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 10,
+                },
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
@@ -2148,6 +2202,44 @@ class TimedTextTrackAPITest(TestCase):
             },
         )
 
+    @override_settings(SUBTITLE_SOURCE_MAX_SIZE=10)
+    def test_api_timed_text_track_initiate_upload_file_too_large(self):
+        """
+        LTI user with admin role initiates upload for a timed text track for a video.
+
+        A user with admin or instructor role can't initiate an upload
+        for a timed text track if its size is too large.
+        """
+        track = TimedTextTrackFactory(
+            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
+            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
+            language="fr",
+            upload_state=random.choice(["ready", "error"]),
+            mode="cc",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=track.video)
+
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 100,
+                },
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["file too large, max size allowed is 10 Bytes"]},
+        )
 
     @override_settings(SUBTITLE_SOURCE_MAX_SIZE=10)
     def test_api_timed_text_track_options_authentified(self):
