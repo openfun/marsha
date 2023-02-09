@@ -9,4 +9,6 @@ export interface VideoMetadata extends ResourceMetadata<Video> {
   };
 }
 
-export type TimedTextMetadata = ResourceMetadata<TimedText>;
+export interface TimedTextMetadata extends ResourceMetadata<TimedText> {
+  upload_max_size_bytes: number;
+}
