@@ -3,13 +3,18 @@ import { StyledLink } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ClassRooms } from 'features/Contents';
+import { ClassRooms, Videos } from 'features/Contents';
 import { routes } from 'routes';
 
 const messages = defineMessages({
+  MyVideos: {
+    defaultMessage: 'My Videos',
+    description: 'My contents page, my videos title',
+    id: 'features.Contents.Contents.MyVideos',
+  },
   MyClassrooms: {
     defaultMessage: 'My Classrooms',
-    description: 'HomePage title',
+    description: 'My contents page, my classrooms title',
     id: 'features.Contents.Contents.MyClassrooms',
   },
   SeeEverything: {
@@ -30,6 +35,17 @@ const Contents = () => {
     <Box margin={{ top: 'medium' }}>
       <Box margin={{ top: 'medium' }}>
         <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
+          <Text weight="bolder">{intl.formatMessage(messages.MyVideos)}</Text>
+          <Text weight="bolder">
+            <StyledLink to={`${routes.CONTENTS.subRoutes.VIDEO.path}`}>
+              › {intl.formatMessage(messages.SeeEverything)}
+            </StyledLink>
+          </Text>
+        </BoxText>
+        <Videos withPagination={false} limit={4} />
+      </Box>
+      <Box margin={{ top: 'medium' }}>
+        <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
           <Text weight="bolder">
             {intl.formatMessage(messages.MyClassrooms)}
           </Text>
@@ -39,7 +55,7 @@ const Contents = () => {
             </StyledLink>
           </Text>
         </BoxText>
-        <ClassRooms withPagination={false} limit={5} />
+        <ClassRooms withPagination={false} limit={4} />
       </Box>
     </Box>
   );
