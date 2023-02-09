@@ -1,8 +1,5 @@
 'use strict';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 process.env.MEDIAPACKAGE_LAMBDA_NAME = 'mediapackage-lambda';
 
 const mockInvoke = jest.fn();
@@ -17,6 +14,8 @@ const mediapackage = require('./mediapackage');
 describe('mediapackage', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
   it('invokes the good mediapackage lambda', async () => {
     const event = {

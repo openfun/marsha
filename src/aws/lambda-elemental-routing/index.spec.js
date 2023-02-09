@@ -1,8 +1,5 @@
 'use strict';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 process.env.MEDIALIVE_LAMBDA_NAME = 'medialive-lambda';
 
 // Mock the AWS SDK calls used in encodeTimedTextTrack
@@ -22,6 +19,8 @@ const lambda = require('./index.js').handler;
 describe('lambda', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('invokes a medialive lambda', async () => {

@@ -1,8 +1,5 @@
 'use strict';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 process.env.DESTINATION_BUCKET_NAME = 'test-marsha-destination';
 const marshaUrl = 'https://marsha.tld';
 process.env.DISABLE_SSL_VALIDATION = 'false';
@@ -30,8 +27,9 @@ const check = require('./check');
 
 describe('check', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('ends the function if not all videos are transmuxed', async () => {

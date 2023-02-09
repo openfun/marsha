@@ -3,9 +3,6 @@
 const mockUpdateState = jest.fn();
 jest.doMock('update-state', () => mockUpdateState);
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log').mockReset();
-
 const lambda = require('./index.js').handler;
 
 describe('lambda', () => {

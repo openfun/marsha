@@ -8,10 +8,6 @@ import { TokenResponse } from 'types/jwt';
 
 import { fetchReconnectWrapper } from './fetchReconnectWrapper';
 
-const consoleError = jest
-  .spyOn(console, 'error')
-  .mockImplementation(() => jest.fn());
-
 jest.mock('data/sideEffects/refreshToken', () => ({
   refreshToken: jest.fn(),
 }));
@@ -23,7 +19,6 @@ describe('fetchReconnectWrapper()', () => {
   beforeEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-    consoleError.mockClear();
 
     useJwt.setState({
       jwt: 'jwt initial',
@@ -90,6 +85,9 @@ describe('fetchReconnectWrapper()', () => {
     });
 
     it('checks options.verbose', async () => {
+      const consoleError = jest
+        .spyOn(console, 'error')
+        .mockImplementation(() => jest.fn());
       const route = '/api/verbose';
       fetchMock.mock(route, 401);
       fetchMock.mock('/account/api/token/refresh/', 500);
@@ -107,6 +105,8 @@ describe('fetchReconnectWrapper()', () => {
       );
 
       expect(consoleError).toHaveBeenCalled();
+
+      consoleError.mockClear();
     });
   });
 
@@ -269,9 +269,6 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(useJwt.getState().jwt).toEqual('new access token');
       expect(useJwt.getState().refreshJwt).toEqual('new refresh token');
-
-      console.log(fetchMock.calls()[0][1]);
-      console.log(fetchMock.calls()[1][1]);
 
       expect(fetchMock.calls()[1][0]).toEqual('/api/');
       expect(fetchMock.calls()[1][1]).toEqual({

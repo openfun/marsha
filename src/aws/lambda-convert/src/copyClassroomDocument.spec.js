@@ -1,8 +1,5 @@
 process.env.S3_DESTINATION_BUCKET = 'destination_bucket';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock the AWS SDK calls used in encodeTimedTextTrack
 const mockCopyObject = jest.fn();
 jest.mock('aws-sdk', () => ({
@@ -15,8 +12,9 @@ const copyClassroomDocument = require('./copyClassroomDocument');
 
 describe('lambda-encore/src/copyClassroomDocument', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('copy a classroom document from a source to a destination bucket', async () => {

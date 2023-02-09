@@ -1,8 +1,5 @@
 'use strict';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock our own sub-modules to simplify our tests
 const mockHarvest = jest.fn();
 jest.doMock('./src/harvest', () => mockHarvest);
@@ -14,8 +11,10 @@ const lambda = require('./index.js').handler;
 
 describe('lambda mediapackage', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('throws an error when the event type is not managed', async () => {

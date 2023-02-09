@@ -20,9 +20,6 @@ const fetchMock = require('node-fetch');
 const requestStub = jest.fn();
 jest.doMock('request-promise-native', () => requestStub);
 
-// Don't pollute tests with logs intended for CloudWatch
-const mockConsoleLog = jest.spyOn(console, 'log');
-
 const mergeRecordSlicesManifest = require('./');
 
 describe('lambda/mediapackage/src/utils/mergeRecordSlicesManifest()', () => {
@@ -31,10 +28,11 @@ describe('lambda/mediapackage/src/utils/mergeRecordSlicesManifest()', () => {
     jest.resetModules();
 
     // Reset the mocks we'll be testing
-    mockConsoleLog.mockReset();
     requestStub.mockReset();
     fetchMock.mockReset();
     mockPutObject.mockReset();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('merges m3u8 manifests for a single record slice in every resolution and put them in S3', async () => {
