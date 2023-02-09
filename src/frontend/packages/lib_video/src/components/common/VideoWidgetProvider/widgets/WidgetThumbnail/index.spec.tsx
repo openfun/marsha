@@ -1,6 +1,5 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   UploadManagerContext,
@@ -15,6 +14,7 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
+import { createThumbnail } from 'api/createThumbnail';
 import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 
 import { WidgetThumbnail } from '.';
@@ -33,17 +33,18 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  report: jest.fn(),
 }));
-
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
 
-mockUseUploadManager.mockReturnValue({
-  addUpload: jest.fn(),
-  resetUpload: jest.fn(),
-  uploadManagerState: {},
-});
+jest.mock('api/createThumbnail', () => ({
+  createThumbnail: jest.fn(),
+}));
+const mockCreateThumbnail = createThumbnail as jest.MockedFunction<
+  typeof createThumbnail
+>;
 
 const mockSetInfoWidgetModal = jest.fn();
 jest.mock('hooks/useInfoWidgetModal', () => ({
@@ -62,18 +63,23 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   afterEach(() => {
-    jest.resetAllMocks();
+    jest.clearAllMocks();
     fetchMock.restore();
   });
 
-  it('renders the component with default thumbnail', () => {
+  it('renders the component with default thumbnail', async () => {
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
     render(
       <InfoWidgetModalProvider value={null}>
         <WidgetThumbnail />
       </InfoWidgetModalProvider>,
     );
 
-    screen.getByText('Thumbnail');
+    await screen.findByText('Thumbnail');
     expect(
       screen.queryByRole('button', {
         name: 'Delete thumbnail',
@@ -93,13 +99,16 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('uploads a new image', async () => {
-    const mockedThumbnail = {
-      id: faker.datatype.uuid(),
-      active_stamp: null,
-      is_ready_to_show: false,
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+    const mockedThumbnail = thumbnailMockFactory({
       upload_state: uploadState.PENDING,
-      video: faker.datatype.uuid(),
-    };
+    });
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
       addUpload: mockAddUpload,
@@ -107,7 +116,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       uploadManagerState: {},
     });
 
-    fetchMock.post('/api/thumbnails/', mockedThumbnail);
+    mockCreateThumbnail.mockResolvedValue(mockedThumbnail);
 
     render(
       <InfoWidgetModalProvider value={null}>
@@ -121,7 +130,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         </UploadManagerContext.Provider>
       </InfoWidgetModalProvider>,
     );
-    const uploadButton = screen.getByRole('button', {
+    const uploadButton = await screen.findByRole('button', {
       name: 'Upload an image',
     });
     userEvent.click(uploadButton);
@@ -131,16 +140,6 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       type: 'image/*',
     });
     userEvent.upload(hiddenInput, file);
-
-    expect(fetchMock.calls()).toHaveLength(1);
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
-    expect(fetchMock.lastCall()![1]).toEqual({
-      headers: {
-        Authorization: 'Bearer json web token',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-    });
 
     await waitFor(() =>
       expect(useThumbnail.getState().thumbnails).toEqual({
@@ -156,6 +155,13 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('ensures upload state is reset when an upload is successful', () => {
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedThumbnail = thumbnailMockFactory({
       upload_state: uploadState.PENDING,
     });
@@ -201,7 +207,14 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     expect(mockResetUpload).toHaveBeenCalledWith(mockedThumbnail.id);
   });
 
-  it('renders the component with an uploaded thumbnail', () => {
+  it('renders the component with an uploaded thumbnail', async () => {
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedThumbnail = thumbnailMockFactory({ is_ready_to_show: true });
     useThumbnail.getState().addResource(mockedThumbnail);
     mockUseUploadManager.mockReturnValue({
@@ -215,7 +228,9 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         <WidgetThumbnail />
       </InfoWidgetModalProvider>,
     );
-    const img = screen.getByRole('img', { name: 'Live video thumbnail' });
+    const img = await screen.findByRole('img', {
+      name: 'Live video thumbnail',
+    });
     expect(img.getAttribute('src')).toEqual(
       'https://example.com/default_thumbnail/144',
     );
@@ -227,6 +242,13 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('deletes an uploaded thumbnail', async () => {
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
     const mockedThumbnail = thumbnailMockFactory({ is_ready_to_show: true });
     useThumbnail.getState().addResource(mockedThumbnail);
     mockUseUploadManager.mockReturnValue({
@@ -242,7 +264,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         <WidgetThumbnail />
       </InfoWidgetModalProvider>,
     );
-    const removeButton = screen.getByRole('button', {
+    const removeButton = await screen.findByRole('button', {
       name: 'Delete thumbnail',
     });
 
@@ -255,15 +277,14 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     userEvent.click(confirmButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
-    expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/thumbnails/${mockedThumbnail.id}/`,
-    );
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
+        'Accept-Language': 'en',
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
       },
-      method: 'DELETE',
+      method: 'OPTIONS',
     });
 
     screen.getByText('Thumbnail successfully deleted.');
@@ -283,7 +304,14 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     ).toBeNull();
   });
 
-  it('renders the component with default thumbnail in a VOD context', () => {
+  it('renders the component with default thumbnail in a VOD context', async () => {
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
       resetUpload: jest.fn(),
@@ -296,7 +324,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       </InfoWidgetModalProvider>,
     );
 
-    screen.getByText('Thumbnail');
+    await screen.findByText('Thumbnail');
     expect(
       screen.queryByRole('button', {
         name: 'Delete thumbnail',
@@ -313,5 +341,53 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       text: 'This widget allows you to change the default thumbnail used for your VOD. The uploaded image should have a 16:9 ratio.',
       refWidget: expect.any(HTMLDivElement),
     });
+  });
+
+  it('fails to upload an image if the file is too large and displays an error toaster', async () => {
+    fetchMock.mock(
+      `api/thumbnails/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 6),
+      },
+      { method: 'OPTIONS' },
+    );
+    mockCreateThumbnail.mockRejectedValue({
+      size: ['File too large !'],
+    });
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    render(
+      <InfoWidgetModalProvider value={null}>
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <WidgetThumbnail />
+        </UploadManagerContext.Provider>
+      </InfoWidgetModalProvider>,
+    );
+    expect(fetchMock.called('api/thumbnails/')).toBe(true);
+    const uploadButton = await screen.findByRole('button', {
+      name: 'Upload an image',
+    });
+    userEvent.click(uploadButton);
+
+    const hiddenInput = screen.getByTestId('input-file-test-id');
+    const file = new File(['(⌐□_□)'], 'thumbnail.png', {
+      type: 'image/*',
+    });
+    userEvent.upload(hiddenInput, file);
+
+    expect(screen.queryByText('subs.srt')).not.toBeInTheDocument();
+    expect(
+      await screen.findByText('Uploaded files exceeds allowed size of 1 MB.'),
+    ).toBeInTheDocument();
   });
 });
