@@ -257,3 +257,17 @@ class VideoUploadSerializer(BaseInitiateUploadSerializer):
         an upload with a size higher than the one defined in the settings
         """
         return settings.VIDEO_SOURCE_MAX_SIZE
+
+
+class TimedTextUploadSerializer(BaseInitiateUploadSerializer):
+    """An initiate-upload serializer dedicated to subtitles"""
+
+    @property
+    def max_upload_file_size(self):
+        """returns the subtitle max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.SUBTITLE_SOURCE_MAX_SIZE
