@@ -47,6 +47,15 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
     )
     is_ready_to_show = serializers.BooleanField(read_only=True)
 
+    def to_internal_value(self, data):
+        """Validate if the size is coherent with django settings."""
+        max_file_size = settings.SUBTITLE_SOURCE_MAX_SIZE
+        if "size" in data and int(data["size"]) > max_file_size:
+            raise serializers.ValidationError(
+                {"size": [f"File too large, max size allowed is {max_file_size} Bytes"]}
+            )
+        return super().to_internal_value(data)
+
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
 
@@ -67,6 +76,9 @@ class TimedTextTrackSerializer(serializers.ModelSerializer):
         # as a proper user object through access rights
         if self.initial_data.get("video") and not resource:
             validated_data["video_id"] = self.initial_data.get("video")
+
+        if "size" not in self.initial_data:
+            raise serializers.ValidationError({"size": ["File size is required"]})
 
         # If the request regards a resource, force the video ID on the timed text track
         if not validated_data.get("video_id") and resource:
