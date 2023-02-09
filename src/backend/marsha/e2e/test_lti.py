@@ -652,24 +652,21 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
     assert video_content_items in lti_select_iframe.content()
 
 
-# TODO: make in work for other browsers
-@pytest.mark.only_browser("firefox")
+@pytest.mark.skip_browser("webkit")
 @pytest.mark.django_db()
 @pytest.mark.usefixtures("mock_video_cloud_storage")
 @override_settings(X_FRAME_OPTIONS="")
 def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_storage):
     """Test LTI Video play."""
-    page, _ = _preview_video(live_server, page, video_uploaded=True)
-
-    with page.expect_request(
-        mock_video_cloud_storage.return_value.get("mp4").get(1080)
-    ) as response_info:
-        assert 200 == response_info.value.response().status
-
-    with page.expect_request("**/xapi/video/") as request_info:
-        assert "initialized" == request_info.value.post_data_json.get("verb").get(
-            "display"
-        ).get("en-US")
+    with (
+        page.expect_request("**/media/e2e/cmaf/1622122634_480.m3u8") as response_info,
+        page.expect_request("**/xapi/video/") as request_info,
+    ):
+        page, _ = _preview_video(live_server, page, video_uploaded=True)
+    assert 200 == response_info.value.response().status
+    assert "initialized" == request_info.value.post_data_json.get("verb").get(
+        "display"
+    ).get("en-US")
 
     def check_xapi_played(request: Request):
         """Check xapi played call."""
