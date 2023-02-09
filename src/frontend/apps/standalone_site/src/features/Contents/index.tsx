@@ -4,4 +4,4 @@ export { default as ContentsWrapper } from './components/ContentsWrapper/Content
 export { default as ContentsRouter } from './components/ContentsRouter/ContentsRouter';
 export { default as ContentsShuffle } from './components/ContentsShuffle/ContentsShuffle';
 export { ClassRoomRouter, ClassRooms } from './features/ClassRoom/';
-export { VideoRouter } from './features/Video/';
+export { VideoRouter, Videos } from './features/Video/';
