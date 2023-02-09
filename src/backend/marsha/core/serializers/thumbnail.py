@@ -40,6 +40,15 @@ class ThumbnailSerializer(serializers.ModelSerializer):
     is_ready_to_show = serializers.BooleanField(read_only=True)
     urls = serializers.SerializerMethodField()
 
+    def to_internal_value(self, data):
+        """Validate if the size is coherent with django settings."""
+        max_file_size = settings.THUMBNAIL_SOURCE_MAX_SIZE
+        if "size" in data and int(data["size"]) > max_file_size:
+            raise serializers.ValidationError(
+                {"size": [f"File too large, max size allowed is {max_file_size} Bytes"]}
+            )
+        return super().to_internal_value(data)
+
     def create(self, validated_data):
         """Force the video field to the video of the JWT Token if any.
 
@@ -54,6 +63,9 @@ class ThumbnailSerializer(serializers.ModelSerializer):
             The "validated_data" dictionary is returned after modification.
 
         """
+        if "size" not in self.initial_data:
+            raise serializers.ValidationError({"size": ["File size is required"]})
+
         # user here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         resource = self.context["request"].resource

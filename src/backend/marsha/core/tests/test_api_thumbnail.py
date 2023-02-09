@@ -214,7 +214,7 @@ class ThumbnailApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 201)
@@ -233,6 +233,36 @@ class ThumbnailApiTest(TestCase):
             },
         )
 
+    @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
+    def test_api_thumbnail_create_instructor_file_too_large(self):
+        """Instructor users should not be able to create a thumbnail if file is too large"""
+        video = VideoFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        response = self.client.post(
+            "/api/thumbnails/", {"size": 100}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            json.loads(response.content),
+            {"size": ["File too large, max size allowed is 10 Bytes"]},
+        )
+
+    def test_api_thumbnail_create_instructor_no_size_parameter_provided(self):
+        """Instructor users shouldn't be able to create a thumbnail without a file size"""
+        video = VideoFactory()
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        response = self.client.post(
+            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+        self.assertEqual(response.status_code, 400)
+
+        self.assertEqual(
+            response.json(),
+            {"size": ["File size is required"]},
+        )
+
     def test_api_thumbnail_create_already_existing_instructor(self):
         """Creating a thumbnail should fail when a thumbnail already exists for the video."""
         video = VideoFactory()
@@ -241,14 +271,13 @@ class ThumbnailApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 400)
-        content = json.loads(response.content)
 
         self.assertEqual(
-            content,
+            response.json(),
             {"video": ["Thumbnail with this Video already exists."]},
         )
 
@@ -315,7 +344,7 @@ class ThumbnailApiTest(TestCase):
 
         # Creating a new thumbnail should be allowed.
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 201)
@@ -440,6 +469,35 @@ class ThumbnailApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+    @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
+    def test_api_thumbnail_initiate_upload_file_too_large(self):
+        """It should not be possible to upload a thumbnail if its size is too large."""
+        video = VideoFactory(upload_state="ready")
+        thumbnail = ThumbnailFactory(video=video, upload_state="ready")
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
+
+        # Get the upload policy for this thumbnail
+        # It should generate a key file with the Unix timestamp of the present time
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 100,
+                },
+            )
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"size": ["File too large, max size allowed is 10 Bytes"]},
+        )
 
     @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
     def test_api_thumbnail_options_as_instructor(self):
