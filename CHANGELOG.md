@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add accepted formats in the subtitles uploaders helptext
 - Standalone website:
   - Add "video" management API endpoints permissions
+- Add a check on thumbnail file size when uploading content
 
 ### Changed
 

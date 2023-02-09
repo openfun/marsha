@@ -26,3 +26,14 @@ class TimedTextMetadata(SimpleMetadata):
         metadata["upload_max_size_bytes"] = settings.SUBTITLE_SOURCE_MAX_SIZE
 
         return metadata
+
+
+class ThumbnailMetadata(SimpleMetadata):
+    """Metadata class dedicated to thumbnail model."""
+
+    def determine_metadata(self, request, view):
+        """Adds live info in video metadata."""
+        metadata = super().determine_metadata(request, view)
+        metadata["upload_max_size_bytes"] = settings.THUMBNAIL_SOURCE_MAX_SIZE
+
+        return metadata
