@@ -220,7 +220,7 @@ test:  ## Run django tests for the marsha project.
 .PHONY: test
 
 build-e2e: ## build the e2e container
-	@$(COMPOSE_BUILD) e2e;
+	@$(COMPOSE_BUILD) --no-cache e2e;
 .PHONY: build-e2e
 
 e2e:  ## Run e2e tests for the marsha project.
