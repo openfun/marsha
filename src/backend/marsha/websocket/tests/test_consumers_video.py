@@ -51,8 +51,9 @@ class VideoConsumerTest(TransactionTestCase):
         return ThumbnailFactory(**kwargs)
 
     @sync_to_async
-    def _get_thumbnail_serializer_data(self, thumbnail, context={}):
+    def _get_thumbnail_serializer_data(self, thumbnail, context=None):
         """Serialize thumbnail model and return the serialized data."""
+        context = context or {}
         serializer = ThumbnailSerializer(thumbnail, context=context)
         return serializer.data
 
@@ -62,8 +63,9 @@ class VideoConsumerTest(TransactionTestCase):
         return TimedTextTrackFactory(**kwargs)
 
     @sync_to_async
-    def _get_timed_text_track_serializer_data(self, thumbnail, context={}):
+    def _get_timed_text_track_serializer_data(self, thumbnail, context=None):
         """Serialize timed text track model and return the serialized data."""
+        context = context or {}
         serializer = TimedTextTrackSerializer(thumbnail, context=context)
         return serializer.data
 
