@@ -16,6 +16,7 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
+import { createTimedTextTrack } from 'api/createTimedTextTrack';
 import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
 
 import { LocalizedTimedTextTrackUpload } from '.';
@@ -33,6 +34,13 @@ const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
 >;
 
+jest.mock('api/createTimedTextTrack', () => ({
+  createTimedTextTrack: jest.fn(),
+}));
+const mockCreateTimedTextTrack = createTimedTextTrack as jest.MockedFunction<
+  typeof createTimedTextTrack
+>;
+
 const languageChoices = [
   { display_name: 'English', value: 'en' },
   { display_name: 'French', value: 'fr' },
@@ -48,9 +56,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     useJwt.setState({
       jwt: 'jsonWebToken',
     });
-  });
-
-  afterEach(() => {
+    jest.clearAllMocks();
     fetchMock.restore();
   });
 
@@ -99,16 +105,21 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     );
 
     const mockTimedTextTrack = {
+      title: 'title',
       id: 'timedTextTrack_id',
       active_stamp: null,
       is_ready_to_show: false,
       language: 'fr',
       mode: timedTextMode.SUBTITLE,
-      upload_state: uploadState,
+      upload_state: uploadState.PENDING,
       source_url: 'source_url',
       url: 'url',
       video: 'video_id',
     };
+
+    mockCreateTimedTextTrack.mockImplementation(() =>
+      Promise.resolve(mockTimedTextTrack),
+    );
 
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
@@ -116,8 +127,6 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       resetUpload: jest.fn(),
       uploadManagerState: {},
     });
-
-    fetchMock.post('/api/timedtexttracks/', mockTimedTextTrack);
 
     render(
       <UploadManagerContext.Provider
@@ -144,14 +153,6 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(2);
     expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
-    expect(fetchMock.lastCall()![1]).toEqual({
-      headers: {
-        Authorization: 'Bearer jsonWebToken',
-        'Content-Type': 'application/json',
-      },
-      method: 'POST',
-      body: JSON.stringify({ language: 'fr', mode: 'st' }),
-    });
     await waitFor(() =>
       expect(mockAddUpload).toHaveBeenLastCalledWith(
         modelName.TIMEDTEXTTRACKS,
@@ -159,6 +160,51 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
         file,
       ),
     );
+  });
+
+  it('fails to upload a timed text track when the file is too large and displays an error message', async () => {
+    mockCreateTimedTextTrack.mockRejectedValue({
+      size: ['File too large !'],
+    });
+
+    fetchMock.mock(
+      `api/timedtexttracks/`,
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+        actions: { POST: { language: { choices: languageChoices } } },
+      },
+      { method: 'OPTIONS' },
+    );
+
+    render(
+      <UploadManagerContext.Provider
+        value={{
+          setUploadState: () => {},
+          uploadManagerState: {},
+        }}
+      >
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.SUBTITLE}
+        />
+      </UploadManagerContext.Provider>,
+      { intlOptions: { locale: 'fr-FR' } },
+    );
+
+    const uploadButton = await screen.findByRole('button', {
+      name: 'Upload file',
+    });
+    userEvent.click(uploadButton);
+    const hiddenInput = screen.getByTestId('input-file-test-id');
+    const file = new File(['(⌐□_□)'], 'subtitle.vtt', {
+      type: '*',
+    });
+    userEvent.upload(hiddenInput, file);
+
+    expect(fetchMock.calls()).toHaveLength(2);
+    expect(screen.queryByText('subs.srt')).not.toBeInTheDocument();
+    expect(
+      await screen.findByText('Uploaded files exceeds allowed size of 1 GB.'),
+    ).toBeInTheDocument();
   });
 
   it('renders the component with several uploaded and uploading timed text track', async () => {
