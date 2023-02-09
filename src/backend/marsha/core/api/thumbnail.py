@@ -6,6 +6,8 @@ from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.response import Response
 
+from marsha.core.metadata import ThumbnailMetadata
+
 from .. import defaults, permissions, serializers
 from ..models import Thumbnail
 from ..utils.s3_utils import create_presigned_post
@@ -26,10 +28,11 @@ class ThumbnailViewSet(
 
     permission_classes = [permissions.NotAllowed]
     serializer_class = serializers.ThumbnailSerializer
+    metadata_class = ThumbnailMetadata
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action == "create":
+        if self.action in ["create", "metadata"]:
             permission_classes = [
                 permissions.IsTokenInstructor | permissions.IsTokenAdmin
             ]
