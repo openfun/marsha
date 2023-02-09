@@ -11,6 +11,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add Markdown wizard in LTI context
+- standalone website:
+  - List the VOD in the contents section
 
 ### Changed
 
