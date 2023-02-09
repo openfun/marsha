@@ -72,6 +72,9 @@ class ThumbnailViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        serializer = serializers.ThumbnailSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+
         now = timezone.now()
         stamp = to_timestamp(now)
 

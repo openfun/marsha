@@ -271,3 +271,17 @@ class TimedTextUploadSerializer(BaseInitiateUploadSerializer):
         an upload with a size higher than the one defined in the settings
         """
         return settings.SUBTITLE_SOURCE_MAX_SIZE
+
+
+class ThumbnailInitiateUploadSerializer(BaseInitiateUploadSerializer):
+    """An initiate-upload serializer dedicated to thumbnails"""
+
+    @property
+    def max_upload_file_size(self):
+        """return the video max file size define in the settings.
+
+        The @property decorator is used to ease the use of @override_settings
+        in tests. Otherwise the setting is not changed and we can't easily test
+        an upload with a size higher than the one defined in the settings
+        """
+        return settings.THUMBNAIL_SOURCE_MAX_SIZE
