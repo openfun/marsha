@@ -15,11 +15,12 @@ import {
 export const createTimedTextTrack = async (
   language: string,
   mode: timedTextMode,
+  size: number,
 ) => {
   const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
     {
-      body: JSON.stringify({ language, mode }),
+      body: JSON.stringify({ language, mode, size }),
       headers: {
         Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
         'Content-Type': 'application/json',
@@ -29,9 +30,7 @@ export const createTimedTextTrack = async (
   );
 
   if (!response.ok) {
-    throw new Error(
-      `Failed to create a new TimedTextTrack with ${language}, ${mode}: ${response.status}.`,
-    );
+    throw await response.json();
   }
 
   const timedtexttrack = (await response.json()) as TimedText;
