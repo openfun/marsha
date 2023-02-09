@@ -10,6 +10,6 @@ describe('<ViewersListHeader />', () => {
       <ViewersListHeader margin={{ bottom: '6px' }} text="An example text" />,
     );
 
-    expect(screen.getByText('An example text')).toBeInTheDocument();
+    expect(await screen.findByText('An example text')).toBeInTheDocument();
   });
 });

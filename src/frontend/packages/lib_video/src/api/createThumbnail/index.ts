@@ -9,10 +9,11 @@ import {
 /**
  * Create a new thumbnail record for a language-mode combination.
  */
-export const createThumbnail = async () => {
+export const createThumbnail = async (size: number) => {
   const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.THUMBNAILS}/`,
     {
+      body: JSON.stringify({ size }),
       headers: {
         Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
         'Content-Type': 'application/json',
@@ -22,7 +23,7 @@ export const createThumbnail = async () => {
   );
 
   if (!response.ok) {
-    throw new Error('Failed to create a new thumbnail.');
+    throw await response.json();
   }
 
   const thumbnail = (await response.json()) as Thumbnail;
