@@ -7,11 +7,15 @@ import {
   modelName,
   timedTextMode,
   uploadState,
+  formatSizeErrorScale,
+  report,
 } from 'lib-components';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createTimedTextTrack } from 'api/createTimedTextTrack';
+import { useTimedTextMetadata } from 'api/useTimedTextMetadata';
 import { LanguageChoice } from 'types/SelectOptions';
 
 import { LanguageSelect } from './LanguageSelect';
@@ -27,6 +31,16 @@ const messages = defineMessages({
     defaultMessage: 'Upload file',
     description: 'Label of the button used to upload the timed text file.',
     id: 'components.UploadWidgetGeneric.uploadButtonLabel',
+  },
+  errorFileTooLarge: {
+    defaultMessage: 'Uploaded files exceeds allowed size of {uploadMaxSize}.',
+    description: 'Error message when file is too big.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge',
+  },
+  errorFileUpload: {
+    defaultMessage: 'An error occurred when uploading your file. Please retry.',
+    description: 'Error message when file upload fails.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
   },
 });
 
@@ -49,33 +63,52 @@ export const LocalizedTimedTextTrackUpload = ({
   const retryUploadIdRef = useRef<Nullable<string>>(null);
   const [selectedLanguage, setSelectedLanguage] =
     useState<Nullable<LanguageChoice>>(null);
+  const metadata = useTimedTextMetadata(intl.locale);
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    let timedTextTrackId;
-    const nativeEvent = event.nativeEvent.target as HTMLInputElement;
-    if (event.target.files && event.target.files[0] && selectedLanguage) {
-      if (!retryUploadIdRef.current) {
-        const response = await createTimedTextTrack(
-          selectedLanguage.value,
-          timedTextModeWidget,
-        );
-        timedTextTrackId = response.id;
-      } else {
-        timedTextTrackId = retryUploadIdRef.current;
-        retryUploadIdRef.current = null;
+  const handleChange = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      let timedTextTrackId;
+      const nativeEvent = event.nativeEvent.target as HTMLInputElement;
+      if (event.target.files && event.target.files[0] && selectedLanguage) {
+        try {
+          if (!retryUploadIdRef.current) {
+            const response = await createTimedTextTrack(
+              selectedLanguage.value,
+              timedTextModeWidget,
+              event.target.files[0].size,
+            );
+            timedTextTrackId = response.id;
+          } else {
+            timedTextTrackId = retryUploadIdRef.current;
+            retryUploadIdRef.current = null;
+          }
+          addUpload(
+            modelName.TIMEDTEXTTRACKS,
+            timedTextTrackId,
+            event.target.files[0],
+          );
+        } catch (error) {
+          if ((error as object).hasOwnProperty('size') && metadata.data) {
+            toast.error(
+              intl.formatMessage(messages.errorFileTooLarge, {
+                uploadMaxSize: formatSizeErrorScale(
+                  metadata.data.upload_max_size_bytes,
+                ),
+              }),
+            );
+          } else {
+            report(error);
+            toast.error(intl.formatMessage(messages.errorFileUpload));
+          }
+        }
       }
-      addUpload(
-        modelName.TIMEDTEXTTRACKS,
-        timedTextTrackId,
-        event.target.files[0],
-      );
-    }
-    // We reset this value to allow handleChange to be triggered again on a new file upload
-    // if it has the same name. More on this issue :
-    // https://stackoverflow.com/questions/39484895/how-to-allow-input-type-file-to-select-the-same-file-in-react-component
-    nativeEvent.value = '';
-  };
-
+      // We reset this value to allow handleChange to be triggered again on a new file upload
+      // if it has the same name. More on this issue :
+      // https://stackoverflow.com/questions/39484895/how-to-allow-input-type-file-to-select-the-same-file-in-react-component
+      nativeEvent.value = '';
+    },
+    [addUpload, intl, metadata.data, selectedLanguage, timedTextModeWidget],
+  );
   const onRetryFailedUpload = (timedTextTrackId: string) => {
     if (hiddenFileInput.current) {
       retryUploadIdRef.current = timedTextTrackId;
