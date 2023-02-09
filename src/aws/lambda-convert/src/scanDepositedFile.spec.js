@@ -1,8 +1,5 @@
 process.env.S3_DESTINATION_BUCKET = 'destination_bucket';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 const mockUpdateState = jest.fn();
 jest.doMock('update-state', () => mockUpdateState);
 
@@ -30,8 +27,9 @@ jest.setTimeout(30000);
 
 describe('lambda-convert/src/scanDepositedFile', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('copy a clean deposited file from a source to a destination bucket', async () => {

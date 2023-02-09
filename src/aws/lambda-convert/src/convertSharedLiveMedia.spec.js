@@ -10,9 +10,6 @@ const svgFiles = [
   `${testDirectory}sample-3.svg`,
 ];
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock the AWS SDK calls used in convertSharedLiveMedia
 const mockGetObject = jest.fn();
 const mockPutObject = jest.fn();
@@ -29,8 +26,9 @@ const convertSharedLiveMedia = require('./convertSharedLiveMedia');
 
 describe('lambda-convert/src/convertSharedLiveMedia', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
   it('converts uploaded sharedlivemedia', async () => {
     mockGetObject.mockReturnValue({

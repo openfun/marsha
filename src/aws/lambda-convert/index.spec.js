@@ -1,8 +1,5 @@
 process.env.DISABLE_SSL_VALIDATION = 'false';
 
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock our own sub-modules to simplify our tests
 const mockEncodeTimedTextTrack = jest.fn();
 jest.doMock('./src/encodeTimedTextTrack', () => mockEncodeTimedTextTrack);
@@ -34,8 +31,9 @@ const callback = jest.fn();
 
 describe('lambda', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('reports a specific error when a video object key has an unexpected format', () => {

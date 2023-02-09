@@ -1,6 +1,3 @@
-// Don't pollute tests with logs intended for CloudWatch
-jest.spyOn(console, 'log');
-
 // Mock our own sub-modules to simplify our tests
 const mockChannelStateChanged = jest.fn();
 jest.doMock('./src/channelStateChanged', () => mockChannelStateChanged);
@@ -9,8 +6,9 @@ const lambda = require('./index.js').handler;
 
 describe('lambda', () => {
   beforeEach(() => {
-    console.log.mockReset();
     jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('calls channelStateChanged when a channel state changes', async () => {

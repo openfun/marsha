@@ -7,8 +7,7 @@ process.env.SHARED_SECRET = 'some secret';
 const requestStub = jest.fn();
 jest.doMock('request-promise-native', () => requestStub);
 
-// Don't pollute tests with logs intended for CloudWatch
-const mockConsoleLog = jest.spyOn(console, 'log');
+let mockConsoleLog;
 
 describe('lambda/mediapackage/src/utils/setRecordingSliceManifestKey()', () => {
   beforeEach(() => {
@@ -16,8 +15,10 @@ describe('lambda/mediapackage/src/utils/setRecordingSliceManifestKey()', () => {
     jest.resetModules();
 
     // Reset the mocks we'll be testing
-    mockConsoleLog.mockReset();
     requestStub.mockReset();
+    jest.resetAllMocks();
+    // Don't pollute tests with logs intended for CloudWatch
+    mockConsoleLog = jest.spyOn(console, 'log').mockImplementation();
   });
 
   it('calculates the signature and posts the new state to the server', async () => {
