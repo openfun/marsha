@@ -9,11 +9,16 @@ import {
   useThumbnail,
   modelName,
   uploadState,
+  report,
+  formatSizeErrorScale,
+  Loader,
 } from 'lib-components';
-import React, { useEffect } from 'react';
+import React, { useCallback, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createThumbnail } from 'api/createThumbnail';
+import { useThumbnailMetadata } from 'api/useThumbnailMetadata';
 
 import { FoldableItem } from '../../FoldableItem';
 
@@ -43,6 +48,16 @@ const messages = defineMessages({
     description: 'Label of the upload image button.',
     id: 'components.WidgetThumbnail.uploadThumbnailButtonLabel',
   },
+  errorFileTooLarge: {
+    defaultMessage: 'Uploaded files exceeds allowed size of {uploadMaxSize}.',
+    description: 'Error message when file is too big.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge',
+  },
+  errorFileUpload: {
+    defaultMessage: 'An error occurred when uploading your file. Please retry.',
+    description: 'Error message when file upload fails.',
+    id: 'apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload',
+  },
 });
 
 interface WidgetThumbnailProps {
@@ -59,6 +74,40 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
     thumbnail: state.getThumbnail(),
   }));
   const hiddenFileInputRef = React.useRef<Nullable<HTMLInputElement>>(null);
+  const { isLoading, data } = useThumbnailMetadata(intl.locale);
+
+  const handleChange = useCallback(
+    async (event: React.ChangeEvent<HTMLInputElement>) => {
+      if (event.target.files && event.target.files[0]) {
+        let thumbnailId;
+        try {
+          if (!thumbnail) {
+            const response = await createThumbnail(event.target.files[0].size);
+            addThumbnail(response);
+            thumbnailId = response.id;
+          } else {
+            thumbnailId = thumbnail.id;
+          }
+          addUpload(modelName.THUMBNAILS, thumbnailId, event.target.files[0]);
+        } catch (error) {
+          if (
+            (error as object).hasOwnProperty('size') &&
+            data?.upload_max_size_bytes
+          ) {
+            toast.error(
+              intl.formatMessage(messages.errorFileTooLarge, {
+                uploadMaxSize: formatSizeErrorScale(data.upload_max_size_bytes),
+              }),
+            );
+          } else {
+            report(error);
+            toast.error(intl.formatMessage(messages.errorFileUpload));
+          }
+        }
+      }
+    },
+    [addThumbnail, addUpload, intl, thumbnail, data?.upload_max_size_bytes],
+  );
 
   // When an upload is over and successful, it is deleted from the uploadManagerState, in order
   // to be able to perform a consecutive upload
@@ -71,19 +120,10 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
     }
   }, [thumbnail?.upload_state, resetUpload, uploadManagerState, thumbnail?.id]);
 
-  const handleChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    let id;
-    if (!thumbnail) {
-      const response = await createThumbnail();
-      addThumbnail(response);
-      id = response.id;
-    } else {
-      id = thumbnail.id;
-    }
-    if (event.target.files) {
-      addUpload(modelName.THUMBNAILS, id, event.target.files[0]);
-    }
-  };
+  if (isLoading) {
+    return <Loader />;
+  }
+
   return (
     <FoldableItem
       title={intl.formatMessage(messages.title)}

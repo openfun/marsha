@@ -59,7 +59,7 @@ describe('<VideoWidgetProvider />', () => {
 
   afterEach(() => fetchMock.restore());
 
-  it('renders widgets for live teacher', () => {
+  it('renders widgets for live teacher', async () => {
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
@@ -164,7 +164,7 @@ describe('<VideoWidgetProvider />', () => {
     expect(select).toHaveValue('Accept joining the discussion after approval');
 
     // DashboardLiveWidgetThumbnail
-    screen.getByText('Thumbnail');
+    await screen.findByText('Thumbnail');
     const img = screen.getByRole('img', { name: 'Live video thumbnail' });
     expect(img.getAttribute('src')).toEqual(
       'https://example.com/default_thumbnail/144',
