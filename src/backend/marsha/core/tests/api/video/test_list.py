@@ -3,6 +3,7 @@
 from django.test import TestCase
 
 from marsha.core import factories
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     UserAccessTokenFactory,
@@ -665,3 +666,48 @@ class VideoListAPITest(TestCase):
             factories.VideoFactory()
             response = self.client.get("/api/videos/")
             self.assertEqual(response.status_code, 401)
+
+    def test_list_video_not_duplicated(self):
+        """
+        When several users have administrator role on a playlist,
+        the video must be returned only once.
+        """
+        user = factories.UserFactory()
+        organization = factories.OrganizationFactory()
+
+        playlist = factories.PlaylistFactory(
+            organization=organization,
+        )
+        video = factories.VideoFactory(playlist=playlist)
+
+        factories.PlaylistAccessFactory(
+            playlist=playlist,
+            user=user,
+            role=ADMINISTRATOR,
+        )
+        factories.PlaylistAccessFactory.create_batch(
+            3,
+            playlist=playlist,
+            role=ADMINISTRATOR,
+        )
+        factories.OrganizationAccessFactory(
+            organization=organization,
+            user=user,
+            role=ADMINISTRATOR,
+        )
+        factories.OrganizationAccessFactory.create_batch(
+            3,
+            organization=organization,
+            role=ADMINISTRATOR,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertEqual(response.json()["results"][0]["id"], str(video.id))
