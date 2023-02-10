@@ -155,6 +155,38 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        user_id = self.request.user.id
+
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                Q(playlist__user_accesses__user__id=user_id)
+                | Q(playlist__organization__user_accesses__user__id=user_id)
+            )
+        )
+
+        playlist = self.request.query_params.get("playlist")
+        if playlist is not None:
+            queryset = queryset.filter(playlist__id=playlist)
+
+        organization = self.request.query_params.get("organization")
+        if organization is not None:
+            queryset = queryset.filter(playlist__organization__id=organization)
+
+        queryset = queryset.order_by("title")
+
+        return queryset.distinct()
+
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
+
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
         context = super().get_serializer_context()
@@ -216,33 +248,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(serializer.data, status=201)
 
-    def list(self, request, *args, **kwargs):
-        """List videos through the API."""
-        # Limit the queryset to the playlists the user has access directly or through
-        # an access they have to an organization
-        queryset = self.get_queryset().filter(
-            Q(playlist__user_accesses__user__id=request.user.id)
-            | Q(playlist__organization__user_accesses__user__id=request.user.id)
-        )
-
-        playlist = request.query_params.get("playlist")
-        if playlist is not None:
-            queryset = queryset.filter(playlist__id=playlist)
-
-        organization = request.query_params.get("organization")
-        if organization is not None:
-            queryset = queryset.filter(playlist__organization__id=organization)
-
-        queryset = queryset.order_by("title")
-
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
-
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
     def initiate_upload(self, request, pk=None):
@@ -278,7 +283,16 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return Response(response)
 
-    @action(methods=["post"], detail=True, url_path="initiate-live")
+    @action(
+        methods=["post"],
+        detail=True,
+        url_path="initiate-live",
+        permission_classes=[
+            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
+            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
+            | permissions.HasPlaylistToken
+        ],
+    )
     # pylint: disable=unused-argument
     def initiate_live(self, request, pk=None):
         """Create a live stack on AWS ready to stream.
