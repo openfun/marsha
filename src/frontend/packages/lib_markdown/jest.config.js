@@ -5,7 +5,9 @@ module.exports = {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
     'is-reference':
       '<rootDir>/../../node_modules/is-reference/dist/is-reference.js',
-    'estree-walker': '<rootDir>../../node_modules/estree-walker/src/index.js',
+    'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
+    '@openfun/cunningham-react':
+      '<rootDir>/../../node_modules/@openfun/cunningham-react/dist/index.js',
   },
   reporters: [
     'default',
@@ -24,6 +26,7 @@ module.exports = {
   testMatch: [__dirname + '/**/*.spec.+(ts|tsx|js)'],
   transformIgnorePatterns: [
     'node_modules/(?!(' +
+      '@openfun/cunningham-react|' +
       'trim-lines|' +
       '@mdx-js/mdx2|' +
       'unified|' +

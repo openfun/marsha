@@ -100,8 +100,10 @@ def _preview_markdown(page: Page, live_server: LiveServer):
     DEBUG=True,
     X_FRAME_OPTIONS="",
 )
-def test_render(page: Page, live_server: LiveServer, settings) -> None:
-    """Test that the markdown is rendered."""
+def test_lti_markdown_render_and_save(
+    page: Page, live_server: LiveServer, settings
+) -> None:
+    """Test that the markdown is rendered and saved."""
     settings.MARKDOWN_ENABLED = True
     page, _ = _preview_markdown(page, live_server)
 
@@ -124,5 +126,6 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
 
     page.get_by_role("tab", name="Preview").click()
     expect(page.get_by_role("heading", name="this should be rendered")).to_be_visible()
+    page.get_by_placeholder("Title").fill("my title")
     page.get_by_role("button", name="Save").click()
     expect(page.get_by_text("Document is saved")).to_be_visible()
