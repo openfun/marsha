@@ -1,4 +1,3 @@
-
 // Icomoon font
 @import './vendor/icomoon';
 
@@ -14,3 +13,6 @@
 // Markdown editor style
 // May be moved to somewhere more specific...
 @import '../apps/markdown/styles/main';
+
+@import 'lib-common/lib/esm/style.css';
+@import '@openfun/cunningham-react/dist/style';

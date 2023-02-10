@@ -10,7 +10,7 @@
   "jsnext:main": "lib/esm/index.js",
   "types": "lib/dts/index.d.ts",
   "scripts": {
-    "build": "rollup -c",
+    "build": "yarn build-theme & rollup -c",
     "build:watch": "yarn build --watch",
     "build:no-fail": "yarn lint && yarn test && yarn build",
     "build-theme": "cunningham -g css -o src",
@@ -48,6 +48,7 @@
     "prettier": "2.8.4",
     "rollup": "3.14.0",
     "rollup-plugin-delete": "2.0.0",
+    "rollup-plugin-import-css": "3.1.0",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-polyfill-node": "0.12.0",
     "rollup-plugin-typescript2": "0.34.1",
