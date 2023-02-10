@@ -14,12 +14,13 @@ from django.utils import timezone
 from django.utils.module_loading import import_string
 
 from boto3.exceptions import Boto3Error
-from rest_framework import status, viewsets
+import django_filters
+from rest_framework import filters, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import APIException, MethodNotAllowed
 from rest_framework.response import Response
 
-from marsha.core.defaults import JITSI
+from marsha.core.defaults import ENDED, JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
@@ -57,6 +58,43 @@ from .base import APIViewMixin, ObjectPkMixin
 # pylint: disable=too-many-public-methods
 
 
+class VideoFilter(django_filters.FilterSet):
+    """Filter for Video."""
+
+    is_live = django_filters.BooleanFilter(method="filter_is_live")
+    is_public = django_filters.BooleanFilter(field_name="is_public")
+    playlist = django_filters.UUIDFilter(field_name="playlist__id")
+    organization = django_filters.UUIDFilter(field_name="playlist__organization__id")
+
+    class Meta:
+        model = Video
+        fields = {
+            "title": [
+                "exact",
+                "iexact",
+                "contains",
+                "icontains",
+                "startswith",
+                "istartswith",
+            ],
+        }
+
+    def filter_is_live(self, queryset, name, value):
+        """Filter video which are live or not."""
+        if value is None:
+            return queryset
+
+        if not isinstance(value, bool):
+            raise ValidationError(
+                f"Invalid value for {name} filter, must be a boolean."
+            )
+
+        if value:  # return only live videos
+            return queryset.filter(Q(live_state__isnull=False) & ~Q(live_state=ENDED))
+
+        return queryset.filter(Q(live_state__isnull=True) | Q(live_state=ENDED))
+
+
 class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the video object."""
 
@@ -64,6 +102,13 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     serializer_class = serializers.VideoSerializer
     permission_classes = [permissions.NotAllowed]
     metadata_class = VideoMetadata
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "title"]
+    ordering = ["title"]
+    filterset_class = VideoFilter
 
     def get_permissions(self):
         """
@@ -167,16 +212,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 | Q(playlist__organization__user_accesses__user__id=user_id)
             )
         )
-
-        playlist = self.request.query_params.get("playlist")
-        if playlist is not None:
-            queryset = queryset.filter(playlist__id=playlist)
-
-        organization = self.request.query_params.get("organization")
-        if organization is not None:
-            queryset = queryset.filter(playlist__organization__id=organization)
-
-        queryset = queryset.order_by("title")
 
         return queryset.distinct()
 
