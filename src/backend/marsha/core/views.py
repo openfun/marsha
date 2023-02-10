@@ -546,6 +546,8 @@ class BaseView(BaseModelResourceView, ABC):
     This view answer to GET request only.
     """
 
+    resource = None
+
     @property
     def cache_key(self):
         """Cache key from view context."""
@@ -573,11 +575,11 @@ class BaseView(BaseModelResourceView, ABC):
         session_id = str(uuid.uuid4())
 
         if app_data is None:
-            resource = self._get_resource()
+            self.resource = self._get_resource()
 
             app_data = self._get_base_app_data()
             app_data["resource"] = self._get_resource_data(
-                resource,
+                self.resource,
                 session_id,
             )
 
@@ -609,7 +611,9 @@ class BaseView(BaseModelResourceView, ABC):
         resource_id = self.kwargs["uuid"]
 
         try:
-            return self.model.objects.select_related("playlist").get(
+            return self.model.objects.select_related(
+                "playlist", "playlist__consumer_site"
+            ).get(
                 self.model.get_ready_clause(),
                 is_public=True,
                 pk=resource_id,
@@ -623,7 +627,24 @@ class BaseView(BaseModelResourceView, ABC):
 
         Publicly accessible resources or direct access videos can be fetched
         """
-        return self.render_to_response(self.get_context_data())
+        response = self.render_to_response(self.get_context_data())
+
+        if not self.resource:
+            return response
+
+        resource_consumer_site = self.resource.playlist.consumer_site
+        # If the resource is owned in a consumer site then we allow only this consumer
+        # site domain to embed a public resource in an iframe
+        # All subdomain from the domain are also accepted to have the same behavior as
+        # with LTI passports
+        if resource_consumer_site:
+            response.xframe_options_exempt = True
+            response.headers["Content-Security-Policy"] = (
+                f"frame-ancestors {resource_consumer_site.domain} "
+                f"*.{resource_consumer_site.domain};"
+            )
+
+        return response
 
 
 class VideoView(BaseView):
