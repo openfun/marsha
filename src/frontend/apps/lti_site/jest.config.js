@@ -6,6 +6,8 @@ module.exports = {
     'is-reference':
       '<rootDir>/../../node_modules/is-reference/dist/is-reference.js',
     'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
+    '@openfun/cunningham-react':
+      '<rootDir>/../../node_modules/@openfun/cunningham-react/dist/index.js',
   },
   reporters: [
     'default',
@@ -25,6 +27,7 @@ module.exports = {
   testPathIgnorePatterns: ['/apps/.cookiecutter/'],
   transformIgnorePatterns: [
     'node_modules/(?!(' +
+      '@openfun/cunningham-react|' +
       'trim-lines|' +
       '@mdx-js/mdx2|' +
       'unified|' +

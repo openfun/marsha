@@ -158,3 +158,4 @@ transmuxed_video
 .ngrok_url
 src/backend/marsha/core/templates/core/mail/
 *.local
+src/frontend/packages/lib_common/src/cunningham-tokens.css
