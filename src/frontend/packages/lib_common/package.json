@@ -13,12 +13,14 @@
     "build": "rollup -c",
     "build:watch": "yarn build --watch",
     "build:no-fail": "yarn lint && yarn test && yarn build",
+    "build-theme": "cunningham -g css -o src",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
   },
   "peerDependencies": {
+    "@openfun/cunningham-react": "*",
     "grommet": "*",
     "styled-components": "*"
   },
@@ -31,6 +33,7 @@
     "@babel/preset-env": "7.20.2",
     "@babel/preset-typescript": "7.18.6",
     "@formatjs/cli": "6.0.1",
+    "@openfun/cunningham-react": "0.1.0",
     "@rollup/plugin-babel": "6.0.3",
     "@rollup/plugin-commonjs": "24.0.1",
     "@rollup/plugin-json": "6.0.0",
