@@ -711,3 +711,134 @@ class VideoListAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 1)
         self.assertEqual(response.json()["results"][0]["id"], str(video.id))
+
+    def test_filters(self):
+        """Results are filtered."""
+        organization_access = factories.OrganizationAccessFactory(role=ADMINISTRATOR)
+
+        playlist = factories.PlaylistFactory(
+            organization=organization_access.organization,
+        )
+
+        video_1 = factories.VideoFactory(
+            playlist=playlist,
+            title="video 1",
+        )
+        video_2 = factories.VideoFactory(
+            playlist=playlist,
+            title="a video 2",
+            is_public=True,
+        )
+        video_3 = factories.WebinarVideoFactory(
+            playlist=playlist,
+            title="video 3",
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        # No filter
+        response = self.client.get(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_2.pk), str(video_1.pk), str(video_3.pk)],
+        )
+
+        # Filter on title
+        response = self.client.get(
+            "/api/videos/?title__icontains=a",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_2.pk)],
+        )
+
+        # Filter on is live false
+        response = self.client.get(
+            "/api/videos/?is_live=false",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_2.pk), str(video_1.pk)],
+        )
+
+        # Filter on is live true
+        response = self.client.get(
+            "/api/videos/?is_live=true",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 1)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_3.pk)],
+        )
+
+        # Filter on is public
+        response = self.client.get(
+            "/api/videos/?is_public=false",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 2)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_1.pk), str(video_3.pk)],
+        )
+
+    def test_ordering(self):
+        """Results are ordered."""
+        organization_access = factories.OrganizationAccessFactory(role=ADMINISTRATOR)
+
+        playlist = factories.PlaylistFactory(
+            organization=organization_access.organization,
+        )
+
+        video_1 = factories.VideoFactory(
+            playlist=playlist,
+            title="video 1",
+        )
+        video_2 = factories.VideoFactory(
+            playlist=playlist,
+            title="a video 2",
+        )
+        video_3 = factories.WebinarVideoFactory(
+            playlist=playlist,
+            title="video 3",
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        # Default order: title
+        response = self.client.get(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_2.pk), str(video_1.pk), str(video_3.pk)],
+        )
+
+        # Order on created_on
+        response = self.client.get(
+            "/api/videos/?ordering=created_on",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        self.assertListEqual(
+            [result["id"] for result in response.json()["results"]],
+            [str(video_1.pk), str(video_2.pk), str(video_3.pk)],
+        )
