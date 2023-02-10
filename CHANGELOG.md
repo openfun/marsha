@@ -22,6 +22,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - make all packages shakeable
 - use lib-common theme in LTI
 - change docker base image to use a debian lite one
+- Allow public resource to be embedded in a iframe
 
 ### Fixed
 

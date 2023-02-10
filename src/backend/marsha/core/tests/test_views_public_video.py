@@ -11,7 +11,12 @@ from django.test import TestCase, override_settings
 from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
 
 from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
-from ..factories import LiveSessionFactory, VideoFactory
+from ..factories import (
+    LiveSessionFactory,
+    OrganizationFactory,
+    PlaylistFactory,
+    VideoFactory,
+)
 
 
 # We don't enforce arguments documentation in tests
@@ -29,6 +34,7 @@ class VideoPublicViewTestCase(TestCase):
             id="301b5f4f-b9f1-4a5f-897d-f8f1bf22c397",
             playlist__title="playlist-003",
             playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__consumer_site__domain="trusted_domain.com",
             is_public=True,
             resolutions=[144, 240, 480, 720, 1080],
             upload_state=random.choice(
@@ -38,9 +44,14 @@ class VideoPublicViewTestCase(TestCase):
         )
 
         response = self.client.get(f"/videos/{video.pk}")
-
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
+        self.assertIn("Content-Security-Policy", response.headers)
+        self.assertNotIn("X-Frame-Options", response.headers)
+        self.assertEqual(
+            response.headers["Content-Security-Policy"],
+            "frame-ancestors trusted_domain.com *.trusted_domain.com;",
+        )
         content = response.content.decode("utf-8")
 
         match = re.search(
@@ -487,3 +498,128 @@ class VideoPublicViewTestCase(TestCase):
             f"{public_registration.get_generate_salted_hmac()}"
         )
         self.assertEqual(response.status_code, 404)
+
+    def test_video_public_without_consumer_site(self):
+        """Public video without consumer site should have x-frame-options header."""
+        organization = OrganizationFactory()
+        playlist = PlaylistFactory(
+            title="playlist-003",
+            lti_id=None,
+            organization=organization,
+            consumer_site=None,
+        )
+        video = VideoFactory(
+            playlist=playlist,
+            is_public=True,
+            resolutions=[144, 240, 480, 720, 1080],
+            upload_state=random.choice(
+                [s[0] for s in STATE_CHOICES if s[0] not in [DELETED, HARVESTED]]
+            ),
+            uploaded_on="2019-09-24 07:24:40+00",
+        )
+
+        response = self.client.get(f"/videos/{video.pk}")
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        self.assertNotIn("Content-Security-Policy", response.headers)
+        self.assertIn("X-Frame-Options", response.headers)
+        self.assertEqual(response.headers["X-Frame-Options"], "DENY")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        jwt_token = ResourceAccessToken(context.get("jwt"))
+        ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+
+        self.assertEqual(
+            jwt_token.payload["permissions"],
+            {"can_access_dashboard": False, "can_update": False},
+        )
+        self.assertNotIn("user", jwt_token.payload)
+
+        self.assertEqual(
+            context.get("resource"),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": "1569309880",
+                "allow_recording": True,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "is_public": True,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "show_download": True,
+                "description": video.description,
+                "id": str(video.id),
+                "upload_state": video.upload_state,
+                "timed_text_tracks": [],
+                "thumbnail": None,
+                "title": video.title,
+                "urls": {
+                    "mp4": {
+                        "144": f"https://abc.cloudfront.net/{video.pk}/"
+                        "mp4/1569309880_144.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "240": f"https://abc.cloudfront.net/{video.pk}/"
+                        "mp4/1569309880_240.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "480": f"https://abc.cloudfront.net/{video.pk}/"
+                        "mp4/1569309880_480.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "720": f"https://abc.cloudfront.net/{video.pk}/"
+                        "mp4/1569309880_720.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                        "1080": f"https://abc.cloudfront.net/{video.pk}/"
+                        "mp4/1569309880_1080.mp4?response-content-disposition=attachment%3B+"
+                        "filename%3Dplaylist-003_1569309880.mp4",
+                    },
+                    "thumbnails": {
+                        "144": f"https://abc.cloudfront.net/{video.pk}/"
+                        "thumbnails/1569309880_144.0000000.jpg",
+                        "240": f"https://abc.cloudfront.net/{video.pk}/"
+                        "thumbnails/1569309880_240.0000000.jpg",
+                        "480": f"https://abc.cloudfront.net/{video.pk}/"
+                        "thumbnails/1569309880_480.0000000.jpg",
+                        "720": f"https://abc.cloudfront.net/{video.pk}/"
+                        "thumbnails/1569309880_720.0000000.jpg",
+                        "1080": f"https://abc.cloudfront.net/{video.pk}/"
+                        "thumbnails/1569309880_1080.0000000.jpg",
+                    },
+                    "manifests": {
+                        "hls": f"https://abc.cloudfront.net/{video.pk}/"
+                        "cmaf/1569309880.m3u8",
+                    },
+                    "previews": f"https://abc.cloudfront.net/{video.pk}/"
+                    "previews/1569309880_100.jpg",
+                },
+                "should_use_subtitle_as_transcript": False,
+                "starting_at": None,
+                "has_transcript": False,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "title": "playlist-003",
+                    "lti_id": None,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "live_state": None,
+                "live_info": {},
+                "live_type": None,
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+        self.assertEqual(context.get("state"), "success")
+        self.assertEqual(context.get("modelName"), "videos")
+        self.assertIsNone(context.get("context_id"))
+        self.assertIsNone(context.get("consumer_site"))
