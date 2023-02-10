@@ -107,6 +107,7 @@
     "@formatjs/intl-pluralrules": "5.1.8",
     "@formatjs/intl-relativetimeformat": "11.1.8",
     "@mdx-js/mdx2": "npm:@mdx-js/mdx@2.3.0",
+    "@openfun/cunningham-react": "*",
     "@sentry/browser": "7.37.1",
     "@types/intl": "1.2.0",
     "@types/react-datepicker": "4.8.0",

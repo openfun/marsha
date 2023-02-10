@@ -722,6 +722,9 @@ jobs:
           working_directory: /home/circleci/marsha/src/backend
           command: python3.10 -m pip install --user .[dev,e2e]
       - run:
+          name: Build front-end LTI sass
+          command: yarn workspace marsha run build-sass
+      - run:
           name: Build front-end LTI application
           command: yarn workspace marsha run build
       - run:

@@ -7,6 +7,7 @@ import resolve from '@rollup/plugin-node-resolve';
 import path from 'path';
 import del from 'rollup-plugin-delete';
 import typescript from 'rollup-plugin-typescript2';
+import css from 'rollup-plugin-import-css';
 import external from 'rollup-plugin-peer-deps-external';
 
 const require = createRequire(import.meta.url);
@@ -42,6 +43,9 @@ export default {
   external: ['react', 'styled-reboot', 'polished'],
   plugins: [
     external([/react/, 'grommet', 'styled-components', /@babel\/runtime/]),
+    css({
+      output: 'style.css',
+    }),
     json(),
     commonjs({
       include: /node_modules/,
