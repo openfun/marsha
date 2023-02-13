@@ -34,7 +34,7 @@
     "react-test-renderer": "*",
     "rollup-plugin-dts": "5.1.1",
     "styled-components": "*",
-    "zustand": "4.3.2"
+    "zustand": "4.3.3"
   },
   "devDependencies": {
     "@babel/core": "7.20.12",
@@ -95,7 +95,7 @@
     "react-query": "3.39.3",
     "react-router-dom": "5.3.0",
     "react-test-renderer": "17.0.2",
-    "rollup": "3.14.0",
+    "rollup": "3.15.0",
     "rollup-jest": "3.1.0",
     "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-dts": "5.1.1",
@@ -112,6 +112,6 @@
     "uuid": "9.0.0",
     "web-streams-polyfill": "3.2.1",
     "xhr-mock": "2.5.1",
-    "zustand": "4.3.2"
+    "zustand": "4.3.3"
   }
 }
