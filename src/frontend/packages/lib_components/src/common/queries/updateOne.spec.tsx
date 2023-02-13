@@ -1,6 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { useJwt } from 'hooks/stores/useJwt';
+import { FetchResponseError } from 'utils/errors/exception';
 
 import { updateOne } from './updateOne';
 
@@ -101,10 +102,19 @@ describe('queries/updateOne', () => {
         object: objectToUpdate,
       });
     } catch (error) {
-      thrownError = error;
+      if (error instanceof FetchResponseError) {
+        thrownError = error.error;
+      }
     }
 
-    expect(thrownError).toEqual({ code: 'exception' });
+    expect(thrownError).toEqual({
+      code: 'exception',
+      message: 'Not Found',
+      status: 404,
+      response: expect.objectContaining({
+        status: 404,
+      }),
+    });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -136,12 +146,19 @@ describe('queries/updateOne', () => {
         object: objectToUpdate,
       });
     } catch (error) {
-      thrownError = error;
+      if (error instanceof FetchResponseError) {
+        thrownError = error.error;
+      }
     }
 
     expect(thrownError).toEqual({
       code: 'invalid',
+      message: 'Bad Request',
       error: 'An error occured!',
+      status: 400,
+      response: expect.objectContaining({
+        status: 400,
+      }),
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/');

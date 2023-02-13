@@ -1,5 +1,6 @@
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchResponseHandler } from './fetchResponseHandler';
 import { fetchWrapper } from './fetchWrapper';
 
 export const deleteOne = async ({
@@ -18,13 +19,9 @@ export const deleteOne = async ({
     method: 'DELETE',
   });
 
-  if (!response.ok) {
-    if (response.status === 400) {
-      throw { code: 'invalid', ...(await response.json()) };
-    }
-
-    throw { code: 'exception' };
-  }
+  await fetchResponseHandler(response, {
+    withoutBody: true,
+  });
 
   return undefined;
 };

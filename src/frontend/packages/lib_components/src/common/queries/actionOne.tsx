@@ -1,5 +1,6 @@
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchResponseHandler } from './fetchResponseHandler';
 import { fetchWrapper } from './fetchWrapper';
 
 /**
@@ -31,15 +32,8 @@ export const actionOne = async <T, K>({
   if (object) {
     init.body = JSON.stringify(object);
   }
-  const response = await fetchWrapper(`/api/${name}/${id}/${action}/`, init);
 
-  if (!response.ok) {
-    if (response.status === 400) {
-      throw { code: 'invalid', ...(await response.json()) };
-    }
-
-    throw { code: 'exception' };
-  }
-
-  return (await response.json()) as T;
+  return await fetchResponseHandler(
+    await fetchWrapper(`/api/${name}/${id}/${action}/`, init),
+  );
 };

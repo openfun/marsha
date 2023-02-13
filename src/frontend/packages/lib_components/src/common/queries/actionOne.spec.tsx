@@ -1,6 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { useJwt } from 'hooks/stores/useJwt';
+import { FetchResponseError } from 'utils/errors/exception';
 
 import { actionOne } from './actionOne';
 
@@ -146,7 +147,6 @@ describe('queries/actionOne', () => {
     fetchMock.mock('/api/model-name/1/action/', 404);
 
     let thrownError;
-
     try {
       await actionOne({
         name: 'model-name',
@@ -155,10 +155,19 @@ describe('queries/actionOne', () => {
         object: objectToUpdate,
       });
     } catch (error) {
-      thrownError = error;
+      if (error instanceof FetchResponseError) {
+        thrownError = error.error;
+      }
     }
 
-    expect(thrownError).toEqual({ code: 'exception' });
+    expect(thrownError).toEqual({
+      code: 'exception',
+      message: 'Not Found',
+      status: 404,
+      response: expect.objectContaining({
+        status: 404,
+      }),
+    });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/1/action/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
