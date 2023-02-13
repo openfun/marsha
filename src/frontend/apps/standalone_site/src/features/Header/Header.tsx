@@ -4,7 +4,7 @@ import { Nullable, theme } from 'lib-common';
 import { AnonymousUser, useCurrentUser } from 'lib-components';
 import { forwardRef, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { NavLink } from 'react-router-dom';
+import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
@@ -135,7 +135,9 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         gap="medium"
       >
         <Burger width={60} height={60} aria-controls="menu" />
-        <LogoIcon width={117} height={80} />
+        <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
+          <LogoIcon width={117} height={80} />
+        </Link>
       </Box>
 
       <DropButton
