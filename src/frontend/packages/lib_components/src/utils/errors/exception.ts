@@ -4,3 +4,37 @@ export class ShouldNotHappen extends Error {
     super(`this should not happen: ${val as string}`);
   }
 }
+
+export interface IFetchResponseError<T = unknown> {
+  code: string;
+  status: number;
+  response: Response;
+  message: string;
+  detail?: string;
+  errors?: { [key in keyof T]?: string[] }[];
+}
+
+export class FetchResponseError<T = unknown>
+  extends Error
+  implements IFetchResponseError<T>
+{
+  code: IFetchResponseError['code'];
+  status: IFetchResponseError['status'];
+  response: IFetchResponseError['response'];
+  detail?: IFetchResponseError['detail'];
+  errors?: IFetchResponseError['errors'];
+  error?: IFetchResponseError<T>;
+
+  constructor(error: IFetchResponseError<T>) {
+    super(error.message);
+
+    this.name = 'FetchResponseError';
+    this.error = error;
+    this.code = error.code;
+    this.status = error.status;
+    this.response = error.response;
+    this.detail = error.detail;
+    this.message = error.message;
+    this.errors = error.errors;
+  }
+}

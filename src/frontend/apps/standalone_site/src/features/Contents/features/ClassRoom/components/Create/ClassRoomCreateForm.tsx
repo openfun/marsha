@@ -47,6 +47,13 @@ const messages = defineMessages({
     description: 'Text when there is an error.',
     id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.Error',
   },
+  ErrorPermission: {
+    defaultMessage:
+      "Sorry, you don't have the permission to create a classroom.",
+    description:
+      'Text when there is a permission error while creating a classroom.',
+    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.ErrorPermission',
+  },
 });
 
 type ClassroomCreate = {
@@ -54,6 +61,10 @@ type ClassroomCreate = {
   title: string;
   description?: string;
 };
+
+enum ETypeError {
+  PERMISSION = "Vous n'avez pas la permission d'effectuer cette action.",
+}
 
 interface ClassroomCreateFormProps {
   onSubmit: () => void;
@@ -123,6 +134,10 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
     ]);
   }, [playlistResponse]);
 
+  const errorMessages = {
+    [ETypeError.PERMISSION]: intl.formatMessage(messages.ErrorPermission),
+  };
+
   return (
     <Fragment>
       {(errorClassroom || errorPlaylist) && (
@@ -135,7 +150,8 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
         >
           <Alert size="42rem" color="#df8c00" />
           <Text weight="bold" size="small">
-            {intl.formatMessage(messages.Error)}
+            {errorMessages[errorClassroom?.detail as ETypeError] ||
+              intl.formatMessage(messages.Error)}
           </Text>
         </Box>
       )}

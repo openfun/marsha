@@ -148,11 +148,9 @@ describe('<ClassRoomCreateForm />', () => {
     );
 
     // Wait for the mocked playlist to be fetched
-    await waitFor(() => {
-      expect(
-        screen.getByRole('option', { selected: false }),
-      ).toBeInTheDocument();
-    });
+    expect(
+      await screen.findByRole('option', { selected: false }),
+    ).toBeInTheDocument();
 
     // Select the mocked playlist
     fireEvent.click(screen.getByRole('option', { selected: false }));
@@ -163,11 +161,56 @@ describe('<ClassRoomCreateForm />', () => {
 
     fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
 
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Sorry, an error has occurred. Please try again./i),
-      ).toBeInTheDocument();
+    expect(
+      await screen.findByText(
+        /Sorry, an error has occurred. Please try again./i,
+      ),
+    ).toBeInTheDocument();
+
+    expect(consoleError).toHaveBeenCalled();
+  });
+
+  test('error permission', async () => {
+    fetchMock.post('/api/classrooms/', {
+      status: 403,
+      body: {
+        detail: "Vous n'avez pas la permission d'effectuer cette action.",
+      },
     });
+
+    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
+
+    deferred.resolve(playlistsResponse);
+
+    fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
+      target: { value: 'my title' },
+    });
+
+    fireEvent.click(
+      screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
+    );
+
+    // Wait for the mocked playlist to be fetched
+    expect(
+      await screen.findByRole('option', { selected: false }),
+    ).toBeInTheDocument();
+
+    // Select the mocked playlist
+    fireEvent.click(screen.getByRole('option', { selected: false }));
+
+    expect(
+      screen.queryByText(
+        /Sorry, you don't have the permission to create a classroom./i,
+      ),
+    ).not.toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+
+    expect(
+      await screen.findByText(
+        /Sorry, you don't have the permission to create a classroom./i,
+      ),
+    ).toBeInTheDocument();
 
     expect(consoleError).toHaveBeenCalled();
   });

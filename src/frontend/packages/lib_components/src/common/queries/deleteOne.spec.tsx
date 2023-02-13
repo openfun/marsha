@@ -1,6 +1,7 @@
 import fetchMock from 'fetch-mock';
 
 import { useJwt } from 'hooks/stores/useJwt';
+import { FetchResponseError } from 'utils/errors/exception';
 
 import { deleteOne } from './deleteOne';
 
@@ -41,10 +42,19 @@ describe('queries/deleteOne', () => {
         id: '123',
       });
     } catch (error) {
-      thrownError = error;
+      if (error instanceof FetchResponseError) {
+        thrownError = error.error;
+      }
     }
 
-    expect(thrownError).toEqual({ code: 'exception' });
+    expect(thrownError).toEqual({
+      code: 'exception',
+      status: 403,
+      message: 'Forbidden',
+      response: expect.objectContaining({
+        status: 403,
+      }),
+    });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');
     expect(fetchMock.lastCall()?.[1]).toEqual({
@@ -98,12 +108,18 @@ describe('queries/deleteOne', () => {
         id: '123',
       });
     } catch (error) {
-      thrownError = error;
+      if (error instanceof FetchResponseError) {
+        thrownError = error.error;
+      }
     }
 
     expect(thrownError).toEqual({
       code: 'invalid',
-      error: 'An error occured!',
+      message: 'Bad Request',
+      status: 400,
+      response: expect.objectContaining({
+        status: 400,
+      }),
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/model-name/123/');

@@ -1,4 +1,3 @@
-import { ClassroomDocumentMetadata } from 'lib-classroom/src/types/ClassroomAppData';
 import { Maybe } from 'lib-common';
 import {
   APIList,
@@ -19,6 +18,7 @@ import {
   ClassroomDocument,
   ClassroomModelName,
   metadata,
+  FetchResponseError,
 } from 'lib-components';
 import {
   useMutation,
@@ -27,6 +27,8 @@ import {
   useQueryClient,
   UseQueryOptions,
 } from 'react-query';
+
+import { ClassroomDocumentMetadata } from 'types/ClassroomAppData';
 
 type ClassroomsResponse = APIList<ClassroomLite>;
 type UseClassroomsParams = {
@@ -85,12 +87,7 @@ type UseCreateClassroomData = {
   description?: string;
   lti_id?: string;
 };
-type UseCreateClassroomError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseCreateClassroomData]?: string[] }[];
-    };
+type UseCreateClassroomError = FetchResponseError<UseCreateClassroomData>;
 type UseCreateClassroomOptions = UseMutationOptions<
   Classroom,
   UseCreateClassroomError,
