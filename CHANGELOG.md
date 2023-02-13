@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create lib-markdown package
 - Add a check on timedtexttrack file size when uploading content
 - Add a check on deposited file size when uploading content 
+- helpers frontend api error handling
 
 ### Changed
 

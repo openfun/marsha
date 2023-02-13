@@ -2,6 +2,7 @@ import { QueryKey, QueryFunctionContext } from 'react-query';
 
 import { useJwt } from 'hooks/stores/useJwt';
 
+import { fetchResponseHandler } from './fetchResponseHandler';
 import { fetchWrapper } from './fetchWrapper';
 
 /**
@@ -21,9 +22,7 @@ export const metadata = async <T,>({
     method: 'OPTIONS',
   });
 
-  if (!response.ok) {
-    throw new Error(`Failed to get metadata for /${String(name)}/.`);
-  }
-
-  return (await response.json()) as T;
+  return await fetchResponseHandler(response, {
+    errorMessage: `Failed to get metadata for /${String(name)}/.`,
+  });
 };
