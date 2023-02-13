@@ -241,12 +241,21 @@ class VideoSerializer(VideoBaseSerializer):
     timed_text_tracks = TimedTextTrackSerializer(
         source="timedtexttracks", many=True, read_only=True
     )
-    shared_live_medias = SharedLiveMediaSerializer(many=True, read_only=True)
+    shared_live_medias = serializers.SerializerMethodField()
     playlist = PlaylistLiteSerializer(read_only=True)
     has_transcript = serializers.SerializerMethodField()
     live_info = serializers.SerializerMethodField()
     xmpp = serializers.SerializerMethodField()
     title = serializers.CharField(allow_blank=False, allow_null=False, max_length=255)
+
+    def get_shared_live_medias(self, instance):
+        """Get shared live media for a video sorted by reverse uploaded_on."""
+        shared_live_medias = instance.shared_live_medias.all().order_by("-uploaded_on")
+        return SharedLiveMediaSerializer(
+            shared_live_medias,
+            many=True,
+            context=self.context,
+        ).data
 
     def validate_starting_at(self, value):
         """Add extra controls for starting_at field."""
