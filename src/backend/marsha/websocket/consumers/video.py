@@ -1,12 +1,22 @@
 """Video consumer module"""
 from urllib.parse import parse_qs
 
+from django.db.models import Q
+
 from channels.db import database_sync_to_async
 from channels.generic.websocket import AsyncJsonWebsocketConsumer
 
-from marsha.core.models import SharedLiveMedia, Thumbnail, TimedTextTrack, Video
+from marsha.core.models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    SharedLiveMedia,
+    Thumbnail,
+    TimedTextTrack,
+    Video,
+)
 from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
 from marsha.core.services import live_session as LiveSessionServices
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, UserAccessToken
 from marsha.websocket import defaults
 
 
@@ -16,6 +26,38 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     room_group_name = None
     is_connected = False
 
+    def __get_video_id(self):
+        return self.scope["url_route"]["kwargs"]["video_id"]
+
+    async def _check_permissions(self):
+        """
+        Check if the user has the required permissions.
+
+        Raises:
+            ConnectionRefusedError: if the user does not have the required permissions.
+        """
+        token = self.scope["token"]
+        if token is None:
+            raise ConnectionRefusedError()
+
+        # Check permissions, MUST be the same as in the `retrieve` method
+        # of the Video API view set.
+
+        if isinstance(token, ResourceAccessToken):
+            # With LTI: anyone with a valid token for the video can access
+            if token.payload.get("resource_id") != self.__get_video_id():
+                raise ConnectionRefusedError()
+
+        elif isinstance(token, UserAccessToken):
+            # With standalone site, only playlist admin or organization admin can access
+            if not await self._user_has_playlist_or_organization_admin_role(
+                token.payload.get("user_id")
+            ):
+                raise ConnectionRefusedError()
+
+        else:
+            raise RuntimeError("This should not happen")
+
     async def connect(self):
         """
         Manage connection to this consumer.
@@ -24,14 +66,9 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         want
         """
         try:
-            await self._validate_token()
+            await self._check_permissions()
             await self._check_video_exists()
-        except ConnectionRefusedError:
-            await self.accept()
-            return await self.close(code=4003)
-
-        try:
-            if not self._is_admin():
+            if not await self._is_admin():
                 live_session = await self.retrieve_live_session()
                 await self.update_live_session_with_channel_name(
                     live_session=live_session
@@ -40,19 +77,12 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
             await self.accept()
             return await self.close(code=4003)
 
-        self.room_group_name = self._get_room_name()
+        self.room_group_name = await self._get_room_name()
         # Join room group
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
 
         await self.accept()
         self.is_connected = True
-
-    async def _validate_token(self):
-        """Validate that the resource_id in the token match the video_id in the url."""
-        video_id = self.scope["url_route"]["kwargs"]["video_id"]
-        token = self.scope["token"]
-        if token.payload.get("resource_id") != video_id:
-            raise ConnectionRefusedError()
 
     async def _check_video_exists(self):
         """Close the room if the video does not exists."""
@@ -62,8 +92,23 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def _video_exists(self):
         """Return if a video exists in database or not."""
+        return Video.objects.filter(pk=self.__get_video_id()).exists()
+
+    @database_sync_to_async
+    def _user_has_playlist_or_organization_admin_role(self, user_id):
+        """Return if the user belongs to the video playlist admin or organization admin."""
         return Video.objects.filter(
-            pk=self.scope["url_route"]["kwargs"]["video_id"]
+            Q(pk=self.__get_video_id())
+            & (
+                Q(
+                    playlist__user_accesses__user_id=user_id,
+                    playlist__user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
+                )
+                | Q(
+                    playlist__organization__user_accesses__user_id=user_id,
+                    playlist__organization__user_accesses__role=ADMINISTRATOR,
+                )
+            )
         ).exists()
 
     @database_sync_to_async
@@ -95,21 +140,30 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         live_session.channel_name = None
         live_session.save()
 
-    def _is_admin(self):
+    async def _is_admin(self):
         """Check if the connected user has admin permissions."""
         token = self.scope["token"]
-        return IsTokenInstructor().check_role(token) or IsTokenAdmin().check_role(token)
+        if not token:
+            return False
 
-    def _get_room_name(self):
-        """Generate the room name the user is connected on depending its permissions."""
-        if self._is_admin():
-            return defaults.VIDEO_ADMIN_ROOM_NAME.format(
-                video_id=self.scope["url_route"]["kwargs"]["video_id"]
+        if isinstance(token, ResourceAccessToken):
+            return IsTokenInstructor().check_role(token) or IsTokenAdmin().check_role(
+                token
             )
 
-        return defaults.VIDEO_ROOM_NAME.format(
-            video_id=self.scope["url_route"]["kwargs"]["video_id"]
-        )
+        if isinstance(token, UserAccessToken):
+            return await self._user_has_playlist_or_organization_admin_role(
+                token.payload.get("user_id"),
+            )
+
+        raise RuntimeError("Should not be called please check the code.", type(token))
+
+    async def _get_room_name(self):
+        """Generate the room name the user is connected on depending its permissions."""
+        if await self._is_admin():
+            return defaults.VIDEO_ADMIN_ROOM_NAME.format(video_id=self.__get_video_id())
+
+        return defaults.VIDEO_ROOM_NAME.format(video_id=self.__get_video_id())
 
     # pylint: disable=unused-argument
     async def disconnect(self, code):
@@ -120,7 +174,7 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
 
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-        if not self._is_admin():
+        if not await self._is_admin():
             live_session = await self.retrieve_live_session()
             await self.reset_live_session(live_session)
 

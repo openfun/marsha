@@ -10,11 +10,18 @@ from channels.testing import WebsocketCommunicator
 
 from marsha.core.defaults import JITSI, RUNNING
 from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
     ThumbnailFactory,
     TimedTextTrackFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.serializers import (
     ThumbnailSerializer,
     TimedTextTrackSerializer,
@@ -25,9 +32,13 @@ from marsha.core.simple_jwt.factories import (
     LiveSessionResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.websocket.application import base_application
 from marsha.websocket.defaults import VIDEO_ADMIN_ROOM_NAME, VIDEO_ROOM_NAME
+
+
+# pylint: disable=too-many-public-methods
 
 
 class VideoConsumerTest(TransactionTestCase):
@@ -73,6 +84,181 @@ class VideoConsumerTest(TransactionTestCase):
     def _get_live_session(self, **kwargs):
         """Create a live_session using LiveSessionFactory."""
         return LiveSessionFactory(**kwargs)
+
+    @sync_to_async
+    def _get_user(self, **kwargs):
+        """Create a user using UserFactory."""
+        return UserFactory(**kwargs)
+
+    @sync_to_async
+    def _get_organization_access(self, **kwargs):
+        """Create an organization access using OrganizationAccessFactory."""
+        return OrganizationAccessFactory(**kwargs)
+
+    @sync_to_async
+    def _get_consumer_site_access(self, **kwargs):
+        """Create a consumer site access using ConsumerSiteAccessFactory."""
+        return ConsumerSiteAccessFactory(**kwargs)
+
+    @sync_to_async
+    def _get_playlist_access(self, **kwargs):
+        """Create a playlist access using PlaylistAccessFactory."""
+        return PlaylistAccessFactory(**kwargs)
+
+    @sync_to_async
+    def _get_user_access_token(self, **kwargs):
+        """Create a user access token using UserAccessTokenFactory."""
+        return UserAccessTokenFactory(**kwargs)
+
+    def setUp(self):
+        """
+        Create commonly used data, should be in a setupClass
+        but cannot since it is a TransactionTestCase.
+        """
+        super().setUp()
+
+        self.some_organization = OrganizationFactory()
+        self.some_video = WebinarVideoFactory(
+            playlist__organization=self.some_organization,
+        )
+
+    async def assert_user_cannot_connect(self, user, video):
+        """Assert the user cannot connect to websocket."""
+
+        jwt_token = await self._get_user_access_token(user=user)
+
+        # Assert the behavior is the same as the video retrieve API endpoint
+        response = await self.async_client.get(
+            f"/api/videos/{video.pk}/",
+            AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 403)
+
+        # Assert the user cannot connect to the websocket
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{video.id}/?jwt={jwt_token}",
+        )
+
+        connected, _subprotocol = await communicator.connect()
+        self.assertTrue(connected)
+
+        response = await communicator.receive_output()
+
+        self.assertEqual(response["type"], "websocket.close")
+        self.assertEqual(response["code"], 4003)
+
+        await communicator.disconnect()
+
+    async def assert_user_can_connect(self, user, video):
+        """Assert the user can connect to websocket."""
+
+        jwt_token = await self._get_user_access_token(user=user)
+
+        # Assert the behavior is the same as the video retrieve API endpoint
+        response = await self.async_client.get(
+            f"/api/videos/{video.pk}/",
+            AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        # Assert the user can connect to the websocket
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{video.id}/?jwt={jwt_token}",
+        )
+
+        connected, _subprotocol = await communicator.connect()
+        self.assertTrue(connected)
+
+        channel_layer = get_channel_layer()
+
+        await channel_layer.group_send(
+            VIDEO_ADMIN_ROOM_NAME.format(video_id=str(video.id)),
+            {
+                "type": "video_updated",
+                "video": await self._get_serializer_data(video, {"is_admin": False}),
+            },
+        )
+
+        response = await communicator.receive_from()
+        self.assertEqual(json.loads(response)["type"], "videos")
+
+    async def test_connect_by_anonymous_user(self):
+        """Anonymous users cannot start a live."""
+        response = await self.async_client.get(f"/api/videos/{self.some_video.pk}/")
+
+        self.assertEqual(response.status_code, 401)
+
+    async def test_connect_by_random_user(self):
+        """Authenticated user without access cannot start a live."""
+        user = await self._get_user()
+
+        await self.assert_user_cannot_connect(user, self.some_video)
+
+    async def test_connect_by_organization_student(self):
+        """Organization students cannot start a live."""
+        organization_access = await self._get_organization_access(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        await self.assert_user_cannot_connect(organization_access.user, self.some_video)
+
+    async def test_connect_by_organization_instructor(self):
+        """Organization instructors cannot start a live."""
+        organization_access = await self._get_organization_access(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        await self.assert_user_cannot_connect(organization_access.user, self.some_video)
+
+    async def test_connect_by_organization_administrator(self):
+        """Organization administrators can start a live."""
+        organization_access = await self._get_organization_access(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        await self.assert_user_can_connect(organization_access.user, self.some_video)
+
+    async def test_connect_by_consumer_site_any_role(self):
+        """Consumer site roles cannot start a live."""
+        consumer_site_access = await self._get_consumer_site_access(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        await self.assert_user_cannot_connect(
+            consumer_site_access.user, self.some_video
+        )
+
+    async def test_connect_by_playlist_student(self):
+        """Playlist student cannot start a live."""
+        playlist_access = await self._get_playlist_access(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        await self.assert_user_cannot_connect(playlist_access.user, self.some_video)
+
+    async def test_connect_by_playlist_instructor(self):
+        """Playlist instructor cannot start a live."""
+        playlist_access = await self._get_playlist_access(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        await self.assert_user_can_connect(playlist_access.user, self.some_video)
+
+    async def test_connect_by_playlist_admin(self):
+        """Playlist administrator can start a live."""
+        playlist_access = await self._get_playlist_access(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        await self.assert_user_can_connect(playlist_access.user, self.some_video)
 
     async def test_connect_matching_video_student(self):
         """A connection with url params matching jwt resource_id should succeed."""

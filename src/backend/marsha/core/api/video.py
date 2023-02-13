@@ -71,6 +71,8 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         the current user has the authorization to access endpoint.
         """
         if self.action in ["retrieve"]:
+            # DEV WARNING: please ensure to also update the permissions in the
+            # `VideoConsumer` websocket consumer.
             permission_classes = [
                 # With LTI: anyone with a valid token for the video can access
                 permissions.IsTokenResourceRouteObject
