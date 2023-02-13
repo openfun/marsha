@@ -35,6 +35,7 @@
     "build-libs": "yarn build-tests && yarn workspace lib-components run build && yarn workspace lib-classroom run build && yarn workspace lib-video run build && yarn workspace lib-markdown run build",
     "build-lti": "yarn build-libs && yarn workspace marsha run build",
     "build-site": "yarn build-libs && yarn workspace standalone_site run build",
+    "build-theme": "cunningham -g css",
     "start-site": "yarn build-libs && yarn workspace standalone_site run start",
     "prettier": "yarn workspaces run prettier"
   },
@@ -51,6 +52,8 @@
     "unist-util-visit": "4.1.2"
   },
   "dependencies": {
+    "@openfun/cunningham-react": "0.1.0",
+    "@openfun/cunningham-tokens": "0.1.0",
     "cljs-merge": "1.1.1",
     "yargs": "17.6.2"
   },

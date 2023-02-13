@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable react-hooks/exhaustive-deps */
+import { Button } from '@openfun/cunningham-react';
 import {
   CodeMirrorEditor,
   useCodemirrorEditor,
@@ -20,7 +21,7 @@ import {
   useSaveTranslations,
   useUpdateMarkdownDocument,
 } from 'data';
-import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
+import { Anchor, Box, Footer, Text, TextInput } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
 import React, { Suspense, useEffect } from 'react';
@@ -283,20 +284,20 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             />
             <Box flex="grow" />
             <Button
-              primary
               onClick={() => publishDocument()}
-              label={intl.formatMessage(messages.publish)}
               disabled={
                 !canSaveDocument() || contentChanged.current || !localIsDraft
               }
-            />
+            >
+              {intl.formatMessage(messages.publish)}
+            </Button>
             <Box flex="shrink" margin="xxsmall" />
             <Button
-              primary
               onClick={() => saveDocument()}
-              label={intl.formatMessage(messages.save)}
               disabled={!canSaveDocument() || !contentChanged.current}
-            />
+            >
+              {intl.formatMessage(messages.save)}
+            </Button>
           </Box>
         </Box>
 
