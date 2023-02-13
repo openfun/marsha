@@ -9,14 +9,14 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@html-to/text-cli@0.5.2":
-  version "0.5.2"
-  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.2.tgz#1630ae20a1454460df913ab1fb6460bdc8bc44fa"
-  integrity sha512-MMNDsENeMWQAOAt0hX0CXJsjDUZYx0IYkxoZvfbSaBo5N5Rf2vAVXswLsida1fkiFTOt5Cwt2Cw3r8Efo8LB/g==
+"@html-to/text-cli@0.5.3":
+  version "0.5.3"
+  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.3.tgz#4f988c199ddc46efd31a640358da562129cf97ec"
+  integrity sha512-4zz57WH3/NoLdV/lbnJFpm88FpwtNm78UOz3Xl/TpWU4CCDVyw5bz6YUdOJ4w0qjJy26a009g2k7D/bMaGehow==
   dependencies:
     "@selderee/plugin-htmlparser2" "^0.10.0"
     aspargvs "^0.6.0"
-    deepmerge "^4.2.2"
+    deepmerge "^4.3.0"
     htmlparser2 "^8.0.1"
     selderee "^0.10.0"
 
@@ -209,10 +209,10 @@ css-what@^5.0.1, css-what@^5.1.0:
   resolved "https://registry.yarnpkg.com/css-what/-/css-what-5.1.0.tgz#3f7b707aadf633baf62c2ceb8579b545bb40f7fe"
   integrity sha512-arSMRWIIFY0hV8pIxZMEfmMI47Wj3R/aWpZDDxWYCPEiOMv6tfOrnpDtgxBYPEQD4V0Y/958+1TdC3iWTFcUPw==
 
-deepmerge@^4.2.2:
-  version "4.2.2"
-  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.2.2.tgz#44d2ea3679b8f4d4ffba33f03d865fc1e7bf4955"
-  integrity sha512-FJ3UgI4gIl+PHZm53knsuSFpE+nESMr7M4v9QcgB7S63Kj/6WqMiFQJpBBYz1Pt+66bZpP3Q7Lye0Oo9MPKEdg==
+deepmerge@^4.3.0:
+  version "4.3.0"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.0.tgz#65491893ec47756d44719ae520e0e2609233b59b"
+  integrity sha512-z2wJZXrmeHdvYJp/Ux55wIjqo81G5Bp4c+oELTW+7ar6SogWHajt5a9gO3s3IDaGSAXjDk0vlQKN3rms8ab3og==
 
 detect-node@2.0.4:
   version "2.0.4"
