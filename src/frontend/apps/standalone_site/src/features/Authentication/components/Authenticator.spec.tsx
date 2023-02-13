@@ -13,14 +13,6 @@ Object.defineProperty(window, 'location', {
   },
 });
 
-const mockSWAddEventListener = jest.fn();
-Object.defineProperty(navigator, 'serviceWorker', {
-  value: {
-    addEventListener: mockSWAddEventListener,
-    removeEventListener: jest.fn(),
-  },
-});
-
 const WrappedAuthenticator = () => {
   // simply wrap the Authenticator to display the location
   // for test purposes
