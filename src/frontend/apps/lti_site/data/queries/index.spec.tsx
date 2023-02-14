@@ -8,15 +8,12 @@ import {
   portabilityRequestMockFactory,
   thumbnailMockFactory,
   timedTextMockFactory,
-  videoMockFactory,
-  LiveModeType,
 } from 'lib-components';
 import React from 'react';
 import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
 
 import {
   useCreateDocument,
-  useCreateVideo,
   useCreatePortabilityRequest,
   useOrganization,
   usePlaylist,
@@ -373,143 +370,6 @@ describe('queries', () => {
           Authorization: 'Bearer some token',
           'Content-Type': 'application/json',
         },
-      });
-      expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-    });
-  });
-
-  describe('useCreateVideo', () => {
-    it('creates the resource', async () => {
-      const video = videoMockFactory();
-      fetchMock.post('/api/videos/', video);
-
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
-        wrapper: Wrapper,
-      });
-      result.current.mutate({
-        playlist: video.playlist.id,
-        title: video.title!,
-      });
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          playlist: video.playlist.id,
-          title: video.title,
-        }),
-      });
-      expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-    });
-
-    it('creates the resource with description', async () => {
-      const video = videoMockFactory();
-      fetchMock.post('/api/videos/', video);
-
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
-        wrapper: Wrapper,
-      });
-      result.current.mutate({
-        playlist: video.playlist.id,
-        title: video.title!,
-        description: video.description!,
-      });
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          playlist: video.playlist.id,
-          title: video.title,
-          description: video.description,
-        }),
-      });
-      expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-    });
-
-    it('creates the resource with live_type and custom success callback', async () => {
-      const video = videoMockFactory();
-      fetchMock.post('/api/videos/', video);
-      const successCallback = jest.fn();
-
-      const { result, waitFor } = renderHook(
-        () =>
-          useCreateVideo({
-            onSuccess: async (createdVideo, variables) => {
-              await successCallback(createdVideo, variables);
-            },
-          }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      result.current.mutate({
-        playlist: video.playlist.id,
-        title: video.title!,
-        live_type: LiveModeType.JITSI,
-      });
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          playlist: video.playlist.id,
-          title: video.title,
-          live_type: LiveModeType.JITSI,
-        }),
-      });
-      expect(result.current.data).toEqual(video);
-      expect(result.current.status).toEqual('success');
-      expect(successCallback).toHaveBeenCalledWith(video, {
-        playlist: video.playlist.id,
-        title: video.title!,
-        live_type: LiveModeType.JITSI,
-      });
-    });
-
-    it('fails to create the resource', async () => {
-      const video = videoMockFactory();
-      fetchMock.post('/api/videos/', 400);
-
-      const { result, waitFor } = renderHook(() => useCreateVideo(), {
-        wrapper: Wrapper,
-      });
-      result.current.mutate({
-        playlist: video.playlist.id,
-        title: video.title!,
-      });
-
-      await waitFor(() => result.current.isError);
-
-      expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-        method: 'POST',
-        body: JSON.stringify({
-          playlist: video.playlist.id,
-          title: video.title,
-        }),
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
