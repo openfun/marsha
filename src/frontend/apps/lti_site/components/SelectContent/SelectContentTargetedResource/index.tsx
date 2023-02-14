@@ -14,16 +14,12 @@ import {
   Video,
 } from 'lib-components';
 
-import {
-  useCreateDocument,
-  useCreateVideo,
-  UseCreateVideoData,
-} from 'data/queries';
+import { useCreateDocument } from 'data/queries';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
 import { buildContentItems } from '../utils';
-import { initiateLive } from 'lib-video';
+import { initiateLive, useCreateVideo, UseCreateVideoData } from 'lib-video';
 
 interface SelectContentVideoProps {
   addMessage: string;

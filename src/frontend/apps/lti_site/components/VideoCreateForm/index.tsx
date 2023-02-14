@@ -9,12 +9,11 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from 'lib-components';
+import { useCreateVideo } from 'lib-video';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
-
-import { useCreateVideo } from '../../data/queries';
 
 import { MutationFieldError } from '../MutationFieldError';
 
