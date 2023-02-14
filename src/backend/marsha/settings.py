@@ -415,6 +415,7 @@ class Base(Configuration):
 
     # Cache
     APP_DATA_CACHE_DURATION = values.Value(60)  # 60 secondes
+    PUBLIC_RESOURCE_DOMAIN_CACHE_DURATION = values.Value(90)  # 90 seconds
     VIDEO_ATTENDANCES_CACHE_DURATION = values.Value(300)  # 5 minutes
 
     SENTRY_DSN = values.Value(None)
