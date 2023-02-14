@@ -101,7 +101,10 @@ def _preview_markdown(page: Page, live_server: LiveServer):
     X_FRAME_OPTIONS="",
 )
 def test_lti_markdown_render_and_save(
-    page: Page, live_server: LiveServer, settings
+    page: Page,
+    live_server: LiveServer,
+    settings,
+    assert_snapshot,
 ) -> None:
     """Test that the markdown is rendered and saved."""
     settings.MARKDOWN_ENABLED = True
@@ -120,3 +123,4 @@ def test_lti_markdown_render_and_save(
     page.get_by_placeholder("Title").fill("my title")
     page.get_by_role("button", name="Save").click()
     expect(page.get_by_text("Document is saved")).to_be_visible()
+    assert_snapshot(page.screenshot(), "example.png")
