@@ -61,7 +61,7 @@ describe('<UploadSubtitles />', () => {
     expect(mockSetInfoWidgetModalProvider).toHaveBeenCalledTimes(1);
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
       title: 'Subtitles',
-      text: 'This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists.',
+      text: `This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)`,
       refWidget: expect.any(HTMLDivElement),
     });
   });
