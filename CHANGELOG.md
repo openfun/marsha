@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a check on timedtexttrack file size when uploading content
 - Add a check on deposited file size when uploading content 
 - helpers frontend api error handling
+- Add accepted formats in the subtitles uploaders helptext
 
 ### Changed
 

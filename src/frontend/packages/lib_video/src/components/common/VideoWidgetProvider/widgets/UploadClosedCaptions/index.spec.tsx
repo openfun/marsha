@@ -58,7 +58,7 @@ describe('<UploadClosedCaptions />', () => {
     expect(mockSetInfoWidgetModalProvider).toHaveBeenCalledTimes(1);
     expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
       title: 'Closed captions',
-      text: 'This widget allows you upload closed captions for the video.',
+      text: `This widget allows you upload closed captions for the video. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)`,
       refWidget: expect.any(HTMLDivElement),
     });
   });
