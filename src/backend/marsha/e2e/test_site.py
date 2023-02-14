@@ -14,7 +14,7 @@ from marsha.core.factories import (
     PlaylistFactory,
     UserFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, Playlist
 
 
 @pytest.mark.django_db()
@@ -173,3 +173,43 @@ def test_site_classroom_invite_link(context: BrowserContext, live_server: LiveSe
         invite_link = invite_link_button.get_attribute("data-clipboard-text")
     invite_page.goto(invite_link)
     expect(invite_page.get_by_text("Classroom not started yet.")).to_be_visible()
+
+
+@pytest.mark.usefixtures("user_logged_in")
+@responses.activate
+@pytest.mark.django_db()
+@override_settings(
+    DEBUG=True,
+    FRONT_UPLOAD_POLL_INTERVAL="1",
+    STORAGE_BACKEND="marsha.core.storage.dummy",
+    X_FRAME_OPTIONS="",
+    BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api",
+    BBB_API_SECRET="SuperSecret",
+)
+def test_playlist_update(context: BrowserContext, live_server: LiveServer):
+    """Test playlist update."""
+    responses.add(
+        responses.GET,
+        "https://10.7.7.1/bigbluebutton/api/getMeetingInfo",
+        body="""<response>
+            <returncode>FAILED</returncode>
+            <messageKey>notFound</messageKey>
+            <message>We could not find a meeting with that meeting ID</message>
+        </response>
+        """,
+        status=200,
+    )
+    page = context.pages[0]
+    page.get_by_role("menuitem", name="My Playlists").click()
+    page.get_by_role("button", name="Update playlist Playlist test").click()
+    page.get_by_label("Name*required").click()
+    page.get_by_label("Name*required").fill("Playlist test updated")
+    page.get_by_role("button", name="Save").click()
+
+    expect(
+        page.get_by_text("An error occures, please try again later.")
+    ).not_to_be_visible()
+    expect(page.get_by_text("Playlist updated with success.")).to_be_visible()
+
+    # playlist title should be updated
+    assert Playlist.objects.get(title="Playlist test updated") is not None
