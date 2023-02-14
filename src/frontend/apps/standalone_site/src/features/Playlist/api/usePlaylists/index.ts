@@ -2,6 +2,7 @@ import {
   APIList,
   fetchList,
   FetchListQueryKey,
+  FetchResponseError,
   Playlist,
 } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
@@ -25,7 +26,7 @@ export const usePlaylists = (
   params: UsePlaylistsParams,
   queryConfig?: UseQueryOptions<
     PlaylistsResponse,
-    'playlists',
+    FetchResponseError<PlaylistsResponse>,
     PlaylistsResponse,
     FetchListQueryKey
   >,
@@ -33,7 +34,7 @@ export const usePlaylists = (
   const keys: FetchListQueryKey = ['playlists', params];
   return useQuery<
     PlaylistsResponse,
-    'playlists',
+    FetchResponseError<PlaylistsResponse>,
     PlaylistsResponse,
     FetchListQueryKey
   >(keys, fetchList, queryConfig);

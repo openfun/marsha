@@ -1,14 +1,13 @@
-import { Text, TextArea, TextInput, Select, Box } from 'grommet';
+import { Text, TextArea, TextInput, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
-import { Playlist, Form, FormField } from 'lib-components';
-import { Fragment, useState, useEffect } from 'react';
+import { Form, FormField } from 'lib-components';
+import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
 import { ModalButton } from 'components/Modal';
-import { ITEM_PER_PAGE } from 'conf/global';
-import { PlaylistOrderType, usePlaylists } from 'features/Playlist';
+import { useSelectPlaylist } from 'features/Playlist';
 import { routes } from 'routes';
 
 const messages = defineMessages({
@@ -31,11 +30,6 @@ const messages = defineMessages({
     defaultMessage: 'This field is required to create the classroom.',
     description: 'Message when classroom field is missing.',
     id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.requiredField',
-  },
-  selectPlaylistLabel: {
-    defaultMessage: 'Choose the playlist.',
-    description: 'Label select playlist.',
-    id: 'features.Contents.features.ClassRooms.ClassroomCreateForm.selectPlaylistLabel',
   },
   submitLabel: {
     defaultMessage: 'Add classroom',
@@ -73,36 +67,12 @@ interface ClassroomCreateFormProps {
 const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
   const intl = useIntl();
   const history = useHistory();
-  const [currentPlaylistPage, setCurrentPlaylistPage] = useState(0);
-  const [isPlaylistInit, setIsPlaylistInit] = useState(false);
-  const { data: playlistResponse, error: errorPlaylist } = usePlaylists(
-    {
-      offset: `${currentPlaylistPage * ITEM_PER_PAGE}`,
-      limit: `${ITEM_PER_PAGE}`,
-      ordering: PlaylistOrderType.BY_CREATED_ON_REVERSED,
-      can_edit: 'true',
-    },
-    {
-      keepPreviousData: true,
-      staleTime: 20000,
-      onSuccess: (data) => {
-        if (isPlaylistInit) {
-          return;
-        }
-
-        if (!data || data.count === 0) {
-          return;
-        }
-
-        setIsPlaylistInit(true);
-        setClassroom((value) => ({
-          ...value,
-          playlist: data.results[0].id,
-        }));
-      },
-    },
-  );
-  const [playlists, setPlaylists] = useState<Playlist[]>([]);
+  const { errorPlaylist, selectPlaylist } = useSelectPlaylist((results) => {
+    setClassroom((value) => ({
+      ...value,
+      playlist: results[0].id,
+    }));
+  });
   const {
     mutate: createClassroom,
     error: errorClassroom,
@@ -122,18 +92,6 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
     title: '',
     description: '',
   });
-
-  useEffect(() => {
-    if (!playlistResponse || !playlistResponse.results) {
-      return;
-    }
-
-    setPlaylists((currentPlaylists) => [
-      ...currentPlaylists,
-      ...playlistResponse.results,
-    ]);
-  }, [playlistResponse]);
-
   const errorMessages = {
     [ETypeError.PERMISSION]: intl.formatMessage(messages.ErrorPermission),
   };
@@ -175,32 +133,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
           <TextInput size="1rem" name="title" id="title-id" />
         </FormField>
 
-        <FormField
-          label={intl.formatMessage(messages.selectPlaylistLabel)}
-          htmlFor="select-playlist-id"
-          name="playlist"
-          required
-        >
-          <Select
-            id="select-playlist-id"
-            name="playlist"
-            size="medium"
-            aria-label={intl.formatMessage(messages.selectPlaylistLabel)}
-            options={playlists}
-            labelKey="title"
-            valueKey={{ key: 'id', reduce: true }}
-            onMore={() => {
-              if (!playlistResponse) {
-                return;
-              }
-
-              if (playlists.length < playlistResponse.count) {
-                setCurrentPlaylistPage((currentPage) => currentPage + 1);
-              }
-            }}
-            dropHeight="medium"
-          />
-        </FormField>
+        {selectPlaylist}
 
         <FormField
           label={intl.formatMessage(messages.descriptionLabel)}
