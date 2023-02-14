@@ -6,6 +6,7 @@ import re
 from unittest import mock
 import uuid
 
+from django.core.cache import cache
 from django.test import TestCase, override_settings
 
 from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
@@ -28,6 +29,10 @@ class VideoPublicViewTestCase(TestCase):
 
     maxDiff = None
 
+    def tearDown(self):
+        super().tearDown()
+        cache.clear()
+
     def test_video_publicly_accessible(self):
         """Validate to access to a public video."""
         video = VideoFactory(
@@ -43,7 +48,10 @@ class VideoPublicViewTestCase(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
         )
 
-        response = self.client.get(f"/videos/{video.pk}")
+        # First response has no cache
+        with self.assertNumQueries(10):
+            response = self.client.get(f"/videos/{video.pk}")
+
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         self.assertIn("Content-Security-Policy", response.headers)
@@ -151,6 +159,20 @@ class VideoPublicViewTestCase(TestCase):
         self.assertEqual(context.get("modelName"), "videos")
         self.assertIsNone(context.get("context_id"))
         self.assertIsNone(context.get("consumer_site"))
+
+        # The second response is cached, the header should not have need changed
+        # and should still contains the CSP frame-ancestors
+        with self.assertNumQueries(0):
+            cached_response = self.client.get(f"/videos/{video.pk}")
+
+        self.assertEqual(cached_response.status_code, 200)
+        self.assertContains(cached_response, "<html>")
+        self.assertIn("Content-Security-Policy", cached_response.headers)
+        self.assertNotIn("X-Frame-Options", cached_response.headers)
+        self.assertEqual(
+            cached_response.headers["Content-Security-Policy"],
+            "frame-ancestors trusted_domain.com *.trusted_domain.com;",
+        )
 
     def test_video_not_publicly_accessible(self):
         """Validate it is impossible to access to a non public video."""

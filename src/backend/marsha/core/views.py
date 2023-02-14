@@ -546,7 +546,14 @@ class BaseView(BaseModelResourceView, ABC):
     This view answer to GET request only.
     """
 
-    resource = None
+    @property
+    def cache_key_domain(self):
+        """Cache key for domain name  linked to the current public resource"""
+        return self.build_cache_key(
+            "consumer_site__domain",
+            self.model.__name__,
+            self.kwargs["uuid"],
+        )
 
     @property
     def cache_key(self):
@@ -575,15 +582,24 @@ class BaseView(BaseModelResourceView, ABC):
         session_id = str(uuid.uuid4())
 
         if app_data is None:
-            self.resource = self._get_resource()
+            resource = self._get_resource()
 
             app_data = self._get_base_app_data()
             app_data["resource"] = self._get_resource_data(
-                self.resource,
+                resource,
                 session_id,
             )
 
             cache.set(self.cache_key, app_data, settings.APP_DATA_CACHE_DURATION)
+            # if a consumer exists, we save the domain in a dedicated cache in order to use it
+            # on every request made to determine if the response headers should be changed in the
+            # get method.
+            if resource.playlist.consumer_site:
+                cache.set(
+                    self.cache_key_domain,
+                    resource.playlist.consumer_site.domain,
+                    settings.PUBLIC_RESOURCE_DOMAIN_CACHE_DURATION,
+                )
 
         if app_data["resource"] is not None:
             refresh_token = ResourceRefreshToken.for_resource_id(
@@ -629,20 +645,17 @@ class BaseView(BaseModelResourceView, ABC):
         """
         response = self.render_to_response(self.get_context_data())
 
-        if not self.resource:
-            return response
+        domain = cache.get(self.cache_key_domain)
 
-        resource_consumer_site = self.resource.playlist.consumer_site
         # If the resource is owned in a consumer site then we allow only this consumer
         # site domain to embed a public resource in an iframe
         # All subdomain from the domain are also accepted to have the same behavior as
         # with LTI passports
-        if resource_consumer_site:
+        if domain:
             response.xframe_options_exempt = True
-            response.headers["Content-Security-Policy"] = (
-                f"frame-ancestors {resource_consumer_site.domain} "
-                f"*.{resource_consumer_site.domain};"
-            )
+            response.headers[
+                "Content-Security-Policy"
+            ] = f"frame-ancestors {domain} *.{domain};"
 
         return response
 

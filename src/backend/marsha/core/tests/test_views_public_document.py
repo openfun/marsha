@@ -5,6 +5,7 @@ import random
 import re
 import uuid
 
+from django.core.cache import cache
 from django.test import TestCase
 
 from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
@@ -22,6 +23,10 @@ class DocumentPublicViewTestCase(TestCase):
 
     maxDiff = None
 
+    def tearDown(self):
+        super().tearDown()
+        cache.clear()
+
     def test_document_publicly_accessible(self):
         """Validate to access to a public document."""
         document = DocumentFactory(
@@ -35,7 +40,9 @@ class DocumentPublicViewTestCase(TestCase):
             uploaded_on="2019-09-24 07:24:40+00",
         )
 
-        response = self.client.get(f"/documents/{document.pk}")
+        # First response has no cache
+        with self.assertNumQueries(6):
+            response = self.client.get(f"/documents/{document.pk}")
 
         self.assertEqual(response.status_code, 200)
         self.assertIn("Content-Security-Policy", response.headers)
@@ -86,6 +93,20 @@ class DocumentPublicViewTestCase(TestCase):
         self.assertEqual(context.get("modelName"), "documents")
         self.assertIsNone(context.get("context_id"))
         self.assertIsNone(context.get("consumer_site"))
+
+        # The second response is cached, the header should not have need changed
+        # and should still contains the CSP frame-ancestors
+        with self.assertNumQueries(0):
+            cached_response = self.client.get(f"/documents/{document.pk}")
+
+        self.assertEqual(cached_response.status_code, 200)
+        self.assertContains(cached_response, "<html>")
+        self.assertIn("Content-Security-Policy", cached_response.headers)
+        self.assertNotIn("X-Frame-Options", cached_response.headers)
+        self.assertEqual(
+            cached_response.headers["Content-Security-Policy"],
+            "frame-ancestors trusted_domain.com *.trusted_domain.com;",
+        )
 
     def test_public_document_without_consumer_site(self):
         """Public document without consumer site should have x-frame-options header"""
