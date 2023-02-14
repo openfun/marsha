@@ -83,7 +83,7 @@ const queryClient = new QueryClient({
 
 /////////////////////////
 //  wrap the component
-const appendUtilsElement = (
+export const appendUtilsElement = (
   element: ReactElement,
   options?: Partial<RenderOptions>,
 ) => {
