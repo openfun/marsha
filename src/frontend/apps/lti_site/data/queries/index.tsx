@@ -6,7 +6,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { Maybe, Nullable } from 'lib-common';
+import { Maybe } from 'lib-common';
 import {
   actionOne,
   APIList,
@@ -18,13 +18,11 @@ import {
   updateOne,
   useVideo as useVideoStore,
   Document,
-  LiveModeType,
   LiveAttendance,
   PortabilityRequest,
   Thumbnail,
   TimedText,
   Video,
-  uploadState,
   Organization,
 } from 'lib-components';
 
@@ -148,41 +146,6 @@ export const useLiveAttendances = (
     LiveAttendancesResponse,
     FetchListQueryKey
   >(key, fetchList, queryConfig);
-};
-
-export type UseCreateVideoData = {
-  playlist: string;
-  title: string;
-  description?: string;
-  lti_id?: string;
-  live_type?: Nullable<LiveModeType>;
-  upload_state?: uploadState;
-};
-type UseCreateVideoError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseCreateVideoData]?: string[] }[];
-    };
-type UseCreateVideoOptions = UseMutationOptions<
-  Video,
-  UseCreateVideoError,
-  UseCreateVideoData
->;
-export const useCreateVideo = (options?: UseCreateVideoOptions) => {
-  const queryClient = useQueryClient();
-  return useMutation<Video, UseCreateVideoError, UseCreateVideoData>(
-    (newVideo) => createOne({ name: 'videos', object: newVideo }),
-    {
-      ...options,
-      onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('videos');
-        if (options?.onSuccess) {
-          options.onSuccess(data, variables, context);
-        }
-      },
-    },
-  );
 };
 
 export const useStartLiveRecording = (id: string, onError: () => void) => {

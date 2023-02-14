@@ -9,17 +9,17 @@ import {
   uploadState,
   Video,
 } from 'lib-components';
+import { initiateLive, useCreateVideo } from 'lib-video';
 import React, { lazy, Suspense } from 'react';
 import { useIntl } from 'react-intl';
 
 import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { useCreateDocument, useCreateVideo } from 'data/queries';
+import { useCreateDocument } from 'data/queries';
 
 import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
 import { buildContentItems } from '../utils';
-import { initiateLive } from 'lib-video';
 
 export interface SelectContentTabProps {
   playlist: Playlist;
