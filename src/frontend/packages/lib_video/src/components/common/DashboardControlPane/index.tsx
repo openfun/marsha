@@ -7,7 +7,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { VideoWidgetProvider } from 'components/common/VideoWidgetProvider';
 
 import { DashboardLiveTabAttendance } from './DashboardLiveTabAttendance';
-import { DashboardTabStatistics } from './DashboardTabStatistics/DashboardTabStatistics';
+import { DashboardTabStatistics } from './DashboardTabStatistics';
 
 export const enum PaneTabs {
   STATS = 'statistics',
