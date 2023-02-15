@@ -770,9 +770,9 @@ jobs:
                 --browser-channel "<< parameters.browser_channel >>" \
                 --browser "<< parameters.browser >>" marsha/e2e
       - store_artifacts:
-          paths:
-            - /home/circleci/marsha/src/backend/test-results
-            - /home/circleci/marsha/src/backend/e2e/__snapshots__
+          path: /home/circleci/marsha/src/backend/test-results
+      - store_artifacts:
+          path: /home/circleci/marsha/src/backend/e2e/__snapshots__
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
