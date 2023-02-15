@@ -19,6 +19,7 @@ import {
   MARKDOWN_NOT_FOUND_ROUTE,
   MARKDOWN_VIEWER_ROUTE,
 } from 'lib-markdown';
+import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -86,7 +87,7 @@ describe('<RedirectOnLoad />', () => {
     getByText('Feature disabled');
   });
 
-  it('shows editor for instructor who can update', async () => {
+  it('shows editor for instructor who can update an existing document', async () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -112,6 +113,33 @@ describe('<RedirectOnLoad />', () => {
     });
 
     screen.getByText('Markdown editor');
+  });
+
+  it('shows wizard for instructor who can update a new document', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      flags: { markdown: true },
+    } as any);
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
+        roles: [OrganizationAccessRole.INSTRUCTOR],
+        consumer_site: 'consumer_site',
+      },
+    ] as any);
+
+    render(<RedirectOnLoad isNewDocument={true} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: MARKDOWN_WIZARD_ROUTE(),
+            render: () => <span>Markdown wizard</span>,
+          },
+        ],
+      },
+    });
+    screen.getByText('Markdown wizard');
   });
 
   it('shows viewer for student or instructor who cannot update', async () => {

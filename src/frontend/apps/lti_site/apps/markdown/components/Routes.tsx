@@ -20,9 +20,11 @@ import {
 } from 'lib-markdown';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
+import { MARKDOWN_WIZARD_ROUTE } from './MarkdownWizard/route';
 import { lazyImport } from 'lib-common';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 
+const { MarkdownWizard } = lazyImport(() => import('./MarkdownWizard'));
 const { MarkdownEditor, MarkdownNotFoundView, MarkdownViewer } = lazyImport(
   () => import('lib-markdown'),
 );
@@ -35,6 +37,14 @@ const Routes = () => {
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
         <UploadManager>
+          <Route
+            exact
+            path={MARKDOWN_WIZARD_ROUTE()}
+            render={() => (
+              <MarkdownWizard markdownDocumentId={markdownDocument.id} />
+            )}
+          />
+
           <Route
             exact
             path={MARKDOWN_EDITOR_ROUTE()}
@@ -75,7 +85,14 @@ const Routes = () => {
             )}
           />
 
-          <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
+          <Route
+            path={REDIRECT_ON_LOAD_ROUTE()}
+            render={() => (
+              <RedirectOnLoad
+                isNewDocument={markdownDocument.translations.length === 0}
+              />
+            )}
+          />
         </UploadManager>
       </MemoryRouter>
     </Suspense>
