@@ -1,15 +1,16 @@
 import { Box, Grid, Text } from 'grommet';
 import { useCurrentVideo } from 'hooks';
-import React from 'react';
+import { Loader } from 'lib-components';
+import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useStatsVideo } from 'hooks/useVideoStats';
 
 const messages = defineMessages({
   viewersStatsDescription: {
-    defaultMessage: 'People present on the whole webinar',
-    description:
-      'Description of the number of people present on the whole webinar',
+    defaultMessage:
+      '{viewers, plural, =0 {Viewers} one {Viewer} other {Viewers}}',
+    description: 'Description of the number of viewers',
     id: 'components.DashboardControlPane.DashboardTabStatistics.viewersStatsDescription',
   },
 });
@@ -23,18 +24,27 @@ interface Metric {
 type MetricsDataType = Metric[][];
 
 export const DashboardTabStatistics = () => {
-  const video = useCurrentVideo();
-  const stats = useStatsVideo(video.id);
   const intl = useIntl();
+  const video = useCurrentVideo();
+  const [metrics, setMetrics] = useState<MetricsDataType>([]);
+  const { isLoading } = useStatsVideo(video.id, {
+    onSuccess(data) {
+      setMetrics([
+        [
+          {
+            value: data.nb_views,
+            description: intl.formatMessage(messages.viewersStatsDescription, {
+              viewers: data.nb_views,
+            }),
+          },
+        ],
+      ]);
+    },
+  });
 
-  const metrics: MetricsDataType = [
-    [
-      {
-        value: stats.data?.nb_views || 0,
-        description: intl.formatMessage(messages.viewersStatsDescription),
-      },
-    ],
-  ];
+  if (isLoading) {
+    return <Loader />;
+  }
 
   return (
     <React.Fragment>
