@@ -14,7 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add stats page on VOD
 - Create lib-markdown package
 - Add a check on timedtexttrack file size when uploading content
-- Add a check on deposited file size when uploading content 
+- Add a check on deposited file size when uploading content
 - helpers frontend api error handling
 - Add accepted formats in the subtitles uploaders helptext
 
@@ -31,8 +31,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - the Renater IdP sort is case-insensitive
-- bug on the textarea description of the live video 
+- bug on the textarea description of the live video
 - aws fargate loggroup region
+- fix recording action buttons style
 
 ## [4.0.0-beta.15] - 2023-02-02
 
@@ -98,7 +99,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - lti:
   - service worker 401 reconnect
-  - Add a check on video file size when uploading content 
+  - Add a check on video file size when uploading content
 
 ### Changed
 

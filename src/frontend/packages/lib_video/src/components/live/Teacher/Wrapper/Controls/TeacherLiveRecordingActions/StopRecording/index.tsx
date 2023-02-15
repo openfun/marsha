@@ -103,7 +103,11 @@ export const StopRecording = () => {
           )}
         </Stack>
       }
-      style={{ borderRadius: '25px' }}
+      style={{
+        borderRadius: '25px',
+        //  force text color to white because a disabled button uses the color props for the text color
+        color: 'white',
+      }}
     />
   );
 };
