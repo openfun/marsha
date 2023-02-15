@@ -17,6 +17,9 @@ import VideoWizard from '.';
 const mockedVideo = videoMockFactory({ live_state: null });
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
+  WizardLayout: ({ children }: { children: React.ReactNode }) => (
+    <div>{children}</div>
+  ),
   useAppConfig: () => ({
     static: {
       img: {

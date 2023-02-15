@@ -7,6 +7,7 @@ import {
   Video,
   useVideo,
   report,
+  WhiteCard,
 } from 'lib-components';
 import React, { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -14,8 +15,6 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { CurrentVideoProvider } from 'hooks/useCurrentVideo';
-
-import { WhiteCard } from '../WhiteCard';
 
 import { LicenseSelect } from './LicenseSelect';
 import { UploadVideoForm } from './UploadVideoForm';
