@@ -37,6 +37,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - bug on the textarea description of the live video
 - aws fargate loggroup region
 - fix recording action buttons style
+- student live polling a stopped live beeing restarted
 
 ## [4.0.0-beta.15] - 2023-02-02
 
