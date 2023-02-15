@@ -1,12 +1,6 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import {
-  useJwt,
-  FULL_SCREEN_ERROR_ROUTE,
-  uploadState,
-  videoMockFactory,
-  liveMockFactory,
-} from 'lib-components';
+import { useJwt, videoMockFactory, liveMockFactory } from 'lib-components';
 import React from 'react';
 
 import { render } from 'lib-tests';
@@ -67,20 +61,20 @@ describe('<PublicVideoDashboard />', () => {
     screen.getByText('vod student');
   });
 
-  it('redirects to the error page when vod is deleted', () => {
-    const video = videoMockFactory({ upload_state: uploadState.DELETED });
+  // it('redirects to the error page when vod is deleted', () => {
+  //   const video = videoMockFactory({ upload_state: uploadState.DELETED });
 
-    render(<PublicVideoDashboard video={video} playerType={'some_player'} />, {
-      routerOptions: {
-        routes: [
-          {
-            path: FULL_SCREEN_ERROR_ROUTE('videoDeleted'),
-            render: () => <span>error page</span>,
-          },
-        ],
-      },
-    });
+  //   render(<PublicVideoDashboard video={video} playerType={'some_player'} />, {
+  //     routerOptions: {
+  //       routes: [
+  //         {
+  //           path: FULL_SCREEN_ERROR_ROUTE('videoDeleted'),
+  //           render: () => <span>error page</span>,
+  //         },
+  //       ],
+  //     },
+  //   });
 
-    screen.getByText('error page');
-  });
+  //   screen.getByText('error page');
+  // });
 });

@@ -15,6 +15,8 @@ import {
   LiveTeacherDashboard,
   VODTeacherDashboard,
 } from 'lib-video';
+import { useIntl } from 'react-intl';
+import { errorMessages } from 'utils/messages';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -23,6 +25,7 @@ interface DashboardVideoWrapperProps {
 export const DashboardVideoWrapper = ({
   video,
 }: DashboardVideoWrapperProps) => {
+  const intl = useIntl();
   const currentVideo = useVideo((state) => state.getVideo(video));
   const videoWebsocketUrl = useMemo(() => {
     return generateVideoWebsocketUrl(currentVideo.id, (url) => {
@@ -35,6 +38,14 @@ export const DashboardVideoWrapper = ({
       return url;
     });
   }, [currentVideo.id]);
+
+  if (video.upload_state === uploadState.DELETED) {
+    if (video?.live_type === 'jitsi') {
+      throw new Error(intl.formatMessage(errorMessages.liveEnded));
+    } else {
+      throw new Error(intl.formatMessage(errorMessages.videoDeleted));
+    }
+  }
 
   const live = convertVideoToLive(currentVideo);
   if (live && live.upload_state === uploadState.PENDING) {

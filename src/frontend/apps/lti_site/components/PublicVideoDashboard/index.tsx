@@ -1,7 +1,6 @@
 import {
   checkLtiToken,
   decodeJwt,
-  FULL_SCREEN_ERROR_ROUTE,
   uploadState,
   useJwt,
   useVideo,
@@ -15,7 +14,8 @@ import {
   VODStudentDashboard,
 } from 'lib-video';
 import React, { useMemo } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useIntl } from 'react-intl';
+import { errorMessages } from 'utils/messages';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -26,6 +26,7 @@ const PublicVideoDashboard = ({
   video,
   playerType,
 }: PublicVideoDashboardProps) => {
+  const intl = useIntl();
   const currentVideo = useVideo((state) => state.getVideo(video));
   const videoWebsocketUrl = useMemo(() => {
     return generateVideoWebsocketUrl(currentVideo.id, (url) => {
@@ -51,7 +52,7 @@ const PublicVideoDashboard = ({
   }
 
   if (video.upload_state === uploadState.DELETED) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+    throw new Error(intl.formatMessage(errorMessages.videoDeleted));
   }
 
   return (

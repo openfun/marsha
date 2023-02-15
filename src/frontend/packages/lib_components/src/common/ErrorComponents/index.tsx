@@ -20,7 +20,6 @@ export interface ErrorComponentsProps {
     | 'liveInit'
     | 'liveToVod'
     | 'liveStopped'
-    | 'videoDeleted'
     | 'fileTooLarge';
 }
 
@@ -160,20 +159,6 @@ const messages = {
       description:
         'Title for a user without update permission when a live is stopped or stopping',
       id: 'components.ErrorComponents.liveStopped.title',
-    },
-  },
-  videoDeleted: {
-    text: {
-      defaultMessage: 'This video is deleted and you can no longer watch it.',
-      description:
-        'Text explaining that a live has been deleted (or a lived has ended without any record).',
-      id: 'components.ErrorComponents.videoDeleted.text',
-    },
-    title: {
-      defaultMessage: 'This video is deleted',
-      description:
-        'Title for a user accessing a deleted video (or a live ended without any record).',
-      id: 'components.ErrorComponents.videoDeleted.title',
     },
   },
   fileTooLarge: {
