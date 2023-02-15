@@ -38,12 +38,12 @@ export const StartRecording = () => {
       disabled={isLoading}
       margin="auto"
       onClick={() => mutate()}
-      secondary
+      primary
       label={
         <Stack>
           <Box direction="row" flex style={{ whiteSpace: 'nowrap' }}>
             <RecordSVG
-              iconColor="red-active"
+              iconColor="white"
               width="25px"
               height="25px"
               containerStyle={{ margin: 'auto', marginRight: '8px' }}
