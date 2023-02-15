@@ -77,7 +77,6 @@ export const disableFormTheme = {
         height: 0.1px;
         margin: 0 1rem 0;
         transform: translateY(0.3rem);
-        z-index: 1;
       }
       & label span[aria-hidden='true'] {
         font-size: 0.688rem;
