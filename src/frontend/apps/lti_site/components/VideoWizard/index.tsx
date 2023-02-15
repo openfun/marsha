@@ -8,13 +8,10 @@ import {
   modelName,
   useAppConfig,
   withLink,
-} from 'lib-components';
-import {
-  ConfigureLiveButton,
-  CreateVOD,
   WhiteCard,
   WizardLayout,
-} from 'lib-video';
+} from 'lib-components';
+import { ConfigureLiveButton, CreateVOD } from 'lib-video';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';

@@ -78,3 +78,5 @@ export * from './ThumbnailDisplayer';
 export * from './ConfirmationModal';
 export * from './NoSelectBox';
 export * from './Form';
+export * from './WhiteCard';
+export * from './WizardLayout';
