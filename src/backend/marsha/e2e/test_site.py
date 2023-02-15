@@ -66,9 +66,9 @@ def test_site_login(page: Page, live_server: LiveServer):
     page.fill("input[name=password]", "password")
     page.click("text=OK")
 
-    page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=My Playlists")
-    page.wait_for_selector("text=My Contents")
+    expect(page.get_by_role("menuitem", name="Dashboard")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Playlists")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Contents")).to_be_visible()
 
 
 @pytest.mark.usefixtures("user_logged_in")
@@ -77,9 +77,9 @@ def test_site_logged_in(context: BrowserContext, live_server: LiveServer):
     page = context.new_page()
     page.goto(live_server.url)
 
-    page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=My Playlists")
-    page.wait_for_selector("text=My Contents")
+    expect(page.get_by_role("menuitem", name="Dashboard")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Playlists")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Contents")).to_be_visible()
 
 
 @pytest.mark.usefixtures("user_logged_in")
@@ -150,9 +150,9 @@ def test_site_classroom_invite_link(context: BrowserContext, live_server: LiveSe
         status=200,
     )
     page = context.pages[0]
-    page.wait_for_selector("text=Dashboard")
-    page.wait_for_selector("text=My Playlists")
-    page.wait_for_selector("text=My Contents")
+    expect(page.get_by_role("menuitem", name="Dashboard")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Playlists")).to_be_visible()
+    expect(page.get_by_role("menuitem", name="My Contents")).to_be_visible()
     page.get_by_text("Classroom test").click()
 
     expect(page.get_by_text("LTI link for this classroom:")).to_be_visible()
