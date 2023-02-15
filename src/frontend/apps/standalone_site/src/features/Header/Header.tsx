@@ -68,6 +68,11 @@ const HeaderBox = styled(Box)<PropsExtended>`
 `;
 
 const messages = defineMessages({
+  iconTitle: {
+    defaultMessage: 'Account',
+    description: 'Menu user icon title.',
+    id: 'features.Header.iconTitle',
+  },
   profile: {
     defaultMessage: 'My profile',
     description: 'My profile link in header drop.',
@@ -145,7 +150,11 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
         label={
           <Box direction="row" align="center" gap="small" justify="end">
             <Text>{fullName}</Text>
-            <AvatarIcon width={42} height={42} />
+            <AvatarIcon
+              title={intl.formatMessage(messages.iconTitle)}
+              width={42}
+              height={42}
+            />
           </Box>
         }
         dropAlign={{ top: 'bottom', right: 'right' }}
