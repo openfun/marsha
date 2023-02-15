@@ -1,27 +1,10 @@
 import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import {
-  useJwt,
-  getResource,
-  modelName,
-  videoMockFactory,
-} from 'lib-components';
 
 import { resumeLive } from './resumeLive';
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-  getResource: jest.fn().mockResolvedValue(null),
-}));
-
-const mockGetResource = getResource as jest.MockedFunction<typeof getResource>;
-
 describe('resumeLive', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
-
     jest.clearAllMocks();
     jest.useFakeTimers();
   });
@@ -31,18 +14,8 @@ describe('resumeLive', () => {
     jest.useRealTimers();
     fetchMock.restore();
   });
-  it('waits until manifest is not ended', async () => {
-    const video = videoMockFactory({
-      urls: {
-        manifests: {
-          hls: 'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls.m3u8',
-        },
-        mp4: {},
-        thumbnails: {},
-      },
-    });
-    mockGetResource.mockResolvedValue(video);
 
+  it('waits until manifest is not ended', async () => {
     fetchMock.mock(
       'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls.m3u8',
       `
@@ -72,7 +45,9 @@ describe('resumeLive', () => {
       `,
     );
 
-    resumeLive(video);
+    resumeLive(
+      'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls.m3u8',
+    );
 
     await waitFor(() => {
       expect(
@@ -84,7 +59,6 @@ describe('resumeLive', () => {
         ),
       ).toHaveLength(1);
     });
-    expect(mockGetResource).not.toHaveBeenCalled();
 
     await waitFor(() => {
       expect(
@@ -96,21 +70,6 @@ describe('resumeLive', () => {
         ),
       ).toHaveLength(1);
     });
-    expect(mockGetResource).not.toHaveBeenCalled();
-
-    jest.advanceTimersToNextTimer();
-
-    await waitFor(() => {
-      expect(
-        fetchMock.calls(
-          'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls_1.m3u8',
-          {
-            method: 'GET',
-          },
-        ),
-      ).toHaveLength(2);
-    });
-    expect(mockGetResource).not.toHaveBeenCalled();
 
     fetchMock.mock(
       'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls_1.m3u8',
@@ -123,15 +82,20 @@ describe('resumeLive', () => {
       #EXTINF:1.500,
       dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls_1_848.ts?m=1637050263
       `,
-      {
-        overwriteRoutes: true,
-      },
+      { overwriteRoutes: true },
     );
 
     jest.advanceTimersToNextTimer();
 
     await waitFor(() => {
-      expect(mockGetResource).toHaveBeenCalledWith(modelName.VIDEOS, video.id);
+      expect(
+        fetchMock.calls(
+          'https://c223d9abb67d57c7.mediapackage.eu-west-1.amazonaws.com/out/v1/0a5924bddfff4fe68e8c10a2a671a503/dev-manu_030aaea4-bb0b-4915-88a4-521fc8b59366_1637050264_hls_1.m3u8',
+          {
+            method: 'GET',
+          },
+        ),
+      ).toHaveLength(2);
     });
   });
 });
