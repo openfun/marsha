@@ -19,9 +19,17 @@ import {
   MARKDOWN_VIEWER_ROUTE,
 } from 'lib-markdown';
 
+import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
+
+type RedirectOnLoadProps = {
+  isNewDocument?: boolean;
+};
+
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
-export const RedirectOnLoad = () => {
+export const RedirectOnLoad = ({
+  isNewDocument = false,
+}: RedirectOnLoadProps) => {
   const appData = useAppConfig();
   const isFeatureEnabled = useIsFeatureEnabled();
 
@@ -46,6 +54,9 @@ export const RedirectOnLoad = () => {
   const [context] = useCurrentResourceContext();
 
   if (context.permissions.can_update) {
+    if (isNewDocument) {
+      return <Redirect push to={MARKDOWN_WIZARD_ROUTE()} />;
+    }
     return <Redirect push to={MARKDOWN_EDITOR_ROUTE()} />;
   } else {
     return <Redirect push to={MARKDOWN_VIEWER_ROUTE()} />;
