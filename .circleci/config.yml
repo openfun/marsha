@@ -772,7 +772,7 @@ jobs:
       - store_artifacts:
           path: /home/circleci/marsha/src/backend/test-results
       - store_artifacts:
-          path: /home/circleci/marsha/src/backend/e2e/__snapshots__
+          path: /home/circleci/marsha/src/backend/marsha/e2e/__snapshots__
 
   # ---- Lambda related jobs ----
   test-lambda-configure:
