@@ -6,8 +6,7 @@ import React from 'react';
 
 import { WizardLayout } from '.';
 
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
+jest.mock('data/stores/useAppConfig', () => ({
   useAppConfig: () => ({
     static: {
       img: {
