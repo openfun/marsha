@@ -4,8 +4,8 @@ from datetime import timedelta
 from django.test import TestCase
 from django.utils import timezone
 
-from ..defaults import IDLE, JITSI
-from ..factories import LiveSessionFactory, VideoFactory
+from marsha.core.defaults import IDLE, JITSI
+from marsha.core.factories import LiveSessionFactory, VideoFactory
 
 
 class ReminderCanceliewTestCase(TestCase):

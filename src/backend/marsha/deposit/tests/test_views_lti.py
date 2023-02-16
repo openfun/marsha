@@ -18,8 +18,8 @@ from marsha.core.factories import (
 )
 from marsha.core.lti import LTI
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-from marsha.core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
 from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 
 from ...core.models import ADMINISTRATOR
 from ..factories import FileDepositoryFactory
