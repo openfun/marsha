@@ -7,11 +7,14 @@ from django.test import RequestFactory, TestCase, override_settings
 import oauth2
 from pylti.common import LTIException, LTIOAuthServer
 
-from ..factories import ConsumerSiteLTIPassportFactory, PlaylistLTIPassportFactory
-from ..lti import LTI
-from ..lti.utils import get_or_create_resource
-from ..models import Video
-from .utils import generate_passport_and_signed_lti_parameters
+from marsha.core.factories import (
+    ConsumerSiteLTIPassportFactory,
+    PlaylistLTIPassportFactory,
+)
+from marsha.core.lti import LTI
+from marsha.core.lti.utils import get_or_create_resource
+from marsha.core.models import Video
+from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
 
 
 # We don't enforce arguments documentation in tests

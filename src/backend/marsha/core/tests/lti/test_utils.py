@@ -9,10 +9,10 @@ from django.utils import timezone
 
 from pylti.common import LTIOAuthServer
 
-from .. import factories, models
-from ..defaults import IDLE, LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
-from ..lti import LTI
-from ..lti.utils import (
+from marsha.core import factories, models
+from marsha.core.defaults import IDLE, LIVE_CHOICES, RAW, RUNNING, STATE_CHOICES
+from marsha.core.lti import LTI
+from marsha.core.lti.utils import (
     PortabilityError,
     get_or_create_resource,
     get_resource_closest_owners_and_playlist,
