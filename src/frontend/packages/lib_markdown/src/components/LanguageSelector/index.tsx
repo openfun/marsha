@@ -28,6 +28,7 @@ export const LanguageSelector = ({
   });
   return (
     <DropButton
+      margin="xsmall"
       a11yTitle={displayedLanguage}
       label={displayedLanguage}
       disabled={disabled}
