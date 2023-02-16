@@ -137,6 +137,31 @@ describe('<MarkdownEditor />', () => {
     expect(publishButton).toBeDisabled();
   });
 
+  it('shows editor in first existing translation language', async () => {
+    const markdownDocument = markdownDocumentMockFactory({
+      id: '1',
+      is_draft: true,
+      translations: [
+        markdownTranslationMockFactory({ language_code: 'fr' }),
+        markdownTranslationMockFactory({ language_code: 'en' }),
+      ],
+    });
+    const documentDeferred = new Deferred();
+    fetchMock.get('/api/markdown-documents/1/', documentDeferred.promise);
+
+    render(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
+
+    act(() => documentDeferred.resolve(markdownDocument));
+
+    await screen.findByDisplayValue(markdownDocument.translations[0].title);
+    expect(screen.getByText('French')).toBeInTheDocument();
+    await waitFor(() =>
+      expect(
+        screen.getAllByText(markdownDocument.translations[0].content).length,
+      ).toEqual(2),
+    );
+  });
+
   it('shows editor for new markdown document', async () => {
     const markdownDocument = markdownDocumentMockFactory({
       id: '1',
