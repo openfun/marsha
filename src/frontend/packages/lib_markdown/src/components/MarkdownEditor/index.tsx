@@ -99,7 +99,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
     React.useState<MarkdownDocumentRenderingOptions>({});
 
   const [screenDisposition, setScreenDisposition] = React.useState(
-    ScreenDisposition.splitScreen,
+    ScreenDisposition.editor,
   );
 
   const contentChanged = React.useRef(false);
@@ -257,7 +257,12 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
         {isSaving && <Loader />}
 
         <Box direction="column">
-          <Box direction="row" width="100%" pad={{ bottom: 'xsmall' }}>
+          <Box
+            direction="row"
+            width="100%"
+            pad={{ bottom: 'xsmall' }}
+            gap="small"
+          >
             <TextInput
               a11yTitle={intl.formatMessage(messages.title)}
               placeholder={intl.formatMessage(messages.title)}
@@ -266,32 +271,13 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
               // This is enforced by backend, but simpler to not allow user for too long title
               maxLength={255}
             />
-          </Box>
-          <Box direction="row" pad={{ bottom: 'xsmall' }}>
-            <LanguageSelector
-              currentLanguage={language}
-              onLanguageChange={setLanguage}
-              disabled={contentChanged.current}
-            />
-            <Box
-              flex="shrink"
-              margin="xsmall"
-              border={{ color: 'light-6', size: 'xsmall', position: 'right' }}
-            />
+            <Box flex="grow" />
+
             <MdxRenderingOptionsSelector
               renderingOptions={localRenderingOptions}
               setRenderingOptions={setLocalRenderingOptions}
             />
-            <Box
-              flex="shrink"
-              margin="xsmall"
-              border={{ color: 'light-6', size: 'xsmall', position: 'right' }}
-            />
-            <ScreenDispositionSelector
-              screenDisposition={screenDisposition}
-              setScreenDisposition={setScreenDisposition}
-            />
-            <Box flex="grow" />
+
             <Button
               onClick={() => publishDocument()}
               disabled={
@@ -300,7 +286,7 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             >
               {intl.formatMessage(messages.publish)}
             </Button>
-            <Box flex="shrink" margin="xxsmall" />
+
             <Button
               onClick={() => saveDocument()}
               disabled={!canSaveDocument() || !contentChanged.current}
@@ -308,17 +294,29 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
               {intl.formatMessage(messages.save)}
             </Button>
           </Box>
+
+          <Box direction="row">
+            <ScreenDispositionSelector
+              screenDisposition={screenDisposition}
+              setScreenDisposition={setScreenDisposition}
+            />
+            <Box flex="grow" />
+            <LanguageSelector
+              currentLanguage={language}
+              onLanguageChange={setLanguage}
+              disabled={contentChanged.current}
+            />
+          </Box>
         </Box>
 
-        <Box direction="row" style={{ minHeight: '50vw' }}>
+        <Box direction="row" style={{ minHeight: '50vw' }} border="top">
           <Box
             flex="grow"
             width="50%"
             // Use style to hide to keep the component's state
             style={{
               display:
-                screenDisposition === ScreenDisposition.editorOnly ||
-                screenDisposition === ScreenDisposition.splitScreen
+                screenDisposition === ScreenDisposition.editor
                   ? 'inherit'
                   : 'none',
             }}
@@ -333,19 +331,17 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
                     codemirrorEditor={codemirrorEditor}
                   />
                 </MarkdownImageDropzone>
-                {!localMarkdownContent && (
-                  <React.Fragment>
-                    <Footer background="brand" pad="xxsmall">
-                      <Text>
-                        {intl.formatMessage(messages.editorEmptyDragDropHelper)}
-                      </Text>
-                    </Footer>
-                  </React.Fragment>
-                )}
-                <Box flex="grow"></Box>
+                <Box flex="grow" />
+                <Footer background="brand" pad="xxsmall">
+                  <Text>
+                    {intl.formatMessage(messages.editorEmptyDragDropHelper)}
+                  </Text>
+                </Footer>
                 <Footer background="light-1" pad="xxsmall">
                   <Anchor
                     href="https://www.markdownguide.org/basic-syntax"
+                    target="_blank"
+                    rel="noopener noreferrer"
                     label="Markdown basic syntax"
                     color="dark-3"
                     weight="normal"
@@ -357,24 +353,13 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
             )}
           </Box>
           <Box
-            flex="shrink"
-            border={{ color: 'light-6', size: 'xsmall', position: 'right' }}
-            style={{
-              display:
-                screenDisposition === ScreenDisposition.splitScreen
-                  ? 'inherit'
-                  : 'none',
-            }}
-          />
-          <Box
             flex="grow"
             width="50%"
             pad={{ left: 'xsmall' }}
             // Use style to hide to keep the component's state
             style={{
               display:
-                screenDisposition === ScreenDisposition.renderingOnly ||
-                screenDisposition === ScreenDisposition.splitScreen
+                screenDisposition === ScreenDisposition.rendering
                   ? 'inherit'
                   : 'none',
             }}

@@ -84,6 +84,7 @@ export const MdxRenderingOptionsSelector = ({
       a11yTitle={intl.formatMessage(messages.settings)}
       icon={<SettingsOption />}
       dropAlign={{ top: 'bottom', left: 'left' }}
+      style={{ borderColor: 'transparent' }}
       dropContent={
         <Form>
           <ToggleCheckBox
