@@ -1,4 +1,4 @@
-"""Tests for the SharedLiveMedia API of the Marsha project."""
+"""Tests for the SharedLiveMedia retrieve API of the Marsha project."""
 from datetime import datetime
 import json
 import random
@@ -6,15 +6,9 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.factories import (
-    InstructorOrAdminLtiTokenFactory,
-    StudentLtiTokenFactory,
-    UserAccessTokenFactory,
-)
-
-from .. import defaults
-from ..api import timezone
-from ..factories import (
+from marsha.core import defaults
+from marsha.core.api import timezone
+from marsha.core.factories import (
     OrganizationAccessFactory,
     OrganizationFactory,
     PlaylistAccessFactory,
@@ -23,249 +17,20 @@ from ..factories import (
     UserFactory,
     VideoFactory,
 )
-from ..models import SharedLiveMedia
-from ..models.account import ADMINISTRATOR, INSTRUCTOR
-from .utils import RSA_KEY_MOCK
+from marsha.core.models import SharedLiveMedia
+from marsha.core.models.account import ADMINISTRATOR, INSTRUCTOR
+from marsha.core.simple_jwt.factories import (
+    InstructorOrAdminLtiTokenFactory,
+    StudentLtiTokenFactory,
+    UserAccessTokenFactory,
+)
+from marsha.core.tests.utils import RSA_KEY_MOCK
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=too-many-lines
-
-
-class SharedLiveMediaAPITest(TestCase):
-    """Test the API of the shared live media object."""
+class SharedLiveMediaRetrieveAPITest(TestCase):
+    """Test the retrieve API of the shared live media object."""
 
     maxDiff = None
-
-    def test_api_shared_live_media_create_anonymous(self):
-        """An anonymous user can't create a shared live media."""
-        response = self.client.post("/api/sharedlivemedias/")
-        self.assertEqual(response.status_code, 401)
-        self.assertFalse(SharedLiveMedia.objects.exists())
-
-    def test_api_shared_live_media_create_instructor(self):
-        """An instructor should be able to create a shared live media for an existing video."""
-
-        video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(SharedLiveMedia.objects.count(), 1)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content,
-            {
-                "id": str(SharedLiveMedia.objects.first().id),
-                "active_stamp": None,
-                "filename": None,
-                "is_ready_to_show": False,
-                "nb_pages": None,
-                "show_download": True,
-                "title": None,
-                "upload_state": "pending",
-                "urls": None,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_shared_live_media_create_instructor_in_read_only(self):
-        """An instructor in read only should not be able to create a shared live media."""
-        video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
-            permissions__can_update=False,
-        )
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertFalse(SharedLiveMedia.objects.exists())
-
-    def test_api_shared_live_media_create_student(self):
-        """A student should not be able to create a shared live media."""
-        video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertFalse(SharedLiveMedia.objects.exists())
-
-    def test_api_shared_live_media_create_staff_or_user(self):
-        """Users authenticated via a session shouldn't be able to create new shared live medias."""
-        for user in [UserFactory(), UserFactory(is_staff=True)]:
-            self.client.login(username=user.username, password="test")
-            response = self.client.post("/api/sharedlivemedias/")
-            self.assertEqual(response.status_code, 401)
-            self.assertFalse(SharedLiveMedia.objects.exists())
-
-    def test_api_shared_live_media_create_by_user_with_no_access(self):
-        """
-        Token user without any access creates a shared live media for a video.
-
-        A user with a user token, without any specific access, cannot create a shared live
-        media for any given video.
-        """
-        video = VideoFactory()
-
-        jwt_token = UserAccessTokenFactory()
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            {"video": str(video.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(SharedLiveMedia.objects.count(), 0)
-
-    def test_api_shared_live_media_create_by_video_playlist_instructor(self):
-        """
-        Playlist instructor token user creates a shared live media for a video.
-
-        A user with a user token, who is a playlist instructor, cannot create a shared
-        live media for a video that belongs to that playlist.
-        """
-        user = UserFactory()
-        # A playlist where the user is an instructor, with a video
-        playlist = PlaylistFactory()
-        video = VideoFactory(playlist=playlist)
-        PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            {"video": str(video.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(SharedLiveMedia.objects.count(), 0)
-
-    def test_api_shared_live_media_create_by_video_playlist_admin(self):
-        """
-        Playlist administrator token user creates a shared live media for a video.
-
-        A user with a user token, who is a playlist administrator, can create a shared
-        live media for a video that belongs to that playlist.
-        """
-        user = UserFactory()
-        # A playlist where the user is an instructor, with a video
-        playlist = PlaylistFactory()
-        video = VideoFactory(playlist=playlist)
-        PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            {"video": str(video.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 201)
-        self.assertEqual(SharedLiveMedia.objects.count(), 1)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content,
-            {
-                "id": str(SharedLiveMedia.objects.first().id),
-                "active_stamp": None,
-                "filename": None,
-                "is_ready_to_show": False,
-                "nb_pages": None,
-                "show_download": True,
-                "title": None,
-                "upload_state": "pending",
-                "urls": None,
-                "video": str(video.id),
-            },
-        )
-
-    def test_api_shared_live_media_create_by_video_organization_instructor(self):
-        """
-        Organization instructor token user creates a shared live media for a video.
-
-        A user with a user token, who is an organization instructor, cannot create a shared
-        live media for a video that belongs to that organization.
-        """
-        user = UserFactory()
-        # A playlist where the user is an instructor, with a video
-        organization = OrganizationFactory()
-        playlist = PlaylistFactory(organization=organization)
-        video = VideoFactory(playlist=playlist)
-        OrganizationAccessFactory(user=user, organization=organization, role=INSTRUCTOR)
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            {"video": str(video.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(SharedLiveMedia.objects.count(), 0)
-
-    def test_api_shared_live_media_create_by_video_organization_admin(self):
-        """
-        Organization administrator token user creates a shared live media for a video.
-
-        A user with a user token, who is an organization administrator, can create a shared
-        live media for a video that belongs to that organization.
-        """
-        user = UserFactory()
-        # A playlist where the user is an instructor, with a video
-        organization = OrganizationFactory()
-        playlist = PlaylistFactory(organization=organization)
-        video = VideoFactory(playlist=playlist)
-        OrganizationAccessFactory(
-            user=user, organization=organization, role=ADMINISTRATOR
-        )
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.post(
-            "/api/sharedlivemedias/",
-            {"video": str(video.id)},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
-
-        self.assertEqual(response.status_code, 201)
-
-        self.assertEqual(SharedLiveMedia.objects.count(), 1)
-        content = json.loads(response.content)
-        self.assertEqual(
-            content,
-            {
-                "id": str(SharedLiveMedia.objects.first().id),
-                "active_stamp": None,
-                "filename": None,
-                "is_ready_to_show": False,
-                "nb_pages": None,
-                "show_download": True,
-                "title": None,
-                "upload_state": "pending",
-                "urls": None,
-                "video": str(video.id),
-            },
-        )
 
     def test_api_shared_live_media_read_detail_anonymous(self):
         """An anonymous user can not read a shared live media detail"""
