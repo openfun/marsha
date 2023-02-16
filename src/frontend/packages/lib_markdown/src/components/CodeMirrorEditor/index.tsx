@@ -1,10 +1,42 @@
-import { defaultKeymap, indentWithTab } from '@codemirror/commands';
+import {
+  autocompletion,
+  closeBracketsKeymap,
+  completionKeymap,
+} from '@codemirror/autocomplete';
+import { closeBrackets } from '@codemirror/closebrackets';
+import {
+  defaultKeymap,
+  history,
+  historyKeymap,
+  indentWithTab,
+} from '@codemirror/commands';
 import { markdown, markdownLanguage } from '@codemirror/lang-markdown';
+import {
+  bracketMatching,
+  defaultHighlightStyle,
+  foldKeymap,
+  indentOnInput,
+  syntaxHighlighting,
+} from '@codemirror/language';
 import { languages } from '@codemirror/language-data';
-import { RegExpCursor } from '@codemirror/search';
+import { lintKeymap } from '@codemirror/lint';
+import {
+  highlightSelectionMatches,
+  RegExpCursor,
+  searchKeymap,
+} from '@codemirror/search';
 import { EditorState, Text } from '@codemirror/state';
-import { EditorView, keymap, ViewUpdate } from '@codemirror/view';
-import { basicSetup } from 'codemirror';
+import {
+  EditorView,
+  keymap,
+  ViewUpdate,
+  highlightSpecialChars,
+  drawSelection,
+  dropCursor,
+  rectangularSelection,
+  crosshairCursor,
+  highlightActiveLine,
+} from '@codemirror/view';
 import { Nullable } from 'lib-common';
 import React, { useCallback, useEffect, useRef } from 'react';
 
@@ -34,8 +66,30 @@ export const CodeMirrorEditor = ({
     const state = EditorState.create({
       doc: initialValues.current,
       extensions: [
-        basicSetup,
-        keymap.of([...defaultKeymap, indentWithTab]),
+        highlightSpecialChars(),
+        history(),
+        drawSelection(),
+        dropCursor(),
+        EditorState.allowMultipleSelections.of(true),
+        indentOnInput(),
+        syntaxHighlighting(defaultHighlightStyle, { fallback: true }),
+        bracketMatching(),
+        closeBrackets(),
+        autocompletion(),
+        rectangularSelection(),
+        crosshairCursor(),
+        highlightActiveLine(),
+        highlightSelectionMatches(),
+        keymap.of([
+          ...closeBracketsKeymap,
+          ...defaultKeymap,
+          ...searchKeymap,
+          ...historyKeymap,
+          ...foldKeymap,
+          ...completionKeymap,
+          ...lintKeymap,
+          indentWithTab,
+        ]),
         markdown({
           addKeymap: true,
           base: markdownLanguage,
