@@ -143,6 +143,12 @@ export const MarkdownEditor = ({ markdownDocumentId }: MarkdownEditorProps) => {
       },
     });
 
+  useEffect(() => {
+    if (markdownDocument?.translations[0]?.language_code) {
+      setLanguage(markdownDocument.translations[0].language_code);
+    }
+  }, [markdownDocument?.translations[0]?.language_code]);
+
   // Allow data reloading from backend on language change
   useEffect(() => {
     queryClient.invalidateQueries(['markdown-documents', markdownDocumentId]);
