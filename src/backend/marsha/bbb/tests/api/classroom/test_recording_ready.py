@@ -7,7 +7,7 @@ import responses
 
 from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 from marsha.bbb.models import ClassroomRecording
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 ALG = "HS256"

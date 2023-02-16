@@ -11,7 +11,7 @@ from marsha.core.simple_jwt.factories import (
     LTIResourceAccessTokenFactory,
 )
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
 class LTIResourceAccessTokenFactoryTestCase(TestCase):

@@ -14,7 +14,7 @@ from marsha.core.defaults import ENDED, IDLE, JITSI
 from marsha.core.factories import DocumentFactory, PlaylistFactory, VideoFactory
 from marsha.core.models import Playlist
 from marsha.core.simple_jwt.tokens import LTISelectFormAccessToken, ResourceAccessToken
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
 # We don't enforce arguments documentation in tests

@@ -7,7 +7,7 @@ import re
 from django.test import TestCase, override_settings
 
 from marsha.core.factories import PlaylistFactory
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 from ..factories import MarkdownDocumentFactory
