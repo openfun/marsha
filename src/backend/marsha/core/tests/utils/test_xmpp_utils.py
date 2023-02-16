@@ -3,7 +3,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from ..utils import xmpp_utils
+from marsha.core.utils import xmpp_utils
 
 
 class XmppUtilsTestCase(TestCase):

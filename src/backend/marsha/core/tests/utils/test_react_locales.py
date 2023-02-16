@@ -3,7 +3,7 @@ from django.core.exceptions import ImproperlyConfigured
 from django.test import TestCase
 from django.test.utils import override_settings
 
-from ..utils.react_locales_utils import react_locale
+from marsha.core.utils.react_locales_utils import react_locale
 
 
 class ReactLocaleUtils(TestCase):

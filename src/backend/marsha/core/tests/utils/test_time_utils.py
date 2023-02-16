@@ -4,7 +4,7 @@ from datetime import datetime
 from django.test import TestCase
 from django.utils import timezone
 
-from ..utils import time_utils
+from marsha.core.utils import time_utils
 
 
 class TimeUtilsTestCase(TestCase):
