@@ -1,5 +1,3 @@
-import './cunningham-tokens.css';
-
 export * from './baseStyles';
 export * from './theme';
 export * from './BreadCrumbsProvider';

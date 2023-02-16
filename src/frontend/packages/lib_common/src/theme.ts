@@ -3,6 +3,10 @@ import { ColorType } from 'grommet/utils';
 import { rgba } from 'polished';
 import { css } from 'styled-components';
 
+// Will generate cunningham theme in style.css
+import '../../../node_modules/@openfun/cunningham-react/dist/style.css';
+import './cunningham-tokens.css';
+
 const colorsGeneric = {
   'accent-1': 'brand',
   'accent-2': '#f72b2f',
