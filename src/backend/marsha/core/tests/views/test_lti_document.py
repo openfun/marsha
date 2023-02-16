@@ -11,10 +11,8 @@ from django.test import TestCase
 
 from pylti.common import LTIException
 
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
-
-from ..defaults import STATE_CHOICES
-from ..factories import (
+from marsha.core.defaults import STATE_CHOICES
+from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     ConsumerSiteLTIPassportFactory,
     DocumentFactory,
@@ -24,9 +22,11 @@ from ..factories import (
     UploadedDocumentFactory,
     UserFactory,
 )
-from ..lti import LTI
-from ..models import ADMINISTRATOR
-from .test_views_lti_base import BaseLTIViewForPortabilityTestCase
+from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
+
+from .test_lti_base import BaseLTIViewForPortabilityTestCase
 
 
 # We don't enforce arguments documentation in tests
