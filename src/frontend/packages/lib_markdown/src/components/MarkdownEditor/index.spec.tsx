@@ -88,10 +88,10 @@ describe('<MarkdownEditor />', () => {
       ).toEqual(2),
     );
     expect(
-      screen.queryByText(
+      screen.getByText(
         "💡 You can easily add some content by drag and dropping a text file in one of the editor's line.",
       ),
-    ).not.toBeInTheDocument();
+    ).toBeInTheDocument();
 
     const saveButton = screen.getByRole('button', { name: 'Save' });
     const publishButton = screen.getByRole('button', { name: 'Publish' });
@@ -269,18 +269,13 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Display editor only
-    userEvent.click(screen.getByTestId('disposition-editor-only'));
+    screen.getByRole('tab', { name: 'Markdown' }).click();
     expect(screen.getByTestId('editor_container')).toBeVisible();
     expect(screen.getByTestId('renderer_container')).not.toBeVisible();
 
     // Display rendering only
-    userEvent.click(screen.getByTestId('disposition-rendering-only'));
+    screen.getByRole('tab', { name: 'Preview' }).click();
     expect(screen.getByTestId('editor_container')).not.toBeVisible();
-    expect(screen.getByTestId('renderer_container')).toBeVisible();
-
-    // Display both again
-    userEvent.click(screen.getByTestId('disposition-split-screen'));
-    expect(screen.getByTestId('editor_container')).toBeVisible();
     expect(screen.getByTestId('renderer_container')).toBeVisible();
   });
 
@@ -322,6 +317,10 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Wait for rendered content
+    await waitFor(() =>
+      expect(screen.getByRole('tab', { name: 'Preview' })).toBeVisible(),
+    );
+    screen.getByRole('tab', { name: 'Preview' }).click();
     await screen.findByRole('heading', { level: 1, name: 'MDX' });
 
     // Assert the MDX is not rendered properly
@@ -433,6 +432,7 @@ describe('<MarkdownEditor />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
 
+    screen.getByRole('tab', { name: 'Preview' }).click();
     await waitFor(() =>
       expect(
         within(screen.getByTestId('renderer_container')).getByRole('img')
@@ -518,8 +518,13 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Wait for rendered content
+    await waitFor(() =>
+      expect(screen.getByRole('tab', { name: 'Preview' })).toBeVisible(),
+    );
+    screen.getByRole('tab', { name: 'Preview' }).click();
     await screen.findByRole('heading', { level: 1, name: 'Heading' });
 
+    screen.getByRole('tab', { name: 'Markdown' }).click();
     const dropzoneInput = container.querySelector('input[type="file"]')!;
 
     // Drop an image
@@ -593,6 +598,7 @@ describe('<MarkdownEditor />', () => {
       ).toHaveTextContent(`![cats.gif](/uploaded/image/${markdownImageId})`),
     );
 
+    screen.getByRole('tab', { name: 'Preview' }).click();
     await waitFor(() =>
       expect(
         within(screen.getByTestId('renderer_container')).getByRole('img'),

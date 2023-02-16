@@ -1,29 +1,22 @@
-import { Anchor, Nav, Tip } from 'grommet';
-import { DocumentImage, DocumentText, Split } from 'grommet-icons';
+import { Tab, Tabs, ThemeContext } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 export enum ScreenDisposition {
-  editorOnly = 1,
-  splitScreen = 2,
-  renderingOnly = 3,
+  editor = 0,
+  rendering = 1,
 }
 
 const messages = defineMessages({
-  editorOnly: {
-    defaultMessage: 'Editor only',
-    description: 'Navigation bar, icon to display editor only',
-    id: 'component.ScreenDispositionSelector.editorOnly',
+  editor: {
+    defaultMessage: 'Markdown',
+    description: 'Navigation bar, tab to display editor',
+    id: 'component.ScreenDispositionSelector.editor',
   },
-  splitScreen: {
-    defaultMessage: 'Split screen',
-    description: 'Navigation bar, icon to display both editor and rendering',
-    id: 'component.ScreenDispositionSelector.splitScreen',
-  },
-  renderingOnly: {
-    defaultMessage: 'Rendering only',
-    description: 'Navigation bar, icon to display rendering only',
-    id: 'component.ScreenDispositionSelector.renderingOnly',
+  rendering: {
+    defaultMessage: 'Preview',
+    description: 'Navigation bar, tab to display rendering',
+    id: 'component.ScreenDispositionSelector.rendering',
   },
 });
 
@@ -37,54 +30,38 @@ export const ScreenDispositionSelector = ({
   setScreenDisposition,
 }: ScreenDispositionSelectorProps) => {
   const intl = useIntl();
+  const extendedTheme = {
+    tab: {
+      extend: 'text-transform: uppercase;',
+      margin: 'none',
+      border: {
+        color: 'white',
+        size: 'medium',
+      },
+      active: {
+        border: {
+          size: 'medium',
+        },
+      },
+    },
+  };
 
   return (
-    <Nav direction="row" pad="none" gap="none">
-      <Tip content={intl.formatMessage(messages.editorOnly)}>
-        <Anchor
-          a11yTitle={intl.formatMessage(messages.editorOnly)}
-          icon={<DocumentText />}
+    <ThemeContext.Extend value={extendedTheme}>
+      <Tabs activeIndex={screenDisposition}>
+        <Tab
+          title={intl.formatMessage(messages.editor)}
           onClick={() => {
-            setScreenDisposition(ScreenDisposition.editorOnly);
+            setScreenDisposition(ScreenDisposition.editor);
           }}
-          color={
-            screenDisposition === ScreenDisposition.editorOnly
-              ? 'status-ok'
-              : 'brand'
-          }
-          data-testid="disposition-editor-only"
         />
-      </Tip>
-      <Tip content={intl.formatMessage(messages.splitScreen)}>
-        <Anchor
-          a11yTitle={intl.formatMessage(messages.splitScreen)}
-          icon={<Split />}
+        <Tab
+          title={intl.formatMessage(messages.rendering)}
           onClick={() => {
-            setScreenDisposition(ScreenDisposition.splitScreen);
+            setScreenDisposition(ScreenDisposition.rendering);
           }}
-          color={
-            screenDisposition === ScreenDisposition.splitScreen
-              ? 'status-ok'
-              : 'brand'
-          }
-          data-testid="disposition-split-screen"
         />
-      </Tip>
-      <Tip content={intl.formatMessage(messages.renderingOnly)}>
-        <Anchor
-          a11yTitle={intl.formatMessage(messages.renderingOnly)}
-          icon={<DocumentImage />}
-          onClick={() => {
-            setScreenDisposition(ScreenDisposition.renderingOnly);
-          }}
-          color={
-            screenDisposition === ScreenDisposition.renderingOnly
-              ? 'status-ok'
-              : 'brand'
-          }
-          data-testid="disposition-rendering-only"
-        />
-      </Tip>
-    </Nav>
+      </Tabs>
+    </ThemeContext.Extend>
   );
 };
