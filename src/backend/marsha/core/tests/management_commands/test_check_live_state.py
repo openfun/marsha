@@ -8,9 +8,9 @@ from django.test import TestCase
 
 from botocore.stub import Stubber
 
-from ..defaults import RAW, RUNNING
-from ..factories import VideoFactory
-from ..management.commands import check_live_state
+from marsha.core.defaults import RAW, RUNNING
+from marsha.core.factories import VideoFactory
+from marsha.core.management.commands import check_live_state
 
 
 class CheckLiveStateTest(TestCase):

@@ -8,7 +8,7 @@ from django.test import TestCase
 
 from botocore.stub import Stubber
 
-from ..management.commands import clean_medialive_dev_stack
+from marsha.core.management.commands import clean_medialive_dev_stack
 
 
 class CleanMedialigeDevStackCommandTest(TestCase):
