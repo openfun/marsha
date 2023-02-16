@@ -8,8 +8,8 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import TimedTextTrackFactory, VideoFactory
-from ..models import TimedTextTrack
+from marsha.core.factories import TimedTextTrackFactory, VideoFactory
+from marsha.core.models import TimedTextTrack
 
 
 # We don't enforce arguments documentation in tests

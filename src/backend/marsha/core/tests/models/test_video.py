@@ -8,7 +8,7 @@ from django.db.utils import IntegrityError
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from ..defaults import (
+from marsha.core.defaults import (
     DELETED,
     ENDED,
     HARVESTED,
@@ -22,8 +22,8 @@ from ..defaults import (
     STATE_CHOICES,
     STOPPING,
 )
-from ..factories import VideoFactory
-from ..utils.time_utils import to_timestamp
+from marsha.core.factories import VideoFactory
+from marsha.core.utils.time_utils import to_timestamp
 
 
 # pylint: disable=too-many-public-methods

@@ -5,7 +5,11 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import ConsumerSiteFactory, OrganizationFactory, PlaylistFactory
+from marsha.core.factories import (
+    ConsumerSiteFactory,
+    OrganizationFactory,
+    PlaylistFactory,
+)
 
 
 class PlaylistModelsTestCase(TestCase):
