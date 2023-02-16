@@ -5,7 +5,7 @@ from unittest import mock
 from django.core.management import call_command
 from django.test import TestCase
 
-from ..management.commands import clean_mediapackages
+from marsha.core.management.commands import clean_mediapackages
 
 
 class CleanMediapackagesTest(TestCase):

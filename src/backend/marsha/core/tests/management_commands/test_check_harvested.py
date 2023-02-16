@@ -9,9 +9,9 @@ from django.utils import timezone
 
 from botocore.stub import Stubber
 
-from ..defaults import DELETED, HARVESTED, JITSI, PENDING
-from ..factories import VideoFactory
-from ..management.commands import check_harvested
+from marsha.core.defaults import DELETED, HARVESTED, JITSI, PENDING
+from marsha.core.factories import VideoFactory
+from marsha.core.management.commands import check_harvested
 
 
 class CheckWaitingLiveToVodTest(TestCase):
