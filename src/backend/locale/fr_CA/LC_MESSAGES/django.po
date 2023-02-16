@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-02-02 11:51+0000\n"
-"PO-Revision-Date: 2023-02-02 14:42\n"
+"POT-Creation-Date: 2023-02-14 17:03+0000\n"
+"PO-Revision-Date: 2023-02-16 16:06\n"
 "Last-Translator: \n"
 "Language-Team: French, Canada\n"
 "Language: fr_CA\n"
@@ -1703,35 +1703,35 @@ msgstr ""
 msgid "image"
 msgstr ""
 
-#: marsha/settings.py:303
+#: marsha/settings.py:307
 msgid "english"
 msgstr ""
 
-#: marsha/settings.py:303
+#: marsha/settings.py:307
 msgid "french"
 msgstr ""
 
-#: marsha/settings.py:520
+#: marsha/settings.py:525
 msgid "5 minutes"
 msgstr ""
 
-#: marsha/settings.py:524
+#: marsha/settings.py:529
 msgid "Live starts in less than 5 minutes"
 msgstr ""
 
-#: marsha/settings.py:527
+#: marsha/settings.py:532
 msgid "3 hours"
 msgstr ""
 
-#: marsha/settings.py:533
+#: marsha/settings.py:538
 msgid "Live starts in less than 3 hours"
 msgstr ""
 
-#: marsha/settings.py:536
+#: marsha/settings.py:541
 msgid "3 days"
 msgstr ""
 
-#: marsha/settings.py:541
+#: marsha/settings.py:546
 msgid "Live starts in less than 3 days"
 msgstr ""
 
