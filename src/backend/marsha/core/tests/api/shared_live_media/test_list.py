@@ -22,7 +22,7 @@ from marsha.core.simple_jwt.factories import (
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.core.tests.utils import RSA_KEY_MOCK
+from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 
 
 class SharedLiveMediaListAPITest(TestCase):

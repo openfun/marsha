@@ -5,7 +5,7 @@ from django.test import TestCase, override_settings
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core import factories as core_factories
 from marsha.core.simple_jwt.factories import PlaylistLtiTokenFactory
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 # We don't enforce arguments documentation in tests

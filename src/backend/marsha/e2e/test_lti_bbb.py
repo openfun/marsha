@@ -15,7 +15,7 @@ from waffle.testutils import override_switch
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.models import Classroom
 from marsha.core.factories import PlaylistFactory
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
 @pytest.mark.django_db()

@@ -8,7 +8,7 @@ from marsha.core.api.schema import (
     extract_permission_docstring,
     format_permissions_and_docstring,
 )
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 @override_settings(DEBUG=True)

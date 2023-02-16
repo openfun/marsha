@@ -10,7 +10,7 @@ from marsha.core.serializers import (
     get_resource_cloudfront_url_params,
     get_video_cloudfront_url_params,
 )
-from marsha.core.tests.utils import RSA_KEY_MOCK
+from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 from marsha.core.utils.time_utils import to_timestamp
 
 

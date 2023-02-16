@@ -8,7 +8,7 @@ from django.utils import timezone
 
 from marsha.bbb.factories import ClassroomFactory
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 class CreateStableInviteJwtTestCase(TestCase):

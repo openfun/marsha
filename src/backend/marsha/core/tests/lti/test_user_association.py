@@ -18,7 +18,7 @@ from marsha.core.lti.user_association import (
     get_user_from_lti_user_id_and_consumer_site,
 )
 from marsha.core.models import LtiUserAssociation
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 
 
 class LTIUserAssociationTestCase(TestCase):
