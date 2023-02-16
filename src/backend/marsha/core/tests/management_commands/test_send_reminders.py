@@ -11,11 +11,10 @@ from django.core.management import call_command
 from django.test import TestCase
 from django.utils import dateformat, timezone
 
+from marsha.core.defaults import IDLE, JITSI, RAW, RUNNING
+from marsha.core.factories import LiveSessionFactory, VideoFactory
 from marsha.core.management.commands import send_reminders
 from marsha.core.simple_jwt.factories import InstructorOrAdminLtiTokenFactory
-
-from ..defaults import IDLE, JITSI, RAW, RUNNING
-from ..factories import LiveSessionFactory, VideoFactory
 
 
 # pylint: disable=too-many-lines
