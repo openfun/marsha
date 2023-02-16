@@ -6,8 +6,8 @@ from uuid import uuid4
 from django.test import TestCase
 from django.utils import timezone
 
-from ..models.video import TimedTextTrack
-from ..serializers import UpdateStateSerializer
+from marsha.core.models.video import TimedTextTrack
+from marsha.core.serializers import UpdateStateSerializer
 
 
 # We don't enforce arguments documentation in tests
