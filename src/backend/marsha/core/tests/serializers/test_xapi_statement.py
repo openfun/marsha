@@ -1,7 +1,11 @@
 """Tests for the XAPIStatementSerializer serializer of the Marsha project."""
 from django.test import TestCase
 
-from ..serializers import ExtensionSerializer, VerbSerializer, XAPIStatementSerializer
+from marsha.core.serializers import (
+    ExtensionSerializer,
+    VerbSerializer,
+    XAPIStatementSerializer,
+)
 
 
 class VerbSerializerTest(TestCase):

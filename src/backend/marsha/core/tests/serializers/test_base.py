@@ -6,12 +6,12 @@ from unittest import mock
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from ..serializers import (
+from marsha.core.serializers import (
     get_resource_cloudfront_url_params,
     get_video_cloudfront_url_params,
 )
-from ..utils.time_utils import to_timestamp
-from .utils import RSA_KEY_MOCK
+from marsha.core.tests.utils import RSA_KEY_MOCK
+from marsha.core.utils.time_utils import to_timestamp
 
 
 FIXED_TIME = datetime(2018, 8, 8, tzinfo=timezone.utc)
