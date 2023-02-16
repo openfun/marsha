@@ -2,7 +2,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from ..factories import ConsumerSiteFactory
+from marsha.core.factories import ConsumerSiteFactory
 
 
 # We don't enforce arguments documentation in tests

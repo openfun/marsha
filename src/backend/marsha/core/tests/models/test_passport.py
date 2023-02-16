@@ -4,13 +4,13 @@ from django.test import TestCase
 
 from safedelete.models import HARD_DELETE
 
-from ..factories import (
+from marsha.core.factories import (
     ConsumerSiteFactory,
     ConsumerSiteLTIPassportFactory,
     PlaylistFactory,
     PlaylistLTIPassportFactory,
 )
-from ..models import LTIPassport
+from marsha.core.models import LTIPassport
 
 
 class LTIPassportModelsTestCase(TestCase):

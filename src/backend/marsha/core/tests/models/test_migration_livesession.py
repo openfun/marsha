@@ -6,7 +6,7 @@ from django.apps import apps
 from django.db import connection
 from django.test import TestCase
 
-from ..factories import LiveSessionFactory
+from marsha.core.factories import LiveSessionFactory
 
 
 data_migration = import_module(

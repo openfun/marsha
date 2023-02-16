@@ -2,8 +2,8 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from ..factories import LivePairingFactory
-from ..models import LivePairing
+from marsha.core.factories import LivePairingFactory
+from marsha.core.models import LivePairing
 
 
 class LivePairingModelsTestCase(TestCase):

@@ -3,7 +3,7 @@
 from django.core.exceptions import ValidationError
 from django.test import TestCase
 
-from ..factories import (
+from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -11,7 +11,11 @@ from ..factories import (
     PortabilityRequestFactory,
     UserFactory,
 )
-from ..models import ADMINISTRATOR, PortabilityRequest, PortabilityRequestState
+from marsha.core.models import (
+    ADMINISTRATOR,
+    PortabilityRequest,
+    PortabilityRequestState,
+)
 
 
 class PortabilityRequestModelsTestCase(TestCase):
