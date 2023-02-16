@@ -5,6 +5,7 @@ from django.utils import timezone
 
 from rest_framework import viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
 from marsha.websocket.utils import channel_layers_utils
@@ -53,13 +54,21 @@ class SharedLiveMediaViewSet(
                 | permissions.IsRelatedVideoPlaylistAdmin
                 | permissions.IsRelatedVideoOrganizationAdmin
             ]
-        else:
+        elif self.action in ["destroy", "initiate_upload", "update", "partial_update"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 | permissions.IsRelatedVideoPlaylistAdmin
                 | permissions.IsRelatedVideoOrganizationAdmin
             ]
+        elif self.action is None:
+            if self.request.method not in self.allowed_methods:
+                raise MethodNotAllowed(self.request.method)
+            permission_classes = self.permission_classes
+        else:
+            # When here it means we forgot to define a permission for a new action
+            # We enforce the permission definition in this method to have a clearer view
+            raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
     def destroy(self, request, *args, **kwargs):
