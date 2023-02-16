@@ -6,14 +6,14 @@ from unittest import mock
 from django.test import TestCase, override_settings
 from django.utils import timezone
 
-from ..defaults import HARVESTING, JITSI, LIVE_CHOICES, PENDING, RUNNING
-from ..factories import VideoFactory
-from ..services.video_recording import (
+from marsha.core.defaults import HARVESTING, JITSI, LIVE_CHOICES, PENDING, RUNNING
+from marsha.core.factories import VideoFactory
+from marsha.core.services.video_recording import (
     VideoRecordingError,
     start_recording,
     stop_recording,
 )
-from ..utils.time_utils import to_timestamp
+from marsha.core.utils.time_utils import to_timestamp
 
 
 class VideoRecordingServicesTestCase(TestCase):
