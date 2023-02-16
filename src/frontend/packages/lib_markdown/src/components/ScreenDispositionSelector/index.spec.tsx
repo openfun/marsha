@@ -9,64 +9,34 @@ describe('<ScreenDispositionSelector />', () => {
   it('send disposition changes', () => {
     const setScreenDisposition = jest.fn();
 
-    // split -> editor only
+    // editor -> rendering
     const { rerender } = render(
       <ScreenDispositionSelector
-        screenDisposition={ScreenDisposition.splitScreen}
+        screenDisposition={ScreenDisposition.editor}
         setScreenDisposition={setScreenDisposition}
       />,
     );
 
-    userEvent.click(screen.getByTestId('disposition-editor-only'));
+    userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
 
     expect(setScreenDisposition).toHaveBeenCalledTimes(1);
     expect(setScreenDisposition).toHaveBeenCalledWith(
-      ScreenDisposition.editorOnly,
+      ScreenDisposition.rendering,
     );
 
-    // split -> editor only
+    // rendering -> editor
     rerender(
       <ScreenDispositionSelector
-        screenDisposition={ScreenDisposition.editorOnly}
+        screenDisposition={ScreenDisposition.rendering}
         setScreenDisposition={setScreenDisposition}
       />,
     );
 
-    userEvent.click(screen.getByTestId('disposition-split-screen'));
+    userEvent.click(screen.getByRole('tab', { name: 'Markdown' }));
 
     expect(setScreenDisposition).toHaveBeenCalledTimes(2);
     expect(setScreenDisposition).toHaveBeenLastCalledWith(
-      ScreenDisposition.splitScreen,
-    );
-
-    // split -> renderer only
-    rerender(
-      <ScreenDispositionSelector
-        screenDisposition={ScreenDisposition.splitScreen}
-        setScreenDisposition={setScreenDisposition}
-      />,
-    );
-
-    userEvent.click(screen.getByTestId('disposition-rendering-only'));
-
-    expect(setScreenDisposition).toHaveBeenCalledTimes(3);
-    expect(setScreenDisposition).toHaveBeenLastCalledWith(
-      ScreenDisposition.renderingOnly,
-    );
-
-    // Renderer only -> split
-    rerender(
-      <ScreenDispositionSelector
-        screenDisposition={ScreenDisposition.renderingOnly}
-        setScreenDisposition={setScreenDisposition}
-      />,
-    );
-
-    userEvent.click(screen.getByTestId('disposition-split-screen'));
-
-    expect(setScreenDisposition).toHaveBeenCalledTimes(4);
-    expect(setScreenDisposition).toHaveBeenLastCalledWith(
-      ScreenDisposition.splitScreen,
+      ScreenDisposition.editor,
     );
   });
 });
