@@ -1,9 +1,9 @@
 """Tests for the video_participants service in the ``core`` app of the Marsha project."""
 from django.test import TestCase
 
-from ..defaults import DENIED
-from ..factories import VideoFactory
-from ..services.video_participants import (
+from marsha.core.defaults import DENIED
+from marsha.core.factories import VideoFactory
+from marsha.core.services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
     move_participant_to_discussion,
