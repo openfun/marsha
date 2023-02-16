@@ -4,7 +4,7 @@ from django.test import TestCase, override_settings
 
 from waffle.testutils import override_switch
 
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 @override_settings(DEBUG=False)

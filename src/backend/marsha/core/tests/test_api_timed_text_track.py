@@ -16,7 +16,7 @@ from .. import factories, models
 from ..api import timezone
 from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
 from ..models import TimedTextTrack
-from .utils import RSA_KEY_MOCK
+from .testing_utils import RSA_KEY_MOCK
 
 
 # We don't enforce arguments documentation in tests

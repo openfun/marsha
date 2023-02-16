@@ -15,7 +15,7 @@ from pytest_django.live_server_helper import LiveServer
 from marsha.core.defaults import READY
 from marsha.core.factories import DocumentFactory, PlaylistFactory, VideoFactory
 from marsha.core.models import Video
-from marsha.core.tests.utils import generate_passport_and_signed_lti_parameters
+from marsha.core.tests.testing_utils import generate_passport_and_signed_lti_parameters
 import marsha.core.views
 
 

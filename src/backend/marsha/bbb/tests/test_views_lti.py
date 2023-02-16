@@ -22,7 +22,7 @@ from marsha.core.factories import (
 from marsha.core.lti import LTI
 from marsha.core.models import ADMINISTRATOR, NONE
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
 
 

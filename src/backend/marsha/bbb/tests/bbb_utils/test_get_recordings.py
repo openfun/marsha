@@ -5,7 +5,7 @@ import responses
 
 from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 from marsha.bbb.utils.bbb_utils import get_recordings
-from marsha.core.tests.utils import reload_urlconf
+from marsha.core.tests.testing_utils import reload_urlconf
 
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
