@@ -8,10 +8,10 @@ from django.utils import timezone
 from botocore.stub import Stubber
 import responses
 
-from ..defaults import PENDING, PROCESSING
-from ..factories import VideoFactory
-from ..utils import medialive_utils
-from ..utils.time_utils import to_timestamp
+from marsha.core.defaults import PENDING, PROCESSING
+from marsha.core.factories import VideoFactory
+from marsha.core.utils import medialive_utils
+from marsha.core.utils.time_utils import to_timestamp
 
 
 # pylint: disable=too-many-lines
