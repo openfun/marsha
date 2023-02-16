@@ -17,11 +17,10 @@ from marsha.core.factories import (
     UserFactory,
 )
 from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
-
-from ...core.models import ADMINISTRATOR
-from ...core.tests.test_views_lti_base import BaseLTIViewForPortabilityTestCase
-from ..factories import MarkdownDocumentFactory
+from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
+from marsha.markdown.factories import MarkdownDocumentFactory
 
 
 @override_settings(MARKDOWN_ENABLED=True)

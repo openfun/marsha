@@ -12,9 +12,7 @@ from django.test import TestCase, override_settings
 from pylti.common import LTIException
 from waffle.testutils import override_switch
 
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
-
-from ..defaults import (
+from marsha.core.defaults import (
     DELETED,
     HARVESTED,
     IDLE,
@@ -26,7 +24,7 @@ from ..defaults import (
     SENTRY,
     STATE_CHOICES,
 )
-from ..factories import (
+from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     ConsumerSiteLTIPassportFactory,
     OrganizationAccessFactory,
@@ -38,9 +36,11 @@ from ..factories import (
     UserFactory,
     VideoFactory,
 )
-from ..lti import LTI
-from ..models import ADMINISTRATOR
-from .test_views_lti_base import BaseLTIViewForPortabilityTestCase
+from marsha.core.lti import LTI
+from marsha.core.models import ADMINISTRATOR
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
+
+from .test_lti_base import BaseLTIViewForPortabilityTestCase
 
 
 # We don't enforce arguments documentation in tests

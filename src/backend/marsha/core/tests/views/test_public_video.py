@@ -9,15 +9,21 @@ import uuid
 from django.core.cache import cache
 from django.test import TestCase, override_settings
 
-from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
-
-from ..defaults import DELETED, HARVESTED, PENDING, RAW, RUNNING, STATE_CHOICES
-from ..factories import (
+from marsha.core.defaults import (
+    DELETED,
+    HARVESTED,
+    PENDING,
+    RAW,
+    RUNNING,
+    STATE_CHOICES,
+)
+from marsha.core.factories import (
     LiveSessionFactory,
     OrganizationFactory,
     PlaylistFactory,
     VideoFactory,
 )
+from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
 
 
 # We don't enforce arguments documentation in tests

@@ -8,10 +8,9 @@ import uuid
 from django.core.cache import cache
 from django.test import TestCase
 
+from marsha.core.defaults import STATE_CHOICES
+from marsha.core.factories import DocumentFactory, OrganizationFactory, PlaylistFactory
 from marsha.core.simple_jwt.tokens import ResourceAccessToken, ResourceRefreshToken
-
-from ..defaults import STATE_CHOICES
-from ..factories import DocumentFactory, OrganizationFactory, PlaylistFactory
 
 
 # We don't enforce arguments documentation in tests

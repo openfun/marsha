@@ -11,9 +11,9 @@ from django.test import TestCase
 
 from waffle.testutils import override_switch
 
-from ..defaults import SENTRY, STATE_CHOICES
-from ..factories import ConsumerSiteFactory, LiveSessionFactory, VideoFactory
-from ..lti import LTI
+from marsha.core.defaults import SENTRY, STATE_CHOICES
+from marsha.core.factories import ConsumerSiteFactory, LiveSessionFactory, VideoFactory
+from marsha.core.lti import LTI
 
 
 # We don't enforce arguments documentation in tests
