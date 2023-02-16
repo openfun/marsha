@@ -7,8 +7,8 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import LiveSessionFactory, VideoFactory
-from ..models import LiveSession
+from marsha.core.factories import LiveSessionFactory, VideoFactory
+from marsha.core.models import LiveSession
 
 
 class LiveSessionModelsTestCase(TestCase):

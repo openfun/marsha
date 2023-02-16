@@ -12,7 +12,7 @@ from django.test import TestCase
 from factory.django import DjangoModelFactory
 from safedelete.models import HARD_DELETE, SOFT_DELETE_CASCADE
 
-from ..factories import (
+from marsha.core.factories import (
     AudioTrackFactory,
     ConsumerSiteAccessFactory,
     ConsumerSiteFactory,
@@ -28,7 +28,7 @@ from ..factories import (
     UserFactory,
     VideoFactory,
 )
-from ..models import TimedTextTrack
+from marsha.core.models import TimedTextTrack
 
 
 # We don't enforce arguments documentation in tests
