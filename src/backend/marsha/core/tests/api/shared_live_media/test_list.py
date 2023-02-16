@@ -2476,3 +2476,4 @@ class SharedLiveMediaAPITest(TestCase):
 
         shared_live_media.refresh_from_db()
         self.assertEqual(shared_live_media.upload_state, defaults.PENDING)
+ 
