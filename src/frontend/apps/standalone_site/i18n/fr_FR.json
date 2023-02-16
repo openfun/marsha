@@ -187,6 +187,10 @@
     "description": "Text when there is an error.",
     "message": "Une erreur s'est produite, veuillez réessayer."
   },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.ErrorPermission": {
+    "description": "Text when there is a permission error while creating a classroom.",
+    "message": "Désolé, vous n'avez pas la permission de créer une classe virtuelle."
+  },
   "features.Contents.features.ClassRooms.ClassroomCreateForm.descriptionLabel": {
     "description": "Label for description in classroom creation form.",
     "message": "Description"

@@ -187,6 +187,10 @@
     "description": "Text when there is an error.",
     "message": "Sorry, an error has occurred. Please try again."
   },
+  "features.Contents.features.ClassRooms.ClassroomCreateForm.ErrorPermission": {
+    "description": "Text when there is a permission error while creating a classroom.",
+    "message": "Sorry, you don't have the permission to create a classroom."
+  },
   "features.Contents.features.ClassRooms.ClassroomCreateForm.descriptionLabel": {
     "description": "Label for description in classroom creation form.",
     "message": "Description"
