@@ -105,6 +105,9 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
     settings.MARKDOWN_ENABLED = True
     page, _ = _preview_markdown(page, live_server)
 
+    page.get_by_placeholder("Enter title of your course here").fill("my title")
+    page.get_by_role("button", name="Create your course").click()
+
     editor_container = page.get_by_test_id("editor_container")
     editor_container.get_by_role("textbox").click()
     page.keyboard.type("this should be rendered")
@@ -115,3 +118,5 @@ def test_render(page: Page, live_server: LiveServer, settings) -> None:
     page.keyboard.press("Home")
     page.keyboard.type("# ")
     expect(page.get_by_role("heading", name="this should be rendered")).to_be_visible()
+    page.get_by_role("button", name="Save").click()
+    expect(page.get_by_text("Document is saved")).to_be_visible()

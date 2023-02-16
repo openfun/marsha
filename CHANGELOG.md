@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Add Markdown wizard in LTI context
+
 ### Changed
 
 - Allow playlist instructor to manage shared live media through API
