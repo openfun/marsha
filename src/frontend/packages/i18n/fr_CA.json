@@ -23,6 +23,14 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Show document"
   },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
+    "description": "Error message when file is too big.",
+    "message": "Uploaded files exceeds allowed size of {uploadMaxSize}."
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload": {
+    "description": "Error message when file upload fails.",
+    "message": "An error occurred when uploading your file. Please retry."
+  },
   "common.ObjectStatusPicker.DELETED": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Deleted"
@@ -323,6 +331,58 @@
     "description": "Viewers and join discussion tab title in live panel",
     "message": "viewers"
   },
+  "component.MarkdownEditor.editorEmptyDragDropHelper": {
+    "description": "Displayed help text when editor is empty",
+    "message": "💡 You can easily add some content by drag and dropping a text file in one of the editor's line."
+  },
+  "component.MarkdownEditor.mathjaxDisabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is disabled",
+    "message": "Mathjax disabled"
+  },
+  "component.MarkdownEditor.mathjaxEnabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is enabled",
+    "message": "Mathjax enabled"
+  },
+  "component.MarkdownEditor.mdxDisabled": {
+    "description": "Button to toggle MDX rendering option when MDX is disabled",
+    "message": "MDX disabled"
+  },
+  "component.MarkdownEditor.mdxEnabled": {
+    "description": "Button to toggle MDX rendering option when MDX is enabled",
+    "message": "MDX enabled"
+  },
+  "component.MarkdownEditor.publish": {
+    "description": "Button to mark edited markdown document as published (not draft)",
+    "message": "Publish"
+  },
+  "component.MarkdownEditor.save": {
+    "description": "Button to save edited markdown document",
+    "message": "Save"
+  },
+  "component.MarkdownEditor.saveFailure": {
+    "description": "Displayed message in toast when the markdown document saving request failed",
+    "message": "An error occurred, the document is not saved"
+  },
+  "component.MarkdownEditor.saveSuccess": {
+    "description": "Displayed message in toast when the markdown document is successfully saved",
+    "message": "Document is saved"
+  },
+  "component.MarkdownEditor.settings": {
+    "description": "Accessibility text for settings menu in markdown editor",
+    "message": "Settings"
+  },
+  "component.MarkdownEditor.title": {
+    "description": "Label for markdown document's title",
+    "message": "Title"
+  },
+  "component.MarkdownEditor.translationNotFound": {
+    "description": "Error message displayed when translation is not found",
+    "message": "Translation not found"
+  },
+  "component.MarkdownImageDropzone.uploadImageInDocument": {
+    "description": "Displayed help text when dragging an image over the Markdown editor",
+    "message": "Release to insert image in document"
+  },
   "component.MessageMetadatas.messageTimeTitle": {
     "description": "A title describing the div where the sending time is displayed",
     "message": "The time at which the message was sent"
@@ -362,6 +422,18 @@
   "component.SchedulingFields.startingAtTextLabel": {
     "description": "Label of the input field to add/update the start time of the scheduled event",
     "message": "Starting time"
+  },
+  "component.ScreenDispositionSelector.editorOnly": {
+    "description": "Navigation bar, icon to display editor only",
+    "message": "Editor only"
+  },
+  "component.ScreenDispositionSelector.renderingOnly": {
+    "description": "Navigation bar, icon to display rendering only",
+    "message": "Rendering only"
+  },
+  "component.ScreenDispositionSelector.splitScreen": {
+    "description": "Navigation bar, icon to display both editor and rendering",
+    "message": "Split screen"
   },
   "component.SharedLiveMedia.noUploadedDocuments": {
     "description": "A message informing the user he hasn't any document imported yet.",
@@ -531,6 +603,18 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Video updated."
   },
+  "component.useImageUploadManager.error": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Error while uploading {imageName}: {error}"
+  },
+  "component.useImageUploadManager.processing": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Processing {imageName}"
+  },
+  "component.useImageUploadManager.uploaded": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Uploaded {imageName}"
+  },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
     "message": "Cancel"
@@ -558,6 +642,10 @@
   "components.DashboardClassroomError.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "The classroom you are looking for could not be found"
+  },
+  "components.DashboardControlPane.DashboardTabStatistics.viewersStatsDescription": {
+    "description": "Description of the number of viewers",
+    "message": "{viewers, plural, =0 {Viewers} one {Viewer} other {Viewers}}"
   },
   "components.DashboardLive.TeacherPIPControls.NextPageButtonProps.title": {
     "description": "Sharing document next page button title text",
@@ -602,6 +690,10 @@
   "components.DashboardLiveControlPane.titleConfiguration": {
     "description": "Title of the tab used to configure the live in capital letters",
     "message": "configuration"
+  },
+  "components.DashboardLiveControlPane.titleStats": {
+    "description": "Title of the tab used to monitor statistics about the video diffusion",
+    "message": "statistics"
   },
   "components.DashboardLiveControlPane.widgets.LivePairing.info": {
     "description": "Helper explaining what contains the external sources widget and how to use the appairing button",
@@ -1245,7 +1337,7 @@
   },
   "components.UploadClosedCaptions.info": {
     "description": "Info of the widget used for uploading closed captions.",
-    "message": "This widget allows you upload closed captions for the video."
+    "message": "This widget allows you upload closed captions for the video. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)"
   },
   "components.UploadClosedCaptions.title": {
     "description": "Title of the widget used for uploading closed captions.",
@@ -1305,7 +1397,7 @@
   },
   "components.UploadSubtitles.info": {
     "description": "Info of the widget used for uploading subtitles.",
-    "message": "This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists."
+    "message": "This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)"
   },
   "components.UploadSubtitles.title": {
     "description": "Title of the widget used for uploading subtitles.",
@@ -1313,7 +1405,7 @@
   },
   "components.UploadTranscripts.info": {
     "description": "Info of the widget used for uploading transcripts.",
-    "message": "This widget allows you upload transcripts for the video."
+    "message": "This widget allows you upload transcripts for the video. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)"
   },
   "components.UploadTranscripts.title": {
     "description": "Title of the widget used for uploading transcripts.",
@@ -1478,6 +1570,14 @@
   "components.useFetchButton.defaultErrorMessage": {
     "description": "Default error toasted on user input error while performing the async action.",
     "message": "An error occurred, please try again later."
+  },
+  "markdown.MarkdownView.notFound.text": {
+    "description": "Base \"resource not found\" text, displayed when no JWT token is provided\"",
+    "message": "The resource you are looking for is not available. If you are an instructor try to re-authenticate."
+  },
+  "markdown.MarkdownView.notFound.title": {
+    "description": "Base \"resource not found\" heading, displayed when no JWT token is provided\"",
+    "message": "Resource not found"
   },
   "utils.onStageRequestMessage.onePersonAsking": {
     "description": "Notification message displayed when one person wants to go on stage.",

@@ -23,6 +23,14 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Afficher le document"
   },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
+    "description": "Error message when file is too big.",
+    "message": "Les fichiers téléversés dépassent la taille autorisée de {uploadMaxSize}."
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload": {
+    "description": "Error message when file upload fails.",
+    "message": "Une erreur s'est produite lors du téléversement de votre fichier. Veuillez réessayer."
+  },
   "common.ObjectStatusPicker.DELETED": {
     "description": "Status information for a video/audio/timed text track",
     "message": "Supprimé"
@@ -323,6 +331,58 @@
     "description": "Viewers and join discussion tab title in live panel",
     "message": "spectateurs"
   },
+  "component.MarkdownEditor.editorEmptyDragDropHelper": {
+    "description": "Displayed help text when editor is empty",
+    "message": "💡 Vous pouvez facilement ajouter du contenu en glissant-déposant un fichier texte dans une des lignes de l'éditeur."
+  },
+  "component.MarkdownEditor.mathjaxDisabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is disabled",
+    "message": "Mathjax désactivé"
+  },
+  "component.MarkdownEditor.mathjaxEnabled": {
+    "description": "Button to toggle MDX rendering option when Mathjax is enabled",
+    "message": "Mathjax activé"
+  },
+  "component.MarkdownEditor.mdxDisabled": {
+    "description": "Button to toggle MDX rendering option when MDX is disabled",
+    "message": "MDX désactivé"
+  },
+  "component.MarkdownEditor.mdxEnabled": {
+    "description": "Button to toggle MDX rendering option when MDX is enabled",
+    "message": "MDX activé"
+  },
+  "component.MarkdownEditor.publish": {
+    "description": "Button to mark edited markdown document as published (not draft)",
+    "message": "Publier"
+  },
+  "component.MarkdownEditor.save": {
+    "description": "Button to save edited markdown document",
+    "message": "Sauvegarder"
+  },
+  "component.MarkdownEditor.saveFailure": {
+    "description": "Displayed message in toast when the markdown document saving request failed",
+    "message": "Une erreur est survenue, le document n'est pas enregistré"
+  },
+  "component.MarkdownEditor.saveSuccess": {
+    "description": "Displayed message in toast when the markdown document is successfully saved",
+    "message": "Document enregistré"
+  },
+  "component.MarkdownEditor.settings": {
+    "description": "Accessibility text for settings menu in markdown editor",
+    "message": "Réglages"
+  },
+  "component.MarkdownEditor.title": {
+    "description": "Label for markdown document's title",
+    "message": "Titre"
+  },
+  "component.MarkdownEditor.translationNotFound": {
+    "description": "Error message displayed when translation is not found",
+    "message": "Aucune traduction disponible"
+  },
+  "component.MarkdownImageDropzone.uploadImageInDocument": {
+    "description": "Displayed help text when dragging an image over the Markdown editor",
+    "message": "Relâcher pour insérer l'image dans le document"
+  },
   "component.MessageMetadatas.messageTimeTitle": {
     "description": "A title describing the div where the sending time is displayed",
     "message": "L'heure à laquelle le message a été envoyé"
@@ -362,6 +422,18 @@
   "component.SchedulingFields.startingAtTextLabel": {
     "description": "Label of the input field to add/update the start time of the scheduled event",
     "message": "Heure de début"
+  },
+  "component.ScreenDispositionSelector.editorOnly": {
+    "description": "Navigation bar, icon to display editor only",
+    "message": "Éditeur uniquement"
+  },
+  "component.ScreenDispositionSelector.renderingOnly": {
+    "description": "Navigation bar, icon to display rendering only",
+    "message": "Rendu uniquement"
+  },
+  "component.ScreenDispositionSelector.splitScreen": {
+    "description": "Navigation bar, icon to display both editor and rendering",
+    "message": "Écran partagé"
   },
   "component.SharedLiveMedia.noUploadedDocuments": {
     "description": "A message informing the user he hasn't any document imported yet.",
@@ -531,6 +603,18 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Vidéo mise à jour."
   },
+  "component.useImageUploadManager.error": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Erreur lors du téléversement de {imageName}: {error}"
+  },
+  "component.useImageUploadManager.processing": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Traitement de {imageName}"
+  },
+  "component.useImageUploadManager.uploaded": {
+    "description": "Displayed in Markdown image upload status",
+    "message": "Téléversé {imageName}"
+  },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
     "message": "Annuler"
@@ -558,6 +642,10 @@
   "components.DashboardClassroomError.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "La classe virtuelle recherchée n'a pu être trouvée"
+  },
+  "components.DashboardControlPane.DashboardTabStatistics.viewersStatsDescription": {
+    "description": "Description of the number of viewers",
+    "message": "{viewers, plural, =0 {Vue} one {Vue} other {Vues}}"
   },
   "components.DashboardLive.TeacherPIPControls.NextPageButtonProps.title": {
     "description": "Sharing document next page button title text",
@@ -602,6 +690,10 @@
   "components.DashboardLiveControlPane.titleConfiguration": {
     "description": "Title of the tab used to configure the live in capital letters",
     "message": "configuration"
+  },
+  "components.DashboardLiveControlPane.titleStats": {
+    "description": "Title of the tab used to monitor statistics about the video diffusion",
+    "message": "statistiques"
   },
   "components.DashboardLiveControlPane.widgets.LivePairing.info": {
     "description": "Helper explaining what contains the external sources widget and how to use the appairing button",
@@ -1245,7 +1337,7 @@
   },
   "components.UploadClosedCaptions.info": {
     "description": "Info of the widget used for uploading closed captions.",
-    "message": "Ce widget vous permet de téléverser des sous-titres codés (sourds et malentendants)."
+    "message": "Ce widget vous permet de téléverser des sous-titres codés pour la vidéo. Les formats acceptés : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa et .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) alias LyRiCs - JSON (.json)"
   },
   "components.UploadClosedCaptions.title": {
     "description": "Title of the widget used for uploading closed captions.",
@@ -1305,7 +1397,7 @@
   },
   "components.UploadSubtitles.info": {
     "description": "Info of the widget used for uploading subtitles.",
-    "message": "Ce widget vous permet de téléverser des sous-titres pour cette vidéo. La possibilité d'utiliser le sous-titre en tant que transcription peut-être désactivée si aucun sous-titre n'est disponible ou bien si au moins une transcription existe."
+    "message": "Ce widget vous permet de téléverser des sous-titres pour la vidéo. Cette option peut être désactivée car il n'y a pas de sous-titre ou au moins une transcription. Formats acceptés : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)"
   },
   "components.UploadSubtitles.title": {
     "description": "Title of the widget used for uploading subtitles.",
@@ -1313,7 +1405,7 @@
   },
   "components.UploadTranscripts.info": {
     "description": "Info of the widget used for uploading transcripts.",
-    "message": "Ce widget vous permet de téléverser des transcriptions qui seront rajoutées à la vidéo."
+    "message": "Ce widget vous permet de téléverser des transcripts pour la vidéo. Les formats acceptés : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa et .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) alias LyRiCs - JSON (.json)"
   },
   "components.UploadTranscripts.title": {
     "description": "Title of the widget used for uploading transcripts.",
@@ -1478,6 +1570,14 @@
   "components.useFetchButton.defaultErrorMessage": {
     "description": "Default error toasted on user input error while performing the async action.",
     "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "markdown.MarkdownView.notFound.text": {
+    "description": "Base \"resource not found\" text, displayed when no JWT token is provided\"",
+    "message": "La ressource que vous cherchez n'est pas disponible. Si vous êtes un instructeur, essayez de vous authentifier."
+  },
+  "markdown.MarkdownView.notFound.title": {
+    "description": "Base \"resource not found\" heading, displayed when no JWT token is provided\"",
+    "message": "Ressource non trouvée"
   },
   "utils.onStageRequestMessage.onePersonAsking": {
     "description": "Notification message displayed when one person wants to go on stage.",

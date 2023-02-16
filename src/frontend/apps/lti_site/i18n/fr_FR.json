@@ -99,6 +99,14 @@
     "description": "Placeholder for dropzone.",
     "message": "Faites glisser et déposez des fichiers ici, ou cliquez pour sélectionner des fichiers"
   },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
+    "description": "Error message when file is too big.",
+    "message": "Les fichiers téléversés dépassent la taille autorisée de {uploadMaxSize}."
+  },
+  "apps.deposit.components.DashboardStudent.UploadFiles.errorFileUpload": {
+    "description": "Error message when file upload fails.",
+    "message": "Une erreur s'est produite lors du téléversement de votre fichier. Veuillez réessayer."
+  },
   "apps.deposit.components.DashboardStudent.UploadFiles.uploadButtonLabel": {
     "description": "Label for upload button.",
     "message": "Téléverser"
@@ -150,58 +158,6 @@
   "component.DashboardFileDepositoryStudent.labelDownload": {
     "description": "Button label for downloading a deposited file.",
     "message": "Télécharger"
-  },
-  "component.MarkdownEditor.editorEmptyDragDropHelper": {
-    "description": "Displayed help text when editor is empty",
-    "message": "💡 Vous pouvez facilement ajouter du contenu en glissant-déposant un fichier texte dans une des lignes de l'éditeur."
-  },
-  "component.MarkdownEditor.mathjaxDisabled": {
-    "description": "Button to toggle MDX rendering option when Mathjax is disabled",
-    "message": "Mathjax désactivé"
-  },
-  "component.MarkdownEditor.mathjaxEnabled": {
-    "description": "Button to toggle MDX rendering option when Mathjax is enabled",
-    "message": "Mathjax activé"
-  },
-  "component.MarkdownEditor.mdxDisabled": {
-    "description": "Button to toggle MDX rendering option when MDX is disabled",
-    "message": "MDX désactivé"
-  },
-  "component.MarkdownEditor.mdxEnabled": {
-    "description": "Button to toggle MDX rendering option when MDX is enabled",
-    "message": "MDX activé"
-  },
-  "component.MarkdownEditor.publish": {
-    "description": "Button to mark edited markdown document as published (not draft)",
-    "message": "Publier"
-  },
-  "component.MarkdownEditor.save": {
-    "description": "Button to save edited markdown document",
-    "message": "Sauvegarder"
-  },
-  "component.MarkdownEditor.saveFailure": {
-    "description": "Displayed message in toast when the markdown document saving request failed",
-    "message": "Une erreur est survenue, le document n'est pas enregistré"
-  },
-  "component.MarkdownEditor.saveSuccess": {
-    "description": "Displayed message in toast when the markdown document is successfully saved",
-    "message": "Document enregistré"
-  },
-  "component.MarkdownEditor.settings": {
-    "description": "Accessibility text for settings menu in markdown editor",
-    "message": "Réglages"
-  },
-  "component.MarkdownEditor.title": {
-    "description": "Label for markdown document's title",
-    "message": "Titre"
-  },
-  "component.MarkdownEditor.translationNotFound": {
-    "description": "Error message displayed when translation is not found",
-    "message": "Aucune traduction disponible"
-  },
-  "component.MarkdownImageDropzone.uploadImageInDocument": {
-    "description": "Displayed help text when dragging an image over the Markdown editor",
-    "message": "Relâcher pour insérer l'image dans le document"
   },
   "component.PlaylistPortability.addPortability": {
     "description": "Accessible message for adding a portability.",
@@ -267,18 +223,6 @@
     "description": "Message displayed when the resource is not available for the current LTI context.",
     "message": "La ressource demandée n'est pas disponible pour ce contexte."
   },
-  "component.ScreenDispositionSelector.editorOnly": {
-    "description": "Navigation bar, icon to display editor only",
-    "message": "Éditeur uniquement"
-  },
-  "component.ScreenDispositionSelector.renderingOnly": {
-    "description": "Navigation bar, icon to display rendering only",
-    "message": "Rendu uniquement"
-  },
-  "component.ScreenDispositionSelector.splitScreen": {
-    "description": "Navigation bar, icon to display both editor and rendering",
-    "message": "Écran partagé"
-  },
   "component.SelectContent.SelectContentSection.playlistTitle": {
     "description": "Title for the current playlist.",
     "message": "Cours {title} ({id})"
@@ -298,18 +242,6 @@
   "component.VideoWizard.descriptionText": {
     "description": "A paragraph presenting the actions below.",
     "message": "Vous pouvez choisir entre créer une vidéo et la téléverser ou créer un webinaire que vous pourrez planifier si nécessaire."
-  },
-  "component.useImageUploadManager.error": {
-    "description": "Displayed in Markdown image upload status",
-    "message": "Erreur lors du téléversement de {imageName}: {error}"
-  },
-  "component.useImageUploadManager.processing": {
-    "description": "Displayed in Markdown image upload status",
-    "message": "Traitement de {imageName}"
-  },
-  "component.useImageUploadManager.uploaded": {
-    "description": "Displayed in Markdown image upload status",
-    "message": "Téléversé {imageName}"
   },
   "components.App.AppContentLoader.errorAppSet": {
     "description": "Application and frontend are not properly set",
@@ -459,18 +391,6 @@
     "description": "Message for the sidebar uploads indicator link.",
     "message": "Téléversements de fichiers"
   },
-  "components.TimedTextCreationForm.addTrackBtn": {
-    "description": "Text for the button in the dashboard to go upload a new timed text file.",
-    "message": "Téléverser le fichier"
-  },
-  "components.TimedTextCreationForm.addTrackLabel": {
-    "description": "Label for the form that lets the instructor add a new timed text track.",
-    "message": "Ajouter une langue"
-  },
-  "components.TimedTextCreationForm.error": {
-    "description": "Generic error message when we fail to create a subtitle/transcript/caption track.",
-    "message": "Une erreur s'est produite pendant la création de cette piste."
-  },
   "components.TimedTextListItem.delete": {
     "description": "Link text to delete a subtitle/transcript/captions item.",
     "message": "Supprimer"
@@ -586,13 +506,5 @@
   "components.VideoCreateForm.videoTitle": {
     "description": "Label for the video title field in the video creation form.",
     "message": "Titre"
-  },
-  "markdown.MarkdownView.notFound.text": {
-    "description": "Base \"resource not found\" text, displayed when no JWT token is provided\"",
-    "message": "La ressource que vous cherchez n'est pas disponible. Si vous êtes un instructeur, essayez de vous authentifier."
-  },
-  "markdown.MarkdownView.notFound.title": {
-    "description": "Base \"resource not found\" heading, displayed when no JWT token is provided\"",
-    "message": "Ressource non trouvée"
   }
 }
