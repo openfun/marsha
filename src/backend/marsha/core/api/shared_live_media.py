@@ -1,9 +1,9 @@
 """Declare API endpoints for shared live media with Django RestFramework viewsets."""
 from django.conf import settings
-from django.db.models.query import EmptyQuerySet
 from django.utils import timezone
 
-from rest_framework import viewsets
+import django_filters
+from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
@@ -17,6 +17,16 @@ from ..utils.time_utils import to_timestamp
 from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 
+class SharedLiveMediaFilter(django_filters.FilterSet):
+    """Filter for SharedLiveMedia."""
+
+    video = django_filters.UUIDFilter(field_name="video_id")
+
+    class Meta:
+        model = SharedLiveMedia
+        fields = []
+
+
 class SharedLiveMediaViewSet(
     APIViewMixin, ObjectPkMixin, ObjectRelatedMixin, viewsets.ModelViewSet
 ):
@@ -25,6 +35,13 @@ class SharedLiveMediaViewSet(
     permission_classes = [permissions.NotAllowed]
     queryset = SharedLiveMedia.objects.all()
     serializer_class = serializers.SharedLiveMediaSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "video__title"]
+    ordering = ["created_on"]
+    filterset_class = SharedLiveMediaFilter
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
@@ -71,6 +88,27 @@ class SharedLiveMediaViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = super().get_queryset()
+
+        if self.request.resource:  # aka we are authenticated through LTI
+            queryset = queryset.filter(video__id=self.request.resource.id)
+
+        # Otherwise, we are authenticated through a user JWT.
+        # Filtering is currently not necessary as permissions enforce
+        # a "video" parameter to be present in the request.
+        # See `IsParamsVideoAdminThrough*` permissions.
+
+        return queryset
+
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
+
     def destroy(self, request, *args, **kwargs):
         """
         Delete the SharedLiveMedia object.
@@ -87,35 +125,6 @@ class SharedLiveMediaViewSet(
         response = super().destroy(request, *args, **kwargs)
         channel_layers_utils.dispatch_video_to_groups(video)
         return response
-
-    def list(self, request, *args, **kwargs):
-        """List shared live media through the API."""
-        queryset = self.get_queryset().none()
-        # If the "user" is just representing a resource and not an actual user profile,
-        # restrict the queryset to tracks linked to said resource
-        if request.resource and (
-            request.resource.user.get("id") != request.resource.id
-        ):
-            queryset = (
-                self.get_queryset()
-                .filter(video__id=request.resource.id)
-                .order_by("created_on")
-            )
-
-        # find the video filter
-        video = request.query_params.get("video")
-        if video is not None:
-            if isinstance(queryset, EmptyQuerySet):
-                queryset = self.get_queryset()
-            queryset = queryset.filter(video__id=video).order_by("created_on")
-
-        paginated_queryset = self.paginate_queryset(queryset)
-        if paginated_queryset is not None:
-            paginated_serializer = self.get_serializer(paginated_queryset, many=True)
-            return self.get_paginated_response(paginated_serializer.data)
-
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
 
     def perform_update(self, serializer):
         super().perform_update(serializer)
