@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.0.0-beta.16] - 2023-02-17
+
 ### Added
 
 - remove lib folder before rollup build to avoid stale files
@@ -1488,7 +1490,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.15...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.16...master
+[4.0.0-beta.16]: https://github.com/openfun/marsha/compare/v4.0.0-beta.15...v4.0.0-beta.16
 [4.0.0-beta.15]: https://github.com/openfun/marsha/compare/v4.0.0-beta.14...v4.0.0-beta.15
 [4.0.0-beta.14]: https://github.com/openfun/marsha/compare/v4.0.0-beta.13...v4.0.0-beta.14
 [4.0.0-beta.13]: https://github.com/openfun/marsha/compare/v4.0.0-beta.12...v4.0.0-beta.13
