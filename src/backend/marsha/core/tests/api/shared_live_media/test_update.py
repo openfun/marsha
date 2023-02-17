@@ -126,26 +126,51 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         """
         Playlist instructor token user updates a shared live medias for a video.
 
-        A user with a user token, who is a playlist instructor, cannot update a shared
+        A user with a user token, who is a playlist instructor, can update a shared
         live medias for a video that belongs to that playlist.
         """
         user = UserFactory()
         # A playlist where the user is an instructor, with a video
         playlist = PlaylistFactory()
         video = VideoFactory(playlist=playlist)
-        shared_live_media = SharedLiveMediaFactory(video=video)
+        shared_live_media = SharedLiveMediaFactory(
+            upload_state=defaults.PENDING,
+            uploaded_on=None,
+            nb_pages=None,
+            video=video,
+            title="update me!",
+        )
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            {"title": "you shall not pass!"},
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
-        )
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
+        ) as mock_dispatch_shared_live_media:
+            response = self.client.put(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                {"title": "give me the red pill!"},
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+            mock_dispatch_shared_live_media.assert_called_once_with(shared_live_media)
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(shared_live_media.id),
+                "active_stamp": None,
+                "filename": None,
+                "is_ready_to_show": False,
+                "nb_pages": None,
+                "show_download": True,
+                "title": "give me the red pill!",
+                "upload_state": "pending",
+                "urls": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_shared_live_media_update_by_video_playlist_admin(self):
         """

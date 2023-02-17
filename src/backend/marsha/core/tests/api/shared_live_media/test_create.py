@@ -124,7 +124,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         """
         Playlist instructor token user creates a shared live media for a video.
 
-        A user with a user token, who is a playlist instructor, cannot create a shared
+        A user with a user token, who is a playlist instructor, can create a shared
         live media for a video that belongs to that playlist.
         """
         user = UserFactory()
@@ -139,10 +139,26 @@ class SharedLiveMediaCreateAPITest(TestCase):
             "/api/sharedlivemedias/",
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(SharedLiveMedia.objects.count(), 0)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(SharedLiveMedia.objects.count(), 1)
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(SharedLiveMedia.objects.first().id),
+                "active_stamp": None,
+                "filename": None,
+                "is_ready_to_show": False,
+                "nb_pages": None,
+                "show_download": True,
+                "title": None,
+                "upload_state": "pending",
+                "urls": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_shared_live_media_create_by_video_playlist_admin(self):
         """

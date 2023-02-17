@@ -105,7 +105,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         """
         Playlist instructor token user deletes a shared live medias for a video.
 
-        A user with a user token, who is a playlist instructor, cannot delete a shared
+        A user with a user token, who is a playlist instructor, can delete a shared
         live medias for a video that belongs to that playlist.
         """
         user = UserFactory()
@@ -117,12 +117,19 @@ class SharedLiveMediaDeleteAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
+        self.assertTrue(SharedLiveMedia.objects.exists())
 
-        self.assertEqual(response.status_code, 403)
+        with mock.patch(
+            "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
+        ) as mock_dispatch_video_to_groups:
+            response = self.client.delete(
+                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+            mock_dispatch_video_to_groups.assert_called_once_with(video)
+
+        self.assertEqual(response.status_code, 204)
+        self.assertFalse(SharedLiveMedia.objects.exists())
 
     def test_api_shared_live_media_delete_by_video_playlist_admin(self):
         """

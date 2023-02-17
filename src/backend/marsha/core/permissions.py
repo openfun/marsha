@@ -448,6 +448,15 @@ class IsParamsVideoAdminThroughPlaylist(
     """
 
 
+class IsParamsVideoAdminOrInstructorThroughPlaylist(
+    HasAdminOrInstructorRoleMixIn, BaseIsParamsVideoRoleThroughPlaylist
+):
+    """
+    Allow access to user with admin or instructor role on the video's playlist
+    provided in parameters.
+    """
+
+
 class BaseIsPlaylistRole(permissions.BasePermission):
     """Base permission class for playlist roles."""
 
@@ -595,6 +604,15 @@ class BaseIsRelatedVideoPlaylistRole(BaseIsObjectPlaylistRole):
 
 class IsRelatedVideoPlaylistAdmin(HasAdminRoleMixIn, BaseIsRelatedVideoPlaylistRole):
     """Allow request when the user has admin role on the object's video's playlist."""
+
+
+class IsRelatedVideoPlaylistAdminOrInstructor(
+    HasAdminOrInstructorRoleMixIn,
+    BaseIsRelatedVideoPlaylistRole,
+):
+    """
+    Allow request when the user has admin or instructor role on the object's video's playlist.
+    """
 
 
 class BaseIsRelatedVideoPlaylistOrganizationRole(BaseIsPlaylistOrganizationRole):
