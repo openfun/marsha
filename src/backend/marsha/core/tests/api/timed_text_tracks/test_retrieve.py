@@ -1,4 +1,4 @@
-"""Tests for the TimedTextTrack API of the Marsha project."""
+"""Tests for the TimedTextTrack retrieve API of the Marsha project."""
 from datetime import datetime
 import json
 import random
@@ -6,117 +6,21 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core import factories, models
+from marsha.core.api import timezone
+from marsha.core.factories import TimedTextTrackFactory, UserFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-
-from .. import factories, models
-from ..api import timezone
-from ..factories import TimedTextTrackFactory, UserFactory, VideoFactory
-from ..models import TimedTextTrack
-from .testing_utils import RSA_KEY_MOCK
+from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 
 
-# We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument,too-many-lines
-
-
-class TimedTextTrackAPITest(TestCase):
-    """Test the API of the timed text track object."""
+class TimedTextTrackRetrieveAPITest(TestCase):
+    """Test the retrieve API of the timed text track object."""
 
     maxDiff = None
-
-    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
-    def test_api_timed_text_track_options_as_instructor(self):
-        """The details of choices fields should be available via http options for an instructor."""
-        timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
-            permissions__can_update=False,
-        )
-
-        response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        content = json.loads(response.content)
-        self.assertEqual(
-            content["actions"]["POST"]["mode"]["choices"],
-            [
-                {"value": "st", "display_name": "Subtitle"},
-                {"value": "ts", "display_name": "Transcript"},
-                {"value": "cc", "display_name": "Closed captioning"},
-            ],
-        )
-        self.assertEqual(
-            content["actions"]["POST"]["language"]["choices"],
-            [
-                {"value": "af", "display_name": "Afrikaans"},
-                {"value": "ast", "display_name": "Asturian"},
-            ],
-        )
-
-    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
-    def test_api_timed_text_track_options_as_student(self):
-        """The details of choices fields should be available via http options for a student."""
-        timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
-
-        response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        content = json.loads(response.content)
-        self.assertEqual(
-            content["actions"]["POST"]["mode"]["choices"],
-            [
-                {"value": "st", "display_name": "Subtitle"},
-                {"value": "ts", "display_name": "Transcript"},
-                {"value": "cc", "display_name": "Closed captioning"},
-            ],
-        )
-        self.assertEqual(
-            content["actions"]["POST"]["language"]["choices"],
-            [
-                {"value": "af", "display_name": "Afrikaans"},
-                {"value": "ast", "display_name": "Asturian"},
-            ],
-        )
-
-    @override_settings(ALL_LANGUAGES=(("af", "Afrikaans"), ("ast", "Asturian")))
-    def test_api_timed_text_track_options_as_administrator(self):
-        """The details of choices fields should be available via http options for an admin."""
-        timed_text_track = TimedTextTrackFactory(language="af")
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=timed_text_track.video,
-            permissions__can_update=False,
-            roles=["administrator"],
-        )
-
-        response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        content = json.loads(response.content)
-        self.assertEqual(
-            content["actions"]["POST"]["mode"]["choices"],
-            [
-                {"value": "st", "display_name": "Subtitle"},
-                {"value": "ts", "display_name": "Transcript"},
-                {"value": "cc", "display_name": "Closed captioning"},
-            ],
-        )
-        self.assertEqual(
-            content["actions"]["POST"]["language"]["choices"],
-            [
-                {"value": "af", "display_name": "Afrikaans"},
-                {"value": "ast", "display_name": "Asturian"},
-            ],
-        )
-
-    def test_api_timed_text_track_options_anonymous(self):
-        """The details of choices fields should be available via http options for a student."""
-        response = self.client.options("/api/timedtexttracks/")
-        self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a timed text track detail."""
@@ -369,7 +273,7 @@ class TimedTextTrackAPITest(TestCase):
         CLOUDFRONT_SIGNED_PUBLIC_KEY_ID="cloudfront-access-key-id",
     )
     @mock.patch("builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK)
-    def test_api_timed_text_track_read_detail_token_user_signed_urls(self, mock_open):
+    def test_api_timed_text_track_read_detail_token_user_signed_urls(self, _mock_open):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         timed_text_track = TimedTextTrackFactory(
             video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
