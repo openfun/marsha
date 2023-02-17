@@ -300,30 +300,77 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         """
         Playlist instructor token user initiates an upload on a shared live medias for a video.
 
-        A user with a user token, who is a playlist instructor, cannot initiate an upload
+        A user with a user token, who is a playlist instructor, can initiate an upload
         on  a shared live medias for a video that belongs to that playlist.
         """
         user = UserFactory()
         # A playlist where the user is an instructor, with a video
         playlist = PlaylistFactory()
-        video = VideoFactory(playlist=playlist)
-        shared_live_media = SharedLiveMediaFactory(video=video)
+        video = VideoFactory(
+            id="ed08da34-7447-4141-96ff-5740315d7b99", playlist=playlist
+        )
+        shared_live_media = SharedLiveMediaFactory(
+            id="c5cad053-111a-4e0e-8f78-fe43dec11512",
+            upload_state=defaults.READY,
+            uploaded_on=None,
+            nb_pages=3,
+            video=video,
+            title="update me!",
+        )
         PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        response = self.client.post(
-            f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now), mock.patch(
+            "datetime.datetime"
+        ) as mock_dt:
+            mock_dt.utcnow = mock.Mock(return_value=now)
+            response = self.client.post(
+                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                {
+                    "filename": "python extensions.pdf",
+                    "mimetype": "application/pdf",
+                    "size": 10,
+                },
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                content_type="application/json",
+            )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
             {
-                "filename": "python extensions.pdf",
-                "mimetype": "application/pdf",
-                "size": 10,
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "ed08da34-7447-4141-96ff-5740315d7b99/sharedlivemedia/"
+                        "c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20211202/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20211202T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMjEtMTItMDNUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBb"
+                        "eyJhY2wiOiAicHJpdmF0ZSJ9LCBbImVxIiwgIiRDb250ZW50LVR5cGUiLCAiYXBwbGljYXRp"
+                        "b24vcGRmIl0sIFsiY29udGVudC1sZW5ndGgtcmFuZ2UiLCAwLCAzMTQ1NzI4MDBdLCB7ImJ1"
+                        "Y2tldCI6ICJ0ZXN0LW1hcnNoYS1zb3VyY2UifSwgeyJrZXkiOiAiZWQwOGRhMzQtNzQ0Ny00"
+                        "MTQxLTk2ZmYtNTc0MDMxNWQ3Yjk5L3NoYXJlZGxpdmVtZWRpYS9jNWNhZDA1My0xMTFhLTRl"
+                        "MGUtOGY3OC1mZTQzZGVjMTE1MTIvMTYzODQwMzIwMC5wZGYifSwgeyJ4LWFtei1hbGdvcml0"
+                        "aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYXdzLWFj"
+                        "Y2Vzcy1rZXktaWQvMjAyMTEyMDIvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB7Ingt"
+                        "YW16LWRhdGUiOiAiMjAyMTEyMDJUMDAwMDAwWiJ9XX0="
+                    ),
+                    "x-amz-signature": (
+                        "db00ba70403f098597777a3cfb9ba5433eecbbe67ebefdf17987f368dec70a5d"
+                    ),
+                },
             },
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-            content_type="application/json",
         )
 
-        self.assertEqual(response.status_code, 403)
+        shared_live_media.refresh_from_db()
+        self.assertEqual(shared_live_media.upload_state, defaults.PENDING)
 
     def test_api_shared_live_media_initiate_upload_by_video_playlist_admin(self):
         """
