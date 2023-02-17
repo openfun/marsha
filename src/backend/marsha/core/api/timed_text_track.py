@@ -2,7 +2,8 @@
 from django.conf import settings
 from django.utils import timezone
 
-from rest_framework import viewsets
+import django_filters
+from rest_framework import filters, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
@@ -15,6 +16,16 @@ from ..utils.time_utils import to_timestamp
 from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 
+class TimedTextTrackFilter(django_filters.FilterSet):
+    """Filter for TimedTextTrack."""
+
+    video = django_filters.UUIDFilter(field_name="video_id")
+
+    class Meta:
+        model = TimedTextTrack
+        fields = []
+
+
 class TimedTextTrackViewSet(
     APIViewMixin, ObjectPkMixin, ObjectRelatedMixin, viewsets.ModelViewSet
 ):
@@ -24,6 +35,13 @@ class TimedTextTrackViewSet(
     queryset = TimedTextTrack.objects.all()
     serializer_class = serializers.TimedTextTrackSerializer
     metadata_class = TimedTextMetadata
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "video__title"]
+    ordering = ["created_on"]
+    filterset_class = TimedTextTrackFilter
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
@@ -59,26 +77,26 @@ class TimedTextTrackViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
-    def list(self, request, *args, **kwargs):
-        """List timed text tracks through the API."""
-        queryset = self.get_queryset()
-        # If the "user" is just representing a resource and not an actual user profile, restrict
-        # the queryset to tracks linked to said resource
-        if self.request.resource:
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = super().get_queryset()
+
+        if self.request.resource:  # aka we are authenticated through LTI
             queryset = queryset.filter(video__id=self.request.resource.id)
 
-        # Apply the video filter if appropriate
-        video = request.query_params.get("video")
-        if video is not None:
-            queryset = queryset.filter(video__id=video)
+        # Otherwise, we are authenticated through a user JWT.
+        # Filtering is currently not necessary as permissions enforce
+        # a "video" parameter to be present in the request.
+        # See `IsParamsVideoAdminThrough*` permissions.
 
-        page = self.paginate_queryset(queryset)
-        if page is not None:
-            serializer = self.get_serializer(page, many=True)
-            return self.get_paginated_response(serializer.data)
+        return queryset
 
-        serializer = self.get_serializer(queryset, many=True)
-        return Response(serializer.data)
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
