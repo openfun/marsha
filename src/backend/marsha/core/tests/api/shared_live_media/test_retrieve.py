@@ -531,7 +531,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         """
         Playlist instructor token user read a shared live media for a video.
 
-        A user with a user token, who is a playlist instructor, cannot read a shared
+        A user with a user token, who is a playlist instructor, can read a shared
         live media for a video that belongs to that playlist.
         """
         user = UserFactory()
@@ -548,7 +548,22 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(SharedLiveMedia.objects.first().id),
+                "active_stamp": None,
+                "filename": None,
+                "is_ready_to_show": False,
+                "nb_pages": shared_live_media.nb_pages,
+                "show_download": True,
+                "title": None,
+                "upload_state": "pending",
+                "urls": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_shared_live_media_read_detail_by_video_playlist_admin(self):
         """

@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Allow playlist instructor to manage shared live media through API
+
 ## [4.0.0-beta.16] - 2023-02-17
 
 ### Added
