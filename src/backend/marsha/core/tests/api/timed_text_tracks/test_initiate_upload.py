@@ -2240,22 +2240,3 @@ class TimedTextTrackAPITest(TestCase):
             response.json(),
             {"size": ["file too large, max size allowed is 10 Bytes"]},
         )
-
-    @override_settings(SUBTITLE_SOURCE_MAX_SIZE=10)
-    def test_api_timed_text_track_options_authentified(self):
-        """An autheticated user can fetch the timed_text_track options endpoint"""
-        timed_text_track = TimedTextTrackFactory(
-            id="5c019027-1e1f-4d8c-9f83-c5e20edaad2b",
-            video__pk="b8d40ed7-95b8-4848-98c9-50728dfee25d",
-            language="fr",
-            upload_state=random.choice(["ready", "error"]),
-            mode="cc",
-        )
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
-
-        response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["upload_max_size_bytes"], 10)
- 
