@@ -418,28 +418,34 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         ).exists()
 
 
-class IsParamsVideoAdminThroughPlaylist(permissions.BasePermission):
+class BaseIsParamsVideoRoleThroughPlaylist(permissions.BasePermission):
     """
-    Allow a request to proceed. Permission class.
-
     Permission to allow a request to proceed only if the user provides the ID for an existing
-    video, and has an access to this video's parent playlist with an administrator role.
+    video, and has an access to this video's parent playlist with a specific role.
     """
+
+    role_filter = {}
 
     def has_permission(self, request, view):
         """
-        Allow the request.
-
         Allow the request only if the video from the params or body of the request exists and
-        the current logged in user is one of the administrators of the playlist to which
+        the current logged in user has a specific role of the playlist to which
         this video belongs.
         """
         video_id = request.data.get("video") or request.query_params.get("video")
         return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
+            **self.role_filter,
             playlist__videos__id=video_id,
             user__id=request.user.id,
         ).exists()
+
+
+class IsParamsVideoAdminThroughPlaylist(
+    HasAdminRoleMixIn, BaseIsParamsVideoRoleThroughPlaylist
+):
+    """
+    Allow access to user with admin role on the video's playlist provided in parameters.
+    """
 
 
 class BaseIsPlaylistRole(permissions.BasePermission):
@@ -578,60 +584,36 @@ class IsObjectPlaylistOrganizationAdmin(
     """
 
 
-class IsRelatedVideoPlaylistAdmin(permissions.BasePermission):
+class BaseIsRelatedVideoPlaylistRole(BaseIsObjectPlaylistRole):
+    """Allow request when the user has specific role on the object's video's playlist."""
+
+    def get_playlist_id(self, request, view, obj):
+        """Get the playlist id."""
+        # Note, use select_related to avoid making extra requests to get the video
+        return obj.video.playlist_id
+
+
+class IsRelatedVideoPlaylistAdmin(HasAdminRoleMixIn, BaseIsRelatedVideoPlaylistRole):
+    """Allow request when the user has admin role on the object's video's playlist."""
+
+
+class BaseIsRelatedVideoPlaylistOrganizationRole(BaseIsPlaylistOrganizationRole):
+    """Base permission class for object's video's playlist's organization roles."""
+
+    def get_playlist_id(self, request, view, obj):
+        """Get the playlist id."""
+        # Note, use select_related to avoid making extra requests to get the video
+        return obj.video.playlist_id
+
+
+class IsRelatedVideoOrganizationAdmin(
+    HasAdminRoleMixIn,
+    BaseIsRelatedVideoPlaylistOrganizationRole,
+):
     """
-    Allow a request to proceed. Permission class.
-
-    Permission to allow a request to proceed only if the user is an admin for the playlist
-    the video related to the current object is a part of.
+    Permission class to check if the user is one of
+    the object's video's playlist's organization admin.
     """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Allow the request only if there is a video related object id in the path of
-        the request, which exists, and if the current user is an admin for the playlist
-        this video is a part of.
-        """
-        try:
-            video_related_object = view.get_related_object().video
-        except ObjectDoesNotExist:
-            return False
-
-        return models.PlaylistAccess.objects.filter(
-            role=ADMINISTRATOR,
-            playlist__videos=video_related_object,
-            user__id=request.user.id,
-        ).exists()
-
-
-class IsRelatedVideoOrganizationAdmin(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Permission to allow a request to proceed only if the user is an admin for the organization
-    the video related to the current object is a part of.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Allow the request only if there is a video related object id in the path of
-        the request, which exists, and if the current user is an admin for the organization
-        this video is a part of.
-        """
-        try:
-            video_related_object = view.get_related_object().video
-        except ObjectDoesNotExist:
-            return False
-
-        return models.OrganizationAccess.objects.filter(
-            role=ADMINISTRATOR,
-            organization__playlists__videos=video_related_object,
-            user__id=request.user.id,
-        ).exists()
 
 
 class HasPlaylistToken(permissions.BasePermission):

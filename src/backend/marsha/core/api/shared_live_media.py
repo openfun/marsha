@@ -33,7 +33,7 @@ class SharedLiveMediaViewSet(
     """Viewset for the API of the SharedLiveMedia object."""
 
     permission_classes = [permissions.NotAllowed]
-    queryset = SharedLiveMedia.objects.all()
+    queryset = SharedLiveMedia.objects.select_related("video")
     serializer_class = serializers.SharedLiveMediaSerializer
     filter_backends = [
         filters.OrderingFilter,
