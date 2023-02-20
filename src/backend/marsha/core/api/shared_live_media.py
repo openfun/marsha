@@ -151,6 +151,8 @@ class SharedLiveMediaViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        shared_live_media = self.get_object()  # check permissions first
+
         serializer = serializers.SharedLiveMediaInitiateUploadSerializer(
             data=request.data
         )
@@ -161,7 +163,6 @@ class SharedLiveMediaViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        shared_live_media = self.get_object()
         key = shared_live_media.get_source_s3_key(
             stamp=stamp, extension=serializer.validated_data["extension"]
         )

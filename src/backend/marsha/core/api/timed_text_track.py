@@ -88,13 +88,14 @@ class TimedTextTrackViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        timed_text_track = self.get_object()  # check permissions first
+
         serializer = serializers.TimedTextUploadSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        timed_text_track = self.get_object()
         key = timed_text_track.get_source_s3_key(stamp=stamp)
 
         presigned_post = create_presigned_post(

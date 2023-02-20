@@ -507,6 +507,8 @@ class ClassroomDocumentViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        classroom = self.get_object()  # check permissions first
+
         serializer = serializers.ClassroomDocumentInitiateUploadSerializer(
             data=request.data
         )
@@ -517,7 +519,6 @@ class ClassroomDocumentViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        classroom = self.get_object()
         key = classroom.get_source_s3_key(
             stamp=stamp, extension=serializer.validated_data["extension"]
         )
