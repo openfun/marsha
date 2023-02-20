@@ -6012,3 +6012,4 @@ class LiveSessionApiTest(TestCase):
         self.assertEqual(
             response.json(), {"live_attendance": "keys in fields should be timestamps"}
         )
+ 
