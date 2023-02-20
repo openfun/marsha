@@ -154,7 +154,11 @@ describe('<MarkdownEditor />', () => {
     act(() => documentDeferred.resolve(markdownDocument));
 
     await screen.findByDisplayValue(markdownDocument.translations[0].title);
-    expect(screen.getByText('French')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: /Select language; Selected: French/i,
+      }),
+    ).toBeVisible();
     await waitFor(() =>
       expect(
         screen.getAllByText(markdownDocument.translations[0].content).length,
@@ -241,8 +245,8 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Change language to fr
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
-    userEvent.click(screen.getByText('French'));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    userEvent.click(await screen.findByRole('option', { name: /French/i }));
 
     await waitFor(() =>
       expect(
