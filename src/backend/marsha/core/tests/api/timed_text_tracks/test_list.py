@@ -88,7 +88,7 @@ class TimedTextTrackListAPITest(TestCase):
         """
         Playlist instructor token user lists timed text tracks by video.
 
-        A user with a user token, who is a playlist instructor, cannot list timed
+        A user with a user token, who is a playlist instructor, can list timed
         text tracks for a video that belongs to that playlist.
         """
         user = factories.UserFactory()
@@ -99,8 +99,8 @@ class TimedTextTrackListAPITest(TestCase):
             user=user, playlist=playlist, role=models.INSTRUCTOR
         )
 
-        TimedTextTrackFactory(mode="st", video=video)
-        TimedTextTrackFactory(mode="cc", video=video)
+        timed_text_track_one = TimedTextTrackFactory(mode="st", video=video)
+        timed_text_track_two = TimedTextTrackFactory(mode="cc", video=video)
         # Add a timed text track for another video
         TimedTextTrackFactory()
 
@@ -111,7 +111,18 @@ class TimedTextTrackListAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        timed_text_track_list = response.json()
+        self.assertEqual(len(timed_text_track_list["results"]), 2)
+        self.assertEqual(timed_text_track_list["count"], 2)
+        self.assertTrue(
+            str(timed_text_track_one.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
+        self.assertTrue(
+            str(timed_text_track_two.id)
+            in (ttt["id"] for ttt in timed_text_track_list["results"])
+        )
 
     def test_api_timed_text_track_read_list_by_video_playlist_admin(self):
         """
@@ -141,7 +152,7 @@ class TimedTextTrackListAPITest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
-        timed_text_track_list = json.loads(response.content)
+        timed_text_track_list = response.json()
         self.assertEqual(len(timed_text_track_list["results"]), 2)
         self.assertEqual(timed_text_track_list["count"], 2)
         self.assertTrue(

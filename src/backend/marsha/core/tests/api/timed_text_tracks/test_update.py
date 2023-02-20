@@ -165,7 +165,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
         """
         Playlist instructor token user updates a timed text track.
 
-        A user with a user token, who is a playlist instructor, cannot update
+        A user with a user token, who is a playlist instructor, can update
         a timed text track for a video that belongs to that playlist.
         """
         user = factories.UserFactory()
@@ -183,7 +183,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
             f"/api/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        data = json.loads(response.content)
+        data = response.json()
         data["language"] = "en"
 
         response = self.client.put(
@@ -192,9 +192,9 @@ class TimedTextTrackUpdateAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
         track.refresh_from_db()
-        self.assertEqual(track.language, "fr")
+        self.assertEqual(track.language, "en")
 
     def test_api_timed_text_track_update_by_video_playlist_admin(self):
         """
@@ -218,7 +218,7 @@ class TimedTextTrackUpdateAPITest(TestCase):
             f"/api/timedtexttracks/{track.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        data = json.loads(response.content)
+        data = response.json()
         data["language"] = "en"
 
         response = self.client.put(

@@ -141,7 +141,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         """
         Playlist instructor token user deletes a timed text track for a video.
 
-        A user with a user token, who is a playlist instructor, cannot delete a timed
+        A user with a user token, who is a playlist instructor, can delete a timed
         text track for a video that belongs to that playlist.
         """
         user = factories.UserFactory()
@@ -162,8 +162,8 @@ class TimedTextTrackDeleteAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(TimedTextTrack.objects.count(), 1)
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(TimedTextTrack.objects.count(), 0)
 
     def test_api_timed_text_track_delete_by_video_playlist_admin(self):
         """
