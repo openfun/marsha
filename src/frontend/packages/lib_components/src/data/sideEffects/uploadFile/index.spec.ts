@@ -21,11 +21,9 @@ describe('sideEffects/uploadFile', () => {
   };
   const mockXHRClass = jest.fn().mockImplementation(() => mockXHRInstance);
 
-  beforeAll(() => {
+  beforeEach(() => {
     (window as any).XMLHttpRequest = mockXHRClass;
   });
-
-  afterEach(jest.restoreAllMocks);
 
   it('makes an xhr POST to perform the upload, notifies of progress and resolves', async () => {
     // Create the promise but don't await it so we can simulate the ongoing request
