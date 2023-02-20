@@ -191,7 +191,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         """
         Playlist instructor token user initiates upload for a timed text track for a video.
 
-        A user with a user token, who is a playlist instructor, cannot initiate an upload for
+        A user with a user token, who is a playlist instructor, can initiate an upload for
         a timed text track for a video that belongs to that playlist.
         """
         user = factories.UserFactory()
@@ -213,6 +213,8 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
+        # Get the upload policy for this timed text track
+        # It should generate a key file with the Unix timestamp of the present time
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
@@ -221,8 +223,42 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
             response = self.client.post(
                 f"/api/timedtexttracks/{track.id}/initiate-upload/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={
+                    "filename": "foo",
+                    "mimetype": "",
+                    "size": 10,
+                },
             )
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "url": "https://test-marsha-source.s3.amazonaws.com/",
+                "fields": {
+                    "acl": "private",
+                    "key": (
+                        "b8d40ed7-95b8-4848-98c9-50728dfee25d/timedtexttrack/5c019027-1e1f-4d8c-"
+                        "9f83-c5e20edaad2b/1533686400_fr_cc"
+                    ),
+                    "x-amz-algorithm": "AWS4-HMAC-SHA256",
+                    "x-amz-credential": "aws-access-key-id/20180808/eu-west-1/s3/aws4_request",
+                    "x-amz-date": "20180808T000000Z",
+                    "policy": (
+                        "eyJleHBpcmF0aW9uIjogIjIwMTgtMDgtMDlUMDA6MDA6MDBaIiwgImNvbmRpdGlvbnMiOiBbe"
+                        "yJhY2wiOiAicHJpdmF0ZSJ9LCBbImNvbnRlbnQtbGVuZ3RoLXJhbmdlIiwgMCwgMTA0ODU3Nl"
+                        "0sIHsiYnVja2V0IjogInRlc3QtbWFyc2hhLXNvdXJjZSJ9LCB7ImtleSI6ICJiOGQ0MGVkNy0"
+                        "5NWI4LTQ4NDgtOThjOS01MDcyOGRmZWUyNWQvdGltZWR0ZXh0dHJhY2svNWMwMTkwMjctMWUx"
+                        "Zi00ZDhjLTlmODMtYzVlMjBlZGFhZDJiLzE1MzM2ODY0MDBfZnJfY2MifSwgeyJ4LWFtei1hb"
+                        "Gdvcml0aG0iOiAiQVdTNC1ITUFDLVNIQTI1NiJ9LCB7IngtYW16LWNyZWRlbnRpYWwiOiAiYX"
+                        "dzLWFjY2Vzcy1rZXktaWQvMjAxODA4MDgvZXUtd2VzdC0xL3MzL2F3czRfcmVxdWVzdCJ9LCB"
+                        "7IngtYW16LWRhdGUiOiAiMjAxODA4MDhUMDAwMDAwWiJ9XX0="
+                    ),
+                    "x-amz-signature": (
+                        "bab90cecbb4db4a6bd7d4036a6be95a7c398b0f9eaa78b14c7f10e6bb3349558"
+                    ),
+                },
+            },
+        )
 
     def test_api_timed_text_track_initiate_upload_by_video_playlist_admin(self):
         """
@@ -268,7 +304,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
             )
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            json.loads(response.content),
+            response.json(),
             {
                 "url": "https://test-marsha-source.s3.amazonaws.com/",
                 "fields": {
