@@ -520,3 +520,4 @@ class ThumbnailApiTest(TestCase):
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 403)
+ 
