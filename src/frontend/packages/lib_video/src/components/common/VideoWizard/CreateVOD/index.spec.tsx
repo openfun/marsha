@@ -29,7 +29,6 @@ jest.mock('lib-components', () => ({
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 
 const mockedUseAppConfig = useAppConfig as jest.MockedFunction<

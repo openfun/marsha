@@ -23,7 +23,6 @@ jest.mock('lib-components', () => ({
   UploadManagerContext: {
     Provider: ({ children }: PropsWithChildren<{}>) => children,
   },
-  UploadManagerStatus: jest.requireActual('lib-components').UploadManagerStatus,
 }));
 const mockUseUploadManager = useUploadManager as jest.MockedFunction<
   typeof useUploadManager
@@ -137,6 +136,8 @@ describe('<UploadVideoForm />', () => {
         <UploadVideoForm
           onRetry={mockedOnRetry}
           setVideoFile={mockedSetVideoFile}
+          videoId={mockedVideo.id}
+          videoUploadState={mockedVideo.upload_state}
         />,
         mockedVideo,
       ),
@@ -175,6 +176,8 @@ describe('<UploadVideoForm />', () => {
         <UploadVideoForm
           onRetry={mockedOnRetry}
           setVideoFile={mockedSetVideoFile}
+          videoId={mockedVideo.id}
+          videoUploadState={mockedVideo.upload_state}
         />,
         mockedVideo,
       ),
@@ -230,6 +233,8 @@ describe('<UploadVideoForm />', () => {
         <UploadVideoForm
           onRetry={mockedOnRetry}
           setVideoFile={mockedSetVideoFile}
+          videoId={mockedVideo.id}
+          videoUploadState={mockedVideo.upload_state}
         />,
         mockedVideo,
       ),

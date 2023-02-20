@@ -183,6 +183,8 @@ export const CreateVOD = ({
             setVideoFile={(videoFile) =>
               setWizardedVideo({ ...wizardedVideo, videoFile })
             }
+            videoId={currentVideo.id}
+            videoUploadState={currentVideo.upload_state}
           />
 
           <LicenseSelect

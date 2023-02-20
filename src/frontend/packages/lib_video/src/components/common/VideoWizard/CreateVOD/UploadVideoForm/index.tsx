@@ -8,8 +8,6 @@ import {
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
 import { UploadVideoDropzone } from './UploadVideoDropzone';
 import { UploadVideoPreview } from './UploadVideoPreview';
 import { UploadVideoProgress } from './UploadVideoProgress';
@@ -18,14 +16,17 @@ import { UploadVideoRetry } from './UploadVideoRetry';
 interface UploadVideoFormProps {
   onRetry: () => void;
   setVideoFile: (videoFile: Nullable<File>) => void;
+  videoId?: string;
+  videoUploadState?: uploadState;
 }
 
 export const UploadVideoForm = ({
   onRetry,
   setVideoFile,
+  videoId,
+  videoUploadState,
 }: UploadVideoFormProps) => {
   const intl = useIntl();
-  const video = useCurrentVideo();
   const metadata = useVideoMetadata(intl.locale);
   const { resetUpload, uploadManagerState } = useUploadManager();
   const [src, setSrc] = useState<Nullable<string>>(null);
@@ -42,16 +43,17 @@ export const UploadVideoForm = ({
   }
 
   if (
-    uploadManagerState[video.id] &&
-    uploadManagerState[video.id].status !== UploadManagerStatus.SUCCESS
+    videoId &&
+    uploadManagerState[videoId] &&
+    uploadManagerState[videoId].status !== UploadManagerStatus.SUCCESS
   ) {
-    if (uploadManagerState[video.id].status === UploadManagerStatus.ERR_SIZE) {
+    if (uploadManagerState[videoId].status === UploadManagerStatus.ERR_SIZE) {
       return (
         <UploadVideoRetry
           onClickRetry={() => {
             setVideoFile(null);
             setSrc(null);
-            resetUpload(video.id);
+            resetUpload(videoId);
             onRetry();
           }}
           maxSize={metadata.data?.vod.upload_max_size_bytes}
@@ -59,22 +61,22 @@ export const UploadVideoForm = ({
       );
     }
     if (
-      uploadManagerState[video.id].status === UploadManagerStatus.ERR_UPLOAD ||
-      video.upload_state === uploadState.ERROR
+      uploadManagerState[videoId].status === UploadManagerStatus.ERR_UPLOAD ||
+      videoUploadState === uploadState.ERROR
     ) {
       return (
         <UploadVideoRetry
           onClickRetry={() => {
             setVideoFile(null);
             setSrc(null);
-            resetUpload(video.id);
+            resetUpload(videoId);
             onRetry();
           }}
         />
       );
     } else {
       return (
-        <UploadVideoProgress progress={uploadManagerState[video.id].progress} />
+        <UploadVideoProgress progress={uploadManagerState[videoId].progress} />
       );
     }
   } else {

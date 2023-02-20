@@ -52,6 +52,7 @@ export const UploadVideoPreview = ({
             onClick={() => onClickRemoveButton()}
             plain
             title={intl.formatMessage(messages.removeVideoButtonLabel)}
+            margin="medium"
           />
         )}
       </Stack>
