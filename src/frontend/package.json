@@ -39,10 +39,10 @@
     "prettier": "yarn workspaces run prettier"
   },
   "resolutions": {
-    "@codemirror/lang-markdown": "6.0.5",
-    "@codemirror/language": "6.5.0",
+    "@codemirror/lang-markdown": "6.1.0",
+    "@codemirror/language": "6.6.0",
     "@codemirror/language-data": "6.1.0",
-    "@codemirror/view": "6.8.1",
+    "@codemirror/view": "6.9.1",
     "@codemirror/state": "6.2.0",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
@@ -52,11 +52,11 @@
   },
   "dependencies": {
     "cljs-merge": "1.1.1",
-    "yargs": "17.6.2"
+    "yargs": "17.7.0"
   },
   "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.51.0",
-    "@typescript-eslint/parser": "5.51.0",
+    "@typescript-eslint/eslint-plugin": "5.52.0",
+    "@typescript-eslint/parser": "5.52.0",
     "eslint": "8.34.0",
     "eslint-config-prettier": "8.6.0",
     "eslint-plugin-import": "2.27.5",
@@ -64,6 +64,6 @@
     "eslint-plugin-prettier": "4.2.1",
     "eslint-plugin-react": "7.32.2",
     "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-testing-library": "5.10.1"
+    "eslint-plugin-testing-library": "5.10.2"
   }
 }

@@ -6,11 +6,11 @@
   "devDependencies": {
     "@types/fetch-mock": "7.3.5",
     "@types/jest": "29.4.0",
-    "@types/node": "18.13.0",
+    "@types/node": "18.14.0",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
     "@types/react-router-dom": "5.3.3",
-    "babel-jest": "29.4.2",
+    "babel-jest": "29.4.3",
     "cross-env": "7.0.3",
     "fetch-mock": "9.11.0",
     "typescript": "4.9.5"
