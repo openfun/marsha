@@ -1,26 +1,19 @@
-"""Tests for the Thumbnail API."""
+"""Tests for the retrieve Thumbnail API."""
 from datetime import datetime
 import json
-from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core.api import timezone
+from marsha.core.factories import ThumbnailFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
 )
 
-from ..api import timezone
-from ..factories import ThumbnailFactory, VideoFactory
-from ..models import Thumbnail
 
-
-# We don't enforce arguments documentation in tests
-# pylint: disable=unused-argument
-
-
-class ThumbnailApiTest(TestCase):
-    """Test the API of the thumbnail object."""
+class ThumbnailRetrieveApiTest(TestCase):
+    """Test the retrieve API of the thumbnail object."""
 
     maxDiff = None
 
@@ -67,7 +60,7 @@ class ThumbnailApiTest(TestCase):
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_thumbnail_read_detail_token_user(self):
-        """Instructors should be able to read details of thumbnail assotiated to their video."""
+        """Instructors should be able to read details of thumbnail associated to their video."""
         video = VideoFactory(
             uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc), upload_state="ready"
         )
@@ -113,7 +106,7 @@ class ThumbnailApiTest(TestCase):
 
     @override_settings(CLOUDFRONT_SIGNED_URLS_ACTIVE=False)
     def test_api_thumbnail_read_detail_admin_user(self):
-        """Admin should be able to read details of thumbnail assotiated to their video."""
+        """Admin should be able to read details of thumbnail associated to their video."""
         video = VideoFactory(
             uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc), upload_state="ready"
         )
