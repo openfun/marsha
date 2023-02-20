@@ -112,8 +112,8 @@ describe('MarkdownWizard', () => {
       screen.getByRole('textbox', { name: 'Enter title of your course here' }),
       'Mon titre',
     );
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
-    userEvent.click(screen.getByText('French'));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    userEvent.click(await screen.findByRole('option', { name: /French/i }));
     userEvent.click(saveButton);
   });
 });

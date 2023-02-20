@@ -6,7 +6,7 @@ import React from 'react';
 import { LanguageSelector } from './index';
 
 describe('<LanguageSelector />', () => {
-  it('displays languages', () => {
+  it('displays languages', async () => {
     const onLanguageChange = jest.fn();
 
     const { rerender } = render(
@@ -17,11 +17,8 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
-    userEvent.click(screen.getByText('French'));
-
-    // Force dropdown to be hidden again: mandatory for rerender...
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    userEvent.click(await screen.findByRole('option', { name: /French/i }));
 
     expect(onLanguageChange).toHaveBeenCalledTimes(1);
     expect(onLanguageChange).toHaveBeenCalledWith('fr');
@@ -34,8 +31,8 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'French' }));
-    userEvent.click(screen.getByText('English'));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    userEvent.click(await screen.findByRole('option', { name: /English/i }));
 
     expect(onLanguageChange).toHaveBeenCalledTimes(2);
     expect(onLanguageChange).toHaveBeenLastCalledWith('en');
@@ -53,12 +50,12 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
 
     expect(screen.queryByText('French')).not.toBeInTheDocument();
   });
 
-  it('displays available languages if current language is not', () => {
+  it('displays available languages if current language is not', async () => {
     const onLanguageChange = jest.fn();
 
     render(
@@ -70,8 +67,8 @@ describe('<LanguageSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'English' }));
-    userEvent.click(screen.getByText('French'));
+    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
+    userEvent.click(await screen.findByRole('option', { name: /French/i }));
 
     expect(onLanguageChange).toHaveBeenCalledTimes(1);
     expect(onLanguageChange).toHaveBeenCalledWith('fr');
