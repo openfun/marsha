@@ -313,6 +313,8 @@ class DepositedFileViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        deposited_file = self.get_object()  # check permissions first
+
         serializer = serializers.DepositedFileInitiateUploadSerializer(
             data=request.data
         )
@@ -323,7 +325,6 @@ class DepositedFileViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        deposited_file = self.get_object()
         key = deposited_file.get_source_s3_key(
             stamp=stamp, extension=serializer.validated_data["extension"]
         )
