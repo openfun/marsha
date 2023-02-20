@@ -1,5 +1,8 @@
 module.exports = {
   theme: {
-    colors: {},
+    colors: {
+      primary: 'red',
+      'primary-500': 'red',
+    },
   },
 };
