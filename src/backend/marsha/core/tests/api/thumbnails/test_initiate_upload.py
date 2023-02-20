@@ -498,26 +498,3 @@ class ThumbnailApiTest(TestCase):
             response.json(),
             {"size": ["File too large, max size allowed is 10 Bytes"]},
         )
-
-    @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
-    def test_api_thumbnail_options_as_instructor(self):
-        """An autheticated user can fetch the thumbnail options endpoint"""
-        video = VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
-
-        response = self.client.options(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["upload_max_size_bytes"], 10)
-
-    def test_api_thumbnail_options_as_student(self):
-        """A student user can't fetch the thumbnail options endpoint"""
-        video = VideoFactory()
-        jwt_token = StudentLtiTokenFactory(resource=video)
-
-        response = self.client.options(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 403)
- 
