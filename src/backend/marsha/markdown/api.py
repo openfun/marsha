@@ -321,6 +321,7 @@ class MarkdownImageViewSet(
             HttpResponse carrying the AWS S3 upload policy as a JSON object.
 
         """
+        markdown_image = self.get_object()  # check permissions first
 
         serializer = serializers.MarkdownImageUploadSerializer(
             data=request.data,
@@ -332,7 +333,6 @@ class MarkdownImageViewSet(
         now = timezone.now()
         stamp = to_timestamp(now)
 
-        markdown_image = self.get_object()
         key = markdown_image.get_source_s3_key(
             stamp=stamp,
             extension=serializer.validated_data["extension"],
