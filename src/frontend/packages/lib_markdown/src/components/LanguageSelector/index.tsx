@@ -1,6 +1,14 @@
-import { Anchor, Box, DropButton } from 'grommet';
+import { Select } from 'grommet';
 import React from 'react';
-import { useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
+
+const messages = defineMessages({
+  selectLanguageLabel: {
+    defaultMessage: 'Select language',
+    description: 'Label for language selector',
+    id: 'component.LanguageSelector.selectLanguageLabel',
+  },
+});
 
 type LanguageSelectorProps = {
   currentLanguage: string;
@@ -27,36 +35,18 @@ export const LanguageSelector = ({
     type: 'language',
   });
   return (
-    <DropButton
+    <Select
       margin="xsmall"
-      a11yTitle={displayedLanguage}
-      label={displayedLanguage}
+      a11yTitle={intl.formatMessage(messages.selectLanguageLabel)}
+      value={displayedLanguage}
       disabled={disabled}
-      dropAlign={{ top: 'bottom', left: 'left' }}
-      dropContent={
-        <Box>
-          {languageList
-            .filter((lang) => lang !== currentLanguage)
-            .map((lang) => {
-              const displayLanguage = intl.formatDisplayName(lang, {
-                type: 'language',
-              });
-              return (
-                <Anchor
-                  key={displayLanguage}
-                  a11yTitle={displayLanguage}
-                  label={displayLanguage}
-                  onClick={() => {
-                    onLanguageChange(lang);
-                  }}
-                  margin="xxsmall"
-                  style={{ textTransform: 'capitalize' }}
-                />
-              );
-            })}
-        </Box>
-      }
-      style={{ textTransform: 'capitalize' }}
+      options={languageList.map((lang) => ({
+        label: intl.formatDisplayName(lang, { type: 'language' }),
+        value: lang,
+      }))}
+      onChange={({ option }: { option: { label: string; value: string } }) => {
+        onLanguageChange(option.value);
+      }}
     />
   );
 };
