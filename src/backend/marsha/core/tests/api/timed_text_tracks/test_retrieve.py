@@ -361,7 +361,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         """
         Playlist instructor token user gets a single timed text track.
 
-        A user with a user token, who is a playlist instructor, cannot get
+        A user with a user token, who is a playlist instructor, can get
         a single timed text track linked to a video in that playlist.
         """
         user = factories.UserFactory()
@@ -371,7 +371,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         factories.PlaylistAccessFactory(
             user=user, playlist=playlist, role=models.INSTRUCTOR
         )
-        track = TimedTextTrackFactory(video=video)
+        track = TimedTextTrackFactory(mode="cc", video=video)
 
         jwt_token = UserAccessTokenFactory(user=user)
 
@@ -380,7 +380,21 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_stamp": None,
+                "id": str(track.id),
+                "is_ready_to_show": False,
+                "language": track.language,
+                "mode": "cc",
+                "source_url": None,
+                "upload_state": "pending",
+                "url": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_timed_text_track_read_detail_by_video_playlist_admin(self):
         """

@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Allow playlist instructor to manage shared live media through API
+- Allow playlist instructor to manage timed text tracks through API
 
 ## [4.0.0-beta.16] - 2023-02-17
 

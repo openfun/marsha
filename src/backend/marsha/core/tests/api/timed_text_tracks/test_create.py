@@ -138,7 +138,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         """
         Playlist instructor token user creates a timed text track for a video.
 
-        A user with a user token, who is a playlist instructor, cannot create a timed
+        A user with a user token, who is a playlist instructor, can create a timed
         text track for a video that belongs to that playlist.
         """
         user = factories.UserFactory()
@@ -157,8 +157,22 @@ class TimedTextTrackCreateAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 403)
-        self.assertEqual(TimedTextTrack.objects.count(), 0)
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(TimedTextTrack.objects.count(), 1)
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(TimedTextTrack.objects.first().id),
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "mode": "st",
+                "language": "fr",
+                "upload_state": "pending",
+                "source_url": None,
+                "url": None,
+                "video": str(video.id),
+            },
+        )
 
     def test_api_timed_text_track_create_by_video_playlist_admin(self):
         """
@@ -185,9 +199,8 @@ class TimedTextTrackCreateAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
-        content = json.loads(response.content)
         self.assertEqual(
-            content,
+            response.json(),
             {
                 "id": str(TimedTextTrack.objects.first().id),
                 "active_stamp": None,

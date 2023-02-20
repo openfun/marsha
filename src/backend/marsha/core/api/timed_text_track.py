@@ -51,8 +51,8 @@ class TimedTextTrackViewSet(
             permission_classes = [
                 permissions.IsTokenInstructor
                 | permissions.IsTokenAdmin
+                | permissions.IsParamsVideoAdminOrInstructorThroughPlaylist
                 | permissions.IsParamsVideoAdminThroughOrganization
-                | permissions.IsParamsVideoAdminThroughPlaylist
             ]
         elif self.action in [
             "destroy",
@@ -64,7 +64,7 @@ class TimedTextTrackViewSet(
             permission_classes = [
                 permissions.IsTokenResourceRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
-                | permissions.IsRelatedVideoPlaylistAdmin
+                | permissions.IsRelatedVideoPlaylistAdminOrInstructor
                 | permissions.IsRelatedVideoOrganizationAdmin
             ]
         elif self.action is None:
