@@ -44,7 +44,7 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
         label: choice.display_name,
         value: choice.value,
       })),
-    [data],
+    [data?.actions.POST.license.choices],
   );
   const [selectedLicense, setSelectedLicense] = useState(
     choices?.length ? choices[0] : errorLicenseChoice,
@@ -69,6 +69,8 @@ export const LicenseSelect = ({ disabled, onChange }: LicenseSelectProps) => {
   return (
     <Select
       aria-label={intl.formatMessage(messages.selectLicenseLabel)}
+      id="select-license-id"
+      name="license"
       disabled={disabled}
       labelKey="label"
       onChange={({ option }: { option: { label: string; value: string } }) => {

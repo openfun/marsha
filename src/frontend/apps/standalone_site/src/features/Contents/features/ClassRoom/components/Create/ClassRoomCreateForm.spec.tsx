@@ -1,7 +1,9 @@
 import { screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { createMemoryHistory } from 'history';
 import { render, Deferred } from 'lib-tests';
+import { Router } from 'react-router-dom';
 
 import ClassRoomCreateForm from './ClassRoomCreateForm';
 
@@ -35,7 +37,7 @@ describe('<ClassRoomCreateForm />', () => {
   });
 
   test('renders ClassRoomCreateForm', () => {
-    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
+    render(<ClassRoomCreateForm />);
 
     deferred.resolve(playlistsResponse);
 
@@ -51,8 +53,8 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
   });
 
-  it('field mandatory', async () => {
-    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
+  test('fields mandatory', async () => {
+    render(<ClassRoomCreateForm />);
 
     deferred.resolve(playlistsResponse);
 
@@ -82,10 +84,17 @@ describe('<ClassRoomCreateForm />', () => {
   });
 
   test('fields are posted correctly', async () => {
-    const mockOnSubmit = jest.fn();
-    fetchMock.post('/api/classrooms/', { ok: true });
+    const history = createMemoryHistory();
+    fetchMock.post('/api/classrooms/', {
+      ok: true,
+      id: 1243,
+    });
 
-    render(<ClassRoomCreateForm onSubmit={mockOnSubmit} />);
+    render(
+      <Router history={history}>
+        <ClassRoomCreateForm />
+      </Router>,
+    );
 
     deferred.resolve(playlistsResponse);
 
@@ -113,7 +122,7 @@ describe('<ClassRoomCreateForm />', () => {
       }),
     ).toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
 
     await waitFor(() => {
       expect(fetchMock.lastCall()?.[0]).toEqual(`/api/classrooms/`);
@@ -129,13 +138,13 @@ describe('<ClassRoomCreateForm />', () => {
       }),
     });
 
-    expect(mockOnSubmit).toHaveBeenCalledTimes(1);
+    expect(history.location.pathname).toBe('/my-contents/classroom/1243');
   });
 
   test('post failed', async () => {
     fetchMock.post('/api/classrooms/', 500);
 
-    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
+    render(<ClassRoomCreateForm />);
 
     deferred.resolve(playlistsResponse);
 
@@ -143,7 +152,7 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    fireEvent.click(
+    userEvent.click(
       screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
     );
 
@@ -153,13 +162,13 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
 
     // Select the mocked playlist
-    fireEvent.click(screen.getByRole('option', { selected: false }));
+    userEvent.click(screen.getByRole('option', { selected: false }));
 
     expect(
       screen.queryByText(/Sorry, an error has occurred. Please try again./i),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
 
     expect(
       await screen.findByText(
@@ -178,7 +187,7 @@ describe('<ClassRoomCreateForm />', () => {
       },
     });
 
-    render(<ClassRoomCreateForm onSubmit={jest.fn()} />);
+    render(<ClassRoomCreateForm />);
 
     deferred.resolve(playlistsResponse);
 
@@ -186,7 +195,7 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    fireEvent.click(
+    userEvent.click(
       screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
     );
 
@@ -196,7 +205,7 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
 
     // Select the mocked playlist
-    fireEvent.click(screen.getByRole('option', { selected: false }));
+    userEvent.click(screen.getByRole('option', { selected: false }));
 
     expect(
       screen.queryByText(
@@ -204,7 +213,7 @@ describe('<ClassRoomCreateForm />', () => {
       ),
     ).not.toBeInTheDocument();
 
-    fireEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
 
     expect(
       await screen.findByText(

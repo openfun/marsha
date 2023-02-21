@@ -1,4 +1,5 @@
 import { Button, Heading, Text } from 'grommet';
+import { UploadManager } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
@@ -8,29 +9,29 @@ import { Modal } from 'components/Modal';
 import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
-import ClassroomCreateForm from './ClassRoomCreateForm';
+import VideoCreateForm from './VideoCreateForm';
 
 const messages = defineMessages({
-  ClassroomTitle: {
-    defaultMessage: 'Classrooms',
-    description: 'Classrooms title',
-    id: 'features.Contents.features.ClassRooms.Create.ClassroomTitle',
+  VideoTitle: {
+    defaultMessage: 'Videos',
+    description: 'Videos title',
+    id: 'features.Contents.features.Video.Create.VideoTitle',
   },
-  CreateClassroomLabel: {
-    defaultMessage: 'Create Classroom',
-    description: 'Text heading create classroom.',
-    id: 'features.Contents.features.ClassRooms.Create.CreateClassroomLabel',
+  CreateVideoLabel: {
+    defaultMessage: 'Create Video',
+    description: 'Text heading create video.',
+    id: 'features.Contents.features.Video.Create.CreateVideoLabel',
   },
 });
 
-const ClassRoomCreate = () => {
+const VideoCreate = () => {
   const intl = useIntl();
   const { breakpoint } = useResponsive();
   const history = useHistory();
 
-  const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
-  const classroomPath = classroomRoute.path;
-  const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
+  const videoRoute = routes.CONTENTS.subRoutes.VIDEO;
+  const videoPath = videoRoute.path;
+  const videoCreatePath = videoRoute.subRoutes?.CREATE?.path || '';
 
   return (
     <Fragment>
@@ -44,21 +45,21 @@ const ClassRoomCreate = () => {
         margin={{ bottom: 'medium' }}
       >
         <Text size="large" weight="bold">
-          {intl.formatMessage(messages.ClassroomTitle)}
+          {intl.formatMessage(messages.VideoTitle)}
         </Text>
-        <Link to={classroomCreatePath}>
+        <Link to={videoCreatePath}>
           <Button
             primary
-            label={intl.formatMessage(messages.CreateClassroomLabel)}
+            label={intl.formatMessage(messages.CreateVideoLabel)}
           />
         </Link>
       </WhiteCard>
       <Switch>
-        <Route path={classroomCreatePath} exact>
+        <Route path={videoCreatePath} exact>
           <Modal
             isOpen
             onClose={() => {
-              history.push(classroomPath);
+              history.push(videoPath);
             }}
           >
             <Heading
@@ -67,9 +68,11 @@ const ClassRoomCreate = () => {
               textAlign="center"
               weight="bold"
             >
-              {intl.formatMessage(messages.CreateClassroomLabel)}
+              {intl.formatMessage(messages.CreateVideoLabel)}
             </Heading>
-            <ClassroomCreateForm />
+            <UploadManager>
+              <VideoCreateForm />
+            </UploadManager>
           </Modal>
         </Route>
       </Switch>
@@ -77,4 +80,4 @@ const ClassRoomCreate = () => {
   );
 };
 
-export default ClassRoomCreate;
+export default VideoCreate;

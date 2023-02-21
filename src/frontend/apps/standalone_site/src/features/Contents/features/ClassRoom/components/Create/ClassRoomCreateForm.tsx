@@ -60,13 +60,10 @@ enum ETypeError {
   PERMISSION = "Vous n'avez pas la permission d'effectuer cette action.",
 }
 
-interface ClassroomCreateFormProps {
-  onSubmit: () => void;
-}
-
-const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
+const ClassroomCreateForm = () => {
   const intl = useIntl();
   const history = useHistory();
+  const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
   const { errorPlaylist, selectPlaylist } = useSelectPlaylist((results) => {
     setClassroom((value) => ({
       ...value,
@@ -79,11 +76,6 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
     isLoading: isCreating,
   } = useCreateClassroom({
     onSuccess: (data) => {
-      onSubmit();
-
-      const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
-      const classroomPath = classroomRoute.path;
-
       history.push(`${classroomPath}/${data.id}`);
     },
   });
@@ -150,9 +142,7 @@ const ClassroomCreateForm = ({ onSubmit }: ClassroomCreateFormProps) => {
 
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
-          onClickCancel={() => {
-            onSubmit();
-          }}
+          onClickCancel={() => history.push(classroomPath)}
           isSubmiting={isCreating}
         />
       </Form>
