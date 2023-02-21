@@ -1,14 +1,13 @@
 """Tests for the livesession delete API."""
-from django.test import TestCase
 
 from marsha.core.factories import AnonymousLiveSessionFactory, LiveSessionFactory
 from marsha.core.simple_jwt.factories import LiveSessionLtiTokenFactory
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionDeleteApiTest(TestCase):
+
+class LiveSessionDeleteApiTest(LiveSessionApiTestCase):
     """Test the delete API of the liveSession object."""
-
-    maxDiff = None
 
     def test_api_livesession_delete_anonymous(self):
         """An anonymous should not be able to delete a livesession."""

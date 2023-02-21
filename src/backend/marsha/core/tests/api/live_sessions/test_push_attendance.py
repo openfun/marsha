@@ -1,8 +1,6 @@
 """Tests for the livesession push_attendance API."""
 import uuid
 
-from django.core.cache import cache
-from django.test import TestCase
 from django.utils import timezone
 
 from marsha.core.factories import (
@@ -19,17 +17,11 @@ from marsha.core.simple_jwt.factories import (
 )
 from marsha.core.utils.time_utils import to_timestamp
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionPushAttendanceApiTest(TestCase):
+
+class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
     """Test the push_attendance API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
 
     def test_api_livesession_post_attendance_no_payload(self):
         """Request without payload should raise an error."""

@@ -7,7 +7,7 @@ import uuid
 
 from django.conf import settings
 from django.core.cache import cache
-from django.test import TestCase, override_settings
+from django.test import override_settings
 from django.utils import timezone
 
 from marsha.core.defaults import JITSI, RAW, RUNNING, STOPPED
@@ -24,20 +24,14 @@ from marsha.core.simple_jwt.factories import (
 from marsha.core.utils.api_utils import generate_hash
 from marsha.core.utils.time_utils import to_timestamp
 
+from .base import LiveSessionApiTestCase
+
 
 # pylint: disable=too-many-lines
 
 
-class LiveSessionLListAttendancesApiTest(TestCase):
+class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
     """Test the list-attendances API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
 
     def test_api_livesession_student_cant_read_attendances(self):
         """LTI Token can't read its liveattendance computed."""

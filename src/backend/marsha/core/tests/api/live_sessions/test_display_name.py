@@ -1,9 +1,6 @@
 """Tests for the livesession display_name API."""
 import uuid
 
-from django.core.cache import cache
-from django.test import TestCase
-
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     LiveSessionFactory,
@@ -16,17 +13,11 @@ from marsha.core.simple_jwt.factories import (
     ResourceAccessTokenFactory,
 )
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionDisplayNameApiTest(TestCase):
+
+class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     """Test the display_name API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
 
     def test_api_livesession_put_username_public_no_anonymous(
         self,
