@@ -2,36 +2,75 @@
 
 from django.test import TestCase, override_settings
 
-from marsha.core.factories import VideoFactory
+from marsha.core.factories import UserFactory, VideoFactory
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 
 
+@override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
 class ThumbnailOptionsApiTest(TestCase):
     """Test the options API of the thumbnail object."""
 
     maxDiff = None
 
-    @override_settings(THUMBNAIL_SOURCE_MAX_SIZE=10)
+    def assert_user_can_query_options(self, user):
+        """Assert the user can query the thumbnail options' endpoint."""
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.options(
+            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["upload_max_size_bytes"], 10)
+
+    def test_options_query_by_anonymous_user(self):
+        """
+        Unauthenticated user cannot query the thumbnail options' endpoint.
+        """
+        response = self.client.options("/api/thumbnails/")
+
+        self.assertEqual(response.status_code, 401)
+
+    def test_options_query_by_random_user(self):
+        """
+        Authenticated user without access
+        can query the thumbnail options' endpoint.
+        """
+        user = UserFactory()
+
+        self.assert_user_can_query_options(user)
+
     def test_api_thumbnail_options_as_instructor(self):
-        """An autheticated user can fetch the thumbnail options endpoint"""
+        """
+        An LTI authenticated instructor or administrator
+        can query the thumbnail options' endpoint.
+        """
         video = VideoFactory()
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.options(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
+
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["upload_max_size_bytes"], 10)
 
     def test_api_thumbnail_options_as_student(self):
-        """A student user can't fetch the thumbnail options endpoint"""
+        """
+        An LTI authenticated student
+        can query the thumbnail options' endpoint.
+        """
         video = VideoFactory()
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.options(
             "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
-        self.assertEqual(response.status_code, 403)
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["upload_max_size_bytes"], 10)

@@ -2,7 +2,8 @@
 from django.conf import settings
 from django.utils import timezone
 
-from rest_framework import mixins, viewsets
+import django_filters
+from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
@@ -14,6 +15,16 @@ from ..models import Thumbnail
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
 from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+
+
+class ThumbnailFilter(django_filters.FilterSet):
+    """Filter for Thumbnail."""
+
+    video = django_filters.UUIDFilter(field_name="video_id")
+
+    class Meta:
+        model = Thumbnail
+        fields = []
 
 
 class ThumbnailViewSet(
@@ -28,19 +39,34 @@ class ThumbnailViewSet(
     """Viewset for the API of the Thumbnail object."""
 
     permission_classes = [permissions.NotAllowed]
+    queryset = Thumbnail.objects.all()
     serializer_class = serializers.ThumbnailSerializer
     metadata_class = ThumbnailMetadata
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on", "video__title"]
+    ordering = ["created_on"]
+    filterset_class = ThumbnailFilter
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in ["create", "metadata"]:
+        if self.action == "metadata":
+            permission_classes = [permissions.UserOrResourceIsAuthenticated]
+        elif self.action in ["create", "list"]:
             permission_classes = [
-                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+                permissions.IsTokenInstructor
+                | permissions.IsTokenAdmin
+                | permissions.IsParamsVideoAdminOrInstructorThroughPlaylist
+                | permissions.IsParamsVideoAdminThroughOrganization
             ]
         elif self.action in ["retrieve", "destroy", "initiate_upload"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObjectRelatedVideo
                 & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
+                | permissions.IsRelatedVideoPlaylistAdminOrInstructor
+                | permissions.IsRelatedVideoOrganizationAdmin
             ]
         elif self.action is None:
             if self.request.method not in self.allowed_methods:
@@ -52,11 +78,26 @@ class ThumbnailViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
+    def _get_list_queryset(self):
+        """Build the queryset used on the list action."""
+        queryset = super().get_queryset()
+
+        if self.request.resource:  # aka we are authenticated through LTI
+            queryset = queryset.filter(video__id=self.request.resource.id)
+
+        # Otherwise, we are authenticated through a user JWT.
+        # Filtering is currently not necessary as permissions enforce
+        # a "video" parameter to be present in the request.
+        # See `IsParamsVideoAdminThrough*` permissions.
+
+        return queryset
+
     def get_queryset(self):
-        """Restrict list access to thumbnail related to the video in the JWT token."""
-        if self.request.resource:
-            return Thumbnail.objects.filter(video__id=self.request.resource.id)
-        return Thumbnail.objects.none()
+        """Redefine the queryset to use based on the current action."""
+        if self.action in ["list"]:
+            return self._get_list_queryset()
+
+        return super().get_queryset()
 
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
