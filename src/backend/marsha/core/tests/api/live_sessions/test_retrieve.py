@@ -2,8 +2,6 @@
 from datetime import timedelta
 import random
 
-from django.core.cache import cache
-from django.test import TestCase
 from django.utils import timezone
 
 from marsha.core.defaults import IDLE, RAW
@@ -22,17 +20,11 @@ from marsha.core.simple_jwt.factories import (
     ResourceAccessTokenFactory,
 )
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionRetrieveApiTest(TestCase):
+
+class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     """Test the retrieve API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
 
     def test_api_livesession_read_anonymous(self):
         """Anonymous users should not be allowed to fetch a livesession."""

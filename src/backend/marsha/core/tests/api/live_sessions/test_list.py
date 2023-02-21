@@ -5,8 +5,6 @@ import time
 from unittest import mock
 import uuid
 
-from django.core.cache import cache
-from django.test import TestCase
 from django.utils import timezone
 
 from marsha.core.defaults import IDLE, RAW
@@ -24,17 +22,11 @@ from marsha.core.simple_jwt.factories import (
     ResourceAccessTokenFactory,
 )
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionListApiTest(TestCase):
+
+class LiveSessionListApiTest(LiveSessionApiTestCase):
     """Test the list API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
 
     def test_list_livesession_by_anonymous_user(self):
         """Anonymous users cannot fetch list requests for livesessions."""

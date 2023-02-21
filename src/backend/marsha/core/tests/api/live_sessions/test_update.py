@@ -5,8 +5,6 @@ from unittest import mock
 import uuid
 
 from django.core import mail
-from django.core.cache import cache
-from django.test import TestCase
 from django.utils import timezone
 
 from marsha.core.defaults import IDLE, RAW
@@ -24,70 +22,11 @@ from marsha.core.simple_jwt.factories import (
     ResourceAccessTokenFactory,
 )
 
+from .base import LiveSessionApiTestCase
 
-class LiveSessionUpdateApiTest(TestCase):
+
+class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
     """Test the update API of the liveSession object."""
-
-    maxDiff = None
-
-    def setUp(self):
-        """
-        Reset the cache so that no throttles will be active
-        """
-        cache.clear()
-
-    def checkRegistrationEmailSent(self, email, video, username, livesession):
-        """Shortcut to check registration email has been sent to email"""
-        # check email has been sent
-        self.assertEqual(len(mail.outbox), 1)
-
-        # check we send it to the the right email
-        self.assertEqual(mail.outbox[0].to[0], email)
-
-        # check it's the right email content
-        self.assertEqual(
-            mail.outbox[0].subject, f"Registration validated! {video.title}"
-        )
-        email_content = " ".join(mail.outbox[0].body.split())
-        self.assertIn(f"Registration validated! {video.title}", email_content)
-        if username:
-            self.assertIn(f"Hello {username},", email_content)
-        else:
-            self.assertIn("Hello,", email_content)
-            self.assertNotIn("None", email_content)
-
-        key_access = livesession.get_generate_salted_hmac()
-        self.assertIn(
-            f'We have taken note of your interest in the event "{video.title}".',
-            email_content,
-        )
-        self.assertIn(
-            f"Access the event [//example.com/videos/{video.id}?lrpk="
-            f"{livesession.pk}&amp;key={key_access}]",
-            email_content,
-        )
-        self.assertIn(
-            "Do not forward this email or share this link. "
-            "It contains your personal code to access the event.",
-            email_content,
-        )
-
-        self.assertIn(f"This mail has been sent to {email} by Marsha", email_content)
-        self.assertIn(
-            "Your email address is used because you have shown interest in this webinar. "
-            "If you want to unsubscribe your email from these notifications, "
-            "please follow the link :",
-            email_content,
-        )
-        self.assertIn(
-            f"unsubscribe [//example.com/reminders/cancel/{livesession.pk}/"
-            f"{key_access}]",
-            email_content,
-        )
-
-        # emails are generated from mjml format, test rendering of email doesn't
-        # contain any trans tag, it might happens if \n are generated
-        self.assertNotIn("trans", email_content)
 
     def test_api_livesession_update_put_anonymous_not_allowed(self):
         """Anonymous can't update livesession."""
