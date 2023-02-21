@@ -7,7 +7,7 @@ POSTGRESQL_USER: {{ postgresql_credentials.user }}
 POSTGRESQL_PASSWORD: {{ postgresql_credentials.password }}
 
 # marsha environment
-DJANGO_SECRET_KEY: {{ lookup('password', '/dev/null length=50') }}
+DJANGO_SECRET_KEY: {{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=50') }}
 # FIXME uncomment this variable and replace with your sentry's credentials
 # DJANGO_SENTRY_DSN: https://super:marsha@sentry.io/foo
 
@@ -27,4 +27,4 @@ DJANGO_SECRET_KEY: {{ lookup('password', '/dev/null length=50') }}
 # DJANGO_CLOUDFRONT_PRIVATE_KEY:
 
 # JWT Token
-DJANGO_JWT_SIGNING_KEY: {{ lookup('password', '/dev/null length=50') }}
+DJANGO_JWT_SIGNING_KEY: {{ lookup('password', '/dev/null chars=ascii_lowercase,digits length=50') }}
