@@ -3,11 +3,20 @@ import json
 
 from django.test import TestCase, override_settings
 
-from marsha.core.factories import ThumbnailFactory, VideoFactory
-from marsha.core.models import Thumbnail
+from marsha.core.factories import (
+    ConsumerSiteAccessFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    ThumbnailFactory,
+    UserFactory,
+    VideoFactory,
+)
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, Thumbnail
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 
 
@@ -16,10 +25,131 @@ class ThumbnailCreateApiTest(TestCase):
 
     maxDiff = None
 
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.some_organization = OrganizationFactory()
+        cls.some_video = VideoFactory(
+            playlist__organization=cls.some_organization,
+        )
+
+    def assert_user_cannot_create_thumbnail(self, user, video):
+        """Assert the user cannot create a thumbnail."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.post(
+            "/api/thumbnails/",
+            {"video": str(video.pk), "size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_create_thumbnail(self, user, video):
+        """Assert the user can create a thumbnail."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.post(
+            "/api/thumbnails/",
+            {"video": str(video.pk), "size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201, response.content)
+
+        created_thumbnail = Thumbnail.objects.last()
+
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(created_thumbnail.id),
+                "active_stamp": None,
+                "is_ready_to_show": False,
+                "upload_state": "pending",
+                "urls": None,
+                "video": str(video.id),
+            },
+        )
+
     def test_api_thumbnail_create_anonymous(self):
         """Anonymous users should not be able to create a thumbnail."""
         response = self.client.post("/api/thumbnails/")
         self.assertEqual(response.status_code, 401)
+
+    def test_api_thumbnail_create_by_random_user(self):
+        """Authenticated user without access cannot create a thumbnail."""
+        user = UserFactory()
+
+        self.assert_user_cannot_create_thumbnail(user, self.some_video)
+
+    def test_api_thumbnail_create_by_organization_student(self):
+        """Organization students cannot create a thumbnail."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_create_thumbnail(
+            organization_access.user, self.some_video
+        )
+
+    def test_api_thumbnail_create_by_organization_instructor(self):
+        """Organization instructors cannot create a thumbnail."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_cannot_create_thumbnail(
+            organization_access.user, self.some_video
+        )
+
+    def test_api_thumbnail_create_by_organization_administrator(self):
+        """Organization administrators can create a thumbnail."""
+        organization_access = OrganizationAccessFactory(
+            organization=self.some_organization,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_create_thumbnail(organization_access.user, self.some_video)
+
+    def test_api_thumbnail_create_by_consumer_site_any_role(self):
+        """Consumer site roles cannot create a thumbnail."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.some_video.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_create_thumbnail(
+            consumer_site_access.user, self.some_video
+        )
+
+    def test_api_thumbnail_create_by_playlist_student(self):
+        """Playlist student cannot create a thumbnail."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=STUDENT,
+        )
+
+        self.assert_user_cannot_create_thumbnail(playlist_access.user, self.some_video)
+
+    def test_api_thumbnail_create_by_playlist_instructor(self):
+        """Playlist instructor cannot create a thumbnail."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=INSTRUCTOR,
+        )
+
+        self.assert_user_can_create_thumbnail(playlist_access.user, self.some_video)
+
+    def test_api_thumbnail_create_by_playlist_admin(self):
+        """Playlist administrator can create a thumbnail."""
+        playlist_access = PlaylistAccessFactory(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        self.assert_user_can_create_thumbnail(playlist_access.user, self.some_video)
 
     def test_api_thumbnail_create_student(self):
         """Student users should not be able to create a thumbnail."""
@@ -33,8 +163,8 @@ class ThumbnailCreateApiTest(TestCase):
 
         self.assertEqual(response.status_code, 403)
 
-    def test_api_thumbnail_create_instructor(self):
-        """Student users should not be able to create a thumbnail."""
+    def test_api_thumbnail_create_instructor_or_admin(self):
+        """LTI instructor or admin should be able to create a thumbnail."""
         video = VideoFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)

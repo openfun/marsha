@@ -68,6 +68,7 @@ Among other things, they can:
 - Create and manage (read/write) all the playlists of the organization.
 - Create and manage (read/write) all the videos of the organization and perform related video actions.
 - Create and manage (read/write) all the shared live media of the organization's videos.
+- Create and manage (read/write) all the thumbnails of the organization's videos.
 - Create and manage (read/write) all the classrooms of the organization.
 - Create and manage (read/write) all the classroom documents of the organization.
 - 🚧 Create and manage (read/write) all the documents of the organization.
@@ -122,6 +123,7 @@ A playlist administrator can:
 - Create and manage (read/write) all the videos of the playlist and perform related video actions.
 - Create and manage (read/write) all the shared live media of the playlist's videos.
 - Create and manage (read/write) all the timed text track of the playlist's videos.
+- Create and manage (read/write) all the thumbnails of the playlist's videos.
 - Create and manage (read/write) all the classrooms of the playlist.
 - Create and manage (read/write) all the classroom documents of the playlist.
 - 🚧 Create and manage (read/write) all the documents of the playlist.
@@ -137,6 +139,7 @@ The playlist instructor is added by a playlist administrator. They can:
 - Create and manage (read/write) all the videos of the playlist and perform related video actions.
 - Create and manage (read/write) all the shared live media of the playlist's videos.
 - 🚧 Read all the timed text track of the playlist's videos.
+- Create and manage (read/write) all the thumbnails of the playlist's videos.
 - 🚧 Read all the classrooms of the playlist.
 - 🚧 Read all the classroom documents of the playlist.
 - 🚧 Read all the documents of the playlist.
