@@ -4,6 +4,7 @@ from django.utils import timezone
 
 from rest_framework import mixins, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 
 from marsha.core.metadata import ThumbnailMetadata
@@ -36,13 +37,19 @@ class ThumbnailViewSet(
             permission_classes = [
                 permissions.IsTokenInstructor | permissions.IsTokenAdmin
             ]
-        else:
+        elif self.action in ["retrieve", "destroy", "initiate_upload"]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObjectRelatedVideo
-                & permissions.IsTokenInstructor
-                | permissions.IsTokenResourceRouteObjectRelatedVideo
-                & permissions.IsTokenAdmin
+                & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
             ]
+        elif self.action is None:
+            if self.request.method not in self.allowed_methods:
+                raise MethodNotAllowed(self.request.method)
+            permission_classes = self.permission_classes
+        else:
+            # When here it means we forgot to define a permission for a new action
+            # We enforce the permission definition in this method to have a clearer view
+            raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
     def get_queryset(self):
