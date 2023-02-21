@@ -12,6 +12,8 @@ import { useDeletePlaylistAccess } from '../api/useDeletePlaylistAccess';
 import { useUpdatePlaylistAcess } from '../api/useUpdatePlaylistAccess';
 import { PlaylistAccess, PlaylistRole } from '../types/playlistAccess';
 
+import { userRoleOptions } from './UserRoleOptions';
+
 const messages = defineMessages({
   anonymousUser: {
     defaultMessage: 'Anonymous',
@@ -28,21 +30,6 @@ const messages = defineMessages({
     defaultMessage: 'Delete',
     description: 'Delete playlist access modale confirmation button.',
     id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserConfirmButtonTitle',
-  },
-  adminLabel: {
-    defaultMessage: 'Administrator',
-    description: 'Administrator role label in playlist access select.',
-    id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.adminLabel',
-  },
-  instructorLabel: {
-    defaultMessage: 'Instructor',
-    description: 'Instructor role label in playlist access select.',
-    id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.instructorLabel',
-  },
-  studentLabel: {
-    defaultMessage: 'Student',
-    description: 'Student role label in playlist access select.',
-    id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.studentLabel',
   },
   updatePlaylistAccessSuccess: {
     defaultMessage: 'Right has been updated with success.',
@@ -85,20 +72,7 @@ interface UserListRowProps {
 export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
   const intl = useIntl();
 
-  const options = [
-    {
-      label: intl.formatMessage(messages.adminLabel),
-      key: PlaylistRole.ADMINISTRATOR,
-    },
-    {
-      label: intl.formatMessage(messages.studentLabel),
-      key: PlaylistRole.STUDENT,
-    },
-    {
-      label: intl.formatMessage(messages.instructorLabel),
-      key: PlaylistRole.TEACHER,
-    },
-  ];
+  const options = userRoleOptions(intl);
   const initialOption = options.find(
     (option) => option.key === playlistAccess.role,
   );
