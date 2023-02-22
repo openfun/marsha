@@ -43,6 +43,7 @@ export enum ModalButtonStyle {
 
 interface ModalButtonProps {
   label: string;
+  labelCancel?: string;
   isDisabled?: boolean;
   isSubmitting?: boolean;
   onClickSubmit?: () => void;
@@ -60,6 +61,7 @@ interface ModalButtonProps {
  */
 const ModalButton = ({
   label,
+  labelCancel,
   isDisabled,
   isSubmitting,
   onClickSubmit,
@@ -71,7 +73,7 @@ const ModalButton = ({
     <ModalButtonContainer>
       {onClickCancel && (
         <ButtonModal
-          label={intl.formatMessage(messages.ButtonCancelModal)}
+          label={labelCancel || intl.formatMessage(messages.ButtonCancelModal)}
           onClick={onClickCancel}
           flex={1}
         />

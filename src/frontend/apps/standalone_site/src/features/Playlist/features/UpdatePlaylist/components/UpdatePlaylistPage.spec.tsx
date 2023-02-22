@@ -67,6 +67,13 @@ describe('<UpdatePlaylistPage />', () => {
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
 
+    expect(
+      screen.getByRole('heading', { name: 'Playlist access' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Add people' }),
+    ).toBeInTheDocument();
+
     const deferredUpdate = new Deferred<Playlist>();
     fetchMock.mock('/api/playlists/some-id/', deferredUpdate.promise, {
       method: 'PATCH',

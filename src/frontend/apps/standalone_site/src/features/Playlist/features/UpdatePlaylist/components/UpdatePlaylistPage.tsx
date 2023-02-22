@@ -10,6 +10,7 @@ import { PlaylistForm } from 'features/Playlist';
 import { usePlaylist } from '../api/usePlaylist';
 import { useUpdatePlaylist } from '../api/useUpdatePlaylist';
 
+import { AddUserAccessButton } from './AddUserAccessButton';
 import { PlaylistUserList } from './PlaylistUserList';
 
 const messages = defineMessages({
@@ -100,7 +101,11 @@ export const UpdatePlaylistPage = () => {
       </WhiteCard>
 
       <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={3}>{intl.formatMessage(messages.accessTitle)}</Heading>
+        <Heading level={4}>{intl.formatMessage(messages.accessTitle)}</Heading>
+        <AddUserAccessButton
+          playlistId={params.id}
+          excludedUsers={playlist.users}
+        />
         <PlaylistUserList playlistId={params.id} />
       </WhiteCard>
     </Box>

@@ -48,4 +48,20 @@ describe('<ModalButton />', () => {
     userEvent.click(buttonSubmit);
     expect(onClickSubmit).toHaveBeenCalled();
   });
+
+  it('cancels with custom label', () => {
+    const onClickCancel = jest.fn();
+    render(
+      <ModaleButton
+        label="My button"
+        labelCancel="My cancel"
+        onClickCancel={onClickCancel}
+      />,
+    );
+
+    const buttonCancel = screen.getByRole('button', { name: 'My cancel' });
+    expect(buttonCancel).toBeInTheDocument();
+    userEvent.click(buttonCancel);
+    expect(onClickCancel).toHaveBeenCalled();
+  });
 });
