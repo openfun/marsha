@@ -4,6 +4,8 @@ import { render } from 'lib-tests';
 import { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import { getFullThemeExtend } from 'styles/theme.extend';
+
 import { useMenu } from '../store/menuStore';
 
 import Burger from './Burger/Burger';
@@ -49,7 +51,12 @@ describe('<Menu />', () => {
       <ResponsiveContext.Provider value="small">
         <Menu />
       </ResponsiveContext.Provider>,
-      { testingLibraryOptions: { wrapper: BrowserRouter } },
+      {
+        testingLibraryOptions: { wrapper: BrowserRouter },
+        grommetOptions: {
+          theme: getFullThemeExtend(),
+        },
+      },
     );
 
     const menu = screen.getByRole('menu');
