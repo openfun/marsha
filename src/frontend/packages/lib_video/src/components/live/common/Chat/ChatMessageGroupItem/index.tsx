@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import React, { useMemo } from 'react';
+import React from 'react';
 
 import { ChatMessageGroupType } from 'hooks/useChatItemsStore';
 
@@ -14,26 +14,22 @@ export const ChatMessageGroupItem = ({
   msgGroup,
 }: ChatMessageGroupItemProps) => {
   const firstMessage = msgGroup.messages[0];
-  const memo = useMemo(
-    () => (
-      <Box
-        margin={{
-          vertical: '5px',
-          horizontal: '20px',
-        }}
-      >
-        <ChatMessageMetadatas
-          msgDatetime={firstMessage.sentAt}
-          msgSender={msgGroup.sender}
-        />
-        <Box gap="5px">
-          {msgGroup.messages.map((msg, index) => (
-            <ChatMessage key={index} message={msg} />
-          ))}
-        </Box>
+  return (
+    <Box
+      margin={{
+        vertical: '5px',
+        horizontal: '20px',
+      }}
+    >
+      <ChatMessageMetadatas
+        msgDatetime={firstMessage.sentAt}
+        msgSender={msgGroup.sender}
+      />
+      <Box gap="5px">
+        {msgGroup.messages.map((msg, index) => (
+          <ChatMessage key={index} message={msg} />
+        ))}
       </Box>
-    ),
-    [firstMessage.sentAt, msgGroup.sender, msgGroup.messages],
+    </Box>
   );
-  return memo;
 };
