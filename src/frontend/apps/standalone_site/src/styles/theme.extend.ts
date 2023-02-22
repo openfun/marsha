@@ -35,7 +35,15 @@ export const themeBase = theme;
 export const getFullThemeExtend = () => deepMerge(themeBase, themeExtend);
 
 export const disableFormTheme = {
-  global: { control: { disabled: { opacity: 1 } } },
+  global: {
+    control: { disabled: { opacity: 1 } },
+    input: {
+      padding: {
+        vertical: '8px',
+        horizontal: '16px',
+      },
+    },
+  },
   textInput: {
     extend: css`
       cursor: text;
@@ -71,7 +79,6 @@ export const disableFormTheme = {
       }
       & input {
         font-size: 1rem;
-        padding: 0.5rem 1rem;
       }
       & label {
         height: 0.1px;

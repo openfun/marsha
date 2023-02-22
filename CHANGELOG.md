@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - List the VOD in the contents section
   - Integrate creation VOD
+  - Add playlist access management
 
 ### Changed
 
