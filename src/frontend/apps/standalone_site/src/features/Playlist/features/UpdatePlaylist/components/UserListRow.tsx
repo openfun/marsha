@@ -103,6 +103,16 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
       ? currentUser.id
       : undefined;
 
+  const user = playlistAccess.user;
+  let userLabel = intl.formatMessage(messages.anonymousUser, { id: user.id });
+  if (user.full_name && user.email) {
+    userLabel = `${user.full_name} (${user.email})`;
+  } else if (user.full_name) {
+    userLabel = user.full_name;
+  } else if (user.email) {
+    userLabel = user.email;
+  }
+
   return (
     <Fragment>
       <Modal controlMethods={modalActions}>
@@ -119,15 +129,9 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
 
       <Box direction="row" flex gap="small">
         <Box flex={{ grow: 1, shrink: 4 }} margin={{ vertical: 'auto' }}>
-          {playlistAccess.user.full_name ? (
-            <Text weight="bold" truncate>
-              {playlistAccess.user.full_name}
-            </Text>
-          ) : (
-            <Text weight="lighter" truncate>
-              {intl.formatMessage(messages.anonymousUser)} ({playlistAccess.id})
-            </Text>
-          )}
+          <Text weight="bold" truncate>
+            {userLabel}
+          </Text>
         </Box>
         <Box
           direction="row"

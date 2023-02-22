@@ -57,7 +57,9 @@ describe('<UserListRow />', () => {
       />,
     );
 
-    expect(screen.getByText('my full name')).toBeInTheDocument();
+    expect(
+      screen.getByText('my full name (my-email@openfun.fr)'),
+    ).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: /Open Drop/ }),
     ).toBeInTheDocument();
@@ -355,7 +357,9 @@ describe('<UserListRow />', () => {
       />,
     );
 
-    expect(screen.getByText('my full name')).toBeInTheDocument();
+    expect(
+      screen.getByText('my full name (my-email@openfun.fr)'),
+    ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Open Drop/ })).toBeDisabled();
     expect(screen.getByRole('textbox')).toHaveValue('Administrator');
     expect(

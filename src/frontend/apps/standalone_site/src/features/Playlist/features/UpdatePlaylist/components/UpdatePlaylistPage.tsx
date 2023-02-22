@@ -45,7 +45,7 @@ export const UpdatePlaylistPage = () => {
   const params = useParams<{ id: string }>();
 
   const { data: playlist, isLoading } = usePlaylist(params.id);
-  const { mutate: updatePlaylist, isLoading: isSubmiting } = useUpdatePlaylist(
+  const { mutate: updatePlaylist, isLoading: isSubmitting } = useUpdatePlaylist(
     params.id,
     {
       onSuccess: () => {
@@ -76,13 +76,13 @@ export const UpdatePlaylistPage = () => {
               name: playlist.title,
               organizationId: playlist.organization?.id,
             }}
-            isEditable={!isSubmiting}
+            isEditable={!isSubmitting}
             onSubmit={(values) => {
               if (!values.name || !values.organizationId) {
                 //  should not happen with validation.
                 report(
                   new Error(
-                    `Submit update playlist form succeed with invalid data, submited data : ${values.toString()}`,
+                    `Submit update playlist form succeed with invalid data, submitted data : ${values.toString()}`,
                   ),
                 );
                 return;
@@ -94,7 +94,7 @@ export const UpdatePlaylistPage = () => {
               });
             }}
             submitTitle={intl.formatMessage(messages.saveButtonTitle)}
-            isSubmiting={isSubmiting}
+            isSubmiting={isSubmitting}
           />
         </Box>
       </WhiteCard>
