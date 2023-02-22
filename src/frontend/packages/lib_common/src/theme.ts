@@ -171,6 +171,10 @@ export const theme: ThemeType = {
     colors,
     input: {
       weight: 'normal',
+      padding: {
+        vertical: '8px',
+        horizontal: '16px',
+      },
       extend: `color: ${colorsGeneric['blue-chat']};`,
     },
     font: {
@@ -337,7 +341,6 @@ export const theme: ThemeType = {
     extend: css`
       & {
         margin-top: 1rem;
-        padding: 0.5rem 1rem;
       }
       &:focus-within {
         color: ${colorsGeneric['blue-focus']};
@@ -451,9 +454,6 @@ export const theme: ThemeType = {
       maxWidth: 'initial',
       size: '1.5rem',
     },
-  },
-  textInput: {
-    extend: 'padding: 0.5rem 1rem;',
   },
   maskedInput: {
     extend: 'padding: 0.5rem 1rem;',
