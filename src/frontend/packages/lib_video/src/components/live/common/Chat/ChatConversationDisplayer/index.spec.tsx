@@ -46,6 +46,30 @@ describe('<ChatConversationDisplayer />', () => {
     }
   });
 
+  it('displays correctly message history group.', () => {
+    render(<ChatConversationDisplayer />);
+
+    for (let i = 0; i < 5; i++) {
+      act(() =>
+        useChatItemState.getState().addMessage({
+          content: `This is example message n°${i}`,
+          sender: `John Doe`,
+          sentAt: DateTime.fromISO(`2020-01-01T12:10:1${i}`),
+        }),
+      );
+    }
+
+    expect(screen.getByText(`John Doe`)).toBeInTheDocument();
+    expect(screen.getByText(`(12:10)`)).toBeInTheDocument();
+    expect(screen.getByText(`This is example message n°0`)).toBeInTheDocument();
+
+    for (let i = 1; i < 5; i++) {
+      expect(
+        screen.getByText(`This is example message n°${i}`),
+      ).toBeInTheDocument();
+    }
+  });
+
   it('scrolls down to bottom, when scroll bar is previously set to bottom.', () => {
     render(<ChatConversationDisplayer />);
 
