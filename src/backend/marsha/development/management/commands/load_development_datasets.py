@@ -119,6 +119,7 @@ class Command(BaseCommand):
             except User.DoesNotExist:
                 user = User.objects.create_user(
                     username=username,
+                    last_name=username,
                     email=f"{username}@example.com",
                     password=username,
                 )
