@@ -1,7 +1,8 @@
 import { screen } from '@testing-library/react';
+import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import { ResponsiveContext } from 'grommet';
-import { render } from 'lib-tests';
-import React from 'react';
+import { appendUtilsElement, render } from 'lib-tests';
+import React, { Fragment } from 'react';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
 
@@ -90,5 +91,41 @@ describe('useResponsive', () => {
     expect(
       screen.getByText(/isSmallerBreakpoint is:false/i),
     ).toBeInTheDocument();
+  });
+
+  test('breakpoint hook value mobile', () => {
+    const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
+      return appendUtilsElement(<Fragment>{children}</Fragment>, {
+        grommetOptions: {
+          theme: fullTheme,
+          responsiveSize: 'xsmall',
+        },
+      });
+    };
+
+    const { result } = renderHook(() => useResponsive(), {
+      wrapper: Wrapper,
+    });
+
+    expect(result.current.breakpoint).toBe('xsmall');
+    expect(result.current.isDesktop).toBeFalsy();
+  });
+
+  test('breakpoint hook value desktop', () => {
+    const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
+      return appendUtilsElement(<Fragment>{children}</Fragment>, {
+        grommetOptions: {
+          theme: fullTheme,
+          responsiveSize: 'medium',
+        },
+      });
+    };
+
+    const { result } = renderHook(() => useResponsive(), {
+      wrapper: Wrapper,
+    });
+
+    expect(result.current.breakpoint).toBe('medium');
+    expect(result.current.isDesktop).toBeTruthy();
   });
 });
