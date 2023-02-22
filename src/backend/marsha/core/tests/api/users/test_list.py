@@ -310,6 +310,24 @@ class UserListAPITest(TestCase):
             str(self.user_4.pk),
         )
 
+        # Exclude from id list
+        response = self.client.get(
+            "/api/users/?id_not_in="
+            f"{self.user_1.pk},{self.user_2.pk},{someone_with_permission.pk}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        response_data = response.json()
+        self.assertEqual(response_data["count"], 3)
+        self.assertListEqual(
+            [user["id"] for user in response_data["results"]],
+            [
+                str(self.user_3.pk),
+                str(self.user_4.pk),
+                str(self.user_5.pk),
+            ],
+        )
+
     def test_orderings(self):
         """Results are sorted like expected."""
 

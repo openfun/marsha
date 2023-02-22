@@ -52,6 +52,7 @@ class UserFilter(django_filters.FilterSet):
     fullname_or_email__icontains = django_filters.CharFilter(
         method="filter_fullname_or_email", label="Full name or email"
     )
+    id_not_in = django_filters.CharFilter(method="filter_id_not_in")
 
     class Meta:
         model = User
@@ -74,6 +75,10 @@ class UserFilter(django_filters.FilterSet):
             | Q(last_name__icontains=value)
             | Q(email__icontains=value)
         )
+
+    def filter_id_not_in(self, queryset, _name, value):
+        """Exclude id list."""
+        return queryset.exclude(Q(id__in=value.split(",")))
 
 
 class UserViewSet(
