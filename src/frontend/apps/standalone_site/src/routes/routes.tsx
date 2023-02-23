@@ -91,7 +91,8 @@ enum EMyProfileSubRoutesNames {
   PROFILE_SETTINGS = 'PROFILE_SETTINGS',
 }
 enum EPlaylistSubRouteNames {
-  UPDATE_PLAYLIST = 'UPDATE_PLAYLIST',
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
 }
 
 type BasicRoute = Omit<Route, 'subRoutes'>;
@@ -194,7 +195,8 @@ export const routes: Routes = {
       />
     ),
     subRoutes: {
-      UPDATE_PLAYLIST: { path: '/my-playlists/:id/update', hideSubRoute: true },
+      CREATE: { path: '/my-playlists/create', hideSubRoute: true },
+      UPDATE: { path: '/my-playlists/:id/update', hideSubRoute: true },
     },
   },
   ORGANIZATION: {
@@ -303,5 +305,3 @@ export const routes: Routes = {
     },
   },
 };
-
-export const CREATE_PLAYLIST_MODALE = `${routes.PLAYLIST.path}/create`;
