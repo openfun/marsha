@@ -2,6 +2,7 @@ import { useClassrooms } from 'lib-classroom';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { REACT_QUERY_CONF_API } from 'conf/global';
 import { ContentsWrapper, useContentPerPage } from 'features/Contents/';
 
 import ClassRoomItem from './ClassRoomItem';
@@ -29,7 +30,7 @@ const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
       offset: `${(currentPage - 1) * contentPerPage}`,
       limit: `${limit || contentPerPage}`,
     },
-    { keepPreviousData: true, staleTime: 20000 },
+    REACT_QUERY_CONF_API,
   );
 
   return (
