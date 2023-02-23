@@ -2,6 +2,7 @@ import { useVideos, VideosOrderType } from 'lib-video';
 import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
+import { REACT_QUERY_CONF_API } from 'conf/global';
 import { ContentsWrapper, useContentPerPage } from 'features/Contents/';
 
 import Video from './Video';
@@ -30,7 +31,7 @@ const Videos = ({ withPagination = true, limit }: VideosProps) => {
       limit: `${limit || contentPerPage}`,
       ordering: VideosOrderType.BY_CREATED_ON_REVERSED,
     },
-    { keepPreviousData: true, staleTime: 20000 },
+    REACT_QUERY_CONF_API,
   );
 
   return (
