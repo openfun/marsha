@@ -31,7 +31,7 @@ const ContentsWrapper = <ContentType,>({
     <ManageAPIState
       isError={isError}
       isLoading={isLoading}
-      itemsLength={dataset?.results.length || 0}
+      hasResult={!!dataset?.results.length}
       nothingToDisplay={noContentMessage}
     >
       <ContentCards style={isFetching ? { filter: 'blur(8px)' } : {}}>

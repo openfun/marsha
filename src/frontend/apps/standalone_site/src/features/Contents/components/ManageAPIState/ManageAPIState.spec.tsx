@@ -6,7 +6,7 @@ import ManageAPIState from './ManageAPIState';
 describe('<ManageAPIState/>', () => {
   test('state without content default', () => {
     render(
-      <ManageAPIState isLoading={false} isError={false} itemsLength={0}>
+      <ManageAPIState isLoading={false} isError={false} hasResult={false}>
         My state
       </ManageAPIState>,
     );
@@ -21,7 +21,7 @@ describe('<ManageAPIState/>', () => {
       <ManageAPIState
         isLoading={false}
         isError={false}
-        itemsLength={0}
+        hasResult={false}
         nothingToDisplay="There is nothing special to display."
       >
         My state
@@ -38,7 +38,7 @@ describe('<ManageAPIState/>', () => {
       <ManageAPIState
         isLoading={false}
         isError={false}
-        itemsLength={0}
+        hasResult={false}
         nothingToDisplay={<div>My component nothing to display.</div>}
       >
         My state
@@ -52,7 +52,7 @@ describe('<ManageAPIState/>', () => {
 
   test('state with error', () => {
     render(
-      <ManageAPIState isLoading={false} isError={true} itemsLength={0}>
+      <ManageAPIState isLoading={false} isError={true} hasResult={false}>
         My state
       </ManageAPIState>,
     );
@@ -64,7 +64,7 @@ describe('<ManageAPIState/>', () => {
 
   test('state with loading', () => {
     render(
-      <ManageAPIState isLoading={true} isError={false} itemsLength={0}>
+      <ManageAPIState isLoading={true} isError={false} hasResult={false}>
         My state
       </ManageAPIState>,
     );
@@ -78,7 +78,7 @@ describe('<ManageAPIState/>', () => {
 
   test('state with success', () => {
     render(
-      <ManageAPIState isLoading={false} isError={false} itemsLength={1}>
+      <ManageAPIState isLoading={false} isError={false} hasResult={true}>
         My state
       </ManageAPIState>,
     );
