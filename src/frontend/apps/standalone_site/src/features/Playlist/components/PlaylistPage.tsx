@@ -9,7 +9,7 @@ import { WhiteCard } from 'components/Cards';
 import { Modal } from 'components/Modal';
 import { commonSortMessages, SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
-import { CREATE_PLAYLIST_MODALE, routes } from 'routes';
+import { routes } from 'routes';
 
 import { PlaylistOrderType, usePlaylists } from '../api/usePlaylists';
 
@@ -57,6 +57,7 @@ const messages = defineMessages({
 export const PlaylistPage = () => {
   const intl = useIntl();
   const history = useHistory();
+  const playlistCreatePath = routes.PLAYLIST.subRoutes.CREATE.path;
 
   const sorts = [
     {
@@ -109,7 +110,7 @@ export const PlaylistPage = () => {
   return (
     <Fragment>
       <Switch>
-        <Route path={CREATE_PLAYLIST_MODALE}>
+        <Route path={playlistCreatePath}>
           <Modal
             isOpen
             onClose={() => {
@@ -140,7 +141,7 @@ export const PlaylistPage = () => {
                   primary
                   a11yTitle={intl.formatMessage(messages.create)}
                   onClick={() => {
-                    history.push(CREATE_PLAYLIST_MODALE);
+                    history.push(playlistCreatePath);
                   }}
                   label={intl.formatMessage(messages.create)}
                 />
@@ -184,7 +185,7 @@ export const PlaylistPage = () => {
                     <Button
                       primary
                       onClick={() => {
-                        history.push(CREATE_PLAYLIST_MODALE);
+                        history.push(playlistCreatePath);
                       }}
                       label={intl.formatMessage(messages.create)}
                     />
