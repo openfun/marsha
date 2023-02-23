@@ -36,15 +36,17 @@ const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
 interface ManageAPIStateProps {
   isLoading: boolean;
   isError: boolean;
-  itemsLength: number;
+  hasResult: boolean;
+  error?: ReactElement | string;
   nothingToDisplay?: ReactElement | string;
 }
 
 const ManageAPIState = ({
   isLoading,
   isError,
-  itemsLength,
+  hasResult,
   children,
+  error,
   nothingToDisplay,
 }: PropsWithChildren<ManageAPIStateProps>) => {
   const intl = useIntl();
@@ -65,15 +67,23 @@ const ManageAPIState = ({
   }
 
   if (isError) {
-    content = (
-      <ContainerInfo>
-        <Alert size="large" color="#df8c00" />
-        <Text weight="bold">{intl.formatMessage(messages.Error)}</Text>
-      </ContainerInfo>
-    );
+    if (error && typeof error !== 'string') {
+      content = error;
+    } else {
+      content = (
+        <ContainerInfo>
+          <Alert size="large" color="#df8c00" />
+          <Text weight="bold">
+            {typeof error === 'string'
+              ? error
+              : intl.formatMessage(messages.Error)}
+          </Text>
+        </ContainerInfo>
+      );
+    }
   } else if (isLoading) {
     content = <ContentSpinner />;
-  } else if (itemsLength) {
+  } else if (hasResult) {
     content = <Fragment>{children}</Fragment>;
   }
 
