@@ -44,7 +44,7 @@
     "@codemirror/language-data": "6.1.0",
     "@codemirror/view": "6.9.1",
     "@codemirror/state": "6.2.0",
-    "@openfun/cunningham-react": "0.1.0",
+    "@openfun/cunningham-react": "0.1.1",
     "@types/mdast": "3.0.10",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",

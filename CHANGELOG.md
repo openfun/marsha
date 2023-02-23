@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add Markdown wizard in LTI context
 - Install cunningham
 - Use cunningham to replace markdown buttons
+- Update cunningham to 0.1.1
 
 ### Changed
 

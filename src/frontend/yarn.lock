@@ -2916,10 +2916,10 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@openfun/cunningham-react@*", "@openfun/cunningham-react@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@openfun/cunningham-react/-/cunningham-react-0.1.0.tgz#09df6a34f061bd188a8e7dd7752ceae5b682ecab"
-  integrity sha512-p/8jiPPSOdMQsq0eE2O7BGfXr7xY/fIkL2tSwZ54ZaPnintSnJXL0CZSc/mRd93mWjw5cQOqNxCTasYooUupWg==
+"@openfun/cunningham-react@*", "@openfun/cunningham-react@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@openfun/cunningham-react/-/cunningham-react-0.1.1.tgz#17194cad6048743f7637e0969b00d81d0354f270"
+  integrity sha512-WK7QJYteNk0f7uNeErsd8wryXmazJ3vT8T+rW3E/5fruYkLeGKoYZFIinsUf47sWaFNcIhxeN9xN2MLesQE2JA==
   dependencies:
     "@fontsource/roboto" "4.5.8"
     "@openfun/cunningham-tokens" "*"
