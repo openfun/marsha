@@ -21,8 +21,8 @@ describe('<ModalButton />', () => {
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
-  it('displays correctly with isSubmiting props', () => {
-    render(<ModaleButton label="My button" isSubmiting />);
+  it('displays correctly with isSubmitting props', () => {
+    render(<ModaleButton label="My button" isSubmitting />);
     expect(screen.getByRole('button', { name: 'My button' })).toBeDisabled();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
