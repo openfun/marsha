@@ -192,7 +192,7 @@ const VideoCreateForm = () => {
           onClickCancel={() => {
             history.push(videoPath);
           }}
-          isSubmiting={isCreating}
+          isSubmitting={isCreating}
           isDisabled={!video.videoFile || isUploading}
         />
       </Form>

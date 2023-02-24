@@ -74,7 +74,7 @@ interface PlaylistFormProps {
   onSubmit: (values: Partial<PlaylistFormValues>) => void;
   onCancel?: () => void;
   submitTitle: string;
-  isSubmiting: boolean;
+  isSubmitting: boolean;
   isEditable?: boolean;
   actions?: ReactNode;
 }
@@ -85,7 +85,7 @@ export const PlaylistForm = ({
   onSubmit,
   onCancel,
   submitTitle,
-  isSubmiting,
+  isSubmitting,
   isEditable = true,
   actions,
 }: PlaylistFormProps) => {
@@ -298,7 +298,7 @@ export const PlaylistForm = ({
                 }
               : undefined
           }
-          isSubmiting={isSubmiting}
+          isSubmitting={isSubmitting}
         />
         {actions}
       </Form>
