@@ -25,7 +25,7 @@ jobs=0
 load-plugins=pylint_django,pylint.extensions.no_self_use
 
 # Pickle collected data for later comparisons.
-persistent=yes
+persistent=no
 
 # Specify a configuration file.
 #rcfile=

@@ -23,6 +23,8 @@ services:
     build:
       context: .
       dockerfile: ./docker/images/dev/Dockerfile
+      args:
+        DOCKER_USER: ${DOCKER_USER:-1000}
     image: marsha:dev
     env_file:
       - env.d/${ENV_FILE:-development}
