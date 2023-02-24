@@ -64,12 +64,12 @@ describe('<PlaylistUserList />', () => {
           {
             id: 'id 2',
             user: { full_name: 'sbire 2' },
-            role: PlaylistRole.TEACHER,
+            role: PlaylistRole.INSTRUCTOR,
           },
           {
             id: 'id 3',
             user: { full_name: 'sbire 3' },
-            role: PlaylistRole.TEACHER,
+            role: PlaylistRole.INSTRUCTOR,
           },
         ],
       },
