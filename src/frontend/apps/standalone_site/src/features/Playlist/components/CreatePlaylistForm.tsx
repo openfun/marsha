@@ -53,7 +53,7 @@ export const CreatePlaylistForm = () => {
         history.push(routes.PLAYLIST.path);
       }}
       submitTitle={intl.formatMessage(messages.createPlaylistButtonTitle)}
-      isSubmiting={isCreating}
+      isSubmitting={isCreating}
     />
   );
 };

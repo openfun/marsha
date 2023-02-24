@@ -33,7 +33,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
       />,
     );
@@ -79,7 +79,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
       />,
     );
@@ -121,7 +121,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',
@@ -165,7 +165,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',
@@ -212,7 +212,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',
@@ -262,7 +262,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={mockedOnSubmit}
         onCancel={mockedOnCancel}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',
@@ -297,7 +297,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={jest.fn()}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',
@@ -343,7 +343,7 @@ describe('<PlaylistForm />', () => {
         onSubmit={jest.fn()}
         onCancel={mockedOnCancel}
         submitTitle="Save"
-        isSubmiting={false}
+        isSubmitting={false}
         actions={<Button label="Edit" />}
         initialValues={{
           name: 'some initial name',

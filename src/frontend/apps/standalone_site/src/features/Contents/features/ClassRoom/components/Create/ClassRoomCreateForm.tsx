@@ -143,7 +143,7 @@ const ClassroomCreateForm = () => {
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => history.push(classroomPath)}
-          isSubmiting={isCreating}
+          isSubmitting={isCreating}
         />
       </Form>
     </Fragment>

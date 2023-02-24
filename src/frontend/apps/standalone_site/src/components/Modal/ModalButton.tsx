@@ -44,7 +44,7 @@ export enum ModalButtonStyle {
 interface ModalButtonProps {
   label: string;
   isDisabled?: boolean;
-  isSubmiting?: boolean;
+  isSubmitting?: boolean;
   onClickSubmit?: () => void;
   onClickCancel?: () => void;
   style?: ModalButtonStyle;
@@ -52,8 +52,8 @@ interface ModalButtonProps {
 
 /**
  * @param ModalButtonProps -
- *  - isDisabled will deactive the submit button
- *  - isSubmiting will deactive the submit button and add a loader above it
+ *  - isDisabled will deactivate the submit button
+ *  - isSubmitting will deactivate the submit button and add a loader above it
  *  - init onClickSubmit switch the button from type submit to type button
  *  - init onClickCancel will display the cancel button
  * @returns ModalButton component
@@ -61,7 +61,7 @@ interface ModalButtonProps {
 const ModalButton = ({
   label,
   isDisabled,
-  isSubmiting,
+  isSubmitting,
   onClickSubmit,
   onClickCancel,
   style,
@@ -71,7 +71,6 @@ const ModalButton = ({
     <ModalButtonContainer>
       {onClickCancel && (
         <ButtonModal
-          primary
           label={intl.formatMessage(messages.ButtonCancelModal)}
           onClick={onClickCancel}
           flex={1}
@@ -84,7 +83,7 @@ const ModalButton = ({
       >
         <ButtonModal
           type={onClickSubmit ? 'button' : 'submit'}
-          disabled={isDisabled || isSubmiting}
+          disabled={isDisabled || isSubmitting}
           primary
           label={label}
           onClick={onClickSubmit}
@@ -93,7 +92,7 @@ const ModalButton = ({
             style === ModalButtonStyle.DESTRUCTIVE ? 'red-active' : undefined
           }
         />
-        {isSubmiting && (
+        {isSubmitting && (
           <Box fill>
             <Box margin="auto">
               <Spinner />

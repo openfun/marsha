@@ -94,7 +94,7 @@ export const UpdatePlaylistPage = () => {
               });
             }}
             submitTitle={intl.formatMessage(messages.saveButtonTitle)}
-            isSubmiting={isSubmitting}
+            isSubmitting={isSubmitting}
           />
         </Box>
       </WhiteCard>
