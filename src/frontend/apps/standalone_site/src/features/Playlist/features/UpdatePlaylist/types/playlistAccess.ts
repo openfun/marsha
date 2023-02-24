@@ -2,7 +2,7 @@ import { Playlist } from 'lib-components';
 
 export enum PlaylistRole {
   ADMINISTRATOR = 'administrator',
-  TEACHER = 'instructor',
+  INSTRUCTOR = 'instructor',
   STUDENT = 'student',
 }
 
