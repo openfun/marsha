@@ -84,10 +84,8 @@ class TimedTextTrackViewSet(
         if self.request.resource:  # aka we are authenticated through LTI
             queryset = queryset.filter(video__id=self.request.resource.id)
 
-        # Otherwise, we are authenticated through a user JWT.
-        # Filtering is currently not necessary as permissions enforce
-        # a "video" parameter to be present in the request.
-        # See `IsParamsVideoAdminThrough*` permissions.
+        else:
+            queryset = queryset.filter(video__id=self.kwargs["video_id"])
 
         return queryset
 

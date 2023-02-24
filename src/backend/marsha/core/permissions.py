@@ -410,10 +410,9 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         the current logged in user is one of the administrators of the organization to which
         this video's playlist belongs.
         """
-        video_id = request.data.get("video") or request.query_params.get("video")
         return models.OrganizationAccess.objects.filter(
             role=ADMINISTRATOR,
-            organization__playlists__videos__id=video_id,
+            organization__playlists__videos__id=view.kwargs["video_id"],
             user__id=request.user.id,
         ).exists()
 
@@ -432,10 +431,9 @@ class BaseIsParamsVideoRoleThroughPlaylist(permissions.BasePermission):
         the current logged in user has a specific role of the playlist to which
         this video belongs.
         """
-        video_id = request.data.get("video") or request.query_params.get("video")
         return models.PlaylistAccess.objects.filter(
             **self.role_filter,
-            playlist__videos__id=video_id,
+            playlist__videos__id=view.kwargs["video_id"],
             user__id=request.user.id,
         ).exists()
 

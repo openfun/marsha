@@ -18,8 +18,10 @@ class TimedTextTrackListAPITest(TestCase):
 
     def test_api_timed_text_track_read_list_anonymous(self):
         """Anonymous users should not be able to read a list of timed text tracks."""
-        TimedTextTrackFactory()
-        response = self.client.get("/api/timedtexttracks/")
+        timed_text_track = TimedTextTrackFactory()
+        response = self.client.get(
+            f"/api/videos/{timed_text_track.video.id}/timedtexttracks/",
+        )
         self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_read_list_token_user(self):
@@ -38,7 +40,8 @@ class TimedTextTrackListAPITest(TestCase):
         )
 
         response = self.client.get(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            f"/api/videos/{timed_text_track_one.video.id}/timedtexttracks/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
         timed_text_track_list = json.loads(response.content)
@@ -57,8 +60,10 @@ class TimedTextTrackListAPITest(TestCase):
         """Users authenticated via a session shouldn't be able to read timed text tracks."""
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            TimedTextTrackFactory()
-            response = self.client.get("/api/timedtexttracks/")
+            timed_text_track = TimedTextTrackFactory()
+            response = self.client.get(
+                f"/api/videos/{timed_text_track.video.id}/timedtexttracks/",
+            )
             self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_read_list_by_user_with_no_access(self):
@@ -78,7 +83,7 @@ class TimedTextTrackListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
-            f"/api/timedtexttracks/?video={video.id}",
+            f"/api/videos/{video.id}/timedtexttracks/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -107,7 +112,7 @@ class TimedTextTrackListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/?video={video.id}",
+            f"/api/videos/{video.id}/timedtexttracks/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -147,7 +152,7 @@ class TimedTextTrackListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/?video={video.id}",
+            f"/api/videos/{video.id}/timedtexttracks/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -188,7 +193,7 @@ class TimedTextTrackListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/?video={video.id}",
+            f"/api/videos/{video.id}/timedtexttracks/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -218,7 +223,7 @@ class TimedTextTrackListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/?video={video.id}",
+            f"/api/videos/{video.id}/timedtexttracks/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -234,33 +239,3 @@ class TimedTextTrackListAPITest(TestCase):
             str(timed_text_track_two.id)
             in (ttt["id"] for ttt in timed_text_track_list["results"])
         )
-
-    def test_api_timed_text_track_read_list_by_admin_without_video_filter(self):
-        """
-        Token user with organization access lists timed text tracks without the video filter.
-
-        A user with a user token, with an organization access, cannot list timed text
-        tracks without a filter, as they have no basis to have permission to do so.
-        """
-        user = factories.UserFactory()
-        # An organization where the user has access, with a playlist with a video
-        organization = factories.OrganizationFactory()
-        playlist = factories.PlaylistFactory(organization=organization)
-        video = factories.VideoFactory(playlist=playlist)
-        factories.OrganizationAccessFactory(
-            user=user, organization=organization, role=models.ADMINISTRATOR
-        )
-
-        TimedTextTrackFactory(mode="st", video=video)
-        TimedTextTrackFactory(mode="cc", video=video)
-        # Add a timed text track for another video
-        TimedTextTrackFactory()
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.get(
-            "/api/timedtexttracks/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)

@@ -56,11 +56,6 @@ router.register(
     LiveSessionViewSet,
     basename="live_sessions",
 )
-router.register(
-    models.TimedTextTrack.RESOURCE_NAME,
-    TimedTextTrackViewSet,
-    basename="timed_text_tracks",
-)
 router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
 router.register("organizations", OrganizationViewSet, basename="organizations")
 router.register("playlists", PlaylistViewSet, basename="playlists")
@@ -78,6 +73,13 @@ router.register(
     models.SharedLiveMedia.RESOURCE_NAME,
     SharedLiveMediaViewSet,
     basename="sharedlivemedias",
+)
+
+video_related_router = DefaultRouter()
+video_related_router.register(
+    models.TimedTextTrack.RESOURCE_NAME,
+    TimedTextTrackViewSet,
+    basename="timed_text_tracks",
 )
 
 urlpatterns = [
@@ -119,6 +121,10 @@ urlpatterns = [
         name="recording_slices_state",
     ),
     path("api/", include(router.urls)),
+    path(
+        f"api/{models.Video.RESOURCE_NAME}/<str:video_id>/",
+        include(video_related_router.urls),
+    ),
     path(
         "reminders/cancel/<str:pk>/<str:key>",
         RemindersCancelView.as_view(),
