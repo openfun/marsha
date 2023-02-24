@@ -27,7 +27,7 @@ export const userRoleOptions = (intl: IntlShape) => [
   },
   {
     label: intl.formatMessage(messages.instructorLabel),
-    key: PlaylistRole.TEACHER,
+    key: PlaylistRole.INSTRUCTOR,
   },
   {
     label: intl.formatMessage(messages.studentLabel),

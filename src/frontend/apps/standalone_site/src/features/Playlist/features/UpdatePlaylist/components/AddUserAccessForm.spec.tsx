@@ -85,7 +85,7 @@ describe('AddUserAccessForm', () => {
       body: JSON.stringify({
         playlist: '1',
         user: '1',
-        role: PlaylistRole.TEACHER,
+        role: PlaylistRole.INSTRUCTOR,
       }),
     });
     expect(mockOnUserAdded).toHaveBeenCalledTimes(1);
