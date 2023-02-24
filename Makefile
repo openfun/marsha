@@ -32,8 +32,11 @@ RESET := \033[0m
 GREEN := \033[1;32m
 
 # -- Docker
-COMPOSE              = docker-compose
-COMPOSE_BUILD        = COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 $(COMPOSE) build
+DOCKER_UID           = $(shell id -u)
+DOCKER_GID           = $(shell id -g)
+DOCKER_USER          = $(DOCKER_UID):$(DOCKER_GID)
+COMPOSE              = DOCKER_USER=$(DOCKER_USER) docker-compose
+COMPOSE_BUILD        = DOCKER_USER=$(DOCKER_USER) COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 $(COMPOSE) build
 COMPOSE_RUN          = $(COMPOSE) run --rm
 COMPOSE_RUN_APP      = $(COMPOSE_RUN) app
 COMPOSE_RUN_CROWDIN  = $(COMPOSE_RUN) crowdin crowdin
@@ -102,6 +105,10 @@ run: ## start the development server using Docker
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 	@$(COMPOSE) up -d prosody-nginx
 .PHONY: run
+
+shell:
+	@$(COMPOSE_RUN) app /bin/bash
+.PHONY: shell
 
 ngrok: ## start the development server using Docker through ngrok
 ngrok: run

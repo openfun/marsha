@@ -145,4 +145,5 @@ ENTRYPOINT [ "entrypoint" ]
 CMD ["gunicorn", "-c", "/usr/local/etc/gunicorn/marsha.py", "marsha.asgi:application"]
 
 # Un-privileged user running the application
-USER 10000
+ARG DOCKER_USER
+USER ${DOCKER_USER}

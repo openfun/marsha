@@ -20,3 +20,7 @@ RUN apt-get update && \
 # and forcibly remove the marsha package
 RUN pip install .[dev] && \
     pip uninstall -y marsha
+
+# Un-privileged user running the application
+ARG DOCKER_USER
+USER ${DOCKER_USER}
