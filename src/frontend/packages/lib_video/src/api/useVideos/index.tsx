@@ -4,16 +4,18 @@ import {
   fetchList,
   FetchListQueryKey,
   fetchOne,
+  FetchResponseError,
   Video,
 } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
+type VideoResponseError = FetchResponseError<Video>;
 export const useVideo = (
   videoId: string,
-  queryConfig?: UseQueryOptions<Video, 'videos', Video>,
+  queryConfig?: UseQueryOptions<Video, VideoResponseError, Video>,
 ) => {
   const key = ['videos', videoId];
-  return useQuery<Video, 'videos'>(key, fetchOne, queryConfig);
+  return useQuery<Video, VideoResponseError>(key, fetchOne, queryConfig);
 };
 
 export enum VideosOrderType {
