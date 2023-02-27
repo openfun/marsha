@@ -55,6 +55,14 @@ describe('<VideoWidgetProvider />', () => {
       },
       { method: 'OPTIONS' },
     );
+
+    fetchMock.mock(
+      '/api/thumbnails/',
+      {
+        upload_max_size_bytes: 1000000,
+      },
+      { method: 'OPTIONS' },
+    );
   });
 
   afterEach(() => fetchMock.restore());
