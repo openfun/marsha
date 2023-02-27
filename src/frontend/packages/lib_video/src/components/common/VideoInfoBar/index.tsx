@@ -135,7 +135,7 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
     <Fragment>
       {isTeacher ? (
         <Box
-          margin={{ top: 'small', right: 'small' }}
+          margin={{ right: 'small' }}
           gap="small"
           alignContent="center"
           direction="row"

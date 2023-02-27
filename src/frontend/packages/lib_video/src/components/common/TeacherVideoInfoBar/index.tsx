@@ -15,6 +15,7 @@ export const TeacherVideoInfoBar = ({
   return (
     <Box
       direction="column"
+      justify="center"
       style={{ flexBasis: '0%', minWidth: '0' }}
       {...props}
     >
