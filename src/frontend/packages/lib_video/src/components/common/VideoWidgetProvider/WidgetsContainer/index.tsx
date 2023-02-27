@@ -1,9 +1,17 @@
-import { Box, ResponsiveContext } from 'grommet';
-import React from 'react';
+import { Box } from 'grommet';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
 
 import { InfoModal } from './InfoModal';
+
+const WIDGETS_COLUMN = {
+  DEFAULT: 2,
+  MIN: 1,
+  MAX: 3,
+  MIN_WIDTH: 380, // px
+  MAX_WIDTH: 600, // px
+};
 
 export enum WidgetSize {
   DEFAULT = 'default',
@@ -21,24 +29,36 @@ interface WidgetsContainerProps {
 
 export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
   const [infoWidgetModal, setInfoWidgetModal] = useInfoWidgetModal();
+  const mainContainerRef = useRef<HTMLDivElement>(null);
+  const [nbrOfColumns, setNbrOfColumns] = useState(WIDGETS_COLUMN.DEFAULT);
 
-  const layoutSize = React.useContext(ResponsiveContext);
-  let nbrOfColumns: number;
-  switch (layoutSize) {
-    case 'small':
-      nbrOfColumns = 1;
-      break;
-    case 'medium':
-      nbrOfColumns = 2;
-      break;
-    default:
-      nbrOfColumns = 3;
-  }
-  const mapper: unknown[] = Array(nbrOfColumns).fill(0);
+  useEffect(() => {
+    const handleResize = () => {
+      if (!mainContainerRef.current?.offsetWidth) {
+        return;
+      }
+
+      let columns = Math.floor(
+        mainContainerRef.current?.offsetWidth / WIDGETS_COLUMN.MIN_WIDTH,
+      );
+      columns = columns > WIDGETS_COLUMN.MAX ? WIDGETS_COLUMN.MAX : columns;
+      setNbrOfColumns(columns || WIDGETS_COLUMN.MIN);
+    };
+
+    const resizeObserver = new ResizeObserver(handleResize);
+    resizeObserver.observe(mainContainerRef.current as Element);
+    handleResize();
+
+    return () => {
+      resizeObserver.disconnect();
+    };
+  }, []);
 
   if (!children || (Array.isArray(children) && children.length === 0)) {
     return null;
   }
+
+  const mapper: unknown[] = Array(nbrOfColumns).fill(0);
 
   return (
     <React.Fragment>
@@ -68,12 +88,20 @@ export const WidgetsContainer = ({ children }: WidgetsContainerProps) => {
         ? children.component
         : null}
 
-      <Box direction="row" background="bg-marsha">
+      <Box
+        ref={mainContainerRef}
+        direction="row"
+        background="bg-marsha"
+        justify="center"
+      >
         {mapper.map((_, indexColumn) => (
           <Box
             direction="column"
             key={indexColumn}
-            width={`${100 / nbrOfColumns}%`}
+            width={{
+              max: `${WIDGETS_COLUMN.MAX_WIDTH}px`,
+              width: `${100 / nbrOfColumns}%`,
+            }}
           >
             {Array.isArray(children)
               ? children

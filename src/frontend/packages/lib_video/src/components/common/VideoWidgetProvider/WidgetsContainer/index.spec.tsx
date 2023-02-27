@@ -1,3 +1,4 @@
+/* eslint-disable testing-library/no-node-access */
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -21,7 +22,19 @@ const genericComponentsList = [
   { component: <GenericComponent6 key="6" />, size: WidgetSize.DEFAULT },
 ];
 
+const minWidgetWidth = 380;
+
 describe('<WidgetsContainer />', () => {
+  afterAll(() => {
+    // Resetting the offsetWidth
+    return Object.defineProperty(
+      HTMLElement.prototype,
+      'offsetWidth',
+      Object.getOwnPropertyDescriptor(HTMLElement.prototype, 'offsetWidth') ||
+        0,
+    );
+  });
+
   it('renders WidgetsContainer empty', () => {
     const { elementContainer: container } = render(
       <InfoWidgetModalProvider value={null}>
@@ -32,15 +45,16 @@ describe('<WidgetsContainer />', () => {
   });
 
   it('renders WidgetsContainer on a large screen', () => {
+    // Mocking the offsetWidth of the main container
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      value: minWidgetWidth * 4,
+    });
+
     const { elementContainer: container } = render(
       <InfoWidgetModalProvider value={null}>
         <WidgetsContainer>{genericComponentsList}</WidgetsContainer>
       </InfoWidgetModalProvider>,
-      {
-        grommetOptions: {
-          responsiveSize: 'large',
-        },
-      },
     );
 
     const parentContainer = container!.firstChild;
@@ -76,15 +90,16 @@ describe('<WidgetsContainer />', () => {
   });
 
   it('renders WidgetsContainer on a medium screen', () => {
+    // Mocking the offsetWidth of the main container
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      value: minWidgetWidth * 2,
+    });
+
     const { elementContainer: container } = render(
       <InfoWidgetModalProvider value={null}>
         <WidgetsContainer>{genericComponentsList}</WidgetsContainer>
       </InfoWidgetModalProvider>,
-      {
-        grommetOptions: {
-          responsiveSize: 'medium',
-        },
-      },
     );
 
     expect(container!.firstChild).not.toBeNull();
@@ -118,15 +133,16 @@ describe('<WidgetsContainer />', () => {
   });
 
   it('renders WidgetsContainer on a small screen', () => {
+    // Mocking the offsetWidth of the main container
+    Object.defineProperty(HTMLElement.prototype, 'offsetWidth', {
+      configurable: true,
+      value: minWidgetWidth,
+    });
+
     const { elementContainer: container } = render(
       <InfoWidgetModalProvider value={null}>
         <WidgetsContainer>{genericComponentsList}</WidgetsContainer>
       </InfoWidgetModalProvider>,
-      {
-        grommetOptions: {
-          responsiveSize: 'small',
-        },
-      },
     );
 
     expect(container!.firstChild).not.toBeNull();
