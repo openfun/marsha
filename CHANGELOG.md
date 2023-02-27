@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- standalone website:
+  - Integrate VOD dashboard (#2086)
+
 ### Changed
 
 - Update live sessions API to use nested video ID route

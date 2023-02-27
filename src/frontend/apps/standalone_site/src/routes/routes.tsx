@@ -244,9 +244,6 @@ export const routes: Routes = {
           UPDATE: {
             path: `/my-contents/videos/:videoId`,
           },
-          INVITE: {
-            path: `/my-contents/videos/:videoId/invite/:inviteId`,
-          },
         },
         isNavStrict: true,
       },

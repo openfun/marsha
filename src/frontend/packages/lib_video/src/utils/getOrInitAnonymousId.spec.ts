@@ -72,15 +72,39 @@ describe('initAnonymousId', () => {
   });
 
   it('generates a new anonymous_id when the public token does not contains one', () => {
-    const anonynousId = uuidv4();
+    const anonymousId = uuidv4();
     useJwt.setState({ jwt: publicToken } as any);
     useCurrentUser.setState({
       currentUser: undefined,
     });
-    mockGetAnonymousId.mockReturnValue(anonynousId);
+    mockGetAnonymousId.mockReturnValue(anonymousId);
     mockedDecodeJwt.mockReturnValue(publicToken);
 
-    expect(getOrInitAnonymousId()).toEqual(anonynousId);
+    expect(getOrInitAnonymousId()).toEqual(anonymousId);
+    expect(mockSetAnonymousId).not.toHaveBeenCalled();
+    expect(mockGetAnonymousId).toHaveBeenCalled();
+  });
+
+  it('generates a new anonymous_id when token is from website', () => {
+    const anonymousId = uuidv4();
+    useJwt.setState({
+      jwt: {
+        token_type: 'website',
+        exp: 123456,
+        iat: 2345,
+        jti: '7889',
+        user_id: '654321',
+      },
+    } as any);
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
+    mockGetAnonymousId.mockReturnValue(anonymousId);
+    mockedDecodeJwt.mockImplementation(() => {
+      throw new Error();
+    });
+
+    expect(getOrInitAnonymousId()).toEqual(anonymousId);
     expect(mockSetAnonymousId).not.toHaveBeenCalled();
     expect(mockGetAnonymousId).toHaveBeenCalled();
   });
