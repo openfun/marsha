@@ -13,9 +13,14 @@ export const getOrInitAnonymousId = () => {
   const user = useCurrentUser.getState().currentUser;
   let anonymousId =
     user !== AnonymousUser.ANONYMOUS ? user?.anonymous_id : undefined;
-  if (anonymousId) {
-    setAnonymousId(anonymousId);
-  } else if (!checkLtiToken(decodeJwt(jwt))) {
+
+  try {
+    if (anonymousId) {
+      setAnonymousId(anonymousId);
+    } else if (!checkLtiToken(decodeJwt(jwt))) {
+      anonymousId = getAnonymousId();
+    }
+  } catch (e) {
     anonymousId = getAnonymousId();
   }
 
