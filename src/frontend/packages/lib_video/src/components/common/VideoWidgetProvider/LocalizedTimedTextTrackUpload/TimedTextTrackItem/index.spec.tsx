@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -233,5 +233,41 @@ describe('<TimedTextTrackItem />', () => {
         name: 'Click on this button to retry uploading your failed upload.',
       }),
     ).not.toBeInTheDocument();
+  });
+
+  it('downloads transcript when the teacher clicks on language title', async () => {
+    const transcriptContent = `WEBVTT
+    1
+    00:00:00.600 --> 00:00:02.240 
+    -Bonjour. Bonjour à tous.
+
+    2
+    00:00:02.560 --> 00:00:05.280
+    Bienvenue dans ce nouveau MOOC
+    "Du manager au leader".`;
+
+    const mockedTimedTextTrack = timedTextMockFactory({
+      language: 'fr-FR',
+      source_url: 'https://example.com/vtt/fr.vtt',
+    });
+
+    fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
+
+    render(
+      <DeleteTimedTextTrackUploadModalProvider value={null}>
+        <TimedTextTrackItem
+          onRetryFailedUpload={mockedOnRetryFailedUpload}
+          timedTextTrack={mockedTimedTextTrack}
+        />
+      </DeleteTimedTextTrackUploadModalProvider>,
+    );
+
+    const downloadAnchor = await screen.findByRole('link');
+    expect(downloadAnchor).toHaveAttribute(
+      'href',
+      'https://example.com/vtt/fr.vtt',
+    );
+
+    fireEvent.click(downloadAnchor);
   });
 });
