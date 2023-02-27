@@ -1,4 +1,4 @@
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 //import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
@@ -7,6 +7,7 @@ import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import { LoadSVG } from 'components/Assets';
 
 const messages = defineMessages({
   menuHomePageLabel: {
@@ -128,107 +129,28 @@ type Routes = {
   };
 };
 
-const HomeIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <HomeIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-homepage"
-      title={intl.formatMessage(messages.menuHomePageLabel)}
-    />
-  );
-};
-
-const StarIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <StarIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-favorites"
-      title={intl.formatMessage(messages.menuFavoritesLabel)}
-    />
-  );
-};
-
-const ProfilIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <AvatarIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-my-profile"
-      title={intl.formatMessage(messages.menuMyProfileLabel)}
-    />
-  );
-};
-
-const PlaylistIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <VueListIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-my-playlists"
-      title={intl.formatMessage(messages.menuPlaylistLabel)}
-    />
-  );
-};
-
-const OrganizationIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <VueListIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-my-organizations"
-      title={intl.formatMessage(messages.menuMyOrganizationsLabel)}
-    />
-  );
-};
-
-const ContentIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <VueListIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-my-contents"
-      title={intl.formatMessage(messages.menuMyContentsLabel)}
-    />
-  );
-};
-
-const ClassroomIconSvg = () => {
-  const intl = useIntl();
-  return (
-    <ClassroomsIcon
-      width={30}
-      height={30}
-      role="img"
-      aria-label="svg-menu-my-contents-classroom"
-      title={intl.formatMessage(messages.menuContentsClassroomLabel)}
-    />
-  );
-};
-
 export const routes: Routes = {
   HOMEPAGE: {
     label: <FormattedMessage {...messages.menuHomePageLabel} />,
     path: `/`,
-    menuIcon: <HomeIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={HomeIcon}
+        aria-label="svg-menu-homepage"
+        title={messages.menuHomePageLabel}
+      />
+    ),
   },
   FAVORITE: {
     label: <FormattedMessage {...messages.menuFavoritesLabel} />,
     path: `/favorites`,
-    menuIcon: <StarIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={StarIcon}
+        aria-label="svg-menu-favorites"
+        title={messages.menuFavoritesLabel}
+      />
+    ),
   },
   LOGIN: {
     path: `/login`,
@@ -246,7 +168,13 @@ export const routes: Routes = {
     isNavStrict: true,
     label: <FormattedMessage {...messages.menuMyProfileLabel} />,
     path: `/my-profile`,
-    menuIcon: <ProfilIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={AvatarIcon}
+        aria-label="svg-menu-my-profile"
+        title={messages.menuMyProfileLabel}
+      />
+    ),
     subRoutes: {
       PROFILE_SETTINGS: {
         path: '/my-profile/settings',
@@ -258,7 +186,13 @@ export const routes: Routes = {
     isNavStrict: true,
     label: <FormattedMessage {...messages.menuPlaylistLabel} />,
     path: `/my-playlists`,
-    menuIcon: <PlaylistIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={VueListIcon}
+        aria-label="svg-menu-my-playlists"
+        title={messages.menuPlaylistLabel}
+      />
+    ),
     subRoutes: {
       UPDATE_PLAYLIST: { path: '/my-playlists/:id/update', hideSubRoute: true },
     },
@@ -266,22 +200,33 @@ export const routes: Routes = {
   ORGANIZATION: {
     label: <FormattedMessage {...messages.menuMyOrganizationsLabel} />,
     path: `/my-organizations`,
-    menuIcon: <OrganizationIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={VueListIcon}
+        aria-label="svg-menu-my-organizations"
+        title={messages.menuMyOrganizationsLabel}
+      />
+    ),
   },
   CONTENTS: {
     label: <FormattedMessage {...messages.menuMyContentsLabel} />,
     path: `/my-contents`,
-    menuIcon: <ContentIconSvg />,
+    menuIcon: (
+      <LoadSVG
+        Icon={VueListIcon}
+        aria-label="svg-menu-my-contents"
+        title={messages.menuMyContentsLabel}
+      />
+    ),
     subRoutes: {
       VIDEO: {
         label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
         path: `/my-contents/videos`,
         menuIcon: (
-          <VideoIcon
-            width={24}
-            height={24}
-            role="img"
+          <LoadSVG
+            Icon={VideoIcon}
             aria-label="svg-menu-my-contents-videos"
+            title={messages.menuContentsVideosLabel}
           />
         ),
         subRoutes: {
@@ -300,6 +245,7 @@ export const routes: Routes = {
             path: `/my-contents/videos/:videoId/invite/:inviteId`,
           },
         },
+        isNavStrict: true,
       },
       // LIVE: {
       //   label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
@@ -316,7 +262,13 @@ export const routes: Routes = {
       CLASSROOM: {
         label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
         path: `/my-contents/classroom`,
-        menuIcon: <ClassroomIconSvg />,
+        menuIcon: (
+          <LoadSVG
+            Icon={ClassroomsIcon}
+            aria-label="svg-menu-my-contents-classroom"
+            title={messages.menuContentsClassroomLabel}
+          />
+        ),
         subRoutes: {
           CREATE: {
             label: (
