@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Add Markdown wizard in LTI context
+- Add subtitles download for teacher
 - standalone website:
   - List the VOD in the contents section
   - Integrate creation VOD

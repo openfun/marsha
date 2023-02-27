@@ -1,4 +1,4 @@
-import { Box, Text } from 'grommet';
+import { Box, Text, Anchor } from 'grommet';
 import {
   ObjectStatusPicker,
   RetryUploadButton,
@@ -76,14 +76,17 @@ export const TimedTextTrackItem = ({
       </Box>
 
       <Box width={{ min: '0px' }}>
-        <Text
-          color="blue-active"
-          size="0.9rem"
-          style={{ fontFamily: 'Roboto-Medium' }}
-          truncate
-        >
-          {languageLabel}
-        </Text>
+        <Anchor href={timedTextTrack.source_url ?? undefined}>
+          <Text
+            color="blue-active"
+            size="0.9rem"
+            weight="normal"
+            style={{ fontFamily: 'Roboto-Medium' }}
+            truncate
+          >
+            {languageLabel}
+          </Text>
+        </Anchor>
       </Box>
 
       <Box
