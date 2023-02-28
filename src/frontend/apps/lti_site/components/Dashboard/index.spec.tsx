@@ -15,11 +15,13 @@ import render from 'utils/tests/render';
 
 import Dashboard from '.';
 
-jest.mock('./DashboardVideoWrapper', () => ({
+jest.mock('lib-video', () => ({
+  ...jest.requireActual('lib-video'),
   DashboardVideoWrapper: ({ video }: { video: Video }) => {
     return <span title={video.id} />;
   },
 }));
+
 jest.mock(
   'components/DashboardDocument',
   () => (props: { document: Document }) => <span title={props.document.id} />,
