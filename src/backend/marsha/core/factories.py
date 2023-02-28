@@ -4,6 +4,7 @@ import uuid
 
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
+from django.contrib.sites.models import Site
 from django.utils import timezone
 
 import factory
@@ -322,3 +323,13 @@ class NotPendingPortabilityRequestFactory(PortabilityRequestFactory):
             if state != models.PortabilityRequestState.PENDING.value
         ]
     )
+
+
+class SiteFactory(DjangoModelFactory):
+    """Factory for the Site model"""
+
+    name = factory.Sequence("Site {:03d}".format)
+    domain = factory.Faker("domain_name")
+
+    class Meta:  # noqa
+        model = Site

@@ -688,6 +688,11 @@ class Base(Configuration):
     # If you'd like to utilize Error Monitoring:
     SCOUT_ERRORS_ENABLED = values.BooleanValue(False)
 
+    # LRS settings dedicated to the current site
+    LRS_URL = values.Value()
+    LRS_AUTH_TOKEN = values.Value()
+    LRS_XAPI_VERSION = values.Value()
+
     # pylint: disable=invalid-name
     @property
     def AWS_SOURCE_BUCKET_NAME(self):
