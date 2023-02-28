@@ -815,10 +815,10 @@ class Build(Base):
         "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
     )
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
-        r"^js\/build\/[0-9]*\..*\.js(\.map)?$"
+        r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"
     )
     STATIC_POSTPROCESS_MAP_IGNORE_REGEX = values.Value(
-        r"^js\/build\/[0-9]*\..*\.js\.map$"
+        r"^js\/build\/.*[0-9]*\..*\.js\.map$"
     )
 
 
@@ -931,10 +931,10 @@ class Production(Base):
         "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
     )
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
-        r"^js\/build\/[0-9]*\..*\.js(\.map)?$"
+        r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"
     )
     STATIC_POSTPROCESS_MAP_IGNORE_REGEX = values.Value(
-        r"^js\/build\/[0-9]*\..*\.js\.map$"
+        r"^js\/build\/.*[0-9]*\..*\.js\.map$"
     )
 
     AWS_BASE_NAME = values.Value("production")
