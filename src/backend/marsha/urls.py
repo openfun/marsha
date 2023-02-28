@@ -3,7 +3,7 @@ import re
 
 from django.conf import settings
 from django.contrib import admin
-from django.urls import include, path, re_path
+from django.urls import include, path, re_path, register_converter
 from django.views.decorators.cache import cache_page
 
 from rest_framework.routers import DefaultRouter
@@ -29,6 +29,7 @@ from marsha.core.api import (
     update_state,
 )
 from marsha.core.api.lti_user_association import LtiUserAssociationViewSet
+from marsha.core.urls.converters import XAPIResourceKindConverter
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 from marsha.core.views import (
     DocumentLTIView,
@@ -43,6 +44,8 @@ from marsha.core.views import (
 )
 from marsha.development.api import local_document_upload, local_video_upload
 
+
+register_converter(XAPIResourceKindConverter, "xapi_resource_kind")
 
 LTI_SELECT_ROUTE_PATTERN = (
     rf"lti/select/((?P<resource_kind>{'|'.join(get_lti_select_resources().keys())})/)?$"
@@ -124,8 +127,8 @@ urlpatterns = [
         RemindersCancelView.as_view(),
         name="reminders_cancel",
     ),
-    re_path(
-        r"^xapi/(?P<resource_kind>video|document)/$",
+    path(
+        "xapi/<xapi_resource_kind:resource_kind>/<uuid:resource_id>/",
         XAPIStatementView.as_view(),
         name="xapi",
     ),
