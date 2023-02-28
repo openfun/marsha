@@ -8,6 +8,9 @@ from django.contrib.staticfiles.storage import ManifestStaticFilesStorage
 from whitenoise.storage import CompressedStaticFilesMixin
 
 
+# from whitenoise.compress import Compressor
+
+
 STATIC_POSTPROCESS_IGNORE_REGEX = re.compile(
     getattr(settings, "STATIC_POSTPROCESS_IGNORE_REGEX", "^$")
 )
@@ -39,13 +42,23 @@ class MarshaCompressedManifestStaticFilesStorage(
         to_compress = []
         for path in paths:
             if not STATIC_POSTPROCESS_IGNORE_REGEX.match(path):
+                # print("processed  : ", path)
                 filtered_paths[path] = paths[path]
             elif not STATIC_POSTPROCESS_MAP_IGNORE_REGEX.match(path):
                 # do not compress map files
+                # print("compressed : ", path)
                 to_compress.append((path, None, False))
+            # else:
+            #     print("ignored    : ", path)
 
         # static files without webpack build are post-processed
         yield from super().post_process(filtered_paths, dry_run=dry_run, **options)
         if not dry_run:
             # static files built from webpack are just compressed
             yield from super().post_process_with_compression(to_compress)
+
+    # def create_compressor(self, **kwargs):
+    #     """Create compressor instance."""
+    #     kwargs["quiet"] = False
+    #     print("kwargs", kwargs)
+    #     return Compressor(**kwargs)
