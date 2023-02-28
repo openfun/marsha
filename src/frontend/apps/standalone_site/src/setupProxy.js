@@ -8,4 +8,10 @@ module.exports = function (app) {
       changeOrigin: true,
     }),
   );
+  app.use(
+    createProxyMiddleware('/ws/', {
+      target: process.env.REACT_APP_BACKEND_WS_BASE_URL,
+      ws: true,
+    }),
+  );
 };
