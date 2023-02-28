@@ -7,18 +7,20 @@ from django.core.management import call_command
 from django.test import TestCase, override_settings
 
 
+DEBUG = False
 TEST_FILE_PATH = os.path.join(os.path.dirname(__file__), "test_files")
 TEMP = tempfile.mkdtemp()
 
-# def _list_files(start_path):
-#     """To be deleted : for debug purpose only"""
-#     for root, dirs, files in os.walk(start_path):
-#         level = root.replace(start_path, "").count(os.sep)
-#         indent = " " * 4 * level
-#         print(f"{indent}{os.path.basename(root)}/")
-#         sub_indent = " " * 4 * (level + 1)
-#         for file in sorted(files):
-#             print(sub_indent + file)
+
+def _list_files(start_path):
+    """Print a tree of files in a directory."""
+    for root, _, files in os.walk(start_path):
+        level = root.replace(start_path, "").count(os.sep)
+        indent = " " * 4 * level
+        print(f"{indent}{os.path.basename(root)}/")
+        sub_indent = " " * 4 * (level + 1)
+        for file in sorted(files):
+            print(sub_indent + file)
 
 
 included_files = [
@@ -89,9 +91,8 @@ class TestMarshaCompressedManifestStaticFilesStorage(TestCase):
         """Files are excluded correctly"""
         call_command("collectstatic", verbosity=0, interactive=False)
 
-        # To be deleted : for debug purpose only
-        # _list_files(TEST_FILE_PATH)
-        # _list_files(settings.STATIC_ROOT)
+        if DEBUG:
+            _list_files(settings.STATIC_ROOT)
 
         for file in included_files:
             path = os.path.join(settings.STATIC_ROOT, file)
@@ -110,9 +111,8 @@ class TestMarshaCompressedManifestStaticFilesStorage(TestCase):
         """
         call_command("collectstatic", verbosity=0, interactive=False)
 
-        # To be deleted : for debug purpose only
-        # _list_files(TEST_FILE_PATH)
-        # _list_files(settings.STATIC_ROOT)
+        if DEBUG:
+            _list_files(settings.STATIC_ROOT)
 
         for file in included_files + excluded_files:
             path = os.path.join(settings.STATIC_ROOT, file)
