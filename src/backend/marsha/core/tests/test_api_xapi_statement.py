@@ -19,7 +19,7 @@ class XAPIStatementApiTest(TestCase):
 
     def test_xapi_statement_api_with_anonymous_user(self):
         """Anonymous users should not be allowed to send xAPI statement."""
-        response = self.client.post("/xapi/video/")
+        response = self.client.post(f"/xapi/video/{uuid.uuid4()}/")
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -42,7 +42,7 @@ class XAPIStatementApiTest(TestCase):
         }
 
         response = self.client.post(
-            "/xapi/video/",
+            f"/xapi/video/{video.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -61,7 +61,7 @@ class XAPIStatementApiTest(TestCase):
         data = {"foo": "bar"}
 
         response = self.client.post(
-            "/xapi/video/",
+            f"/xapi/video/{video.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -92,7 +92,7 @@ class XAPIStatementApiTest(TestCase):
         }
 
         response = self.client.post(
-            "/xapi/video/",
+            f"/xapi/video/{uuid.uuid4()}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -127,7 +127,7 @@ class XAPIStatementApiTest(TestCase):
         xapi_send_mock.side_effect = exception
 
         response = self.client.post(
-            "/xapi/video/",
+            f"/xapi/video/{video.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             data=json.dumps(data),
             content_type="application/json",
@@ -158,7 +158,7 @@ class XAPIStatementApiTest(TestCase):
 
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
-                "/xapi/video/",
+                f"/xapi/video/{video.id}/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
@@ -187,7 +187,7 @@ class XAPIStatementApiTest(TestCase):
 
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
-                "/xapi/video/",
+                f"/xapi/video/{video.id}/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
@@ -218,7 +218,7 @@ class XAPIStatementApiTest(TestCase):
 
         with mock.patch("marsha.core.api.XAPI.send", return_value=None):
             response = self.client.post(
-                "/xapi/document/",
+                f"/xapi/document/{document.id}/",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data=json.dumps(data),
                 content_type="application/json",
