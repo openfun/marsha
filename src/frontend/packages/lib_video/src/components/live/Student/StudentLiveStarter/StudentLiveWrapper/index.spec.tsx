@@ -16,6 +16,7 @@ import {
   PersistentStore,
   sharedLiveMediaMockFactory,
   videoMockFactory,
+  useVideo,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
@@ -1176,6 +1177,65 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     expect(pipSlave!.getElementsByTagName('img')[0]).toHaveAttribute(
       'src',
       `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/1`,
+    );
+  });
+
+  it('use id3 tags for shared documents instead of video when possible', () => {
+    const videoId = faker.datatype.uuid();
+    const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
+    useVideo.getState().setId3Video({
+      active_shared_live_media: { id: sharedLiveMedia.id },
+      active_shared_live_media_page: 2,
+      live_state: liveState.RUNNING,
+    });
+    useVideo.getState().setIsWatchingVideo(true);
+    const video = videoMockFactory({
+      id: videoId,
+      active_shared_live_media: sharedLiveMedia,
+      active_shared_live_media_page: 1,
+      title: 'live title',
+      live_info: {
+        jitsi: {
+          domain: 'meet.jit.si',
+          external_api_url: 'https://meet.jit.si/external_api.js',
+          config_overwrite: {},
+          interface_config_overwrite: {},
+          room_name: 'jitsi_conference',
+        },
+      },
+      live_state: liveState.RUNNING,
+      live_type: LiveModeType.JITSI,
+      shared_live_medias: [sharedLiveMedia],
+      xmpp: {
+        bosh_url: 'https://xmpp-server.com/http-bind',
+        converse_persistent_store: PersistentStore.LOCALSTORAGE,
+        websocket_url: null,
+        conference_url:
+          '870c467b-d66e-4949-8ee5-fcf460c72e88@conference.xmpp-server.com',
+        prebind_url: 'https://xmpp-server.com/http-pre-bind',
+        jid: 'xmpp-server.com',
+      },
+    });
+    useChatItemState.setState({
+      hasReceivedMessageHistory: true,
+    });
+
+    const { elementContainer: container } = render(
+      wrapInVideo(
+        <PictureInPictureProvider value={{ reversed: true }}>
+          <StudentLiveWrapper playerType="player_type" />
+        </PictureInPictureProvider>,
+        video,
+      ),
+    );
+
+    expect(mockJitsi).toHaveBeenCalled();
+
+    container!.querySelector('#picture-in-picture-master');
+    const pipSlave = container!.querySelector('#picture-in-picture-slave');
+    expect(pipSlave!.getElementsByTagName('img')[0]).toHaveAttribute(
+      'src',
+      `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/2`,
     );
   });
 

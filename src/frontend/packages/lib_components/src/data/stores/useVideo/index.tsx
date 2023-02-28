@@ -8,7 +8,7 @@ import {
 } from 'data/stores/actions';
 import { modelName } from 'types/models';
 import { StoreState } from 'types/stores';
-import { Video } from 'types/tracks';
+import { Video, Id3VideoType } from 'types/tracks';
 
 type VideoStateResource = {
   [modelName.VIDEOS]: {
@@ -19,6 +19,10 @@ type VideoStateResource = {
 type VideoState = StoreState<Video> &
   VideoStateResource & {
     getVideo: (video: Nullable<Video>) => Video;
+    id3Video: Nullable<Id3VideoType>;
+    setId3Video: (id3Video: Nullable<Id3VideoType>) => void;
+    isWatchingVideo: boolean;
+    setIsWatchingVideo: (isWatching: boolean) => void;
   };
 
 export const useVideo = create<VideoState>((set, get) => ({
@@ -55,4 +59,12 @@ export const useVideo = create<VideoState>((set, get) => ({
   removeResource: (video: Video) =>
     set(removeResource(get(), modelName.VIDEOS, video) as VideoStateResource),
   [modelName.VIDEOS]: {},
+  isWatchingVideo: false,
+  setIsWatchingVideo: (isWatching: boolean) => {
+    set((state) => ({ ...state, isWatchingVideo: isWatching }));
+  },
+  id3Video: null,
+  setId3Video: (video: Nullable<Id3VideoType>) => {
+    set((state) => ({ ...state, id3Video: video }));
+  },
 }));

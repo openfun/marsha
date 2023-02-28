@@ -1,5 +1,6 @@
 """Test medialive utils functions."""
-from datetime import timedelta
+from datetime import datetime, timedelta
+import json
 from unittest import mock
 
 from django.test import TestCase, override_settings
@@ -8,8 +9,8 @@ from django.utils import timezone
 from botocore.stub import Stubber
 import responses
 
-from marsha.core.defaults import PENDING, PROCESSING
-from marsha.core.factories import VideoFactory
+from marsha.core.defaults import PENDING, PROCESSING, RAW, RUNNING
+from marsha.core.factories import SharedLiveMediaFactory, VideoFactory
 from marsha.core.utils import medialive_utils
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -417,6 +418,7 @@ class MediaLiveUtilsTestCase(TestCase):
                                                 "RestartDelay": 5,
                                             }
                                         },
+                                        "HlsId3SegmentTagging": "ENABLED",
                                         "IndexNSegments": 15,
                                         "InputLossAction": "EMIT_OUTPUT",
                                         "IvInManifest": "INCLUDE",
@@ -1287,3 +1289,67 @@ class MediaLiveUtilsTestCase(TestCase):
             deleted_endpoints = medialive_utils.delete_mediapackage_channel("1")
             mediapackage_client_stubber.assert_no_pending_responses()
         self.assertEqual(deleted_endpoints, ["1", "2"])
+
+    def test_update_id3(self):
+        """Should update id3 tags on a video channel."""
+        shared_live_media = SharedLiveMediaFactory(nb_pages=5)
+
+        video = VideoFactory(
+            live_type=RAW,
+            live_state=RUNNING,
+            active_shared_live_media=shared_live_media,
+            active_shared_live_media_page=3,
+            live_info={
+                "medialive": {
+                    "input": {"id": "medialive_input1"},
+                    "channel": {"id": "medialive_channel1"},
+                },
+                "mediapackage": {
+                    "endpoints": {
+                        "hls": {"id": "mediapackage_endpoint1"},
+                    },
+                    "channel": {"id": "mediapackage_channel1"},
+                },
+            },
+        )
+
+        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        with mock.patch("datetime.datetime") as mock_dt, Stubber(
+            medialive_utils.medialive_client
+        ) as mediapackage_client_stubber:
+            mock_dt.now = mock.Mock(return_value=now)
+            mediapackage_client_stubber.add_response(
+                "batch_update_schedule",
+                service_response={},
+                expected_params={
+                    "ChannelId": "medialive_channel1",
+                    "Creates": {
+                        "ScheduleActions": [
+                            {
+                                "ActionName": now.isoformat(),
+                                "ScheduleActionStartSettings": {
+                                    "ImmediateModeScheduleActionStartSettings": {}
+                                },
+                                "ScheduleActionSettings": {
+                                    "HlsId3SegmentTaggingSettings": {
+                                        "Tag": json.dumps(
+                                            {
+                                                "video": {
+                                                    "active_shared_live_media": {
+                                                        "id": str(shared_live_media.id)
+                                                    },
+                                                    "active_shared_live_media_page": 3,
+                                                    "id": str(video.id),
+                                                    "live_state": RUNNING,
+                                                }
+                                            }
+                                        )
+                                    }
+                                },
+                            }
+                        ]
+                    },
+                },
+            )
+            medialive_utils.update_id3_tags(video)
+            mediapackage_client_stubber.assert_no_pending_responses()

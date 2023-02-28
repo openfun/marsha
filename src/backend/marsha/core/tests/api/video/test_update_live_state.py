@@ -6,7 +6,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
-from marsha.core import factories
+from marsha.core import api, factories
 from marsha.core.api import timezone
 from marsha.core.defaults import (
     HARVESTED,
@@ -74,7 +74,10 @@ class VideoUpdateLiveStateAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags:
+            mock_update_id3_tags.assert_not_called()
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
@@ -159,7 +162,10 @@ class VideoUpdateLiveStateAPITest(TestCase):
         new_start = timezone.now() + timedelta(minutes=20)
         with mock.patch.object(timezone, "now", return_value=new_start), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags:
+            mock_update_id3_tags.assert_not_called()
             response = self.client.patch(
                 f"/api/videos/{video.id}/update-live-state/",
                 data,
