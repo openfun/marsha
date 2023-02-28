@@ -50,7 +50,11 @@ included_files = [
 excluded_files = [
     "js/build/site/static/js/main.a235b98c.3fa8bf9a8082.js",
     "js/build/site/static/js/main.a235b98c.3fa8bf9a8082.js.br",
-    "js/build/site/static/js/main.a235b98c.js.d41d8cd98f00.map",
+    "js/build/site/static/js/main.a235b98c.js.map.br",
+    "js/build/site/static/js/main.a235b98c.js.map.gz",
+    "js/build/site/static/js/main.a235b98c.js.e0dcef76319e.map",
+    "js/build/site/static/js/main.a235b98c.js.e0dcef76319e.map.br",
+    "js/build/site/static/js/main.a235b98c.js.e0dcef76319e.map.gz",
     (
         "js/build/lti_site/"
         "vendors-node_modules_grommet-icons_index_js.cbf443f52b931567ba45.index.2233822e528d.js"
