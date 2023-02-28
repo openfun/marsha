@@ -78,7 +78,10 @@ class VideoAPITest(TestCase):
 
         with mock.patch.object(api.video, "stop_live_channel"), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups:
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags:
+            mock_update_id3_tags.assert_not_called()
             jwt_token = UserAccessTokenFactory(user=user)
             response = self.client.post(
                 f"/api/videos/{video.id}/stop-live/",
@@ -252,7 +255,7 @@ class VideoAPITest(TestCase):
         now = datetime(2021, 11, 16, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
             api.video, "stop_live_channel"
-        ), mock.patch(
+        ), mock.patch.object(api.video, "update_id3_tags"), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.post(
@@ -409,7 +412,7 @@ class VideoAPITest(TestCase):
         # stop a live video,
         with mock.patch.object(timezone, "now", return_value=stop), mock.patch.object(
             api.video, "stop_live_channel"
-        ), mock.patch(
+        ), mock.patch.object(api.video, "update_id3_tags"), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.post(

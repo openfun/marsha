@@ -131,7 +131,8 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
         "medialive:ListInputs",
         "medialive:TagResource",
         "medialive:ListInputSecurityGroups",
-        "medialive:ListChannels"
+        "medialive:ListChannels",
+        "medialive:BatchUpdateSchedule"
       ],
       "Effect": "Allow",
       "Resource": "*"

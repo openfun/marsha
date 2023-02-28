@@ -128,3 +128,12 @@ class SharedLiveMediaSerializer(
             )
 
         return urls
+
+
+class SharedLiveMediaId3TagsSerializer(serializers.ModelSerializer):
+    """Serializer to display a shared live media model in id3 Tags."""
+
+    class Meta:  # noqa
+        model = SharedLiveMedia
+        fields = ("id",)
+        read_only_fields = ("id",)

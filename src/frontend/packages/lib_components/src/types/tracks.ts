@@ -254,6 +254,11 @@ export interface Live extends Omit<Video, 'live_state' | 'live_type'> {
   live_type: LiveModeType;
 }
 
+export type Id3VideoType = Pick<
+  Video,
+  'live_state' | 'active_shared_live_media' | 'active_shared_live_media_page'
+>;
+
 export interface LiveJitsi extends Omit<Live, 'live_type' | 'live_info'> {
   live_type: LiveModeType.JITSI;
   live_info: {

@@ -48,6 +48,7 @@ from ..utils.medialive_utils import (
     delete_mediapackage_channel,
     start_live_channel,
     stop_live_channel,
+    update_id3_tags,
     wait_medialive_channel_is_created,
 )
 from ..utils.time_utils import to_timestamp
@@ -269,7 +270,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     arity=2,
                 )
             )
+
         channel_layers_utils.dispatch_video_to_groups(serializer.instance)
+        update_id3_tags(serializer.instance)
 
     def create(self, request, *args, **kwargs):
         """Create one video based on the request payload."""
@@ -454,6 +457,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
 
         serializer = self.get_serializer(video)
+        update_id3_tags(video)
         return Response(serializer.data)
 
     @action(methods=["post"], detail=True, url_path="stop-live")
@@ -495,6 +499,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
         serializer = self.get_serializer(video)
 
+        update_id3_tags(video)
         return Response(serializer.data)
 
     @action(methods=["post"], detail=True, url_path="harvest-live")
@@ -663,6 +668,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             video.live_state = defaults.RUNNING
             live_info.update({"started_at": stamp})
             live_info.pop("stopped_at", None)
+            update_id3_tags(video)
 
             # if keys with no timeout were cached for this video, it needs to be reinitialized
             key_cache_video = f"{defaults.VIDEO_ATTENDANCE_KEY_CACHE}{video.id}"
@@ -776,6 +782,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
 
         channel_layers_utils.dispatch_video_to_groups(video)
+        update_id3_tags(video)
         return Response(serializer.data)
 
     @action(methods=["patch"], detail=True, url_path="navigate-sharing")
@@ -815,6 +822,8 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         serializer = self.get_serializer(video)
 
         channel_layers_utils.dispatch_video_to_groups(video)
+        update_id3_tags(video)
+
         return Response(serializer.data)
 
     @action(methods=["patch"], detail=True, url_path="end-sharing")
@@ -845,7 +854,9 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         video.save()
 
         serializer = self.get_serializer(video)
+
         channel_layers_utils.dispatch_video_to_groups(video)
+        update_id3_tags(video)
         return Response(serializer.data)
 
     @action(

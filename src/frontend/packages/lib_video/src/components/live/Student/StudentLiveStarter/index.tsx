@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 import { Maybe } from 'lib-common';
-import { JoinMode, liveState } from 'lib-components';
+import { JoinMode, liveState, useVideo } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
@@ -27,6 +27,7 @@ export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
   const intl = useIntl();
   const live = useCurrentLive();
   const session = useLiveSession();
+  const id3Video = useVideo((state) => state.id3Video);
   const liveScheduleStartDate = useMemo(() => {
     if (!live.starting_at) {
       return undefined;
@@ -169,14 +170,15 @@ export const StudentLiveStarter = ({ playerType }: StudentLiveStarterProps) => {
     !liveScheduleStartDate;
 
   if (
-    ([
+    id3Video?.live_state !== liveState.RUNNING &&
+    (([
       liveState.STOPPING,
       liveState.STOPPED,
       liveState.HARVESTING,
       liveState.HARVESTED,
     ].includes(live.live_state) &&
       isScheduledPassed) ||
-    !isStarted
+      !isStarted)
   ) {
     return <StudentLiveAdvertising />;
   } else if (

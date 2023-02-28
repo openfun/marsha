@@ -1,6 +1,6 @@
 import { Box, Layer } from 'grommet';
 import { Nullable } from 'lib-common';
-import { useAppConfig } from 'lib-components';
+import { useAppConfig, useVideo } from 'lib-components';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
@@ -39,6 +39,8 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   const intl = useIntl();
   const appData = useAppConfig();
   const live = useCurrentLive();
+  const { isWatchingVideo, id3Video } = useVideo();
+
   const mainElementRef = useRef<Nullable<HTMLDivElement>>(null);
 
   const { configPanel, currentItem, setPanelVisibility } = useLivePanelState(
@@ -109,7 +111,11 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
   }
 
   let secondElement: ReactNode;
-  if (live.active_shared_live_media && live.active_shared_live_media_page) {
+  if (
+    !isWatchingVideo &&
+    live.active_shared_live_media &&
+    live.active_shared_live_media_page
+  ) {
     if (!live.active_shared_live_media.urls) {
       throw new MissingSharedLiveSessionUrls(
         'Missing shared live session urls during a sharing.',
@@ -121,6 +127,29 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
         initialPage={live.active_shared_live_media_page}
         pages={live.active_shared_live_media.urls.pages}
       >
+        <UpdateCurrentSharedLiveMediaPage />
+      </SharedMediaExplorer>
+    );
+  }
+
+  if (
+    isWatchingVideo &&
+    id3Video?.active_shared_live_media?.id &&
+    id3Video.active_shared_live_media_page
+  ) {
+    const pages = live.shared_live_medias.find(
+      (media) => media.id === id3Video.active_shared_live_media?.id,
+    )?.urls?.pages;
+    const pageNumber = id3Video.active_shared_live_media_page;
+
+    if (!pages) {
+      throw new MissingSharedLiveSessionUrls(
+        'Missing shared live session urls during a sharing.',
+      );
+    }
+
+    secondElement = (
+      <SharedMediaExplorer initialPage={pageNumber} pages={pages}>
         <UpdateCurrentSharedLiveMediaPage />
       </SharedMediaExplorer>
     );
