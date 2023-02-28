@@ -1,4 +1,5 @@
 import { Nullable } from 'lib-common';
+import { Live } from 'types';
 
 import {
   ContextExtensionsDefinition,
@@ -23,7 +24,11 @@ export class LiveXAPIStatement implements VideoXAPIStatementInterface {
   private playedSegments = '';
   private startSegment: Nullable<number> = null;
 
-  constructor(private jwt: string, private sessionId: string) {}
+  constructor(
+    private jwt: string,
+    private sessionId: string,
+    private liveId: Live['id'],
+  ) {}
 
   getPlayedSegment(): string {
     if (this.startSegment !== null) {
@@ -196,7 +201,7 @@ export class LiveXAPIStatement implements VideoXAPIStatementInterface {
   }
 
   private send(data: DataPayload) {
-    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO);
+    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO, this.liveId);
   }
 
   private addStartSegment(time: number) {

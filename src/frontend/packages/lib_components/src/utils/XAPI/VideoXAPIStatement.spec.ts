@@ -2,6 +2,7 @@ import fetchMock from 'fetch-mock';
 import { XAPI_ENDPOINT } from 'lib-components';
 
 import { VerbDefinition } from 'types/XAPI';
+import { videoMockFactory } from 'utils/tests/factories';
 import { truncateDecimalDigits } from 'utils/truncateDecimalDigits';
 
 import { VideoXAPIStatement } from './VideoXAPIStatement';
@@ -11,7 +12,8 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.setDuration', () => {
     it('does not accept negative or 0 value', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
 
       expect(() => {
         xapiStatement.setDuration(-1);
@@ -23,7 +25,8 @@ describe('VideoXAPIStatement', () => {
     });
 
     it('accept only one modification', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(20);
 
       expect(() => {
@@ -34,7 +37,8 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.mergeSegments', () => {
     it('merges overlapping time segments', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
 
       expect(xapiStatement.mergeSegments(['0[.]5', '10[.]22'])).toBe(
         '0[.]5[,]10[.]22',
@@ -74,12 +78,15 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.initialized', () => {
     it('post an initialized statement with only required extensions', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204);
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204);
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         length: 1,
       });
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -104,10 +111,11 @@ describe('VideoXAPIStatement', () => {
     });
 
     it('post an initialized statement with all extensions', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         ccSubtitleEnabled: true,
         ccSubtitleLanguage: 'en-US',
@@ -122,7 +130,9 @@ describe('VideoXAPIStatement', () => {
         videoPlaybackSize: '1080x960',
         volume: 1,
       });
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -161,15 +171,18 @@ describe('VideoXAPIStatement', () => {
 
   describe('XAPIStatement.played', () => {
     it('sends a played statement', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(1);
       xapiStatement.played({
         time: 42.321,
       });
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -196,15 +209,18 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.paused', () => {
     it('sends a paused statement without completion threshold', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(100);
       xapiStatement.played({ time: 0 });
       xapiStatement.paused({ time: 10 });
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -236,17 +252,20 @@ describe('VideoXAPIStatement', () => {
 
   describe('XAPIStatement.seeked', () => {
     it('sends a seeked statement', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(100);
       xapiStatement.seeked({
         timeFrom: 0,
         timeTo: 10,
       });
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -277,16 +296,19 @@ describe('VideoXAPIStatement', () => {
 
   describe('XAPIStatement.completed', () => {
     it('sends a completed statement when progress reaches 100%', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({ length: 100 });
       xapiStatement.played({ time: 0 });
       xapiStatement.paused({ time: 100 });
       // completed is delayed to have a realistic duration
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -326,15 +348,18 @@ describe('VideoXAPIStatement', () => {
       // We are not using plyr anymore but keep this test to prevent similar behavior
       // in other players.
 
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({ length: 74.582 });
       xapiStatement.played({ time: 0 });
       xapiStatement.paused({ time: 74.608 });
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -368,16 +393,19 @@ describe('VideoXAPIStatement', () => {
 
   describe('XAPIStatement.terminated', () => {
     it('sends terminated statement', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(100);
       xapiStatement.terminated({
         time: 50,
       });
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -407,17 +435,18 @@ describe('VideoXAPIStatement', () => {
     });
 
     it('sends a terminated statement with a segment started and not closed', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(100);
       xapiStatement.played({ time: 0 });
       xapiStatement.terminated({
         time: 50,
       });
 
-      const calls = fetchMock.calls(`${XAPI_ENDPOINT}/video/`);
+      const calls = fetchMock.calls(`${XAPI_ENDPOINT}/video/${video.id}/`);
 
       const pausedCall = calls[1];
 
@@ -459,10 +488,11 @@ describe('VideoXAPIStatement', () => {
   });
   describe('XAPIStatement.interacted', () => {
     it('sends an interacted event with all context entensions', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(1);
       xapiStatement.interacted(
         {
@@ -481,7 +511,9 @@ describe('VideoXAPIStatement', () => {
         },
       );
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 
@@ -516,10 +548,11 @@ describe('VideoXAPIStatement', () => {
   });
   describe('VideoXAPIStatement played segment', () => {
     it('computes played segment', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         length: 100,
       });
@@ -555,10 +588,11 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.getProgress', () => {
     it('compute progress at random time', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         length: 100,
       });
@@ -586,10 +620,11 @@ describe('VideoXAPIStatement', () => {
     });
 
     it('compute progress when not started', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         length: 100,
       });
@@ -597,10 +632,11 @@ describe('VideoXAPIStatement', () => {
     });
 
     it('compute progress with everything watched', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.initialized({
         length: 100,
       });
@@ -619,19 +655,22 @@ describe('VideoXAPIStatement', () => {
 
   describe('VideoXAPIStatement.computeThreshold', () => {
     it('return a completion thresold equal to 0.95 when time is 600', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(600);
       xapiStatement.computeCompletionThreshold();
       expect(xapiStatement.getCompletionThreshold()).toEqual(0.95);
     });
     it('return a completion threshold equal to 0.95 when duration is higher than 600', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(600 * (Math.random() + 1));
       xapiStatement.computeCompletionThreshold();
       expect(xapiStatement.getCompletionThreshold()).toEqual(0.95);
     });
     it('return a completion closed to 0.70 when duration is less than 1 minute', () => {
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const video = videoMockFactory();
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(1);
       xapiStatement.computeCompletionThreshold();
       expect(xapiStatement.getCompletionThreshold()).toBeCloseTo(0.7, 3);
@@ -639,15 +678,18 @@ describe('VideoXAPIStatement', () => {
   });
   describe('VideoXAPIStatement.downloaded', () => {
     it('sends downloaded segment', () => {
-      fetchMock.mock(`${XAPI_ENDPOINT}/video/`, 204, {
+      const video = videoMockFactory();
+      fetchMock.mock(`${XAPI_ENDPOINT}/video/${video.id}/`, 204, {
         overwriteRoutes: true,
       });
 
-      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd');
+      const xapiStatement = new VideoXAPIStatement('jwt', 'abcd', video.id);
       xapiStatement.setDuration(600);
       xapiStatement.downloaded(720);
 
-      const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/video/`);
+      const lastCall = fetchMock.lastCall(
+        `${XAPI_ENDPOINT}/video/${video.id}/`,
+      );
 
       const requestParameters = lastCall![1]!;
 

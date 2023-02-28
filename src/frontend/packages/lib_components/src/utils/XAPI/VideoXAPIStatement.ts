@@ -1,6 +1,7 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { Nullable } from 'lib-common';
 import { DateTime, Interval } from 'luxon';
+import { Video } from 'types';
 
 import {
   CompletedDataPlayload,
@@ -30,7 +31,11 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
   private isCompleted = false;
   private completionThreshold: Nullable<number> = null;
 
-  constructor(private jwt: string, private sessionId: string) {}
+  constructor(
+    private jwt: string,
+    private sessionId: string,
+    private videoId: Video['id'],
+  ) {}
 
   setDuration(duration: number) {
     if (this.duration > 0) {
@@ -423,7 +428,7 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
       return;
     }
 
-    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO);
+    sendXAPIStatement(data, this.jwt, XapiResourceType.VIDEO, this.videoId);
   }
 
   private addStartSegment(time: number) {

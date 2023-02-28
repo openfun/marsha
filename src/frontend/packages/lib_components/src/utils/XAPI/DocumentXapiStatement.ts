@@ -1,3 +1,5 @@
+import { Document } from 'types';
+
 import {
   ContextDocumentExtensionsDefinition,
   DataPayload,
@@ -9,7 +11,11 @@ import {
 import { sendXAPIStatement } from './sendXAPIStatement';
 
 export class DocumentXapiStatement implements DocumentXapiStatementInterface {
-  constructor(private jwt: string, private sessionId: string) {}
+  constructor(
+    private jwt: string,
+    private sessionId: string,
+    private documentId: Document['id'],
+  ) {}
 
   downloaded(): void {
     const data: DataPayload = {
@@ -30,6 +36,11 @@ export class DocumentXapiStatement implements DocumentXapiStatementInterface {
   }
 
   private send(data: DataPayload) {
-    sendXAPIStatement(data, this.jwt, XapiResourceType.DOCUMENT);
+    sendXAPIStatement(
+      data,
+      this.jwt,
+      XapiResourceType.DOCUMENT,
+      this.documentId,
+    );
   }
 }

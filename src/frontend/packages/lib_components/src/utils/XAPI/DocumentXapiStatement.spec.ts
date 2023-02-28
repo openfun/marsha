@@ -2,6 +2,7 @@ import fetchMock from 'fetch-mock';
 import { XAPI_ENDPOINT } from 'lib-components';
 
 import { VerbDefinition } from 'types/XAPI';
+import { documentMockFactory } from 'utils/tests/factories';
 
 import { DocumentXapiStatement } from './DocumentXapiStatement';
 
@@ -9,12 +10,15 @@ describe('DocumentXapiStatement', () => {
   afterEach(() => fetchMock.reset());
 
   it('sends a downloaded statement', () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/document/`, 204);
+    const document = documentMockFactory();
+    fetchMock.mock(`${XAPI_ENDPOINT}/document/${document.id}/`, 204);
 
-    const xapiStatement = new DocumentXapiStatement('jwt', 'abcd');
+    const xapiStatement = new DocumentXapiStatement('jwt', 'abcd', document.id);
     xapiStatement.downloaded();
 
-    const lastCall = fetchMock.lastCall(`${XAPI_ENDPOINT}/document/`);
+    const lastCall = fetchMock.lastCall(
+      `${XAPI_ENDPOINT}/document/${document.id}/`,
+    );
 
     const requestParameters = lastCall![1]!;
 
