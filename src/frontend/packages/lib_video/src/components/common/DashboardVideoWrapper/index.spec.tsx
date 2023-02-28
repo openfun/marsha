@@ -1,7 +1,4 @@
 import { cleanup, screen } from '@testing-library/react';
-import React, { Suspense } from 'react';
-
-import { LiveModaleConfigurationProvider } from 'lib-video';
 import {
   modelName,
   LiveModeType,
@@ -9,7 +6,10 @@ import {
   uploadState,
   videoMockFactory,
 } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
+import React, { Suspense } from 'react';
+
+import { LiveModaleConfigurationProvider } from 'hooks/useLiveModale';
 
 import { DashboardVideoWrapper } from '.';
 
@@ -38,10 +38,12 @@ jest.mock('lib-components', () => ({
   decodeJwt: () => ({}),
 }));
 
-jest.mock('lib-video', () => ({
-  ...jest.requireActual('lib-video'),
-  LiveTeacherDashboard: () => <p>{`Dashboard video live`}</p>,
-  VODTeacherDashboard: () => <p>{`VOD dashboard`}</p>,
+jest.mock('components/live', () => ({
+  LiveTeacherDashboard: () => <p>Dashboard video live</p>,
+}));
+
+jest.mock('components/vod', () => ({
+  VODTeacherDashboard: () => <p>VOD dashboard</p>,
 }));
 
 describe('<DashboardVideoWrapper />', () => {
@@ -77,7 +79,7 @@ describe('<DashboardVideoWrapper />', () => {
         </LiveModaleConfigurationProvider>,
       );
 
-      screen.getByText('Dashboard video live');
+      expect(screen.getByText('Dashboard video live')).toBeInTheDocument();
 
       cleanup();
       jest.clearAllMocks();
@@ -93,7 +95,7 @@ describe('<DashboardVideoWrapper />', () => {
 
       render(<DashboardVideoWrapper video={video} />);
 
-      screen.getAllByText('VOD dashboard');
+      expect(screen.getAllByText('VOD dashboard')).toHaveLength(1);
 
       cleanup();
       jest.clearAllMocks();
@@ -117,6 +119,6 @@ describe('<DashboardVideoWrapper />', () => {
 
     render(<DashboardVideoWrapper video={video} />);
 
-    screen.getAllByText('VOD dashboard');
+    expect(screen.getAllByText('VOD dashboard')).toHaveLength(1);
   });
 });

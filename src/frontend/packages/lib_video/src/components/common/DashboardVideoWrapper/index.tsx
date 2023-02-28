@@ -1,20 +1,11 @@
+import { useVideo, uploadState, Video } from 'lib-components';
 import React, { useMemo } from 'react';
 
-import {
-  useVideo,
-  uploadState,
-  Video,
-  checkLtiToken,
-  decodeJwt,
-  useJwt,
-} from 'lib-components';
-import {
-  convertVideoToLive,
-  generateVideoWebsocketUrl,
-  getOrInitAnonymousId,
-  LiveTeacherDashboard,
-  VODTeacherDashboard,
-} from 'lib-video';
+import { LiveTeacherDashboard } from 'components/live';
+import { VODTeacherDashboard } from 'components/vod';
+import { convertVideoToLive } from 'utils/convertVideo';
+import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { generateVideoWebsocketUrl } from 'utils/websocket';
 
 interface DashboardVideoWrapperProps {
   video: Video;
@@ -24,12 +15,11 @@ export const DashboardVideoWrapper = ({
   video,
 }: DashboardVideoWrapperProps) => {
   const currentVideo = useVideo((state) => state.getVideo(video));
+
   const videoWebsocketUrl = useMemo(() => {
     return generateVideoWebsocketUrl(currentVideo.id, (url) => {
-      const { jwt } = useJwt.getState();
-
-      if (!checkLtiToken(decodeJwt(jwt))) {
-        const anonymousId = getOrInitAnonymousId();
+      const anonymousId = getOrInitAnonymousId();
+      if (anonymousId) {
         url = `${url}&anonymous_id=${anonymousId}`;
       }
       return url;
