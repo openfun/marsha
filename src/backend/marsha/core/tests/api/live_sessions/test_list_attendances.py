@@ -10,6 +10,7 @@ from django.core.cache import cache
 from django.test import override_settings
 from django.utils import timezone
 
+from marsha.core import api
 from marsha.core.defaults import JITSI, RAW, RUNNING, STOPPED
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
@@ -955,12 +956,13 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
             "state": "running",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        response = self.client.patch(
-            f"/api/videos/{video.id}/update-live-state/",
-            data,
-            content_type="application/json",
-            HTTP_X_MARSHA_SIGNATURE=signature,
-        )
+        with mock.patch.object(api.video, "update_id3_tags"):
+            response = self.client.patch(
+                f"/api/videos/{video.id}/update-live-state/",
+                data,
+                content_type="application/json",
+                HTTP_X_MARSHA_SIGNATURE=signature,
+            )
         self.assertEqual(response.status_code, 200)
 
         # results aren't cached anymore

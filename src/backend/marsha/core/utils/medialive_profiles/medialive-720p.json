@@ -70,6 +70,7 @@
               "RestartDelay": 5
             }
           },
+          "HlsId3SegmentTagging": "ENABLED",
           "IndexNSegments": 15,
           "InputLossAction": "EMIT_OUTPUT",
           "IvInManifest": "INCLUDE",

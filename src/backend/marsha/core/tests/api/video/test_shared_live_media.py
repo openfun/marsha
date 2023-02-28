@@ -5,6 +5,7 @@ from unittest import mock
 
 from django.test import TestCase, override_settings
 
+from marsha.core import api
 from marsha.core.api.video import channel_layers_utils
 from marsha.core.defaults import (
     DELETED,
@@ -695,9 +696,12 @@ class TestVideoSharedLiveMedia(TestCase):
         )
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/start-sharing/",
@@ -1073,9 +1077,12 @@ class TestVideoSharedLiveMedia(TestCase):
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/navigate-sharing/",
@@ -1472,9 +1479,12 @@ class TestVideoSharedLiveMedia(TestCase):
 
         with mock.patch.object(
             channel_layers_utils, "dispatch_video_to_groups"
-        ) as mock_dispatch_video_to_groups, mock.patch(
+        ) as mock_dispatch_video_to_groups, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             response = self.client.patch(
                 f"/api/videos/{shared_live_media.video.id}/end-sharing/",

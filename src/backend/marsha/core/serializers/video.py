@@ -23,7 +23,10 @@ from ..models import Thumbnail, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from .base import TimestampField, get_video_cloudfront_url_params
 from .playlist import PlaylistLiteSerializer
-from .shared_live_media import SharedLiveMediaSerializer
+from .shared_live_media import (
+    SharedLiveMediaId3TagsSerializer,
+    SharedLiveMediaSerializer,
+)
 from .thumbnail import ThumbnailSerializer
 from .timed_text_track import TimedTextTrackSerializer
 
@@ -447,6 +450,27 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
         return self.context["request"].build_absolute_uri(
             reverse("video_lti_view", args=[obj.id]),
         )
+
+
+class VideoId3TagsSerializer(serializers.ModelSerializer):
+    """A serializer to display a Video resource in id3 tags."""
+
+    class Meta:
+        model = Video
+        fields = (
+            "active_shared_live_media",
+            "active_shared_live_media_page",
+            "id",
+            "live_state",
+        )
+        read_only_fields = (
+            "active_shared_live_media",
+            "active_shared_live_media_page",
+            "id",
+            "live_state",
+        )
+
+    active_shared_live_media = SharedLiveMediaId3TagsSerializer(read_only=True)
 
 
 class ParticipantSerializer(serializers.Serializer):

@@ -64,13 +64,16 @@ class VideoStartLiveAPITest(TestCase):
             api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
             api.video, "wait_medialive_channel_is_created"
-        ) as mock_wait_medialive_channel_is_created, mock.patch(
+        ) as mock_wait_medialive_channel_is_created, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
         ) as mock_create_room, mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.return_value = {
                 "medialive": {
@@ -210,13 +213,16 @@ class VideoStartLiveAPITest(TestCase):
             api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
             api.video, "wait_medialive_channel_is_created"
-        ) as mock_wait_medialive_channel_is_created, mock.patch(
+        ) as mock_wait_medialive_channel_is_created, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
         ) as mock_create_room, mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.return_value = {
                 "medialive": {
@@ -377,10 +383,13 @@ class VideoStartLiveAPITest(TestCase):
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
-        ) as mock_create_room, mock.patch(
+        ) as mock_create_room, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             mock_jwt_encode.return_value = "xmpp_jwt"
+            mock_update_id3_tags.assert_not_called()
             mock_create_live_stream.assert_not_called()
             mock_create_room.assert_not_called()
 
@@ -522,7 +531,9 @@ class VideoStartLiveAPITest(TestCase):
             api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
             api.video, "wait_medialive_channel_is_created"
-        ), mock.patch(
+        ), mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
@@ -532,6 +543,7 @@ class VideoStartLiveAPITest(TestCase):
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.assert_not_called()
             mock_create_room.assert_not_called()
+            mock_update_id3_tags.assert_not_called()
 
             response = self.client.post(
                 f"/api/videos/{video.id}/start-live/",
@@ -675,13 +687,16 @@ class VideoStartLiveAPITest(TestCase):
             api.video, "create_live_stream"
         ) as mock_create_live_stream, mock.patch.object(
             api.video, "wait_medialive_channel_is_created"
-        ) as mock_wait_medialive_channel_is_created, mock.patch(
+        ) as mock_wait_medialive_channel_is_created, mock.patch.object(
+            api.video, "update_id3_tags"
+        ) as mock_update_id3_tags, mock.patch(
             "marsha.core.serializers.xmpp_utils.generate_jwt"
         ) as mock_jwt_encode, mock.patch.object(
             api.video, "create_room"
         ) as mock_create_room, mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
+            mock_update_id3_tags.assert_not_called()
             mock_jwt_encode.return_value = "xmpp_jwt"
             mock_create_live_stream.return_value = {
                 "medialive": {
