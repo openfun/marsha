@@ -56,8 +56,8 @@ class XAPIVideoStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -144,8 +144,8 @@ class XAPIVideoStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -233,8 +233,8 @@ class XAPIVideoStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -323,8 +323,8 @@ class XAPIVideoStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -410,8 +410,8 @@ class XAPIVideoStatmentTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIVideoStatement(video, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIVideoStatement()
+        statement = xapi_statement.from_lti(video, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -484,8 +484,8 @@ class XAPIDocumentStatementTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIDocumentStatement()
+        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -561,8 +561,8 @@ class XAPIDocumentStatementTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIDocumentStatement()
+        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -627,8 +627,8 @@ class XAPIDocumentStatementTest(TestCase):
             "id": "17dfcd44-b3e0-403d-ab96-e3ef7da616d4",
         }
 
-        xapi_statement = XAPIDocumentStatement(document, base_statement, jwt_token)
-        statement = xapi_statement.get_statement()
+        xapi_statement = XAPIDocumentStatement()
+        statement = xapi_statement.from_lti(document, base_statement, jwt_token)
 
         self.assertIsNotNone(statement["timestamp"])
         self.assertEqual(
@@ -716,12 +716,12 @@ class GetXapiStatementTest(TestCase):
     def test_get_xapi_statement_with_video(self):
         """With video parameter must return XAPIVideoStatement."""
         statement_class = get_xapi_statement("video")
-        self.assertEqual(statement_class, XAPIVideoStatement)
+        self.assertIsInstance(statement_class, XAPIVideoStatement)
 
     def test_get_xapi_statement_with_document(self):
         """With document parameter must return XAPIDocumentStatement."""
         statement_class = get_xapi_statement("document")
-        self.assertEqual(statement_class, XAPIDocumentStatement)
+        self.assertIsInstance(statement_class, XAPIDocumentStatement)
 
     def test_get_xapi_statement_with_unknown_resource(self):
         """With unknown resource must throw an exception."""

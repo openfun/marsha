@@ -12,10 +12,10 @@ import requests
 def get_xapi_statement(resource):
     """Return the xapi object statement based on the required resource type."""
     if resource == "video":
-        return XAPIVideoStatement
+        return XAPIVideoStatement()
 
     if resource == "document":
-        return XAPIDocumentStatement
+        return XAPIDocumentStatement()
 
     raise NotImplementedError
 
@@ -23,13 +23,8 @@ def get_xapi_statement(resource):
 class XAPIStatementMixin:
     """Mixin used by xapi statements."""
 
-    statement = None
-
-    def get_statement(self):
-        """Return the enriched statement."""
-        return self.statement
-
-    def get_user_id(self, jwt_token):
+    @staticmethod
+    def get_user_id(jwt_token):
         """Return the user id if present in the JWT token or the session_is otherwise."""
         return (
             jwt_token.payload["user"].get("id")
@@ -37,29 +32,118 @@ class XAPIStatementMixin:
             else jwt_token.payload["session_id"]
         )
 
-    def get_homepage(self, resource):
+    @staticmethod
+    def get_homepage(resource):
         """Return the domain associated to the playlist consumer site."""
         return resource.playlist.consumer_site.domain
+
+    def get_locale(self):
+        """Return the locale formatted with a - instead of _"""
+
+        return to_locale(settings.LANGUAGE_CODE).replace("_", "-")
+
+    def get_actor_from_website(self, homepage, user):
+        """Return the actor property from a website context"""
+        return {
+            "objectType": "Agent",
+            "account": {
+                "homePage": homepage,
+                "mbox": f"mailto:{user.email}",
+                "name": str(user.id),
+            },
+        }
+
+    def get_actor_from_lti(self, homepage, user_id):
+        """Return the actor property from a LTI context"""
+        return {
+            "objectType": "Agent",
+            "account": {"name": user_id, "homePage": homepage},
+        }
+
+    def build_common_statement_properties(
+        self, statement, homepage, user=None, user_id=None
+    ):
+        """build statement properties common to all resources."""
+        if "id" not in statement:
+            statement["id"] = str(uuid.uuid4())
+
+        statement["timestamp"] = timezone.now().isoformat()
+
+        statement["actor"] = (
+            self.get_actor_from_website(homepage, user)
+            if user
+            else self.get_actor_from_lti(homepage, user_id)
+        )
+
+        return statement
 
 
 class XAPIDocumentStatement(XAPIStatementMixin):
     """Object managing statement for document objects."""
 
-    def __init__(self, document, statement, jwt_token):
-        """Compute a valid xapi download activity statement."""
-        user_id = self.get_user_id(jwt_token)
-
-        homepage = self.get_homepage(document)
-
-        activity_type = "http://id.tincanapi.com/activitytype/document"
+    # pylint: disable=too-many-arguments
+    def _build_statement(self, document, statement, homepage, user=None, user_id=None):
+        """Build all common properties for a document."""
 
         if re.match(r"^http(s?):\/\/.*", homepage) is None:
             homepage = f"http://{homepage}"
 
-        if "id" not in statement:
-            statement["id"] = str(uuid.uuid4())
+        statement = self.build_common_statement_properties(
+            statement, homepage, user=user, user_id=user_id
+        )
 
-        statement["timestamp"] = timezone.now().isoformat()
+        statement["object"] = {
+            "definition": {
+                "type": "http://id.tincanapi.com/activitytype/document",
+                "name": {self.get_locale(): document.title},
+            },
+            "id": f"uuid://{document.id}",
+            "objectType": "Activity",
+        }
+
+        return statement
+
+    def from_website(self, document, statement, current_site, user):
+        """Compute a valid xapi satement in a website context.
+
+        Parameters
+        ----------
+        document : Type[marsha.core.models.Document]
+            The document object used in the xAPI statement
+
+        statement : dictionary
+            Statement containing base information to send to the LRS
+            An example of expected statement:
+            {
+                "verb": {
+                    "id": "http://adlnet.gov/expapi/verbs/initialized",
+                    "display": {
+                        "en-US": "initialized"
+                    }
+                },
+            }
+
+        current_site : Type[django.contrib.sites.models.Site]
+            The current site used to send the XAPI request
+
+        user: Type[marsha.core.models.User]
+            The connected user who sent the XAPI request
+
+        """
+
+        return self._build_statement(
+            document, statement, homepage=current_site.domain, user=user
+        )
+
+    def from_lti(self, document, statement, jwt_token):
+        """Compute a valid xapi download activity statement."""
+
+        statement = self._build_statement(
+            document,
+            statement,
+            homepage=self.get_homepage(document),
+            user_id=self.get_user_id(jwt_token),
+        )
 
         if jwt_token.payload.get("context_id"):
             statement["context"].update(
@@ -78,30 +162,88 @@ class XAPIDocumentStatement(XAPIStatementMixin):
                 }
             )
 
-        statement["actor"] = {
-            "objectType": "Agent",
-            "account": {"name": user_id, "homePage": homepage},
-        }
-
-        statement["object"] = {
-            "definition": {
-                "type": activity_type,
-                "name": {
-                    to_locale(settings.LANGUAGE_CODE).replace("_", "-"): document.title
-                },
-            },
-            "id": f"uuid://{document.id}",
-            "objectType": "Activity",
-        }
-
-        self.statement = statement
+        return statement
 
 
 class XAPIVideoStatement(XAPIStatementMixin):
     """Object managing statement for video objects."""
 
-    def __init__(self, video, statement, jwt_token):
-        """Compute a valid xapi satement.
+    def _get_activity_type(self, video):
+        """Return the activity type for a given video"""
+
+        activity_type = "https://w3id.org/xapi/video/activity-type/video"
+
+        # When the video is a live we change the activity to webinar
+        if video.is_live:
+            activity_type = "http://id.tincanapi.com/activitytype/webinar"
+
+        return activity_type
+
+    # pylint: disable=too-many-arguments
+    def _build_statement(self, video, statement, homepage, user=None, user_id=None):
+        """Build all common properties for a video."""
+        if re.match(r"^http(s?):\/\/.*", homepage) is None:
+            homepage = f"http://{homepage}"
+
+        statement = self.build_common_statement_properties(
+            statement, homepage, user=user, user_id=user_id
+        )
+
+        statement["context"].update(
+            {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
+        )
+
+        statement["object"] = {
+            "definition": {
+                "type": self._get_activity_type(video),
+                "name": {self.get_locale(): video.title},
+            },
+            "id": f"uuid://{video.id}",
+            "objectType": "Activity",
+        }
+
+        return statement
+
+    def from_website(self, video, statement, current_site, user):
+        """Compute a valid xapi satement in a website context.
+
+        Parameters
+        ----------
+        video : Type[.models/videos]
+            The video object used in the xAPI statement
+
+        statement : dictionary
+            Statement containing base information to send to the LRS
+            An example of expected statement:
+            {
+                "verb": {
+                    "id": "http://adlnet.gov/expapi/verbs/initialized",
+                    "display": {
+                        "en-US": "initialized"
+                    }
+                },
+                "context": {
+                    "extensions": {
+                        "https://w3id.org/xapi/video/extensions/volume": 1,
+                        "https://w3id.org/xapi/video/extensions/video-playback-size": "640x264",
+                    }
+                }
+            }
+
+        current_site : Type[django.contrib.sites.models.Site]
+            The current site used to send the XAPI request
+
+        user: Type[marsha.core.models.User]
+            The connected user who sent the XAPI request
+
+        """
+
+        return self._build_statement(
+            video, statement, homepage=current_site.domain, user=user
+        )
+
+    def from_lti(self, video, statement, jwt_token):
+        """Compute a valid xapi satement in a LTI context.
 
         Parameters
         ----------
@@ -130,25 +272,11 @@ class XAPIVideoStatement(XAPIStatementMixin):
             A jwt token containing the context used to enrich the xapi statement
 
         """
-        user_id = self.get_user_id(jwt_token)
-
-        homepage = self.get_homepage(video)
-
-        activity_type = "https://w3id.org/xapi/video/activity-type/video"
-
-        # When the video is a live we change the activity to webinar
-        if video.is_live:
-            activity_type = "http://id.tincanapi.com/activitytype/webinar"
-
-        if re.match(r"^http(s?):\/\/.*", homepage) is None:
-            homepage = f"http://{homepage}"
-
-        if "id" not in statement:
-            statement["id"] = str(uuid.uuid4())
-
-        statement["timestamp"] = timezone.now().isoformat()
-        statement["context"].update(
-            {"contextActivities": {"category": [{"id": "https://w3id.org/xapi/video"}]}}
+        statement = self._build_statement(
+            video,
+            statement,
+            homepage=self.get_homepage(video),
+            user_id=self.get_user_id(jwt_token),
         )
 
         if jwt_token.payload.get("context_id"):
@@ -166,23 +294,7 @@ class XAPIVideoStatement(XAPIStatementMixin):
                 }
             )
 
-        statement["actor"] = {
-            "objectType": "Agent",
-            "account": {"name": user_id, "homePage": homepage},
-        }
-
-        statement["object"] = {
-            "definition": {
-                "type": activity_type,
-                "name": {
-                    to_locale(settings.LANGUAGE_CODE).replace("_", "-"): video.title
-                },
-            },
-            "id": f"uuid://{video.id}",
-            "objectType": "Activity",
-        }
-
-        self.statement = statement
+        return statement
 
 
 class XAPI:

@@ -8,6 +8,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+
+### Changed
+
+- Manage xapi request without consumer_site
+
 ## [4.0.0-beta.17] - 2023-03-03
 
 ### Added
