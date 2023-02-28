@@ -10,8 +10,8 @@ export const XAPIStatement = (
   video: Video,
 ): VideoXAPIStatementInterface => {
   if (video.live_state) {
-    return new LiveXAPIStatement(jwt, sessionId);
+    return new LiveXAPIStatement(jwt, sessionId, video.id);
   }
 
-  return new VideoXAPIStatement(jwt, sessionId);
+  return new VideoXAPIStatement(jwt, sessionId, video.id);
 };
