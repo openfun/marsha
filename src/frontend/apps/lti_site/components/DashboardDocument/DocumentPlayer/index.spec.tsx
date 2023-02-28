@@ -67,11 +67,12 @@ describe('<DocumentPlayer />', () => {
   });
 
   it('sends the xapi downloaded statement when clicking on the link', async () => {
-    fetchMock.mock(`${XAPI_ENDPOINT}/document/`, 204);
     const document = documentMockFactory({
       id: '42',
       title: 'foo.pdf',
     });
+    fetchMock.mock(`${XAPI_ENDPOINT}/document/${document.id}/`, 204);
+
     render(<DocumentPlayer document={document} />);
 
     const toDownload = screen.getByRole('link', { name: 'foo.pdf' });
@@ -80,7 +81,9 @@ describe('<DocumentPlayer />', () => {
     fireEvent.blur(window);
 
     await waitFor(() =>
-      expect(fetchMock.called(`${XAPI_ENDPOINT}/document/`)).toBe(true),
+      expect(
+        fetchMock.called(`${XAPI_ENDPOINT}/document/${document.id}/`),
+      ).toBe(true),
     );
   });
 });

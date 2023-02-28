@@ -31,6 +31,7 @@ const DocumentPlayer = (props: DocumentPlayerProps) => {
       const documentXapiStatement = new DocumentXapiStatement(
         jwt,
         useCurrentSession.getState().sessionId,
+        document.id,
       );
       documentXapiStatement.downloaded();
       window.removeEventListener('blur', callback);
