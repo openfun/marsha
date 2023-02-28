@@ -30,6 +30,11 @@ const messages = defineMessages({
     description: 'Label for description in video creation form.',
     id: 'features.Contents.features.Video.VideoCreateForm.descriptionLabel',
   },
+  licenseLabel: {
+    defaultMessage: 'License',
+    description: 'Label for license in video creation form.',
+    id: 'features.Contents.features.Video.VideoCreateForm.licenseLabel',
+  },
   requiredField: {
     defaultMessage: 'This field is required to create the video.',
     description: 'Message when video field is missing.',
@@ -173,7 +178,7 @@ const VideoCreateForm = () => {
           />
 
           <FormField
-            label={intl.formatMessage(messages.titleLabel)}
+            label={intl.formatMessage(messages.licenseLabel)}
             htmlFor="select-license-id"
             name="license"
             required
