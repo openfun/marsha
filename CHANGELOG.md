@@ -28,6 +28,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Bug on chat messages synchronisation
 - Static files exclusion
 
+### Removed
+
+- Remove unused STATIC_POSTPROCESS_MAP_IGNORE_REGEX setting
+
 ## [4.0.0-beta.16] - 2023-02-17
 
 ### Added
