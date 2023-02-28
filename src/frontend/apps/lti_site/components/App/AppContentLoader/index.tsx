@@ -2,7 +2,6 @@ import { Grommet } from 'grommet';
 import { colors, theme } from 'lib-common';
 import {
   CurrentResourceContextProvider,
-  decodeJwt,
   useJwt,
   useCurrentSession,
   useCurrentUser,
@@ -55,7 +54,6 @@ Object.values(appNames).forEach((app) => {
 
 const AppContent = () => {
   const appConfig = useAppConfig();
-  const { jwt } = useJwt();
   const intlShape = useIntl();
 
   let Content: LazyExoticComponent<ComponentType<any>>;
@@ -63,28 +61,15 @@ const AppContent = () => {
   else if (appConfig.frontend) Content = appsContent[appConfig.frontend];
   else throw new Error(intlShape.formatMessage(messages.errorAppSet));
 
-  useEffect(() => {
+  const decodedJwt = useMemo(() => {
+    const jwt = useJwt.getState().jwt;
     if (jwt) {
-      return;
+      return useJwt.getState().getDecodedJwt();
     }
-
-    throw new Error(intlShape.formatMessage(messages.errorJwtEmpty));
-  }, [jwt]);
-
-  return <Content />;
-};
-
-const AppContentLoader = () => {
-  const [isLoaded, setIsLoaded] = useState(false);
-  const queryClient = useMemo(() => new QueryClient(), []);
-
-  //  load it from the store to prevent having a dependancy and recompute decodedJwt
-  const decodedJwt = useMemo(() => decodeJwt(useJwt.getState().jwt), []);
-  const resourceContext: ResourceContext = useMemo(
-    () => ({ ...decodedJwt }),
-    [decodedJwt],
-  );
-  const intl = useMemo(() => createIntl(decodedJwt.locale), [decodedJwt]);
+    throw new Error(
+      'Unable to find a jwt Token. The ressource might not exist.',
+    );
+  }, []);
 
   useEffect(() => {
     useCurrentSession.setState({
@@ -104,8 +89,43 @@ const AppContentLoader = () => {
     useCurrentUser.setState({
       currentUser,
     });
+  }, [decodedJwt]);
 
+  return <Content />;
+};
+
+const AppContentLoader = () => {
+  const [isLoaded, setIsLoaded] = useState(false);
+  const queryClient = new QueryClient();
+
+  //  load it from the store to prevent having a dependency and recompute decodedJwt
+  const decodedJwt = useMemo(() => {
+    const jwt = useJwt.getState().jwt;
+    if (jwt) {
+      setIsLoaded(true);
+      return useJwt.getState().getDecodedJwt();
+    }
     setIsLoaded(true);
+  }, []);
+
+  const intl = useMemo(() => {
+    return createIntl(decodedJwt?.locale || 'en');
+  }, [decodedJwt?.locale]);
+
+  const resourceContext: ResourceContext = useMemo(() => {
+    const defaultResourceContext: ResourceContext = {
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: '',
+      roles: [],
+    };
+
+    if (decodedJwt) {
+      return { ...decodedJwt };
+    }
+    return defaultResourceContext;
   }, [decodedJwt]);
 
   if (!isLoaded) {
