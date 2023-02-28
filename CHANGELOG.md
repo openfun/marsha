@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Bug on chat messages synchronisation
+- Static files exclusion
 
 ## [4.0.0-beta.16] - 2023-02-17
 
