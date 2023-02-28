@@ -1,16 +1,15 @@
 import React, { Fragment } from 'react';
 import { Redirect } from 'react-router-dom';
-
-import DashboardDocument from 'components/DashboardDocument';
 import {
   FULL_SCREEN_ERROR_ROUTE,
   useAppConfig,
   modelName,
 } from 'lib-components';
+import { DashboardVideoWrapper } from 'lib-video';
+
+import DashboardDocument from 'components/DashboardDocument';
 import { LTINav } from 'components/LTINav';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
-
-import { DashboardVideoWrapper } from './DashboardVideoWrapper';
 
 /** Component. Displays a Dashboard with the state of the video in marsha's pipeline and provides links to
  * the player and to the form to replace the video with another one.
