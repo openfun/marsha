@@ -30,6 +30,7 @@ const Videos = ({ withPagination = true, limit }: VideosProps) => {
       offset: `${(currentPage - 1) * contentPerPage}`,
       limit: `${limit || contentPerPage}`,
       ordering: VideosOrderType.BY_CREATED_ON_REVERSED,
+      is_live: 'false',
     },
     REACT_QUERY_CONF_API,
   );
