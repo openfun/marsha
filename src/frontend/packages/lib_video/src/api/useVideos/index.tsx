@@ -29,8 +29,9 @@ type VideosResponse = APIList<Video>;
 type UseVideosParams = Maybe<{
   organization?: string;
   playlist?: string;
-  limit?: Maybe<string>;
-  offset?: Maybe<string>;
+  limit?: string;
+  offset?: string;
+  is_live?: 'true' | 'false';
   ordering?: VideosOrderType;
 }>;
 export const useVideos = (
