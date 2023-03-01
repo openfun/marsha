@@ -56,7 +56,7 @@ describe('<Videos/>', () => {
     });
 
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -81,7 +81,7 @@ describe('<Videos/>', () => {
       results: [],
     };
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
       someStuff,
     );
 
@@ -94,7 +94,7 @@ describe('<Videos/>', () => {
 
   test('render Videos', async () => {
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
       someResponse,
     );
 
@@ -108,10 +108,13 @@ describe('<Videos/>', () => {
   });
 
   test('render pagination', async () => {
-    fetchMock.get('/api/videos/?limit=20&offset=0&ordering=-created_on', {
-      ...someResponse,
-      count: 111,
-    });
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
 
     render(<Videos />);
 
@@ -121,10 +124,13 @@ describe('<Videos/>', () => {
   });
 
   test('render without pagination', async () => {
-    fetchMock.get('/api/videos/?limit=20&offset=0&ordering=-created_on', {
-      ...someResponse,
-      count: 111,
-    });
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
 
     render(<Videos withPagination={false} />);
 
@@ -136,9 +142,12 @@ describe('<Videos/>', () => {
   });
 
   test('render with limit', async () => {
-    fetchMock.get('/api/videos/?limit=1&offset=0&ordering=-created_on', {
-      ...someResponse,
-    });
+    fetchMock.get(
+      '/api/videos/?limit=1&offset=0&ordering=-created_on&is_live=false',
+      {
+        ...someResponse,
+      },
+    );
 
     render(<Videos withPagination={false} limit={1} />);
 
@@ -146,10 +155,13 @@ describe('<Videos/>', () => {
   });
 
   test('api limit depend the responsive', async () => {
-    fetchMock.get('/api/videos/?limit=4&offset=0&ordering=-created_on', {
-      ...someResponse,
-      count: 111,
-    });
+    fetchMock.get(
+      '/api/videos/?limit=4&offset=0&ordering=-created_on&is_live=false',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
 
     render(
       <ResponsiveContext.Provider value="xxsmall">
