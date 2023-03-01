@@ -17,20 +17,24 @@ const TextTruncated = styled(Text)`
 
 const Video = ({ video }: { video: IVideo }) => {
   const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
+  const thumbnail =
+    video.thumbnail?.urls?.[240] || video.urls?.thumbnails?.[240];
 
   return (
     <StyledLink to={`${videoPath}/${video.id}`}>
       <ContentCard
         header={
           <Box
+            aria-label="thumbnail"
+            role="img"
             width="100%"
             height="150px"
             align="center"
             justify="center"
             background={`
               ${
-                video.urls?.thumbnails[240]
-                  ? `url(${video.urls?.thumbnails[240]}) no-repeat center / cover`
+                thumbnail
+                  ? `url(${thumbnail}) no-repeat center / cover`
                   : `radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)`
               }
             `}
