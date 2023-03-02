@@ -31,6 +31,21 @@ describe('<TranscriptSentence />', () => {
     expect(mockSetTime).toHaveBeenCalledWith(10);
   });
 
+  it('displays html', () => {
+    const cue: VTTCue = {
+      endTime: 1,
+      id: 'e67ba62e-ec93-4e04-a8da-bdaed3655262',
+      startTime: 10,
+      text: 'Lorem <b>ipsum</b> dolor sit amet.',
+    };
+
+    render(<TranscriptSentence cue={cue} active={false} />);
+
+    const sentence = screen.getByText('Lorem dolor sit amet.');
+    expect(sentence).not.toHaveClass('sentence-active');
+    expect(sentence.innerHTML).toEqual('Lorem <b>ipsum</b> dolor sit amet. ');
+  });
+
   it('highlights the text when the sentence is active', () => {
     const cue: VTTCue = {
       endTime: 1,
@@ -42,8 +57,8 @@ describe('<TranscriptSentence />', () => {
     render(<TranscriptSentence cue={cue} active={true} />);
 
     const sentence = screen.getByText('Lorem ipsum dolor sit amet.');
-
-    expect(sentence).toHaveClass('sentence-active');
+    // eslint-disable-next-line testing-library/no-node-access
+    expect(sentence.parentElement).toHaveClass('sentence-active');
 
     fireEvent.click(sentence);
     expect(mockSetTime).toHaveBeenCalledWith(20);
