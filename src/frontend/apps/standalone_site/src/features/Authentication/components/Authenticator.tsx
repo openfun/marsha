@@ -33,7 +33,7 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     currentUser: state.currentUser,
     setCurrentUser: state.setCurrentUser,
   }));
-  const { jwt, setJwt, resetJwt } = useJwt();
+  const { jwt, setJwt, setRefreshJwt, resetJwt } = useJwt();
 
   useEffect(() => {
     if (jwt) {
@@ -41,7 +41,9 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
     }
 
     const fetchJwt = async (validationToken: string) => {
-      setJwt(await validateChallenge(validationToken));
+      const response = await validateChallenge(validationToken);
+      setJwt(response.access);
+      setRefreshJwt(response.refresh);
     };
 
     if (code) {
@@ -50,7 +52,7 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
       getLocalStorage()?.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
       history.push(routes.LOGIN.path);
     }
-  }, [code, history, jwt, pathname, search, setJwt]);
+  }, [code, history, jwt, pathname, search, setJwt, setRefreshJwt]);
 
   useEffect(() => {
     if (!jwt || currentUser) {

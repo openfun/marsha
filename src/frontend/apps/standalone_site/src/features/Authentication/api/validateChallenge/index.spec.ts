@@ -25,8 +25,12 @@ describe('validateChallenge()', () => {
   });
 
   it('returns the access token', async () => {
-    fetchMock.post('/api/auth/challenge/', { access: 'some access token' });
+    const tokenPair = {
+      access: 'some access token',
+      refresh: 'some refresh token',
+    };
+    fetchMock.post('/api/auth/challenge/', tokenPair);
 
-    expect(await validateChallenge('some_code')).toEqual('some access token');
+    expect(await validateChallenge('some_code')).toEqual(tokenPair);
   });
 });
