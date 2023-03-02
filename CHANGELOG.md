@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Bug on chat messages synchronisation
 - Static files exclusion
 - Impossible to decode JWT token, there is no jwt to decode
+- Add refresh token in the challenge response
 
 ### Removed
 
