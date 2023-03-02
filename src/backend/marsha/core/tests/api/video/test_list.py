@@ -1,8 +1,10 @@
 """Tests for the Video list API of the Marsha project."""
+from datetime import datetime
 
 from django.test import TestCase
 
 from marsha.core import factories
+from marsha.core.api import timezone
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
@@ -719,6 +721,54 @@ class VideoListAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 1)
         self.assertEqual(response.json()["results"][0]["id"], str(video.id))
+
+    def test_list_video_thumbnail_not_duplicated(self):
+        """
+        When several users have administrator role on a playlist,
+        the video's thumbnail must not be duplicated across videos.
+        """
+        organization_access = factories.OrganizationAccessFactory(role=ADMINISTRATOR)
+
+        playlist = factories.PlaylistFactory(
+            organization=organization_access.organization,
+        )
+
+        video_1 = factories.VideoFactory(
+            playlist=playlist,
+            title="video 1",
+        )
+        video_2 = factories.VideoFactory(
+            playlist=playlist,
+            title="video 2",
+            is_public=True,
+        )
+        factories.ThumbnailFactory(
+            video=video_2,
+            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            upload_state="ready",
+        )
+        video_3 = factories.VideoFactory(
+            playlist=playlist,
+            title="video 3",
+        )
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        # No filter
+        response = self.client.get(
+            "/api/videos/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 3)
+        results = response.json()["results"]
+        self.assertListEqual(
+            [result["id"] for result in results],
+            [str(video_1.pk), str(video_2.pk), str(video_3.pk)],
+        )
+        self.assertIsNone(results[0]["thumbnail"])
+        self.assertIsNotNone(results[1]["thumbnail"])
+        self.assertIsNone(results[2]["thumbnail"])
 
     def test_filters(self):
         """Results are filtered."""
