@@ -465,21 +465,11 @@ class LTIUserToken(AccessToken):
         return token
 
 
-class UserAccessToken(AccessToken):
+class UserTokenMixin:
     """
-    User access JWT.
-
-    For now, we stay with the same attributes as the original AccessToken for
-    backward compatibility:
-    ```
-        token_type = "access"
-        lifetime = api_settings.ACCESS_TOKEN_LIFETIME
-    ```
-
-    Note: `api_settings.USER_ID_CLAIM` is currently `resource_id`.
+    Methods dedicated to user JWT. They are both used by the UserAccessToken
+    and the UserRefreshToken classes.
     """
-
-    token_type = "user_access"  # nosec
 
     @classmethod
     def for_user_id(cls, user_id):
@@ -505,6 +495,21 @@ class UserAccessToken(AccessToken):
         token.payload["user_id"] = user_id
         return token
 
+
+class UserAccessToken(UserTokenMixin, AccessToken):
+    """
+    User access JWT.
+
+    For now, we stay with the same attributes as the original AccessToken for
+    backward compatibility:
+    ```
+        token_type = "access"
+        lifetime = api_settings.ACCESS_TOKEN_LIFETIME
+    ```
+    """
+
+    token_type = "user_access"  # nosec
+
     def verify(self):
         """Performs additional validation steps to test payload content."""
         super().verify()
@@ -513,7 +518,7 @@ class UserAccessToken(AccessToken):
             raise TokenError(_("Malformed user token"))
 
 
-class UserRefreshToken(MarshaRefreshToken):
+class UserRefreshToken(UserTokenMixin, MarshaRefreshToken):
     """Refresh token for user authentication, which relies on our own `UserAccessToken`."""
 
     access_token_class = UserAccessToken

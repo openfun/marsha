@@ -3,7 +3,7 @@
 from django.test import TestCase
 
 from marsha.core.simple_jwt.factories import ChallengeTokenFactory
-from marsha.core.simple_jwt.tokens import ChallengeToken, UserAccessToken
+from marsha.core.simple_jwt.tokens import ChallengeToken, UserAccessToken, UserRefreshToken
 
 
 class ChallengeAuthenticationViewTestCase(TestCase):
@@ -31,7 +31,9 @@ class ChallengeAuthenticationViewTestCase(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        access_token = response.json()["access"]
-        user_token = UserAccessToken(access_token)
+        response_data = response.json()
+        # Verify tokens
+        user_token = UserAccessToken(response_data["access"])
+        UserRefreshToken(response_data["refresh"])
 
         self.assertEqual(user_token.payload["user_id"], challenge.payload["user_id"])

@@ -8,7 +8,7 @@ from rest_framework_simplejwt.serializers import TokenVerifySerializer
 from rest_framework_simplejwt.settings import api_settings
 
 from ..models import ConsumerSite, Organization, OrganizationAccess
-from ..simple_jwt.tokens import ChallengeToken, LTIUserToken, UserAccessToken
+from ..simple_jwt.tokens import ChallengeToken, LTIUserToken, UserRefreshToken
 from .base import ReadOnlyModelSerializer
 
 
@@ -22,13 +22,14 @@ class ChallengeTokenSerializer(TokenVerifySerializer):
         token = ChallengeToken(attrs["token"])
 
         try:
-            user_access_token = UserAccessToken.for_user_id(
+            user_refresh_token = UserRefreshToken.for_user_id(
                 token.payload[api_settings.USER_ID_CLAIM],
             )
         except KeyError as exc:
             raise TokenError(exc.args[0]) from exc
 
-        data["access"] = str(user_access_token)
+        data["refresh"] = str(user_refresh_token)
+        data["access"] = str(user_refresh_token.access_token)
 
         return data
 
