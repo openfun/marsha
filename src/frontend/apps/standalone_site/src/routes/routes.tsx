@@ -220,6 +220,7 @@ export const routes: Routes = {
     ),
     subRoutes: {
       VIDEO: {
+        hideSubRoute: true,
         label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
         path: `/my-contents/videos`,
         menuIcon: (
