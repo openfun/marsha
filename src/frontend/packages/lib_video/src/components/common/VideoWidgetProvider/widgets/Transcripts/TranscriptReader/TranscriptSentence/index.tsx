@@ -34,7 +34,8 @@ export const TranscriptSentence = ({
     <Sentence
       className={active ? 'sentence-active' : ''}
       onClick={() => setTime(cue.startTime)}
-      dangerouslySetInnerHTML={textSentence()}
-    />
+    >
+      <span dangerouslySetInnerHTML={textSentence()} />
+    </Sentence>
   );
 };
