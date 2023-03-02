@@ -225,6 +225,9 @@ describe('<VideoWidgetProvider />', () => {
     //  Closed captions
     expect(screen.getByText('Closed captions')).toBeInTheDocument();
 
+    // License Manager
+    expect(screen.getByText('License')).toBeInTheDocument();
+
     // visibility
     expect(
       screen.getByText('Visibility and interaction parameters'),
