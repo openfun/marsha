@@ -7,6 +7,7 @@ import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { WidgetProps, WidgetsContainer, WidgetSize } from './WidgetsContainer';
 import { DescriptionWidget } from './widgets/DescriptionWidget';
 import { DownloadVideo } from './widgets/DownloadVideo';
+import { LicenseManager } from './widgets/LicenseManager';
 import { LiveJoinMode } from './widgets/LiveJoinMode';
 import { LivePairing } from './widgets/LivePairing';
 import { SchedulingAndDescription } from './widgets/SchedulingAndDescription';
@@ -36,6 +37,7 @@ enum WidgetType {
   TOOLS_AND_APPLICATIONS = 'TOOLS_AND_APPLICATIONS',
   VISIBILITY_AND_INTERACTION = 'VISIBILITY_AND_INTERACTION',
   SCHEDULING_AND_DESCRIPTION = 'SCHEDULING_AND_DESCRIPTION',
+  LICENSE_MANAGER = 'LICENSE_MANAGER',
   LIVE_PAIRING = 'LIVE_PAIRING',
   VOD_CREATION = 'VOD_CREATION',
   LIVE_JOIN_MODE = 'LIVE_JOIN_MODE',
@@ -130,6 +132,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <Transcripts key="transcripts" />,
     size: WidgetSize.LARGE,
   },
+  [WidgetType.LICENSE_MANAGER]: {
+    component: <LicenseManager key="license_manager" />,
+    size: WidgetSize.DEFAULT,
+  },
 };
 
 const teacherLiveWidgets: WidgetType[] = [
@@ -148,6 +154,7 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.VISIBILITY_AND_INTERACTION,
   WidgetType.THUMBNAIL_VOD,
   WidgetType.DOWNLOAD_VOD_TEACHER,
+  WidgetType.LICENSE_MANAGER,
   WidgetType.UPLOAD_SUBTITLES,
   WidgetType.UPLOAD_TRANSCRIPTS,
   WidgetType.UPLOAD_CLOSED_CAPTATIONS,
