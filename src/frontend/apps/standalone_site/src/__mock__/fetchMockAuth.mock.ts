@@ -10,7 +10,10 @@ jest.mock('react-router-dom', () => ({
 }));
 
 export default () => {
-  fetchMock.post('/api/auth/challenge/', { access: 'some-access' });
+  fetchMock.post('/api/auth/challenge/', {
+    access: 'some-access',
+    refresh: 'some-refresh',
+  });
   fetchMock.get('/api/users/whoami/', {
     date_joined: 'date_joined',
     email: 'email',

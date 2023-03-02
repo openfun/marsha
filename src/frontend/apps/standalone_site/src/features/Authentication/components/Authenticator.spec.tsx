@@ -81,7 +81,10 @@ describe('<Authenticator />', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
 
     //  resolve challenge
-    challengeDeferred.resolve({ access: 'some-access' });
+    challengeDeferred.resolve({
+      access: 'some-access',
+      refresh: 'some-refresh',
+    });
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual('/api/users/whoami/'),
@@ -115,7 +118,10 @@ describe('<Authenticator />', () => {
       screen.queryByText('/some/other/path/?some=query'),
     ).not.toBeInTheDocument();
 
-    fetchMock.post('/api/auth/challenge/', { access: 'some-access' });
+    fetchMock.post('/api/auth/challenge/', {
+      access: 'some-access',
+      refresh: 'some-refresh',
+    });
 
     fetchMock.get('/api/users/whoami/', {
       date_joined: 'date_joined',
@@ -150,7 +156,10 @@ describe('<Authenticator />', () => {
 
     expect(screen.getByText('login page')).toBeInTheDocument();
 
-    fetchMock.post('/api/auth/challenge/', { access: 'some-access2' });
+    fetchMock.post('/api/auth/challenge/', {
+      access: 'some-access2',
+      refresh: 'some-refresh2',
+    });
 
     fetchMock.get('/api/users/whoami/', {
       date_joined: 'date_joined',
@@ -161,6 +170,9 @@ describe('<Authenticator />', () => {
       is_superuser: false,
       organization_accesses: [],
     });
+
+    // refresh token url is called and should return a 401 to be redirected to the login page
+    fetchMock.mock('/account/api/token/refresh/', 401);
 
     //  unmount components to mock the redirection after authentication (and init the new location)
     //  this is mandatory to take the new location.search into account
