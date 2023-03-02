@@ -83,6 +83,9 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         to use it several times without having to fetch it again and again
         in the database.
         """
+        # force to initialize to None, otherwise when the serializer is used with a collection,
+        # the thumbnail_instance will be use with the next video not having a thumbnail.
+        self.thumbnail_instance = None
         try:
             self.thumbnail_instance = instance.thumbnail.get()
         except Thumbnail.DoesNotExist:
