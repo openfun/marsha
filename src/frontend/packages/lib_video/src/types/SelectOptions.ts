@@ -4,4 +4,4 @@ interface SelectOptions {
 }
 
 export type LanguageChoice = SelectOptions;
-export type LicenceChoise = SelectOptions;
+export type LicenseChoice = SelectOptions;
