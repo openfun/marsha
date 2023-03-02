@@ -3,7 +3,7 @@
 exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
 <div>
   <div
-    class="StyledGrommet-sc-19lkkz7-0 jaywUP"
+    class="StyledGrommet-sc-19lkkz7-0 kmmbMN"
   >
     <div
       style="position: fixed; z-index: 9999; top: 16px; left: 16px; right: 16px; bottom: 16px; pointer-events: none;"
@@ -12,27 +12,27 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
       data-testid="test-component-container"
     >
       <div
-        class="StyledBox-sc-13pk1d4-0 dQhdfU"
+        class="StyledBox-sc-13pk1d4-0 hwudUK"
       >
         <span
-          class="StyledText-sc-1sadyjn-0 jbJJSg"
+          class="StyledText-sc-1sadyjn-0 eHxAW"
         >
           some-file.test
         </span>
         <div
-          class="StyledBox__StyledBoxGap-sc-13pk1d4-1 iISQcM"
+          class="StyledBox__StyledBoxGap-sc-13pk1d4-1 gqCMcy"
         />
         <div
-          class="StyledBox-sc-13pk1d4-0 hRkWLs"
+          class="StyledBox-sc-13pk1d4-0 jEroZC"
         >
           <div
-            class="StyledStack-sc-ajspsk-0 RUPca"
+            class="StyledStack-sc-ajspsk-0 gHKgKg"
           >
             <div
-              class="StyledStack__StyledStackLayer-sc-ajspsk-1 jvatDH"
+              class="StyledStack__StyledStackLayer-sc-ajspsk-1 jXIVhF"
             >
               <svg
-                class="StyledMeter-sc-nsxarx-0 kCzifM"
+                class="StyledMeter-sc-nsxarx-0 dYqvpi"
                 height="24"
                 preserveAspectRatio="none"
                 viewBox="0 0 384 24"
@@ -56,10 +56,10 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
               </svg>
             </div>
             <div
-              class="StyledStack__StyledStackLayer-sc-ajspsk-1 uboKz"
+              class="StyledStack__StyledStackLayer-sc-ajspsk-1 nGNWx"
             >
               <span
-                class="StyledText-sc-1sadyjn-0 hDSAIu"
+                class="StyledText-sc-1sadyjn-0 cFbisQ"
               >
                 80%
               </span>
