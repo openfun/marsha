@@ -1,15 +1,15 @@
-import { fetchWrapper } from 'lib-components';
+import { fetchWrapper, TokenResponse } from 'lib-components';
 
-interface ValidateChallengeResponse {
-  access: string;
-}
-
-const isValidateChallenge = (
-  response: unknown,
-): response is ValidateChallengeResponse => {
+const isValidateChallenge = (response: unknown): response is TokenResponse => {
   if (response && typeof response === 'object') {
-    const access: unknown = (response as ValidateChallengeResponse).access;
-    if (access && typeof access === 'string') {
+    const access: unknown = (response as TokenResponse).access;
+    const refresh: unknown = (response as TokenResponse).refresh;
+    if (
+      access &&
+      typeof access === 'string' &&
+      refresh &&
+      typeof refresh === 'string'
+    ) {
       return true;
     }
   }
@@ -32,7 +32,7 @@ export const validateChallenge = async (token: string) => {
 
   const responseContent: unknown = await response.json();
   if (isValidateChallenge(responseContent)) {
-    return responseContent.access;
+    return responseContent;
   }
 
   throw new Error('Missing access token in response.');

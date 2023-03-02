@@ -3,7 +3,11 @@
 from django.test import TestCase
 
 from marsha.core.simple_jwt.factories import ChallengeTokenFactory
-from marsha.core.simple_jwt.tokens import ChallengeToken, UserAccessToken, UserRefreshToken
+from marsha.core.simple_jwt.tokens import (
+    ChallengeToken,
+    UserAccessToken,
+    UserRefreshToken,
+)
 
 
 class ChallengeAuthenticationViewTestCase(TestCase):
