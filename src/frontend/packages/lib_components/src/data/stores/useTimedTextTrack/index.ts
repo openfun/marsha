@@ -18,6 +18,7 @@ type TimedTextTrackStore = {
 export type TimedTextTrackState = StoreState<TimedText> &
   TimedTextTrackStore & {
     getTimedTextTracks: () => TimedText[];
+    reset: () => void;
   };
 
 export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
@@ -50,5 +51,8 @@ export const useTimedTextTrack = create<TimedTextTrackState>((set, get) => {
         ) as TimedTextTrackStore,
       ),
     [modelName.TIMEDTEXTTRACKS]: {},
+    reset: () => {
+      set({ [modelName.TIMEDTEXTTRACKS]: {} });
+    },
   };
 });

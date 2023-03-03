@@ -19,6 +19,7 @@ type ThumbnailStateResource = {
 type ThumbnailState = StoreState<Thumbnail> &
   ThumbnailStateResource & {
     getThumbnail: () => Nullable<Thumbnail>;
+    reset: () => void;
   };
 
 export const useThumbnail = create<ThumbnailState>((set, get) => {
@@ -58,5 +59,8 @@ export const useThumbnail = create<ThumbnailState>((set, get) => {
         ) as ThumbnailStateResource,
       ),
     [modelName.THUMBNAILS]: {},
+    reset: () => {
+      set({ [modelName.THUMBNAILS]: {} });
+    },
   };
 });
