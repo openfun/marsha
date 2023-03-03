@@ -14,6 +14,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { createLiveSession } from 'api/createLiveSession';
 import { updateLiveSession } from 'api/updateLiveSession';
+import { useCurrentLive } from 'hooks/useCurrentVideo';
 import { getAnonymousId } from 'utils/localstorage';
 
 const formTheme = {
@@ -175,6 +176,7 @@ export const RegistrationForm = ({
 
   const intl = useIntl();
   const jwt = useJwt((state) => state.jwt);
+  const live = useCurrentLive();
   const [values, setValues] = useState({ email: trimedEmail });
   const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
   const isLtiToken = useMemo(() => {
@@ -201,6 +203,7 @@ export const RegistrationForm = ({
           let updatedLiveSession: LiveSession;
           if (!liveSession) {
             updatedLiveSession = await createLiveSession(
+              live.id,
               value.email,
               intl.locale,
               anonymousId,

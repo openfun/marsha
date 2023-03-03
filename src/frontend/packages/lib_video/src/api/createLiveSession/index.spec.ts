@@ -16,7 +16,7 @@ describe('sideEffects/createLiveSession', () => {
   it('creates a new livesession and returns it', async () => {
     fetchMock.mock(
       {
-        url: '/api/livesessions/',
+        url: '/api/videos/some-video-id/livesessions/',
         body: {
           email: 'test@open-fun.fr',
           language: 'fr',
@@ -30,7 +30,11 @@ describe('sideEffects/createLiveSession', () => {
       },
     );
 
-    const liveSession = await createLiveSession('test@open-fun.fr', 'fr');
+    const liveSession = await createLiveSession(
+      'some-video-id',
+      'test@open-fun.fr',
+      'fr',
+    );
 
     const fetchArgs = fetchMock.lastCall()![1]!;
 
@@ -49,7 +53,7 @@ describe('sideEffects/createLiveSession', () => {
     const anonymousId = uuidv4();
     fetchMock.mock(
       {
-        url: '/api/livesessions/',
+        url: '/api/videos/some-video-id/livesessions/',
         body: {
           anonymous_id: anonymousId,
           email: 'test@open-fun.fr',
@@ -66,6 +70,7 @@ describe('sideEffects/createLiveSession', () => {
     );
 
     const liveSession = await createLiveSession(
+      'some-video-id',
       'test@open-fun.fr',
       'fr',
       anonymousId,
@@ -86,7 +91,7 @@ describe('sideEffects/createLiveSession', () => {
   });
 
   it('throws when it fails to create the liveSession and returns a json Error', async () => {
-    fetchMock.mock('/api/livesessions/', {
+    fetchMock.mock('/api/videos/some-video-id/livesessions/', {
       body: JSON.stringify({ email: 'Invalid email!' }),
       status: 400,
       headers: { 'Content-Type': 'application/json' },
@@ -94,7 +99,7 @@ describe('sideEffects/createLiveSession', () => {
 
     let thrownError;
     try {
-      await createLiveSession(uuidv4(), 'email@fun.com');
+      await createLiveSession('some-video-id', uuidv4(), 'fr');
     } catch (error) {
       thrownError = error;
     }
