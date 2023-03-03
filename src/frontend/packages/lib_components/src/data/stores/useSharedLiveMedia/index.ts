@@ -18,6 +18,7 @@ type ShareLiveMediaStateResource = {
 type SharedLiveMediaState = StoreState<SharedLiveMedia> &
   ShareLiveMediaStateResource & {
     getSharedLiveMedias: () => SharedLiveMedia[];
+    reset: () => void;
   };
 
 export const useSharedLiveMedia = create<SharedLiveMediaState>((set, get) => {
@@ -50,5 +51,8 @@ export const useSharedLiveMedia = create<SharedLiveMediaState>((set, get) => {
         ) as ShareLiveMediaStateResource,
       ),
     [modelName.SHAREDLIVEMEDIAS]: {},
+    reset: () => {
+      set({ [modelName.SHAREDLIVEMEDIAS]: {} });
+    },
   };
 });

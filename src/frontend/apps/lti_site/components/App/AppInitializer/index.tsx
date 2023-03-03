@@ -4,15 +4,11 @@ import {
   useJwt,
   useMaintenance,
   useSentry,
-  useVideo,
-  useTimedTextTrack,
-  useThumbnail,
-  useSharedLiveMedia,
   useDocument,
   useAppConfig,
   flags,
 } from 'lib-components';
-import { useAttendance } from 'lib-video';
+import { useAttendance, useSetVideoState } from 'lib-video';
 import React, {
   Fragment,
   PropsWithChildren,
@@ -38,14 +34,7 @@ export const AppInitializer = (
   const appConfig = useAppConfig();
   const jwt = useJwt((state) => state.jwt);
   const setIsSentryReady = useSentry((state) => state.setIsSentryReady);
-  const addVideo = useVideo((state) => state.addResource);
-  const addMultipleTimedTextTrack = useTimedTextTrack(
-    (state) => state.addMultipleResources,
-  );
-  const addThumbnail = useThumbnail((state) => state.addResource);
-  const addMultipleSharedLiveMedia = useSharedLiveMedia(
-    (state) => state.addMultipleResources,
-  );
+  useSetVideoState(appConfig.video);
   const addDocument = useDocument((state) => state.addResource);
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
 
@@ -87,36 +76,6 @@ export const AppInitializer = (
     setIsSentryReady,
     isFeatureEnabled,
   ]);
-
-  useEffect(() => {
-    if (appConfig.video) {
-      addVideo(appConfig.video);
-    }
-  }, [appConfig.video, addVideo]);
-
-  useEffect(() => {
-    if (
-      appConfig.video?.timed_text_tracks &&
-      appConfig.video.timed_text_tracks.length > 0
-    ) {
-      addMultipleTimedTextTrack(appConfig.video.timed_text_tracks);
-    }
-  }, [appConfig.video?.timed_text_tracks, addMultipleTimedTextTrack]);
-
-  useEffect(() => {
-    if (appConfig.video?.thumbnail) {
-      addThumbnail(appConfig.video.thumbnail);
-    }
-  }, [appConfig.video?.thumbnail, addThumbnail]);
-
-  useEffect(() => {
-    if (
-      appConfig.video?.shared_live_medias &&
-      appConfig.video.shared_live_medias.length > 0
-    ) {
-      addMultipleSharedLiveMedia(appConfig.video.shared_live_medias);
-    }
-  }, [appConfig.video?.shared_live_medias, addMultipleSharedLiveMedia]);
 
   useEffect(() => {
     if (appConfig.document) {
