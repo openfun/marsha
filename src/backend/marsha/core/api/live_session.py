@@ -185,7 +185,7 @@ class LiveSessionViewSet(
 
     @action(detail=False, methods=["post"])
     # pylint: disable=unused-argument
-    def push_attendance(self, request, pk=None):
+    def push_attendance(self, request, video_id=None):
         """View handling pushing new attendance"""
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
@@ -246,7 +246,7 @@ class LiveSessionViewSet(
         return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
 
     @action(detail=False, methods=["put"], url_path="display_name")
-    def set_display_name(self, request):
+    def set_display_name(self, request, video_id=None):
         """View handling setting display_name. Create or get registration."""
         serializer = serializers.LiveSessionDisplayUsernameSerializer(data=request.data)
         if not serializer.is_valid():
@@ -308,7 +308,7 @@ class LiveSessionViewSet(
         permission_classes=[permissions.IsTokenInstructor | permissions.IsTokenAdmin],
         url_path="list_attendances",
     )
-    def list_attendances(self, request, *args, **kwargs):
+    def list_attendances(self, request, video_id=None):
         """
         Retrieve the list of attendances computed for livesessions where is_registered
         equals True or with the live_attendance field not empty. As we request a list

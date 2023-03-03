@@ -26,10 +26,14 @@ from .base import LiveSessionApiTestCase
 class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     """Test the retrieve API of the liveSession object."""
 
+    def _get_url(self, video, live_session):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/{live_session.pk}/"
+
     def test_api_livesession_read_anonymous(self):
         """Anonymous users should not be allowed to fetch a livesession."""
         livesession = AnonymousLiveSessionFactory()
-        response = self.client.get(f"/api/livesessions/{livesession.id}/")
+        response = self.client.get(self._get_url(livesession.video, livesession))
         self.assertEqual(response.status_code, 401)
         self.assertEqual(
             response.json(), {"detail": "Authentication credentials were not provided."}
@@ -43,7 +47,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=video)
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -59,7 +63,8 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=livesession.video)
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/?anonymous_id={livesession.anonymous_id}",
+            f"{self._get_url(livesession.video, livesession)}"
+            f"?anonymous_id={livesession.anonymous_id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -98,7 +103,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         # token from LTI has context_id, consumer_site and user.id
         jwt_token = LiveSessionResourceAccessTokenFactory(live_session=livesession)
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -139,7 +144,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         jwt_token = LiveSessionResourceAccessTokenFactory(live_session=livesession)
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -184,7 +189,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -230,7 +235,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -258,7 +263,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -288,7 +293,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -310,7 +315,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -332,7 +337,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         # combo lti_user_id / consumer_site is needed if token has no email
@@ -352,7 +357,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             user=None,
         )
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -379,7 +384,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -402,7 +407,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -449,7 +454,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -486,7 +491,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -529,7 +534,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -575,7 +580,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -607,7 +612,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory()
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
@@ -623,7 +628,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             user__email=None,
         )
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
@@ -637,7 +642,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=VideoFactory())
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
@@ -656,7 +661,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
@@ -669,8 +674,17 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         # token with no user information
         jwt_token = ResourceAccessTokenFactory()
         response = self.client.get(
-            f"/api/livesessions/{livesession.id}/",
+            self._get_url(livesession.video, livesession),
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 404)
+
+
+# Old routes to remove
+class LiveSessionRetrieveApiOldTest(LiveSessionRetrieveApiTest):
+    """Test the retrieve API of the liveSession object using old URLs."""
+
+    def _get_url(self, video, live_session):
+        """Return the url to use in tests."""
+        return f"/api/livesessions/{live_session.pk}/"

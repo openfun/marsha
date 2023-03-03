@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Changed
+
+- Update live sessions API to use nested video ID route
+
 ### Fixed
 
 - redirect to error page when VOD is deleted
