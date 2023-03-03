@@ -1,5 +1,10 @@
-import { AppConfig, AppConfigProvider } from 'lib-components';
-import { useVideo, DashboardVideoWrapper } from 'lib-video';
+import {
+  AppConfig,
+  AppConfigProvider,
+  UploadHandlers,
+  UploadManager,
+} from 'lib-components';
+import { useVideo, DashboardVideoWrapper, useSetVideoState } from 'lib-video';
 import 'lib-video/lib/esm/style.css';
 import { defineMessages, useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
@@ -56,6 +61,8 @@ const VideoDashboard = ({ videoId }: { videoId: string }) => {
     data: currentVideo,
   } = useVideo(videoId, REACT_QUERY_CONF_API);
 
+  useSetVideoState(currentVideo);
+
   return (
     <ManageAPIState
       isError={isError}
@@ -70,7 +77,10 @@ const VideoDashboard = ({ videoId }: { videoId: string }) => {
     >
       {currentVideo && (
         <AppConfigProvider value={appConfig}>
-          <DashboardVideoWrapper video={currentVideo} />
+          <UploadManager>
+            <UploadHandlers />
+            <DashboardVideoWrapper video={currentVideo} />
+          </UploadManager>
         </AppConfigProvider>
       )}
     </ManageAPIState>
