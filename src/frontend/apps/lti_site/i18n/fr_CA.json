@@ -159,6 +159,22 @@
     "description": "Button label for downloading a deposited file.",
     "message": "Download"
   },
+  "component.MarkdownWizard.descriptionText": {
+    "description": "Description of the markdown wizard.",
+    "message": "Use this wizard to create a new Markdown course, that you will be able to share with your students."
+  },
+  "component.MarkdownWizard.markdownCreationTitle": {
+    "description": "Title of the markdown wizard.",
+    "message": "Start by naming your course"
+  },
+  "component.MarkdownWizard.saveFailure": {
+    "description": "Displayed message in toast when the markdown document saving request failed",
+    "message": "An error occurred, the document is not saved"
+  },
+  "component.MarkdownWizard.updateMarkdownInfosFail": {
+    "description": "Message displayed when markdown infos update has failed.",
+    "message": "Course update has failed !"
+  },
   "component.PlaylistPortability.addPortability": {
     "description": "Accessible message for adding a portability.",
     "message": "add share"
@@ -318,6 +334,14 @@
   "components.LTINav.linkPreview": {
     "description": "Title for the Instructor View. Describes the area appearing right above, which is a preview\n      of what the student will see there.",
     "message": "Preview"
+  },
+  "components.MarkdownWizard.createMarkdownButtonLabel": {
+    "description": "Button's label offering the user to validate his form and create a new markdown.",
+    "message": "Create your course"
+  },
+  "components.MarkdownWizard.placeholderTitleInput": {
+    "description": "A placeholder text inviting to enter a markdown title.",
+    "message": "Enter title of your course here"
   },
   "components.PlaylistPortability.copied": {
     "description": "Message displayed when playlist info are copied.",

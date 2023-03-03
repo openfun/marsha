@@ -47,35 +47,35 @@
     "description": "Create playlist button title to submit create form.",
     "message": "Créer un cours"
   },
-  "feature.Playlist.CreatePlaylistForm.errorOrganizations": {
-    "description": "Message displayed in case an error occured while fetching organizations.",
-    "message": "Une erreur est survenue, veuillez réessayer plus tard."
-  },
   "feature.Playlist.CreatePlaylistForm.formTitle": {
     "description": "Create playlist modale title",
     "message": "Créer un cours"
   },
-  "feature.Playlist.CreatePlaylistForm.organizationFieldLabel": {
+  "feature.Playlist.PlaylistForm.errorOrganizations": {
+    "description": "Message displayed in case an error occured while fetching organizations.",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "feature.Playlist.PlaylistForm.organizationFieldLabel": {
     "description": "Organization field label in create playlist form.",
     "message": "Organisation"
   },
-  "feature.Playlist.CreatePlaylistForm.organizationHelper": {
+  "feature.Playlist.PlaylistForm.organizationHelper": {
     "description": "Organization field in create playlist form helper.",
     "message": "Si vous ne trouvez pas votre organisation, merci de contacter l'administrateur en charge de votre organisation."
   },
-  "feature.Playlist.CreatePlaylistForm.playlistNameFieldLabel": {
+  "feature.Playlist.PlaylistForm.playlistNameFieldLabel": {
     "description": "Playlist name field label in create playlist form.",
     "message": "Nom"
   },
-  "feature.Playlist.CreatePlaylistForm.playlistNameHelper": {
+  "feature.Playlist.PlaylistForm.playlistNameHelper": {
     "description": "Playlist name helper in create playlist form.",
     "message": "Ce nom sera utilisé pour rechercher votre cours"
   },
-  "feature.Playlist.CreatePlaylistForm.requiredField": {
+  "feature.Playlist.PlaylistForm.requiredField": {
     "description": "Message when playlist field is missing.",
     "message": "Ce champ est requis pour créer le cours."
   },
-  "feature.Playlist.CreatePlaylistForm.retryOrganizations": {
+  "feature.Playlist.PlaylistForm.retryOrganizations": {
     "description": "Retry button title to fetch again organizations in case of error.",
     "message": "Réessayer"
   },
@@ -176,8 +176,12 @@
     "message": "OU SE CONNECTER AVEC"
   },
   "features.Contents.Contents.MyClassrooms": {
-    "description": "HomePage title",
+    "description": "My contents page, my classrooms title",
     "message": "Mes classes virtuelles"
+  },
+  "features.Contents.Contents.MyVideos": {
+    "description": "My contents page, my videos title",
+    "message": "Mes vidéos"
   },
   "features.Contents.Contents.SeeEverything": {
     "description": "Label to see all the cards",
@@ -198,10 +202,6 @@
   "features.Contents.features.ClassRooms.ClassroomCreateForm.requiredField": {
     "description": "Message when classroom field is missing.",
     "message": "Ce champs est requis pour créer une classe virtuelle."
-  },
-  "features.Contents.features.ClassRooms.ClassroomCreateForm.selectPlaylistLabel": {
-    "description": "Label select playlist.",
-    "message": "Choisir un cours."
   },
   "features.Contents.features.ClassRooms.ClassroomCreateForm.submitLabel": {
     "description": "Label for button submit in classroom creation form.",
@@ -226,6 +226,46 @@
   "features.Contents.features.ClassRooms.NoClassroom": {
     "description": "Text when there is no classroom to display.",
     "message": "Il n'y a pas de classe virtuelle à afficher."
+  },
+  "features.Contents.features.ReadVideos.NoVideo": {
+    "description": "Text when there is no video to display.",
+    "message": "Aucune vidéo à afficher."
+  },
+  "features.Contents.features.Video.Create.CreateVideoLabel": {
+    "description": "Text heading create video.",
+    "message": "Créer une vidéo"
+  },
+  "features.Contents.features.Video.Create.VideoTitle": {
+    "description": "Videos title",
+    "message": "Vidéos"
+  },
+  "features.Contents.features.Video.VideoCreateForm.Error": {
+    "description": "Text when there is an error.",
+    "message": "Une erreur s'est produite, veuillez réessayer."
+  },
+  "features.Contents.features.Video.VideoCreateForm.descriptionLabel": {
+    "description": "Label for description in video creation form.",
+    "message": "Description"
+  },
+  "features.Contents.features.Video.VideoCreateForm.requiredField": {
+    "description": "Message when video field is missing.",
+    "message": "Ce champ est requis pour créer une vidéo."
+  },
+  "features.Contents.features.Video.VideoCreateForm.selectPlaylistLabel": {
+    "description": "Label select playlist.",
+    "message": "Choisir un cours."
+  },
+  "features.Contents.features.Video.VideoCreateForm.submitLabel": {
+    "description": "Label for button submit in video creation form.",
+    "message": "Ajouter la vidéo"
+  },
+  "features.Contents.features.Video.VideoCreateForm.titleLabel": {
+    "description": "Label for title in video creation form.",
+    "message": "Titre"
+  },
+  "features.Header.iconTitle": {
+    "description": "Menu user icon title.",
+    "message": "Compte"
   },
   "features.Header.logout": {
     "description": "Logout action in header drop.",
@@ -267,6 +307,130 @@
     "description": "Error message on loading playlists",
     "message": "Une erreur est survenue, veuillez réessayer plus tard."
   },
+  "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.accessTitle": {
+    "description": "Update playlist page, playlist access bloc title.",
+    "message": "Accès à la liste de lecture"
+  },
+  "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.mainInfoTitle": {
+    "description": "Update playlist page, main info bloc title.",
+    "message": "Informations principales"
+  },
+  "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.saveButtonTitle": {
+    "description": "Update playlist page, save main info button title.",
+    "message": "Sauvegarder"
+  },
+  "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.updateErrorMessage": {
+    "description": "Toast message when updating playlist main info failed.",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.updateSuccessMessage": {
+    "description": "Toast message when updating playlist main info succeed.",
+    "message": "Cours mis à jour avec succès."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessButton.buttonLabel": {
+    "description": "Add member to playlist button label.",
+    "message": "Ajouter des utilisateurs"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.addMember": {
+    "description": "Add member to playlist button title.",
+    "message": "Ajouter cet utilisateur"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.back": {
+    "description": "Back to user selection button title.",
+    "message": "Précédent"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.placeHolder": {
+    "description": "Search user input placeholder.",
+    "message": "Chercher par nom d'utilisateur ou adresse email..."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.roleSelectLabel": {
+    "description": "Select role for user to add in playlist.",
+    "message": "Sélectionner le rôle"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.searchInfos": {
+    "description": "Modale description to search user to add into playlist.",
+    "message": "Recherchez parmi les utilisateurs et sélectionnez celui que vous souhaitez rajouter à votre cours."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.AddUserAccessForm.title": {
+    "description": "Add member to playlist modal title.",
+    "message": "Ajouter un utilisateur"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.errorLoadingPlaylist": {
+    "description": "Message when an error occurred while fetching it.",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.noAccess": {
+    "description": "Message when there are no playlist access related to a playlist in this playlist page settings.",
+    "message": "Aucun accès configuré pour ce cours."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.retryLoadPlaylist": {
+    "description": "Button title to reload playlist data when error occurred while fetching it.",
+    "message": "Réessayer"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.SearchUserList.error": {
+    "description": "Message when an error occurred while fetching users to add in playlist.",
+    "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.SearchUserList.noResults": {
+    "description": "No results while searching users to add in playlist.",
+    "message": "Aucun résultat trouvé."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.SearchUserList.retry": {
+    "description": "Retry search users button label.",
+    "message": "Réessayer"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.SearchUserList.selectUserLabel": {
+    "description": "Select user to add in playlist button label.",
+    "message": "Ajouter l'utilisateur {user} dans le cours"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.SearchUserListRow.anonymous": {
+    "description": "Default name completed with the user id in case the user has no full name",
+    "message": "Anonyme ({id})"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.anonymousUser": {
+    "description": "Update page, playlist access row for user without full name.",
+    "message": "Anonyme"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.deletePlaylistAccessError": {
+    "description": "Toast message when a playlist access has been deleted with error.",
+    "message": "Une erreur s'est produite lors de la suppression de l'utilisateur."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.deletePlaylistAccessSuccess": {
+    "description": "Toast message when a playlist access has been deleted with success.",
+    "message": "Accès supprimé avec succès."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserConfirmButtonTitle": {
+    "description": "Delete playlist access modale confirmation button.",
+    "message": "Supprimer"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserDescription": {
+    "description": "Delete playlist access modal information content.",
+    "message": "Voulez-vous supprimer l'accès de cet utilisateur à ce cours ? Attention, cette action est irréversible."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserLabel": {
+    "description": "Delete playlist access button accessibility title.",
+    "message": "Supprimer l'utilisateur {username}."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.updatePlaylistAccessError": {
+    "description": "Toast message when a playlist access has been updated with error.",
+    "message": "Une erreur s'est produite lors de la mise à jour de l'utilisateur."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserListRow.updatePlaylistAccessSuccess": {
+    "description": "Toast message when a playlist access has been updated with success.",
+    "message": "Accès mis à jour avec succès."
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserRoleOptions.adminLabel": {
+    "description": "Administrator role label in playlist access select.",
+    "message": "Administrateur"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserRoleOptions.instructorLabel": {
+    "description": "Instructor role label in playlist access select.",
+    "message": "Instructeur"
+  },
+  "features.Playlist.features.UpdatePlaylist.components.UserRoleOptions.studentLabel": {
+    "description": "Student role label in playlist access select.",
+    "message": "Étudiant"
+  },
   "features.Playlist.noPlaylists": {
     "description": "Message displayed when the user has not playlist yet.",
     "message": "Vous n'avez pas encore de cours."
@@ -282,6 +446,10 @@
   "features.Playlist.title": {
     "description": "Playlist page title",
     "message": "Mes cours"
+  },
+  "features.Playlist.updatePlaylist": {
+    "description": "Message for update playlist button.",
+    "message": "Mettre à jour le cours {playlistName}"
   },
   "features.PortabilityRequestStateTag.acceptedState": {
     "description": "Accepted display state",

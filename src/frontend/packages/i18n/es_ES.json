@@ -307,6 +307,10 @@
     "description": "Alt message for a shared document page",
     "message": "Shared document page {url}"
   },
+  "component.LanguageSelector.selectLanguageLabel": {
+    "description": "Label for language selector",
+    "message": "Select language"
+  },
   "component.LiveInfoBar.nbViewers": {
     "description": "Number of user connected on the live",
     "message": "{numberOfStudents, plural, =0 {No viewers connected.} one {# viewer connected.} other {# viewers connected}}"
@@ -423,17 +427,13 @@
     "description": "Label of the input field to add/update the start time of the scheduled event",
     "message": "Starting time"
   },
-  "component.ScreenDispositionSelector.editorOnly": {
-    "description": "Navigation bar, icon to display editor only",
-    "message": "Editor only"
+  "component.ScreenDispositionSelector.editor": {
+    "description": "Navigation bar, tab to display editor",
+    "message": "Markdown"
   },
-  "component.ScreenDispositionSelector.renderingOnly": {
-    "description": "Navigation bar, icon to display rendering only",
-    "message": "Rendering only"
-  },
-  "component.ScreenDispositionSelector.splitScreen": {
-    "description": "Navigation bar, icon to display both editor and rendering",
-    "message": "Split screen"
+  "component.ScreenDispositionSelector.rendering": {
+    "description": "Navigation bar, tab to display rendering",
+    "message": "Preview"
   },
   "component.SharedLiveMedia.noUploadedDocuments": {
     "description": "A message informing the user he hasn't any document imported yet.",
