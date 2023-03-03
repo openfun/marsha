@@ -20,6 +20,7 @@ import {
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
 } from 'conf/chat';
+import { useCurrentLive } from 'hooks/useCurrentVideo';
 import { useLiveSession } from 'hooks/useLiveSession';
 import { isAnonymous } from 'utils/chat/chat';
 import { getAnonymousId } from 'utils/localstorage';
@@ -98,6 +99,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
   const intl = useIntl();
   const jwt = useJwt((state) => state.jwt);
   const user = useCurrentUser((state) => state.currentUser);
+  const live = useCurrentLive();
   const [alertsState, setAlertsState] = useState<string[]>([]);
   const [isWaiting, setIsWaiting] = useState(false);
   const { liveSession, setLiveSession } = useLiveSession((state) => ({
@@ -199,6 +201,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
           anonymousId = getAnonymousId();
         }
         const response = await setLiveSessionDisplayName(
+          live.id,
           displayName,
           anonymousId,
         );
@@ -221,7 +224,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
         return false;
       }
     },
-    [intl, jwt, onSuccess, setLiveSession],
+    [intl, jwt, onSuccess, setLiveSession, live.id],
   );
 
   return (

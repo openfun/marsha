@@ -26,7 +26,7 @@ describe('setLiveSessionDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/livesessions/display_name/',
+        url: '/api/videos/some-video-id/livesessions/display_name/',
       },
       {
         ...liveSession,
@@ -34,7 +34,10 @@ describe('setLiveSessionDisplayName', () => {
       },
     );
 
-    const response = await setLiveSessionDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(
+      'some-video-id',
+      displayName,
+    );
 
     expect(response.success).toEqual({
       ...liveSession,
@@ -57,7 +60,7 @@ describe('setLiveSessionDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/livesessions/display_name/',
+        url: '/api/videos/some-video-id/livesessions/display_name/',
       },
       {
         ...liveSession,
@@ -65,7 +68,11 @@ describe('setLiveSessionDisplayName', () => {
       },
     );
 
-    const response = await setLiveSessionDisplayName(displayName, anonymousId);
+    const response = await setLiveSessionDisplayName(
+      'some-video-id',
+      displayName,
+      anonymousId,
+    );
 
     expect(response.success).toEqual({
       ...liveSession,
@@ -83,12 +90,15 @@ describe('setLiveSessionDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/livesessions/display_name/',
+        url: '/api/videos/some-video-id/livesessions/display_name/',
       },
       409,
     );
 
-    const response = await setLiveSessionDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(
+      'some-video-id',
+      displayName,
+    );
 
     expect(response).toEqual({ error: 409 });
   });
@@ -103,7 +113,7 @@ describe('setLiveSessionDisplayName', () => {
           'Content-Type': 'application/json',
         },
         method: 'PUT',
-        url: '/api/livesessions/display_name/',
+        url: '/api/videos/some-video-id/livesessions/display_name/',
       },
       {
         body: { detail: 'Invalid request.' },
@@ -111,7 +121,10 @@ describe('setLiveSessionDisplayName', () => {
       },
     );
 
-    const response = await setLiveSessionDisplayName(displayName);
+    const response = await setLiveSessionDisplayName(
+      'some-video-id',
+      displayName,
+    );
 
     expect(response).toEqual({ error: { detail: 'Invalid request.' } });
   });

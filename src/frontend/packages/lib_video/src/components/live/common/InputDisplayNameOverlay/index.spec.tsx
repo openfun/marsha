@@ -2,7 +2,12 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useCurrentUser, useJwt, liveSessionFactory } from 'lib-components';
+import {
+  useCurrentUser,
+  useJwt,
+  liveSessionFactory,
+  liveMockFactory,
+} from 'lib-components';
 import { render, renderImageSnapshot, wrapInIntlProvider } from 'lib-tests';
 import React from 'react';
 
@@ -14,6 +19,7 @@ import {
 } from 'conf/chat';
 import { useLiveSession } from 'hooks/useLiveSession';
 import { converse } from 'utils/window';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { InputDisplayNameOverlay } from '.';
 
@@ -47,6 +53,10 @@ const mockSetLiveSessionDisplayName =
     typeof setLiveSessionDisplayName
   >;
 
+const live = liveMockFactory({
+  id: 'some-live-id',
+});
+
 describe('<InputDisplayNameOverlay />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -62,7 +72,7 @@ describe('<InputDisplayNameOverlay />', () => {
       getDecodedJwt: () => ({} as any),
     });
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -85,7 +95,7 @@ describe('<InputDisplayNameOverlay />', () => {
       getDecodedJwt: () => ({} as any),
     });
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -108,7 +118,7 @@ describe('<InputDisplayNameOverlay />', () => {
       getDecodedJwt: () => ({} as any),
     });
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -142,7 +152,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -190,7 +200,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -239,7 +249,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -290,7 +300,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -335,7 +345,7 @@ describe('<InputDisplayNameOverlay />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -369,7 +379,7 @@ describe('<InputDisplayNameOverlay />', () => {
       } as any,
     });
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     const closeButton = screen.getByTitle(
       'Click this button to close the overlay.',
@@ -395,7 +405,7 @@ describe('<InputDisplayNameOverlay />', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(<InputDisplayNameOverlay />);
+    render(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });
@@ -411,7 +421,7 @@ describe('<InputDisplayNameOverlay />', () => {
       } as any,
     });
 
-    render(wrapInIntlProvider(<InputDisplayNameOverlay />));
+    render(wrapInVideo(wrapInIntlProvider(<InputDisplayNameOverlay />), live));
 
     expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
   });
@@ -421,7 +431,7 @@ describe('<InputDisplayNameOverlay />', () => {
       jwt: 'some_jwt',
     });
 
-    await renderImageSnapshot(<InputDisplayNameOverlay />);
+    await renderImageSnapshot(wrapInVideo(<InputDisplayNameOverlay />, live));
 
     expect(screen.getByRole('textbox')).toBeInTheDocument();
   });

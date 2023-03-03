@@ -2,7 +2,12 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { decodeJwt, useCurrentUser, liveSessionFactory } from 'lib-components';
+import {
+  decodeJwt,
+  useCurrentUser,
+  liveSessionFactory,
+  liveMockFactory,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -14,6 +19,7 @@ import {
 } from 'conf/chat';
 import { useLiveSession } from 'hooks/useLiveSession';
 import { converse } from 'utils/window';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { InputDisplayName } from '.';
 
@@ -42,6 +48,10 @@ jest.mock('lib-components', () => ({
 }));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
+const live = liveMockFactory({
+  id: 'some-live-id',
+});
+
 describe('<InputDisplayName />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -55,7 +65,7 @@ describe('<InputDisplayName />', () => {
   it(`controls input and shows error when input contains "${ANONYMOUS_ID_PREFIX}"`, async () => {
     mockedDecodeJwt.mockReturnValue({} as any);
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -76,7 +86,7 @@ describe('<InputDisplayName />', () => {
   it(`controls input and shows error when input contains less than ${NICKNAME_MIN_LENGTH} characters.`, async () => {
     mockedDecodeJwt.mockReturnValue({} as any);
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -97,7 +107,7 @@ describe('<InputDisplayName />', () => {
   it(`controls input and shows error when input contains more than ${NICKNAME_MAX_LENGTH} characters.`, async () => {
     mockedDecodeJwt.mockReturnValue({} as any);
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -133,7 +143,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -179,7 +189,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -226,7 +236,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -275,7 +285,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -318,7 +328,7 @@ describe('<InputDisplayName />', () => {
     });
     expect(useLiveSession.getState().liveSession).toBeUndefined();
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
@@ -354,7 +364,7 @@ describe('<InputDisplayName />', () => {
     const liveSession = liveSessionFactory({ username: 'Foo' });
     useLiveSession.getState().setLiveSession(liveSession);
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     expect(screen.getByRole('textbox')).toHaveValue('Foo');
   });
@@ -372,7 +382,7 @@ describe('<InputDisplayName />', () => {
       } as any,
     });
 
-    render(<InputDisplayName />);
+    render(wrapInVideo(<InputDisplayName />, live));
 
     expect(screen.getByRole('textbox')).toHaveValue('jane_doe');
   });
