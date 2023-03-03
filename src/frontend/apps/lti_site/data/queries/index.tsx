@@ -18,7 +18,6 @@ import {
   updateOne,
   useVideo as useVideoStore,
   Document,
-  LiveAttendance,
   PortabilityRequest,
   Thumbnail,
   TimedText,
@@ -126,24 +125,6 @@ export const useTimedTextTracks = (
     TimedTextTracksResponse,
     'timedtexttracks',
     TimedTextTracksResponse,
-    FetchListQueryKey
-  >(key, fetchList, queryConfig);
-};
-
-export type LiveAttendancesResponse = APIList<LiveAttendance>;
-export const useLiveAttendances = (
-  queryConfig?: UseQueryOptions<
-    LiveAttendancesResponse,
-    'livesessions/list_attendances',
-    LiveAttendancesResponse,
-    FetchListQueryKey
-  >,
-) => {
-  const key: FetchListQueryKey = ['livesessions/list_attendances'];
-  return useQuery<
-    LiveAttendancesResponse,
-    'livesessions/list_attendances',
-    LiveAttendancesResponse,
     FetchListQueryKey
   >(key, fetchList, queryConfig);
 };
