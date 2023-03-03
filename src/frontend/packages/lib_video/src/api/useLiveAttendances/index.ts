@@ -8,6 +8,7 @@ import { useQuery, UseQueryOptions } from 'react-query';
 
 export type LiveAttendancesResponse = APIList<LiveAttendance>;
 export const useLiveAttendances = (
+  videoId: string,
   queryConfig?: UseQueryOptions<
     LiveAttendancesResponse,
     'livesessions/list_attendances',
@@ -15,7 +16,9 @@ export const useLiveAttendances = (
     FetchListQueryKey
   >,
 ) => {
-  const key: FetchListQueryKey = ['livesessions/list_attendances'];
+  const key: FetchListQueryKey = [
+    `videos/${videoId}/livesessions/list_attendances`,
+  ];
   return useQuery<
     LiveAttendancesResponse,
     'livesessions/list_attendances',

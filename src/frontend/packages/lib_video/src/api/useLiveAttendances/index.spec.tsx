@@ -53,17 +53,20 @@ describe('useLiveAttendances', () => {
       },
     });
     fetchMock.mock(
-      '/api/livesessions/list_attendances/?limit=999',
+      '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
       liveAttendances,
     );
 
-    const { result, waitFor } = renderHook(() => useLiveAttendances(), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useLiveAttendances('some-video-id'),
+      {
+        wrapper: Wrapper,
+      },
+    );
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      '/api/livesessions/list_attendances/?limit=999',
+      '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -76,16 +79,22 @@ describe('useLiveAttendances', () => {
   });
 
   it('fails to get the resource list', async () => {
-    fetchMock.mock('/api/livesessions/list_attendances/?limit=999', 404);
+    fetchMock.mock(
+      '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
+      404,
+    );
 
-    const { result, waitFor } = renderHook(() => useLiveAttendances(), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useLiveAttendances('some-video-id'),
+      {
+        wrapper: Wrapper,
+      },
+    );
 
     await waitFor(() => result.current.isError);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      '/api/livesessions/list_attendances/?limit=999',
+      '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

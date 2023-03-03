@@ -37,7 +37,7 @@ describe('<DashboardLiveTabAttendance />', () => {
   it('renders the list of attendance', async () => {
     const deferred = new Deferred();
     fetchMock.mock(
-      '/api/livesessions/list_attendances/?limit=999',
+      `/api/videos/${mockedVideo.id}/livesessions/list_attendances/?limit=999`,
       deferred.promise,
     );
     render(wrapInVideo(<DashboardLiveTabAttendance />, mockedVideo));
@@ -149,7 +149,7 @@ describe('<DashboardLiveTabAttendance />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/livesessions/list_attendances/?limit=999`,
+      `/api/videos/${mockedVideo.id}/livesessions/list_attendances/?limit=999`,
     );
     // 3 results are displayed
     expect(screen.getAllByTestId('live-attendance').length).toEqual(3);
@@ -194,7 +194,7 @@ describe('<DashboardLiveTabAttendance />', () => {
   it('displays the default message when there is no attendance', async () => {
     const deferred = new Deferred();
     fetchMock.mock(
-      '/api/livesessions/list_attendances/?limit=999',
+      `/api/videos/${mockedVideo.id}/livesessions/list_attendances/?limit=999`,
       deferred.promise,
     );
 
@@ -217,7 +217,7 @@ describe('<DashboardLiveTabAttendance />', () => {
     });
     const deferred = new Deferred();
     fetchMock.get(
-      '/api/livesessions/list_attendances/?limit=999',
+      `/api/videos/${mockedVideo.id}/livesessions/list_attendances/?limit=999`,
       deferred.promise,
     );
 
