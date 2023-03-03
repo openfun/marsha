@@ -19,6 +19,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { createThumbnail } from 'api/createThumbnail';
 import { useThumbnailMetadata } from 'api/useThumbnailMetadata';
+import { useCurrentVideo } from 'hooks/useCurrentVideo';
 
 import { FoldableItem } from '../../FoldableItem';
 
@@ -68,6 +69,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
   const appData = useAppConfig();
   const intl = useIntl();
 
+  const video = useCurrentVideo();
   const { addUpload, uploadManagerState, resetUpload } = useUploadManager();
   const { addThumbnail, thumbnail } = useThumbnail((state) => ({
     addThumbnail: state.addResource,
@@ -81,8 +83,11 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
       if (event.target.files && event.target.files[0]) {
         let thumbnailId;
         try {
-          if (!thumbnail) {
-            const response = await createThumbnail(event.target.files[0].size);
+          if (!thumbnail?.id) {
+            const response = await createThumbnail({
+              video: video.id,
+              size: event.target.files[0].size,
+            });
             addThumbnail(response);
             thumbnailId = response.id;
           } else {
@@ -106,7 +111,14 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
         }
       }
     },
-    [addThumbnail, addUpload, intl, thumbnail, data?.upload_max_size_bytes],
+    [
+      addThumbnail,
+      addUpload,
+      video.id,
+      data?.upload_max_size_bytes,
+      intl,
+      thumbnail?.id,
+    ],
   );
 
   // When an upload is over and successful, it is deleted from the uploadManagerState, in order
