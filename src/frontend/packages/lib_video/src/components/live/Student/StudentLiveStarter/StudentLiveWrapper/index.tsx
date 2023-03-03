@@ -64,7 +64,12 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
             onStage: true,
           },
         };
-        pushAttendance(attendance, intl.locale, getOrInitAnonymousId());
+        pushAttendance(
+          live.id,
+          attendance,
+          intl.locale,
+          getOrInitAnonymousId(),
+        );
       }, appData.attendanceDelay);
       return () => {
         // Stop tracking attendances as we unmount
@@ -73,7 +78,7 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     }
 
     return;
-  }, [isParticipantOnstage, intl.locale, appData]);
+  }, [isParticipantOnstage, intl.locale, appData, live.id]);
 
   useEffect(() => {
     // if the xmpp object is not null, panel state is filled

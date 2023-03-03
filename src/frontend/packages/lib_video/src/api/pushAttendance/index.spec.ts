@@ -20,7 +20,7 @@ describe('pushAttendance', () => {
     });
     fetchMock.mock(
       {
-        url: '/api/livesessions/push_attendance/',
+        url: '/api/videos/some-video-id/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
@@ -31,7 +31,11 @@ describe('pushAttendance', () => {
       expectedLiveSession,
     );
 
-    const response = await pushAttendance(liveAttendance, 'fr');
+    const response = await pushAttendance(
+      'some-video-id',
+      liveAttendance,
+      'fr',
+    );
     expect(response).toEqual(expectedLiveSession);
   });
 
@@ -45,7 +49,7 @@ describe('pushAttendance', () => {
     });
     fetchMock.mock(
       {
-        url: `/api/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
+        url: `/api/videos/some-video-id/livesessions/push_attendance/?anonymous_id=${anonymousId}`,
         body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
@@ -56,7 +60,12 @@ describe('pushAttendance', () => {
       expectedLiveSession,
     );
 
-    const response = await pushAttendance(liveAttendance, 'fr', anonymousId);
+    const response = await pushAttendance(
+      'some-video-id',
+      liveAttendance,
+      'fr',
+      anonymousId,
+    );
     expect(response).toEqual(expectedLiveSession);
   });
 
@@ -64,7 +73,7 @@ describe('pushAttendance', () => {
     const liveAttendance = { key1: 'value1' };
     fetchMock.mock(
       {
-        url: '/api/livesessions/push_attendance/',
+        url: '/api/videos/some-video-id/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance, language: 'fr' },
         headers: {
           Authorization: 'Bearer some token',
@@ -75,16 +84,16 @@ describe('pushAttendance', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(pushAttendance(liveAttendance, 'fr')).rejects.toThrow(
-      'Failed to perform the request',
-    );
+    await expect(
+      pushAttendance('some-video-id', liveAttendance, 'fr'),
+    ).rejects.toThrow('Failed to perform the request');
   });
 
   it('raises an error when it fails to push new attendances (local)', async () => {
     const liveAttendance = { key1: 'value1' };
     fetchMock.mock(
       {
-        url: '/api/livesessions/push_attendance/',
+        url: '/api/videos/some-video-id/livesessions/push_attendance/',
         body: { live_attendance: liveAttendance, language: 'en' },
         headers: {
           Authorization: 'Bearer some token',
@@ -95,8 +104,8 @@ describe('pushAttendance', () => {
       400,
     );
 
-    await expect(pushAttendance(liveAttendance, 'en')).rejects.toThrow(
-      'Failed to push attendance',
-    );
+    await expect(
+      pushAttendance('some-video-id', liveAttendance, 'en'),
+    ).rejects.toThrow('Failed to push attendance');
   });
 });

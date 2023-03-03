@@ -49,7 +49,9 @@ export const VideoFromLiveDashboard = ({
           setLiveSession(data.results[0]);
         } else {
           const generateFirstAttendance = async () => {
-            setLiveSession(await pushAttendance({}, intl.locale, anonymousId));
+            setLiveSession(
+              await pushAttendance(video.id, {}, intl.locale, anonymousId),
+            );
             queryClient.invalidateQueries('livesessions', {
               refetchActive: false,
             });

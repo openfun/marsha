@@ -534,6 +534,7 @@ describe('createVideoJsPlayer', () => {
     Date.now = jest.fn(() => 1651732370000);
     jest.runOnlyPendingTimers();
     expect(mockPushAttendance).toHaveBeenCalledWith(
+      video.id,
       {
         1651732370: {
           fullScreen: false,
