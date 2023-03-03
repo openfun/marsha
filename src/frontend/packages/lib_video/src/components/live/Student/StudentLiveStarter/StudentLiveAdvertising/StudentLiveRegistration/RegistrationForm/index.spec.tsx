@@ -1,12 +1,13 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import { decodeJwt, liveSessionFactory } from 'lib-components';
+import { decodeJwt, liveSessionFactory, liveMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
 import { createLiveSession } from 'api/createLiveSession';
 import { updateLiveSession } from 'api/updateLiveSession';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { RegistrationForm } from '.';
 
@@ -33,6 +34,10 @@ jest.mock('lib-components', () => ({
   decodeJwt: jest.fn(),
 }));
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
+
+const live = liveMockFactory({
+  id: 'some-live-id',
+});
 
 describe('<RegistrationForm />', () => {
   beforeEach(() => {
@@ -65,10 +70,13 @@ describe('<RegistrationForm />', () => {
 
   it('renders the form without values', () => {
     render(
-      <RegistrationForm
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     const textbox = screen.getByRole('textbox', { name: 'Email address' });
@@ -86,11 +94,14 @@ describe('<RegistrationForm />', () => {
 
   it('renders the form with initial value', () => {
     render(
-      <RegistrationForm
-        defaultEmail="some.email@openfun.fr"
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     screen.getByRole('textbox', { name: 'Email address' });
@@ -124,11 +135,14 @@ describe('<RegistrationForm />', () => {
     mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
 
     render(
-      <RegistrationForm
-        defaultEmail="some.email@openfun.fr"
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     expect(
@@ -172,16 +186,19 @@ describe('<RegistrationForm />', () => {
       id: 'id',
       email: 'email',
       should_send_reminders: true,
-      video: 'id',
+      video: live.id,
     });
     mockCreateLiveSession.mockResolvedValue(liveSession);
 
     render(
-      <RegistrationForm
-        defaultEmail="some.email@openfun.com"
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          defaultEmail="some.email@openfun.com"
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     expect(mockCreateLiveSession).toHaveBeenCalledTimes(0);
@@ -195,11 +212,14 @@ describe('<RegistrationForm />', () => {
 
   it('renders the error when email is invalid', async () => {
     render(
-      <RegistrationForm
-        defaultEmail="some.invalid.email@openfun."
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          defaultEmail="some.invalid.email@openfun."
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     screen.getByRole('textbox', { name: 'Email address' });
@@ -217,11 +237,14 @@ describe('<RegistrationForm />', () => {
     mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
 
     render(
-      <RegistrationForm
-        defaultEmail="some.email@openfun.fr"
-        liveSession={undefined}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          defaultEmail="some.email@openfun.fr"
+          liveSession={undefined}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
 
     screen.getByRole('textbox', { name: 'Email address' });
@@ -243,10 +266,13 @@ describe('<RegistrationForm />', () => {
     });
 
     render(
-      <RegistrationForm
-        liveSession={existingLiveSession}
-        setRegistrationCompleted={setRegistrationCompleted}
-      />,
+      wrapInVideo(
+        <RegistrationForm
+          liveSession={existingLiveSession}
+          setRegistrationCompleted={setRegistrationCompleted}
+        />,
+        live,
+      ),
     );
     const updatedEmail = 'updatedEmail@fun-test.fr';
     const textbox = screen.getByRole('textbox', { name: 'Email address' });

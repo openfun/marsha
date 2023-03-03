@@ -6,6 +6,7 @@ import {
   useCurrentUser,
   useJwt,
   liveSessionFactory,
+  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -13,6 +14,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from 'api/createLiveSession';
 import { getAnonymousId } from 'utils/localstorage';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { StudentLiveRegistration } from '.';
 
@@ -37,6 +39,10 @@ jest.mock('utils/localstorage', () => ({
 const mockGetAnonymousId = getAnonymousId as jest.MockedFunction<
   typeof getAnonymousId
 >;
+
+const live = liveMockFactory({
+  id: 'some-live-id',
+});
 
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
@@ -77,7 +83,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the message on submit', async () => {
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -86,11 +92,13 @@ describe('<StudentLiveRegistration />', () => {
       is_registered: true,
       email: 'email',
       should_send_reminders: true,
-      video: 'video_id',
+      video: live.id,
     });
     mockCreateLiveSession.mockResolvedValue(liveSession);
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -107,11 +115,13 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and an error when validation fail', async () => {
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -129,7 +139,7 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when mail is already registered', async () => {
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
@@ -137,7 +147,9 @@ describe('<StudentLiveRegistration />', () => {
       email: ['blabla already registered'],
     });
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -156,13 +168,15 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an error occured with the email on backend', async () => {
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
     mockCreateLiveSession.mockRejectedValue({ email: 'something bad' });
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -181,13 +195,15 @@ describe('<StudentLiveRegistration />', () => {
   });
 
   it('renders the form and the error when an unknown error occured with the email on backend', async () => {
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 0,
       results: [],
     });
     mockCreateLiveSession.mockRejectedValue({});
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -211,14 +227,16 @@ describe('<StudentLiveRegistration />', () => {
       is_registered: false,
       email: 'email',
       should_send_reminders: true,
-      video: 'video_id',
+      video: live.id,
     });
-    fetchMock.get('/api/livesessions/?limit=999', {
+    fetchMock.get('/api/videos/some-live-id/livesessions/?limit=999', {
       count: 1,
       results: [liveSession],
     });
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
@@ -252,16 +270,21 @@ describe('<StudentLiveRegistration />', () => {
       is_registered: false,
       email: 'email',
       should_send_reminders: true,
-      video: 'video_id',
+      video: live.id,
     });
     const anonymousId = uuidv4();
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    fetchMock.get(`/api/livesessions/?limit=999&anonymous_id=${anonymousId}`, {
-      count: 1,
-      results: [liveSession],
-    });
+    fetchMock.get(
+      `/api/videos/some-live-id/livesessions/?limit=999&anonymous_id=${anonymousId}`,
+      {
+        count: 1,
+        results: [liveSession],
+      },
+    );
 
-    const { container } = render(<StudentLiveRegistration />);
+    const { container } = render(
+      wrapInVideo(<StudentLiveRegistration />, live),
+    );
 
     await screen.findByRole('heading', {
       name: 'I want to subscribe to this webinar',
