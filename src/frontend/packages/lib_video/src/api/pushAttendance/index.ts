@@ -6,11 +6,12 @@ import {
 } from 'lib-components';
 
 export const pushAttendance = async (
+  videoId: string,
   liveAttendance: LiveSession['live_attendance'],
   language: string,
   anonymousId?: string,
 ): Promise<LiveSession> => {
-  let endpoint = `${API_ENDPOINT}/livesessions/push_attendance/`;
+  let endpoint = `${API_ENDPOINT}/videos/${videoId}/livesessions/push_attendance/`;
   if (anonymousId) {
     endpoint = `${endpoint}?anonymous_id=${anonymousId}`;
   }

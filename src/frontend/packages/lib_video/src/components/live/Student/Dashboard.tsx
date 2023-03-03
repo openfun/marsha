@@ -33,7 +33,9 @@ export const Dashboard = ({ live, playerType, socketUrl }: DasboardProps) => {
           if (data.count > 0) {
             setLiveSession(data.results[0]);
           } else {
-            setLiveSession(await pushAttendance({}, intl.locale, anonymousId));
+            setLiveSession(
+              await pushAttendance(live.id, {}, intl.locale, anonymousId),
+            );
             queryClient.invalidateQueries('livesessions', {
               refetchActive: false,
             });
