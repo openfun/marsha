@@ -10,12 +10,14 @@ import {
   useThumbnail,
   modelName,
   uploadState,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { createThumbnail } from 'api/createThumbnail';
 import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { WidgetThumbnail } from '.';
 
@@ -74,9 +76,12 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       uploadManagerState: {},
     });
     render(
-      <InfoWidgetModalProvider value={null}>
-        <WidgetThumbnail />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <WidgetThumbnail />
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
 
     await screen.findByText('Thumbnail');
@@ -119,17 +124,21 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     mockCreateThumbnail.mockResolvedValue(mockedThumbnail);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <WidgetThumbnail />
-        </UploadManagerContext.Provider>
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <WidgetThumbnail />
+          </UploadManagerContext.Provider>
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
+
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload an image',
     });
@@ -184,16 +193,19 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <WidgetThumbnail />
-        </UploadManagerContext.Provider>
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <WidgetThumbnail />
+          </UploadManagerContext.Provider>
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
 
     // Simulate an upload which just finished
@@ -224,9 +236,12 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <WidgetThumbnail />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <WidgetThumbnail />
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
     const img = await screen.findByRole('img', {
       name: 'Live video thumbnail',
@@ -260,9 +275,12 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 204);
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <WidgetThumbnail />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <WidgetThumbnail />
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
     const removeButton = await screen.findByRole('button', {
       name: 'Delete thumbnail',
@@ -319,9 +337,12 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <WidgetThumbnail isLive={false} />
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <WidgetThumbnail isLive={false} />
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
 
     await screen.findByText('Thumbnail');
@@ -362,16 +383,19 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     });
 
     render(
-      <InfoWidgetModalProvider value={null}>
-        <UploadManagerContext.Provider
-          value={{
-            setUploadState: () => {},
-            uploadManagerState: {},
-          }}
-        >
-          <WidgetThumbnail />
-        </UploadManagerContext.Provider>
-      </InfoWidgetModalProvider>,
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <UploadManagerContext.Provider
+            value={{
+              setUploadState: () => {},
+              uploadManagerState: {},
+            }}
+          >
+            <WidgetThumbnail />
+          </UploadManagerContext.Provider>
+        </InfoWidgetModalProvider>,
+        videoMockFactory(),
+      ),
     );
     expect(fetchMock.called('api/thumbnails/')).toBe(true);
     const uploadButton = await screen.findByRole('button', {

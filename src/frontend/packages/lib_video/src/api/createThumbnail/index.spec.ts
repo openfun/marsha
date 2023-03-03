@@ -19,7 +19,11 @@ describe('sideEffects/createThumbnail', () => {
       urls: null,
     });
 
-    const thumbnail = await createThumbnail(10);
+    const body = {
+      size: 10,
+      video: 'video-id',
+    };
+    const thumbnail = await createThumbnail(body);
     const fetchArgs = fetchMock.lastCall()![1]!;
 
     expect(thumbnail).toEqual({
@@ -27,6 +31,7 @@ describe('sideEffects/createThumbnail', () => {
       ready_to_display: false,
       urls: null,
     });
+    expect(fetchArgs.body).toEqual(JSON.stringify(body));
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer token',
       'Content-Type': 'application/json',
@@ -40,7 +45,11 @@ describe('sideEffects/createThumbnail', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(createThumbnail(10)).rejects.toThrow(
+    const body = {
+      size: 10,
+      video: 'video-id',
+    };
+    await expect(createThumbnail(body)).rejects.toThrow(
       'Failed to perform the request',
     );
   });
@@ -48,6 +57,10 @@ describe('sideEffects/createThumbnail', () => {
   it('throws when it fails to create the thumbnail (API error)', async () => {
     fetchMock.mock('/api/thumbnails/', 400);
 
-    await expect(createThumbnail(10)).rejects.toThrow();
+    const body = {
+      size: 10,
+      video: 'video-id',
+    };
+    await expect(createThumbnail(body)).rejects.toThrow();
   });
 });
