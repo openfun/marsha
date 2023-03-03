@@ -28,6 +28,10 @@ from .base import LiveSessionApiTestCase
 class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
     """Test the update API of the liveSession object."""
 
+    def _update_url(self, video, live_session):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/{live_session.pk}/"
+
     def test_api_livesession_update_put_anonymous_not_allowed(self):
         """Anonymous can't update livesession."""
         video = VideoFactory(
@@ -35,9 +39,9 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        AnonymousLiveSessionFactory(video=video)
+        live_session = AnonymousLiveSessionFactory(video=video)
         response = self.client.put(
-            "/api/livesessions/",
+            self._update_url(video, live_session),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
         )
@@ -54,10 +58,10 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        AnonymousLiveSessionFactory(video=video)
+        live_session = AnonymousLiveSessionFactory(video=video)
 
         response = self.client.patch(
-            "/api/livesessions/",
+            self._update_url(video, live_session),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
         )
@@ -74,36 +78,17 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             live_type=RAW,
             starting_at=timezone.now() + timedelta(days=100),
         )
-        AnonymousLiveSessionFactory(video=video)
+        live_session = AnonymousLiveSessionFactory(video=video)
         jwt_token = ResourceAccessTokenFactory(resource=video)
 
         response = self.client.put(
-            "/api/livesessions/",
+            self._update_url(video, live_session),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.json(), {"detail": 'Method "PUT" not allowed.'})
-
-    def test_api_livesession_update_with_token_patch_not_allowed(self):
-        """Patch update is not allowed."""
-        video = VideoFactory(
-            live_state=IDLE,
-            live_type=RAW,
-            starting_at=timezone.now() + timedelta(days=100),
-        )
-        AnonymousLiveSessionFactory(video=video)
-        jwt_token = ResourceAccessTokenFactory(resource=video)
-
-        response = self.client.patch(
-            "/api/livesessions/",
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 405)
-        self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})
 
     def test_api_livesession_put_not_allowed(self):
         """Updating a live_session using a PUT method is not allowed."""
@@ -126,7 +111,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.put(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -147,7 +132,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             video=video,
         )
 
-        response = self.client.patch(f"/api/livesessions/{live_session.id}/")
+        response = self.client.patch(self._update_url(video, live_session))
 
         self.assertEqual(response.status_code, 401)
 
@@ -164,7 +149,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.patch(f"/api/livesessions/{live_session.id}/")
+            response = self.client.patch(self._update_url(video, live_session))
             self.assertEqual(response.status_code, 401)
 
     def test_api_livesession_patch_student_not_allowed_fields(self):
@@ -192,7 +177,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": True, "anonymous_id": uuid.uuid4()},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -229,7 +214,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": True, "email": "sarah@fun-test.fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -279,7 +264,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         now = datetime(2022, 4, 7, tzinfo=timezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.patch(
-                f"/api/livesessions/{live_session.id}/",
+                self._update_url(video, live_session),
                 {"is_registered": True, "email": "sarah@fun-test.fr"},
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -336,7 +321,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -397,7 +382,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"email": "sarah@fun-test.fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -453,7 +438,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": True, "email": "sarah@fun-test.fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -521,7 +506,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/",
+            self._update_url(video, live_session),
             {"is_registered": True, "email": "r00t@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -532,7 +517,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertEqual(live_session.language, "fr")
 
         response = self.client.patch(
-            f"/api/livesessions/{other_live_session.id}/",
+            self._update_url(other_live_session.video, other_live_session),
             {"is_registered": True, "email": "l33t@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -543,7 +528,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertEqual(other_live_session.language, "fr")
 
         response = self.client.patch(
-            f"/api/livesessions/{anonymous_live_session.id}/",
+            self._update_url(anonymous_live_session.video, anonymous_live_session),
             {"is_registered": True, "email": "An0n@fun-test.fr", "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -554,7 +539,9 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         self.assertEqual(anonymous_live_session.language, "fr")
 
         response = self.client.patch(
-            f"/api/livesessions/{not_accessing_live_session.id}/",
+            self._update_url(
+                not_accessing_live_session.video, not_accessing_live_session
+            ),
             {"is_registered": True, "email": "wr0ng@fun-test.fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -587,7 +574,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.patch(
-            f"/api/livesessions/{anonymous_live_session.id}/",
+            self._update_url(anonymous_live_session.video, anonymous_live_session),
             {"is_registered": True, "email": other_anonymous_live_session.email},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -619,7 +606,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         now = datetime(2022, 4, 7, tzinfo=timezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.patch(
-                f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+                f"{self._update_url(video, live_session)}?anonymous_id={anonymous_id}",
                 {"is_registered": True, "email": "sarah@fun-test.fr"},
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -668,7 +655,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
         other_anonymous_id = uuid.uuid4()
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/?anonymous_id={other_anonymous_id}",
+            f"{self._update_url(video, live_session)}?anonymous_id={other_anonymous_id}",
             {"is_registered": True, "email": "sarah@fun-test.fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -699,7 +686,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
         # if a wrong language is set
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            f"{self._update_url(video, live_session)}?anonymous_id={anonymous_id}",
             {
                 "is_registered": True,
                 "email": "sarah@fun-test.fr",
@@ -717,7 +704,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
         # now with empty
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            f"{self._update_url(video, live_session)}?anonymous_id={anonymous_id}",
             {
                 "is_registered": True,
                 "email": "sarah@fun-test.fr",
@@ -732,7 +719,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
         # now with a value accepted
         response = self.client.patch(
-            f"/api/livesessions/{live_session.id}/?anonymous_id={anonymous_id}",
+            f"{self._update_url(video, live_session)}?anonymous_id={anonymous_id}",
             {
                 "is_registered": True,
                 "email": "sarah@fun-test.fr",
@@ -762,3 +749,33 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
                 "video": str(video.id),
             },
         )
+
+
+# Old routes to remove
+class LiveSessionUpdateApiOldTest(LiveSessionUpdateApiTest):
+    """Test the update API of the liveSession object with old URLs."""
+
+    def _update_url(self, video, live_session):
+        """Return the url to use in tests."""
+        return f"/api/livesessions/{live_session.pk}/"
+
+    def test_api_livesession_update_with_token_patch_not_allowed(self):
+        """Patch update is not allowed."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        AnonymousLiveSessionFactory(video=video)
+        jwt_token = ResourceAccessTokenFactory(resource=video)
+
+        # This is not clear why this is tested as this is not an expected URL
+        # still we keep the test for old URLs
+        response = self.client.patch(
+            "/api/livesessions/",
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})

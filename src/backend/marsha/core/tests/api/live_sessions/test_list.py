@@ -28,9 +28,14 @@ from .base import LiveSessionApiTestCase
 class LiveSessionListApiTest(LiveSessionApiTestCase):
     """Test the list API of the liveSession object."""
 
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/"
+
     def test_list_livesession_by_anonymous_user(self):
         """Anonymous users cannot fetch list requests for livesessions."""
-        response = self.client.get("/api/livesessions/")
+        video = VideoFactory()
+        response = self.client.get(self._get_url(video))
         self.assertEqual(response.status_code, 401)
 
     def test_list_livesession_public_token(self):
@@ -66,7 +71,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # public token
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.get(
-            "/api/livesessions/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -81,7 +86,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
             jwt_token = ResourceAccessTokenFactory(resource=video)
 
             response = self.client.get(
-                f"/api/livesessions/?anonymous_id={uuid.uuid4()}",
+                f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 200)
@@ -89,7 +94,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
 
         # fourth request should be throttled
         response = self.client.get(
-            f"/api/livesessions/?anonymous_id={uuid.uuid4()}",
+            f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -104,7 +109,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
             # first 3 requests shouldn't be throttled
             for _i in range(3):
                 response = self.client.get(
-                    f"/api/livesessions/?anonymous_id={uuid.uuid4()}",
+                    f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 )
                 self.assertEqual(response.status_code, 200)
@@ -112,7 +117,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
 
             # fourth request should be throttled
             response = self.client.get(
-                f"/api/livesessions/?anonymous_id={uuid.uuid4()}",
+                f"{self._get_url(video)}?anonymous_id={uuid.uuid4()}",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 429)
@@ -129,7 +134,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
             jwt_token = ResourceAccessTokenFactory(resource=video)
 
             response = self.client.get(
-                "/api/livesessions/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 200)
@@ -137,7 +142,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
 
         # fourth request shouldn't be throttled
         response = self.client.get(
-            "/api/livesessions/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -181,7 +186,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # public token
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.get(
-            f"/api/livesessions/?anonymous_id={livesession.anonymous_id}",
+            f"{self._get_url(video)}?anonymous_id={livesession.anonymous_id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -281,7 +286,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -367,7 +372,7 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -475,9 +480,18 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
         # token has context_id and no email
         jwt_token = LiveSessionResourceAccessTokenFactory(live_session=live_session)
         response = self.client.get(
-            "/api/livesessions/?is_registered=True",
+            f"{self._get_url(video)}?is_registered=True",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["count"], 0)
+
+
+# Old routes to remove
+class LiveSessionListApiOldTest(LiveSessionListApiTest):
+    """Test the list API of the liveSession object with old URLs."""
+
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return "/api/livesessions/"

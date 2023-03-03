@@ -19,6 +19,10 @@ from .base import LiveSessionApiTestCase
 class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     """Test the display_name API of the liveSession object."""
 
+    def _put_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/display_name/"
+
     def test_api_livesession_put_username_public_no_anonymous(
         self,
     ):
@@ -26,7 +30,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -41,7 +45,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         video = VideoFactory()
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": uuid.uuid4()},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -62,7 +66,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 1)
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -106,7 +110,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 1)
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": live_session.anonymous_id, "display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -148,7 +152,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 0)
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": anonymous_id, "display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -189,7 +193,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assertEqual(LiveSession.objects.count(), 1)
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -208,7 +212,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             consumer_site=str(video.playlist.consumer_site.id),
         )
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": uuid.uuid4()},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -236,7 +240,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             user__username="Token",
         )
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -298,7 +302,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             user__username="Patou",
         )
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -343,7 +347,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             user__username="Token",
         )
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": uuid.uuid4(), "display_name": "Antoine"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -387,7 +391,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             consumer_site=str(video.playlist.consumer_site.id),
         )
         response = self.client.put(
-            "/api/livesessions/display_name/",
+            self._put_url(video),
             {"anonymous_id": uuid.uuid4(), "display_name": "Samuel"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -397,3 +401,12 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
             response.json(),
             {"display_name": "User with that display_name already exists!"},
         )
+
+
+# Old routes to remove
+class LiveSessionDisplayNameApiOldTest(LiveSessionDisplayNameApiTest):
+    """Test the display_name API of the liveSession object with old URLs."""
+
+    def _put_url(self, video):
+        """Return the url to use in tests."""
+        return "/api/livesessions/display_name/"
