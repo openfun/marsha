@@ -31,8 +31,12 @@ from .base import LiveSessionApiTestCase
 # pylint: disable=too-many-lines
 
 
-class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
+class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
     """Test the list-attendances API of the liveSession object."""
+
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/list_attendances/"
 
     def test_api_livesession_student_cant_read_attendances(self):
         """LTI Token can't read its liveattendance computed."""
@@ -57,7 +61,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         jwt_token = LiveSessionLtiTokenFactory(live_session=live_session)
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -84,7 +88,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
         video.delete()
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -165,7 +169,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -248,7 +252,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
         livesession.refresh_from_db()
         response = self.client.get(
-            f"/api/livesessions/list_attendances/?pk={livesession.id}",
+            f"{self._get_url(video)}?pk={livesession.id}",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -332,7 +336,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession_public.refresh_from_db()
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -451,7 +455,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession.refresh_from_db()
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -612,7 +616,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession_public.refresh_from_db()
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -747,7 +751,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession_public.refresh_from_db()
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -798,7 +802,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results are identical as it is cached, no queries are executed
         with self.assertNumQueries(0):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -814,7 +818,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # nothing is already cached
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -902,7 +906,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
 
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/?limit=99",
+                f"{self._get_url(video)}?limit=99",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             response_json = response.json()
@@ -914,7 +918,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results are identical as it is cached, no queries are executed
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/?limit=1&offset=1",
+                f"{self._get_url(video)}?limit=1&offset=1",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             cache_key_offset = f"{prefix_key}offset:1limit:1"
@@ -933,7 +937,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         ), mock.patch.object(time, "time", return_value=int(to_timestamp(new_time))):
             with self.assertNumQueries(0):
                 response = self.client.get(
-                    "/api/livesessions/list_attendances/?limit=99",
+                    f"{self._get_url(video)}?limit=99",
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 )
 
@@ -942,7 +946,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
 
             with self.assertNumQueries(0):
                 response = self.client.get(
-                    "/api/livesessions/list_attendances/?limit=1&offset=1",
+                    f"{self._get_url(video)}?limit=1&offset=1",
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 )
 
@@ -968,7 +972,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results aren't cached anymore
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -976,7 +980,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
 
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/?limit=1&offset=1",
+                f"{self._get_url(video)}?limit=1&offset=1",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1028,7 +1032,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession.refresh_from_db()
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1054,7 +1058,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
 
         with self.assertNumQueries(0):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1072,7 +1076,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
             # results are not identical
             with self.assertNumQueries(3):
                 response = self.client.get(
-                    "/api/livesessions/list_attendances/",
+                    self._get_url(video),
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 )
 
@@ -1123,7 +1127,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession.refresh_from_db()
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1157,7 +1161,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
             # cache has no timeout
             with self.assertNumQueries(0):
                 response = self.client.get(
-                    "/api/livesessions/list_attendances/",
+                    self._get_url(video),
                     HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 )
 
@@ -1202,7 +1206,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
         livesession.refresh_from_db()
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -1269,7 +1273,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         livesession.refresh_from_db()
         with self.assertNumQueries(3):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1309,7 +1313,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results are identical as it is cached, no queries are executed
         with self.assertNumQueries(0):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1378,7 +1382,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/?limit=1",
+            f"{self._get_url(video)}?limit=1",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1390,7 +1394,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
 
         response_offset_1_limit_1 = {
             "count": 4,
-            "next": "http://testserver/api/livesessions/list_attendances/?limit=1&offset=1",
+            "next": f"http://testserver{self._get_url(video)}?limit=1&offset=1",
             "previous": None,
             "results": [
                 {
@@ -1407,7 +1411,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results are cached and response is identical
         with self.assertNumQueries(0):
             response = self.client.get(
-                "/api/livesessions/list_attendances/?limit=1",
+                f"{self._get_url(video)}?limit=1",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1415,14 +1419,14 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
             self.assertEqual(response.json(), response_offset_1_limit_1)
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/?limit=2&offset=2",
+            f"{self._get_url(video)}?limit=2&offset=2",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         response_offset_2_limit_1 = {
             "count": 4,
             "next": None,
-            "previous": "http://testserver/api/livesessions/list_attendances/?limit=2",
+            "previous": f"http://testserver{self._get_url(video)}?limit=2",
             "results": [
                 {
                     "id": str(live_session_username.id),
@@ -1446,7 +1450,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         # results are cached and response is identical
         with self.assertNumQueries(0):
             response = self.client.get(
-                "/api/livesessions/list_attendances/?limit=2&offset=2",
+                f"{self._get_url(video)}?limit=2&offset=2",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -1492,7 +1496,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
             Video, "get_list_timestamps_attendences", return_value={}
         ):
             response = self.client.get(
-                "/api/livesessions/list_attendances/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(
@@ -1543,7 +1547,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1590,7 +1594,7 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.get(
-            "/api/livesessions/list_attendances/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1599,3 +1603,12 @@ class LiveSessionLListAttendancesApiTest(LiveSessionApiTestCase):
         self.assertEqual(
             response.json(), {"live_attendance": "keys in fields should be timestamps"}
         )
+
+
+# Old routes to remove
+class LiveSessionListAttendancesApiOldTest(LiveSessionListAttendancesApiTest):
+    """Test the list-attendances API of the liveSession object with old URLs."""
+
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return "/api/livesessions/list_attendances/"

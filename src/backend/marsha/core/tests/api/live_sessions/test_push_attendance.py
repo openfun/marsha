@@ -23,10 +23,15 @@ from .base import LiveSessionApiTestCase
 class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
     """Test the push_attendance API of the liveSession object."""
 
+    def _post_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/livesessions/push_attendance/"
+
     def test_api_livesession_post_attendance_no_payload(self):
         """Request without payload should raise an error."""
+        video = VideoFactory()
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
         )
 
         self.assertEqual(response.status_code, 401)
@@ -43,7 +48,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             consumer_site=str(video.playlist.consumer_site.id),
         )
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -64,7 +69,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             user__email=None,
         )
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {
                 "live_attendance": {
                     to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
@@ -87,7 +92,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             user__email=None,
         )
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {
                 "live_attendance": {
                     to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
@@ -113,7 +118,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": live_attendance, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -173,7 +178,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         timestamp = to_timestamp(timezone.now())
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -325,7 +330,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
 
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {
                 "live_attendance": {
                     timestamp: {"sound": "ON", "tabs": "OFF"},
@@ -358,7 +363,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(livesession.video),
             {"live_attendance": {"key1": "val1"}},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -400,7 +405,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         live_attendance = {to_timestamp(timezone.now()): "val1"}
 
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": live_attendance},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -458,7 +463,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": live_attendance},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -518,7 +523,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": live_attendance, "language": "fr"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -575,7 +580,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": {"key1": "val1"}, "language": "whatever"},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -597,7 +602,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
 
         # now with empty
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {"live_attendance": {to_timestamp(timezone.now()): "val1"}, "language": ""},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -685,7 +690,7 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
         )
         timestamp = to_timestamp(timezone.now())
         response = self.client.post(
-            "/api/livesessions/push_attendance/",
+            self._post_url(video),
             {
                 "language": "fr",
                 "live_attendance": {timestamp: {"sound": "ON", "tabs": "OFF"}},
@@ -733,3 +738,12 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             },
         )
         self.assertEqual(livesession.consumer_site, video.playlist.consumer_site)
+
+
+# Old routes to remove
+class LiveSessionPushAttendanceApiOldTest(LiveSessionPushAttendanceApiTest):
+    """Test the push_attendance API of the liveSession object with old URLs."""
+
+    def _post_url(self, video):
+        """Return the url to use in tests."""
+        return "/api/livesessions/push_attendance/"

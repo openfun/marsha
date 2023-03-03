@@ -34,9 +34,15 @@ from .base import LiveSessionApiTestCase
 class LiveSessionCreateApiTest(LiveSessionApiTestCase):
     """Test the create API of the liveSession object."""
 
+    def _post_url(self, video):
+        """Return the url to use to create a live session."""
+        return f"/api/videos/{video.pk}/livesessions/"
+
     def test_api_livesession_create_anonymous(self):
         """Anonymous users should not be able to create a livesession."""
-        response = self.client.post("/api/livesessions/")
+        video = VideoFactory()
+
+        response = self.client.post(self._post_url(video))
         self.assertEqual(response.status_code, 401)
         content = response.json()
         self.assertEqual(
@@ -63,7 +69,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
 
         anonymous_id = uuid.uuid4()
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": anonymous_id,
                 "email": "salome@test-fun-mooc.fr",
@@ -110,7 +116,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=video)
         anonymous_id = uuid.uuid4()
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": anonymous_id,
                 "email": "salome@test-fun-mooc.fr",
@@ -158,7 +164,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         now = datetime(2022, 4, 7, tzinfo=timezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.post(
-                "/api/livesessions/",
+                self._post_url(video),
                 {
                     "anonymous_id": anonymous_id,
                     "email": "salome@test-fun-mooc.fr",
@@ -205,7 +211,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with no context_id and no user information
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "email": "salome@test-fun-mooc.fr",
                 "is_registered": False,
@@ -235,7 +241,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         jwt_token = LTIResourceAccessTokenFactory(resource=video, user={})
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -271,7 +277,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -307,7 +313,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -343,7 +349,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -394,7 +400,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "is_registered": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -446,7 +452,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -496,7 +502,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=video)
         anonymous_id = uuid.uuid4()
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": anonymous_id,
                 "email": "salome@test-fun-mooc.fr",
@@ -561,7 +567,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -622,7 +628,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -680,7 +686,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",  # explicit to be found in response
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -731,7 +737,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "notsaved@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -760,7 +766,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         jwt_token = ResourceAccessTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": uuid.uuid4(),
                 "email": "salome@test-fun-mooc.fr",
@@ -790,7 +796,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             consumer_site=str(video.playlist.consumer_site.id),
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -820,7 +826,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with same context_id and same email
         jwt_token = LiveSessionLtiTokenFactory(live_session=live_session)
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -859,7 +865,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with same context_id and same email
         jwt_token = LiveSessionLtiTokenFactory(live_session=livesession)
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -914,7 +920,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with same context_id and same email
         jwt_token = LiveSessionLtiTokenFactory(live_session=liveregister)
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -959,7 +965,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with no context_id leading to an undefined consumer_site
         jwt_token = ResourceAccessTokenFactory(resource=video)
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": uuid.uuid4(),
                 "email": "salome@test-fun-mooc.fr",
@@ -998,7 +1004,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__email=None,
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "balou@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1039,7 +1045,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         anonymous_id = uuid.uuid4()
         # With the same email but other video, livesession is possible
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "anonymous_id": anonymous_id,
                 "email": "chantal@test-fun-mooc.fr",
@@ -1108,7 +1114,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         # With the same email but other video, livesession is possible
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": False},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -1161,7 +1167,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "email": "salome@test-fun-mooc.fr",
                 "should_send_reminders": True,
@@ -1197,10 +1203,12 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
 
     def test_api_livesession_create_with_unknown_video(self):
         """Token with wrong resource_id should render a 404."""
+        video = VideoFactory()
+
         # token with no user information
         jwt_token = ResourceAccessTokenFactory()
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1240,7 +1248,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__email="anotheremail@test-fun.fr",
         )
         response = self.client.get(
-            "/api/livesessions/",
+            self._post_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -1269,7 +1277,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
 
         # if we try to set a new livesession with the email in the token, it won't be allowed
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "anotheremail@test-fun.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1305,7 +1313,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
 
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {"email": "saved@test-fun-mooc.fr", "should_send_reminders": True},
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -1352,7 +1360,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             user__username="Token",
         )
         response = self.client.post(
-            "/api/livesessions/",
+            self._post_url(video),
             {
                 "email": "salome@test-fun-mooc.fr",
                 "language": "fr",
@@ -1423,3 +1431,12 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
             f"{key_access}]",
             email_content,
         )
+
+
+# Old routes to remove
+class LiveSessionCreateApiOldTest(LiveSessionCreateApiTest):
+    """Test the create API of the liveSession object with old URLs."""
+
+    def _post_url(self, video):
+        """Return the url to use to create a live session."""
+        return "/api/livesessions/"
