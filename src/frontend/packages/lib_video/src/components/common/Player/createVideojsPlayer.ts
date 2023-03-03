@@ -222,7 +222,7 @@ export const createVideojsPlayer = (
     if (!locale) {
       throw new Error('Locale is undefined.');
     }
-    pushAttendance(attendance, locale, anonymousId);
+    pushAttendance(video.id, attendance, locale, anonymousId);
   };
   const getCurrentTrack = (): Nullable<TextTrack> => {
     // TextTrackList is not an iterable object
