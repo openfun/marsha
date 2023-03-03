@@ -36,10 +36,9 @@ export const useDetermineMessage = (
     return intl.formatMessage(messages.thumbnailError);
   }
   if (
-    (thumbnail.upload_state === uploadState.PENDING &&
-      uploadManagerState[thumbnail.id]?.status ===
-        UploadManagerStatus.UPLOADING) ||
-    uploadManagerState[thumbnail.id]?.status === UploadManagerStatus.INIT
+    [UploadManagerStatus.UPLOADING, UploadManagerStatus.INIT].includes(
+      uploadManagerState[thumbnail.id]?.status,
+    )
   ) {
     return intl.formatMessage(messages.thumbnailUploaded, {
       progress: uploadManagerState[thumbnail.id]?.progress || 0,

@@ -100,7 +100,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
     };
 
     const { result: resultGeneric } = renderHook(
-      () => useDetermineMessage(processedThumbnail, genericUploadManagerState),
+      () => useDetermineMessage(processedThumbnail, {}),
       {
         wrapper: Wrapper,
       },
@@ -121,12 +121,33 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
 
   it('determineMessage when there is no message to return', () => {
     const { result } = renderHook(
-      () => useDetermineMessage(genericThumbnail, genericUploadManagerState),
+      () => useDetermineMessage(genericThumbnail, {}),
       {
         wrapper: Wrapper,
       },
     );
 
     expect(result.current).toEqual(null);
+
+    const { result: resultSuccess } = renderHook(
+      () =>
+        useDetermineMessage(
+          {
+            ...genericThumbnail,
+            upload_state: uploadState.READY,
+          },
+          {
+            [genericThumbnail.id]: {
+              ...genericUploadManagerState[genericThumbnail.id],
+              status: UploadManagerStatus.SUCCESS,
+            },
+          },
+        ),
+      {
+        wrapper: Wrapper,
+      },
+    );
+
+    expect(resultSuccess.current).toEqual(null);
   });
 });

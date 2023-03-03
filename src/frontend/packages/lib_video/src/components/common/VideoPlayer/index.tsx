@@ -31,6 +31,7 @@ export const VideoPlayer = ({
 }: BaseVideoPlayerProps) => {
   const intl = useIntl();
   const videoNodeRef = useRef<Nullable<HTMLVideoElement>>(null);
+  const containerVideoRef = useRef<HTMLDivElement>(null);
   const localeRef = useRef(intl.locale);
   const propsRef = useRef({
     video,
@@ -169,16 +170,31 @@ export const VideoPlayer = ({
   }
   const urls = video.urls;
 
-  const thumbnailUrls =
-    (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
-    video.urls?.thumbnails;
+  const thumbnailUrl = useMemo(() => {
+    const thumbnailUrls =
+      (thumbnail && thumbnail.is_ready_to_show && thumbnail.urls) ||
+      video.urls?.thumbnails;
+
+    const thumbnailUrl = thumbnailUrls && thumbnailUrls[resolutions[0]];
+
+    if (containerVideoRef.current) {
+      containerVideoRef.current
+        .querySelector('.vjs-poster')
+        ?.setAttribute(
+          'style',
+          thumbnailUrl ? `background-image: url(${thumbnailUrl});` : ``,
+        );
+    }
+
+    return thumbnailUrl;
+  }, [resolutions, thumbnail, video.urls?.thumbnails]);
 
   return (
-    <Box>
+    <Box ref={containerVideoRef}>
       <video
         ref={videoNodeRef}
         crossOrigin="anonymous"
-        poster={thumbnailUrls && thumbnailUrls[resolutions[0]]}
+        poster={thumbnailUrl}
         /* tabIndex is set to -1 to not take focus on this element when a user is navigating using
        their keyboard. */
         tabIndex={-1}

@@ -12,6 +12,7 @@ import {
   report,
   formatSizeErrorScale,
   Loader,
+  UploadManagerStatus,
 } from 'lib-components';
 import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -126,7 +127,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
   useEffect(() => {
     if (
       thumbnail?.upload_state === uploadState.READY &&
-      uploadManagerState[thumbnail.id]
+      uploadManagerState[thumbnail.id]?.status === UploadManagerStatus.SUCCESS
     ) {
       resetUpload(thumbnail.id);
     }
