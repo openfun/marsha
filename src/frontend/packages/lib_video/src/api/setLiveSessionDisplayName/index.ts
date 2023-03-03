@@ -6,6 +6,7 @@ import {
 } from 'lib-components';
 
 export const setLiveSessionDisplayName = async (
+  videoId: string,
   displayName: string,
   anonymousId?: string,
 ): Promise<{
@@ -18,7 +19,7 @@ export const setLiveSessionDisplayName = async (
   };
 
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/livesessions/display_name/`,
+    `${API_ENDPOINT}/videos/${videoId}/livesessions/display_name/`,
     {
       body: JSON.stringify(body),
       headers: {
