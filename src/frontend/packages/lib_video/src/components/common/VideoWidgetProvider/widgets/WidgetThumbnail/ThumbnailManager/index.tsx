@@ -5,9 +5,8 @@ import {
   Thumbnail,
 } from 'lib-components';
 import React from 'react';
-import { useIntl } from 'react-intl';
 
-import { determineMessage } from './utils/utils';
+import { useDetermineMessage } from './utils/utils';
 
 interface ThumbnailManagerProps {
   thumbnail: Thumbnail;
@@ -18,16 +17,14 @@ export const ThumbnailManager = ({
   thumbnail,
   uploadManagerState,
 }: ThumbnailManagerProps) => {
-  const intl = useIntl();
-
-  const messageToDisplay = determineMessage(thumbnail, uploadManagerState);
+  const messageToDisplay = useDetermineMessage(thumbnail, uploadManagerState);
 
   return (
     <React.Fragment>
       {messageToDisplay ? (
         <Box border={{ color: 'blue-active' }} pad="small" round="xsmall">
           <Text alignSelf="center" color="blue-active" size="0.875rem">
-            {intl.formatMessage(messageToDisplay)}
+            {messageToDisplay}
           </Text>
         </Box>
       ) : (
