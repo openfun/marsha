@@ -21,9 +21,10 @@ const messages = defineMessages({
 
 interface InternalProps {
   live_state: Exclude<liveState, liveState.IDLE>;
+  video_id: string;
 }
 
-const Internal = ({ live_state }: InternalProps) => {
+const Internal = ({ live_state, video_id }: InternalProps) => {
   const refetchInterval = [liveState.STOPPING, liveState.RUNNING].includes(
     live_state,
   )
@@ -31,7 +32,7 @@ const Internal = ({ live_state }: InternalProps) => {
     : false;
 
   // only if the video is running or is stopping, we refresh the list
-  const { data, status } = useLiveAttendances({
+  const { data, status } = useLiveAttendances(video_id, {
     refetchInterval,
     refetchIntervalInBackground: !!refetchInterval,
     refetchOnWindowFocus: !!refetchInterval,
@@ -91,5 +92,5 @@ export const DashboardLiveTabAttendance = () => {
     return <DashboardLiveTabAttendanceWaiting />;
   }
 
-  return <Internal live_state={video.live_state} />;
+  return <Internal live_state={video.live_state} video_id={video.id} />;
 };
