@@ -9,6 +9,8 @@ import {
   uploadState,
   liveState,
   LiveModeType,
+  thumbnailMockFactory,
+  useThumbnail,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -204,5 +206,45 @@ describe('VideoPlayer', () => {
     const videoElement = container.querySelector('video');
     expect(videoElement).toBeInTheDocument();
     expect(videoElement?.poster).toEqual('');
+  });
+
+  it('renders correct thumbnail video', async () => {
+    const mockThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+      urls: {
+        1080: 'https://example.com/another-thumbnail/1080p.jpg',
+      },
+    });
+
+    const mockVideoThumb = {
+      ...mockVideo,
+      thumbnail: mockThumbnail,
+    };
+
+    useThumbnail.getState().addResource(mockThumbnail);
+
+    const { container } = render(
+      <VideoPlayer
+        video={mockVideoThumb}
+        playerType="videojs"
+        timedTextTracks={[]}
+      />,
+    );
+    await waitFor(() =>
+      // The player is created and initialized with DashJS for adaptive bitrate
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        mockVideoThumb,
+        'en',
+        expect.any(Function),
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+    expect(videoElement?.poster).toEqual(
+      'https://example.com/another-thumbnail/1080p.jpg',
+    );
   });
 });

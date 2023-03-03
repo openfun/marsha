@@ -95,6 +95,7 @@ export const ThumbnailRemoveButton = ({
         onClick={() => setShowDeleteConfirmationModal(true)}
         plain
         title={intl.formatMessage(messages.deleteButtonLabel)}
+        margin="small"
       />
     </React.Fragment>
   );
