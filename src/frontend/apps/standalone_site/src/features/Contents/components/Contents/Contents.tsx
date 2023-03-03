@@ -3,7 +3,7 @@ import { StyledLink } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ClassRooms } from 'features/Contents';
+import { ClassRooms, Videos } from 'features/Contents';
 import { routes } from 'routes';
 
 const messages = defineMessages({
@@ -33,7 +33,7 @@ const Contents = () => {
 
   return (
     <Box margin={{ top: 'medium' }}>
-      {/* <Box margin={{ top: 'medium' }}>
+      <Box margin={{ top: 'medium' }}>
         <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
           <Text weight="bolder">{intl.formatMessage(messages.MyVideos)}</Text>
           <Text weight="bolder">
@@ -43,7 +43,7 @@ const Contents = () => {
           </Text>
         </BoxText>
         <Videos withPagination={false} limit={4} />
-      </Box> */}
+      </Box>
       <Box margin={{ top: 'medium' }}>
         <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
           <Text weight="bolder">
