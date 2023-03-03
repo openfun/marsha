@@ -69,7 +69,7 @@ describe('<ThumbnailManager />', () => {
     );
 
     expect(
-      screen.getByText('Your image is being uploaded.'),
+      screen.getByText('Your image is being uploaded (50/100).'),
     ).toBeInTheDocument();
   });
 

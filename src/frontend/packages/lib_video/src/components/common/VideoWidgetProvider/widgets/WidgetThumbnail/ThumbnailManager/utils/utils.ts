@@ -5,7 +5,7 @@ import {
   Thumbnail,
   uploadState,
 } from 'lib-components';
-import { defineMessages, MessageDescriptor } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
   thumbnailError: {
@@ -15,7 +15,7 @@ const messages = defineMessages({
     id: 'components.ThumbnailManager.thumbnailError',
   },
   thumbnailUploaded: {
-    defaultMessage: 'Your image is being uploaded.',
+    defaultMessage: 'Your image is being uploaded ({progress}/100).',
     description: 'A text displayed when the thumbnail is being uploaded.',
     id: 'components.ThumbnailManager.thumbnailUploaded',
   },
@@ -26,12 +26,14 @@ const messages = defineMessages({
   },
 });
 
-export const determineMessage = (
+export const useDetermineMessage = (
   thumbnail: Thumbnail,
   uploadManagerState: UploadManagerState,
-): Nullable<MessageDescriptor> => {
+): Nullable<string> => {
+  const intl = useIntl();
+
   if (thumbnail.upload_state === uploadState.ERROR) {
-    return messages.thumbnailError;
+    return intl.formatMessage(messages.thumbnailError);
   }
   if (
     (thumbnail.upload_state === uploadState.PENDING &&
@@ -39,14 +41,16 @@ export const determineMessage = (
         UploadManagerStatus.UPLOADING) ||
     uploadManagerState[thumbnail.id]?.status === UploadManagerStatus.INIT
   ) {
-    return messages.thumbnailUploaded;
+    return intl.formatMessage(messages.thumbnailUploaded, {
+      progress: uploadManagerState[thumbnail.id]?.progress || 0,
+    });
   }
   if (
     thumbnail.upload_state === uploadState.PROCESSING ||
     (thumbnail.upload_state === uploadState.PENDING &&
       uploadManagerState[thumbnail.id]?.status === UploadManagerStatus.SUCCESS)
   ) {
-    return messages.thumbnailProcessed;
+    return intl.formatMessage(messages.thumbnailProcessed);
   }
   return null;
 };
