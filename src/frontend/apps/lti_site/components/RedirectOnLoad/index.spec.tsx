@@ -93,7 +93,8 @@ describe('<RedirectOnLoad />', () => {
   });
 
   it('redirects users to the player when the video can be shown', () => {
-    for (const state of Object.values(uploadState)) {
+    const { DELETED: _deleted, ...displayableUploadState } = uploadState;
+    for (const state of Object.values(displayableUploadState)) {
       mockedUseAppConfig.mockReturnValue({
         state: appState.SUCCESS,
         video: { is_ready_to_show: true, upload_state: state },

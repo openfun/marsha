@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- redirect to error page when VOD is deleted
+
 ## [4.0.0-beta.18] - 2023-03-06
 
 ### Changed

@@ -217,6 +217,44 @@ describe('RedirectVideo', () => {
     screen.getByText('Error Component: notFound');
   });
 
+  it('redirects to the error view when the video is deleted', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: false,
+        },
+      },
+    ] as any);
+    const video = videoMockFactory({
+      upload_state: uploadState.DELETED,
+      is_ready_to_show: false,
+    });
+
+    render(<RedirectVideo video={video} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: DASHBOARD_ROUTE(modelName.VIDEOS),
+            render: () => <span>dashboard</span>,
+          },
+          {
+            path: FULL_SCREEN_ERROR_ROUTE(),
+            render: ({ match }) => (
+              <span>{`Error Component: ${match.params.code}`}</span>
+            ),
+          },
+          {
+            path: PLAYER_ROUTE(modelName.VIDEOS),
+            render: () => <span>video player</span>,
+          },
+          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+        ],
+      },
+    });
+
+    screen.getByText('Error Component: videoDeleted');
+  });
+
   it('redirects to the player view when the starting date is set to past', () => {
     const startingAtPast = new Date();
     startingAtPast.setFullYear(startingAtPast.getFullYear() - 10);
