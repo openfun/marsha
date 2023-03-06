@@ -132,19 +132,21 @@ export const theme: ThemeType = {
   button: {
     default: {
       background: { color: 'white' },
-      border: { color: 'brand', width: '1px' },
+      border: { color: 'brand', width: '1px', radius: '4px' },
       color: 'blue-active',
       padding: { vertical: 'xsmall', horizontal: 'small' },
     },
     primary: {
       background: { color: 'blue-button' },
-      border: undefined,
+      border: {
+        radius: '4px',
+      },
       color: 'white',
       padding: { vertical: 'small', horizontal: 'medium' },
     },
     secondary: {
       background: { color: 'transparent' },
-      border: { color: 'brand', width: '1px' },
+      border: { color: 'brand', width: '1px', radius: '4px' },
       color: 'blue-active',
       padding: { vertical: 'xsmall', horizontal: 'small' },
     },
