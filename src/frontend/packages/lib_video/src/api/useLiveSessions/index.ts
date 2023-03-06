@@ -9,6 +9,7 @@ import { useQuery, UseQueryOptions } from 'react-query';
 type LiveSessionsResponse = APIList<LiveSession>;
 type UseLiveSessionsParams = { anonymous_id?: string };
 export const useLiveSessionsQuery = (
+  videoId: string,
   params: UseLiveSessionsParams,
   queryConfig?: UseQueryOptions<
     LiveSessionsResponse,
@@ -17,7 +18,7 @@ export const useLiveSessionsQuery = (
     FetchListQueryKey
   >,
 ) => {
-  const key: FetchListQueryKey = ['livesessions', params];
+  const key: FetchListQueryKey = [`videos/${videoId}/livesessions`, params];
   return useQuery<
     LiveSessionsResponse,
     'livesessions',

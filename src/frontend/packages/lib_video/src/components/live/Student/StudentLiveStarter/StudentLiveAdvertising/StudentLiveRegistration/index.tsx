@@ -12,6 +12,7 @@ import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useLiveSessionsQuery } from 'api/useLiveSessions';
+import { useCurrentLive } from 'hooks/useCurrentVideo';
 import { useLiveSession } from 'hooks/useLiveSession';
 import { getAnonymousId } from 'utils/localstorage';
 
@@ -42,6 +43,7 @@ const messages = defineMessages({
 export const StudentLiveRegistration = () => {
   const intl = useIntl();
   const jwt = useJwt((state) => state.jwt);
+  const live = useCurrentLive();
   const user = useCurrentUser((state) => state.currentUser);
 
   const userEmail = useMemo(() => {
@@ -59,6 +61,7 @@ export const StudentLiveRegistration = () => {
 
   const { liveSession, setLiveSession } = useLiveSession();
   const { isError, isLoading } = useLiveSessionsQuery(
+    live.id,
     { anonymous_id: anonymousId },
     {
       onSuccess: (data) => {

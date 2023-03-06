@@ -19,6 +19,8 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
+const videoId = 'some-video-id';
+
 let Wrapper: WrapperComponent<Element>;
 
 describe('useLiveSessions', () => {
@@ -47,14 +49,22 @@ describe('useLiveSessions', () => {
 
   it('requests the resource list', async () => {
     const liveSessions = Array(4).fill(liveSessionFactory());
-    fetchMock.mock('/api/livesessions/?limit=999', liveSessions);
+    fetchMock.mock(
+      '/api/videos/some-video-id/livesessions/?limit=999',
+      liveSessions,
+    );
 
-    const { result, waitFor } = renderHook(() => useLiveSessionsQuery({}), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useLiveSessionsQuery(videoId, {}),
+      {
+        wrapper: Wrapper,
+      },
+    );
     await waitFor(() => result.current.isSuccess);
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/livesessions/?limit=999');
+    expect(fetchMock.lastCall()![0]).toEqual(
+      '/api/videos/some-video-id/livesessions/?limit=999',
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -69,12 +79,12 @@ describe('useLiveSessions', () => {
     const liveSessions = Array(4).fill(liveSessionFactory());
     const anonymousId = uuidv4();
     fetchMock.mock(
-      `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
+      `/api/videos/some-video-id/livesessions/?limit=999&anonymous_id=${anonymousId}`,
       liveSessions,
     );
 
     const { result, waitFor } = renderHook(
-      () => useLiveSessionsQuery({ anonymous_id: anonymousId }),
+      () => useLiveSessionsQuery(videoId, { anonymous_id: anonymousId }),
       {
         wrapper: Wrapper,
       },
@@ -82,7 +92,7 @@ describe('useLiveSessions', () => {
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/livesessions/?limit=999&anonymous_id=${anonymousId}`,
+      `/api/videos/some-video-id/livesessions/?limit=999&anonymous_id=${anonymousId}`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -95,15 +105,20 @@ describe('useLiveSessions', () => {
   });
 
   it('fails to get the resource list', async () => {
-    fetchMock.mock('/api/livesessions/?limit=999', 404);
+    fetchMock.mock('/api/videos/some-video-id/livesessions/?limit=999', 404);
 
-    const { result, waitFor } = renderHook(() => useLiveSessionsQuery({}), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useLiveSessionsQuery(videoId, {}),
+      {
+        wrapper: Wrapper,
+      },
+    );
 
     await waitFor(() => result.current.isError);
 
-    expect(fetchMock.lastCall()![0]).toEqual('/api/livesessions/?limit=999');
+    expect(fetchMock.lastCall()![0]).toEqual(
+      '/api/videos/some-video-id/livesessions/?limit=999',
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',

@@ -26,6 +26,7 @@ export const Dashboard = ({ live, playerType, socketUrl }: DasboardProps) => {
   const queryClient = useQueryClient();
   const setLiveSession = useLiveSession((state) => state.setLiveSession);
   const { isError, isLoading } = useLiveSessionsQuery(
+    live.id,
     { anonymous_id: anonymousId },
     {
       onSuccess: (data) => {

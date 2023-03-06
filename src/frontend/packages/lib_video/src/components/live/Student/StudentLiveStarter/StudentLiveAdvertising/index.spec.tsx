@@ -138,7 +138,10 @@ describe('<StudentLiveAdvertising />', () => {
     });
 
     const deferred = new Deferred();
-    fetchMock.get('/api/livesessions/?limit=999', deferred.promise);
+    fetchMock.get(
+      `/api/videos/${video.id}/livesessions/?limit=999`,
+      deferred.promise,
+    );
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
@@ -229,6 +232,8 @@ describe('<StudentLiveAdvertising />', () => {
       live_type: LiveModeType.JITSI,
     });
 
+    fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
+
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     expect(
@@ -277,6 +282,8 @@ describe('<StudentLiveAdvertising />', () => {
       live_type: LiveModeType.JITSI,
     });
 
+    fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
+
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     const img = screen.getByRole('img');
@@ -322,6 +329,8 @@ describe('<StudentLiveAdvertising />', () => {
       }),
       live_type: LiveModeType.JITSI,
     });
+
+    fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
@@ -372,6 +381,9 @@ describe('<StudentLiveAdvertising />', () => {
       title: '',
       live_type: LiveModeType.JITSI,
     });
+
+    fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
+
     render(wrapInVideo(<StudentLiveAdvertising />, video));
     screen.getByText('Add to my calendar');
 
@@ -401,6 +413,8 @@ describe('<StudentLiveAdvertising />', () => {
       title: 'this is the title',
       live_type: LiveModeType.JITSI,
     });
+    fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
+
     render(wrapInVideo(<StudentLiveAdvertising />, video));
 
     expect(screen.getByText('Add to my calendar')).toBeInTheDocument();

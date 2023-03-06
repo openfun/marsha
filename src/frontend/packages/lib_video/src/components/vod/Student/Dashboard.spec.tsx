@@ -100,8 +100,6 @@ describe('<Dashboard />', () => {
       },
       { method: 'OPTIONS' },
     );
-
-    fetchMock.mock('/api/livesessions/', 200);
   });
 
   afterEach(() => {
