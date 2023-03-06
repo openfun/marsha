@@ -51,7 +51,7 @@ describe('<PublicVideoDashboard />', () => {
     jest.clearAllMocks();
   });
 
-  it('reders live component when video is a live', () => {
+  it('renders live component when video is a live', () => {
     const live = liveMockFactory();
 
     render(<PublicVideoDashboard video={live} playerType={'some_player'} />);

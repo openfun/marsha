@@ -36,6 +36,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - List the VOD in the contents section
   - Integrate creation VOD
   - Add playlist access management
+- Add 'is_live' property to video object
 
 ### Changed
 

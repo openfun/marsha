@@ -132,6 +132,8 @@ export interface SharedLiveMedia extends Resource {
   video: Video['id'];
 }
 
+export type Id3SharedLiveMediaType = Resource;
+
 export interface VideoUrls {
   manifests: {
     hls: string;
@@ -213,6 +215,7 @@ export interface Video extends Resource {
   active_shared_live_media_page: Nullable<number>;
   allow_recording: boolean;
   description: Nullable<string>;
+  is_live: boolean;
   is_ready_to_show: boolean;
   is_scheduled: boolean;
   has_chat: boolean;
@@ -256,8 +259,10 @@ export interface Live extends Omit<Video, 'live_state' | 'live_type'> {
 
 export type Id3VideoType = Pick<
   Video,
-  'live_state' | 'active_shared_live_media' | 'active_shared_live_media_page'
->;
+  'live_state' | 'active_shared_live_media_page'
+> & {
+  active_shared_live_media: Id3SharedLiveMediaType;
+};
 
 export interface LiveJitsi extends Omit<Live, 'live_type' | 'live_info'> {
   live_type: LiveModeType.JITSI;

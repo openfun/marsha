@@ -3,7 +3,7 @@ import {
   JoinMode,
   LiveModeType,
   liveState,
-  videoMockFactory,
+  liveMockFactory,
 } from 'lib-components';
 
 import { useLiveSession } from 'hooks/useLiveSession';
@@ -25,7 +25,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('inits jitsi for students', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -107,7 +107,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('overrides configuration', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -191,7 +191,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('overrides interface configuration', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -275,7 +275,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('uses live session display name', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -379,7 +379,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('uses jwt user name', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -466,7 +466,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('disables prejoin page when join mode is forced and user is not instructor', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {
@@ -558,7 +558,7 @@ describe('DashboardLiveJitsi/utils', () => {
   });
 
   it('does not disable prejoin page when join mode is forced and user is instructor', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_info: {
         jitsi: {

@@ -1,18 +1,12 @@
 import { Maybe } from 'lib-common';
-import {
-  Live,
-  LiveJitsi,
-  LiveModeType,
-  liveState,
-  Video,
-} from 'lib-components';
+import { Live, LiveJitsi, LiveModeType, Video } from 'lib-components';
+
+function isLive(video: Video | Live): video is Live {
+  return video.is_live;
+}
 
 export const convertVideoToLive = (video: Video): Maybe<Live> => {
-  if (
-    video.live_state !== null &&
-    video.live_state !== liveState.ENDED &&
-    video.live_type !== null
-  ) {
+  if (isLive(video)) {
     return {
       ...video,
       live_state: video.live_state,
@@ -51,8 +45,7 @@ export const convertVideoToJitsiLive = (video: Video): Maybe<LiveJitsi> => {
     video.live_type === LiveModeType.JITSI &&
     video.live_info.jitsi?.external_api_url &&
     video.live_info.jitsi.domain &&
-    video.live_state !== null &&
-    video.live_state !== liveState.ENDED
+    isLive(video)
   ) {
     return {
       ...video,
