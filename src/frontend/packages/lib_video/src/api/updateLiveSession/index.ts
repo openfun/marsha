@@ -18,7 +18,7 @@ export const updateLiveSession = async (
     language,
   };
 
-  let endpoint = `${API_ENDPOINT}/livesessions/${liveSession.id}/`;
+  let endpoint = `${API_ENDPOINT}/videos/${liveSession.video}/livesessions/${liveSession.id}/`;
   if (anonymousId) {
     endpoint = `${endpoint}?anonymous_id=${anonymousId}`;
   }
