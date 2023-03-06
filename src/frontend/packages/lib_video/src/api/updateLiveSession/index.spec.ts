@@ -18,11 +18,12 @@ describe('updateLiveSession', () => {
       email: 'john@fun-test.fr',
       is_registered: false,
       language: 'fr',
+      video: 'some-video-id',
     });
 
     fetchMock.mock(
       {
-        url: `/api/livesessions/${liveSession.id}/`,
+        url: `/api/videos/some-video-id/livesessions/${liveSession.id}/`,
         body: {
           email: 'updated@fun-test.fr',
           is_registered: true,
@@ -57,11 +58,12 @@ describe('updateLiveSession', () => {
       email: 'john@fun-test.fr',
       is_registered: false,
       language: 'en',
+      video: 'some-video-id',
     });
 
     fetchMock.mock(
       {
-        url: `/api/livesessions/${liveSession.id}/?anonymous_id=${anonymousId}`,
+        url: `/api/videos/some-video-id/livesessions/${liveSession.id}/?anonymous_id=${anonymousId}`,
         body: {
           email: 'updated@fun-test.fr',
           is_registered: true,
@@ -96,9 +98,10 @@ describe('updateLiveSession', () => {
       anonymous_id: anonymousId,
       email: 'john@fun-test.fr',
       is_registered: false,
+      video: 'some-video-id',
     });
     fetchMock.mock(
-      `/api/livesessions/${liveSession.id}/?anonymous_id=${anonymousId}`,
+      `/api/videos/some-video-id/livesessions/${liveSession.id}/?anonymous_id=${anonymousId}`,
       {
         body: JSON.stringify({ email: 'Invalid email!' }),
         status: 400,
