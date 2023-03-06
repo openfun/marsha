@@ -42,6 +42,7 @@ export const VideoFromLiveDashboard = ({
   );
 
   useLiveSessionsQuery(
+    video.id,
     { anonymous_id: anonymousId },
     {
       onSuccess: (data) => {
