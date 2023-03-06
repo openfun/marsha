@@ -1,5 +1,5 @@
 import { screen } from '@testing-library/react';
-import { videoMockFactory, LiveModeType, liveState } from 'lib-components';
+import { LiveModeType, liveState, liveMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 
@@ -14,7 +14,7 @@ jest.mock('components/live/common/DashboardLiveJitsi', () => () => (
 
 describe('<TeacherLiveContent />', () => {
   it('renders the raw wrapper', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_state: liveState.IDLE,
       live_type: LiveModeType.RAW,
     });
@@ -37,8 +37,7 @@ describe('<TeacherLiveContent />', () => {
   });
 
   it('renders the live jitsi', async () => {
-    const video = videoMockFactory({
-      live_type: LiveModeType.JITSI,
+    const video = liveMockFactory({
       live_state: liveState.RUNNING,
       live_info: {
         jitsi: {

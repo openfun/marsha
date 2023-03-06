@@ -2,9 +2,9 @@ import { act, cleanup, waitFor } from '@testing-library/react';
 import {
   DecodedJwt,
   useJwt,
-  videoMockFactory,
   LiveModeType,
   liveState,
+  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -78,7 +78,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('configures jitsi', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -97,7 +97,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
     });
 
     const { rerender } = render(
@@ -206,7 +205,7 @@ describe('<DashboardLiveJitsi />', () => {
       useJwt.setState({
         getDecodedJwt: () => decodedToken as DecodedJwt,
       });
-      const video = videoMockFactory({
+      const video = liveMockFactory({
         live_info: {
           medialive: {
             input: {
@@ -225,7 +224,6 @@ describe('<DashboardLiveJitsi />', () => {
           },
         },
         live_state: liveState.IDLE,
-        live_type: LiveModeType.JITSI,
       });
 
       render(
@@ -247,7 +245,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('configures jitsi with a JWT', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -267,7 +265,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -285,7 +282,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('manages recording interruption', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -305,7 +302,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     const setCanShowStartButton = jest.fn();
@@ -372,7 +368,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('manages triggering start recording multiple times by multiple moderators', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -391,7 +387,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -447,7 +442,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('calls setCanStartLive when role changes', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -466,7 +461,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
     const mockCanStartLive = jest.fn();
 
@@ -508,7 +502,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('calls setCanStartLive and setCanShowStartButton when participant leave the conference', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -561,7 +555,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('calls setCanShowStartButton when participant join the conference', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -580,7 +574,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
     const mockCanShowStartButton = jest.fn();
 
@@ -610,7 +603,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('does not start recording when isInstructor is False', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         jitsi: {
           domain: 'meet.jit.si',
@@ -621,7 +614,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -646,7 +638,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('does not start recording when the user is an instructor but not a moderator', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         jitsi: {
           domain: 'meet.jit.si',
@@ -657,7 +649,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -684,7 +675,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('redirects to the player when user leaves the conference and is not an instructor', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         jitsi: {
           domain: 'meet.jit.si',
@@ -695,7 +686,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -723,7 +713,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('allows to restart a streaming once stopped without error', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -742,7 +732,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     const { rerender } = render(
@@ -842,7 +831,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('stop retrying to start streaming when the error is not-allowed', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -861,7 +850,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -917,7 +905,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('does not start streaming when loading the component and jitsi already streaming', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -936,7 +924,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(
@@ -978,7 +965,7 @@ describe('<DashboardLiveJitsi />', () => {
   });
 
   it('start streaming when the component is loaded and the live_state already running', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       live_info: {
         medialive: {
           input: {
@@ -997,7 +984,6 @@ describe('<DashboardLiveJitsi />', () => {
         },
       },
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
     });
 
     render(

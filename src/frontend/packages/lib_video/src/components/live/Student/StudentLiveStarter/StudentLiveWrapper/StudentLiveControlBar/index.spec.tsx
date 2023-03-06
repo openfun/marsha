@@ -1,6 +1,6 @@
 import { cleanup, screen } from '@testing-library/react';
 import {
-  videoMockFactory,
+  liveMockFactory,
   JoinMode,
   LiveModeType,
   liveState,
@@ -14,7 +14,7 @@ import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { StudentLiveControlBar } from '.';
 
-const mockEmptyVideo = videoMockFactory({
+const mockEmptyVideo = liveMockFactory({
   live_state: liveState.IDLE,
   live_type: LiveModeType.JITSI,
 });
@@ -117,8 +117,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
   it('does not render wrapper without xmpp available in video', () => {
     useLivePanelState.setState({});
 
-    const mockVideo = videoMockFactory({
-      live_type: LiveModeType.JITSI,
+    const mockVideo = liveMockFactory({
       live_state: liveState.RUNNING,
     });
 
@@ -140,7 +139,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
   it('does not render wrapper if video_type is not LiveModeType.JITSI', () => {
     useLivePanelState.setState({});
 
-    const mockVideo = videoMockFactory({
+    const mockVideo = liveMockFactory({
       live_type: LiveModeType.RAW,
       live_state: liveState.RUNNING,
       xmpp: {
@@ -170,14 +169,13 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
   });
 
   it('does not render wrapper if live_state is not liveState.RUNNING', () => {
-    const values = Object.values(liveState).filter(
-      (state) => ![liveState.RUNNING, liveState.ENDED].includes(state),
-    );
+    const { RUNNING: _running, ENDED: _ended, ...state } = liveState;
+    const values = Object.values(state);
 
     values.forEach((myLiveState) => {
       useLivePanelState.setState({});
 
-      const mockVideo = videoMockFactory({
+      const mockVideo = liveMockFactory({
         live_type: LiveModeType.JITSI,
         live_state: myLiveState,
         xmpp: {
@@ -212,7 +210,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
   it('does not render wrapper if join_mode is not JoinMode.ASK_FOR_APPROVAL', () => {
     useLivePanelState.setState({});
 
-    const mockVideo = videoMockFactory({
+    const mockVideo = liveMockFactory({
       join_mode: JoinMode.DENIED,
       live_type: LiveModeType.JITSI,
       live_state: liveState.RUNNING,
@@ -245,7 +243,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
   it('renders leave/join discussion button', () => {
     useLivePanelState.setState({});
 
-    const mockRunningJitsiWithXMPP = videoMockFactory({
+    const mockRunningJitsiWithXMPP = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_state: liveState.RUNNING,
       xmpp: {
@@ -279,7 +277,7 @@ describe('<StudentLiveControlBar /> leave/join discussion wrapper', () => {
       ],
     });
 
-    const mockRunningJitsiWithXMPP = videoMockFactory({
+    const mockRunningJitsiWithXMPP = liveMockFactory({
       live_type: LiveModeType.JITSI,
       live_state: liveState.RUNNING,
       xmpp: {

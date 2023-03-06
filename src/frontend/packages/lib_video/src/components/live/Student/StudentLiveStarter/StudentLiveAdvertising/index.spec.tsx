@@ -6,7 +6,7 @@ import {
   liveState,
   liveSessionFactory,
   thumbnailMockFactory,
-  videoMockFactory,
+  liveMockFactory,
   LiveModeType,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
@@ -101,15 +101,16 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information when live is not starting and not running and starting_at is null', () => {
-    const states = Object.values(liveState).filter(
-      (state) =>
-        ![liveState.STARTING, liveState.RUNNING, liveState.ENDED].includes(
-          state,
-        ),
-    );
+    const {
+      RUNNING: _running,
+      ENDED: _ended,
+      STARTING: _starting,
+      ...state
+    } = liveState;
+    const states = Object.values(state);
 
     states.forEach((state) => {
-      const video = videoMockFactory({
+      const video = liveMockFactory({
         live_state: state,
         starting_at: undefined,
         title: 'live title',
@@ -129,7 +130,7 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information, schedule and register form when live is idling and starting_at is in the future', async () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 29, 11, 0, 0)).toISO(),
       live_state: liveState.IDLE,
       title: 'live title',
@@ -170,10 +171,10 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information only when live is not STARTING or RUNNING', () => {
-    const states = [liveState.STARTING, liveState.RUNNING];
+    const states = [liveState.STARTING, liveState.RUNNING] as const;
 
     states.forEach((state) => {
-      const video = videoMockFactory({
+      const video = liveMockFactory({
         starting_at: DateTime.fromJSDate(
           new Date(2022, 1, 29, 11, 0, 0),
         ).toISO(),
@@ -200,12 +201,10 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information only when live is idling and starting_at is in the past', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
-      live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
-      live_type: LiveModeType.JITSI,
     });
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
@@ -224,12 +223,11 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information only when live is stopping and starting_at is in the past', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
       live_state: liveState.STOPPING,
       title: 'live title',
       description: 'live description',
-      live_type: LiveModeType.JITSI,
     });
 
     fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
@@ -250,12 +248,10 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('renders live information with no uploaded thumbnail', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
-      live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
-      live_type: LiveModeType.JITSI,
     });
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
@@ -266,12 +262,11 @@ describe('<StudentLiveAdvertising />', () => {
 
   it('renders live information with uploaded thumbnail but with no urls', () => {
     const videoId = faker.datatype.uuid();
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(
         new Date(nextYear, 1, 25, 11, 0, 0),
       ).toISO(),
-      live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
       thumbnail: thumbnailMockFactory({
@@ -279,7 +274,6 @@ describe('<StudentLiveAdvertising />', () => {
         video: videoId,
         urls: undefined,
       }),
-      live_type: LiveModeType.JITSI,
     });
 
     fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
@@ -293,10 +287,9 @@ describe('<StudentLiveAdvertising />', () => {
 
   it('renders live information with uploaded thumbnail but with no urls and past scheduled', () => {
     const videoId = faker.datatype.uuid();
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(new Date(2022, 1, 25, 11, 0, 0)).toISO(),
-      live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
       thumbnail: thumbnailMockFactory({
@@ -304,7 +297,6 @@ describe('<StudentLiveAdvertising />', () => {
         video: videoId,
         urls: undefined,
       }),
-      live_type: LiveModeType.JITSI,
     });
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
@@ -316,18 +308,16 @@ describe('<StudentLiveAdvertising />', () => {
 
   it('renders live information with an uploaded thumbnail', () => {
     const videoId = faker.datatype.uuid();
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       id: videoId,
       starting_at: DateTime.fromJSDate(
         new Date(nextYear, 1, 25, 11, 0, 0),
       ).toISO(),
-      live_state: liveState.IDLE,
       title: 'live title',
       description: 'live description',
       thumbnail: thumbnailMockFactory({
         video: videoId,
       }),
-      live_type: LiveModeType.JITSI,
     });
 
     fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
@@ -345,11 +335,9 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it("doesn't add a link to add to my calendar if there is no starting_at date", () => {
-    const video = videoMockFactory({
-      live_state: liveState.IDLE,
+    const video = liveMockFactory({
       title: 'live title',
       description: 'live description',
-      live_type: LiveModeType.JITSI,
     });
 
     render(wrapInVideo(<StudentLiveAdvertising />, video));
@@ -371,15 +359,13 @@ describe('<StudentLiveAdvertising />', () => {
   });
 
   it('uses default values for description, duration and title when the video has none for the ics link', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(
         new Date(nextYear, 1, 25, 11, 0, 0),
       ).toISO(),
-      live_state: liveState.IDLE,
       description: '',
       is_public: false,
       title: '',
-      live_type: LiveModeType.JITSI,
     });
 
     fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
@@ -402,7 +388,7 @@ describe('<StudentLiveAdvertising />', () => {
   it("creates a link when the video is public and uses video's info for the ics link", () => {
     const estimatedDuration = Duration.fromObject({ hours: 6, minutes: 15 });
     const year = new Date().getFullYear() + 1;
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       starting_at: DateTime.fromJSDate(new Date(year, 1, 25, 11, 0, 0)).toISO(),
       estimated_duration: estimatedDuration.toISOTime({
         suppressMilliseconds: true,
@@ -411,7 +397,6 @@ describe('<StudentLiveAdvertising />', () => {
       description: 'this is the description',
       is_public: true,
       title: 'this is the title',
-      live_type: LiveModeType.JITSI,
     });
     fetchMock.get(`/api/videos/${video.id}/livesessions/?limit=999`, []);
 

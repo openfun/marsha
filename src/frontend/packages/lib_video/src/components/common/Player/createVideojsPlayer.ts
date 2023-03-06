@@ -59,9 +59,6 @@ export const createVideojsPlayer = (
   // add the video-js class name to the video attribute.
   videoNode.classList.add('video-js', 'vjs-big-play-centered');
 
-  const isLive =
-    video.live_state !== null && video.live_state !== liveState.ENDED;
-
   const sources: VideoJsExtendedSourceObject[] = [];
   const plugins: VideoJsPlayerPluginOptions = {};
   const anonymousId = getOrInitAnonymousId();
@@ -88,7 +85,7 @@ export const createVideojsPlayer = (
   }
 
   const options: VideoJsPlayerOptions = {
-    autoplay: isLive,
+    autoplay: video.is_live,
     controls: true,
     debug: false,
     fluid: true,
@@ -108,15 +105,15 @@ export const createVideojsPlayer = (
       nativeVideoTracks: videojs.browser.IS_SAFARI,
     },
     language: locale,
-    liveui: isLive,
-    playbackRates: isLive ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
+    liveui: video.is_live,
+    playbackRates: video.is_live ? [] : [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 4],
     plugins,
     responsive: true,
     sources,
   };
 
   const player = videojs(videoNode, options, function () {
-    if (isLive) {
+    if (video.is_live) {
       videoState.setIsWatchingVideo(true);
       this.play();
     }
@@ -306,7 +303,7 @@ export const createVideojsPlayer = (
       // action is when the first quality to play is chosen, the default one. To choose it,
       // all quality available must be read in the HLS manifest. So we can consider at this
       // time that the video is initialized.
-      if (isLive) {
+      if (video.is_live) {
         initialize();
       }
       return;

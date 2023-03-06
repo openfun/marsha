@@ -12,7 +12,7 @@ import {
   Video,
   PersistentStore,
   participantMockFactory,
-  videoMockFactory,
+  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { Suspense, useEffect } from 'react';
@@ -113,7 +113,7 @@ describe('components/DashboardLive', () => {
     mockCanShowStartButton = false;
   });
 
-  const video = videoMockFactory({
+  const video = liveMockFactory({
     is_ready_to_show: true,
     show_download: true,
     thumbnail: null,
