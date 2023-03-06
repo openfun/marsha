@@ -22,6 +22,11 @@ interface RedirectVideoProps {
 export const RedirectVideo = ({ video }: RedirectVideoProps) => {
   const [context] = useCurrentResourceContext();
 
+  if (video.upload_state === uploadState.DELETED) {
+    // A deleted video cannot be used
+    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+  }
+
   if (
     (video.live_type ||
       video.is_ready_to_show ||
