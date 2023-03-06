@@ -3,10 +3,15 @@ import { StyledLink } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ClassRooms, Videos } from 'features/Contents';
+import { ClassRooms, Videos, Lives } from 'features/Contents';
 import { routes } from 'routes';
 
 const messages = defineMessages({
+  MyLives: {
+    defaultMessage: 'My Lives',
+    description: 'My contents page, my lives title',
+    id: 'features.Contents.Contents.MyLives',
+  },
   MyVideos: {
     defaultMessage: 'My Videos',
     description: 'My contents page, my videos title',
@@ -33,6 +38,17 @@ const Contents = () => {
 
   return (
     <Box margin={{ top: 'medium' }}>
+      <Box margin={{ top: 'medium' }}>
+        <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
+          <Text weight="bolder">{intl.formatMessage(messages.MyLives)}</Text>
+          <Text weight="bolder">
+            <StyledLink to={`${routes.CONTENTS.subRoutes.LIVE.path}`}>
+              › {intl.formatMessage(messages.SeeEverything)}
+            </StyledLink>
+          </Text>
+        </BoxText>
+        <Lives withPagination={false} limit={4} />
+      </Box>
       <Box margin={{ top: 'medium' }}>
         <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
           <Text weight="bolder">{intl.formatMessage(messages.MyVideos)}</Text>

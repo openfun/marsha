@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - standalone website:
   - Integrate VOD dashboard (#2086)
+  - List the lives in the contents section (#2104)
 
 ### Changed
 

@@ -1,8 +1,8 @@
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-//import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
+import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
@@ -83,7 +83,7 @@ enum ERouteNames {
 }
 enum EMyContentsSubRouteNames {
   VIDEO = 'VIDEO',
-  //LIVE = 'LIVE',
+  LIVE = 'LIVE',
   CLASSROOM = 'CLASSROOM',
   //LESSON = 'LESSON',
 }
@@ -246,18 +246,18 @@ export const routes: Routes = {
         },
         isNavStrict: true,
       },
-      // LIVE: {
-      //   label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
-      //   path: `/my-contents/lives`,
-      //   menuIcon: (
-      //     <CheckListIcon
-      //       width={30}
-      //       height={30}
-      //       role="img"
-      //       aria-label="svg-menu-my-contents-live"
-      //     />
-      //   ),
-      // },
+      LIVE: {
+        label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
+        path: `/my-contents/lives`,
+        menuIcon: (
+          <LoadSVG
+            Icon={LiveIcon}
+            aria-label="svg-menu-my-contents-live"
+            title={messages.menuContentsLivesLabel}
+          />
+        ),
+        isNavStrict: true,
+      },
       CLASSROOM: {
         label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
         path: `/my-contents/classroom`,
