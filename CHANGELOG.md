@@ -8,13 +8,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
-### Fixed
-
-- rounded button style (#2118)
+## [4.0.0-beta.18] - 2023-03-06
 
 ### Changed
 
 - Manage xapi request without consumer_site
+
+### Fixed
+
+- rounded button style (#2118)
 
 ## [4.0.0-beta.17] - 2023-03-03
 
@@ -1529,7 +1531,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.17...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0-beta.18...master
+[4.0.0-beta.18]: https://github.com/openfun/marsha/compare/v4.0.0-beta.17...v4.0.0-beta.18
 [4.0.0-beta.17]: https://github.com/openfun/marsha/compare/v4.0.0-beta.16...v4.0.0-beta.17
 [4.0.0-beta.16]: https://github.com/openfun/marsha/compare/v4.0.0-beta.15...v4.0.0-beta.16
 [4.0.0-beta.15]: https://github.com/openfun/marsha/compare/v4.0.0-beta.14...v4.0.0-beta.15
