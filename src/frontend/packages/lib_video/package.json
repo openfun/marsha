@@ -26,7 +26,7 @@
     "jest-image-snapshot": "*",
     "jest-matchmedia-mock": "*",
     "jsdom-screenshot": "*",
-    "luxon": "3.2.1",
+    "luxon": "3.3.0",
     "react": "*",
     "react-dom": "*",
     "react-hot-toast": "*",
@@ -37,7 +37,7 @@
     "rollup-plugin-dts": "5.2.0",
     "styled-components": "*",
     "vtt.js": "0.13.0",
-    "zustand": "4.3.5"
+    "zustand": "4.3.6"
   },
   "devDependencies": {
     "@babel/core": "7.21.0",
@@ -91,7 +91,7 @@
     "jest-styled-components": "7.1.1",
     "jsdom-screenshot": "4.0.0",
     "linkifyjs": "4.1.0",
-    "luxon": "3.2.1",
+    "luxon": "3.3.0",
     "m3u8-parser": "6.0.0",
     "prettier": "2.8.4",
     "react": "17.0.2",
@@ -106,7 +106,7 @@
     "rollup-jest": "3.1.0",
     "rollup-plugin-delete": "2.0.0",
     "rollup-plugin-dts": "5.2.0",
-    "rollup-plugin-import-css": "3.1.0",
+    "rollup-plugin-import-css": "3.2.1",
     "rollup-plugin-peer-deps-external": "2.2.4",
     "rollup-plugin-polyfill-node": "0.12.0",
     "rollup-plugin-typescript2": "0.34.1",
@@ -122,6 +122,6 @@
     "videojs-http-source-selector": "1.1.6",
     "vtt.js": "0.13.0",
     "xhr-mock": "2.5.1",
-    "zustand": "4.3.5"
+    "zustand": "4.3.6"
   }
 }

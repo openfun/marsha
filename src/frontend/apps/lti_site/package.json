@@ -123,7 +123,7 @@
     "katex": "0.16.4",
     "linkifyjs": "4.1.0",
     "lodash": "4.17.21",
-    "luxon": "3.2.1",
+    "luxon": "3.3.0",
     "mermaid": "9.1.7",
     "polished": "4.2.2",
     "rc-tooltip": "6.0.1",
@@ -154,6 +154,6 @@
     "uuid": "9.0.0",
     "vtt.js": "0.13.0",
     "whatwg-fetch": "3.6.2",
-    "zustand": "4.3.5"
+    "zustand": "4.3.6"
   }
 }
