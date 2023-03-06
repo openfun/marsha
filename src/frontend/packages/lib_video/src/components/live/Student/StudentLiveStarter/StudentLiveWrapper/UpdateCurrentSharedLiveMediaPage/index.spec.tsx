@@ -1,7 +1,7 @@
 import faker from 'faker';
 import {
   sharedLiveMediaMockFactory,
-  videoMockFactory,
+  liveMockFactory,
   liveState,
   LiveModeType,
   useVideo,
@@ -32,7 +32,7 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
   it('set the page in the SharedMediaCurrentPageProvider', () => {
     const videoId = faker.datatype.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       id: videoId,
       active_shared_live_media: sharedLiveMedia,
       active_shared_live_media_page: 1,
@@ -84,7 +84,7 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
   it('set the page with id3 tags', () => {
     const videoId = faker.datatype.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       id: videoId,
       active_shared_live_media: sharedLiveMedia,
       active_shared_live_media_page: 1,

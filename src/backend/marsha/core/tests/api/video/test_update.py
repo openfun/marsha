@@ -474,6 +474,7 @@ class VideoUpdateAPITest(TestCase):
                 "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
+                "is_live": True,
                 "upload_state": PENDING,
                 "timed_text_tracks": [],
                 "thumbnail": None,

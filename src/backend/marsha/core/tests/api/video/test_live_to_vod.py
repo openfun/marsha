@@ -202,6 +202,7 @@ class VideoLivetoVodAPITest(TestCase):
                 "starting_at": None,
                 "description": video.description,
                 "id": str(video.id),
+                "is_live": False,
                 "upload_state": READY,
                 "timed_text_tracks": [],
                 "thumbnail": None,

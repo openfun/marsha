@@ -137,6 +137,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     description: '',
     has_transcript: false,
     id,
+    is_live: false,
     is_ready_to_show: true,
     is_scheduled: false,
     has_chat: true,
@@ -186,6 +187,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
 export const liveMockFactory = (live: Partial<Live> = {}): Live => {
   return {
     ...videoMockFactory(live),
+    is_live: true,
     live_state: liveState.IDLE,
     live_type: LiveModeType.JITSI,
     ...live,

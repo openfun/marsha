@@ -55,6 +55,7 @@ describe('<DashboardVideoWrapper />', () => {
         continue;
       }
       const video = videoMockFactory({
+        is_live: true,
         live_type: LiveModeType.JITSI,
         live_state: state,
         live_info: {

@@ -8,8 +8,7 @@ import {
   Live,
   liveState,
   liveSessionFactory,
-  videoMockFactory,
-  LiveModeType,
+  liveMockFactory,
 } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
@@ -103,7 +102,7 @@ describe('StudentLiveStarter', () => {
     useLiveStateStarted.setState({
       isStarted: false,
     });
-    const video = videoMockFactory({
+    const live = liveMockFactory({
       urls: {
         manifests: {
           hls: 'some hls',
@@ -111,12 +110,8 @@ describe('StudentLiveStarter', () => {
         mp4: {},
         thumbnails: {},
       },
-    });
-    const live: Live = {
-      ...video,
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
-    };
+    });
 
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
@@ -171,12 +166,9 @@ describe('StudentLiveStarter', () => {
     ];
 
     for (const state of values) {
-      const video = videoMockFactory();
-      const live: Live = {
-        ...video,
+      const live = liveMockFactory({
         live_state: state,
-        live_type: LiveModeType.JITSI,
-      };
+      });
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -203,13 +195,10 @@ describe('StudentLiveStarter', () => {
     ];
 
     for (const state of values) {
-      const video = videoMockFactory();
-      const live: Live = {
-        ...video,
+      const live = liveMockFactory({
         live_state: state,
-        live_type: LiveModeType.JITSI,
         starting_at: new Date(2022, 1, 20, 10, 0, 0).toISOString(),
-      };
+      });
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -230,12 +219,9 @@ describe('StudentLiveStarter', () => {
     ];
 
     for (const state of values) {
-      const video = videoMockFactory();
-      const live: Live = {
-        ...video,
+      const live = liveMockFactory({
         live_state: state,
-        live_type: LiveModeType.JITSI,
-      };
+      });
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -264,13 +250,10 @@ describe('StudentLiveStarter', () => {
     ];
 
     for (const state of values) {
-      const video = videoMockFactory();
-      const live: Live = {
-        ...video,
+      const live = liveMockFactory({
         live_state: state,
-        live_type: LiveModeType.JITSI,
         starting_at: new Date(2022, 1, 20, 15, 0, 0).toISOString(),
-      };
+      });
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -286,13 +269,10 @@ describe('StudentLiveStarter', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.STARTING,
-      live_type: LiveModeType.JITSI,
       starting_at: new Date(2022, 1, 20, 15, 0, 0).toISOString(),
-    };
+    });
 
     render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -302,12 +282,9 @@ describe('StudentLiveStarter', () => {
   });
 
   it('displays the player once manifest is pulled for non scheduled live', async () => {
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
-    };
+    });
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
@@ -330,13 +307,10 @@ describe('StudentLiveStarter', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
       starting_at: new Date(2022, 1, 20, 15, 0, 0).toISOString(),
-    };
+    });
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
@@ -361,13 +335,10 @@ describe('StudentLiveStarter', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
       starting_at: new Date(2022, 1, 20, 13, 0, 0).toISOString(),
-    };
+    });
     const deferred = new Deferred<null>();
     mockedPollForLive.mockReturnValue(deferred.promise);
 
@@ -395,13 +366,10 @@ describe('StudentLiveStarter', () => {
     jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.STOPPED,
-      live_type: LiveModeType.JITSI,
       starting_at: new Date(2022, 1, 20, 13, 0, 0).toISOString(),
-    };
+    });
 
     render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -420,13 +388,10 @@ describe('StudentLiveStarter', () => {
     ];
 
     for (const state of values) {
-      const video = videoMockFactory();
-      const live: Live = {
-        ...video,
+      const live = liveMockFactory({
         live_state: state,
-        live_type: LiveModeType.JITSI,
         join_mode: JoinMode.FORCED,
-      };
+      });
 
       render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
@@ -452,13 +417,10 @@ describe('StudentLiveStarter', () => {
       isStarted: false,
     });
 
-    const video = videoMockFactory();
-    const live: Live = {
-      ...video,
+    const live = liveMockFactory({
       live_state: liveState.RUNNING,
-      live_type: LiveModeType.JITSI,
       join_mode: JoinMode.FORCED,
-    };
+    });
     mockSetLiveSessionDisplayName.mockResolvedValue({
       success: liveSessionFactory({ display_name: 'John_Doe' }),
     });

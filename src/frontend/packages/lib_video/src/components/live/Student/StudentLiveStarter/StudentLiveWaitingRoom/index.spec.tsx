@@ -4,10 +4,8 @@ import { Nullable } from 'lib-common';
 import {
   useCurrentUser,
   useMaintenance,
-  liveState,
   liveSessionFactory,
-  videoMockFactory,
-  LiveModeType,
+  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -86,11 +84,9 @@ describe('<StudentLiveWaitingRoom />', () => {
   });
 
   it('renders the waiting room', () => {
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       title: 'live title',
       description: 'live description',
-      live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
     });
 
     render(wrapInVideo(<StudentLiveWaitingRoom />, video));
@@ -117,11 +113,9 @@ describe('<StudentLiveWaitingRoom />', () => {
         callbackSuccess();
       },
     );
-    const video = videoMockFactory({
+    const video = liveMockFactory({
       title: 'live title',
       description: 'live description',
-      live_state: liveState.IDLE,
-      live_type: LiveModeType.JITSI,
     });
     mockSetLiveSessionDisplayName.mockResolvedValue({
       success: liveSessionFactory({ display_name: 'John_Doe' }),
