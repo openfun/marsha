@@ -8,6 +8,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- rounded button style (#2118)
 
 ### Changed
 
