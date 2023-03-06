@@ -32,8 +32,14 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
             justify="center"
             background="radial-gradient(ellipse at center, #8682bc 0%,#6460c3 100%);"
           >
-            <ClassroomsIcon width={80} height={80} color="white" />
-            <Text weight="bold" color="white" textAlign="center" size="small">
+            <ClassroomsIcon width={70} height={70} color="white" />
+            <Text
+              weight="bold"
+              color="white"
+              textAlign="center"
+              size="small"
+              margin={{ top: 'small' }}
+            >
               {classroom.welcome_text}
             </Text>
           </Box>

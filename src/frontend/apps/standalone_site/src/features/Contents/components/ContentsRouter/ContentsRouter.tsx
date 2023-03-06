@@ -1,6 +1,6 @@
 import { Route, Switch } from 'react-router-dom';
 
-import { ClassRoomRouter, VideoRouter } from 'features/Contents';
+import { ClassRoomRouter, VideoRouter, LiveRouter } from 'features/Contents';
 import { routes } from 'routes';
 
 import Contents from '../Contents/Contents';
@@ -16,6 +16,9 @@ const ContentsRouter = () => {
       </Route>
       <Route path={routes.CONTENTS.subRoutes.VIDEO.path}>
         <VideoRouter />
+      </Route>
+      <Route path={routes.CONTENTS.subRoutes.LIVE.path}>
+        <LiveRouter />
       </Route>
     </Switch>
   );
