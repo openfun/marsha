@@ -1,11 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
 import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { UploadClosedCaptions } from '.';
 
@@ -47,7 +48,7 @@ describe('<UploadClosedCaptions />', () => {
       mockSetInfoWidgetModalProvider,
     ]);
 
-    render(<UploadClosedCaptions />);
+    render(wrapInVideo(<UploadClosedCaptions />, videoMockFactory()));
 
     screen.getByText('Closed captions');
 
