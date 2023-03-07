@@ -1,14 +1,18 @@
 import { screen } from '@testing-library/react';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import { ResponsiveContext } from 'grommet';
+import { deepMerge } from 'grommet/utils';
+import { breakpoints, theme } from 'lib-common';
 import { appendUtilsElement, render } from 'lib-tests';
 import React, { Fragment } from 'react';
 
-import { getFullThemeExtend } from 'styles/theme.extend';
+import { useResponsive } from '.';
 
-import { useResponsive } from './useResponsive';
-
-const fullTheme = getFullThemeExtend();
+const fullTheme = deepMerge(theme, {
+  global: {
+    breakpoints: breakpoints,
+  },
+});
 
 const TestComponent = ({ breakpointTest }: { breakpointTest: string }) => {
   const { breakpoint, isSmallerBreakpoint } = useResponsive();

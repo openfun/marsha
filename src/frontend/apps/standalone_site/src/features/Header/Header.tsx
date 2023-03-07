@@ -1,7 +1,7 @@
 import { Box, Button, DropButton, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { AnonymousUser, useCurrentUser } from 'lib-components';
+import { AnonymousUser, useCurrentUser, useResponsive } from 'lib-components';
 import { forwardRef, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, NavLink } from 'react-router-dom';
@@ -13,7 +13,6 @@ import { ReactComponent as LogoutIcon } from 'assets/svg/logout.svg';
 import { ReactComponent as SettingsIcon } from 'assets/svg/settings.svg';
 import { logout } from 'features/Authentication';
 import { Burger } from 'features/Menu';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes/routes';
 
 const NavLinkStyled = styled(NavLink)`

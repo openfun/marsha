@@ -1,11 +1,15 @@
 import { Box, Heading, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import { AnonymousUser, StyledLink, useCurrentUser } from 'lib-components';
+import {
+  AnonymousUser,
+  StyledLink,
+  useCurrentUser,
+  useResponsive,
+} from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ClassRooms } from 'features/Contents';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 const BoxText = styled(Box)`
