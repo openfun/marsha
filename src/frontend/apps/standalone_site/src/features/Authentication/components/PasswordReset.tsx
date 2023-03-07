@@ -1,10 +1,9 @@
 import { Box } from 'grommet';
+import { useResponsive } from 'lib-components';
 import React, { PropsWithChildren, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
 import { useIntl, defineMessages } from 'react-intl';
 import { useHistory, useLocation, useParams } from 'react-router-dom';
-
-import { useResponsive } from 'hooks/useResponsive';
 
 import { PasswordResetConfirmForm } from './PasswordResetConfirmForm';
 import { PasswordResetForm } from './PasswordResetForm';

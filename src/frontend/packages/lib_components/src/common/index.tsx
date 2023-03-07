@@ -1,5 +1,6 @@
 export * from './Button';
 export * from './Button/ButtonLayout';
+export * from './ContentCard';
 
 export * from './Form';
 

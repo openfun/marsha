@@ -1,4 +1,5 @@
 import { Box } from 'grommet';
+import { useResponsive } from 'lib-components';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
@@ -6,7 +7,6 @@ import imageLeft from 'assets/img/telescope.png';
 import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
 import { WhiteCard } from 'components/Cards';
 import { HeaderLight } from 'features/Header';
-import { useResponsive } from 'hooks/useResponsive';
 
 const messages = defineMessages({
   altLogo: {

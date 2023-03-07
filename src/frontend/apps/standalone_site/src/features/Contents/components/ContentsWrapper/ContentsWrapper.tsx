@@ -1,10 +1,9 @@
 import { Pagination } from 'grommet';
-import { APIList } from 'lib-components';
+import { APIList, ContentCards } from 'lib-components';
 import { UseQueryResult } from 'react-query';
 
 import { useContentPerPage } from 'features/Contents';
 
-import { ContentCards } from '../ContentCard/ContentCard';
 import ManageAPIState from '../ManageAPIState/ManageAPIState';
 
 interface ContentsWrapperProps<ContentType> {

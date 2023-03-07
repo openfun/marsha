@@ -1,8 +1,7 @@
 import { Box, FormField, Image, Select, Text, ThemeContext } from 'grommet';
+import { useResponsive } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
-
-import { useResponsive } from 'hooks/useResponsive';
 
 import {
   getRenaterFerIdpList,

@@ -8,6 +8,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
   Video,
+  useResponsive,
 } from 'lib-components';
 import { LicenseSelect, useCreateVideo, UploadVideoForm } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
@@ -16,7 +17,6 @@ import { useHistory } from 'react-router-dom';
 
 import { ModalButton } from 'components/Modal';
 import { useSelectPlaylist } from 'features/Playlist';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 const messages = defineMessages({

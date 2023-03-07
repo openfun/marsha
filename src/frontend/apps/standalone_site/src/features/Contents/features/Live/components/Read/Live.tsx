@@ -1,11 +1,10 @@
 import { Text, Box } from 'grommet';
-import { StyledLink, Video } from 'lib-components';
+import { StyledLink, Video, ContentCard } from 'lib-components';
 import { Fragment } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
-import { ContentCard } from 'features/Contents/';
 import { routes } from 'routes';
 
 const TextTruncated = styled(Text)`

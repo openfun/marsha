@@ -1,5 +1,5 @@
 import { Image, Box, Text, Heading } from 'grommet';
-import { StyledLink } from 'lib-components';
+import { StyledLink, useResponsive } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -7,7 +7,6 @@ import styled from 'styled-components';
 import banner from 'assets/img/homepage-banner.png';
 import { ContentsShuffle } from 'features/Contents';
 import { useMenu } from 'features/Menu';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 const messages = defineMessages({
