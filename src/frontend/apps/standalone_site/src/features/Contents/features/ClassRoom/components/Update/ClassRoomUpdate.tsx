@@ -5,13 +5,13 @@ import {
   AppConfigProvider,
   CurrentResourceContextProvider,
   ResourceContext,
+  useResponsive,
 } from 'lib-components';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
 import bbbBackground from 'assets/img/bbbBackground.png';
 import bbbLogo from 'assets/img/bbbLogo.png';
-import { useResponsive } from 'hooks/useResponsive';
 import { themeExtend } from 'styles/theme.extend';
 
 const appConfig = {

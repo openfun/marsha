@@ -1,10 +1,10 @@
 import { Box, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
+import { useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useResponsive } from 'hooks/useResponsive';
 import { Route, routes } from 'routes';
 
 import { useMenu } from '../store/menuStore';

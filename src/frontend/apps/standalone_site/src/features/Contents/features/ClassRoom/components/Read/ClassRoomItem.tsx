@@ -1,12 +1,11 @@
 import { Text, Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import { ClassroomLite, StyledLink } from 'lib-components';
+import { ClassroomLite, StyledLink, ContentCard } from 'lib-components';
 import { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
-import { ContentCard } from 'features/Contents/';
 import { routes } from 'routes';
 import { localDate } from 'utils/date';
 

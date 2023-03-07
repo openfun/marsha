@@ -1,10 +1,9 @@
 import { Box } from 'grommet';
-import { useJwt, refreshToken } from 'lib-components';
+import { useJwt, refreshToken, useResponsive } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 
 import { ContentSpinner } from 'components/Spinner';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 import { LoginForm } from './LoginForm';

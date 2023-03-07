@@ -1,6 +1,7 @@
 import { render, screen } from '@testing-library/react';
+import React from 'react';
 
-import { ContentCard } from './ContentCard';
+import { ContentCard } from '.';
 
 describe('<ContentCard />', () => {
   test('renders ContentCard', () => {

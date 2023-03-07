@@ -492,3 +492,11 @@ export const theme: ThemeType = {
     `,
   },
 };
+
+export const breakpoints = {
+  xxsmall: { value: 380 },
+  xsmall: { value: 540 },
+  xsmedium: { value: 1024 },
+  smedium: { value: 1280 },
+  large: { value: 9999 },
+};

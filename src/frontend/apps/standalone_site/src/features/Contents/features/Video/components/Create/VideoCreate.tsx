@@ -1,12 +1,11 @@
 import { Button, Heading, Text } from 'grommet';
-import { UploadManager } from 'lib-components';
+import { UploadManager, useResponsive } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
 
 import { WhiteCard } from 'components/Cards';
 import { Modal } from 'components/Modal';
-import { useResponsive } from 'hooks/useResponsive';
 import { routes } from 'routes';
 
 import VideoCreateForm from './VideoCreateForm';
