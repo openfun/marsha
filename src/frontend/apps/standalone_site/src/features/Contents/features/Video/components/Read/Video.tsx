@@ -1,18 +1,15 @@
 import { Text, Box } from 'grommet';
-import { ContentCard, StyledLink, Video as IVideo } from 'lib-components';
+import {
+  ContentCard,
+  StyledLink,
+  TextTruncated,
+  Video as IVideo,
+} from 'lib-components';
 import { Fragment } from 'react';
-import styled from 'styled-components';
 
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { routes } from 'routes';
-
-const TextTruncated = styled(Text)`
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
 
 const Video = ({ video }: { video: IVideo }) => {
   const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
