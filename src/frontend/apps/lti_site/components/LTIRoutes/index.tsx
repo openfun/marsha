@@ -6,7 +6,7 @@ import {
   UploadForm,
   UPLOAD_FORM_ROUTE,
   UploadManager,
-  LTIUploadHandlers,
+  UploadHandlers,
   useAppConfig,
   modelName,
 } from 'lib-components';
@@ -40,7 +40,7 @@ const Wrappers = ({ children }: React.PropsWithChildren<{}>) => {
   return (
     <MemoryRouter>
       <UploadManager>
-        <LTIUploadHandlers />
+        <UploadHandlers />
         <div className={`marsha-${appData.frontend}`}>{children}</div>
       </UploadManager>
     </MemoryRouter>
