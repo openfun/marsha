@@ -137,6 +137,7 @@ describe('<SharedLiveMedia />', () => {
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(`/api/sharedlivemedias/`);
     expect(fetchMock.lastCall()![1]).toEqual({
+      body: JSON.stringify({ video: videoId }),
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
