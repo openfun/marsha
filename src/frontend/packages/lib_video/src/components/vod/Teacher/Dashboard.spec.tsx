@@ -1,6 +1,7 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   liveState,
@@ -83,6 +84,10 @@ describe('<Dashboard />', () => {
     );
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
+    // show dashboard
+    userEvent.click(
+      screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
+    );
     // TeacherLiveInfoBar
     screen.getByDisplayValue('Title of the video');
 
@@ -117,6 +122,10 @@ describe('<Dashboard />', () => {
     );
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
+    // show dashboard
+    userEvent.click(
+      screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
+    );
     // TeacherLiveInfoBar
     screen.getByDisplayValue('Title of the video');
 
