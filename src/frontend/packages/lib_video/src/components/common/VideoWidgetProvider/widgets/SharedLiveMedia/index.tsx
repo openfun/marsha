@@ -91,7 +91,9 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
     let sharedLiveMediaId;
     if (event.target.files && event.target.files[0]) {
       if (!retryUploadIdRef.current) {
-        const response = await createSharedLiveMedia();
+        const response = await createSharedLiveMedia({
+          video: video.id,
+        });
         sharedLiveMediaId = response.id;
       } else {
         sharedLiveMediaId = retryUploadIdRef.current;
