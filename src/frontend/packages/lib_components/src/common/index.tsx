@@ -69,6 +69,7 @@ export * from './TextInput';
 export * from './ProgressionBar';
 export * from './RetryUploadButton';
 
+export * from './TextTruncated';
 export * from './ToggleButton';
 export * from './ToggleInput';
 export * from './TextAreaInput';

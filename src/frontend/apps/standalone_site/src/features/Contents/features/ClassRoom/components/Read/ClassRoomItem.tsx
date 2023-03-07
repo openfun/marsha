@@ -1,20 +1,17 @@
 import { Text, Box } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
-import { ClassroomLite, StyledLink, ContentCard } from 'lib-components';
+import {
+  ClassroomLite,
+  StyledLink,
+  ContentCard,
+  TextTruncated,
+} from 'lib-components';
 import { Fragment } from 'react';
 import { useIntl } from 'react-intl';
-import styled from 'styled-components';
 
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { routes } from 'routes';
 import { localDate } from 'utils/date';
-
-const TextTruncated = styled(Text)`
-  display: -webkit-box;
-  -webkit-line-clamp: 5;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
-`;
 
 const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   const intl = useIntl();
