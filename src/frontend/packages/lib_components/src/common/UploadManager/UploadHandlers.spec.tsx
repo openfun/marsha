@@ -9,7 +9,7 @@ import { addResource, getStoreResource } from 'data/stores/generics';
 import { modelName } from 'types/models';
 import { Thumbnail, Video } from 'types/tracks';
 
-import { LTIUploadHandlers } from './LTIUploadHandlers';
+import { UploadHandlers } from './UploadHandlers';
 
 import { UploadManagerContext, UploadManagerStatus } from '.';
 
@@ -60,7 +60,7 @@ describe('<LTIUploadHandlers />', () => {
           uploadManagerState: { [objectState.objectId]: objectState },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -79,7 +79,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -112,7 +112,7 @@ describe('<LTIUploadHandlers />', () => {
           uploadManagerState: { [objectState.objectId]: objectState },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -131,7 +131,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -154,7 +154,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -172,7 +172,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -191,7 +191,7 @@ describe('<LTIUploadHandlers />', () => {
           uploadManagerState: { [objectState.objectId]: objectState },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -210,7 +210,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -228,7 +228,7 @@ describe('<LTIUploadHandlers />', () => {
           uploadManagerState: { [objectState.objectId]: objectState },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
@@ -247,7 +247,7 @@ describe('<LTIUploadHandlers />', () => {
           },
         }}
       >
-        <LTIUploadHandlers />
+        <UploadHandlers />
       </UploadManagerContext.Provider>,
     );
 
