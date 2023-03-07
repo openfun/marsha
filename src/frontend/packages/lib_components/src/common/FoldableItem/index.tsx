@@ -24,6 +24,7 @@ interface WidgetTemplateProps {
   infoText?: string;
   initialOpenValue: boolean;
   title: string;
+  cardStyle?: boolean;
 }
 
 export const FoldableItem = ({
@@ -31,6 +32,7 @@ export const FoldableItem = ({
   infoText,
   initialOpenValue,
   title,
+  cardStyle = true,
 }: WidgetTemplateProps) => {
   const intl = useIntl();
   const [open, setOpen] = useState(initialOpenValue);
@@ -40,39 +42,44 @@ export const FoldableItem = ({
   return (
     <Box
       ref={refWidget}
-      background="white"
+      background={cardStyle ? 'white' : 'transparent'}
       direction="column"
-      round="6px"
-      style={{
-        boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
-        minHeight: '70px',
-      }}
+      round={cardStyle ? '6px' : '0'}
+      style={
+        cardStyle
+          ? {
+              boxShadow: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
+              minHeight: '70px',
+            }
+          : undefined
+      }
       margin="small"
     >
-      <Box pad={{ horizontal: '6px', top: '6px' }}>
-        <Button
-          disabled={!infoText}
-          margin={{ left: 'auto' }}
-          onClick={() => {
-            if (!infoText) {
-              //  this should not happen since button is disabled
-              return;
-            }
+      {infoText && (
+        <Box pad={{ horizontal: '6px', top: '6px' }}>
+          <Button
+            margin={{ left: 'auto' }}
+            onClick={() => {
+              if (!infoText) {
+                //  this should not happen since button is disabled
+                return;
+              }
 
-            setInfoWidgetModalProvider({
-              text: infoText,
-              title,
-              refWidget: refWidget.current,
-            });
-          }}
-          plain
-          style={{ display: 'flex', padding: 0 }}
-          a11yTitle={intl.formatMessage(messages.helpButtonTitle)}
-          title={intl.formatMessage(messages.helpButtonTitle)}
-        >
-          <InfoCircleSVG height="17px" iconColor="blue-active" width="17px" />
-        </Button>
-      </Box>
+              setInfoWidgetModalProvider({
+                text: infoText,
+                title,
+                refWidget: refWidget.current,
+              });
+            }}
+            plain
+            style={{ display: 'flex', padding: 0 }}
+            a11yTitle={intl.formatMessage(messages.helpButtonTitle)}
+            title={intl.formatMessage(messages.helpButtonTitle)}
+          >
+            <InfoCircleSVG height="17px" iconColor="blue-active" width="17px" />
+          </Button>
+        </Box>
+      )}
 
       <Box pad={{ horizontal: '20px' }}>
         <Button onClick={() => setOpen(!open)} plain style={{ padding: 0 }}>
@@ -98,7 +105,7 @@ export const FoldableItem = ({
       </Box>
 
       <Collapsible open={open}>
-        <Box pad="33px">{children}</Box>
+        <Box pad={cardStyle ? '33px' : '0'}>{children}</Box>
       </Collapsible>
     </Box>
   );
