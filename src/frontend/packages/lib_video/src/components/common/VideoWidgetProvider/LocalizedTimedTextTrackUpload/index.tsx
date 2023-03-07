@@ -16,6 +16,7 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { createTimedTextTrack } from 'api/createTimedTextTrack';
 import { useTimedTextMetadata } from 'api/useTimedTextMetadata';
+import { useCurrentVideo } from 'hooks/useCurrentVideo';
 import { LanguageChoice } from 'types/SelectOptions';
 
 import { LanguageSelect } from './LanguageSelect';
@@ -52,6 +53,7 @@ export const LocalizedTimedTextTrackUpload = ({
   timedTextModeWidget,
 }: UploadWidgetGenericProps) => {
   const intl = useIntl();
+  const video = useCurrentVideo();
   const { addUpload, resetUpload, uploadManagerState } = useUploadManager();
   const timedTextTracks = useTimedTextTrack((state) =>
     state.getTimedTextTracks(),
@@ -72,11 +74,12 @@ export const LocalizedTimedTextTrackUpload = ({
       if (event.target.files && event.target.files[0] && selectedLanguage) {
         try {
           if (!retryUploadIdRef.current) {
-            const response = await createTimedTextTrack(
-              selectedLanguage.value,
-              timedTextModeWidget,
-              event.target.files[0].size,
-            );
+            const response = await createTimedTextTrack({
+              language: selectedLanguage.value,
+              mode: timedTextModeWidget,
+              size: event.target.files[0].size,
+              video: video.id,
+            });
             timedTextTrackId = response.id;
           } else {
             timedTextTrackId = retryUploadIdRef.current;
@@ -107,7 +110,14 @@ export const LocalizedTimedTextTrackUpload = ({
       // https://stackoverflow.com/questions/39484895/how-to-allow-input-type-file-to-select-the-same-file-in-react-component
       nativeEvent.value = '';
     },
-    [addUpload, intl, metadata.data, selectedLanguage, timedTextModeWidget],
+    [
+      addUpload,
+      intl,
+      metadata.data,
+      selectedLanguage,
+      timedTextModeWidget,
+      video.id,
+    ],
   );
   const onRetryFailedUpload = (timedTextTrackId: string) => {
     if (hiddenFileInput.current) {

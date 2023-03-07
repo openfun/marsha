@@ -12,12 +12,14 @@ import {
   modelName,
   timedTextMode,
   uploadState,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { createTimedTextTrack } from 'api/createTimedTextTrack';
 import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { LocalizedTimedTextTrackUpload } from '.';
 
@@ -76,9 +78,12 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
 
     render(
-      <LocalizedTimedTextTrackUpload
-        timedTextModeWidget={timedTextMode.SUBTITLE}
-      />,
+      wrapInVideo(
+        <LocalizedTimedTextTrackUpload
+          timedTextModeWidget={timedTextMode.SUBTITLE}
+        />,
+        videoMockFactory(),
+      ),
       { intlOptions: { locale: 'fr-FR' } },
     );
 
@@ -129,16 +134,19 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.SUBTITLE}
-        />
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <LocalizedTimedTextTrackUpload
+            timedTextModeWidget={timedTextMode.SUBTITLE}
+          />
+        </UploadManagerContext.Provider>,
+        videoMockFactory(),
+      ),
       { intlOptions: { locale: 'fr-FR' } },
     );
 
@@ -177,16 +185,19 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     );
 
     render(
-      <UploadManagerContext.Provider
-        value={{
-          setUploadState: () => {},
-          uploadManagerState: {},
-        }}
-      >
-        <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.SUBTITLE}
-        />
-      </UploadManagerContext.Provider>,
+      wrapInVideo(
+        <UploadManagerContext.Provider
+          value={{
+            setUploadState: () => {},
+            uploadManagerState: {},
+          }}
+        >
+          <LocalizedTimedTextTrackUpload
+            timedTextModeWidget={timedTextMode.SUBTITLE}
+          />
+        </UploadManagerContext.Provider>,
+        videoMockFactory(),
+      ),
       { intlOptions: { locale: 'fr-FR' } },
     );
 
@@ -251,12 +262,15 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     useTimedTextTrack.getState().addResource(mockedTimedTextTrackCompleted);
 
     render(
-      <DeleteTimedTextTrackUploadModalProvider value={null}>
-        <LocalizedTimedTextTrackUpload
-          timedTextModeWidget={timedTextMode.SUBTITLE}
-        />
-        ,
-      </DeleteTimedTextTrackUploadModalProvider>,
+      wrapInVideo(
+        <DeleteTimedTextTrackUploadModalProvider value={null}>
+          <LocalizedTimedTextTrackUpload
+            timedTextModeWidget={timedTextMode.SUBTITLE}
+          />
+          ,
+        </DeleteTimedTextTrackUploadModalProvider>,
+        videoMockFactory(),
+      ),
       { intlOptions: { locale: 'fr-FR' } },
     );
 

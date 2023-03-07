@@ -19,12 +19,17 @@ describe('sideEffects/createTimedTextTrack()', () => {
       mode: 'st',
     });
 
-    const track = await createTimedTextTrack('en', timedTextMode.SUBTITLE, 10);
+    const track = await createTimedTextTrack({
+      language: 'en',
+      mode: timedTextMode.SUBTITLE,
+      size: 10,
+      video: '1234',
+    });
     const fetchArgs = fetchMock.lastCall()![1]!;
 
     expect(track).toEqual({ id: '42', language: 'en', mode: 'st' });
     expect(fetchArgs.body).toEqual(
-      JSON.stringify({ language: 'en', mode: 'st', size: 10 }),
+      JSON.stringify({ language: 'en', mode: 'st', size: 10, video: '1234' }),
     );
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer some token',
@@ -40,7 +45,12 @@ describe('sideEffects/createTimedTextTrack()', () => {
     );
 
     await expect(
-      createTimedTextTrack('en', timedTextMode.SUBTITLE, 10),
+      createTimedTextTrack({
+        language: 'en',
+        mode: timedTextMode.SUBTITLE,
+        size: 10,
+        video: '1234',
+      }),
     ).rejects.toThrow('Failed to perform the request');
   });
 
@@ -48,7 +58,12 @@ describe('sideEffects/createTimedTextTrack()', () => {
     fetchMock.mock('/api/timedtexttracks/', 400);
 
     await expect(
-      createTimedTextTrack('en', timedTextMode.SUBTITLE, 10),
+      createTimedTextTrack({
+        language: 'en',
+        mode: timedTextMode.SUBTITLE,
+        size: 10,
+        video: '1234',
+      }),
     ).rejects.toThrow();
   });
 });

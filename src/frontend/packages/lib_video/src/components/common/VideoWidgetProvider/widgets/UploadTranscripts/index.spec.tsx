@@ -1,11 +1,12 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
 import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
+import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { UploadTranscripts } from '.';
 
@@ -48,7 +49,7 @@ describe('<UploadTranscripts />', () => {
       mockSetInfoWidgetModalProvider,
     ]);
 
-    render(<UploadTranscripts />);
+    render(wrapInVideo(<UploadTranscripts />, videoMockFactory()));
 
     screen.getByText('Transcripts');
 
