@@ -6,6 +6,7 @@ import {
   modelName,
   uploadState,
   ProgressionBar,
+  UploadManagerStatus,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -62,12 +63,12 @@ export const UploadVideo = () => {
   // to be able to perform a consecutive upload if needed
   useEffect(() => {
     if (
-      video.upload_state === uploadState.READY &&
-      uploadManagerState[video.id]
+      video?.upload_state === uploadState.READY &&
+      uploadManagerState[video.id]?.status === UploadManagerStatus.SUCCESS
     ) {
       resetUpload(video.id);
     }
-  }, [video.upload_state, resetUpload, video.id, uploadManagerState]);
+  }, [video?.upload_state, resetUpload, video.id, uploadManagerState]);
 
   useEffect(() => {
     if (video.upload_state !== uploadState.PENDING) {
