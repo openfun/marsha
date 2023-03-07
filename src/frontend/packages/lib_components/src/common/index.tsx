@@ -50,7 +50,7 @@ export * from './queries';
 
 export * from './SchedulingFields';
 export * from './UploadManager';
-export * from './UploadManager/LTIUploadHandlers';
+export * from './UploadManager/UploadHandlers';
 export * from './UploadField';
 export * from './UploadField/DropzoneIcon';
 export * from './UploadField/DropzonePlaceholder';

@@ -56,7 +56,7 @@ const UploadSuccessHandler = ({
   return null;
 };
 
-export const LTIUploadHandlers = () => {
+export const UploadHandlers = () => {
   const { uploadManagerState } = useUploadManager();
 
   return (
