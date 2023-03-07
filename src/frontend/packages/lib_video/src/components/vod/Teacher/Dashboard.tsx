@@ -7,8 +7,11 @@ import {
   useTimedTextTrack,
   Video,
   ThumbnailDisplayer,
+  InfoWidgetModalProvider,
+  FoldableItem,
 } from 'lib-components';
 import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import {
@@ -19,6 +22,14 @@ import { TeacherVideoInfoBar } from 'components/common/TeacherVideoInfoBar';
 import { VideoPlayer } from 'components/common/VideoPlayer';
 import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
 import { CurrentVideoProvider } from 'hooks/useCurrentVideo';
+
+const messages = defineMessages({
+  titleDetails: {
+    defaultMessage: '{videoTitle} dashboard',
+    description: 'Title of the accordion panel used to display video dashboard',
+    id: 'components.Dashboard.titleDetails',
+  },
+});
 
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
@@ -31,6 +42,7 @@ interface DashboardProps {
 }
 
 export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
+  const intl = useIntl();
   const appData = useAppConfig();
 
   const timedTextTracks = useTimedTextTrack((state) =>
@@ -60,30 +72,40 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
             </Box>
           )}
 
-          <StyledLiveVideoInformationBarWrapper
-            align="center"
-            background="white"
-            direction="row-responsive"
-            height="80px"
-            justify="between"
-            margin="small"
-            pad={{
-              vertical: 'small',
-              horizontal: 'medium',
-            }}
-            round="xsmall"
-          >
-            <TeacherVideoInfoBar flex startDate={video.starting_at} />
-          </StyledLiveVideoInformationBarWrapper>
+          <InfoWidgetModalProvider value={null}>
+            <FoldableItem
+              cardStyle={false}
+              initialOpenValue={false}
+              title={intl.formatMessage(messages.titleDetails, {
+                videoTitle: video.title,
+              })}
+            >
+              <StyledLiveVideoInformationBarWrapper
+                align="center"
+                background="white"
+                direction="row-responsive"
+                height="80px"
+                justify="between"
+                margin="small"
+                pad={{
+                  vertical: 'small',
+                  horizontal: 'medium',
+                }}
+                round="xsmall"
+              >
+                <TeacherVideoInfoBar flex startDate={video.starting_at} />
+              </StyledLiveVideoInformationBarWrapper>
 
-          <DashboardControlPane
-            isLive={false}
-            tabs={
-              video.live_state === null
-                ? [PaneTabs.STATS]
-                : [PaneTabs.ATTENDANCE]
-            }
-          />
+              <DashboardControlPane
+                isLive={false}
+                tabs={
+                  video.live_state === null
+                    ? [PaneTabs.STATS]
+                    : [PaneTabs.ATTENDANCE]
+                }
+              />
+            </FoldableItem>
+          </InfoWidgetModalProvider>
         </Box>
       </VideoWebSocketInitializer>
     </CurrentVideoProvider>
