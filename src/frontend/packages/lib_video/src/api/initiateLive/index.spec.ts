@@ -11,9 +11,7 @@ import { initiateLive } from '.';
 
 describe('sideEffects/initiateLive', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

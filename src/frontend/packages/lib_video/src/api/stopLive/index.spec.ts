@@ -5,9 +5,7 @@ import { stopLive } from '.';
 
 describe('sideEffects/stopLive', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

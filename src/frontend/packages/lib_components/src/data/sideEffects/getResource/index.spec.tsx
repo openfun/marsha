@@ -21,9 +21,7 @@ const mockAddResource = addResource as jest.MockedFunction<typeof addResource>;
 
 describe('sideEffects/getResource', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

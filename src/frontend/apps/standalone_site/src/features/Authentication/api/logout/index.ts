@@ -1,7 +1,7 @@
 import { fetchWrapper, useJwt } from 'lib-components';
 
 export const logout = async () => {
-  const refreshToken = useJwt.getState().refreshJwt;
+  const refreshToken = useJwt.getState().getRefreshJwt();
   useJwt.getState().resetJwt();
 
   const response = await fetchWrapper('/account/api/logout/', {

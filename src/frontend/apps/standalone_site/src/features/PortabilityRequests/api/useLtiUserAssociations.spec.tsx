@@ -19,9 +19,7 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
   });
 
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -43,6 +41,7 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
+    useJwt.getState().resetJwt();
   });
 
   describe('useCreateLtiUserAssociation', () => {

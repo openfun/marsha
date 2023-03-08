@@ -21,10 +21,7 @@ jest.mock('lib-components', () => ({
 
 describe('sideEffects/pollForTrack', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
-
+    useJwt.getState().setJwt('some token');
     jest.clearAllMocks();
     jest.useFakeTimers();
   });

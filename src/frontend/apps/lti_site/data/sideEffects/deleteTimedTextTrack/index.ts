@@ -15,7 +15,7 @@ export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt()}`,
       },
       method: 'DELETE',
     },

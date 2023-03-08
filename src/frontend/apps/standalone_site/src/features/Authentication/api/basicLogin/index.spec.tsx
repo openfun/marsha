@@ -74,7 +74,7 @@ describe('features/Authentication/api/basicLogin', () => {
       });
       expect(result.current.status).toEqual('success');
 
-      const jwt = useJwt.getState().jwt;
+      const jwt = useJwt.getState().getJwt();
       expect(jwt).toEqual('some access token');
     });
 

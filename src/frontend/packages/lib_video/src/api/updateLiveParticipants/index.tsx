@@ -18,7 +18,7 @@ const updateLiveParticipants = async (
     {
       body: JSON.stringify(participant),
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method,

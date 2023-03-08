@@ -21,7 +21,7 @@ export const actionOne = async <T, K>({
   method,
   object,
 }: Variables<K>): Promise<T> => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const init: RequestInit = {
     headers: {
       'Content-Type': 'application/json',

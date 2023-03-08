@@ -29,7 +29,7 @@ export const getResourceList = async (
       `${endpoint}?limit=${params.limit}&offset=${params.offset}`,
       {
         headers: {
-          Authorization: `Bearer ${useJwt.getState().jwt}`,
+          Authorization: `Bearer ${useJwt.getState().getJwt()}`,
           'Content-Type': 'application/json',
         },
       },

@@ -9,9 +9,8 @@ describe('queries/deleteOne', () => {
   afterEach(() => fetchMock.restore());
 
   it('deletes the resource', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/123/', 204, { method: 'DELETE' });
 
     await deleteOne({
@@ -30,9 +29,8 @@ describe('queries/deleteOne', () => {
   });
 
   it('deletes the resource without JWT token', async () => {
-    useJwt.setState({
-      jwt: undefined,
-    });
+    useJwt.getState().resetJwt();
+
     fetchMock.mock('/api/model-name/123/', 403, { method: 'DELETE' });
 
     let thrownError;
@@ -66,9 +64,8 @@ describe('queries/deleteOne', () => {
   });
 
   it('resolves with a failure and handles it when it fails to delete the resource (local)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock(
       '/api/model-name/123/',
       Promise.reject(new Error('Failed to perform the request')),
@@ -92,9 +89,8 @@ describe('queries/deleteOne', () => {
   });
 
   it('resolves with a 400 and handles it when it fails to delete the resource (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/123/', {
       body: JSON.stringify({ error: 'An error occured!' }),
       status: 400,

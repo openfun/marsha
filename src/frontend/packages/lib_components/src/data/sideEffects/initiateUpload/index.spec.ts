@@ -7,9 +7,7 @@ import { initiateUpload } from '.';
 
 describe('sideEffects/initiateUpload', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

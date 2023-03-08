@@ -11,7 +11,7 @@ import { fetchWrapper } from './fetchWrapper';
 export const metadata = async <T,>({
   queryKey,
 }: QueryFunctionContext<QueryKey>): Promise<T> => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const [name, locale] = queryKey;
   const response = await fetchWrapper(`/api/${String(name)}/`, {
     headers: {

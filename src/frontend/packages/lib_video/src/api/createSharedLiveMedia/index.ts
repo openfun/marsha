@@ -16,7 +16,7 @@ export const createSharedLiveMedia = async (
   const response = await fetchWrapper(`${API_ENDPOINT}/sharedlivemedias/`, {
     body: JSON.stringify(body),
     headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+      Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

@@ -19,7 +19,7 @@ export const pushAttendance = async (
   const response = await fetchWrapper(endpoint, {
     body: JSON.stringify({ live_attendance: liveAttendance, language }),
     headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+      Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
       'Content-Type': 'application/json',
     },
     method: 'POST',

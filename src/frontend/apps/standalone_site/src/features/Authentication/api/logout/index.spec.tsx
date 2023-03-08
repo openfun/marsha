@@ -17,15 +17,15 @@ describe('logout()', () => {
     fetchMock.post('/account/api/logout/', 500);
 
     await expect(logout()).rejects.toThrow('Fail to logout user.');
-    expect(useJwt.getState().jwt).toEqual(undefined);
-    expect(useJwt.getState().refreshJwt).toEqual(undefined);
+    expect(useJwt.getState().getJwt()).toEqual(undefined);
+    expect(useJwt.getState().getRefreshJwt()).toEqual(undefined);
   });
 
   it('clear jwt store on success', async () => {
     fetchMock.post('/account/api/logout/', 200);
 
     await expect(logout()).resolves.toEqual(undefined);
-    expect(useJwt.getState().jwt).toEqual(undefined);
-    expect(useJwt.getState().refreshJwt).toEqual(undefined);
+    expect(useJwt.getState().getJwt()).toEqual(undefined);
+    expect(useJwt.getState().getRefreshJwt()).toEqual(undefined);
   });
 });

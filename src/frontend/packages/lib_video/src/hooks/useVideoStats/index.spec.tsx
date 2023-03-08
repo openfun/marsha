@@ -10,9 +10,7 @@ let Wrapper: WrapperComponent<Element>;
 
 describe('useStatsVideo', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     const queryClient = new QueryClient({
       defaultOptions: {

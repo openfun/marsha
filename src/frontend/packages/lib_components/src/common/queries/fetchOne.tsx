@@ -11,7 +11,7 @@ import { fetchWrapper } from './fetchWrapper';
 export const fetchOne = async <T,>({
   queryKey,
 }: QueryFunctionContext<QueryKey>): Promise<T> => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const [name, id, action] = queryKey;
 
   const actionEndpoint = action ? `${String(action)}/` : '';

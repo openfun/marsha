@@ -19,7 +19,7 @@ export const createLiveSession = async (
     language,
     anonymous_id: anonymousId,
   };
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const response = await fetchWrapper(
     `${API_ENDPOINT}/videos/${videoId}/livesessions/`,
     {

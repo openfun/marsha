@@ -7,9 +7,7 @@ import { fetchJitsiInfo } from '.';
 
 describe('fetchJitsiInfo', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {

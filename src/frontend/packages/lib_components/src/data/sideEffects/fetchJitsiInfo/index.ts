@@ -11,7 +11,7 @@ export const fetchJitsiInfo = async (
     `${API_ENDPOINT}/videos/${video.id}/jitsi/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
     },

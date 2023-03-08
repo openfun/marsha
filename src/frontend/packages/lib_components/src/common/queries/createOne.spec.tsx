@@ -9,9 +9,8 @@ describe('queries/createOne', () => {
   afterEach(() => fetchMock.restore());
 
   it('creates the resource, handles the response and resolves with a success', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToCreate = { objets: 'data' };
     fetchMock.mock('/api/model-name/', { key: 'value' });
 
@@ -33,9 +32,8 @@ describe('queries/createOne', () => {
   });
 
   it('creates the resource without JWT token', async () => {
-    useJwt.setState({
-      jwt: undefined,
-    });
+    useJwt.getState().resetJwt();
+
     const objectToCreate = { objets: 'data' };
     fetchMock.mock('/api/model-name/', { key: 'value' });
 
@@ -56,9 +54,8 @@ describe('queries/createOne', () => {
   });
 
   it('resolves with a failure and handles it when it fails to create the resource (local)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToCreate = { objets: 'data' };
     fetchMock.mock(
       '/api/model-name/',
@@ -84,9 +81,8 @@ describe('queries/createOne', () => {
   });
 
   it('resolves with a 404 and handles it when it fails to create the resource (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToCreate = { objets: 'data' };
     fetchMock.mock('/api/model-name/', 404);
 
@@ -124,9 +120,8 @@ describe('queries/createOne', () => {
   });
 
   it('resolves with a 400 and handles it when it fails to create the resource (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToCreate = { objets: 'data' };
     fetchMock.mock('/api/model-name/', {
       body: JSON.stringify({ error: 'An error occured!' }),

@@ -23,7 +23,7 @@ export async function getResource(
   try {
     const response = await fetchWrapper(endpoint, {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
     });
