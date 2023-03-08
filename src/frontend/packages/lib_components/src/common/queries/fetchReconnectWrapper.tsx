@@ -49,8 +49,9 @@ export const fetchReconnectWrapper = async (
     return response;
   }
 
-  const { refreshJwt } = useJwt.getState();
-  if (refreshJwt) {
+  const refreshJwt = useJwt.getState().getRefreshJwt();
+  let jwt = useJwt.getState().getJwt();
+  if (refreshJwt && jwt) {
     try {
       const token = await refreshToken(refreshJwt);
       useJwt.getState().setJwt(token.access);
@@ -64,7 +65,7 @@ export const fetchReconnectWrapper = async (
        * - If multiple requests are made very quickly, the refresh token can be blacklisted,
        *   in this case, we try to reconnect with the potential new access token.
        */
-      const { jwt } = useJwt.getState();
+      jwt = useJwt.getState().getJwt();
       if (jwt) {
         try {
           const response = await fetchReconnect(jwt, initialRequest, init);

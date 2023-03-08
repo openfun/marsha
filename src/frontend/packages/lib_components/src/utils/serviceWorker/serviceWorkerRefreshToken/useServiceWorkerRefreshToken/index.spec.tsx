@@ -151,8 +151,10 @@ describe('<useServiceWorkerRefreshToken />', () => {
 
     render(<TestComponent />);
 
-    await waitFor(() => expect(useJwt.getState().jwt).toBe('my new access'));
-    expect(useJwt.getState().refreshJwt).toBe('my new refresh');
+    await waitFor(() =>
+      expect(useJwt.getState().getJwt()).toBe('my new access'),
+    );
+    expect(useJwt.getState().getRefreshJwt()).toBe('my new refresh');
   });
 
   it('checks the service workers actions: LOGOUT', () => {
@@ -177,7 +179,7 @@ describe('<useServiceWorkerRefreshToken />', () => {
 
     render(<TestComponent />);
 
-    expect(useJwt.getState().jwt).toBeUndefined();
-    expect(useJwt.getState().refreshJwt).toBeUndefined();
+    expect(useJwt.getState().getJwt()).toBeUndefined();
+    expect(useJwt.getState().getRefreshJwt()).toBeUndefined();
   });
 });

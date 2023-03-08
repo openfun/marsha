@@ -53,8 +53,8 @@ describe('<AppInitializer />', () => {
     expect(useDocument.getState().documents).toEqual({});
     expect(useAttendance.getState().delay).toEqual(10000);
     expect(useMaintenance.getState().isActive).toEqual(false);
-    expect(useJwt.getState().jwt).toBeUndefined();
-    expect(useJwt.getState().refreshJwt).toBeUndefined();
+    expect(useJwt.getState().getJwt()).toBeUndefined();
+    expect(useJwt.getState().getRefreshJwt()).toBeUndefined();
 
     render(
       <AppInitializer jwt="jwt" refresh_token="refresh_token">
@@ -82,7 +82,7 @@ describe('<AppInitializer />', () => {
     });
     expect(useAttendance.getState().delay).toEqual(6);
     expect(useMaintenance.getState().isActive).toEqual(true);
-    expect(useJwt.getState().jwt).toEqual('jwt');
-    expect(useJwt.getState().refreshJwt).toEqual('refresh_token');
+    expect(useJwt.getState().getJwt()).toEqual('jwt');
+    expect(useJwt.getState().getRefreshJwt()).toEqual('refresh_token');
   });
 });

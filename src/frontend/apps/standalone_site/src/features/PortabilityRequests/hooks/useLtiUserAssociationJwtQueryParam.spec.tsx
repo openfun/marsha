@@ -27,14 +27,13 @@ describe('features/PortabilityRequests/hooks/useLtiUserAssociationJwtQueryParam'
   });
 
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
+    useJwt.getState().resetJwt();
   });
 
   describe('useLtiUserAssociationJwtQueryParam', () => {

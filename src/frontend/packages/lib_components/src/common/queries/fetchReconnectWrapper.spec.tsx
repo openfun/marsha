@@ -20,10 +20,8 @@ describe('fetchReconnectWrapper()', () => {
     jest.resetAllMocks();
     fetchMock.restore();
 
-    useJwt.setState({
-      jwt: 'jwt initial',
-      refreshJwt: 'refreshJwt initial',
-    });
+    useJwt.getState().setJwt('jwt initial');
+    useJwt.getState().setRefreshJwt('refreshJwt initial');
   });
 
   describe('check options', () => {
@@ -42,7 +40,7 @@ describe('fetchReconnectWrapper()', () => {
         { routesInclude: [route] },
       );
 
-      expect(useJwt.getState().jwt).toBeUndefined();
+      expect(useJwt.getState().getJwt()).toBeUndefined();
     });
 
     it('checks options.routesExclude', async () => {
@@ -60,7 +58,7 @@ describe('fetchReconnectWrapper()', () => {
         { routesExclude: [route] },
       );
 
-      expect(useJwt.getState().jwt).toEqual('jwt initial');
+      expect(useJwt.getState().getJwt()).toEqual('jwt initial');
     });
 
     it('checks options.isRetry', async () => {
@@ -81,7 +79,7 @@ describe('fetchReconnectWrapper()', () => {
         { isRetry: false },
       );
 
-      expect(useJwt.getState().jwt).toEqual('jwt initial');
+      expect(useJwt.getState().getJwt()).toEqual('jwt initial');
     });
 
     it('checks options.verbose', async () => {
@@ -120,7 +118,7 @@ describe('fetchReconnectWrapper()', () => {
 
       await fetchReconnectWrapper(route);
 
-      expect(useJwt.getState().jwt).toBeUndefined();
+      expect(useJwt.getState().getJwt()).toBeUndefined();
     });
 
     it('checks when token recovery is a success with body request', async () => {
@@ -148,8 +146,8 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      expect(useJwt.getState().jwt).toEqual('new access token');
-      expect(useJwt.getState().refreshJwt).toEqual('new refresh token');
+      expect(useJwt.getState().getJwt()).toEqual('new access token');
+      expect(useJwt.getState().getRefreshJwt()).toEqual('new refresh token');
 
       expect(fetchMock.calls()[1][0]).toEqual('/api/');
       expect(fetchMock.calls()[1][1]).toEqual({
@@ -190,8 +188,8 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      expect(useJwt.getState().jwt).toEqual('new access token');
-      expect(useJwt.getState().refreshJwt).toEqual('new refresh token');
+      expect(useJwt.getState().getJwt()).toEqual('new access token');
+      expect(useJwt.getState().getRefreshJwt()).toEqual('new refresh token');
 
       expect(fetchMock.calls()[1][0]).toEqual('/api/');
       expect(fetchMock.calls()[1][1]).toEqual({
@@ -228,8 +226,8 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      expect(useJwt.getState().jwt).toEqual('new access token');
-      expect(useJwt.getState().refreshJwt).toEqual('new refresh token');
+      expect(useJwt.getState().getJwt()).toEqual('new access token');
+      expect(useJwt.getState().getRefreshJwt()).toEqual('new refresh token');
 
       expect(fetchMock.calls()[1][0]).toEqual('/api/');
       expect(fetchMock.calls()[1][1]).toEqual({
@@ -267,8 +265,8 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      expect(useJwt.getState().jwt).toEqual('new access token');
-      expect(useJwt.getState().refreshJwt).toEqual('new refresh token');
+      expect(useJwt.getState().getJwt()).toEqual('new access token');
+      expect(useJwt.getState().getRefreshJwt()).toEqual('new refresh token');
 
       expect(fetchMock.calls()[1][0]).toEqual('/api/');
       expect(fetchMock.calls()[1][1]).toEqual({
@@ -310,10 +308,8 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      useJwt.setState({
-        jwt: 'new jwt',
-        refreshJwt: 'new refresh',
-      });
+      useJwt.getState().setJwt('new jwt');
+      useJwt.getState().setRefreshJwt('new refresh');
       fetchMock.mock(
         '/api/',
         { someData: 'blabla' },
@@ -332,8 +328,8 @@ describe('fetchReconnectWrapper()', () => {
         method: 'POST',
       });
 
-      expect(useJwt.getState().jwt).toEqual('new jwt');
-      expect(useJwt.getState().refreshJwt).toEqual('new refresh');
+      expect(useJwt.getState().getJwt()).toEqual('new jwt');
+      expect(useJwt.getState().getRefreshJwt()).toEqual('new refresh');
 
       expect(await (await result).json()).toEqual({ someData: 'blabla' });
     });
@@ -366,10 +362,9 @@ describe('fetchReconnectWrapper()', () => {
 
       expect(mockedRefreshToken).toHaveBeenCalledWith('refreshJwt initial');
 
-      useJwt.setState({
-        jwt: 'new jwt',
-        refreshJwt: 'new refresh',
-      });
+      useJwt.getState().setJwt('new jwt');
+      useJwt.getState().setRefreshJwt('new refresh');
+
       fetchMock.mock(
         '/api/',
         {
@@ -392,8 +387,8 @@ describe('fetchReconnectWrapper()', () => {
         method: 'POST',
       });
 
-      expect(useJwt.getState().jwt).toBeUndefined();
-      expect(useJwt.getState().refreshJwt).toBeUndefined();
+      expect(useJwt.getState().getJwt()).toBeUndefined();
+      expect(useJwt.getState().getRefreshJwt()).toBeUndefined();
 
       const reconnect = await result;
       expect(reconnect.status).toEqual(401);

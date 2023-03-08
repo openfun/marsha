@@ -8,9 +8,8 @@ describe('queries/fetchList', () => {
   afterEach(() => fetchMock.restore());
 
   it('requests the resource list, handles the response and resolves with a success', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
@@ -30,9 +29,8 @@ describe('queries/fetchList', () => {
   });
 
   it('requests the resource list with parameters, handles the response and resolves with a success', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/?limit=999&key=value', { key: 'value' });
 
     const response = await fetchList({
@@ -54,9 +52,8 @@ describe('queries/fetchList', () => {
   });
 
   it('requests the resource list without JWT token', async () => {
-    useJwt.setState({
-      jwt: undefined,
-    });
+    useJwt.getState().resetJwt();
+
     fetchMock.mock('/api/model-name/?limit=999', { key: 'value' });
 
     const response = await fetchList({
@@ -75,9 +72,8 @@ describe('queries/fetchList', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource list (local)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock(
       '/api/model-name/?limit=999',
       Promise.reject(new Error('Failed to perform the request')),
@@ -101,9 +97,8 @@ describe('queries/fetchList', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource list (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/?limit=999', 404);
 
     await expect(

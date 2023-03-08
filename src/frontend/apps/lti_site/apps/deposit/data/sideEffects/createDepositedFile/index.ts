@@ -14,7 +14,7 @@ export const createDepositedFile = async (file: {
     `${API_ENDPOINT}/${modelName.DepositedFiles}/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt()}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

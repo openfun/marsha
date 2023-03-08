@@ -14,9 +14,7 @@ import { ItemTableRow } from './ItemTableRow';
 
 describe('<ItemTableRow />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {

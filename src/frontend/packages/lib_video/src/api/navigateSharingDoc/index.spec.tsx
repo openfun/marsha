@@ -5,9 +5,7 @@ import { navigateSharingDoc } from '.';
 
 describe('navigateSharingDoc', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

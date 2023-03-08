@@ -26,7 +26,7 @@ export const updateLiveSession = async (
   const response = await fetchWrapper(endpoint, {
     body: JSON.stringify(body),
     headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+      Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
       'Content-Type': 'application/json',
     },
     method: 'PATCH',

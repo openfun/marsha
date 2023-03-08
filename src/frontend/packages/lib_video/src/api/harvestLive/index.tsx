@@ -5,7 +5,7 @@ export const harvestLive = async (video: Video) => {
     `${API_ENDPOINT}/videos/${video.id}/harvest-live/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

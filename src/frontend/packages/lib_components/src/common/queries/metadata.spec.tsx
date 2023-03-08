@@ -8,9 +8,7 @@ describe('metadata', () => {
   afterEach(() => fetchMock.restore());
 
   it('requests the metadata, handles the response and resolves with a success', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
     fetchMock.mock('/api/model-name/', { key: 'value' });
 
     const response = await metadata({
@@ -32,9 +30,8 @@ describe('metadata', () => {
   });
 
   it('requests the metadata without JWT token', async () => {
-    useJwt.setState({
-      jwt: undefined,
-    });
+    useJwt.getState().resetJwt();
+
     fetchMock.mock('/api/model-name/', { key: 'value' });
 
     const response = await metadata({
@@ -55,9 +52,7 @@ describe('metadata', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource (local)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
     fetchMock.mock(
       '/api/model-name/',
       Promise.reject(new Error('Failed to perform the request')),
@@ -83,9 +78,8 @@ describe('metadata', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/', 404);
 
     await expect(

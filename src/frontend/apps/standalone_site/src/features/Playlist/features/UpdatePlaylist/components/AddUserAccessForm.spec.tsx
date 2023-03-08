@@ -10,9 +10,7 @@ import { AddUserAccessForm } from './AddUserAccessForm';
 
 describe('AddUserAccessForm', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'json web token',
-    });
+    useJwt.getState().setJwt('json web token');
     jest.clearAllMocks();
     fetchMock.restore();
   });

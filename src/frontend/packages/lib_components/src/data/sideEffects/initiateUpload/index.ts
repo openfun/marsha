@@ -28,7 +28,7 @@ export const initiateUpload = async (
         size,
       }),
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

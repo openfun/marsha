@@ -5,7 +5,7 @@ export const publishLiveToVod = async (video: Video) => {
     `${API_ENDPOINT}/videos/${video.id}/live-to-vod/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

@@ -62,7 +62,7 @@ const AppContent = () => {
   else throw new Error(intlShape.formatMessage(messages.errorAppSet));
 
   const decodedJwt = useMemo(() => {
-    const jwt = useJwt.getState().jwt;
+    const jwt = useJwt.getState().getJwt();
     if (jwt) {
       return useJwt.getState().getDecodedJwt();
     }
@@ -100,7 +100,7 @@ const AppContentLoader = () => {
 
   //  load it from the store to prevent having a dependency and recompute decodedJwt
   const decodedJwt = useMemo(() => {
-    const jwt = useJwt.getState().jwt;
+    const jwt = useJwt.getState().getJwt();
     if (jwt) {
       setIsLoaded(true);
       return useJwt.getState().getDecodedJwt();

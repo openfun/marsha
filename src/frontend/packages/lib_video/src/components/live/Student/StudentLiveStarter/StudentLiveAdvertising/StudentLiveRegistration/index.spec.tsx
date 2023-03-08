@@ -48,9 +48,7 @@ const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
 describe('<StudentLiveRegistration />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
     useCurrentUser.setState({
       currentUser: {
         email: null,

@@ -12,7 +12,7 @@ export const createClassroomDocument = async (file: {
   size: number;
   classroom: Classroom['id'];
 }) => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   if (!jwt) {
     throw new Error('No JWT found');
   }

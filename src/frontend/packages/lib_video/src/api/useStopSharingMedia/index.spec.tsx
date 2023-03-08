@@ -26,9 +26,7 @@ let Wrapper: WrapperComponent<Element>;
 
 describe('useStopSharingMedia', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     const queryClient = new QueryClient({
       defaultOptions: {

@@ -6,7 +6,7 @@ export const resetPassword = async (
   newPassword: Maybe<string>,
   passwordValidation: Maybe<string>,
 ) => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
 
   const response = await fetchWrapper('/account/api/password/change/', {
     headers: {

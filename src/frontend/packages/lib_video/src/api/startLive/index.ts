@@ -10,7 +10,7 @@ export const startLive = async (video: Video): Promise<Video> => {
     `${API_ENDPOINT}/videos/${video.id}/start-live/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',
