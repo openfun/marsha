@@ -14,7 +14,7 @@ export const updateOne = async <T, K>({
   id,
   object,
 }: Variables<K>): Promise<T> => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const response = await fetchWrapper(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',

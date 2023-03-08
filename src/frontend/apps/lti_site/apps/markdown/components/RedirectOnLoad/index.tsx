@@ -47,7 +47,7 @@ export const RedirectOnLoad = ({
   }
 
   // Deal with missing JWT (the resource may be not available yet)
-  if (!useJwt.getState().jwt) {
+  if (!useJwt.getState().getJwt()) {
     return <Redirect push to={MARKDOWN_NOT_FOUND_ROUTE()} />;
   }
 

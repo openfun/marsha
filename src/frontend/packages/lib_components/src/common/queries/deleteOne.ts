@@ -10,7 +10,7 @@ export const deleteOne = async ({
   name: string;
   id: string;
 }): Promise<undefined> => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const response = await fetchWrapper(`/api/${name}/${id}/`, {
     headers: {
       'Content-Type': 'application/json',

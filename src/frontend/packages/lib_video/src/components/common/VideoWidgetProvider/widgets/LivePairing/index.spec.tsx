@@ -11,9 +11,7 @@ import { LivePairing } from '.';
 
 describe('LivePairing', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
   it('displays the appairing button', () => {
     const video = videoMockFactory({

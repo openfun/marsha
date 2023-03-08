@@ -23,9 +23,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
   });
 
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     const queryClient = new QueryClient({
       defaultOptions: {
@@ -47,6 +45,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
+    useJwt.getState().resetJwt();
   });
 
   describe('acceptPortabilityRequest', () => {

@@ -5,9 +5,7 @@ import { createTimedTextTrack } from '.';
 
 describe('sideEffects/createTimedTextTrack()', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

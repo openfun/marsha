@@ -49,9 +49,9 @@ describe('<Login />', () => {
     render(<Login />);
 
     await waitFor(() => {
-      expect(useJwt.getState().jwt).toBe('my access');
+      expect(useJwt.getState().getJwt()).toBe('my access');
     });
-    expect(useJwt.getState().refreshJwt).toBe('my refresh Jwt2');
+    expect(useJwt.getState().getRefreshJwt()).toBe('my refresh Jwt2');
     expect(mockHistoryPush).toHaveBeenCalledWith('/');
   });
 
@@ -65,9 +65,9 @@ describe('<Login />', () => {
     render(<Login />);
 
     await waitFor(() => {
-      expect(useJwt.getState().jwt).toBe(undefined);
+      expect(useJwt.getState().getJwt()).toBe(undefined);
     });
-    expect(useJwt.getState().refreshJwt).toBe(undefined);
+    expect(useJwt.getState().getRefreshJwt()).toBe(undefined);
     expect(screen.getByText(/My LoginForm/i)).toBeInTheDocument();
   });
 });

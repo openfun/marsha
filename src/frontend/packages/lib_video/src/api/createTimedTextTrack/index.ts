@@ -28,7 +28,7 @@ export const createTimedTextTrack = async (
     {
       body: JSON.stringify(body),
       headers: {
-        Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+        Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
         'Content-Type': 'application/json',
       },
       method: 'POST',

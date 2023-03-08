@@ -6,9 +6,7 @@ import { pushAttendance } from '.';
 
 describe('pushAttendance', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => fetchMock.restore());

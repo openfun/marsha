@@ -19,7 +19,7 @@ export const fetchList = async <T,>({
   const name = queryKey[0];
   const queryParams = queryKey[1] || {};
 
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
 
   // remove keys with undefined value
   Object.keys(queryParams).forEach(

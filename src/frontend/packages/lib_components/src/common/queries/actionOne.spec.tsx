@@ -9,9 +9,8 @@ describe('queries/actionOne', () => {
   afterEach(() => fetchMock.restore());
 
   it('requests the resource, handles the response and resolves with a success', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/action/', { key: 'value' });
 
@@ -35,9 +34,8 @@ describe('queries/actionOne', () => {
   });
 
   it('allows empty request body', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     fetchMock.mock('/api/model-name/1/action/', { key: 'value' });
 
     const response = await actionOne({
@@ -58,9 +56,8 @@ describe('queries/actionOne', () => {
   });
 
   it('allows defining request method', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/action/', { key: 'value' });
 
@@ -85,9 +82,8 @@ describe('queries/actionOne', () => {
   });
 
   it('requests the resource list without JWT token', async () => {
-    useJwt.setState({
-      jwt: undefined,
-    });
+    useJwt.getState().resetJwt();
+
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/action/', { key: 'value' });
 
@@ -110,9 +106,8 @@ describe('queries/actionOne', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource (local)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToUpdate = { object: 'data' };
     fetchMock.mock(
       '/api/model-name/1/action/',
@@ -140,9 +135,8 @@ describe('queries/actionOne', () => {
   });
 
   it('resolves with a failure and handles it when it fails to get the resource (api)', async () => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
+
     const objectToUpdate = { object: 'data' };
     fetchMock.mock('/api/model-name/1/action/', 404);
 

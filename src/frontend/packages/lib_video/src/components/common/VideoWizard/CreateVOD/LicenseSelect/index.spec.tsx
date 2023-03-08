@@ -30,9 +30,7 @@ const licenseChoices = [
 
 describe('<LicenseSelect />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {

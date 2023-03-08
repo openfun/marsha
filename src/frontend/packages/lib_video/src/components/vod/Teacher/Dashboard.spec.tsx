@@ -57,9 +57,7 @@ const languageChoices = [
 
 describe('<Dashboard />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
     fetchMock.mock(
       `/api/timedtexttracks/`,
       {

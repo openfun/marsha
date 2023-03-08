@@ -38,9 +38,7 @@ const languageChoices = [
 
 describe('<VideoWidgetProvider />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     fetchMock.mock(
       '/api/timedtexttracks/',

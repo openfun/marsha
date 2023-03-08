@@ -56,9 +56,7 @@ jest.mock('hooks/useInfoWidgetModal', () => ({
 
 describe('<UploadVideo />', () => {
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {

@@ -12,9 +12,7 @@ describe('<DashboardLivePairing />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
 
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
   });
 
   afterEach(() => {

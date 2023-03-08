@@ -24,7 +24,7 @@ export async function pollForTrack<
       `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
       {
         headers: {
-          Authorization: `Bearer ${useJwt.getState().jwt}`,
+          Authorization: `Bearer ${useJwt.getState().getJwt()}`,
         },
       },
     );

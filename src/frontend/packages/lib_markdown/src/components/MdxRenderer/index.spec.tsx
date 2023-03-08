@@ -34,9 +34,7 @@ jest.mock('uuid', () => ({
 describe('<MdxRenderer />', () => {
   // Mock getBBox SVG for tests
   beforeEach(() => {
-    useJwt.setState({
-      jwt: 'some token',
-    });
+    useJwt.getState().setJwt('some token');
 
     // @ts-ignore
     window.SVGElement.prototype.getBBox = () => ({

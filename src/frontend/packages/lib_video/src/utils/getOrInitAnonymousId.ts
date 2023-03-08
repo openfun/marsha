@@ -9,7 +9,7 @@ import {
 import { getAnonymousId, setAnonymousId } from './localstorage';
 
 export const getOrInitAnonymousId = () => {
-  const jwt = useJwt.getState().jwt;
+  const jwt = useJwt.getState().getJwt();
   const user = useCurrentUser.getState().currentUser;
   let anonymousId =
     user !== AnonymousUser.ANONYMOUS ? user?.anonymous_id : undefined;

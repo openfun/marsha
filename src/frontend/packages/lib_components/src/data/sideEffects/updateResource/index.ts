@@ -14,7 +14,7 @@ export async function updateResource<R extends Resource>(
   const response = await fetchWrapper(endpoint, {
     body: JSON.stringify(resource),
     headers: {
-      Authorization: `Bearer ${useJwt.getState().jwt ?? ''}`,
+      Authorization: `Bearer ${useJwt.getState().getJwt() ?? ''}`,
       'Content-Type': 'application/json',
     },
     method: 'PUT',
