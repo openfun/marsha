@@ -1,5 +1,5 @@
 import { Video, report, TextAreaInput } from 'lib-components';
-import React, { useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -43,6 +43,7 @@ const messages = defineMessages({
 export const DescriptionWidget = () => {
   const video = useCurrentVideo();
   const intl = useIntl();
+  const descriptionInit = useRef(video.description);
   const [description, setDescription] = useState(video.description);
 
   const videoMutation = useUpdateVideo(video.id, {
@@ -68,6 +69,15 @@ export const DescriptionWidget = () => {
     },
     1000,
   );
+
+  useEffect(() => {
+    const isIdle = descriptionInit.current === description;
+    const isWriting = description !== video.description;
+    if (isIdle || !isWriting) {
+      setDescription(video.description);
+      descriptionInit.current = video.description;
+    }
+  }, [description, video.description]);
 
   return (
     <FoldableItem
