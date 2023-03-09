@@ -29,6 +29,11 @@ const messages = {
     description: 'Placeholder for dropzone.',
     id: 'apps.classroom.components.DashboardStudent.UploadFiles.dropzonePlaceholder',
   },
+  dropzoneTitle: {
+    defaultMessage: 'Upload files to your classroom:',
+    description: 'Title for the dropzone.',
+    id: 'apps.classroom.components.DashboardStudent.UploadFiles.dropzoneTitle',
+  },
   uploadButtonLabel: {
     defaultMessage: 'Upload',
     description: 'Label for upload button.',
@@ -253,7 +258,14 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
   }, [refreshClassroomDocuments]);
 
   return (
-    <Box>
+    <Box margin={{ top: 'medium' }}>
+      <Text
+        color="blue-active"
+        size="0.875rem"
+        style={{ fontFamily: 'Roboto-Medium' }}
+      >
+        {intl.formatMessage(messages.dropzoneTitle)}
+      </Text>
       <Box
         align="center"
         background="blue-message"
@@ -263,7 +275,6 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
           size: 'xsmall',
           color: 'blue-active',
         }}
-        margin={{ top: 'medium' }}
         round="xsmall"
       >
         {classroomDocuments?.results
