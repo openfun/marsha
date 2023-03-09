@@ -1,7 +1,7 @@
-import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
-import { Group } from 'grommet-icons/icons';
+import { Box, Button, Grid } from 'grommet';
+import { AddCircle, DocumentStore } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { FileDepository } from 'lib-components';
+import { ContentCard, FileDepository, TextTruncated } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -9,12 +9,6 @@ import { SelectContentTabProps } from 'components/SelectContent/SelectContentTab
 import { buildContentItems } from 'components/SelectContent/utils';
 
 const messages = defineMessages({
-  loadingFileDepositories: {
-    defaultMessage: 'Loading file depositories...',
-    description:
-      'Accessible message for the spinner while loading the file depositories in lti select view.',
-    id: 'apps.deposit.SelectContent.loadingFileDepositories',
-  },
   addFileDepository: {
     defaultMessage: 'Add a file depository',
     description: `Text displayed on a button to add a new file depository.`,
@@ -27,7 +21,7 @@ const messages = defineMessages({
   },
 });
 
-const ContentCard = ({
+const SelectContentCard = ({
   content,
   onClick,
 }: {
@@ -37,23 +31,32 @@ const ContentCard = ({
   const intl = useIntl();
 
   return (
-    <Tip
-      content={
-        <Box pad="medium">
-          <Text>{content.title}</Text>
+    <ContentCard
+      a11yTitle={intl.formatMessage(messages.select, {
+        title: content.title || '',
+      })}
+      onClick={onClick}
+      header={
+        <Box
+          aria-label="thumbnail"
+          role="img"
+          width="100%"
+          height="150px"
+          align="center"
+          justify="center"
+          background="radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)"
+        >
+          <DocumentStore size="large" color="white" />
         </Box>
       }
+      title={content.title || ''}
     >
-      <Card
-        width="large"
-        title={intl.formatMessage(messages.select, { title: content.title })}
-        onClick={onClick}
-      >
-        <CardBody height="small" align="center" justify="center">
-          <Group size="xlarge" />
-        </CardBody>
-      </Card>
-    </Tip>
+      {content.description && (
+        <TextTruncated size="0.688rem" color="grey" title={content.description}>
+          {content.description}
+        </TextTruncated>
+      )}
+    </ContentCard>
   );
 };
 
@@ -74,21 +77,17 @@ export const SelectContentSection = ({
   const intl = useIntl();
   return (
     <Box>
-      <Grid columns="small" gap="small">
-        <Card
-          height="144px"
-          justify="center"
-          background="light-3"
-          align="center"
+      <Box margin={{ bottom: 'medium' }}>
+        <Button
+          icon={<AddCircle />}
+          secondary
+          label={intl.formatMessage(messages.addFileDepository)}
           onClick={addAndSelectContent}
-        >
-          <Text alignSelf="center">
-            {intl.formatMessage(messages.addFileDepository)}
-          </Text>
-        </Card>
-
+        />
+      </Box>
+      <Grid columns="small" gap="small">
         {items?.map((item: FileDepository) => (
-          <ContentCard
+          <SelectContentCard
             content={item!}
             key={item.id}
             onClick={() =>

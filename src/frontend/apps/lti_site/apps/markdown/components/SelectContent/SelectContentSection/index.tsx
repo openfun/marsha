@@ -1,47 +1,27 @@
-import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
-import { DocumentMissing, DocumentVerified } from 'grommet-icons';
-import { DocumentPerformance, Icon } from 'grommet-icons/icons';
+import { Box, Button, Grid } from 'grommet';
+import { AddCircle, DocumentText } from 'grommet-icons';
 import { Nullable } from 'lib-common';
+import {
+  ContentCard,
+  MarkdownDocument,
+  MarkdownDocumentTranslation,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
-import { MarkdownDocument, MarkdownDocumentTranslation } from 'lib-components';
-
 const messages = defineMessages({
-  loadingDocuments: {
-    defaultMessage: 'Loading documents...',
-    description:
-      'Accessible message for the spinner while loading the markdown document in lti select view.',
-    id: 'apps.markdown.SelectContent.loadingDocuments',
-  },
   addDocument: {
     defaultMessage: 'Add a markdown document',
     description: `Text displayed on a button to add a new markdown document.`,
     id: 'apps.markdown.SelectContent.addDocument',
   },
-  newDocument: {
-    defaultMessage: 'New markdown document',
-    description: `Default LTI consumer title for a new markdown document.`,
-    id: 'apps.markdown.SelectContent.newDocument',
-  },
   select: {
     defaultMessage: 'Select {title}',
     description: 'Accessible message for selecting a markdown document.',
     id: 'apps.markdown.SelectContent.select',
-  },
-  published: {
-    defaultMessage: 'Published',
-    description: 'Text helper displayed if a markdown document is published.',
-    id: 'apps.markdown.SelectContent.published',
-  },
-  draft: {
-    defaultMessage: 'Draft',
-    description:
-      'Text helper displayed if a markdown document is still a draft.',
-    id: 'apps.markdown.SelectContent.draft',
   },
   missingTitle: {
     defaultMessage: 'Missing title',
@@ -50,53 +30,6 @@ const messages = defineMessages({
     id: 'apps.markdown.SelectContent.missingTitle',
   },
 });
-
-const IconStatus = ({
-  message,
-  GrommetIcon,
-  color,
-}: {
-  message: string;
-  GrommetIcon: Icon;
-  color: string;
-}) => (
-  <Box direction="row" gap="small" pad="small">
-    <GrommetIcon a11yTitle={message} color={color} />
-    <Text>{message}</Text>
-  </Box>
-);
-
-const AssertedIconStatus = ({
-  assertion,
-  trueMessage,
-  falseMessage,
-  TrueIcon,
-  FalseIcon,
-}: {
-  assertion: boolean;
-  trueMessage: string;
-  falseMessage: string;
-  TrueIcon: Icon;
-  FalseIcon: Icon;
-}) => {
-  if (assertion) {
-    return (
-      <IconStatus
-        message={trueMessage}
-        GrommetIcon={TrueIcon}
-        color="status-ok"
-      />
-    );
-  }
-
-  return (
-    <IconStatus
-      message={falseMessage}
-      GrommetIcon={FalseIcon}
-      color="status-error"
-    />
-  );
-};
 
 const getTranslatedContent = (
   markdownDocument: MarkdownDocument,
@@ -110,46 +43,34 @@ const getTranslatedContent = (
   return translation ? translation[content] : defaultValue;
 };
 
-const ContentCard = ({
-  content,
+const SelectContentCard = ({
   onClick,
   title,
 }: {
-  content: MarkdownDocument;
   onClick: () => void;
   title: string;
 }) => {
   const intl = useIntl();
 
   return (
-    <Tip
-      content={
-        <Box pad="medium">
-          <Text>{title}</Text>
-          <Box gap="small" direction="row" align="end">
-            <AssertedIconStatus
-              assertion={!content.is_draft}
-              trueMessage={intl.formatMessage(messages.published)}
-              falseMessage={intl.formatMessage(messages.draft)}
-              TrueIcon={DocumentVerified}
-              FalseIcon={DocumentMissing}
-            />
-          </Box>
+    <ContentCard
+      a11yTitle={intl.formatMessage(messages.select, { title })}
+      onClick={onClick}
+      header={
+        <Box
+          aria-label="thumbnail"
+          role="img"
+          width="100%"
+          height="150px"
+          align="center"
+          justify="center"
+          background="radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)"
+        >
+          <DocumentText size="large" color="white" />
         </Box>
       }
-    >
-      <Card
-        width="large"
-        title={intl.formatMessage(messages.select, {
-          title,
-        })}
-        onClick={onClick}
-      >
-        <CardBody height="small" align="center" justify="center">
-          <DocumentPerformance size="xlarge" />
-        </CardBody>
-      </Card>
-    </Tip>
+      title={title || ''}
+    />
   );
 };
 
@@ -173,19 +94,15 @@ export const SelectContentSection = ({
 
   return (
     <Box>
-      <Grid columns="small" gap="small">
-        <Card
-          height="144px"
-          justify="center"
-          background="light-3"
-          align="center"
+      <Box margin={{ bottom: 'medium' }}>
+        <Button
+          icon={<AddCircle />}
+          secondary
+          label={intl.formatMessage(messages.addDocument)}
           onClick={addAndSelectContent}
-        >
-          <Text alignSelf="center" textAlign="center">
-            {intl.formatMessage(messages.addDocument)}
-          </Text>
-        </Card>
-
+        />
+      </Box>
+      <Grid columns="small" gap="small">
         {items?.map((item: MarkdownDocument) => {
           const title = getTranslatedContent(
             item,
@@ -194,8 +111,7 @@ export const SelectContentSection = ({
             intl.formatMessage(messages.missingTitle),
           );
           return (
-            <ContentCard
-              content={item!}
+            <SelectContentCard
               key={item.id}
               onClick={() =>
                 buildContentItems(

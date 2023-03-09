@@ -1,8 +1,12 @@
-import { Box, Card, CardBody, Grid, Text, Tip } from 'grommet';
-import { DocumentMissing, DocumentUpload } from 'grommet-icons';
-import { Icon, Group } from 'grommet-icons/icons';
+import { Box, Button, Grid } from 'grommet';
+import { AddCircle } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { Classroom } from 'lib-components';
+import {
+  Classroom,
+  ClassroomSVG,
+  ContentCard,
+  TextTruncated,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -10,12 +14,6 @@ import { SelectContentTabProps } from 'components/SelectContent/SelectContentTab
 import { buildContentItems } from 'components/SelectContent/utils';
 
 const messages = defineMessages({
-  loadingClassrooms: {
-    defaultMessage: 'Loading classrooms...',
-    description:
-      'Accessible message for the spinner while loading the classrooms in lti select view.',
-    id: 'apps.classroom.SelectContent.SelectContentSection.loadingClassrooms',
-  },
   addClassroom: {
     defaultMessage: 'Add a classroom',
     description: `Text displayed on a button to add a new classroom.`,
@@ -26,66 +24,9 @@ const messages = defineMessages({
     description: 'Accessible message for selecting a classroom.',
     id: 'apps.classroom.SelectContent.SelectContentSection.select',
   },
-  started: {
-    defaultMessage: 'Started',
-    description: `Text helper displayed if a classroom is started.`,
-    id: 'apps.classroom.SelectContent.SelectContentSection.started',
-  },
-  notStarted: {
-    defaultMessage: 'Not started',
-    description: `Text helper displayed if a classroom is not started.`,
-    id: 'apps.classroom.SelectContent.SelectContentSection.notStarted',
-  },
 });
 
-const IconStatus = ({
-  message,
-  GrommetIcon,
-  color,
-}: {
-  message: string;
-  GrommetIcon: Icon;
-  color: string;
-}) => (
-  <Box direction="row" gap="small" pad="small">
-    <GrommetIcon a11yTitle={message} color={color} />
-    <Text>{message}</Text>
-  </Box>
-);
-
-const AssertedIconStatus = ({
-  assertion,
-  trueMessage,
-  falseMessage,
-  TrueIcon,
-  FalseIcon,
-}: {
-  assertion: boolean;
-  trueMessage: string;
-  falseMessage: string;
-  TrueIcon: Icon;
-  FalseIcon: Icon;
-}) => {
-  if (assertion) {
-    return (
-      <IconStatus
-        message={trueMessage}
-        GrommetIcon={TrueIcon}
-        color="status-ok"
-      />
-    );
-  }
-
-  return (
-    <IconStatus
-      message={falseMessage}
-      GrommetIcon={FalseIcon}
-      color="status-error"
-    />
-  );
-};
-
-const ContentCard = ({
+const SelectContentCard = ({
   content,
   onClick,
 }: {
@@ -95,32 +36,30 @@ const ContentCard = ({
   const intl = useIntl();
 
   return (
-    <Tip
-      content={
-        <Box pad="medium">
-          <Text>{content.title}</Text>
-          <Box gap="small" direction="row" align="end">
-            <AssertedIconStatus
-              assertion={content.started}
-              trueMessage={intl.formatMessage(messages.started)}
-              falseMessage={intl.formatMessage(messages.notStarted)}
-              TrueIcon={DocumentUpload}
-              FalseIcon={DocumentMissing}
-            />
-          </Box>
+    <ContentCard
+      onClick={onClick}
+      a11yTitle={intl.formatMessage(messages.select, { title: content.title })}
+      header={
+        <Box
+          aria-label="thumbnail"
+          role="img"
+          width="100%"
+          height="150px"
+          align="center"
+          justify="center"
+          background="radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)"
+        >
+          <ClassroomSVG width={80} height={80} iconColor="white" />
         </Box>
       }
+      title={content.title || ''}
     >
-      <Card
-        width="large"
-        title={intl.formatMessage(messages.select, { title: content.title })}
-        onClick={onClick}
-      >
-        <CardBody height="small" align="center" justify="center">
-          <Group size="xlarge" />
-        </CardBody>
-      </Card>
-    </Tip>
+      {content.description && (
+        <TextTruncated size="0.688rem" color="grey" title={content.description}>
+          {content.description}
+        </TextTruncated>
+      )}
+    </ContentCard>
   );
 };
 
@@ -141,22 +80,18 @@ export const SelectContentSection = ({
   const intl = useIntl();
   return (
     <Box>
-      <Grid columns="small" gap="small">
-        <Card
-          height="144px"
-          justify="center"
-          background="light-3"
-          align="center"
+      <Box margin={{ bottom: 'medium' }}>
+        <Button
+          icon={<AddCircle />}
+          secondary
+          label={intl.formatMessage(messages.addClassroom)}
           onClick={addAndSelectContent}
-        >
-          <Text alignSelf="center">
-            {intl.formatMessage(messages.addClassroom)}
-          </Text>
-        </Card>
-
+        />
+      </Box>
+      <Grid columns="small" gap="small">
         {items?.map((item: Classroom) => {
           return (
-            <ContentCard
+            <SelectContentCard
               content={item!}
               key={item.id}
               onClick={() =>

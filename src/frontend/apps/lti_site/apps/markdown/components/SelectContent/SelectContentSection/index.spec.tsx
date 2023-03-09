@@ -32,6 +32,6 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a markdown document');
 
-    screen.getByTitle(`Select ${markdown.translations[0].title}`);
+    screen.getByLabelText(`Select ${markdown.translations[0].title}`);
   });
 });

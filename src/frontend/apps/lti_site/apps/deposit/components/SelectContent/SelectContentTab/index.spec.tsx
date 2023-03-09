@@ -41,6 +41,6 @@ describe('<SelectContentTab />', () => {
 
     screen.getByRole('tab', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
-    screen.getByTitle('Select deposit title');
+    screen.getByLabelText('Select deposit title');
   });
 });
