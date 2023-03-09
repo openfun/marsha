@@ -418,6 +418,7 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
         fields = (
             "id",
             "is_ready_to_show",
+            "is_live",
             "thumbnail",
             "title",
             "description",
@@ -428,6 +429,7 @@ class VideoSelectLTISerializer(VideoBaseSerializer):
         read_only_fields = (
             "id",
             "is_ready_to_show",
+            "is_live",
             "thumbnail",
             "title",
             "description",
