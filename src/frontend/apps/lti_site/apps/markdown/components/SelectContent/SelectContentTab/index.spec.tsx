@@ -47,6 +47,6 @@ describe('<SelectContentTab />', () => {
 
     screen.getByRole('tab', { name: 'Markdown' });
     screen.getByText('Add a markdown document');
-    screen.getByTitle('Select translated title');
+    screen.getByLabelText('Select translated title');
   });
 });

@@ -1,10 +1,10 @@
-import { screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import React from 'react';
 
 import {
-  uploadState,
   documentMockFactory,
+  liveMockFactory,
   videoMockFactory,
 } from 'lib-components';
 import render from 'utils/tests/render';
@@ -25,16 +25,10 @@ describe('SelectContentSection', () => {
         addAndSelectContent={mockAddAndSelectContent}
         items={[
           videoMockFactory({
-            id: '1',
             title: 'Video 1',
-            upload_state: uploadState.PROCESSING,
-            is_ready_to_show: false,
           }),
           videoMockFactory({
-            id: '2',
             title: 'Video 2',
-            upload_state: uploadState.READY,
-            is_ready_to_show: true,
           }),
         ]}
         newLtiUrl="https://example.com/lti/videos/"
@@ -46,34 +40,59 @@ describe('SelectContentSection', () => {
       />,
     );
 
-    const video1 = screen.getByTitle('Select Video 1');
-    expect(video1.getElementsByTagName('img')[0]).toHaveAttribute(
-      'src',
-      'https://example.com/default_thumbnail/144',
+    const video1 = screen.getByLabelText('Select Video 1');
+    expect(
+      within(video1).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyle(
+      `background: url(https://example.com/default_thumbnail/240) no-repeat center / cover`,
     );
-
-    expect(screen.queryByText('Video 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
-    userEvent.hover(video1);
-    screen.getByText('Video 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
-    userEvent.unhover(video1);
-
-    expect(screen.queryByText('Video 2')).toBeNull();
-    expect(screen.queryByText('Uploaded')).toBeNull();
-    expect(screen.queryByText('Ready to show')).toBeNull();
-    userEvent.hover(screen.getByTitle('Select Video 2'));
-    screen.getByText('Video 2');
-    screen.getByLabelText('Uploaded');
-    screen.getByLabelText('Ready to show');
 
     const newVideo = screen.getByText('new video');
     userEvent.click(newVideo);
     expect(mockAddAndSelectContent).toHaveBeenCalledTimes(1);
 
     userEvent.click(video1);
+    expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);
+  });
+
+  it('displays webinars, select one and create a new one', () => {
+    render(
+      <SelectContentSection
+        addMessage="new webinar"
+        addAndSelectContent={mockAddAndSelectContent}
+        items={[
+          liveMockFactory({
+            title: 'Webinar 1',
+          }),
+          liveMockFactory({
+            title: 'Webinar 2',
+          }),
+        ]}
+        newLtiUrl="https://example.com/lti/videos/"
+        lti_select_form_data={{
+          lti_response_url: 'https://example.com/lti',
+          lti_message_type: 'ContentItemSelection',
+        }}
+        setContentItemsValue={mockSetContentItemsValue}
+      />,
+    );
+
+    const webinar1 = screen.getByLabelText('Select Webinar 1');
+    expect(
+      within(webinar1).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyle(
+      `background: url(https://example.com/default_thumbnail/240) no-repeat center / cover`,
+    );
+
+    const newWebinar = screen.getByText('new webinar');
+    userEvent.click(newWebinar);
+    expect(mockAddAndSelectContent).toHaveBeenCalledTimes(1);
+
+    userEvent.click(webinar1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);
   });
 
@@ -84,10 +103,7 @@ describe('SelectContentSection', () => {
         addAndSelectContent={mockAddAndSelectContent}
         items={[
           documentMockFactory({
-            id: '1',
             title: 'Document 1',
-            upload_state: uploadState.PROCESSING,
-            is_ready_to_show: false,
           }),
         ]}
         newLtiUrl="https://example.com/lti/documents/"
@@ -99,12 +115,9 @@ describe('SelectContentSection', () => {
       />,
     );
 
-    const document1 = screen.getByTitle('Select Document 1');
+    const document1 = screen.getByLabelText('Select Document 1');
 
-    userEvent.hover(screen.getByTitle('Select Document 1'));
-    screen.getByText('Document 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
+    userEvent.hover(screen.getByLabelText('Select Document 1'));
 
     userEvent.click(document1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);

@@ -49,7 +49,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'classrooms' });
     screen.getByText('Add a classroom');
 
-    screen.getByTitle('Select classroom title');
+    screen.getByLabelText('Select classroom title');
   });
 
   it('displays available classrooms and select existing one', async () => {
@@ -67,7 +67,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'classrooms' });
     screen.getByText('Add a classroom');
 
-    userEvent.click(screen.getByTitle('Select classroom title'));
+    userEvent.click(screen.getByLabelText('Select classroom title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({
@@ -104,7 +104,7 @@ describe('<SelectContentResource />', () => {
     );
 
     screen.getByRole('heading', { name: 'classrooms' });
-    screen.getByTitle('Select classroom title');
+    screen.getByLabelText('Select classroom title');
     userEvent.click(screen.getByText('Add a classroom'));
 
     await waitFor(() => {

@@ -31,6 +31,6 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a classroom');
 
-    screen.getByTitle(`Select ${classroom.title}`);
+    screen.getByLabelText(`Select ${classroom.title}`);
   });
 });

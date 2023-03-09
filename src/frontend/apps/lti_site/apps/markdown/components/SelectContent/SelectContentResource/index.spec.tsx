@@ -54,7 +54,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Markdown' });
     screen.getByText('Add a markdown document');
 
-    screen.getByTitle('Select translated title');
+    screen.getByLabelText('Select translated title');
   });
 
   it('displays available markdown documents and select existing one', async () => {
@@ -72,7 +72,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Markdown' });
     screen.getByText('Add a markdown document');
 
-    userEvent.click(screen.getByTitle('Select translated title'));
+    userEvent.click(screen.getByLabelText('Select translated title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({
@@ -105,7 +105,7 @@ describe('<SelectContentResource />', () => {
     );
 
     screen.getByRole('heading', { name: 'Markdown' });
-    screen.getByTitle('Select translated title');
+    screen.getByLabelText('Select translated title');
     userEvent.click(screen.getByText('Add a markdown document'));
 
     await waitFor(() => {
