@@ -31,6 +31,6 @@ describe('<SelectContentResource />', () => {
 
     screen.getByText('Add a file depository');
 
-    screen.getByTitle(`Select ${deposit.title}`);
+    screen.getByLabelText(`Select ${deposit.title}`);
   });
 });

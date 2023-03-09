@@ -1,5 +1,4 @@
-import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { screen, within } from '@testing-library/react';
 import React from 'react';
 
 import {
@@ -75,31 +74,19 @@ describe('SelectContentTargetedResource', () => {
 
     screen.getByRole('heading', { name: 'Videos' });
 
-    const video1 = screen.getByTitle('Select Video 1');
-    expect(video1.getElementsByTagName('img')[0]).toHaveAttribute(
-      'src',
-      'https://example.com/default_thumbnail/144',
+    expect(
+      within(screen.getByLabelText('Select Video 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
     );
 
-    expect(screen.queryByText('Video 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
-    userEvent.hover(video1);
     screen.getByText('Video 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
-    userEvent.unhover(video1);
-
-    expect(screen.queryByText('Video 2')).toBeNull();
-    expect(screen.queryByText('Uploaded')).toBeNull();
-    expect(screen.queryByText('Ready to show')).toBeNull();
-    userEvent.hover(screen.getByTitle('Select Video 2'));
     screen.getByText('Video 2');
-    screen.getByLabelText('Uploaded');
-    screen.getByLabelText('Ready to show');
+
     expect(screen.queryByText('Document 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
   });
 
   it('renders the document targeted resource', () => {
@@ -125,10 +112,8 @@ describe('SelectContentTargetedResource', () => {
 
     screen.getByRole('heading', { name: 'Documents' });
 
-    userEvent.hover(screen.getByTitle('Select Document 1'));
+    screen.getByLabelText('Select Document 1');
     screen.getByText('Document 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
   });
 
   it('renders the webinar targeted resource', () => {
@@ -164,30 +149,14 @@ describe('SelectContentTargetedResource', () => {
 
     screen.getByRole('heading', { name: 'Webinars' });
 
-    const webinar1 = screen.getByTitle('Select Webinar 1');
-    expect(webinar1.getElementsByTagName('img')[0]).toHaveAttribute(
-      'src',
-      'https://example.com/default_thumbnail/144',
+    expect(
+      within(screen.getByLabelText('Select Webinar 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
     );
-
-    expect(screen.queryByText('Webinar 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
-    userEvent.hover(webinar1);
-    screen.getByText('Webinar 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
-    userEvent.unhover(webinar1);
-
-    expect(screen.queryByText('Webinar 2')).toBeNull();
-    expect(screen.queryByText('Uploaded')).toBeNull();
-    expect(screen.queryByText('Ready to show')).toBeNull();
-    const webinar2 = screen.getByTitle('Select Webinar 2');
-    userEvent.hover(webinar2);
-    screen.getByText('Webinar 2');
-    screen.getByLabelText('Uploaded');
-    screen.getByLabelText('Ready to show');
-    userEvent.unhover(webinar2);
   });
 
   it('renders a dynamic resource loaded from an app', async () => {

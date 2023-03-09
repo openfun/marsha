@@ -1,4 +1,4 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
@@ -175,30 +175,14 @@ describe('<SelectContent />', () => {
     );
 
     // Webinars tab
-    const webinar1 = screen.getByTitle('Select Webinar 1');
-    expect(webinar1.getElementsByTagName('img')[0]).toHaveAttribute(
-      'src',
-      'https://example.com/default_thumbnail/144',
+    expect(
+      within(screen.getByLabelText('Select Webinar 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
     );
-
-    expect(screen.queryByText('Webinar 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
-    userEvent.hover(webinar1);
-    screen.getByText('Webinar 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
-    userEvent.unhover(webinar1);
-
-    expect(screen.queryByText('Webinar 2')).toBeNull();
-    expect(screen.queryByText('Uploaded')).toBeNull();
-    expect(screen.queryByText('Ready to show')).toBeNull();
-    const webinar2 = screen.getByTitle('Select Webinar 2');
-    userEvent.hover(webinar2);
-    screen.getByText('Webinar 2');
-    screen.getByLabelText('Uploaded');
-    screen.getByLabelText('Ready to show');
-    userEvent.unhover(webinar2);
 
     // Videos Tab
     const videoTab = screen.getByRole('tab', {
@@ -206,41 +190,21 @@ describe('<SelectContent />', () => {
     });
     userEvent.click(videoTab);
 
-    const video1 = screen.getByTitle('Select Video 1');
-    expect(video1.getElementsByTagName('img')[0]).toHaveAttribute(
-      'src',
-      'https://example.com/default_thumbnail/144',
+    expect(
+      within(screen.getByLabelText('Select Video 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
     );
-
-    expect(screen.queryByText('Video 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
-    userEvent.hover(video1);
-    screen.getByText('Video 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
-    userEvent.unhover(video1);
-
-    expect(screen.queryByText('Video 2')).toBeNull();
-    expect(screen.queryByText('Uploaded')).toBeNull();
-    expect(screen.queryByText('Ready to show')).toBeNull();
-    userEvent.hover(screen.getByTitle('Select Video 2'));
-    screen.getByText('Video 2');
-    screen.getByLabelText('Uploaded');
-    screen.getByLabelText('Ready to show');
-    expect(screen.queryByText('Document 1')).toBeNull();
-    expect(screen.queryByText('Not uploaded')).toBeNull();
-    expect(screen.queryByText('Not ready to show')).toBeNull();
 
     // Documents Tab
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
     userEvent.click(documentTab);
-    userEvent.hover(screen.getByTitle('Select Document 1'));
     screen.getByText('Document 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
   });
 
   it('displays first available generated video thumbnail', async () => {
@@ -272,10 +236,14 @@ describe('<SelectContent />', () => {
       />,
     );
     userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    screen.getByTitle('Select Video 1');
     expect(
-      screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
-    ).toHaveAttribute('src', 'https://example.com/default_thumbnail/480');
+      within(screen.getByLabelText('Select Video 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/480) no-repeat center / cover',
+    );
   });
 
   it('displays first available uploaded video thumbnail', async () => {
@@ -309,10 +277,14 @@ describe('<SelectContent />', () => {
     );
 
     userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    screen.getByTitle('Select Video 1');
     expect(
-      screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
-    ).toHaveAttribute('src', 'https://example.com/uploaded_thumbnail/480');
+      within(screen.getByLabelText('Select Video 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/uploaded_thumbnail/480) no-repeat center / cover',
+    );
   });
 
   it('fallback to generated video thumbnail if uploaded thumbnail not ready', async () => {
@@ -346,36 +318,14 @@ describe('<SelectContent />', () => {
     );
 
     userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    screen.getByTitle('Select Video 1');
     expect(
-      screen.getByTitle('Select Video 1').getElementsByTagName('img')[0],
-    ).toHaveAttribute('src', 'https://example.com/default_thumbnail/144');
-  });
-
-  it('video not uploaded', async () => {
-    render(
-      <SelectContent
-        videos={[
-          videoMockFactory({
-            id: '1',
-            title: 'Video 1',
-            upload_state: uploadState.PENDING,
-            is_ready_to_show: false,
-            urls: null,
-          }),
-        ]}
-        new_document_url={mockAppData.new_document_url}
-        new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
-      />,
+      within(screen.getByLabelText('Select Video 1')).getByRole('img', {
+        name: 'thumbnail',
+      }),
+    ).toHaveStyleRule(
+      'background',
+      'url(https://example.com/default_thumbnail/144) no-repeat center / cover',
     );
-
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    userEvent.hover(screen.getByTitle('Select Video 1'));
-    screen.getByText('Video 1');
-    screen.getByLabelText('Not uploaded');
-    screen.getByLabelText('Not ready to show');
   });
 
   it('selects content', async () => {
@@ -402,7 +352,7 @@ describe('<SelectContent />', () => {
       name: 'Documents',
     });
     userEvent.click(documentTab);
-    userEvent.click(screen.getByTitle('Select Document 1'));
+    userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -450,7 +400,7 @@ describe('<SelectContent />', () => {
       name: 'Documents',
     });
     userEvent.click(documentTab);
-    userEvent.click(screen.getByTitle('Select Document 1'));
+    userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -498,7 +448,7 @@ describe('<SelectContent />', () => {
       name: 'Documents',
     });
     userEvent.click(documentTab);
-    userEvent.click(screen.getByTitle('Select Document 1'));
+    userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -544,7 +494,7 @@ describe('<SelectContent />', () => {
       name: 'Documents',
     });
     userEvent.click(documentTab);
-    userEvent.click(screen.getByTitle('Select'));
+    userEvent.click(screen.getByLabelText('Select'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 

@@ -183,7 +183,7 @@ def test_lti_select_bbb_enabled(page: Page, live_server: LiveServer, settings):
     )
     assert classroom_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {classroom.title}"]')
+        lti_select_iframe.get_by_label(f"Select {classroom.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert classroom_content_items in lti_select_iframe.content()
 

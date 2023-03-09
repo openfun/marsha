@@ -48,7 +48,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
 
-    screen.getByTitle('Select deposit title');
+    screen.getByLabelText('Select deposit title');
   });
 
   it('displays available file depositories and select existing one', async () => {
@@ -66,7 +66,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
 
-    userEvent.click(screen.getByTitle('Select deposit title'));
+    userEvent.click(screen.getByLabelText('Select deposit title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({
@@ -104,7 +104,7 @@ describe('<SelectContentResource />', () => {
 
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
-    screen.getByTitle('Select deposit title');
+    screen.getByLabelText('Select deposit title');
     userEvent.click(screen.getByText('Add a file depository'));
 
     await waitFor(() => {

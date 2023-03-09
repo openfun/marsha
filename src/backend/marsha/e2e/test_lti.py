@@ -305,7 +305,7 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     )
     assert document_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {document.title}"]')
+        lti_select_iframe.get_by_label(f"Select {document.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert document_content_items in lti_select_iframe.content()
 
@@ -333,7 +333,7 @@ def test_lti_select_title_text(page: Page, live_server: LiveServer):
     )
     assert video_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {video.title}"]')
+        lti_select_iframe.get_by_label(f"Select {video.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert video_content_items in lti_select_iframe.content()
     assert Video.objects.count() == 1
@@ -447,7 +447,7 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
     )
     assert document_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {document.title}"]')
+        lti_select_iframe.get_by_label(f"Select {document.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert document_content_items in lti_select_iframe.content()
 
@@ -475,7 +475,7 @@ def test_lti_select_title_no_text(page: Page, live_server: LiveServer):
     )
     assert video_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {video.title}"]')
+        lti_select_iframe.get_by_label(f"Select {video.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert video_content_items in lti_select_iframe.content()
     assert Video.objects.count() == 1
@@ -585,7 +585,7 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
     )
     assert document_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {document.title}"]')
+        lti_select_iframe.get_by_label(f"Select {document.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert document_content_items in lti_select_iframe.content()
 
@@ -613,7 +613,7 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
     )
     assert video_content_items not in lti_select_iframe.content()
     with page.expect_request("**/lti/respond/"):
-        lti_select_iframe.click(f'[title="Select {video.title}"]')
+        lti_select_iframe.get_by_label(f"Select {video.title}").click()
     lti_select_iframe.wait_for_selector("dd")
     assert video_content_items in lti_select_iframe.content()
     assert Video.objects.count() == 1
@@ -840,4 +840,4 @@ def test_lti_playlist_portability_video(page: Page, live_server: LiveServer):
     # ensure video is available in new_playlist
     lti_select_iframe = page.frame("lti_select")
     lti_select_iframe.click('button[role="tab"]:has-text("Videos")')
-    lti_select_iframe.text_content(f'[title="Select {video.title}"]')
+    lti_select_iframe.get_by_label(f"Select {video.title}")

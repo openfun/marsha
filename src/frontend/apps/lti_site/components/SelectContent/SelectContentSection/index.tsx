@@ -1,115 +1,28 @@
-import { Box, Card, CardBody, Grid, Image, Text, Tip } from 'grommet';
-import { DocumentMissing, DocumentUpload, Monitor } from 'grommet-icons';
-import { Icon } from 'grommet-icons/icons';
+import { Box, Button, Grid } from 'grommet';
+import { AddCircle, Document as DocumentIcon } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
-import { Document, Video, videoSize } from 'lib-components';
+import {
+  ContentCard,
+  Document,
+  PlaySVG,
+  WebinarSVG,
+  TextTruncated,
+  Video,
+  videoSize,
+} from 'lib-components';
 
 import { buildContentItems } from '../utils';
 
 const messages = defineMessages({
-  playlistTitle: {
-    defaultMessage: 'Playlist {title} ({id})',
-    description: 'Title for the current playlist.',
-    id: 'component.SelectContent.SelectContentSection.playlistTitle',
-  },
-  cancel: {
-    defaultMessage: 'Cancel',
-    description: `Text displayed on a button to cancel content selection.`,
-    id: 'components.SelectContent.SelectContentSection.cancel',
-  },
-  confirm: {
-    defaultMessage: 'Select',
-    description: `Text displayed on a button to confirm content selection.`,
-    id: 'components.SelectContent.SelectContentSection.confirm',
-  },
-  uploaded: {
-    defaultMessage: 'Uploaded',
-    description: `Text helper displayed if a video or a document is uploaded.`,
-    id: 'components.SelectContent.SelectContentSection.uploaded',
-  },
-  notUploaded: {
-    defaultMessage: 'Not uploaded',
-    description: `Text helper displayed if a video or a document is not uploaded.`,
-    id: 'components.SelectContent.SelectContentSection.notUploaded',
-  },
-  readyToShow: {
-    defaultMessage: 'Ready to show',
-    description: `Text helper displayed if a video or a document is ready to show to students.`,
-    id: 'components.SelectContent.SelectContentSection.readyToShow',
-  },
-  notReadyToShow: {
-    defaultMessage: 'Not ready to show',
-    description: `Text helper displayed if a video or a document is not ready to show to students.`,
-    id: 'components.SelectContent.SelectContentSection.notReadyToShow',
-  },
   select: {
     defaultMessage: 'Select {content_title}',
     description: `Title used for a video or a document select.`,
     id: 'components.SelectContent.SelectContentSection.select',
   },
-  titleEdit: {
-    defaultMessage: 'LTI Content title',
-    description: `Label for LTI title content input.`,
-    id: 'components.SelectContent.SelectContentSection.titleEdit',
-  },
 });
-
-const IconBox = styled.span`
-  font-size: 70px;
-  text-align: center;
-  padding: 40px;
-`;
-
-const IconStatus = ({
-  message,
-  GrommetIcon,
-  color,
-}: {
-  message: string;
-  GrommetIcon: Icon;
-  color: string;
-}) => (
-  <Box direction="row" gap="small" pad="small">
-    <GrommetIcon a11yTitle={message} color={color} />
-    <Text>{message}</Text>
-  </Box>
-);
-
-const AssertedIconStatus = ({
-  assertion,
-  trueMessage,
-  falseMessage,
-  TrueIcon,
-  FalseIcon,
-}: {
-  assertion: boolean;
-  trueMessage: string;
-  falseMessage: string;
-  TrueIcon: Icon;
-  FalseIcon: Icon;
-}) => {
-  if (assertion) {
-    return (
-      <IconStatus
-        message={trueMessage}
-        GrommetIcon={TrueIcon}
-        color="status-ok"
-      />
-    );
-  }
-
-  return (
-    <IconStatus
-      message={falseMessage}
-      GrommetIcon={FalseIcon}
-      color="status-error"
-    />
-  );
-};
 
 type ContentCardContent = Video | Document;
 const isVideoGuard = (content: ContentCardContent): content is Video => {
@@ -119,7 +32,7 @@ const isVideoGuard = (content: ContentCardContent): content is Video => {
   );
 };
 
-const ContentCard = ({
+const SelectContentCard = ({
   content,
   onClick,
 }: {
@@ -127,9 +40,9 @@ const ContentCard = ({
   onClick: () => void;
 }) => {
   const intl = useIntl();
-  const contentTitle = { content_title: content.title };
 
   let thumbnail;
+  let header;
   if (isVideoGuard(content)) {
     const thumbnailUrls =
       (content.thumbnail &&
@@ -146,55 +59,59 @@ const ContentCard = ({
           ? thumbnailUrls[resolutions[0]]
           : undefined;
     }
+
+    header = (
+      <Box
+        aria-label="thumbnail"
+        role="img"
+        width="100%"
+        height="150px"
+        align="center"
+        justify="center"
+        background={`
+          ${
+            thumbnail
+              ? `url(${thumbnail}) no-repeat center / cover`
+              : `radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)`
+          }
+        `}
+      >
+        {content.is_live ? (
+          <WebinarSVG width={80} height={80} iconColor="white" />
+        ) : (
+          <PlaySVG width={80} height={80} iconColor="white" />
+        )}
+      </Box>
+    );
+  } else {
+    header = (
+      <Box
+        width="100%"
+        height="150px"
+        align="center"
+        justify="center"
+        background="radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)"
+      >
+        <DocumentIcon size="large" color="white" />
+      </Box>
+    );
   }
 
   return (
-    <Tip
-      content={
-        <Box pad="medium">
-          <Text>{content.title}</Text>
-          <Box gap="small" direction="row" align="end">
-            <AssertedIconStatus
-              assertion={content.upload_state === 'ready'}
-              trueMessage={intl.formatMessage(messages.uploaded)}
-              falseMessage={intl.formatMessage(messages.notUploaded)}
-              TrueIcon={DocumentUpload}
-              FalseIcon={DocumentMissing}
-            />
-          </Box>
-
-          <Box gap="small" direction="row" align="end">
-            <AssertedIconStatus
-              assertion={content.is_ready_to_show!}
-              trueMessage={intl.formatMessage(messages.readyToShow)}
-              falseMessage={intl.formatMessage(messages.notReadyToShow)}
-              TrueIcon={Monitor}
-              FalseIcon={Monitor}
-            />
-          </Box>
-        </Box>
-      }
+    <ContentCard
+      a11yTitle={intl.formatMessage(messages.select, {
+        content_title: content.title,
+      })}
+      onClick={onClick}
+      header={header}
+      title={content.title || ''}
     >
-      <Card
-        width="large"
-        title={intl.formatMessage(messages.select, contentTitle)}
-        onClick={onClick}
-      >
-        <CardBody height="small">
-          {thumbnail ? (
-            <Image
-              alignSelf="stretch"
-              alt={content.title || undefined}
-              fit="cover"
-              fill="vertical"
-              src={thumbnail}
-            />
-          ) : (
-            <IconBox className="icon-file-text2" />
-          )}
-        </CardBody>
-      </Card>
-    </Tip>
+      {content.description && (
+        <TextTruncated size="0.688rem" color="grey" title={content.description}>
+          {content.description}
+        </TextTruncated>
+      )}
+    </ContentCard>
   );
 };
 
@@ -218,20 +135,18 @@ export const SelectContentSection = ({
 }: SelectContentSectionProps) => {
   return (
     <Box>
-      <Grid columns="small" gap="small">
-        <Card
-          height="144px"
-          justify="center"
-          background="light-3"
-          align="center"
+      <Box margin={{ bottom: 'medium' }}>
+        <Button
+          icon={<AddCircle />}
+          secondary
+          label={addMessage}
           onClick={addAndSelectContent}
-        >
-          <Text alignSelf="center">{addMessage}</Text>
-        </Card>
-
+        />
+      </Box>
+      <Grid columns="small" gap="small">
         {items?.map(
           (item: Video | Document, index: React.Key | null | undefined) => (
-            <ContentCard
+            <SelectContentCard
               content={item!}
               key={index}
               onClick={() =>
