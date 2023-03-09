@@ -174,8 +174,6 @@ describe('<SelectContent />', () => {
       />,
     );
 
-    screen.getByText('Playlist Playlist 1 (1)');
-
     // Webinars tab
     const webinar1 = screen.getByTitle('Select Webinar 1');
     expect(webinar1.getElementsByTagName('img')[0]).toHaveAttribute(

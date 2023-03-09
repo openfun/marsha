@@ -1,7 +1,5 @@
 import { Box } from 'grommet';
 import React, { useEffect } from 'react';
-import { toast } from 'react-hot-toast';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
 import {
   LtiSelectResource,
@@ -9,24 +7,10 @@ import {
   Live,
   Playlist,
   Video,
-  CopyClipboard,
 } from 'lib-components';
 
 import { SelectContentTabs } from './SelectContentTabs';
 import { SelectContentTargetedResource } from './SelectContentTargetedResource';
-
-const messages = defineMessages({
-  playlistTitle: {
-    defaultMessage: 'Playlist {title} ({id})',
-    description: 'Title for the current playlist.',
-    id: 'component.SelectContent.playlistTitle',
-  },
-  copied: {
-    defaultMessage: '{text} copied!',
-    description: 'Message displayed when playlist info are copied.',
-    id: 'components.SelectContent.copied',
-  },
-});
 
 interface SelectContentProps {
   playlist?: Playlist;
@@ -57,7 +41,6 @@ export const SelectContent = ({
 }: SelectContentProps) => {
   const [contentItemsValue, setContentItemsValue] = React.useState('');
   const formRef = React.useRef<HTMLFormElement>(null);
-  const intl = useIntl();
 
   useEffect(() => {
     if (formRef.current && contentItemsValue) {
@@ -67,28 +50,6 @@ export const SelectContent = ({
 
   return (
     <Box pad="medium">
-      <Box justify="center" align="center" direction="row">
-        <CopyClipboard
-          copyId={`key-${playlist?.id}`}
-          text={
-            <FormattedMessage
-              {...messages.playlistTitle}
-              values={{ title: playlist?.title, id: playlist?.id }}
-            />
-          }
-          textToCopy={playlist?.id}
-          title={`copy key ${playlist?.id}`}
-          onSuccess={(event) => {
-            toast.success(
-              intl.formatMessage(messages.copied, { text: event.text }),
-            );
-          }}
-          onError={(event) => {
-            toast.error(event.text);
-          }}
-        />
-      </Box>
-
       <form
         ref={formRef}
         action={lti_select_form_action_url}
