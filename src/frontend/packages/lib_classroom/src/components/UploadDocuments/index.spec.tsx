@@ -62,6 +62,9 @@ describe('<UploadDocuments />', () => {
         "Drag 'n' drop some files here, or click to select files",
       ),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText('Upload files to your classroom:'),
+    ).toBeInTheDocument();
   });
 
   it('passes the file to the callback', async () => {
