@@ -14,6 +14,7 @@ export * from './SVGIcons/CameraOnSVG';
 export * from './SVGIcons/ChannelSVG';
 export * from './SVGIcons/ChatSVG';
 export * from './SVGIcons/ChronometerSVG';
+export * from './SVGIcons/ClassroomSVG';
 export * from './SVGIcons/CopySVG';
 export * from './SVGIcons/DoubleArrowResizerSVG';
 export * from './SVGIcons/DownArrowSVG';
@@ -45,6 +46,7 @@ export * from './SVGIcons/ValidSVG';
 export * from './SVGIcons/ViewDocumentSVG';
 export * from './SVGIcons/ViewersSVG';
 export * from './SVGIcons/WaitingJoinDiscussionSVG';
+export * from './SVGIcons/WebinarSVG';
 export * from './BreadCrumbs';
 
 export * from './queries';
