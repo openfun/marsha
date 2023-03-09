@@ -1,8 +1,12 @@
 import { Tab } from 'grommet';
+import { TextWrap } from 'grommet-icons';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import {
+  RichTabTitle,
+  SelectContentTabProps,
+} from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
 import { commonMessages } from 'apps/markdown/components/SelectContent/commonMessages';
@@ -72,7 +76,14 @@ const SelectContentTab = ({
   }
 
   return (
-    <Tab title={intl.formatMessage(commonMessages.titleMarkdown)}>
+    <Tab
+      title={
+        <RichTabTitle
+          icon={<TextWrap a11yTitle="" size="medium" color="blue-active" />}
+          label={intl.formatMessage(commonMessages.titleMarkdown)}
+        />
+      }
+    >
       {content}
     </Tab>
   );
