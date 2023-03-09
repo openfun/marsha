@@ -1,7 +1,11 @@
 import { Tab } from 'grommet';
+import { DocumentStore } from 'grommet-icons';
 import React from 'react';
 
-import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import {
+  RichTabTitle,
+  SelectContentTabProps,
+} from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
 import { SelectContentSection } from 'apps/deposit/components/SelectContent/SelectContentSection';
@@ -71,7 +75,18 @@ const SelectContentTab = ({
   }
 
   return (
-    <Tab title={intl.formatMessage(commonMessages.titleDeposit)}>{content}</Tab>
+    <Tab
+      title={
+        <RichTabTitle
+          icon={
+            <DocumentStore a11yTitle="" size="medium" color="blue-active" />
+          }
+          label={intl.formatMessage(commonMessages.titleDeposit)}
+        />
+      }
+    >
+      {content}
+    </Tab>
   );
 };
 

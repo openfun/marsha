@@ -44,7 +44,7 @@ describe('<SelectContentTab />', () => {
       </Tabs>,
     );
 
-    screen.getByRole('tab', { name: 'classrooms' });
+    screen.getByRole('tab', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
     screen.getByLabelText('Select classroom title');
   });

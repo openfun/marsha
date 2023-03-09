@@ -80,7 +80,7 @@ export const SelectContentSection = ({
   const intl = useIntl();
   return (
     <Box>
-      <Box margin={{ bottom: 'medium' }}>
+      <Box margin={{ vertical: 'medium' }}>
         <Button
           icon={<AddCircle />}
           secondary

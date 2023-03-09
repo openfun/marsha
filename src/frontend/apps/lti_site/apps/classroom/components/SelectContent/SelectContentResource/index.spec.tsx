@@ -46,7 +46,7 @@ describe('<SelectContentResource />', () => {
       />,
     );
 
-    screen.getByRole('heading', { name: 'classrooms' });
+    screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
 
     screen.getByLabelText('Select classroom title');
@@ -64,7 +64,7 @@ describe('<SelectContentResource />', () => {
       />,
     );
 
-    screen.getByRole('heading', { name: 'classrooms' });
+    screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
 
     userEvent.click(screen.getByLabelText('Select classroom title'));
@@ -103,7 +103,7 @@ describe('<SelectContentResource />', () => {
       />,
     );
 
-    screen.getByRole('heading', { name: 'classrooms' });
+    screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByLabelText('Select classroom title');
     userEvent.click(screen.getByText('Add a classroom'));
 
