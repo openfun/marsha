@@ -135,7 +135,7 @@ export const SelectContentSection = ({
 }: SelectContentSectionProps) => {
   return (
     <Box>
-      <Box margin={{ bottom: 'medium' }}>
+      <Box margin={{ vertical: 'medium' }}>
         <Button
           icon={<AddCircle />}
           secondary

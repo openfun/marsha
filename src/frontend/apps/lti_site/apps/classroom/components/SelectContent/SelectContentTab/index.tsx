@@ -1,12 +1,16 @@
 import { Tab } from 'grommet';
 import { useCreateClassroom } from 'lib-classroom';
+import { ClassroomSVG } from 'lib-components';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/classroom/components/SelectContent/SelectContentSection';
-import { SelectContentTabProps } from 'components/SelectContent/SelectContentTabs';
+import {
+  RichTabTitle,
+  SelectContentTabProps,
+} from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
 
 const Internal = ({
@@ -69,7 +73,14 @@ const SelectContentTab = ({
   }
 
   return (
-    <Tab title={intl.formatMessage(commonMessages.titleClassroom)}>
+    <Tab
+      title={
+        <RichTabTitle
+          icon={<ClassroomSVG width={30} height={30} iconColor="blue-active" />}
+          label={intl.formatMessage(commonMessages.titleClassroom)}
+        />
+      }
+    >
       {content}
     </Tab>
   );

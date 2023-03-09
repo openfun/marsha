@@ -1,4 +1,7 @@
-import { Tab, Tabs } from 'grommet';
+import { Box, Grommet, Tab, Tabs, Text } from 'grommet';
+import { Document as DocumentIcon } from 'grommet-icons';
+import { deepMerge } from 'grommet/utils';
+import { theme as baseTheme } from 'lib-common';
 import {
   Loader,
   appNames,
@@ -8,6 +11,8 @@ import {
   Playlist,
   uploadState,
   Video,
+  WebinarSVG,
+  PlaySVG,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
 import React, { lazy, Suspense } from 'react';
@@ -21,6 +26,20 @@ import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
 import { buildContentItems } from '../utils';
 
+const customTheme = deepMerge(baseTheme, {
+  tab: {
+    active: {
+      background: 'bg-menu-hover',
+      color: 'blue-active',
+    },
+    border: undefined,
+    color: 'blue-active',
+    margin: 'none',
+    pad: '6px 12px',
+    extend: 'border-radius: 6px;',
+  },
+});
+
 export interface SelectContentTabProps {
   playlist: Playlist;
   lti_select_form_data: {
@@ -28,6 +47,25 @@ export interface SelectContentTabProps {
   };
   setContentItemsValue: (value: string) => void;
 }
+
+export interface RichTabTitleProps {
+  icon: JSX.Element;
+  label: string;
+}
+
+export const RichTabTitle = ({ icon, label }: RichTabTitleProps) => (
+  <Box direction="row" align="center">
+    {icon}
+    <Text
+      size="0.938rem"
+      color="blue-active"
+      margin={{ left: 'xsmall' }}
+      weight="bold"
+    >
+      {label}
+    </Text>
+  </Box>
+);
 
 interface SelectContentTabsProps {
   playlist?: Playlist;
@@ -96,66 +134,94 @@ export const SelectContentTabs = ({
   });
 
   return (
-    <Tabs>
-      <Tab title={intl.formatMessage(commonMessages.titleWebinar)}>
-        <SelectContentSection
-          addMessage={intl.formatMessage(commonMessages.addWebinar)}
-          addAndSelectContent={async () => {
-            useCreateVideoMutation.mutate({
-              playlist: playlist!.id,
-              title: lti_select_form_data?.activity_title,
-              description: lti_select_form_data?.activity_description,
-              live_type: LiveModeType.JITSI,
-            });
-          }}
-          newLtiUrl={new_video_url!}
-          items={webinars!}
-          lti_select_form_data={lti_select_form_data}
-          setContentItemsValue={setContentItemsValue}
-        />
-      </Tab>
-      <Tab title={intl.formatMessage(commonMessages.titleVideo)}>
-        <SelectContentSection
-          addMessage={intl.formatMessage(commonMessages.addVideo)}
-          addAndSelectContent={() => {
-            useCreateVideoMutation.mutate({
-              playlist: playlist!.id,
-              title: lti_select_form_data?.activity_title,
-              description: lti_select_form_data?.activity_description,
-              upload_state: uploadState.INITIALIZED,
-            });
-          }}
-          newLtiUrl={new_video_url!}
-          items={videos!}
-          lti_select_form_data={lti_select_form_data}
-          setContentItemsValue={setContentItemsValue}
-        />
-      </Tab>
-      <Tab title={intl.formatMessage(commonMessages.titleDocument)}>
-        <SelectContentSection
-          addMessage={intl.formatMessage(commonMessages.addDocument)}
-          addAndSelectContent={() => {
-            useCreateDocumentMutation.mutate({
-              playlist: playlist!.id,
-              title: lti_select_form_data?.activity_title,
-              description: lti_select_form_data?.activity_description,
-            });
-          }}
-          newLtiUrl={new_document_url!}
-          items={documents!}
-          lti_select_form_data={lti_select_form_data}
-          setContentItemsValue={setContentItemsValue}
-        />
-      </Tab>
-      {appTabs.map((LazyComponent, index) => (
-        <Suspense key={index} fallback={<Loader />}>
-          <LazyComponent
-            lti_select_form_data={lti_select_form_data!}
-            playlist={playlist!}
+    <Grommet theme={customTheme}>
+      <Tabs>
+        <Tab
+          reverse
+          title={
+            <RichTabTitle
+              icon={
+                <WebinarSVG width={30} height={30} iconColor="blue-active" />
+              }
+              label={intl.formatMessage(commonMessages.titleWebinar)}
+            />
+          }
+        >
+          <SelectContentSection
+            addMessage={intl.formatMessage(commonMessages.addWebinar)}
+            addAndSelectContent={async () => {
+              useCreateVideoMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+                live_type: LiveModeType.JITSI,
+              });
+            }}
+            newLtiUrl={new_video_url!}
+            items={webinars!}
+            lti_select_form_data={lti_select_form_data}
             setContentItemsValue={setContentItemsValue}
           />
-        </Suspense>
-      ))}
-    </Tabs>
+        </Tab>
+        <Tab
+          title={
+            <RichTabTitle
+              icon={<PlaySVG width={30} height={30} iconColor="blue-active" />}
+              label={intl.formatMessage(commonMessages.titleVideo)}
+            />
+          }
+        >
+          <SelectContentSection
+            addMessage={intl.formatMessage(commonMessages.addVideo)}
+            addAndSelectContent={() => {
+              useCreateVideoMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+                upload_state: uploadState.INITIALIZED,
+              });
+            }}
+            newLtiUrl={new_video_url!}
+            items={videos!}
+            lti_select_form_data={lti_select_form_data}
+            setContentItemsValue={setContentItemsValue}
+          />
+        </Tab>
+        <Tab
+          title={
+            <RichTabTitle
+              icon={
+                <DocumentIcon a11yTitle="" size="medium" color="blue-active" />
+              }
+              label={intl.formatMessage(commonMessages.titleDocument)}
+            />
+          }
+        >
+          <SelectContentSection
+            addMessage={intl.formatMessage(commonMessages.addDocument)}
+            addAndSelectContent={() => {
+              useCreateDocumentMutation.mutate({
+                playlist: playlist!.id,
+                title: lti_select_form_data?.activity_title,
+                description: lti_select_form_data?.activity_description,
+              });
+            }}
+            newLtiUrl={new_document_url!}
+            items={documents!}
+            lti_select_form_data={lti_select_form_data}
+            setContentItemsValue={setContentItemsValue}
+          />
+        </Tab>
+        {appTabs.map((LazyComponent, index) => (
+          <Suspense key={index} fallback={<Loader />}>
+            <LazyComponent
+              lti_select_form_data={lti_select_form_data!}
+              playlist={playlist!}
+              setContentItemsValue={setContentItemsValue}
+            />
+          </Suspense>
+        ))}
+      </Tabs>
+    </Grommet>
   );
 };
