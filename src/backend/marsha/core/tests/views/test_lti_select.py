@@ -102,10 +102,12 @@ class SelectLTIViewTestCase(TestCase):
             context.get("videos")[0].get("lti_url"),
             f"http://testserver/lti/videos/{video.id}",
         )
+        self.assertFalse(context.get("videos")[0].get("is_live"))
         self.assertEqual(
             context.get("videos")[1].get("lti_url"),
             f"http://testserver/lti/videos/{vod_webinar.id}",
         )
+        self.assertFalse(context.get("videos")[1].get("is_live"))
         self.assertEqual(len(context.get("videos")), 2)
 
         self.assertEqual(
@@ -118,6 +120,7 @@ class SelectLTIViewTestCase(TestCase):
             context.get("webinars")[0].get("lti_url"),
             f"http://testserver/lti/videos/{webinar.id}",
         )
+        self.assertTrue(context.get("webinars")[0].get("is_live"))
         self.assertEqual(len(context.get("webinars")), 1)
 
         self.assertEqual(
