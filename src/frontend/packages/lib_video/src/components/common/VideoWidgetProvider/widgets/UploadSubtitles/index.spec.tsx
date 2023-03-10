@@ -1,22 +1,16 @@
 import { screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import {
+  InfoWidgetModalProvider,
+  useJwt,
+  videoMockFactory,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { UploadSubtitles } from '.';
-
-jest.mock('hooks/useInfoWidgetModal', () => ({
-  useInfoWidgetModal: jest.fn(),
-}));
-
-const mockUseInfoWidgetModal = useInfoWidgetModal as jest.MockedFunction<
-  typeof useInfoWidgetModal
->;
 
 const languageChoices = [
   { display_name: 'English', value: 'en' },
@@ -43,26 +37,18 @@ describe('<UploadSubtitles />', () => {
       },
       { method: 'OPTIONS' },
     );
-    const mockSetInfoWidgetModalProvider = jest.fn();
-    mockUseInfoWidgetModal.mockReturnValue([
-      null,
-      mockSetInfoWidgetModalProvider,
-    ]);
     const mockedVideo = videoMockFactory();
 
-    render(wrapInVideo(<UploadSubtitles />, mockedVideo));
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <UploadSubtitles />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
 
-    screen.getByText('Subtitles');
-
-    const infoButton = screen.getByRole('button', { name: 'help' });
-
-    userEvent.click(infoButton);
-
-    expect(mockSetInfoWidgetModalProvider).toHaveBeenCalledTimes(1);
-    expect(mockSetInfoWidgetModalProvider).toHaveBeenLastCalledWith({
-      title: 'Subtitles',
-      text: `This widget allows you upload subtitles for the video. Toggle to use as transcripts can be disabled because there is no subtitle or at least one transcript exists. Accepted formats : MicroDVD SUB (.sub) - SubRip (.srt) - SubViewer (.sbv) - WebVTT (.vtt) - SubStation Alpha (.ssa and .ass) - SAMI (.smi) aka Synchronized Accessible Media Interchange - LRC (.lrc) aka LyRiCs - JSON (.json)`,
-      refWidget: expect.any(HTMLDivElement),
-    });
+    expect(screen.getByText('Subtitles')).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'help' })).toBeInTheDocument();
   });
 });

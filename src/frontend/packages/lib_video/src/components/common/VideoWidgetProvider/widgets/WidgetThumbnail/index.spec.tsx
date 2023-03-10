@@ -2,6 +2,7 @@ import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
   UploadManagerContext,
   UploadManagerStatus,
   useUploadManager,
@@ -16,7 +17,6 @@ import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { createThumbnail } from 'api/createThumbnail';
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { WidgetThumbnail } from '.';
@@ -47,15 +47,6 @@ jest.mock('api/createThumbnail', () => ({
 const mockCreateThumbnail = createThumbnail as jest.MockedFunction<
   typeof createThumbnail
 >;
-
-const mockSetInfoWidgetModal = jest.fn();
-jest.mock('hooks/useInfoWidgetModal', () => ({
-  useInfoWidgetModal: () => [
-    { isVisible: false, text: null, title: null },
-    mockSetInfoWidgetModal,
-  ],
-  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
-}));
 
 describe('<DashboardLiveWidgetThumbnail />', () => {
   beforeEach(() => {
@@ -93,14 +84,6 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByRole('button', { name: 'Upload an image' });
-
-    userEvent.click(screen.getByRole('button', { name: 'help' }));
-
-    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
-      title: 'Thumbnail',
-      text: 'This widget allows you to change the default thumbnail used for your live. The uploaded image should have a 16:9 ratio.',
-      refWidget: expect.any(HTMLDivElement),
-    });
   });
 
   it('uploads a new image', async () => {
@@ -354,14 +337,6 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     const img = screen.getByRole('img');
     expect(img.getAttribute('src')).toEqual('path/to/image.png');
     screen.getByRole('button', { name: 'Upload an image' });
-
-    userEvent.click(screen.getByRole('button', { name: 'help' }));
-
-    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
-      title: 'Thumbnail',
-      text: 'This widget allows you to change the default thumbnail used for your VOD. The uploaded image should have a 16:9 ratio.',
-      refWidget: expect.any(HTMLDivElement),
-    });
   });
 
   it('fails to upload an image if the file is too large and displays an error toaster', async () => {

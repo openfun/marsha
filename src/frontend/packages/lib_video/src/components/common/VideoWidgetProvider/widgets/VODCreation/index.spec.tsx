@@ -1,10 +1,14 @@
 /* eslint-disable testing-library/no-node-access */
 import { cleanup, screen } from '@testing-library/react';
-import { useJwt, videoMockFactory, liveState } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  liveState,
+  InfoWidgetModalProvider,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { shouldDisplayDefaultMessage } from './utils';
