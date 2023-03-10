@@ -1,13 +1,16 @@
 import { Box, Collapsible } from 'grommet';
-import { report, CopyClipboard, ToggleInput } from 'lib-components';
+import {
+  report,
+  CopyClipboard,
+  ToggleInput,
+  FoldableItem,
+} from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 const messages = defineMessages({
   info: {

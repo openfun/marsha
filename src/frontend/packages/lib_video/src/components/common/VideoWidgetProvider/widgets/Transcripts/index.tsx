@@ -6,14 +6,13 @@ import {
   TimedTextTranscript,
   useTimedTextTrack,
   TimedTextTrackState,
+  FoldableItem,
 } from 'lib-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 import { TranscriptReader } from './TranscriptReader';
 

@@ -1,8 +1,7 @@
-import { timedTextMode } from 'lib-components';
+import { timedTextMode, FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { FoldableItem } from '../../FoldableItem';
 import { LocalizedTimedTextTrackUpload } from '../../LocalizedTimedTextTrackUpload';
 
 import { ToggleSubtitlesAsTranscript } from './ToggleSubtitlesAsTranscript';
