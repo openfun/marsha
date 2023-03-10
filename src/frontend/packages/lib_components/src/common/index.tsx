@@ -82,3 +82,4 @@ export * from './WhiteCard';
 export * from './WizardLayout';
 
 export * from './FoldableItem';
+export * from './WidgetsContainer';

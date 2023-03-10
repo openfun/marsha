@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect, useRef, useState } from 'react';
 
-import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
+import { useInfoWidgetModal } from 'hooks/stores/useInfoWidgetModal';
 
 import { InfoModal } from './InfoModal';
 
