@@ -1,9 +1,10 @@
 import { Box, Button, Layer, ResponsiveContext, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { RoundCrossSVG } from 'lib-components';
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
+
+import { RoundCrossSVG } from 'common/SVGIcons/RoundCrossSVG';
 
 const StyledTitleText = styled(Text)`
   font-family: 'Roboto-Medium';
