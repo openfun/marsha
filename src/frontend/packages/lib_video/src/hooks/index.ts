@@ -3,7 +3,6 @@ export * from './useChatItemsStore';
 export * from './useCurrentVideo';
 export * from './useDeleteSharedLiveMediaModal';
 export * from './useDeleteTimedTextTrackUploadModal';
-export * from './useInfoWidgetModal';
 export * from './useJitsiApi';
 export * from './useLiveFeedback';
 export * from './useLiveModale';

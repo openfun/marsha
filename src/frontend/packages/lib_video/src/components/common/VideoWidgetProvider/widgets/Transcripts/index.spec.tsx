@@ -2,6 +2,7 @@ import { configure, fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
   useTimedTextTrack,
   useJwt,
   timedTextMode,
@@ -12,7 +13,6 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { VTTCue } from 'vtt.js';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { Transcripts } from './index';

@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
   useJwt,
   sharedLiveMediaMockFactory,
   videoMockFactory,
@@ -17,7 +18,6 @@ import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from 'hooks/useDeleteSharedLiveMediaModal';
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { SharedLiveMediaModalWrapper } from '../../wrappers/SharedLiveMediaModalWrapper';
