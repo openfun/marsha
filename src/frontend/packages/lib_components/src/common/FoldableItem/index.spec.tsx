@@ -8,7 +8,7 @@ import { InfoWidgetModalProvider } from 'hooks/stores/useInfoWidgetModal';
 import { FoldableItem } from '.';
 
 const mockSetInfoWidgetModal = jest.fn();
-jest.mock('hooks/useInfoWidgetModal', () => ({
+jest.mock('hooks/stores/useInfoWidgetModal', () => ({
   useInfoWidgetModal: () => [
     { isVisible: false, text: null, title: null },
     mockSetInfoWidgetModal,

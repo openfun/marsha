@@ -1,11 +1,16 @@
 import { within, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, report, JoinMode } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  report,
+  JoinMode,
+  InfoWidgetModalProvider,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { LiveJoinMode } from '.';

@@ -1,10 +1,14 @@
+import {
+  InfoWidgetModalProvider,
+  WidgetProps,
+  WidgetsContainer,
+  WidgetSize,
+} from 'lib-components';
 import React from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from 'hooks/useDeleteSharedLiveMediaModal';
 import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 
-import { WidgetProps, WidgetsContainer, WidgetSize } from './WidgetsContainer';
 import { DescriptionWidget } from './widgets/DescriptionWidget';
 import { DownloadVideo } from './widgets/DownloadVideo';
 import { LicenseManager } from './widgets/LicenseManager';

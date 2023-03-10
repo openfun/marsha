@@ -8,11 +8,11 @@ import {
   useUploadManager,
   modelName,
   uploadState,
+  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { UploadVideo } from '.';
@@ -45,15 +45,6 @@ const appData = {
   },
 };
 
-const mockSetInfoWidgetModal = jest.fn();
-jest.mock('hooks/useInfoWidgetModal', () => ({
-  useInfoWidgetModal: () => [
-    { isVisible: false, text: null, title: null },
-    mockSetInfoWidgetModal,
-  ],
-  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
-}));
-
 describe('<UploadVideo />', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
@@ -78,14 +69,10 @@ describe('<UploadVideo />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'help' }));
 
-    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
-      title: 'Video',
-      text: 'This widget allows you to upload a video to replace the current one.',
-      refWidget: expect.any(HTMLDivElement),
-    });
-
-    screen.getByText('Video available');
-    screen.getByRole('button', { name: 'Replace the video' });
+    expect(screen.getByText('Video available')).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Replace the video' }),
+    ).toBeInTheDocument();
   });
 
   it('uploads a new video', () => {

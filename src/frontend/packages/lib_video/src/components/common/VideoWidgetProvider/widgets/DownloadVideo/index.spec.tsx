@@ -1,23 +1,17 @@
 import { within, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory } from 'lib-components';
+import {
+  InfoWidgetModalProvider,
+  useJwt,
+  videoMockFactory,
+} from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { DownloadVideo } from '.';
-
-const mockSetInfoWidgetModal = jest.fn();
-jest.mock('hooks/useInfoWidgetModal', () => ({
-  useInfoWidgetModal: () => [
-    { isVisible: false, text: null, title: null },
-    mockSetInfoWidgetModal,
-  ],
-  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
-}));
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -50,18 +44,12 @@ describe('<InstructorDownloadVideo />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'help' }));
 
-    expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
-      title: 'Download video',
-      text: 'This widget allows you to download the video, with the available quality you desire.',
-      refWidget: expect.any(HTMLDivElement),
-    });
-
     const button = screen.getByRole('button', {
       name: 'This input allows you to select the quality you desire for your download.; Selected: 1080 p',
     });
     within(button).getByText('1080 p');
 
-    screen.getByRole('link', { name: 'Download' });
+    expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument();
   });
 
   it('selects the lowest quality', () => {

@@ -9,13 +9,12 @@ import {
   timedTextMode,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import React from 'react';
 
 import { wrapInVideo } from 'utils/wrapInVideo';
 
 import { ToggleSubtitlesAsTranscript } from '.';
 
-const mockSetInfoWidgetModal = jest.fn();
 const mockedVideo = videoMockFactory();
 const toggleLabel = 'Use subtitles as transcripts';
 const mockedTimedTextTrackSubtitle = timedTextMockFactory({
@@ -28,14 +27,6 @@ const mockedTimedTextTrackTranscript = timedTextMockFactory({
   is_ready_to_show: true,
   mode: timedTextMode.TRANSCRIPT,
 });
-
-jest.mock('hooks/useInfoWidgetModal', () => ({
-  useInfoWidgetModal: () => [
-    { isVisible: false, text: null, title: null },
-    mockSetInfoWidgetModal,
-  ],
-  InfoWidgetModalProvider: ({ children }: PropsWithChildren<{}>) => children,
-}));
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
