@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/useInfoWidgetModal';
+import { InfoWidgetModalProvider } from 'hooks/stores/useInfoWidgetModal';
 
 import { FoldableItem } from '.';
 

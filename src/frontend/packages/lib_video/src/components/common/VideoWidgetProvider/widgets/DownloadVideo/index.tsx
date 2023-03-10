@@ -1,5 +1,11 @@
 import { Box, Button, Select, Text } from 'grommet';
-import { videoSize, report, ToggleInput, Video } from 'lib-components';
+import {
+  videoSize,
+  report,
+  ToggleInput,
+  Video,
+  FoldableItem,
+} from 'lib-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -7,8 +13,6 @@ import styled from 'styled-components';
 
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 const messages = defineMessages({
   info: {

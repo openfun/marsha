@@ -6,6 +6,7 @@ import {
   liveState,
   Video,
   report,
+  FoldableItem,
 } from 'lib-components';
 import { DateTime, Duration } from 'luxon';
 import React, { Fragment, useRef, useState, useEffect } from 'react';
@@ -15,7 +16,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
 
-import { FoldableItem } from '../../FoldableItem';
 import { debounce } from '../../utils/widgets';
 
 const messages = defineMessages({

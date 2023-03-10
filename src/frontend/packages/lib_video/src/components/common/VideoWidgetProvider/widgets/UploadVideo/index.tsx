@@ -7,13 +7,12 @@ import {
   uploadState,
   ProgressionBar,
   UploadManagerStatus,
+  FoldableItem,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 const messages = defineMessages({
   info: {

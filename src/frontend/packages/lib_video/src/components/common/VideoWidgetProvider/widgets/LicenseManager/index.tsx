@@ -1,5 +1,6 @@
 import { Select } from 'grommet';
 import { Nullable } from 'lib-common';
+import { FoldableItem } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -8,8 +9,6 @@ import { LicenseChoice } from 'types';
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { useVideoMetadata } from 'api/useVideoMetadata';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 const messages = defineMessages({
   info: {

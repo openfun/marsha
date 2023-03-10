@@ -1,10 +1,11 @@
 import { Box, Button, Collapsible, Text } from 'grommet';
-import { DownArrowSVG, InfoCircleSVG } from 'lib-components';
 import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useInfoWidgetModal } from 'hooks/useInfoWidgetModal';
+import { DownArrowSVG } from 'common/SVGIcons/DownArrowSVG';
+import { InfoCircleSVG } from 'common/SVGIcons/InfoCircleSVG';
+import { useInfoWidgetModal } from 'hooks/stores/useInfoWidgetModal';
 
 const messages = defineMessages({
   helpButtonTitle: {

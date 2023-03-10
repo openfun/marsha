@@ -5,14 +5,13 @@ import {
   useSharedLiveMedia,
   modelName,
   ItemList,
+  FoldableItem,
 } from 'lib-components';
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { createSharedLiveMedia } from 'api/createSharedLiveMedia';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 

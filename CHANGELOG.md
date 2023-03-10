@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Update live sessions API to use nested video ID route
+- Move generic widget components from lib-video to lib-components
 
 ### Fixed
 

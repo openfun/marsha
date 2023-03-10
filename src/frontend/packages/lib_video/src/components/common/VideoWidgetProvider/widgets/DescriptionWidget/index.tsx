@@ -1,4 +1,4 @@
-import { Video, report, TextAreaInput } from 'lib-components';
+import { Video, report, TextAreaInput, FoldableItem } from 'lib-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -6,7 +6,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useUpdateVideo } from 'api/useUpdateVideo';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
 
-import { FoldableItem } from '../../FoldableItem';
 import { debounce } from '../../utils/widgets';
 
 const messages = defineMessages({
