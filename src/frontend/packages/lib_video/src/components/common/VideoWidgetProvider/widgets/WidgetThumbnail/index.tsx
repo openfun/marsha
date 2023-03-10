@@ -13,6 +13,7 @@ import {
   formatSizeErrorScale,
   Loader,
   UploadManagerStatus,
+  FoldableItem,
 } from 'lib-components';
 import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
@@ -21,8 +22,6 @@ import { defineMessages, useIntl } from 'react-intl';
 import { createThumbnail } from 'api/createThumbnail';
 import { useThumbnailMetadata } from 'api/useThumbnailMetadata';
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 import { ThumbnailManager } from './ThumbnailManager';
 import { ThumbnailRemoveButton } from './ThumbnailRemoveButton';

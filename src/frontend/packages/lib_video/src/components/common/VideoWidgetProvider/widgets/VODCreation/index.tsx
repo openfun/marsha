@@ -1,11 +1,9 @@
 import { Box, Paragraph, Spinner } from 'grommet';
-import { liveState } from 'lib-components';
+import { liveState, FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useCurrentVideo } from 'hooks/useCurrentVideo';
-
-import { FoldableItem } from '../../FoldableItem';
 
 import { HarvestVOD } from './HarvestVOD';
 import { PublishVOD } from './PublishVOD';
