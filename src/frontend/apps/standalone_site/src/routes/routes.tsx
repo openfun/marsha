@@ -255,6 +255,9 @@ export const routes: Routes = {
           CREATE: {
             path: `/my-contents/lives/create`,
           },
+          UPDATE: {
+            path: `/my-contents/lives/:liveId`,
+          },
         },
         isNavStrict: true,
       },
