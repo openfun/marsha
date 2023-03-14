@@ -89,14 +89,16 @@ export const ThumbnailRemoveButton = ({
           }}
         />
       )}
-      <Button
-        a11yTitle={intl.formatMessage(messages.deleteButtonLabel)}
-        icon={<BinSVG width="14px" height="18px" iconColor="blue-active" />}
-        onClick={() => setShowDeleteConfirmationModal(true)}
-        plain
-        title={intl.formatMessage(messages.deleteButtonLabel)}
-        margin="small"
-      />
+      {thumbnail && thumbnail.is_ready_to_show && (
+        <Button
+          a11yTitle={intl.formatMessage(messages.deleteButtonLabel)}
+          icon={<BinSVG width="14px" height="18px" iconColor="blue-active" />}
+          onClick={() => setShowDeleteConfirmationModal(true)}
+          plain
+          title={intl.formatMessage(messages.deleteButtonLabel)}
+          margin="small"
+        />
+      )}
     </React.Fragment>
   );
 };
