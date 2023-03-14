@@ -9,6 +9,7 @@ import {
 } from 'lib-components';
 import React, { useRef, useMemo, useEffect } from 'react';
 import { useIntl } from 'react-intl';
+import { useQueryClient } from 'react-query';
 
 import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
 import { createPlayer } from 'components/common/Player/createPlayer';
@@ -30,6 +31,7 @@ export const VideoPlayer = ({
   defaultVolume,
 }: BaseVideoPlayerProps) => {
   const intl = useIntl();
+  const queryClient = useQueryClient();
   const videoNodeRef = useRef<Nullable<HTMLVideoElement>>(null);
   const containerVideoRef = useRef<HTMLDivElement>(null);
   const localeRef = useRef(intl.locale);
@@ -169,6 +171,16 @@ export const VideoPlayer = ({
     throw new MissingVideoUrlsException('Urls are missing in the video.');
   }
   const urls = video.urls;
+
+  /**
+   * Thumbnail store is not associated to a video, so we need to refresh the
+   * video if a thumbnail is deleted in the store to get the correct new thumbnail.
+   */
+  useEffect(() => {
+    if (!thumbnail && video.thumbnail) {
+      (async () => await queryClient.resetQueries(['videos', video.id]))();
+    }
+  }, [queryClient, thumbnail, video.id, video.thumbnail]);
 
   const thumbnailUrl = useMemo(() => {
     const thumbnailUrls =

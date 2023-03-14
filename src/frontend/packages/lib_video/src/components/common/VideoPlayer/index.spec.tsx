@@ -1,6 +1,6 @@
 /* eslint-disable testing-library/no-node-access */
 /* eslint-disable testing-library/no-container */
-import { screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   timedTextMockFactory,
@@ -15,6 +15,7 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
+import { useVideo } from 'api/useVideos';
 import { createPlayer } from 'components/common/Player/createPlayer';
 
 import { VideoPlayer } from '.';
@@ -245,6 +246,73 @@ describe('VideoPlayer', () => {
     const videoElement = container.querySelector('video');
     expect(videoElement?.poster).toEqual(
       'https://example.com/another-thumbnail/1080p.jpg',
+    );
+  });
+
+  it('checks refetch video after a thumbnail is deleted', async () => {
+    const mockThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+      urls: {
+        1080: 'https://example.com/another-thumbnail/1080p.jpg',
+      },
+    });
+
+    const mockVideoThumb = {
+      ...mockVideo,
+      thumbnail: mockThumbnail,
+    };
+
+    fetchMock.mock(`/api/videos/video-id/`, mockVideoThumb);
+
+    useThumbnail.getState().addResource(mockThumbnail);
+
+    const WrapperVideo = () => {
+      const { data } = useVideo('video-id');
+
+      if (!data) {
+        return null;
+      }
+
+      return (
+        <VideoPlayer video={data} playerType="videojs" timedTextTracks={[]} />
+      );
+    };
+
+    const { container } = render(<WrapperVideo />);
+
+    await waitFor(() =>
+      // The player is created and initialized with DashJS for adaptive bitrate
+      expect(mockCreatePlayer).toHaveBeenCalledWith(
+        'videojs',
+        expect.any(Element),
+        expect.anything(),
+        mockVideoThumb,
+        'en',
+        expect.any(Function),
+      ),
+    );
+
+    const videoElement = container.querySelector('video');
+    expect(videoElement?.poster).toEqual(
+      'https://example.com/another-thumbnail/1080p.jpg',
+    );
+
+    fetchMock.mock(`/api/videos/video-id/`, mockVideo, {
+      overwriteRoutes: true,
+    });
+
+    act(() => {
+      useThumbnail.getState().removeResource(mockThumbnail);
+    });
+
+    await waitFor(() => {
+      expect(
+        fetchMock.calls('/api/videos/video-id/', { method: 'GET' }).length,
+      ).toEqual(2);
+    });
+
+    expect(videoElement?.poster).toEqual(
+      'https://example.com/thumbnail/1080p.jpg',
     );
   });
 });
