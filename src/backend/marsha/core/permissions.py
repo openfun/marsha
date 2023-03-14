@@ -457,6 +457,18 @@ class IsParamsVideoAdminOrInstructorThroughPlaylist(
     """
 
 
+def playlist_role_exists(playlist_id, user_id, roles=None):
+    """
+    Database query used by the BaseIsPlaylistRole permission.
+    Extracting it allow us to reuse it outside permissions
+    """
+    return models.PlaylistAccess.objects.filter(
+        **roles,
+        playlist_id=playlist_id,
+        user__id=user_id,
+    ).exists()
+
+
 class BaseIsPlaylistRole(permissions.BasePermission):
     """Base permission class for playlist roles."""
 
@@ -478,11 +490,11 @@ class BaseIsPlaylistRole(permissions.BasePermission):
                 f"{self.__class__.__name__} must define a `role_filter`."
             )
 
-        return models.PlaylistAccess.objects.filter(
-            **self.role_filter,
+        return playlist_role_exists(
             playlist_id=self.get_playlist_id(request, view, obj),
-            user__id=request.user.id,
-        ).exists()
+            user_id=request.user.id,
+            roles=self.role_filter,
+        )
 
 
 class IsPlaylistAdmin(HasAdminRoleMixIn, BaseIsPlaylistRole):
@@ -535,6 +547,18 @@ class IsObjectPlaylistAdminOrInstructor(
     """Allow request when the user has admin or instructor role on the object's playlist."""
 
 
+def playlist_organization_role_exists(playlist_id, user_id, roles=None):
+    """
+    Database query used by the BaseIsPlaylistOrganizationRole permission.
+    Extracting it allow us to reuse it outside permissions
+    """
+    return models.OrganizationAccess.objects.filter(
+        **roles,
+        organization__playlists__id=playlist_id,
+        user__id=user_id,
+    ).exists()
+
+
 class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
     """Base permission class for playlist's organization roles."""
 
@@ -556,11 +580,11 @@ class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
                 f"{self.__class__.__name__} must define a `role_filter`."
             )
 
-        return models.OrganizationAccess.objects.filter(
-            **self.role_filter,
-            organization__playlists__id=self.get_playlist_id(request, view, obj),
-            user__id=request.user.id,
-        ).exists()
+        return playlist_organization_role_exists(
+            playlist_id=self.get_playlist_id(request, view, obj),
+            user_id=request.user.id,
+            roles=self.role_filter,
+        )
 
 
 class IsPlaylistOrganizationAdmin(HasAdminRoleMixIn, BaseIsPlaylistOrganizationRole):

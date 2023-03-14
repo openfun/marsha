@@ -82,6 +82,7 @@ class VideoListAPITest(TestCase):
         # In this organization, a playlist where the user has access
         organization_playlist_1 = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=organization_playlist_1)
+        # Default role is instructor
         factories.PlaylistAccessFactory(user=user, playlist=organization_playlist_1)
         # In the same organization, a playlist where the user has no access
         organization_playlist_2 = factories.PlaylistFactory(organization=organization)
@@ -109,6 +110,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": True,
                         "description": video.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -196,6 +198,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
+                        "can_edit": False,
                         "allow_recording": True,
                         "description": video_1.description,
                         "estimated_duration": None,
@@ -238,6 +241,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": False,
                         "description": video_2.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -310,6 +314,7 @@ class VideoListAPITest(TestCase):
         # A playlist where the user has access, with a video
         first_playlist = factories.PlaylistFactory()
         video = factories.VideoFactory(playlist=first_playlist)
+        # Default role is Instructor
         factories.PlaylistAccessFactory(user=user, playlist=first_playlist)
         # Another one where the user has no access, with a video
         other_playlist = factories.PlaylistFactory()
@@ -334,6 +339,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": True,
                         "description": video.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -411,6 +417,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": False,
                         "description": video.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -488,6 +495,7 @@ class VideoListAPITest(TestCase):
         # A playlist where the user has access, with a video
         first_playlist = factories.PlaylistFactory(organization=organization)
         video = factories.VideoFactory(playlist=first_playlist)
+        # Default role is Instructor
         factories.PlaylistAccessFactory(user=user, playlist=first_playlist)
         # Another one where the user has no access, with a video
         other_playlist = factories.PlaylistFactory(organization=organization)
@@ -512,6 +520,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": True,
                         "description": video.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -588,6 +597,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": False,
                         "description": video_1.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -629,6 +639,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
+                        "can_edit": False,
                         "description": video_2.description,
                         "estimated_duration": None,
                         "has_chat": True,
