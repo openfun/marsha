@@ -3,6 +3,7 @@ export * from './Button/ButtonLayout';
 export * from './Card';
 
 export * from './Form';
+export * from './Select';
 
 export * from './Loader';
 

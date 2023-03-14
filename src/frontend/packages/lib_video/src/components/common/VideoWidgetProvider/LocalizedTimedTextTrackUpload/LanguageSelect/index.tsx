@@ -1,5 +1,4 @@
-import { Select } from 'grommet';
-import { useTimedTextTrack, timedTextMode } from 'lib-components';
+import { useTimedTextTrack, timedTextMode, Select } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
