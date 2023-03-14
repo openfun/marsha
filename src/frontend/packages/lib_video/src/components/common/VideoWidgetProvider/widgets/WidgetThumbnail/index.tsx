@@ -163,9 +163,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
                 uploadManagerState={uploadManagerState}
               />
             </Box>
-            {thumbnail && thumbnail.is_ready_to_show && (
-              <ThumbnailRemoveButton thumbnail={thumbnail} />
-            )}
+            <ThumbnailRemoveButton thumbnail={thumbnail} />
           </Stack>
         )}
 

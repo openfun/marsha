@@ -29,8 +29,22 @@ describe('<ThumbnailRemoveButton />', () => {
     fetchMock.restore();
   });
 
+  it('checks remove button is not displayed', () => {
+    const mockedThumbnail = thumbnailMockFactory({
+      is_ready_to_show: false,
+    });
+
+    render(<ThumbnailRemoveButton thumbnail={mockedThumbnail} />);
+
+    expect(
+      screen.queryByRole('button', { name: 'Delete thumbnail' }),
+    ).not.toBeInTheDocument();
+  });
+
   it('clicks on the remove button and removal is successful', async () => {
-    const mockedThumbnail = thumbnailMockFactory();
+    const mockedThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+    });
     useThumbnail.getState().addResource(mockedThumbnail);
 
     fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 204);
@@ -70,7 +84,9 @@ describe('<ThumbnailRemoveButton />', () => {
   });
 
   it('clicks on the remove button and removal fails', async () => {
-    const mockedThumbnail = thumbnailMockFactory();
+    const mockedThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+    });
     useThumbnail.getState().addResource(mockedThumbnail);
 
     fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 500);
