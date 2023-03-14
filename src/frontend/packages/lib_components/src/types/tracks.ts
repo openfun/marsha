@@ -214,6 +214,7 @@ export interface Video extends Resource {
   active_shared_live_media: Nullable<SharedLiveMedia>;
   active_shared_live_media_page: Nullable<number>;
   allow_recording: boolean;
+  can_edit: boolean;
   description: Nullable<string>;
   is_live: boolean;
   is_ready_to_show: boolean;
