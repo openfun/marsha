@@ -134,6 +134,7 @@ export const videoMockFactory = (video: Partial<Video> = {}): Video => {
     active_shared_live_media: null,
     active_shared_live_media_page: null,
     allow_recording: true,
+    can_edit: true,
     description: '',
     has_transcript: false,
     id,
