@@ -190,6 +190,7 @@ class VideoLivetoVodAPITest(TestCase):
                 "active_shared_live_media_page": None,
                 "active_stamp": "1569309880",
                 "allow_recording": True,
+                "can_edit": True,
                 "estimated_duration": None,
                 "has_chat": True,
                 "has_live_media": True,

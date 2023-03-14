@@ -208,6 +208,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -409,6 +410,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -626,6 +628,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "allow_recording": True,
+                "can_edit": False,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -790,6 +793,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
+                "can_edit": False,
                 "allow_recording": True,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -870,6 +874,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -935,6 +940,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media": None,
                 "active_shared_live_media_page": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -1080,6 +1086,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -1142,6 +1149,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -1204,6 +1212,7 @@ class VideoRetrieveAPITest(TestCase):
                 "active_shared_live_media_page": None,
                 "active_stamp": None,
                 "allow_recording": True,
+                "can_edit": True,
                 "description": video.description,
                 "estimated_duration": None,
                 "has_chat": True,
@@ -1303,5 +1312,352 @@ class VideoRetrieveAPITest(TestCase):
                 "thumbnails/1533686400_720.jpg",
                 "1080": "https://abc.cloudfront.net/38a91911-9aee-41e2-94dd-573abda6f48f/"
                 "thumbnails/1533686400_1080.jpg",
+            },
+        )
+
+    def test_api_webinar_read_detail_by_playlist_admin(self):
+        """A playlist administrator can reach a playlist and get live_info"""
+
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.ADMINISTRATOR, playlist=playlist, user=user
+        )
+        video = factories.WebinarVideoFactory(
+            playlist=playlist,
+            starting_at=None,
+            live_type=JITSI,
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "can_edit": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_live": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
+                    },
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                },
+                "live_state": RUNNING,
+                "live_type": JITSI,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+
+    def test_api_webinar_read_detail_by_playlist_instructor(self):
+        """A playlist administrator can reach a playlist and get live_info"""
+
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.WebinarVideoFactory(
+            playlist=playlist,
+            starting_at=None,
+            live_type=JITSI,
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "can_edit": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_live": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
+                    },
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                },
+                "live_state": RUNNING,
+                "live_type": JITSI,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "xmpp": None,
+                "tags": [],
+                "license": None,
+            },
+        )
+
+    def test_api_webinar_read_detail_by_orga_admin(self):
+        """A playlist administrator can reach a playlist and get live_info"""
+
+        user = factories.UserFactory()
+        other_users_playlist = factories.UserFactory.create_batch(3)
+        other_users_organization = factories.UserFactory.create_batch(3)
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(
+            role=models.ADMINISTRATOR, organization=organization, user=user
+        )
+        playlist = factories.PlaylistFactory(organization=organization)
+        for other_user in other_users_playlist:
+            factories.PlaylistAccessFactory(
+                user=other_user, playlist=playlist, role=models.ADMINISTRATOR
+            )
+        for other_user in other_users_organization:
+            factories.OrganizationAccessFactory(
+                role=models.ADMINISTRATOR, organization=organization, user=other_user
+            )
+        video = factories.WebinarVideoFactory(
+            playlist=playlist,
+            starting_at=None,
+            live_type=JITSI,
+            live_state=RUNNING,
+            live_info={
+                "medialive": {
+                    "input": {
+                        "id": "medialive_input_1",
+                        "endpoints": [
+                            "https://live_endpoint1",
+                            "https://live_endpoint2",
+                        ],
+                    },
+                    "channel": {"id": "medialive_channel_1"},
+                },
+                "mediapackage": {
+                    "id": "mediapackage_channel_1",
+                    "endpoints": {
+                        "hls": {
+                            "id": "endpoint1",
+                            "url": "https://channel_endpoint1/live.m3u8",
+                        },
+                    },
+                },
+            },
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "active_shared_live_media": None,
+                "active_shared_live_media_page": None,
+                "active_stamp": None,
+                "allow_recording": True,
+                "can_edit": True,
+                "description": video.description,
+                "estimated_duration": None,
+                "has_chat": True,
+                "has_live_media": True,
+                "has_transcript": False,
+                "id": str(video.id),
+                "is_live": True,
+                "is_public": False,
+                "is_ready_to_show": True,
+                "is_recording": False,
+                "is_scheduled": False,
+                "join_mode": "approval",
+                "live_info": {
+                    "jitsi": {
+                        "config_overwrite": {},
+                        "domain": "meet.jit.si",
+                        "external_api_url": "https://meet.jit.si/external_api.js",
+                        "interface_config_overwrite": {},
+                        "room_name": str(video.pk),
+                    },
+                    "medialive": {
+                        "input": {
+                            "endpoints": [
+                                "https://live_endpoint1",
+                                "https://live_endpoint2",
+                            ],
+                        }
+                    },
+                },
+                "live_state": RUNNING,
+                "live_type": JITSI,
+                "participants_asking_to_join": [],
+                "participants_in_discussion": [],
+                "playlist": {
+                    "id": str(video.playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "recording_time": 0,
+                "shared_live_medias": [],
+                "should_use_subtitle_as_transcript": False,
+                "show_download": True,
+                "starting_at": None,
+                "thumbnail": None,
+                "timed_text_tracks": [],
+                "title": video.title,
+                "upload_state": "pending",
+                "urls": {
+                    "manifests": {
+                        "hls": "https://channel_endpoint1/live.m3u8",
+                    },
+                    "mp4": {},
+                    "thumbnails": {},
+                },
+                "xmpp": None,
+                "tags": [],
+                "license": None,
             },
         )

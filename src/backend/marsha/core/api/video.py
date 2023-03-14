@@ -232,10 +232,11 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             admin_role_permission = permissions.IsTokenAdmin()
             instructor_role_permission = permissions.IsTokenInstructor()
 
-            context["is_admin"] = admin_role_permission.has_permission(
-                request=self.request, view=None
-            ) or instructor_role_permission.has_permission(
-                request=self.request, view=None
+            context["is_admin"] = bool(
+                admin_role_permission.has_permission(request=self.request, view=None)
+                or instructor_role_permission.has_permission(
+                    request=self.request, view=None
+                )
             )
 
         return context

@@ -20,6 +20,8 @@ from ..defaults import (
     STOPPED,
 )
 from ..models import Thumbnail, Video
+from ..models.account import ADMINISTRATOR, INSTRUCTOR
+from ..permissions import playlist_organization_role_exists, playlist_role_exists
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from .base import TimestampField, get_video_cloudfront_url_params
 from .playlist import PlaylistLiteSerializer
@@ -58,6 +60,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
     """Base Serializer to factorize common Video attributes."""
 
     thumbnail_instance = None
+    _is_admin = False
 
     class Meta:  # noqa
         model = Video
@@ -65,6 +68,8 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             "urls",
             "thumbnail",
             "is_ready_to_show",
+            # Non-model fields
+            "can_edit",
         )
         read_only_fields = (
             "urls",
@@ -74,6 +79,8 @@ class VideoBaseSerializer(serializers.ModelSerializer):
     urls = serializers.SerializerMethodField()
     thumbnail = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
+
+    can_edit = serializers.SerializerMethodField(read_only=True)
 
     def to_representation(self, instance):
         """
@@ -91,7 +98,35 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         except Thumbnail.DoesNotExist:
             pass
 
+        # The self._is_admin property is computed in the `to_representation` method.
+        # In a LTI context, this information id added to the serializer context with the
+        # id_admin keyword. In a standlone context, we reuse the same database queries used
+        # in the permissions
+        self._is_admin = False
+        if "is_admin" in self.context:
+            self._is_admin = self.context.get("is_admin")
+        elif "request" in self.context:
+            user_id = self.context["request"].user.id
+            self._is_admin = playlist_organization_role_exists(
+                playlist_id=instance.playlist_id,
+                user_id=user_id,
+                roles={"role": ADMINISTRATOR},
+            ) or playlist_role_exists(
+                playlist_id=instance.playlist_id,
+                user_id=user_id,
+                roles={"role__in": [ADMINISTRATOR, INSTRUCTOR]},
+            )
+
         return super().to_representation(instance)
+
+    def get_can_edit(self, _):
+        """
+        The can_edit property is computed in the `to_representation` method.
+        In a LTI context, this information id added to the serializer context with the
+        id_admin keyword. In a standlone context, we reuse the same database queries used
+        in the permissions
+        """
+        return self._is_admin
 
     def get_thumbnail(self, _):
         """Return a serialized thumbnail if it exists."""
@@ -119,7 +154,7 @@ class VideoBaseSerializer(serializers.ModelSerializer):
             None if the video is still not uploaded to S3 with success
 
         """
-        if not self.context.get("is_admin") and obj.live_state == HARVESTED:
+        if not self._is_admin and obj.live_state == HARVESTED:
             return None
 
         if obj.live_info is not None and obj.live_info.get("mediapackage"):
@@ -222,6 +257,8 @@ class VideoSerializer(VideoBaseSerializer):
             "shared_live_medias",
             "tags",
             "license",
+            # Non-model fields
+            "can_edit",
         )
         read_only_fields = (
             "active_shared_live_media",
@@ -322,7 +359,7 @@ class VideoSerializer(VideoBaseSerializer):
         ):
             token = xmpp_utils.generate_jwt(
                 str(obj.id),
-                "owner" if self.context.get("is_admin") else "member",
+                "owner" if self._is_admin else "member",
                 timezone.now() + timedelta(days=1),
             )
 
@@ -366,7 +403,7 @@ class VideoSerializer(VideoBaseSerializer):
                 if obj.live_info.get(attribute):
                     live_info.update({attribute: obj.live_info[attribute]})
 
-        if not self.context.get("is_admin"):
+        if not self._is_admin:
             return live_info
 
         if obj.live_info is not None and obj.live_info.get("medialive"):
@@ -384,11 +421,7 @@ class VideoSerializer(VideoBaseSerializer):
 
         if obj.live_type == JITSI:
             live_info.update(
-                {
-                    "jitsi": jitsi_utils.generate_jitsi_info(
-                        obj, self.context.get("is_admin")
-                    )
-                }
+                {"jitsi": jitsi_utils.generate_jitsi_info(obj, self._is_admin)}
             )
 
         return live_info
