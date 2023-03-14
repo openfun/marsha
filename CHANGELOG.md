@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - redirect to error page when VOD is deleted
 - Manage disconnection when multiple tabs were open on standalone site
 - synchronisation between pages for the VOD description widget
+- tooltip position on the website context dashboard (#2136)
 
 ## [4.0.0-beta.18] - 2023-03-06
 

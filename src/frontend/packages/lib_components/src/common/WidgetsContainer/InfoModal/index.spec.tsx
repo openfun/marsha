@@ -1,10 +1,19 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
+import { isFirefox, isIframe } from 'lib-common';
 import { render } from 'lib-tests';
 import React from 'react';
 
 import { InfoModal } from '.';
+
+jest.mock('lib-common', () => ({
+  ...jest.requireActual('lib-common'),
+  isIframe: jest.fn(),
+  isFirefox: jest.fn(),
+}));
+const mockIsFirefox = isFirefox as jest.MockedFunction<typeof isFirefox>;
+const mockIsIframe = isIframe as jest.MockedFunction<typeof isIframe>;
 
 const mockModalOnClose = jest.fn();
 const genericTitle = 'A generic title';
@@ -14,6 +23,8 @@ const genericContent =
 describe('<InfoModal />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    mockIsIframe.mockReturnValue(false);
+    mockIsFirefox.mockReturnValue(false);
   });
 
   it('renders the modal and closes it with esc key', () => {
@@ -70,15 +81,34 @@ describe('<InfoModal />', () => {
       />,
     );
 
+    expect(screen.getByTestId('info-modal')).toHaveStyle('margin-top: 200px');
+  });
+
+  it('renders the modal above the calling components when inside an iFrame', () => {
+    mockIsIframe.mockReturnValue(true);
+
+    const ref = {
+      current: {
+        offsetTop: 100,
+      },
+    };
+
+    render(
+      <InfoModal
+        text={genericContent}
+        title={genericTitle}
+        onModalClose={mockModalOnClose}
+        refWidget={ref.current as unknown as HTMLDivElement}
+      />,
+    );
+
     expect(screen.getByTestId('info-modal')).toHaveStyle('margin-top: -100px');
   });
 
-  it('renders the modal on the top if Firefox browser', () => {
-    jest
-      .spyOn(window.navigator, 'userAgent', 'get')
-      .mockReturnValue(
-        'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/109.0',
-      );
+  it('renders the modal on the top if Firefox browser and inside an iFrame', () => {
+    mockIsIframe.mockReturnValue(true);
+    mockIsFirefox.mockReturnValue(true);
+
     const ref = {
       current: {
         offsetTop: 100,
