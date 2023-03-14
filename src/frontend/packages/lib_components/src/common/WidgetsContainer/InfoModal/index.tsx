@@ -1,6 +1,6 @@
 import { Box, Button, Layer, ResponsiveContext, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme } from 'lib-common';
+import { theme, isFirefox, isIframe } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
@@ -29,10 +29,9 @@ export const InfoModal = ({
 }: InfoModalProps) => {
   const size = React.useContext(ResponsiveContext);
   const positionAbove = 200; // px
-  const isFirefox = navigator.userAgent.toLowerCase().indexOf('firefox') > -1;
 
   useEffect(() => {
-    if (!isFirefox && refWidget) {
+    if (!isFirefox() && refWidget) {
       const timeout = setTimeout(() => {
         refWidget.scrollIntoView({ block: 'center', behavior: 'smooth' });
       }, 50);
@@ -41,7 +40,7 @@ export const InfoModal = ({
     }
 
     return () => null;
-  }, [refWidget, isFirefox]);
+  }, [refWidget]);
 
   const onClose = useCallback(() => {
     onModalClose();
@@ -63,7 +62,7 @@ export const InfoModal = ({
         border: `1px solid ${normalizeColor('blue-active', theme)}`,
         marginTop: `${
           refWidget?.offsetTop
-            ? isFirefox
+            ? isFirefox() || !isIframe()
               ? positionAbove
               : refWidget?.offsetTop - positionAbove
             : 0
