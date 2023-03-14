@@ -1,6 +1,6 @@
 export * from './Button';
 export * from './Button/ButtonLayout';
-export * from './ContentCard';
+export * from './Card';
 
 export * from './Form';
 
@@ -80,7 +80,6 @@ export * from './ThumbnailDisplayer';
 export * from './ConfirmationModal';
 export * from './NoSelectBox';
 export * from './Form';
-export * from './WhiteCard';
 export * from './WizardLayout';
 
 export * from './FoldableItem';
