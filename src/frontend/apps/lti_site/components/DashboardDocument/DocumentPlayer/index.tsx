@@ -20,7 +20,7 @@ interface DocumentPlayerProps {
 
 const DocumentPlayer = (props: DocumentPlayerProps) => {
   const document = useDocument((state) => state.getDocument(props.document));
-  const jwt = useJwt((state) => state.jwt);
+  const jwt = useJwt((state) => state.getJwt());
 
   if (!jwt) {
     throw new Error('Jwt is required.');

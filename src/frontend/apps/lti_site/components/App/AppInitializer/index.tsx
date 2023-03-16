@@ -32,7 +32,7 @@ export const AppInitializer = (
   const [isJwtInitialized, setIsJwtInitialized] = useState(false);
 
   const appConfig = useAppConfig();
-  const jwt = useJwt((state) => state.jwt);
+  const jwt = useJwt((state) => state.getJwt());
   const setIsSentryReady = useSentry((state) => state.setIsSentryReady);
   useSetVideoState(appConfig.video);
   const addDocument = useDocument((state) => state.addResource);
