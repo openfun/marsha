@@ -19,7 +19,7 @@ from ..defaults import (
     RUNNING,
     STOPPED,
 )
-from ..models import Thumbnail, Video
+from ..models import Thumbnail, TimedTextTrack, Video
 from ..models.account import ADMINISTRATOR, INSTRUCTOR
 from ..permissions import playlist_organization_role_exists, playlist_role_exists
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
@@ -245,7 +245,6 @@ class VideoSerializer(VideoBaseSerializer):
             "show_download",
             "should_use_subtitle_as_transcript",
             "starting_at",
-            "has_transcript",
             "participants_asking_to_join",
             "participants_in_discussion",
             "playlist",
@@ -271,7 +270,6 @@ class VideoSerializer(VideoBaseSerializer):
             "is_scheduled",
             "upload_state",
             "urls",
-            "has_transcript",
             "recording_time",
             "live_info",
             "live_state",
@@ -288,10 +286,24 @@ class VideoSerializer(VideoBaseSerializer):
     )
     shared_live_medias = serializers.SerializerMethodField()
     playlist = PlaylistLiteSerializer(read_only=True)
-    has_transcript = serializers.SerializerMethodField()
     live_info = serializers.SerializerMethodField()
     xmpp = serializers.SerializerMethodField()
     title = serializers.CharField(allow_blank=False, allow_null=False, max_length=255)
+
+    def to_representation(self, instance):
+        """
+        compute the has_transcript field based on existing timed_text_tracks data
+        already present in the serialized data. Doing this help us to decrease the
+        number of queries made against the database. We have all the data we need.
+        """
+        rep = super().to_representation(instance)
+        timed_text_tracks = rep.get("timed_text_tracks")
+        rep["has_transcript"] = any(
+            timed_text_track.get("mode") == TimedTextTrack.TRANSCRIPT
+            and timed_text_track.get("is_ready_to_show", False)
+            for timed_text_track in timed_text_tracks
+        )
+        return rep
 
     def get_shared_live_medias(self, instance):
         """Get shared live media for a video sorted by reverse uploaded_on."""
@@ -425,22 +437,6 @@ class VideoSerializer(VideoBaseSerializer):
             )
 
         return live_info
-
-    def get_has_transcript(self, obj):
-        """Compute if should_use_subtitle_as_transcript behavior is disabled.
-
-        Parameters
-        ----------
-        obj : Type[models.Video]
-            The video that we want to serialize
-
-        Returns
-        -------
-        Boolean
-            If there is at least one transcript ready to be shown the method will return True.
-            Returns False otherwise.
-        """
-        return obj.timedtexttracks.filter(mode="ts", uploaded_on__isnull=False).exists()
 
 
 class VideoSelectLTISerializer(VideoBaseSerializer):

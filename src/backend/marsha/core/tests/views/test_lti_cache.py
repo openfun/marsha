@@ -61,7 +61,7 @@ class CacheLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video1.id))
         self.assertLess(elapsed, 0.1)
@@ -75,7 +75,7 @@ class CacheLTIViewTestCase(TestCase):
 
         # The cache should not be hit on first call if we change the playlist id
         data["context_id"] = "other_playlist"
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertLess(elapsed, 0.1)
@@ -87,7 +87,7 @@ class CacheLTIViewTestCase(TestCase):
 
         # The cache should not be hit on first call if we change the domain
         mock_get_consumer_site.return_value = ConsumerSiteFactory()
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertLess(elapsed, 0.1)
@@ -101,7 +101,7 @@ class CacheLTIViewTestCase(TestCase):
 
         # The cache should not be hit on first call if we change the resource id
         url = f"/lti/videos/{video2.pk}"
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             elapsed, resource_video2 = self._fetch_lti_request(url, data)
         self.assertEqual(resource_video2["id"], str(video2.id))
         self.assertLess(elapsed, 0.2)
@@ -140,14 +140,14 @@ class CacheLTIViewTestCase(TestCase):
             "lis_person_sourcedid": "jane_doe",
         }
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url, data)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertLess(elapsed, 0.1)
 
         # Calling the same resource a second time with the same LTI parameters
         # should not hit the cache
-        with self.assertNumQueries(5):
+        with self.assertNumQueries(4):
             elapsed, resource = self._fetch_lti_request(url, data)
         self.assertEqual(resource, resource_origin)
         self.assertLess(elapsed, 0.1)
@@ -163,7 +163,7 @@ class CacheLTIViewTestCase(TestCase):
         )
         url = f"/videos/{video.pk}"
 
-        with self.assertNumQueries(6):
+        with self.assertNumQueries(5):
             elapsed, resource_origin = self._fetch_lti_request(url)
         self.assertEqual(resource_origin["id"], str(video.id))
         self.assertLess(elapsed, 0.1)
@@ -190,7 +190,7 @@ class CacheLTIViewTestCase(TestCase):
             f"{livesession.get_generate_salted_hmac()}"
         )
 
-        with self.assertNumQueries(9):
+        with self.assertNumQueries(8):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))
@@ -218,7 +218,7 @@ class CacheLTIViewTestCase(TestCase):
             f"{public_registration.get_generate_salted_hmac()}"
         )
 
-        with self.assertNumQueries(8):
+        with self.assertNumQueries(7):
             elapsed, resource_origin = self._fetch_lti_request(url)
 
         self.assertEqual(resource_origin["id"], str(video.id))
