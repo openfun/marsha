@@ -42,7 +42,7 @@ const messages = defineMessages({
 
 export const StudentLiveRegistration = () => {
   const intl = useIntl();
-  const jwt = useJwt((state) => state.jwt);
+  const jwt = useJwt((state) => state.getJwt());
   const live = useCurrentLive();
   const user = useCurrentUser((state) => state.currentUser);
 

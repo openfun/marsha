@@ -175,7 +175,7 @@ export const RegistrationForm = ({
   const trimedEmail = defaultEmail && defaultEmail.trim();
 
   const intl = useIntl();
-  const jwt = useJwt((state) => state.jwt);
+  const jwt = useJwt((state) => state.getJwt());
   const live = useCurrentLive();
   const [values, setValues] = useState({ email: trimedEmail });
   const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
