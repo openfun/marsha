@@ -911,3 +911,40 @@ class VideoListAPITest(TestCase):
             [result["id"] for result in response.json()["results"]],
             [str(video_1.pk), str(video_2.pk), str(video_3.pk)],
         )
+
+    def test_api_video_read_list_control_database_queries(self):
+        """
+        This test is here to control the number of database queries made
+        when a video or a list of video id requested. Lot of videos and related objects
+        are created to simulate a real API call made by the front application.
+        """
+        user = factories.UserFactory()
+        # The organization for both our playlists
+        organization = factories.OrganizationFactory()
+        # A playlist where the user has access, with a video
+        first_playlist = factories.PlaylistFactory(organization=organization)
+        # create an empty video without any relation (timed_text_Track, thumbnail, etc)
+        factories.VideoFactory(playlist=first_playlist)
+        # Create a batch of videos and add to them many related objects
+        videos = factories.VideoFactory.create_batch(40, playlist=first_playlist)
+        for video in videos:
+            factories.TimedTextTrackFactory(video=video, mode="ts")
+            factories.TimedTextTrackFactory(video=video, mode="st")
+            factories.ThumbnailFactory(video=video)
+            factories.SharedLiveMediaFactory.create_batch(4, video=video)
+
+        # Default role is Instructor
+        factories.PlaylistAccessFactory(user=user, playlist=first_playlist)
+        # Another one where the user has no access, with a video
+        other_playlist = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=other_playlist)
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        with self.assertNumQueries(83):
+            response = self.client.get(
+                f"/api/videos/?organization={organization.id}&limit=20",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.json()["count"], 41)
