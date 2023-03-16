@@ -7,7 +7,7 @@ export const VisitorAuthenticator = ({
 }: PropsWithChildren<unknown>) => {
   const { inviteId } = useParams<{ inviteId?: string }>();
   const { jwt, setJwt } = useJwt((state) => ({
-    jwt: state.jwt,
+    jwt: state.getJwt(),
     setJwt: state.setJwt,
   }));
 

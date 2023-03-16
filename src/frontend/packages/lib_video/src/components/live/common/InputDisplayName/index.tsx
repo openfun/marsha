@@ -97,7 +97,7 @@ interface InputDisplayNameProps {
 
 export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
   const intl = useIntl();
-  const jwt = useJwt((state) => state.jwt);
+  const jwt = useJwt((state) => state.getJwt());
   const user = useCurrentUser((state) => state.currentUser);
   const live = useCurrentLive();
   const [alertsState, setAlertsState] = useState<string[]>([]);
