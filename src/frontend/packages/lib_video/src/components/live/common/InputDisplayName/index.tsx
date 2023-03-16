@@ -31,11 +31,6 @@ import { InputBar } from '../Chat/InputBar';
 import { InputDisplayNameIncorrectAlert } from './InputDisplayNameIncorrectAlert';
 
 const messages = defineMessages({
-  closeButtonTitle: {
-    defaultMessage: 'Click this button to close the overlay.',
-    description: 'A title describing the close button action',
-    id: 'components.InputDiplayNameOverlay.closeButtonTitle',
-  },
   inputAnonymousKeywordForbiddenAlertMessage: {
     defaultMessage: 'Keyword "{forbiddenPrefix}" is not allowed.',
     description:
@@ -57,7 +52,7 @@ const messages = defineMessages({
   inputDisplayNamePlaceholder: {
     defaultMessage: 'Enter your desired display name...',
     description: 'The input bar to fill your display name.',
-    id: 'components.InputBar.inputDisplayNamePlaceholder',
+    id: 'components.InputDisplayName.inputDisplayNamePlaceholder',
   },
   inputTooShortAlertMessage: {
     defaultMessage: 'Min length is {minLength} characters.',
