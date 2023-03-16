@@ -99,7 +99,11 @@ class VideoFilter(django_filters.FilterSet):
 class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     """Viewset for the API of the video object."""
 
-    queryset = Video.objects.all()
+    queryset = (
+        Video.objects.all()
+        .select_related("playlist", "active_shared_live_media")
+        .prefetch_related("timedtexttracks")
+    )
     serializer_class = serializers.VideoSerializer
     permission_classes = [permissions.NotAllowed]
     metadata_class = VideoMetadata
