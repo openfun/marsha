@@ -1,17 +1,37 @@
 import jwt_decode from 'jwt-decode';
 
-import { DecodedJwt } from '@lib-components/types/jwt';
+import {
+  DecodedJwt,
+  DecodedJwtLTI,
+  DecodedJwtWeb,
+} from '@lib-components/types/jwt';
 
-const isDecodedJwt = (jwt: unknown): jwt is DecodedJwt => {
+export const isDecodedJwtLTI = (jwt: unknown): jwt is DecodedJwtLTI => {
   if (jwt && typeof jwt === 'object') {
-    const resourceId = (jwt as DecodedJwt).resource_id;
-    const playlistId = (jwt as DecodedJwt).playlist_id;
-    const userId = (jwt as DecodedJwt).user?.id;
+    const resourceId = (jwt as DecodedJwtLTI).resource_id;
+    const playlistId = (jwt as DecodedJwtLTI).playlist_id;
+    const userId = (jwt as DecodedJwtLTI).user?.id;
     return (
       // A resource is defined
       (!!resourceId && typeof resourceId === 'string') ||
       // Or we are in a portability request context and a playlist and user ID are mandatory
       (!resourceId && !!playlistId && !!userId)
+    );
+  }
+
+  return false;
+};
+
+export const isDecodedJwtWeb = (jwt: unknown): jwt is DecodedJwtWeb => {
+  if (jwt && typeof jwt === 'object') {
+    const thisJwt = jwt as DecodedJwtWeb;
+
+    return (
+      typeof thisJwt.token_type === 'string' &&
+      typeof thisJwt.exp === 'number' &&
+      typeof thisJwt.iat === 'number' &&
+      typeof thisJwt.jti === 'string' &&
+      typeof thisJwt.user_id === 'string'
     );
   }
 
@@ -27,7 +47,7 @@ export const decodeJwt = (jwtToDecode?: string): DecodedJwt => {
 
   const jwt = jwt_decode(jwtToDecode);
 
-  if (isDecodedJwt(jwt)) {
+  if (isDecodedJwtLTI(jwt) || isDecodedJwtWeb(jwt)) {
     return jwt;
   }
 

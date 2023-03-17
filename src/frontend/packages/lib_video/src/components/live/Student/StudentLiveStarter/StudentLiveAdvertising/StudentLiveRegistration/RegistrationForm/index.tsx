@@ -7,7 +7,7 @@ import {
   LiveSession,
   Form,
   FormField,
-  checkLtiToken,
+  checkToken,
 } from 'lib-components';
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -179,11 +179,15 @@ export const RegistrationForm = ({
   const live = useCurrentLive();
   const [values, setValues] = useState({ email: trimedEmail });
   const [ltiUserError, setLtiUserError] = useState<Maybe<string>>(undefined);
-  const isLtiToken = useMemo(() => {
-    return checkLtiToken(decodeJwt(jwt));
+  const isValidToken = useMemo(() => {
+    return checkToken(decodeJwt(jwt));
   }, [jwt]);
 
-  const displayEmailInput = !(isLtiToken && trimedEmail && trimedEmail !== '');
+  const displayEmailInput = !(
+    isValidToken &&
+    trimedEmail &&
+    trimedEmail !== ''
+  );
 
   return (
     <ThemeContext.Extend value={formTheme}>
@@ -197,7 +201,7 @@ export const RegistrationForm = ({
           }
 
           let anonymousId: Maybe<string>;
-          if (!isLtiToken) {
+          if (!isValidToken) {
             anonymousId = getAnonymousId();
           }
           let updatedLiveSession: LiveSession;

@@ -7,6 +7,7 @@ import {
   useDocument,
   useAppConfig,
   flags,
+  DecodedJwtLTI,
 } from 'lib-components';
 import { useAttendance, useSetVideoState } from 'lib-video';
 import React, {
@@ -42,7 +43,7 @@ export const AppInitializer = (
 
   const decodedJwt = useMemo(() => {
     if (jwt && isJwtInitialized) {
-      return decodeJwt(jwt);
+      return decodeJwt(jwt) as DecodedJwtLTI;
     }
     return null;
   }, [jwt, isJwtInitialized]);

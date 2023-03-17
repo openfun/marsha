@@ -9,7 +9,7 @@ import {
 } from '@lib-components/types/PortabilityRequest';
 import { DecodedJwtPermission } from '@lib-components/types/ResourceContext';
 import { Document } from '@lib-components/types/file';
-import { DecodedJwt, DecodedJwtUser } from '@lib-components/types/jwt';
+import { DecodedJwtLTI, DecodedJwtUser } from '@lib-components/types/jwt';
 import {
   JoinMode,
   Live,
@@ -281,10 +281,10 @@ export const participantMockFactory = (
   };
 };
 
-export const publicTokenMockFactory = (
-  token: Partial<DecodedJwt> = {},
+export const ltiPublicTokenMockFactory = (
+  token: Partial<DecodedJwtLTI> = {},
   permission: Partial<DecodedJwtPermission> = {},
-): DecodedJwt => {
+): DecodedJwtLTI => {
   return {
     locale: 'en',
     maintenance: false,
@@ -301,12 +301,12 @@ export const publicTokenMockFactory = (
 };
 
 export const ltiStudentTokenMockFactory = (
-  token: Partial<DecodedJwt> = {},
+  token: Partial<DecodedJwtLTI> = {},
   user: Partial<DecodedJwtUser> = {},
   permission: Partial<DecodedJwtPermission> = {},
-): DecodedJwt => {
+): DecodedJwtLTI => {
   return {
-    ...publicTokenMockFactory(token, permission),
+    ...ltiPublicTokenMockFactory(token, permission),
     context_id: faker.lorem.sentence(2),
     consumer_site: faker.datatype.uuid(),
     roles: ['student'],
@@ -322,10 +322,10 @@ export const ltiStudentTokenMockFactory = (
 };
 
 export const ltiInstructorTokenMockFactory = (
-  token: Partial<DecodedJwt> = {},
+  token: Partial<DecodedJwtLTI> = {},
   user: Partial<DecodedJwtUser> = {},
   permission: Partial<DecodedJwtPermission> = {},
-): DecodedJwt => {
+): DecodedJwtLTI => {
   return {
     ...ltiStudentTokenMockFactory(token, user, permission),
     permissions: {

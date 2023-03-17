@@ -3,7 +3,7 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import { PortabilityConfig, useJwt } from 'lib-components';
+import { DecodedJwtLTI, PortabilityConfig, useJwt } from 'lib-components';
 
 import { useCreatePortabilityRequest } from '../../data/queries';
 import { Clock } from 'grommet-icons';
@@ -72,11 +72,13 @@ export const PortabilityRequest = ({
   });
 
   const onRequestBtnClick = async () => {
+    const decodedJwt = getDecodedJwt() as DecodedJwtLTI;
+
     useCreatePortabilityRequestMutation.mutate({
       for_playlist: portability.for_playlist_id,
-      from_playlist: getDecodedJwt().playlist_id!,
-      from_lti_consumer_site: getDecodedJwt().consumer_site!,
-      from_lti_user_id: getDecodedJwt().user!.id!,
+      from_playlist: decodedJwt.playlist_id!,
+      from_lti_consumer_site: decodedJwt.consumer_site!,
+      from_lti_user_id: decodedJwt.user!.id!,
     });
   };
 

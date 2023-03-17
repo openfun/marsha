@@ -26,6 +26,13 @@ const publicToken = {
   roles: ['none'],
   session_id: '6bbb8d1d-442d-4575-a0ad-d1e34f37cae3',
 };
+const webToken = {
+  token_type: 'website',
+  exp: 123456,
+  iat: 2345,
+  jti: '7889',
+  user_id: '1324',
+};
 
 const ltiToken = {
   context_id: 'course-v1:ufr+mathematics+0001',
@@ -85,24 +92,27 @@ describe('initAnonymousId', () => {
     expect(mockGetAnonymousId).toHaveBeenCalled();
   });
 
-  it('generates a new anonymous_id when token is from website', () => {
+  it('does nothing when the token is not a website one', () => {
+    useJwt.setState({ jwt: webToken } as any);
+    useCurrentUser.setState({
+      currentUser: undefined,
+    });
+    mockedDecodeJwt.mockReturnValue(webToken);
+
+    expect(getOrInitAnonymousId()).toBeUndefined();
+    expect(mockSetAnonymousId).not.toHaveBeenCalled();
+    expect(mockGetAnonymousId).not.toHaveBeenCalled();
+  });
+
+  it('generates a new anonymous_id when token is from website and user_id empty', () => {
     const anonymousId = uuidv4();
-    useJwt.setState({
-      jwt: {
-        token_type: 'website',
-        exp: 123456,
-        iat: 2345,
-        jti: '7889',
-        user_id: '654321',
-      },
-    } as any);
+    const newWebToken = { ...webToken, user_id: '' };
+    useJwt.setState({ jwt: newWebToken } as any);
     useCurrentUser.setState({
       currentUser: undefined,
     });
     mockGetAnonymousId.mockReturnValue(anonymousId);
-    mockedDecodeJwt.mockImplementation(() => {
-      throw new Error();
-    });
+    mockedDecodeJwt.mockReturnValue(newWebToken);
 
     expect(getOrInitAnonymousId()).toEqual(anonymousId);
     expect(mockSetAnonymousId).not.toHaveBeenCalled();

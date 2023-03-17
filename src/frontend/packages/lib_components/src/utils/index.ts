@@ -1,4 +1,4 @@
-export * from './checkLtiToken';
+export * from './checkToken';
 export * from './createContext';
 export * from './decodeJwt';
 export * from './errors/report';

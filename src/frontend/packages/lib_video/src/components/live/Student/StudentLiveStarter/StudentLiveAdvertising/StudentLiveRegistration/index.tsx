@@ -6,7 +6,7 @@ import {
   decodeJwt,
   useCurrentUser,
   useJwt,
-  checkLtiToken,
+  checkToken,
 } from 'lib-components';
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -52,7 +52,7 @@ export const StudentLiveRegistration = () => {
 
   const anonymousId = useMemo(() => {
     let anonId: Maybe<string>;
-    if (!checkLtiToken(decodeJwt(jwt))) {
+    if (!checkToken(decodeJwt(jwt))) {
       anonId = getAnonymousId();
     }
 
