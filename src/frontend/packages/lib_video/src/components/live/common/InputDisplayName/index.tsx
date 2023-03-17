@@ -4,7 +4,7 @@ import { Box, Text, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
   AnonymousUser,
-  checkLtiToken,
+  checkToken,
   decodeJwt,
   QuestionMarkSVG,
   useCurrentUser,
@@ -192,7 +192,7 @@ export const InputDisplayName = ({ onSuccess }: InputDisplayNameProps) => {
       }
       if (alerts.length === 0) {
         let anonymousId: Maybe<string>;
-        if (!checkLtiToken(decodeJwt(jwt))) {
+        if (!checkToken(decodeJwt(jwt))) {
           anonymousId = getAnonymousId();
         }
         const response = await setLiveSessionDisplayName(

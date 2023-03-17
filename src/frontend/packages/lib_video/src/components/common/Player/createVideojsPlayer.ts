@@ -47,7 +47,7 @@ export const createVideojsPlayer = (
   locale: Maybe<string>,
   onReady: Maybe<(player: VideoJsPlayer) => void> = undefined,
 ): VideoJsPlayer => {
-  const { getDecodedJwt, jwt } = useJwt.getState();
+  const { jwt } = useJwt.getState();
   const videoState = useVideo.getState();
   let lastReceivedVideo: Id3VideoType;
 
@@ -202,8 +202,7 @@ export const createVideojsPlayer = (
   let isInitialized = false;
   let interval: number;
   const hasAttendance =
-    video.live_state === liveState.RUNNING &&
-    getDecodedJwt().permissions.can_update === false;
+    video.live_state === liveState.RUNNING && video.can_edit === false;
 
   const trackAttendance = () => {
     const attendance = {

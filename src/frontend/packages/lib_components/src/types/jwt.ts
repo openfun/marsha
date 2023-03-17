@@ -10,11 +10,21 @@ export interface DecodedJwtUser {
   user_fullname?: Nullable<string>;
 }
 
-export interface DecodedJwt extends ResourceContext {
+export type DecodedJwt = DecodedJwtLTI | DecodedJwtWeb;
+
+export interface DecodedJwtLTI extends ResourceContext {
   locale: string;
   maintenance: boolean;
   session_id: string;
   user?: DecodedJwtUser;
+}
+
+export interface DecodedJwtWeb {
+  token_type: string;
+  exp: number;
+  iat: number;
+  jti: string;
+  user_id: string;
 }
 
 export interface TokenResponse {

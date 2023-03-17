@@ -3,8 +3,6 @@
 import { waitFor } from '@testing-library/react';
 import {
   useJwt,
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
   liveState,
   timedTextMode,
   uploadState,
@@ -78,12 +76,6 @@ const mockPushAttendance = pushAttendance as jest.MockedFunction<
   typeof pushAttendance
 >;
 
-const mockGetDecodedJwt = jest.fn().mockReturnValue({
-  permissions: {
-    can_update: true,
-  },
-});
-
 // It prevents console to display error when it tries to play a non existing media
 jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 jest.spyOn(console, 'log').mockImplementation(() => jest.fn());
@@ -122,7 +114,6 @@ describe('createVideoJsPlayer', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'foo',
-      getDecodedJwt: mockGetDecodedJwt,
     });
 
     jest.useFakeTimers();
@@ -141,7 +132,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('creates videojs player and configures it', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       <VideoPlayer
@@ -191,7 +181,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('creates videojs player without HLS compat and configures it', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
     mockIsMSESupported.mockReturnValue(false);
     const { container } = render(
       <VideoPlayer
@@ -269,7 +258,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('configures for a live video', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const video = liveMockFactory({
       urls: {
@@ -443,7 +431,9 @@ describe('createVideoJsPlayer', () => {
     player.addTextTrack('metadata', 'Timed Metadata', 'en');
     const id3Video: Id3VideoType = {
       live_state: liveState.RUNNING,
-      active_shared_live_media: null,
+      active_shared_live_media: {
+        id: '1234',
+      },
       active_shared_live_media_page: null,
     } as any;
     const tracks = player.textTracks();
@@ -500,7 +490,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it('sends attendance for a student watching a live', async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const video = liveMockFactory({
       urls: {
@@ -511,6 +500,7 @@ describe('createVideoJsPlayer', () => {
         thumbnails: {},
       },
       live_state: liveState.RUNNING,
+      can_edit: false,
     });
     const { container } = render(
       <VideoPlayer video={video} playerType="videojs" timedTextTracks={[]} />,
@@ -559,7 +549,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it("doesn't send attendance for an admin or instructor watching a live", async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiInstructorTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const video = liveMockFactory({
       urls: {
@@ -595,7 +584,6 @@ describe('createVideoJsPlayer', () => {
   });
 
   it("doesn't send attendance when it's not a live", async () => {
-    mockGetDecodedJwt.mockReturnValue(ltiStudentTokenMockFactory());
     mockIsMSESupported.mockReturnValue(true);
     const { container } = render(
       <VideoPlayer
