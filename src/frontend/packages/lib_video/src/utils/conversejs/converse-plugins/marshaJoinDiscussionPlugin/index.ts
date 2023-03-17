@@ -7,7 +7,6 @@
 import { Maybe } from 'lib-common';
 import {
   fetchJitsiInfo,
-  useJwt,
   Participant,
   Video,
   EventType,
@@ -109,7 +108,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
         aVideo: Video,
       ) => {
         // only instructors or admin have update permissions
-        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
+        if (!video.can_edit) {
           return;
         }
 
@@ -151,7 +150,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
 
       const rejectParticipantToJoin = (participant: Participant) => {
         // only instructors or admin have update permissions
-        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
+        if (!video.can_edit) {
           return;
         }
         const msg = converse.env.$msg({
@@ -174,7 +173,7 @@ const addMarshaJoinDiscussionPlugin = (xmpp: XMPP, video: Video) =>
 
       const kickParticipant = (participant: Participant) => {
         // only instructors or admin have update permissions
-        if (!useJwt.getState().getDecodedJwt().permissions.can_update) {
+        if (!video.can_edit) {
           return;
         }
         const msg = converse.env.$msg({

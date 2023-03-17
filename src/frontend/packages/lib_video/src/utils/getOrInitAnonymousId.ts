@@ -1,6 +1,6 @@
 import {
   AnonymousUser,
-  checkLtiToken,
+  checkToken,
   decodeJwt,
   useCurrentUser,
   useJwt,
@@ -14,13 +14,9 @@ export const getOrInitAnonymousId = () => {
   let anonymousId =
     user !== AnonymousUser.ANONYMOUS ? user?.anonymous_id : undefined;
 
-  try {
-    if (anonymousId) {
-      setAnonymousId(anonymousId);
-    } else if (!checkLtiToken(decodeJwt(jwt))) {
-      anonymousId = getAnonymousId();
-    }
-  } catch (e) {
+  if (anonymousId) {
+    setAnonymousId(anonymousId);
+  } else if (!checkToken(decodeJwt(jwt))) {
     anonymousId = getAnonymousId();
   }
 

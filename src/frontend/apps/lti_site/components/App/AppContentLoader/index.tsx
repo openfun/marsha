@@ -11,6 +11,7 @@ import {
   useAppConfig,
   appNames,
   Loader,
+  DecodedJwtLTI,
 } from 'lib-components';
 import React, {
   ComponentType,
@@ -64,7 +65,7 @@ const AppContent = () => {
   const decodedJwt = useMemo(() => {
     const jwt = useJwt.getState().getJwt();
     if (jwt) {
-      return useJwt.getState().getDecodedJwt();
+      return useJwt.getState().getDecodedJwt() as DecodedJwtLTI;
     }
     throw new Error(
       'Unable to find a jwt Token. The ressource might not exist.',
@@ -103,7 +104,7 @@ const AppContentLoader = () => {
     const jwt = useJwt.getState().getJwt();
     if (jwt) {
       setIsLoaded(true);
-      return useJwt.getState().getDecodedJwt();
+      return useJwt.getState().getDecodedJwt() as DecodedJwtLTI;
     }
     setIsLoaded(true);
   }, []);

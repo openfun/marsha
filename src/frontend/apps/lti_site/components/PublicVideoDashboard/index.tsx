@@ -1,5 +1,5 @@
 import {
-  checkLtiToken,
+  checkToken,
   decodeJwt,
   FULL_SCREEN_ERROR_ROUTE,
   uploadState,
@@ -31,7 +31,7 @@ const PublicVideoDashboard = ({
     return generateVideoWebsocketUrl(currentVideo.id, (url) => {
       const { jwt } = useJwt.getState();
 
-      if (!checkLtiToken(decodeJwt(jwt))) {
+      if (!checkToken(decodeJwt(jwt))) {
         const anonymousId = getOrInitAnonymousId();
         url = `${url}&anonymous_id=${anonymousId}`;
       }
