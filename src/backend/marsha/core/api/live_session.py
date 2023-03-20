@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _, override
 
-from rest_framework import mixins, status, viewsets
+import django_filters
+from rest_framework import filters, mixins, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
@@ -34,6 +35,14 @@ from .base import APIViewMixin, ObjectPkMixin
 
 
 logger = getLogger(__name__)
+
+
+class LiveSessionFilter(django_filters.FilterSet):
+    """Filter for LiveSession."""
+
+    class Meta:
+        model = LiveSession
+        fields = ["is_registered", "anonymous_id"]
 
 
 class LiveSessionThrottle(SimpleRateThrottle):
@@ -63,6 +72,13 @@ class LiveSessionViewSet(
     permission_classes = [permissions.NotAllowed]
     queryset = LiveSession.objects.select_related("user").all()
     serializer_class = serializers.LiveSessionSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+        django_filters.rest_framework.DjangoFilterBackend,
+    ]
+    ordering_fields = ["created_on"]
+    ordering = ["created_on"]
+    filterset_class = LiveSessionFilter
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
@@ -89,43 +105,56 @@ class LiveSessionViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
-    def get_queryset(self):
-        """Restrict access to liveSession with data contained in the JWT token.
+    def _get_lti_queryset(self):
+        """
+        Restrict access to liveSession with data contained in the JWT token.
         Access is restricted to liveSession related to the video, context_id and consumer_site
         present in the JWT token. Email is ignored. Lti user id from the token can be used as well
         depending on the role.
         """
-        filters = {"video__id": self.request.resource.id}
-        if is_lti_token(self.request.resource.token):
-            if self.kwargs.get("pk"):
-                filters["pk"] = self.kwargs["pk"]
+        queryset = super().get_queryset().filter(video_id=self.request.resource.id)
 
-            if self.request.query_params.get("is_registered"):
-                filters["is_registered"] = self.request.query_params.get(
-                    "is_registered"
-                )
+        if is_lti_token(self.request.resource.token):
+            if object_pk := self.kwargs.get("pk"):
+                queryset = queryset.filter(pk=object_pk)
 
             # admin and instructors can access all registrations of this course
-            if permissions.IsTokenInstructor().check_role(
-                self.request.resource.token
-            ) or permissions.IsTokenAdmin().check_role(self.request.resource.token):
-                return LiveSession.objects.filter(**filters)
+            if not (
+                permissions.IsTokenInstructor().check_role(self.request.resource.token)
+                or permissions.IsTokenAdmin().check_role(self.request.resource.token)
+            ):
+                # students are limited by the token information
+                queryset = queryset.filter(
+                    lti_id=self.request.resource.context_id,
+                    consumer_site=self.request.resource.consumer_site,
+                    # token has email or not, user has access to this registration
+                    # if it's the right combination of lti_user_id, lti_id and consumer_site
+                    # email doesn't necessary have a match
+                    lti_user_id=self.request.resource.user["id"],
+                )
 
-            filters["lti_id"] = self.request.resource.context_id
-            filters["consumer_site"] = self.request.resource.consumer_site
+        elif not self.request.query_params.get("anonymous_id"):
+            # Enforce the use of anonymous_id if the token is a public one
+            queryset = queryset.none()
 
-            # token has email or not, user has access to this registration if it's the right
-            # combination of lti_user_id, lti_id and consumer_site
-            # email doesn't necessary have a match
-            filters["lti_user_id"] = self.request.resource.user["id"]
-            return LiveSession.objects.filter(**filters)
+        return queryset
 
-        if self.request.query_params.get("anonymous_id"):
-            return LiveSession.objects.filter(
-                anonymous_id=self.request.query_params.get("anonymous_id"), **filters
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
+        if self.request.resource is not None:  # Then we are in an LTI context
+            queryset = self._get_lti_queryset()
+
+        else:  # Then we are in a stand-alone site context
+            queryset = super().get_queryset().none()
+
+        if self.action == "list_attendances":
+            # we only want live sessions that are registered or with live_attendance not empty
+            queryset = queryset.filter(
+                Q(is_registered=True)
+                | ~(Q(live_attendance__isnull=True) | Q(live_attendance__exact={}))
             )
 
-        return LiveSession.objects.none()
+        return queryset
 
     def get_throttles(self):
         """Depending on action, defines a throttle class"""
