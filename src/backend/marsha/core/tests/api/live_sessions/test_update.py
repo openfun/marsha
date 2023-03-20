@@ -45,11 +45,8 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             {"email": "salome@test-fun-mooc.fr", "should_send_reminders": False},
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 401)
-        content = response.json()
-        self.assertEqual(
-            content, {"detail": "Authentication credentials were not provided."}
-        )
+        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.json(), {"detail": 'Method "PUT" not allowed.'})
 
     def test_api_livesession_update_patch_anonymous_not_allowed(self):
         """Anonymous can't update livesession."""

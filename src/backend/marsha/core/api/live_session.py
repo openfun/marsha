@@ -15,6 +15,7 @@ from django.utils.translation import gettext as _, override
 
 from rest_framework import mixins, status, viewsets
 from rest_framework.decorators import action
+from rest_framework.exceptions import MethodNotAllowed
 from rest_framework.response import Response
 from rest_framework.throttling import SimpleRateThrottle
 from sentry_sdk import capture_exception
@@ -59,9 +60,34 @@ class LiveSessionViewSet(
 ):
     """Viewset for the API of the LiveSession object."""
 
-    permission_classes = [permissions.ResourceIsAuthenticated]
+    permission_classes = [permissions.NotAllowed]
     queryset = LiveSession.objects.select_related("user").all()
     serializer_class = serializers.LiveSessionSerializer
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action in [
+            "create",
+            "list",
+            "partial_update",
+            "retrieve",
+            "push_attendance",
+            "set_display_name",
+        ]:
+            permission_classes = [permissions.ResourceIsAuthenticated]
+        elif self.action in ["list_attendances"]:
+            permission_classes = [
+                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+            ]
+        elif self.action is None:
+            if self.request.method not in self.allowed_methods:
+                raise MethodNotAllowed(self.request.method)
+            permission_classes = self.permission_classes
+        else:
+            # When here it means we forgot to define a permission for a new action
+            # We enforce the permission definition in this method to have a clearer view
+            raise NotImplementedError(f"Action '{self.action}' is not implemented.")
+        return [permission() for permission in permission_classes]
 
     def get_queryset(self):
         """Restrict access to liveSession with data contained in the JWT token.
@@ -302,12 +328,7 @@ class LiveSessionViewSet(
 
             raise error
 
-    @action(
-        detail=False,
-        methods=["get"],
-        permission_classes=[permissions.IsTokenInstructor | permissions.IsTokenAdmin],
-        url_path="list_attendances",
-    )
+    @action(detail=False, methods=["get"], url_path="list_attendances")
     def list_attendances(self, request, video_id=None):
         """
         Retrieve the list of attendances computed for livesessions where is_registered
