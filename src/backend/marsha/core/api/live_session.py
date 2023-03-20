@@ -87,9 +87,16 @@ class LiveSessionViewSet(
             "partial_update",
             "retrieve",
             "push_attendance",
-            "set_display_name",
         ]:
             permission_classes = [permissions.ResourceIsAuthenticated]
+        elif self.action in [
+            "set_display_name",
+        ]:
+            permission_classes = [
+                permissions.ResourceIsAuthenticated
+                | permissions.HasVideoAdminThroughOrganization
+                | permissions.HasVideoRoleThroughPlaylist
+            ]
         elif self.action in ["list_attendances"]:
             permission_classes = [
                 permissions.IsTokenInstructor | permissions.IsTokenAdmin
@@ -104,15 +111,13 @@ class LiveSessionViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
-    def _get_lti_queryset(self):
+    def _get_lti_queryset(self, queryset):
         """
         Restrict access to liveSession with data contained in the JWT token.
         Access is restricted to liveSession related to the video, context_id and consumer_site
         present in the JWT token. Email is ignored. Lti user id from the token can be used as well
         depending on the role.
         """
-        queryset = super().get_queryset().filter(video_id=self.request.resource.id)
-
         if is_lti_token(self.request.resource.token):
             if object_pk := self.kwargs.get("pk"):
                 queryset = queryset.filter(pk=object_pk)
@@ -140,11 +145,21 @@ class LiveSessionViewSet(
 
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
-        if self.request.resource is not None:  # Then we are in an LTI context
-            queryset = self._get_lti_queryset()
+        video_id = self._get_related_video_id()
 
-        else:  # Then we are in a stand-alone site context
-            queryset = super().get_queryset().none()
+        if video_id is None:  # backward behavior for stand-alone site context
+            return super().get_queryset().none()
+
+        queryset = super().get_queryset().filter(video_id=video_id)
+
+        if self.request.resource is not None:  # Then we are in an LTI context
+            # Add a verification on the video ID in the URL if it is present
+            if video_id != self.request.resource.id:
+                # Might be turned into permission when old routes are deleted.
+                raise Http404(
+                    "The video id in the url does not match the one in the token."
+                )
+            queryset = self._get_lti_queryset(queryset)
 
         if self.action == "list_attendances":
             # we only want live sessions that are registered or with live_attendance not empty
@@ -171,8 +186,15 @@ class LiveSessionViewSet(
 
     def _get_related_video_id(self):
         """Get the related video ID from the request."""
+        # The video ID in the URL will be mandatory when old routes are deleted.
+        video_id = self.kwargs.get("video_id")
+        if video_id is not None:
+            return video_id
+
+        # Backward compatibility with old routes
         if self.request.resource is not None:
             return self.request.resource.id
+
         return None
 
     def _send_registration_email(self, livesession):
@@ -320,17 +342,19 @@ class LiveSessionViewSet(
                 {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        resource = self.request.resource
-        video = get_object_or_404(Video, pk=resource.id)
+        video_id = self._get_related_video_id()
+        video = get_object_or_404(Video, pk=video_id)
 
         try:
             update_fields = {
                 "display_name": serializer.validated_data["display_name"],
             }
-            if is_lti_token(resource.token):
-                token_user = resource.user
+
+            if self.request.resource and is_lti_token(self.request.resource.token):
+                token_user = self.request.resource.user
                 consumer_site = get_object_or_404(
-                    ConsumerSite, pk=resource.token.payload["consumer_site"]
+                    ConsumerSite,
+                    pk=self.request.resource.token.payload["consumer_site"],
                 )
                 # Update email only if it's defined in the token user
                 if "email" in token_user:
@@ -340,25 +364,32 @@ class LiveSessionViewSet(
                 if "username" in token_user:
                     update_fields.update({"username": token_user["username"]})
 
-                livesession, _ = LiveSession.objects.update_or_create(
+                livesession, _created = LiveSession.objects.update_or_create(
                     consumer_site=consumer_site,
-                    lti_id=resource.context_id,
+                    lti_id=self.request.resource.context_id,
                     lti_user_id=token_user.get("id"),
                     video=video,
                     defaults=update_fields,
                 )
-            else:
+            elif self.request.resource:
                 if not serializer.validated_data.get("anonymous_id"):
                     return Response(
                         {"detail": "Invalid request."},
                         status=status.HTTP_400_BAD_REQUEST,
                     )
-                livesession, _ = LiveSession.objects.update_or_create(
+                livesession, _created = LiveSession.objects.update_or_create(
                     anonymous_id=serializer.validated_data["anonymous_id"],
                     video=video,
                     defaults=update_fields,
                 )
+            else:
+                livesession, _created = LiveSession.objects.update_or_create(
+                    video=video,
+                    user_id=self.request.user.id,
+                    defaults=update_fields,
+                )
             return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
+
         except IntegrityError as error:
             if "livesession_unique_video_display_name" in error.args[0]:
                 return Response(
