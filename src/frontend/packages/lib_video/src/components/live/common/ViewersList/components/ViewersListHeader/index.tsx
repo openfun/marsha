@@ -16,7 +16,7 @@ export const ViewersListHeader = ({
   ...boxProps
 }: ViewersListHeaderProps) => {
   return (
-    <Box align="start" {...boxProps}>
+    <Box align="start" {...boxProps} height={{ min: 'auto' }}>
       <Box
         align="center"
         border={{
@@ -28,6 +28,7 @@ export const ViewersListHeader = ({
           vertical: '2px',
         }}
         round="14px"
+        height={{ min: 'auto' }}
       >
         <StyledText color="blue-active" size="0.625rem" weight="normal">
           {text}

@@ -82,10 +82,6 @@ describe('<StudentLiveControlBar />', () => {
       },
     });
 
-    screen.getByRole('button', { name: 'Show viewers' });
-    expect(
-      screen.queryByRole('button', { name: 'Show chat' }),
-    ).not.toBeInTheDocument();
     expect(
       screen.queryByRole('button', {
         name: 'Send request to join the discussion',
@@ -107,7 +103,6 @@ describe('<StudentLiveControlBar />', () => {
     expect(
       screen.queryByRole('button', { name: 'Show apps' }),
     ).not.toBeInTheDocument();
-    screen.getByRole('button', { name: 'Show chat' });
     expect(
       screen.queryByRole('button', {
         name: 'Send request to join the discussion',

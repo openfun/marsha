@@ -44,34 +44,30 @@ export const ChatLayout = ({ isModerated }: ChatLayoutProps) => {
   };
 
   return (
-    <Box direction="column" fill>
-      <Box direction="column" fill>
-        {!hasReceivedMessageHistory ? (
-          <Box align="center" fill justify="center">
-            <Spinner size="large" />
-          </Box>
-        ) : (
-          <ChatConversationDisplayer />
-        )}
-        {!isModerated && (
-          <Box margin="small">
-            {liveSession?.display_name ? (
-              <InputBar
-                handleUserInput={processChatMessage}
-                isChatInput={true}
-                placeholderText={intl.formatMessage(
-                  messages.inputBarPlaceholder,
-                )}
-              />
-            ) : (
-              <JoinChatButton
-                disabled={!hasReceivedMessageHistory}
-                handleClick={handleJoinChatButton}
-              />
-            )}
-          </Box>
-        )}
-      </Box>
+    <Box direction="column" fill overflow="auto">
+      {!hasReceivedMessageHistory ? (
+        <Box align="center" fill justify="center">
+          <Spinner size="large" />
+        </Box>
+      ) : (
+        <ChatConversationDisplayer />
+      )}
+      {!isModerated && (
+        <Box margin="small" height={{ min: 'auto' }}>
+          {liveSession?.display_name ? (
+            <InputBar
+              handleUserInput={processChatMessage}
+              isChatInput={true}
+              placeholderText={intl.formatMessage(messages.inputBarPlaceholder)}
+            />
+          ) : (
+            <JoinChatButton
+              disabled={!hasReceivedMessageHistory}
+              handleClick={handleJoinChatButton}
+            />
+          )}
+        </Box>
+      )}
     </Box>
   );
 };

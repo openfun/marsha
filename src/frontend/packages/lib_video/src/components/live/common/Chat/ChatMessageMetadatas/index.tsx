@@ -50,14 +50,16 @@ export const ChatMessageMetadatas = ({
       margin={{
         bottom: '9px',
       }}
+      width={{ min: 'auto' }}
     >
-      <Box>
+      <Box width={{ min: 'auto' }}>
         <ChatAvatar />
       </Box>
       <Box
         margin={{
           left: '10px',
         }}
+        width={{ min: 'auto', max: 'calc(100% - 70px)' }}
       >
         <SenderNameTextStyled
           color={chatFonts.primary.color}

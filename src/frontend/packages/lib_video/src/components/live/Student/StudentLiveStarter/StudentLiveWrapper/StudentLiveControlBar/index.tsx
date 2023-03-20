@@ -1,10 +1,9 @@
 import { Box, ResponsiveContext } from 'grommet';
 import { JoinMode, LiveModeType, liveState } from 'lib-components';
-import React, { useContext } from 'react';
+import { useContext } from 'react';
+import styled from 'styled-components';
 
 import { AppsWrapper } from '@lib-video/components/live/common/LiveControls/AppsWrapper';
-import { ChatWrapper } from '@lib-video/components/live/common/LiveControls/ChatWrapper';
-import { ViewersWrapper } from '@lib-video/components/live/common/LiveControls/ViewersWrapper';
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 import {
   LivePanelItem,
@@ -12,6 +11,12 @@ import {
 } from '@lib-video/hooks/useLivePanelState';
 
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
+
+const ButtonBox = styled(Box)`
+  & > button > div {
+    height: 45px;
+  }
+`;
 
 export const StudentLiveControlBar = () => {
   const live = useCurrentLive();
@@ -39,21 +44,11 @@ export const StudentLiveControlBar = () => {
         </Box>
       )}
 
-      {isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
-          <ViewersWrapper />
-        </Box>
-      )}
-
-      {isMobileView && availableItems.includes(LivePanelItem.CHAT) && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
-          <ChatWrapper />
-        </Box>
-      )}
-
       {displayJoinDiscussionButtons && (
         <Box height="100%" style={{ minWidth: '60px' }}>
-          <LeaveJoinDiscussionWrapper />
+          <ButtonBox>
+            <LeaveJoinDiscussionWrapper />
+          </ButtonBox>
         </Box>
       )}
     </Box>

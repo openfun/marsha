@@ -27,6 +27,9 @@ export const Controls = ({
         width={{
           min: 'auto',
         }}
+        height={{
+          min: 'auto',
+        }}
       >
         <TeacherLiveRecordingActions isJitsiAdministrator={canStartLive} />
         <TeacherLiveLifecycleControls
