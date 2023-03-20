@@ -842,25 +842,47 @@ class LiveSession(BaseModel):
         help_text=_("Websocket channel_name"),
     )
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        blank=True,
+        null=True,
+        related_name="livesessions",
+        verbose_name=_("User"),
+    )
+
     class Meta:
         """Options for the `livesessions` model."""
 
         db_table = "live_session"
         constraints = [
             models.CheckConstraint(
-                name="livesession_lti_or_public",
+                name="livesession_lti_or_public_or_standalone",
                 check=(
+                    # LTI user
                     models.Q(
                         consumer_site__isnull=False,
                         lti_id__isnull=False,
                         lti_user_id__isnull=False,
+                        user__isnull=True,
                     )
+                    # Public/anonymous user
                     | models.Q(
                         consumer_site__isnull=True,
                         anonymous_id__isnull=False,
                         lti_id__isnull=True,
                         lti_user_id__isnull=True,
                         username__isnull=True,
+                        user__isnull=True,
+                    )
+                    # Standalone site user
+                    | models.Q(
+                        consumer_site__isnull=True,
+                        anonymous_id__isnull=True,
+                        lti_id__isnull=True,
+                        lti_user_id__isnull=True,
+                        username__isnull=True,
+                        user__isnull=False,
                     )
                 ),
             ),
@@ -873,8 +895,12 @@ class LiveSession(BaseModel):
             ),
             models.UniqueConstraint(
                 fields=["email", "video"],
-                condition=models.Q(deleted=None, consumer_site=None),
-                name="livesession_unique_email_video_with_consumer_site_none",
+                condition=models.Q(
+                    deleted=None,
+                    consumer_site__isnull=True,
+                    user__isnull=True,
+                ),
+                name="livesession_unique_email_video_with_consumer_site_user_none",
             ),
             models.UniqueConstraint(
                 condition=models.Q(deleted=None),
@@ -890,6 +916,11 @@ class LiveSession(BaseModel):
                 condition=models.Q(deleted=None),
                 fields=("anonymous_id", "video"),
                 name="livesession_unique_video_anonymous_id",
+            ),
+            models.UniqueConstraint(
+                condition=models.Q(deleted=None),
+                fields=("user", "video"),
+                name="livesession_unique_video_user",
             ),
         ]
 
