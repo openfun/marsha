@@ -93,8 +93,14 @@ def get_or_create_resource(model, lti):
         portable_to__consumer_site_id=consumer_site.id,
     )
 
+    queryset = model.objects.select_related("playlist")
+    if hasattr(queryset, "annotate_can_edit"):  # for video only for now
+        queryset = queryset.annotate_can_edit(
+            "", force_value=lti.is_instructor or lti.is_admin
+        )
+
     try:
-        return model.objects.select_related("playlist").get(
+        return queryset.get(
             Q() if (lti.is_instructor or lti.is_admin) else model.get_ready_clause(),
             # The resource exists in this playlist on this consumer site
             Q(playlist__lti_id=lti.context_id, playlist__consumer_site=consumer_site)
@@ -120,7 +126,7 @@ def get_or_create_resource(model, lti):
         return None
 
     try:
-        resource = model.objects.get(pk=lti.resource_id)
+        resource = queryset.get(pk=lti.resource_id)
     except model.DoesNotExist:
         pass
     else:
@@ -151,7 +157,12 @@ def get_or_create_resource(model, lti):
             default_attributes[field_name] = field_value
 
     # Create resource
-    return model.objects.create(**default_attributes)
+    new_resource = model.objects.create(**default_attributes)
+
+    if hasattr(queryset, "annotate_can_edit"):  # for video only for now
+        new_resource.can_edit = True
+
+    return new_resource
 
 
 def get_resource_closest_owners_and_playlist(model, resource_id):

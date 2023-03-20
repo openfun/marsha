@@ -5,6 +5,7 @@ from django.conf import settings
 from django.contrib.postgres.fields import ArrayField
 from django.contrib.sites.models import Site
 from django.db import models
+from django.db.models import OuterRef
 from django.urls import reverse
 from django.utils import timezone
 from django.utils.crypto import get_random_string
@@ -13,7 +14,10 @@ from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
 from safedelete import HARD_DELETE_NOCASCADE
+from safedelete.managers import SafeDeleteManager
+from safedelete.queryset import SafeDeleteQueryset
 
+from . import ADMINISTRATOR, INSTRUCTOR, OrganizationAccess, PlaylistAccess
 from ..defaults import (
     APPROVAL,
     DELETED,
@@ -35,6 +39,68 @@ from .file import AbstractImage, BaseFile, UploadableFileMixin
 
 
 # pylint: disable=too-many-lines
+
+
+class VideoQueryset(SafeDeleteQueryset):
+    """A queryset to provide helper for querying videos."""
+
+    def annotate_can_edit(self, user_id, force_value=None):
+        """
+        Annotate the queryset with a boolean indicating if the user can act
+        on the video.
+        Required for the VideoSerializer serializer.
+
+        Parameters
+        ----------
+        user_id : str
+            The user ID determine rights on video.
+            We use the user ID here because it can be provided from UserToken
+
+        force_value : optional[bool]
+            If set, force the value of the annotation to `force_value`.
+            Useful to avoid heavy request when we already know the answer.
+
+        Returns
+        -------
+        QuerySet
+            The annotated queryset.
+        """
+        if force_value is not None:
+            return self.annotate(
+                can_edit=models.Value(force_value, output_field=models.BooleanField()),
+            )
+
+        organization_subquery = OrganizationAccess.objects.filter(
+            role=ADMINISTRATOR,
+            organization__playlists__videos__id=OuterRef("pk"),
+            user_id=user_id,
+        )
+
+        playlist_subquery = PlaylistAccess.objects.filter(
+            role__in=[
+                ADMINISTRATOR,
+                INSTRUCTOR,
+            ],
+            playlist__videos__id=OuterRef("pk"),
+            user_id=user_id,
+        )
+
+        return self.annotate(
+            can_edit=models.Case(
+                models.When(
+                    # Has admin or instructor role on playlist
+                    models.Exists(playlist_subquery),
+                    then=models.Value(True),
+                ),
+                models.When(
+                    # Has admin role on organization
+                    models.Exists(organization_subquery),
+                    then=models.Value(True),
+                ),
+                default=models.Value(False),
+                output_field=models.BooleanField(),
+            ),
+        )
 
 
 class Video(BaseFile):
@@ -164,6 +230,8 @@ class Video(BaseFile):
         null=True,
         blank=True,
     )
+
+    objects = SafeDeleteManager(VideoQueryset)
 
     class Meta:
         """Options for the ``Video`` model."""
