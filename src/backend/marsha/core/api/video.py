@@ -222,10 +222,22 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
-        if self.action in ["list"]:
-            return self._get_list_queryset()
+        queryset = super().get_queryset()
 
-        return super().get_queryset()
+        if self.action in ["list"]:
+            queryset = self._get_list_queryset()
+
+        if self.request.resource is not None:
+            # If the request comes from an LTI resource, we force the annotation
+            # of the can_edit field depending on the user role.
+            return queryset.annotate_can_edit(
+                "", force_value=self.get_serializer_context()["is_admin"]
+            )
+
+        if self.request.user.id is not None:
+            return queryset.annotate_can_edit(str(self.request.user.id))
+
+        return queryset
 
     def get_serializer_context(self):
         """Extra context provided to the serializer class."""
@@ -287,6 +299,8 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)
 
+        # Fake the annotation
+        video.can_edit = True
         serializer = self.get_serializer(video)
 
         return Response(serializer.data, status=201)
