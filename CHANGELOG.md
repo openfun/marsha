@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - Integrate VOD dashboard (#2086)
   - List the lives in the contents section (#2104)
+  - Live session model
 - Add a License Manager widget for LTI VOD view
 - Add a title to the classroom file dropzone
 - Add can_edit property on a serialized video
