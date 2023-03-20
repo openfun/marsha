@@ -52,7 +52,12 @@ export const TeacherLiveControlBar = () => {
     };
   }, [video, isStarted, setIsStarted]);
 
-  return (
+  const isBoxToDisplay =
+    (isMobileView && availableItems.includes(LivePanelItem.CHAT)) ||
+    (isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST)) ||
+    (video.live_type === LiveModeType.RAW && isStarted);
+
+  return isBoxToDisplay ? (
     <Box direction="row" height="100%">
       {isMobileView && availableItems.includes(LivePanelItem.CHAT) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
@@ -72,5 +77,5 @@ export const TeacherLiveControlBar = () => {
         </Box>
       )}
     </Box>
-  );
+  ) : null;
 };

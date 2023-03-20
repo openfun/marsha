@@ -68,13 +68,21 @@ export const TeacherLiveLifecycleControls = ({
   let content;
   if (!canStartStreaming) {
     content = (
-      <Paragraph margin={firstItemMargin}>
+      <Paragraph
+        margin={firstItemMargin}
+        style={{ minWidth: '9.5rem' }}
+        textAlign="center"
+      >
         {intl.formatMessage(messages.joinTheRoom)}
       </Paragraph>
     );
   } else if (!hasRightToStart) {
     content = (
-      <Paragraph margin={firstItemMargin}>
+      <Paragraph
+        margin={firstItemMargin}
+        style={{ minWidth: '11rem' }}
+        textAlign="center"
+      >
         {intl.formatMessage(messages.notAnAdministrator)}
       </Paragraph>
     );
@@ -107,7 +115,11 @@ export const TeacherLiveLifecycleControls = ({
   } else if (video.live_state === liveState.HARVESTING) {
     content = (
       <Box direction="row" flex="shrink" margin={firstItemMargin}>
-        <Paragraph margin="auto">
+        <Paragraph
+          margin="auto"
+          style={{ minWidth: '5.5rem' }}
+          textAlign="center"
+        >
           {intl.formatMessage(messages.harvesting)}
         </Paragraph>
         <Spinner margin={{ left: 'small' }} />
@@ -118,7 +130,6 @@ export const TeacherLiveLifecycleControls = ({
   return (
     <Box
       direction="row"
-      style={{ flexBasis: '0%', whiteSpace: 'nowrap' }}
       margin={{ right: 'none', vertical: 'auto' }}
       {...props}
     >

@@ -18,6 +18,17 @@ import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 
+const StyledBoxTextInput = styled(Box)`
+  & > div:first-child {
+    display: flex;
+    flex-direction: row-reverse;
+    width: 100%;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+`;
+
 const StyledTitleTextInput = styled(TextInput)`
   border: 1px solid ${normalizeColor('blue-active', theme)};
   border-radius: 4px;
@@ -134,19 +145,14 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
   return (
     <Fragment>
       {isTeacher ? (
-        <Box
-          margin={{ right: 'small' }}
-          gap="small"
-          alignContent="center"
-          direction="row"
-        >
+        <StyledBoxTextInput alignContent="center" direction="row">
           <StyledTitleTextInput
             icon={
               <EditionSVG
                 iconColor={normalizeColor('blue-chat', theme)}
                 width="25px"
                 height="25px"
-                containerStyle={{ margin: 'auto', marginRight: '8px' }}
+                containerStyle={{ margin: 'auto' }}
               />
             }
             onBlur={(event) => handleChange(event.target.value)}
@@ -156,14 +162,15 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
             value={title}
             plain
             reverse
+            width="100%"
           />
-        </Box>
+        </StyledBoxTextInput>
       ) : (
         <Heading
           a11yTitle={title}
           color="blue-active"
           level="1"
-          margin={{ bottom: 'none' }}
+          margin={{ bottom: 'small' }}
           size="1.3rem"
           title={title}
           truncate
@@ -172,28 +179,37 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
           {title}
         </Heading>
       )}
-      <Box direction="row">
-        {numberOfStudents > 0 && (
-          <Paragraph
-            color="blue-active"
-            margin={{ left: 'small', right: 'large', bottom: 'small' }}
-            size="small"
-          >
-            {intl.formatMessage(messages.nbViewers, {
-              numberOfStudents,
-            })}
-          </Paragraph>
-        )}
-        {localStartDate && (
-          <Paragraph
-            color="blue-active"
-            margin={{ right: 'large', bottom: 'small' }}
-            size="small"
-          >
-            {localStartDate}
-          </Paragraph>
-        )}
-      </Box>
+      {numberOfStudents > 0 || localStartDate ? (
+        <Box direction="row">
+          {numberOfStudents > 0 && (
+            <Paragraph
+              color="blue-active"
+              margin={{
+                left: isTeacher ? 'small' : '',
+                right: 'large',
+                bottom: 'small',
+              }}
+              size="small"
+            >
+              {intl.formatMessage(messages.nbViewers, {
+                numberOfStudents,
+              })}
+            </Paragraph>
+          )}
+          {localStartDate && (
+            <Paragraph
+              color="blue-active"
+              margin={{
+                bottom: 'small',
+                left: numberOfStudents ? '' : 'small',
+              }}
+              size="small"
+            >
+              {localStartDate}
+            </Paragraph>
+          )}
+        </Box>
+      ) : null}
     </Fragment>
   );
 };
