@@ -34,6 +34,7 @@ const messages = defineMessages({
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
   box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
+  flex-wrap: wrap;
 `;
 
 interface DashboardProps {

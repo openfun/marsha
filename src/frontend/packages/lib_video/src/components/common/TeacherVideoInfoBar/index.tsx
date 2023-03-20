@@ -16,7 +16,7 @@ export const TeacherVideoInfoBar = ({
     <Box
       direction="column"
       justify="center"
-      style={{ flexBasis: '0%', minWidth: '0' }}
+      style={{ flex: 'auto' }}
       {...props}
     >
       <VideoInfoBar isTeacher startDate={startDate} />

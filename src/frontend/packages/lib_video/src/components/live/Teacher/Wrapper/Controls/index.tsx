@@ -19,7 +19,15 @@ export const Controls = ({
   return (
     <Fragment>
       {isLiveStarted && <TeacherLiveControlBar />}
-      <Box flex={isLiveStarted} direction="row" justify="end">
+      <Box
+        flex={isLiveStarted}
+        direction="row"
+        style={{ flex: '0' }}
+        justify="evenly"
+        width={{
+          min: 'auto',
+        }}
+      >
         <TeacherLiveRecordingActions isJitsiAdministrator={canStartLive} />
         <TeacherLiveLifecycleControls
           canStartStreaming={canShowStartButton}
