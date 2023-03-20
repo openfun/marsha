@@ -3,14 +3,21 @@ import uuid
 
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
+    ConsumerSiteAccessFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
-from marsha.core.models import LiveSession
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, LiveSession
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
     LTIResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 
 from .base import LiveSessionApiTestCase
@@ -22,6 +29,123 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
     def _put_url(self, video):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/display_name/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cant_set_display_name(self, user, video):
+        """Assert a user cannot set display name with a PUT request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            self._put_url(video),
+            {"display_name": "Antoine"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_set_display_name(self, user, video):
+        """Assert a user can set display name with a PUT request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.put(
+            self._put_url(video),
+            {"display_name": "Antoine"},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        response_data = response.json()
+        self.assertEqual(
+            response_data["display_name"],
+            "Antoine",
+        )
+
+    def test_set_display_name_by_anonymous_user(self):
+        """Anonymous users cannot update playlist access."""
+        response = self.client.put(
+            self._put_url(self.live),
+            {"display_name": "Antoine"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_set_display_name_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot update access for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cant_set_display_name(user, self.live)
+
+    def test_set_display_name_by_organization_student(self):
+        """Organization students cannot update playlist access."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cant_set_display_name(organization_access.user, self.live)
+
+    def test_set_display_name_by_organization_instructor(self):
+        """Organization instructors cannot update playlist access."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cant_set_display_name(organization_access.user, self.live)
+
+    def test_set_display_name_by_organization_administrator(self):
+        """Organization administrators can update playlist access."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_set_display_name(organization_access.user, self.live)
+
+    def test_set_display_name_by_consumer_site_any_role(self):
+        """Consumer site roles cannot update playlist access."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.live.playlist.consumer_site,
+        )
+
+        self.assert_user_cant_set_display_name(consumer_site_access.user, self.live)
+
+    def test_set_display_name_by_playlist_student(self):
+        """Playlist students cannot update playlist access."""
+        playlist_access = PlaylistAccessFactory(
+            role=STUDENT,
+            playlist=self.live.playlist,
+        )
+
+        self.assert_user_can_set_display_name(playlist_access.user, self.live)
+
+    def test_set_display_name_by_playlist_instructor(self):
+        """Playlist instructors cannot update playlist access."""
+        playlist_access = PlaylistAccessFactory(
+            role=INSTRUCTOR,
+            playlist=self.live.playlist,
+        )
+
+        self.assert_user_can_set_display_name(playlist_access.user, self.live)
+
+    def test_set_display_name_by_playlist_administrator(self):
+        """Playlist administrators can update playlist access."""
+        playlist_access = PlaylistAccessFactory(
+            role=ADMINISTRATOR,
+            playlist=self.live.playlist,
+        )
+
+        self.assert_user_can_set_display_name(playlist_access.user, self.live)
 
     def test_api_livesession_put_username_public_no_anonymous(
         self,
@@ -410,3 +534,7 @@ class LiveSessionDisplayNameApiOldTest(LiveSessionDisplayNameApiTest):
     def _put_url(self, video):
         """Return the url to use in tests."""
         return "/api/livesessions/display_name/"
+
+    def assert_user_can_set_display_name(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cant_set_display_name(user, video)
