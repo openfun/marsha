@@ -1016,10 +1016,10 @@
   dependencies:
     "@types/istanbul-lib-report" "*"
 
-"@types/jest@29.4.0":
-  version "29.4.0"
-  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.4.0.tgz#a8444ad1704493e84dbf07bb05990b275b3b9206"
-  integrity sha512-VaywcGQ9tPorCX/Jkkni7RWGFfI11whqzs8dvxF41P17Z+z872thvEvlIbznjPJ02kl1HMX3LmLOonsj2n7HeQ==
+"@types/jest@29.5.0":
+  version "29.5.0"
+  resolved "https://registry.yarnpkg.com/@types/jest/-/jest-29.5.0.tgz#337b90bbcfe42158f39c2fb5619ad044bbb518ac"
+  integrity sha512-3Emr5VOl/aoBwnWcH/EFQvlSAmjV+XtV9GGu5mwdYew5vhQh0IUZx/60x0TzHDu09Bi7HMx10t/namdJw5QIcg==
   dependencies:
     expect "^29.0.0"
     pretty-format "^29.0.0"
@@ -1112,10 +1112,10 @@ aws-sdk-mock@5.8.0:
     sinon "^14.0.1"
     traverse "^0.6.6"
 
-aws-sdk@2.1333.0:
-  version "2.1333.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1333.0.tgz#02ecd59499e364584efb08196d6147873d6328a9"
-  integrity sha512-MvOuleNeRryJtkCGXGEWDHPqqgxuqdi4/hGzJEpn9tnjsW9LNK8UgFPpYzUZ24ZO/3S+jiUh8DMMrL5nVGnagg==
+aws-sdk@2.1338.0:
+  version "2.1338.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1338.0.tgz#e9272a0563940ceebed5910d271c944f31dbae00"
+  integrity sha512-apxv53ABuvi87UQHAUqRrJOaGNMiPXAe6bizzJhOnsaNqasg2KjDDit7QSCi6HlLNG44n1ApIvMtR/k+NnxU4Q==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -2715,10 +2715,10 @@ pkg-dir@^4.2.0:
   dependencies:
     find-up "^4.0.0"
 
-prettier@2.8.4:
-  version "2.8.4"
-  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.4.tgz#34dd2595629bfbb79d344ac4a91ff948694463c3"
-  integrity sha512-vIS4Rlc2FNh0BySk3Wkd6xmwxB0FpOndW5fisM5H8hsZSxU2VWVB5CWIkIjWvrHjIhxk2g3bfMKM87zNTrZddw==
+prettier@2.8.5:
+  version "2.8.5"
+  resolved "https://registry.yarnpkg.com/prettier/-/prettier-2.8.5.tgz#3dd8ae1ebddc4f6aa419c9b64d8c8319a7e0d982"
+  integrity sha512-3gzuxrHbKUePRBB4ZeU08VNkUcqEHaUaouNt0m7LGP4Hti/NuB07C7PPTM/LkWqXoJYJn2McEo5+kxPNrtQkLQ==
 
 pretty-format@^29.0.0, pretty-format@^29.0.2:
   version "29.0.2"
