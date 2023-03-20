@@ -1,5 +1,4 @@
 """Declare API endpoints for live session with Django RestFramework viewsets."""
-from collections import OrderedDict
 from logging import getLogger
 import smtplib
 
@@ -70,7 +69,7 @@ class LiveSessionViewSet(
     """Viewset for the API of the LiveSession object."""
 
     permission_classes = [permissions.NotAllowed]
-    queryset = LiveSession.objects.select_related("user").all()
+    queryset = LiveSession.objects.select_related("user", "video").all()
     serializer_class = serializers.LiveSessionSerializer
     filter_backends = [
         filters.OrderingFilter,
@@ -156,6 +155,12 @@ class LiveSessionViewSet(
 
         return queryset
 
+    def get_serializer_class(self):
+        """Get serializer for this view based on the current action."""
+        if self.action == "list_attendances":
+            return serializers.LiveAttendanceGraphSerializer
+        return super().get_serializer_class()
+
     def get_throttles(self):
         """Depending on action, defines a throttle class"""
         throttle_class = []
@@ -163,6 +168,12 @@ class LiveSessionViewSet(
             throttle_class = [LiveSessionThrottle]
 
         return [throttle() for throttle in throttle_class]
+
+    def _get_related_video_id(self):
+        """Get the related video ID from the request."""
+        if self.request.resource is not None:
+            return self.request.resource.id
+        return None
 
     def _send_registration_email(self, livesession):
         """Send a registration email and catch error if needed."""
@@ -367,61 +378,36 @@ class LiveSessionViewSet(
         The same one will then be used for all the students on this list.
         Serializer is cached so the listing don't get recalculated too often
         """
-        prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{self.request.resource.id}"
+        video_id = self._get_related_video_id()
+
+        prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{video_id}"
         cache_key = (
             f"{prefix_key}offset:{self.request.query_params.get('offset')}"
             f"limit:{self.request.query_params.get('limit')}"
         )
-        if cached_data := cache.get(cache_key, None):
-            return Response(
-                OrderedDict(
-                    [
-                        ("count", cached_data.get("count")),
-                        ("next", cached_data.get("next")),
-                        ("previous", cached_data.get("previous")),
-                        ("results", cached_data.get("results")),
-                    ]
-                )
-            )
+        if (cached_data := cache.get(cache_key, None)) is not None:
+            return Response(cached_data)
 
         try:
-            video = Video.objects.get(pk=self.request.resource.id)
+            video = Video.objects.get(pk=video_id)
         except Video.DoesNotExist as exception:
             raise Http404("No resource matches the given query.") from exception
 
-        # we only want livesessions that are registered or with live_attendance not empty
-        queryset = LiveSession.objects.filter(
-            (
-                Q(is_registered=True)
-                | ~(Q(live_attendance__isnull=True) | Q(live_attendance__exact={}))
-            )
-            & Q(video__id=video.id)
-        )
-        page = self.paginate_queryset(self.filter_queryset(queryset))
-        serializer = serializers.LiveAttendanceGraphSerializer(
-            page,
-            many=True,
-            context={"video_timestamps": video.get_list_timestamps_attendences()},
-        )
+        data = self.list(request, video_id=video_id).data
+
         # if the video is stopped, there is no need to limit the cache timeout
         cache_timeout = (
             None
             if video.live_info and video.live_info.get("stopped_at")
             else settings.VIDEO_ATTENDANCES_CACHE_DURATION
         )
-        data = OrderedDict(
-            [
-                ("count", self.paginator.count),
-                ("next", self.paginator.get_next_link()),
-                ("previous", self.paginator.get_previous_link()),
-                ("results", serializer.data),
-            ]
-        )
+
         cache.set(
             cache_key,
             data,
             timeout=cache_timeout,
         )
+
         # save the key generated with no timeout in case it needs to be reinitialized
         if not cache_timeout:
             list_keys_timeout = cache.get(prefix_key, [])
