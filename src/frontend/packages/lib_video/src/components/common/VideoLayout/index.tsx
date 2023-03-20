@@ -23,6 +23,10 @@ import { DisplayNameForm } from './DisplayNameForm';
 const StyledLiveVideoInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
   box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
+  flex-wrap: wrap;
+  gap: 1rem;
+  height: auto;
+  justify-content: space-evenly;
 `;
 
 interface LiveStudentLayoutProps {
@@ -109,7 +113,7 @@ export const VideoLayout = ({
                   />
                 )}
 
-                {!isLargeLayout && isStarted && (
+                {!isLive && isStarted && (
                   <Box margin={{ top: 'medium' }}>
                     <StyledLiveVideoInformationBarWrapper />
                     <Box background="white" pad={{ left: 'small' }}>
