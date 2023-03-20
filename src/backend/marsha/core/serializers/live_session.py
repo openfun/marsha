@@ -16,6 +16,8 @@ from ..models import ConsumerSite, LiveSession, Video
 class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
     """Serializer for liveSession models and display_name."""
 
+    username = serializers.SerializerMethodField()
+
     class Meta:
         model = LiveSession
         fields = ("anonymous_id", "display_name", "username")
@@ -24,9 +26,17 @@ class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
             "display_name": {"allow_null": False, "required": True},
         }
 
+    def get_username(self, obj):
+        """Get username from user when present or from username field for LTI."""
+        if obj.user_id:
+            return obj.user.username
+        return obj.username
+
 
 class LiveSessionSerializer(serializers.ModelSerializer):
     """Serializer for liveSession model."""
+
+    username = serializers.SerializerMethodField()
 
     class Meta:  # noqa
         model = LiveSession
@@ -60,6 +70,12 @@ class LiveSessionSerializer(serializers.ModelSerializer):
     video = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
+
+    def get_username(self, obj):
+        """Get username from user when present or from username field for LTI."""
+        if obj.user_id:
+            return obj.user.username
+        return obj.username
 
     def create(self, validated_data):
         """Control or set data with token information.
@@ -130,7 +146,6 @@ class LiveSessionSerializer(serializers.ModelSerializer):
                 # If username is present in the token we catch it
                 validated_data["username"] = resource.user.get("username")
             else:  # public token should have no LTI info
-                print(type(resource), dir(resource))
                 if (
                     resource.context_id
                     or resource.consumer_site

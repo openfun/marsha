@@ -60,7 +60,7 @@ class LiveSessionViewSet(
     """Viewset for the API of the LiveSession object."""
 
     permission_classes = [permissions.ResourceIsAuthenticated]
-    queryset = LiveSession.objects.all()
+    queryset = LiveSession.objects.select_related("user").all()
     serializer_class = serializers.LiveSessionSerializer
 
     def get_queryset(self):
@@ -162,7 +162,7 @@ class LiveSessionViewSet(
             livesession = serializer.save()
         except IntegrityError as error:
             if (
-                "livesession_unique_email_video_with_consumer_site_none"
+                "livesession_unique_email_video_with_consumer_site_user_none"
                 in error.args[0]
             ):
                 return Response(

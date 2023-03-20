@@ -7,10 +7,16 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from marsha.core.factories import LiveSessionFactory, VideoFactory
+from marsha.core.factories import (
+    ConsumerSiteFactory,
+    LiveSessionFactory,
+    UserFactory,
+    VideoFactory,
+)
 from marsha.core.models import LiveSession
 
 
+# pylint: disable=too-many-public-methods
 class LiveSessionModelsTestCase(TestCase):
     """Test livesession model."""
 
@@ -41,7 +47,7 @@ class LiveSessionModelsTestCase(TestCase):
 
         self.assertIn(
             "duplicate key value violates unique constraint "
-            '"livesession_unique_email_video_with_consumer_site_none"',
+            '"livesession_unique_email_video_with_consumer_site_user_none"',
             context.exception.args[0],
         )
         # Soft deleted videos should not count for unicity
@@ -443,3 +449,80 @@ class LiveSessionModelsTestCase(TestCase):
             video=VideoFactory(),
         )
         self.assertNotEqual(live_session.key_access, live_session2.key_access)
+
+    def test_livesession_with_user_only(self):
+        """A live session linked to a user cannot be used for LTI or anonymous purpose."""
+
+        user = UserFactory()
+        consumer_site = ConsumerSiteFactory()
+        video = VideoFactory()
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveSession.objects.create(
+                    video=video,
+                    user=user,
+                    consumer_site=consumer_site,
+                    lti_id="lti_id",
+                    lti_user_id="lti_user_id",
+                )
+
+        self.assertIn(
+            'violates check constraint "livesession_lti_or_public_or_standalone',
+            context.exception.args[0],
+        )
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveSession.objects.create(
+                    video=video,
+                    user=user,
+                    anonymous_id=uuid.uuid4(),
+                )
+
+        self.assertIn(
+            'violates check constraint "livesession_lti_or_public_or_standalone',
+            context.exception.args[0],
+        )
+
+        LiveSession.objects.create(
+            video=video,
+            user=user,
+        )
+
+    def test_livesession_with_several_users(self):
+        """Several users can have a live session to the same video."""
+        user = UserFactory()
+        user2 = UserFactory()
+        video = VideoFactory()
+
+        LiveSession.objects.create(
+            video=video,
+            user=user,
+        )
+        LiveSession.objects.create(
+            video=video,
+            user=user2,
+        )
+
+    def test_live_session_unicity_per_user(self):
+        """A user cannot have more than one live session for the same video."""
+        user = UserFactory()
+        video = VideoFactory()
+
+        LiveSession.objects.create(
+            video=video,
+            user=user,
+        )
+
+        with self.assertRaises(IntegrityError) as context:
+            with transaction.atomic():
+                LiveSession.objects.create(
+                    video=video,
+                    user=user,
+                )
+
+        self.assertIn(
+            'violates unique constraint "livesession_unique_video_user"',
+            context.exception.args[0],
+        )
