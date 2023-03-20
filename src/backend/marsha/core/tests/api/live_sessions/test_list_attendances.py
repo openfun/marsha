@@ -470,21 +470,6 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                 "previous": None,
                 "results": [
                     {
-                        "id": str(livesession_only_before.id),
-                        "display_name": "only_before@test-fun-mooc.fr",
-                        "is_registered": True,
-                        "live_attendance": {
-                            str(started): {
-                                "connectedInBetween": True,
-                                "lastConnected": int(started - 1000),
-                            },
-                            str(started + 900): {},
-                            str(started + 1800): {},
-                            str(started + 2700): {},
-                            str(started + 3600): {},
-                        },
-                    },
-                    {
                         "id": str(livesession.id),
                         "display_name": "samia@test-fun-mooc.fr",
                         "is_registered": True,
@@ -495,6 +480,21 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
                             },
                             str(started + 900): {"volume": 0.15},
                             str(started + 1800): {"volume": 0.18},
+                            str(started + 2700): {},
+                            str(started + 3600): {},
+                        },
+                    },
+                    {
+                        "id": str(livesession_only_before.id),
+                        "display_name": "only_before@test-fun-mooc.fr",
+                        "is_registered": True,
+                        "live_attendance": {
+                            str(started): {
+                                "connectedInBetween": True,
+                                "lastConnected": int(started - 1000),
+                            },
+                            str(started + 900): {},
+                            str(started + 1800): {},
                             str(started + 2700): {},
                             str(started + 3600): {},
                         },
