@@ -418,6 +418,58 @@ class IsParamsVideoAdminThroughOrganization(permissions.BasePermission):
         ).exists()
 
 
+class BaseHasVideoRoleThroughOrganization(permissions.BasePermission):
+    """
+    Base permission to allow access according to the role of the user on the video's organization.
+    """
+
+    role_filter = {}
+
+    def _get_video_id(self, request, view):
+        """Get the video id."""
+        return view.kwargs.get("video_id")
+
+    def has_permission(self, request, view):
+        """
+        Allow the request if user has a specific role on the video's playlist's organization.
+        """
+        video_id = self._get_video_id(request, view)
+        if video_id is None:  # backward compatibility
+            return False
+        return models.OrganizationAccess.objects.filter(
+            **self.role_filter,
+            organization__playlists__videos__id=video_id,
+            user_id=request.user.id,
+        ).exists()
+
+
+class HasVideoAdminThroughOrganization(
+    HasAdminRoleMixIn, BaseHasVideoRoleThroughOrganization
+):
+    """
+    Allow access to user with admin role on the video's playlist's organization.
+    """
+
+
+class HasVideoRoleThroughPlaylist(BaseHasVideoRoleThroughOrganization):
+    """
+    Base permission to allow access according to the role of the user on the video's playlist.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request if user has a specific role on the video's playlist.
+        """
+        video_id = self._get_video_id(request, view)
+        if video_id is None:  # backward compatibility
+            return False
+        return models.PlaylistAccess.objects.filter(
+            **self.role_filter,
+            playlist__videos__id=video_id,
+            user_id=request.user.id,
+        ).exists()
+
+
 class BaseIsParamsVideoRoleThroughPlaylist(permissions.BasePermission):
     """
     Permission to allow a request to proceed only if the user provides the ID for an existing
