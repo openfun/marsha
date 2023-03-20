@@ -29,7 +29,7 @@ interface PropsExtended {
 
 const MenuBox = styled(Box)<PropsExtended>`
   box-shadow: 0px 0px 4px 0px rgba(104, 111, 122, 0.3);
-  z-index: 1;
+  z-index: 10;
   transition: margin-left 0.6s;
   ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
   ${(props) =>

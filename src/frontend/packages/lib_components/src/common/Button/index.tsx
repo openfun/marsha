@@ -12,6 +12,7 @@ const StyledGrommetButton = styled(GrommetButton)`
 
 interface ButtonProps extends ButtonLayoutSubComponentProps {
   disabled?: boolean;
+  disabledHover?: boolean;
   onClick?: () => void;
   reversed?: boolean;
   title?: string;
@@ -20,6 +21,7 @@ interface ButtonProps extends ButtonLayoutSubComponentProps {
 export const Button = ({
   badge,
   disabled,
+  disabledHover,
   Icon,
   label,
   onClick,
@@ -43,7 +45,7 @@ export const Button = ({
         if (disabled) {
           tintColor = normalizeColor('blue-off', theme);
           reverseLayout = reversed;
-        } else if (hover) {
+        } else if (hover && !disabledHover) {
           tintColor = normalizeColor('blue-active', theme);
           reverseLayout = true;
         } else {

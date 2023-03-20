@@ -1,15 +1,9 @@
-import { Box, ResponsiveContext } from 'grommet';
+import { Box } from 'grommet';
 import { LiveModeType, liveState } from 'lib-components';
-import React, { useContext, useEffect } from 'react';
+import React, { useEffect } from 'react';
 
 import { pollForLive } from '@lib-video/api/pollForLive';
-import { ChatWrapper } from '@lib-video/components/live/common/LiveControls/ChatWrapper';
-import { ViewersWrapper } from '@lib-video/components/live/common/LiveControls/ViewersWrapper';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
-import {
-  LivePanelItem,
-  useLivePanelState,
-} from '@lib-video/hooks/useLivePanelState';
 import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
 
 import { LiveFeedbackWrapper } from './LiveFeedbackWrapper';
@@ -20,10 +14,6 @@ export const TeacherLiveControlBar = () => {
     isStarted: state.isStarted,
     setIsStarted: state.setIsStarted,
   }));
-  const { availableItems } = useLivePanelState((state) => ({
-    availableItems: state.availableItems,
-  }));
-  const isMobileView = useContext(ResponsiveContext) === 'small';
 
   useEffect(() => {
     let canceled = false;
@@ -52,30 +42,15 @@ export const TeacherLiveControlBar = () => {
     };
   }, [video, isStarted, setIsStarted]);
 
-  const isBoxToDisplay =
-    (isMobileView && availableItems.includes(LivePanelItem.CHAT)) ||
-    (isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST)) ||
-    (video.live_type === LiveModeType.RAW && isStarted);
+  if (!(video.live_type === LiveModeType.RAW && isStarted)) {
+    return null;
+  }
 
-  return isBoxToDisplay ? (
+  return (
     <Box direction="row" height="100%">
-      {isMobileView && availableItems.includes(LivePanelItem.CHAT) && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
-          <ChatWrapper />
-        </Box>
-      )}
-
-      {isMobileView && availableItems.includes(LivePanelItem.VIEWERS_LIST) && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
-          <ViewersWrapper />
-        </Box>
-      )}
-
-      {video.live_type === LiveModeType.RAW && isStarted && (
-        <Box height="100%" style={{ minWidth: '60px' }}>
-          <LiveFeedbackWrapper />
-        </Box>
-      )}
+      <Box height="100%" style={{ minWidth: '60px' }}>
+        <LiveFeedbackWrapper />
+      </Box>
     </Box>
-  ) : null;
+  );
 };

@@ -84,9 +84,9 @@ const Section = ({
   }
 
   return (
-    <Box margin={{ top: 'medium' }}>
+    <Box height={{ min: 'auto' }} style={{ gap: '0.5rem' }}>
       <ViewersListHeader
-        margin={{ left: 'medium', bottom: 'xsmall' }}
+        margin={{ left: 'medium' }}
         text={`${title} (${items.length})`}
       />
 
@@ -194,6 +194,7 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
         horizontal: 'hidden',
         vertical: 'auto',
       }}
+      style={{ gap: '1rem' }}
     >
       {isInstructor && video.join_mode === JoinMode.APPROVAL && (
         <Section
