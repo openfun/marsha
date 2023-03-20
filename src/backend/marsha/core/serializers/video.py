@@ -19,7 +19,7 @@ from ..defaults import (
     RUNNING,
     STOPPED,
 )
-from ..models import Thumbnail, TimedTextTrack, Video
+from ..models import TimedTextTrack, Video
 from ..utils import cloudfront_utils, jitsi_utils, time_utils, xmpp_utils
 from .base import TimestampField, get_video_cloudfront_url_params
 from .playlist import PlaylistLiteSerializer
@@ -29,6 +29,9 @@ from .shared_live_media import (
 )
 from .thumbnail import ThumbnailSerializer
 from .timed_text_track import TimedTextTrackSerializer
+
+
+MAX_DATETIME = timezone.datetime.max.replace(tzinfo=timezone.utc)
 
 
 class UpdateLiveStateSerializer(serializers.Serializer):
@@ -91,8 +94,10 @@ class VideoBaseSerializer(serializers.ModelSerializer):
         # the thumbnail_instance will be use with the next video not having a thumbnail.
         self.thumbnail_instance = None
         try:
-            self.thumbnail_instance = instance.thumbnail.get()
-        except Thumbnail.DoesNotExist:
+            # There can be only one thumbnail per video, we use this to take advantage of the
+            # prefetch_related in the viewset (instead of making a new `get`).
+            self.thumbnail_instance = instance.thumbnail.all()[0]
+        except IndexError:
             pass
 
         return super().to_representation(instance)
@@ -286,7 +291,13 @@ class VideoSerializer(VideoBaseSerializer):
 
     def get_shared_live_medias(self, instance):
         """Get shared live media for a video sorted by reverse uploaded_on."""
-        shared_live_medias = instance.shared_live_medias.all().order_by("-uploaded_on")
+        # Sort shared live media by reverse uploaded_on on python side
+        # to take advantage of the prefetch_related
+        shared_live_medias = sorted(
+            instance.shared_live_medias.all(),
+            key=lambda x: x.uploaded_on or MAX_DATETIME,
+            reverse=True,
+        )
         return SharedLiveMediaSerializer(
             shared_live_medias,
             many=True,

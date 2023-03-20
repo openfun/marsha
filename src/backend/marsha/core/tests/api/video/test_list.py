@@ -941,7 +941,7 @@ class VideoListAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        with self.assertNumQueries(43):
+        with self.assertNumQueries(5):
             response = self.client.get(
                 f"/api/videos/?organization={organization.id}&limit=20",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
