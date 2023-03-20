@@ -1,5 +1,4 @@
 """Declare API endpoints for videos with Django RestFramework viewsets."""
-# We don't enforce arguments documentation in tests
 # pylint: disable=too-many-lines
 from copy import deepcopy
 
@@ -102,7 +101,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
     queryset = (
         Video.objects.all()
         .select_related("playlist", "active_shared_live_media")
-        .prefetch_related("timedtexttracks")
+        .prefetch_related("shared_live_medias", "timedtexttracks", "thumbnail")
     )
     serializer_class = serializers.VideoSerializer
     permission_classes = [permissions.NotAllowed]
