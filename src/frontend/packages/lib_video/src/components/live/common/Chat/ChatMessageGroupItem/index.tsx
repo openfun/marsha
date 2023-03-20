@@ -20,12 +20,13 @@ export const ChatMessageGroupItem = ({
         vertical: '5px',
         horizontal: '20px',
       }}
+      height={{ min: 'auto' }}
     >
       <ChatMessageMetadatas
         msgDatetime={firstMessage.sentAt}
         msgSender={msgGroup.sender}
       />
-      <Box gap="5px">
+      <Box gap="5px" height={{ min: 'auto' }}>
         {msgGroup.messages.map((msg, index) => (
           <ChatMessage key={index} message={msg} />
         ))}

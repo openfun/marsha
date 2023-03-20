@@ -63,7 +63,7 @@ const HeaderBox = styled(Box)<PropsExtended>`
         background: #fff;                                                                     
         box-shadow: 1px 1px 20px #cce4f3;
       `}
-  z-index: 2;
+  z-index: 11;
 `;
 
 const messages = defineMessages({
@@ -196,6 +196,9 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
           border: {
             color: 'blue-active',
             size: '2px',
+          },
+          style: {
+            zIndex: 991,
           },
         }}
       />

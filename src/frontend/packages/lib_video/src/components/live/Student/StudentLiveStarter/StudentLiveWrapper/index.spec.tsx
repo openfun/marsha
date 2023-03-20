@@ -639,7 +639,11 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   afterEach(() => {
     jest.clearAllMocks();
-    jest.runOnlyPendingTimers();
+
+    act(() => {
+      jest.runOnlyPendingTimers();
+    });
+
     jest.useRealTimers();
   });
 
@@ -1286,6 +1290,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
     await waitFor(() => expect(mockSetJitsi).toHaveBeenCalled());
     screen.getByRole('button', { name: 'Show viewers' });
-    screen.getByRole('button', { name: 'Hide chat' });
+    screen.getByRole('button', { name: 'Show chat' });
   });
 });

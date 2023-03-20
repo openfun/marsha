@@ -9,6 +9,7 @@ import {
 import React, { useRef } from 'react';
 import styled from 'styled-components';
 
+import { TabPanelWebinar } from '@lib-video/components/live/common/TabPanelWebinar';
 import {
   DEFAULT_PANEL_WIDTH_RATIO,
   MAX_PANEL_WIDTH_RATIO,
@@ -66,19 +67,13 @@ export const VideoLayout = ({
 
   return (
     <SetDisplayNameProvider value={false}>
+      {!isLargeLayout && <TabPanelWebinar />}
       <DisplayNameForm
         fullPage={!isLargeLayout}
         target={containerRef.current}
       />
-
-      <Box
-        height={isLargeLayout ? undefined : { min: '100vh' }}
-        background="bg-marsha"
-      >
-        <Box
-          height={isLargeLayout ? undefined : { min: '100vh' }}
-          ref={containerRef}
-        >
+      <Box background="bg-marsha">
+        <Box ref={containerRef}>
           <Box flex={isLargeLayout ? undefined : 'grow'}>
             <Box direction="row" style={{ position: 'relative' }}>
               <Box flex style={{ position: 'relative' }}>
@@ -166,11 +161,11 @@ export const VideoLayout = ({
             </Box>
           </Box>
 
-          {isLargeLayout && isLive && (
+          {isLive && (
             <StyledLiveVideoInformationBarWrapper
               align="center"
               background="white"
-              direction="row-responsive"
+              direction="row"
               height="80px"
               justify="between"
               margin="small"
@@ -185,22 +180,6 @@ export const VideoLayout = ({
               {liveTitleElement}
               {displayActionsElement && actionsElement}
             </StyledLiveVideoInformationBarWrapper>
-          )}
-          {!isLargeLayout && displayActionsElement && (
-            <Box
-              direction="row"
-              pad={{
-                bottom: 'small',
-                left: 'small',
-                right: 'small',
-                top: 'small',
-              }}
-              min-height="67px"
-              margin={{ top: 'small' }}
-              wrap
-            >
-              {actionsElement}
-            </Box>
           )}
         </Box>
 
