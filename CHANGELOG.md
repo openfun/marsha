@@ -30,6 +30,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - synchronisation between pages for the VOD description widget
 - tooltip position on the website context dashboard (#2136)
 - thumbnail not reset correctly on the video player (#2137)
+- display title / description when a classroom is not scheduled and not started
 
 ## [4.0.0-beta.18] - 2023-03-06
 

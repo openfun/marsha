@@ -10,9 +10,9 @@ import {
 
 const { READY } = uploadState;
 
-export const classroomMockFactory = (
-  classroom: Partial<Classroom> = {},
-): Classroom => {
+export const classroomMockFactory = <T extends Partial<Classroom>>(
+  classroom: T = {} as T,
+): Classroom & T => {
   return {
     id: faker.datatype.uuid(),
     playlist: playlistMockFactory(),
