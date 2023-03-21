@@ -11,15 +11,20 @@ from marsha.core.defaults import IDLE, RAW
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
     UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.serializers.live_session import timezone as LiveSessionTimezone
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
     LTIResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 
 from .base import LiveSessionApiTestCase
@@ -31,6 +36,127 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
     def _update_url(self, video, live_session):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/{live_session.pk}/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_patch(self, user, video):
+        """Assert a user cannot update livesession with a PATCH request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.patch(
+            self._update_url(video, livesession),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_patch(self, user, video):
+        """Assert a user cannot update livesession with a PATCH request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.patch(
+            self._update_url(video, livesession),
+            {"is_registered": False, "email": "sarah@fun-test.fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": None,
+                "display_name": None,
+                "email": "sarah@fun-test.fr",
+                "id": str(livesession.id),
+                "is_registered": False,
+                "language": "en",
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": user.username,
+                "video": str(video.id),
+            },
+        )
+
+    def test_patch_by_anonymous_user(self):
+        """Anonymous users cannot update livesession."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+        response = self.client.get(
+            self._update_url(self.live, livesession),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_patch_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot update livesession for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cannot_patch(user, self.live)
+
+    def test_patch_by_organization_student(self):
+        """Organization students cannot update livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_patch(organization_access.user, self.live)
+
+    def test_patch_by_organization_instructor(self):
+        """Organization instructors cannot update livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_patch(organization_access.user, self.live)
+
+    def test_patch_by_organization_administrator(self):
+        """Organization administrators can update livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_patch(organization_access.user, self.live)
 
     def test_api_livesession_update_put_anonymous_not_allowed(self):
         """Anonymous can't update livesession."""
@@ -441,7 +567,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         live_session.refresh_from_db()
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         self.assertEqual(live_session.email, "john@fun-test.fr")
 
     def test_api_livesession_admin_can_patch_any_record_from_the_same_consumer_site(
@@ -543,7 +669,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_live_session_admin_using_existing_email(self):
         """An instructor trying to update an anonymous live_session using an email
@@ -659,7 +785,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
 
         live_session.refresh_from_db()
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
         self.assertIsNone(live_session.email)
 
     def test_api_livesession_patch_language(self):
@@ -776,3 +902,7 @@ class LiveSessionUpdateApiOldTest(LiveSessionUpdateApiTest):
         )
         self.assertEqual(response.status_code, 405)
         self.assertEqual(response.json(), {"detail": 'Method "PATCH" not allowed.'})
+
+    def assert_user_can_patch(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_patch(user, video)

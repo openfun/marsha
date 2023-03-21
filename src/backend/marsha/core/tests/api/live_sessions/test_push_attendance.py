@@ -5,15 +5,22 @@ from django.utils import timezone
 
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
+    ConsumerSiteAccessFactory,
     ConsumerSiteFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
-from marsha.core.models import LiveSession
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, LiveSession
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
     LTIResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -26,6 +33,140 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
     def _post_url(self, video):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/push_attendance/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_push_attendance(self, user, video):
+        """Assert a user cannot push attendance with a POST request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.post(
+            self._post_url(video),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_push_attendance(self, user, video):
+        """Assert a user can push attendance with a POST request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
+
+        response = self.client.post(
+            self._post_url(video),
+            {"live_attendance": live_attendance, "language": "fr"},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        created_livesession = LiveSession.objects.last()
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": None,
+                "display_name": None,
+                "email": None,
+                "id": str(created_livesession.id),
+                "is_registered": False,
+                "language": "fr",
+                "live_attendance": live_attendance,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": user.username,
+                "video": str(video.id),
+            },
+        )
+
+    def test_push_attendance_by_anonymous_user(self):
+        """Anonymous users cannot push attendance."""
+        live_attendance = {to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}}
+
+        response = self.client.post(
+            self._post_url(self.live),
+            {"live_attendance": live_attendance, "language": "fr"},
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_push_attendance_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot update access for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cannot_push_attendance(user, self.live)
+
+    def test_push_attendance_by_organization_student(self):
+        """Organization students cannot push attendance."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_push_attendance(organization_access.user, self.live)
+
+    def test_push_attendance_by_organization_instructor(self):
+        """Organization instructors cannot push attendance."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_push_attendance(organization_access.user, self.live)
+
+    def test_push_attendance_by_organization_administrator(self):
+        """Organization administrators can push attendance."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_push_attendance(organization_access.user, self.live)
+
+    def test_push_attendance_by_consumer_site_any_role(self):
+        """Consumer site roles cannot push attendance."""
+        consumer_site_access = ConsumerSiteAccessFactory(
+            consumer_site=self.live.playlist.consumer_site,
+        )
+
+        self.assert_user_cannot_push_attendance(consumer_site_access.user, self.live)
+
+    def test_push_attendance_by_playlist_student(self):
+        """Playlist students can push attendance."""
+        playlist_access = PlaylistAccessFactory(
+            role=STUDENT,
+            playlist=self.live.playlist,
+        )
+
+        self.assert_user_can_push_attendance(playlist_access.user, self.live)
+
+    def test_push_attendance_by_playlist_instructor(self):
+        """Playlist instructors can push attendance."""
+        playlist_access = PlaylistAccessFactory(
+            role=INSTRUCTOR,
+            playlist=self.live.playlist,
+        )
+
+        self.assert_user_can_push_attendance(playlist_access.user, self.live)
+
+    def test_push_attendance_by_playlist_administrator(self):
+        """Organization students cannot push attendance."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_push_attendance(organization_access.user, self.live)
 
     def test_api_livesession_post_attendance_no_payload(self):
         """Request without payload should raise an error."""
@@ -747,3 +888,7 @@ class LiveSessionPushAttendanceApiOldTest(LiveSessionPushAttendanceApiTest):
     def _post_url(self, video):
         """Return the url to use in tests."""
         return "/api/livesessions/push_attendance/"
+
+    def assert_user_can_push_attendance(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_push_attendance(user, video)

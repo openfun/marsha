@@ -15,12 +15,18 @@ from marsha.core.defaults import JITSI, RAW, RUNNING, STOPPED
 from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    PlaylistAccessFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
-from marsha.core.models import Video
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, Video
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
+    UserAccessTokenFactory,
 )
 from marsha.core.utils.api_utils import generate_hash
 from marsha.core.utils.time_utils import to_timestamp
@@ -37,6 +43,140 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
     def _get_url(self, video):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/list_attendances/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_read_attendances(self, user, video):
+        """Assert a user cannot read attendances with a POST request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_read_attendances(self, user, video):
+        """Assert a user can read attendances with a POST request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        started = 1620800000
+        livesession_public = AnonymousLiveSessionFactory(
+            email=None,
+            is_registered=False,
+            live_attendance={
+                # key before range
+                str(started + 30): {"muted": 1, "timestamp": str(started + 30)},
+                str(started + 1030): {"data": 0},
+                str(started + 2230): {"volume": 0.15, "timestamp": str(started + 2230)},
+                str(started + 2730): {"volume": 0.10, "timestamp": str(started + 2730)},
+            },
+            video=video,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 2,
+                "next": None,
+                "previous": None,
+                "results": [
+                    {
+                        "id": str(livesession.id),
+                        "display_name": user.email,
+                        "is_registered": True,
+                        "live_attendance": video.get_list_timestamps_attendences(),
+                    },
+                    {
+                        "id": str(livesession_public.id),
+                        "display_name": None,
+                        "is_registered": False,
+                        "live_attendance": {},
+                    },
+                ],
+            },
+        )
+
+    def test_read_attendances_by_anonymous_user(self):
+        """Anonymous users read attendances."""
+        response = self.client.get(
+            self._get_url(self.live),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_read_attendances_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot update access for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cannot_read_attendances(user, self.live)
+
+    def test_read_attendances_by_organization_student(self):
+        """Organization students cannot read attendances."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_read_attendances(organization_access.user, self.live)
+
+    def test_list_by_playlist_student(self):
+        """Playlist instructors cannot read attendances."""
+        playlist_access = PlaylistAccessFactory(
+            role=STUDENT, playlist=self.live.playlist
+        )
+
+        self.assert_user_cannot_read_attendances(playlist_access.user, self.live)
+
+    def test_list_by_playlist_instructor(self):
+        """Playlist instructors can read attendances."""
+        playlist_access = PlaylistAccessFactory(
+            role=INSTRUCTOR, playlist=self.live.playlist
+        )
+
+        self.assert_user_can_read_attendances(playlist_access.user, self.live)
+
+    def test_read_attendances_by_organization_instructor(self):
+        """Organization instructors cannot read attendances."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_read_attendances(organization_access.user, self.live)
+
+    def test_read_attendances_by_organization_administrator(self):
+        """Organization administrators can read attendances."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_read_attendances(organization_access.user, self.live)
 
     def test_api_livesession_student_cant_read_attendances(self):
         """LTI Token can't read its liveattendance computed."""
@@ -1612,3 +1752,7 @@ class LiveSessionListAttendancesApiOldTest(LiveSessionListAttendancesApiTest):
     def _get_url(self, video):
         """Return the url to use in tests."""
         return "/api/livesessions/list_attendances/"
+
+    def assert_user_can_read_attendances(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_read_attendances(user, video)

@@ -27,10 +27,10 @@ from ..models import ConsumerSite, LiveSession, Video
 from ..services.live_session import (
     get_livesession_from_anonymous_id,
     get_livesession_from_lti,
+    get_livesession_from_user_id,
     is_lti_token,
-    is_public_token,
 )
-from .base import APIViewMixin, ObjectPkMixin
+from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 
 
 logger = getLogger(__name__)
@@ -61,6 +61,7 @@ class LiveSessionThrottle(SimpleRateThrottle):
 class LiveSessionViewSet(
     APIViewMixin,
     ObjectPkMixin,
+    ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -81,25 +82,30 @@ class LiveSessionViewSet(
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in [
-            "create",
-            "list",
-            "partial_update",
-            "retrieve",
-            "push_attendance",
-        ]:
-            permission_classes = [permissions.ResourceIsAuthenticated]
-        elif self.action in [
-            "set_display_name",
-        ]:
+        if self.action in ["list"]:
+            permission_classes = [permissions.UserOrResourceIsAuthenticated]
+        elif self.action in ["create", "set_display_name", "push_attendance"]:
             permission_classes = [
                 permissions.ResourceIsAuthenticated
                 | permissions.HasVideoAdminThroughOrganization
                 | permissions.HasVideoRoleThroughPlaylist
             ]
+        elif self.action in [
+            "partial_update",
+            "retrieve",
+        ]:
+            permission_classes = [
+                permissions.IsTokenResourceRouteObjectRelatedVideo
+                | permissions.HasVideoAdminThroughOrganization
+                | permissions.HasVideoRoleThroughPlaylist
+            ]
         elif self.action in ["list_attendances"]:
             permission_classes = [
-                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+                permissions.IsTokenInstructor
+                | permissions.IsTokenAdmin
+                # With standalone site, admin can access
+                | permissions.HasVideoAdminThroughOrganization
+                | permissions.HasVideoAdminOrInstructorThroughPlaylist
             ]
         elif self.action is None:
             if self.request.method not in self.allowed_methods:
@@ -143,6 +149,18 @@ class LiveSessionViewSet(
 
         return queryset
 
+    def _get_standalone_queryset(self, queryset):
+        """
+        Restrict access to liveSession for user token.
+        """
+        # (not used yet) To be iso LTI, admin and instructor can retrieve all video's livesession
+        if permissions.HasVideoAdminThroughOrganization().has_permission(
+            self.request, self
+        ):
+            return queryset
+        # use can get his related livesession
+        return queryset.filter(user_id=self.request.user.id)
+
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
         video_id = self._get_related_video_id()
@@ -153,13 +171,12 @@ class LiveSessionViewSet(
         queryset = super().get_queryset().filter(video_id=video_id)
 
         if self.request.resource is not None:  # Then we are in an LTI context
-            # Add a verification on the video ID in the URL if it is present
-            if video_id != self.request.resource.id:
-                # Might be turned into permission when old routes are deleted.
-                raise Http404(
-                    "The video id in the url does not match the one in the token."
-                )
             queryset = self._get_lti_queryset(queryset)
+
+        if (
+            not self.request.resource and self.request.user and self.action == "list"
+        ):  # Then we are in stand-alone site context
+            queryset = self._get_standalone_queryset(queryset)
 
         if self.action == "list_attendances":
             # we only want live sessions that are registered or with live_attendance not empty
@@ -176,6 +193,14 @@ class LiveSessionViewSet(
             return serializers.LiveAttendanceGraphSerializer
         return super().get_serializer_class()
 
+    def get_serializer_context(self):
+        """Extra context provided to the serializer class."""
+        context = super().get_serializer_context()
+
+        context.update({"video_id": self._get_related_video_id()})
+
+        return context
+
     def get_throttles(self):
         """Depending on action, defines a throttle class"""
         throttle_class = []
@@ -186,14 +211,14 @@ class LiveSessionViewSet(
 
     def _get_related_video_id(self):
         """Get the related video ID from the request."""
+        # Backward compatibility with old routes
+        if self.request.resource is not None:
+            return self.request.resource.id
+
         # The video ID in the URL will be mandatory when old routes are deleted.
         video_id = self.kwargs.get("video_id")
         if video_id is not None:
             return video_id
-
-        # Backward compatibility with old routes
-        if self.request.resource is not None:
-            return self.request.resource.id
 
         return None
 
@@ -245,7 +270,6 @@ class LiveSessionViewSet(
         was_registered = instance.is_registered
         serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
-
         try:
             livesession = serializer.save()
         except IntegrityError as error:
@@ -278,60 +302,59 @@ class LiveSessionViewSet(
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        token = self.request.resource.token
-        if is_lti_token(token):
-            try:
-                livesession, created = get_livesession_from_lti(token)
-            except (Video.DoesNotExist, ConsumerSite.DoesNotExist) as exception:
-                raise Http404("No resource matches the given query.") from exception
+        video_id = self._get_related_video_id()
+        video = get_object_or_404(Video, pk=video_id)
 
-        elif is_public_token(token):
-            anonymous_id = self.request.query_params.get("anonymous_id")
-            if anonymous_id is None:
-                return Response(
-                    {"detail": "anonymous_id is missing"},
-                    status=status.HTTP_400_BAD_REQUEST,
-                )
-            try:
-                livesession, created = get_livesession_from_anonymous_id(
-                    video_id=token.payload["resource_id"], anonymous_id=anonymous_id
-                )
-            except Video.DoesNotExist as exception:
-                raise Http404("No Video matches the given query.") from exception
-        else:
-            return Response(
-                {
-                    "detail": (
-                        "Impossible to authenticate you. You should provide a valid JWT token."
+        try:
+            if self.request.resource and is_lti_token(
+                self.request.resource.token
+            ):  # LTI context
+                token = self.request.resource.token
+                token_user = self.request.resource.user
+                livesession, _ = get_livesession_from_lti(token)
+
+                # Update username only if defined in the token user
+                if token_user.get("username"):
+                    livesession.username = token_user["username"]
+                # Update email only if defined in the token user
+                if token_user.get("email"):
+                    livesession.email = token_user["email"]
+            elif self.request.resource:  # Anonymous context
+                anonymous_id = self.request.query_params.get("anonymous_id")
+                if anonymous_id is None:
+                    return Response(
+                        {"detail": "anonymous_id is missing"},
+                        status=status.HTTP_400_BAD_REQUEST,
                     )
-                },
-                status=status.HTTP_401_UNAUTHORIZED,
+                livesession, _ = get_livesession_from_anonymous_id(
+                    video_id=video.id, anonymous_id=anonymous_id
+                )
+            else:  # Standalone context
+                livesession, _ = get_livesession_from_user_id(
+                    video_id=video.id, user_id=request.user.id
+                )
+
+            livesession.live_attendance = (
+                (serializer.data["live_attendance"] | livesession.live_attendance)
+                if livesession.live_attendance
+                else serializer.data["live_attendance"]
             )
 
-        token_user = self.request.resource.user
-        # livesession already exists, we update email and username if necessary
-        if not created:
-            # Update livesession email only if it's defined in the token user
-            if token_user.get("email"):
-                livesession.email = token_user.get("email")
+            if serializer.data.get("language"):
+                livesession.language = serializer.data["language"]
 
-            # Update livesession username only it's defined in the token user
-            if token_user.get("username"):
-                livesession.username = token_user.get("username")
+            livesession.save()
+            return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
+        except (Video.DoesNotExist, ConsumerSite.DoesNotExist) as exception:
+            raise Http404("No resource matches the given query.") from exception
+        except IntegrityError as error:
+            if "livesession_unique_video_display_name" in error.args[0]:
+                return Response(
+                    {"display_name": "User with that display_name already exists!"},
+                    status=status.HTTP_409_CONFLICT,
+                )
 
-        # update or add live_attendance information
-        livesession.live_attendance = (
-            (serializer.data["live_attendance"] | livesession.live_attendance)
-            if livesession.live_attendance
-            else serializer.data["live_attendance"]
-        )
-
-        if serializer.data.get("language"):
-            livesession.language = serializer.data["language"]
-
-        livesession.save()
-
-        return Response(self.get_serializer(livesession).data, status.HTTP_200_OK)
+            raise error
 
     @action(detail=False, methods=["put"], url_path="display_name")
     def set_display_name(self, request, video_id=None):
@@ -349,8 +372,9 @@ class LiveSessionViewSet(
             update_fields = {
                 "display_name": serializer.validated_data["display_name"],
             }
-
-            if self.request.resource and is_lti_token(self.request.resource.token):
+            if self.request.resource and is_lti_token(
+                self.request.resource.token
+            ):  # LTI context
                 token_user = self.request.resource.user
                 consumer_site = get_object_or_404(
                     ConsumerSite,
@@ -371,7 +395,7 @@ class LiveSessionViewSet(
                     video=video,
                     defaults=update_fields,
                 )
-            elif self.request.resource:
+            elif self.request.resource:  # Anonymous context
                 if not serializer.validated_data.get("anonymous_id"):
                     return Response(
                         {"detail": "Invalid request."},
@@ -382,7 +406,7 @@ class LiveSessionViewSet(
                     video=video,
                     defaults=update_fields,
                 )
-            else:
+            else:  # Standalone context
                 livesession, _created = LiveSession.objects.update_or_create(
                     video=video,
                     user_id=self.request.user.id,
@@ -419,10 +443,7 @@ class LiveSessionViewSet(
         if (cached_data := cache.get(cache_key, None)) is not None:
             return Response(cached_data)
 
-        try:
-            video = Video.objects.get(pk=video_id)
-        except Video.DoesNotExist as exception:
-            raise Http404("No resource matches the given query.") from exception
+        video = get_object_or_404(Video, pk=video_id)
 
         data = self.list(request, video_id=video_id).data
 

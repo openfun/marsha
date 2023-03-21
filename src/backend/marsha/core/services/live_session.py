@@ -1,5 +1,5 @@
 """Live session services."""
-from marsha.core.models import ConsumerSite, LiveSession, Video
+from marsha.core.models import ConsumerSite, LiveSession, User, Video
 from marsha.core.models.account import NONE
 
 
@@ -59,3 +59,11 @@ def get_livesession_from_anonymous_id(video_id, anonymous_id):
     video = Video.objects.get(pk=video_id)
 
     return LiveSession.objects.get_or_create(video=video, anonymous_id=anonymous_id)
+
+
+def get_livesession_from_user_id(video_id, user_id):
+    """Get or create a livesession for an anonymous id"""
+    video = Video.objects.get(pk=video_id)
+    user = User.objects.get(pk=user_id)
+
+    return LiveSession.objects.get_or_create(video=video, user=user)
