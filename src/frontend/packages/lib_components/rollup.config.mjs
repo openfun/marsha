@@ -135,7 +135,9 @@ export default [
       { file: path.dirname(pkg.types) + '/converse.d.ts', format: 'es' },
     ],
     plugins: [
-      dts({ compilerOptions: tsconfig.compilerOptions }),
+      dts({ compilerOptions: {
+        baseUrl: tsconfig.compilerOptions.baseUrl
+      }}),
       pluginModuleInjection(pkg.types, "export * from './converse'"),
     ],
   },
@@ -148,7 +150,9 @@ export default [
       },
     ],
     plugins: [
-      dts({ compilerOptions: tsconfig.compilerOptions }),
+      dts({ compilerOptions: {
+        baseUrl: tsconfig.compilerOptions.baseUrl
+      }}),
       pluginModuleInjection(
         pkg.types,
         "export * from './JitsiMeetExternalAPI'",
