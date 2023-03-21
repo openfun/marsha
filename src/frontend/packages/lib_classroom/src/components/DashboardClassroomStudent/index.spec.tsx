@@ -39,6 +39,8 @@ describe('<DashboardClassroomStudent />', () => {
       id: '1',
       started: false,
       ended: false,
+      title: 'Title',
+      description: 'Description',
     });
     const joinClassroomAction = jest.fn();
     const classroomEnded = jest.fn();
@@ -52,6 +54,8 @@ describe('<DashboardClassroomStudent />', () => {
       />,
     );
 
+    screen.getByText(classroom.title);
+    screen.getByText(classroom.description);
     screen.getByText('Classroom not started yet.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(0);
     expect(classroomEnded).toHaveBeenCalledTimes(0);
@@ -74,8 +78,8 @@ describe('<DashboardClassroomStudent />', () => {
         classroomEnded={classroomEnded}
       />,
     );
-    screen.getByText(classroom.title!);
-    screen.getByText(classroom.description!);
+    screen.getByText(classroom.title);
+    screen.getByText(classroom.description);
     const displayedStartingDate = startingAt.toLocaleString(DateTime.DATE_HUGE);
     const displayedStartingTime = startingAt.toLocaleString(
       DateTime.TIME_24_SIMPLE,
