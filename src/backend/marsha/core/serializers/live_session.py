@@ -8,9 +8,14 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from marsha.core.permissions import IsTokenAdmin, IsTokenInstructor
+from marsha.core.permissions import (
+    IsTokenAdmin,
+    IsTokenInstructor,
+    playlist_role_exists,
+)
 
-from ..models import ConsumerSite, LiveSession, Video
+from ..models import ADMINISTRATOR, ConsumerSite, LiveSession, Video
+from ..services.live_session import is_lti_token, is_public_token
 
 
 class LiveSessionDisplayUsernameSerializer(serializers.ModelSerializer):
@@ -92,24 +97,24 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         dictionary
             The "data" dictionary is returned after modification.
         """
-        resource = self.context["request"].resource
-        video = get_object_or_404(Video, pk=resource.id)
+        request = self.context["request"]
+        video_id = self.context["video_id"]
+        resource = request.resource
+
+        video = get_object_or_404(Video, pk=video_id)
+
         if not validated_data.get("email"):
             raise serializers.ValidationError({"email": "Email is mandatory."})
+
         if video.is_scheduled is False:
             raise serializers.ValidationError(
-                {"video": f"video with id {resource.id} doesn't accept registration."}
+                {"video": f"video with id {video_id} doesn't accept registration."}
             )
 
         if not validated_data.get("video_id"):
-            validated_data["video_id"] = resource.id
-            is_lti = (
-                resource.context_id
-                and resource.consumer_site
-                and resource.user.get("id")
-            )
+            validated_data["video_id"] = video_id
 
-            if is_lti:
+            if resource and is_lti_token(resource.token):  # LTI context
                 validated_data["consumer_site"] = get_object_or_404(
                     ConsumerSite, pk=resource.consumer_site
                 )
@@ -145,13 +150,10 @@ class LiveSessionSerializer(serializers.ModelSerializer):
 
                 # If username is present in the token we catch it
                 validated_data["username"] = resource.user.get("username")
-            else:  # public token should have no LTI info
-                if (
-                    resource.context_id
-                    or resource.consumer_site
-                    or resource.user.get("id")
-                ):
-                    # we prevent any side effects if token's creation changes.
+            elif resource:  # Anonymous context
+                if not is_public_token(
+                    resource.token
+                ):  # public token should have no LTI info
                     raise serializers.ValidationError(
                         {
                             "token": "Public token shouldn't have any LTI information, "
@@ -180,6 +182,10 @@ class LiveSessionSerializer(serializers.ModelSerializer):
 
                 validated_data["consumer_site"] = None
                 validated_data["lti_id"] = None
+            else:  # stand-alone context
+                validated_data["user_id"] = request.user.id
+                validated_data["consumer_site"] = None
+                validated_data["lti_id"] = None
 
         validated_data["is_registered"] = True
         validated_data["registered_at"] = timezone.now()
@@ -190,6 +196,9 @@ class LiveSessionSerializer(serializers.ModelSerializer):
         # User here is a video as it comes from the JWT
         # It is named "user" by convention in the `rest_framework_simplejwt` dependency we use.
         resource = self.context["request"].resource
+        user = self.context["request"].user
+        video_id = self.context["video_id"]
+
         updatable_fields = ["is_registered", "email", "language"]
 
         extra_fields = list(set(validated_data.keys()) - set(updatable_fields))
@@ -198,10 +207,17 @@ class LiveSessionSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError({"not_allowed_fields": extra_fields})
         if validated_data.get("email"):
             # If the email is present in the token, we don't allow a different email
-            token_email = resource.user.get("email")
-            is_admin = IsTokenInstructor().check_role(
-                resource.token
-            ) or IsTokenAdmin().check_role(resource.token)
+            if resource:  # LTI context
+                token_email = resource.user.get("email")
+                is_admin = IsTokenInstructor().check_role(
+                    resource.token
+                ) or IsTokenAdmin().check_role(resource.token)
+            else:  # stand-alone context
+                video = get_object_or_404(Video, pk=video_id)
+                token_email = user.email
+                is_admin = playlist_role_exists(
+                    video.playlist_id, user.id, {"role": ADMINISTRATOR}
+                )
             if not is_admin and token_email and token_email != validated_data["email"]:
                 raise serializers.ValidationError(
                     {

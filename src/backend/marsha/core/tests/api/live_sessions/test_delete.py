@@ -17,7 +17,7 @@ class LiveSessionDeleteApiTest(LiveSessionApiTestCase):
         """An anonymous should not be able to delete a live session."""
         livesession = AnonymousLiveSessionFactory()
         response = self.client.delete(self._delete_url(livesession.video, livesession))
-        self.assertEqual(response.status_code, 401)
+        self.assertEqual(response.status_code, 405)
 
     def test_api_livesession_delete_token_lti(self):
         """A user should not be able to delete a live session."""
