@@ -11,6 +11,29 @@ import {
 } from 'components/DashboardClassroomLayout';
 import { DashboardClassroomStudentCounter } from 'components/DashboardClassroomStudentCounter';
 
+const DashboardClassRoomTitleDescription = ({
+  classroom,
+}: {
+  classroom: Classroom;
+}) => {
+  return (
+    <React.Fragment>
+      <Text
+        size="large"
+        weight="bold"
+        color="blue-active"
+        textAlign="center"
+        margin={{ top: 'large' }}
+      >
+        {classroom.title}
+      </Text>
+      <Text color="blue-active" textAlign="center">
+        {classroom.description}
+      </Text>
+    </React.Fragment>
+  );
+};
+
 const messages = defineMessages({
   joinedAs: {
     defaultMessage: 'You have joined the classroom as {joinedAs}.',
@@ -116,18 +139,7 @@ const DashboardClassroomStudent = ({
     // classroom scheduled
     left = (
       <React.Fragment>
-        <Text
-          size="large"
-          weight="bold"
-          color="blue-active"
-          textAlign="center"
-          margin={{ top: 'large' }}
-        >
-          {classroom.title}
-        </Text>
-        <Text color="blue-active" textAlign="center">
-          {classroom.description}
-        </Text>
+        <DashboardClassRoomTitleDescription classroom={classroom} />
         <Box
           margin={{ top: 'large', horizontal: 'small' }}
           pad={{ vertical: 'small', horizontal: 'small' }}
@@ -148,9 +160,12 @@ const DashboardClassroomStudent = ({
   } else {
     // classroom exists but not started
     left = (
-      <DashboardClassroomMessage
-        message={intl.formatMessage(messages.classroomNotStarted)}
-      />
+      <React.Fragment>
+        <DashboardClassRoomTitleDescription classroom={classroom} />
+        <DashboardClassroomMessage
+          message={intl.formatMessage(messages.classroomNotStarted)}
+        />
+      </React.Fragment>
     );
   }
 
