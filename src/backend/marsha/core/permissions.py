@@ -470,6 +470,14 @@ class HasVideoRoleThroughPlaylist(BaseHasVideoRoleThroughOrganization):
         ).exists()
 
 
+class HasVideoAdminOrInstructorThroughPlaylist(
+    HasAdminOrInstructorRoleMixIn, HasVideoRoleThroughPlaylist
+):
+    """
+    Allow access to user with admin and instructor role on the video's playlist.
+    """
+
+
 class BaseIsParamsVideoRoleThroughPlaylist(permissions.BasePermission):
     """
     Permission to allow a request to proceed only if the user provides the ID for an existing

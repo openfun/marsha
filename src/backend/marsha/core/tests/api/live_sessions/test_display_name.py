@@ -36,7 +36,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         cls.organization = OrganizationFactory()
         cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
 
-    def assert_user_cant_set_display_name(self, user, video):
+    def assert_user_cannot_set_display_name(self, user, video):
         """Assert a user cannot set display name with a PUT request."""
         jwt_token = UserAccessTokenFactory(user=user)
 
@@ -67,7 +67,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         )
 
     def test_set_display_name_by_anonymous_user(self):
-        """Anonymous users cannot update playlist access."""
+        """Anonymous users cannot set display name."""
         response = self.client.put(
             self._put_url(self.live),
             {"display_name": "Antoine"},
@@ -79,32 +79,32 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         """
         Random logged-in users.
 
-        Cannot update access for playlist they have no role in.
+        Cannot set display name for playlist they have no role in.
         """
         user = UserFactory()
 
-        self.assert_user_cant_set_display_name(user, self.live)
+        self.assert_user_cannot_set_display_name(user, self.live)
 
     def test_set_display_name_by_organization_student(self):
-        """Organization students cannot update playlist access."""
+        """Organization students cannot set display name."""
         organization_access = OrganizationAccessFactory(
             role=STUDENT,
             organization=self.organization,
         )
 
-        self.assert_user_cant_set_display_name(organization_access.user, self.live)
+        self.assert_user_cannot_set_display_name(organization_access.user, self.live)
 
     def test_set_display_name_by_organization_instructor(self):
-        """Organization instructors cannot update playlist access."""
+        """Organization instructors cannot set display name."""
         organization_access = OrganizationAccessFactory(
             role=INSTRUCTOR,
             organization=self.organization,
         )
 
-        self.assert_user_cant_set_display_name(organization_access.user, self.live)
+        self.assert_user_cannot_set_display_name(organization_access.user, self.live)
 
     def test_set_display_name_by_organization_administrator(self):
-        """Organization administrators can update playlist access."""
+        """Organization administrators can set display name."""
         organization_access = OrganizationAccessFactory(
             role=ADMINISTRATOR,
             organization=self.organization,
@@ -113,15 +113,15 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assert_user_can_set_display_name(organization_access.user, self.live)
 
     def test_set_display_name_by_consumer_site_any_role(self):
-        """Consumer site roles cannot update playlist access."""
+        """Consumer site roles cannot set display name."""
         consumer_site_access = ConsumerSiteAccessFactory(
             consumer_site=self.live.playlist.consumer_site,
         )
 
-        self.assert_user_cant_set_display_name(consumer_site_access.user, self.live)
+        self.assert_user_cannot_set_display_name(consumer_site_access.user, self.live)
 
     def test_set_display_name_by_playlist_student(self):
-        """Playlist students cannot update playlist access."""
+        """Playlist students can set display name."""
         playlist_access = PlaylistAccessFactory(
             role=STUDENT,
             playlist=self.live.playlist,
@@ -130,7 +130,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assert_user_can_set_display_name(playlist_access.user, self.live)
 
     def test_set_display_name_by_playlist_instructor(self):
-        """Playlist instructors cannot update playlist access."""
+        """Playlist instructors can set display name."""
         playlist_access = PlaylistAccessFactory(
             role=INSTRUCTOR,
             playlist=self.live.playlist,
@@ -139,7 +139,7 @@ class LiveSessionDisplayNameApiTest(LiveSessionApiTestCase):
         self.assert_user_can_set_display_name(playlist_access.user, self.live)
 
     def test_set_display_name_by_playlist_administrator(self):
-        """Playlist administrators can update playlist access."""
+        """Playlist administrators can set display name."""
         playlist_access = PlaylistAccessFactory(
             role=ADMINISTRATOR,
             playlist=self.live.playlist,
@@ -537,4 +537,4 @@ class LiveSessionDisplayNameApiOldTest(LiveSessionDisplayNameApiTest):
 
     def assert_user_can_set_display_name(self, user, video):
         """Defuse original assertion for old URLs"""
-        self.assert_user_cant_set_display_name(user, video)
+        self.assert_user_cannot_set_display_name(user, video)

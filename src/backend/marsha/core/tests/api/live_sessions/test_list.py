@@ -12,14 +12,19 @@ from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     ConsumerSiteFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
     UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
     LiveSessionResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 
 from .base import LiveSessionApiTestCase
@@ -31,6 +36,163 @@ class LiveSessionListApiTest(LiveSessionApiTestCase):
     def _get_url(self, video):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_list(self, user, video):
+        """Assert a user cannot list with a GET request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 0,
+                "next": None,
+                "previous": None,
+                "results": [],
+            },
+        )
+
+    def assert_user_can_list(self, user, video, awaited_results=1):
+        """
+        Assert a user cannot list with a GET request.
+
+        Depending on user's role, list can be a unique element or
+        a list of every livessions related to the video
+        """
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        public_livesession = AnonymousLiveSessionFactory(
+            email=None,
+            is_registered=False,
+            video=self.live,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+        livesession.refresh_from_db()
+
+        results = [
+            {
+                "anonymous_id": None,
+                "consumer_site": None,
+                "display_name": None,
+                "email": user.email,
+                "id": str(livesession.id),
+                "is_registered": True,
+                "language": "en",
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": user.username,
+                "video": str(video.id),
+            },
+        ]
+        if awaited_results == 2:
+            results.append(
+                {
+                    "anonymous_id": str(public_livesession.anonymous_id),
+                    "consumer_site": None,
+                    "display_name": None,
+                    "email": None,
+                    "id": str(public_livesession.id),
+                    "is_registered": False,
+                    "language": "en",
+                    "live_attendance": None,
+                    "lti_id": None,
+                    "lti_user_id": None,
+                    "should_send_reminders": True,
+                    "username": None,
+                    "video": str(video.id),
+                }
+            )
+
+        self.assertEqual(
+            response.json(),
+            {
+                "count": awaited_results,
+                "next": None,
+                "previous": None,
+                "results": results,
+            },
+        )
+
+    def test_list_by_anonymous_user(self):
+        """Anonymous users cannot list."""
+        response = self.client.get(
+            self._get_url(self.live),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_list_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Can list their own livessession related to a video.
+        """
+        user = UserFactory()
+
+        self.assert_user_can_list(user, self.live)
+
+    def test_list_by_organization_student(self):
+        """Organization students can list their own livessession related to a video."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_list(organization_access.user, self.live)
+
+    def test_list_by_organization_instructor(self):
+        """Organization instructors can list their own livessession related to a video."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_list(organization_access.user, self.live)
+
+    def test_list_by_organization_administrator(self):
+        """Organization administrators can list every livessession related to a video."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_list(organization_access.user, self.live, 2)
 
     def test_list_livesession_by_anonymous_user(self):
         """Anonymous users cannot fetch list requests for livesessions."""
@@ -495,3 +657,7 @@ class LiveSessionListApiOldTest(LiveSessionListApiTest):
     def _get_url(self, video):
         """Return the url to use in tests."""
         return "/api/livesessions/"
+
+    def assert_user_can_list(self, user, video, awaited_results=1):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_list(user, video)

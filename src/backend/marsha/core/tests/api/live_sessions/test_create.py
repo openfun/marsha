@@ -13,16 +13,21 @@ from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     ConsumerSiteFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
     PlaylistFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
-from marsha.core.models import STUDENT, LiveSession
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, LiveSession
 from marsha.core.models.account import NONE
 from marsha.core.serializers.live_session import timezone as LiveSessionTimezone
 from marsha.core.simple_jwt.factories import (
     LiveSessionLtiTokenFactory,
     LTIResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 
 from .base import LiveSessionApiTestCase
@@ -37,6 +42,102 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
     def _post_url(self, video):
         """Return the url to use to create a live session."""
         return f"/api/videos/{video.pk}/livesessions/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_create(self, user, video):
+        """Assert a user cannot create with a POST request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.post(
+            self._post_url(video),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_create(self, user, video):
+        """Assert a user can create with a POST request."""
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.post(
+            self._post_url(video),
+            {"email": user.email, "should_send_reminders": False},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 201)
+        created_livesession = LiveSession.objects.last()
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": None,
+                "display_name": None,
+                "email": user.email,
+                "id": str(created_livesession.id),
+                "is_registered": True,
+                "language": "en",
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": False,
+                "username": user.username,
+                "video": str(video.id),
+            },
+        )
+
+        self.checkRegistrationEmailSent(user.email, video, None, created_livesession)
+
+    def test_create_by_anonymous_user(self):
+        """Anonymous users create."""
+        response = self.client.post(
+            self._post_url(self.live),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_create_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot update access for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cannot_create(user, self.live)
+
+    def test_create_by_organization_student(self):
+        """Organization students cannot create."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_create(organization_access.user, self.live)
+
+    def test_create_by_organization_instructor(self):
+        """Organization instructors cannot create."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_create(organization_access.user, self.live)
+
+    def test_create_by_organization_administrator(self):
+        """Organization administrators can create."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_create(organization_access.user, self.live)
 
     def test_api_livesession_create_anonymous(self):
         """Anonymous users should not be able to create a livesession."""
@@ -1440,3 +1541,7 @@ class LiveSessionCreateApiOldTest(LiveSessionCreateApiTest):
     def _post_url(self, video):
         """Return the url to use to create a live session."""
         return "/api/livesessions/"
+
+    def assert_user_can_create(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_create(user, video)

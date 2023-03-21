@@ -9,15 +9,20 @@ from marsha.core.factories import (
     AnonymousLiveSessionFactory,
     ConsumerSiteFactory,
     LiveSessionFactory,
+    OrganizationAccessFactory,
+    OrganizationFactory,
+    UserFactory,
     VideoFactory,
+    WebinarVideoFactory,
 )
-from marsha.core.models import NONE, STUDENT
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     LiveSessionLtiTokenFactory,
     LiveSessionResourceAccessTokenFactory,
     LTIResourceAccessTokenFactory,
     ResourceAccessTokenFactory,
+    UserAccessTokenFactory,
 )
 
 from .base import LiveSessionApiTestCase
@@ -29,6 +34,130 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
     def _get_url(self, video, live_session):
         """Return the url to use in tests."""
         return f"/api/videos/{video.pk}/livesessions/{live_session.pk}/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+        cls.organization = OrganizationFactory()
+        cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
+
+    def assert_user_cannot_read(self, user, video):
+        """Assert a user cannot retrieve with a GET request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video, livesession),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
+    def assert_user_can_read(self, user, video):
+        """Assert a user can retrieve with a GET request."""
+        livesession = LiveSessionFactory(
+            email=user.email,
+            is_registered=True,
+            user=user,
+            video=video,
+        )
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            self._get_url(video, livesession),
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+        self.assertEqual(
+            response.json(),
+            {
+                "anonymous_id": None,
+                "consumer_site": None,
+                "display_name": None,
+                "email": user.email,
+                "id": str(livesession.id),
+                "is_registered": True,
+                "language": "en",
+                "live_attendance": None,
+                "lti_id": None,
+                "lti_user_id": None,
+                "should_send_reminders": True,
+                "username": user.username,
+                "video": str(video.id),
+            },
+        )
+
+    def test_read_by_anonymous_user(self):
+        """Anonymous users read."""
+        video = VideoFactory(
+            live_state=IDLE,
+            live_type=RAW,
+            starting_at=timezone.now() + timedelta(days=100),
+        )
+        livesession = LiveSessionFactory(
+            consumer_site=video.playlist.consumer_site,
+            display_name="Samantha63",
+            email="john@fun-test.fr",
+            is_registered=False,
+            lti_user_id="55555",
+            lti_id="Maths",
+            username="Sylvie",
+            video=video,
+        )
+
+        response = self.client.get(
+            self._get_url(self.live, livesession),
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 401)
+
+    def test_read_by_random_logged_in_user(self):
+        """
+        Random logged-in users.
+
+        Cannot fetch a livesession for playlist they have no role in.
+        """
+        user = UserFactory()
+
+        self.assert_user_cannot_read(user, self.live)
+
+    def test_read_by_organization_student(self):
+        """Organization students cannot fetch a livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=STUDENT,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_read(organization_access.user, self.live)
+
+    def test_read_by_organization_instructor(self):
+        """Organization instructors cannot fetch a livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=INSTRUCTOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_cannot_read(organization_access.user, self.live)
+
+    def test_read_by_organization_administrator(self):
+        """Organization administrators can fetch a livesession."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization=self.organization,
+        )
+
+        self.assert_user_can_read(organization_access.user, self.live)
 
     def test_api_livesession_read_anonymous(self):
         """Anonymous users should not be allowed to fetch a livesession."""
@@ -51,8 +180,11 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
-        self.assertEqual(response.json(), {"detail": "Not found."})
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(
+            response.json(),
+            {"detail": "You do not have permission to perform this action."},
+        )
 
     def test_api_livesession_read_token_public_with_anonymous(self):
         """Token from public context can read livesession detail with
@@ -239,7 +371,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_record_consumer_diff(self):
         """Control we can only read livesession from the same consumer site.
@@ -267,7 +399,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_record_course_diff(self):
         """Control we can only read livesession from the same course.
@@ -297,7 +429,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_record_lti_user_id_diff(self):
         """Control we can only read livesession from the same user."""
@@ -319,7 +451,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_public_partially_lti(self):
         """Token with no email and no consumer_site can't read the livesession.
@@ -341,7 +473,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         # combo lti_user_id / consumer_site is needed if token has no email
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_public_partially_lti_2(self):
         """Token with consumer_site and no user's info can't read livesession detail.
@@ -361,7 +493,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_public_partially_lti_3(self):
         """Token with email can't read the livesession.
@@ -388,7 +520,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_admin_instruct_token_email_ok(self):
         """Admin/instructor can read any livesession part of the course."""
@@ -615,7 +747,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_wrong_video_token(self):
         """Request with wrong video in token and LTI token."""
@@ -631,7 +763,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_public_other_video_context_none_role(self):
         """Public token can't read another video than the one in the token."""
@@ -645,7 +777,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_token_lti_other_video_context_none_role(self):
         """LTI token can't read another video than the one in the token."""
@@ -664,7 +796,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_livesession_read_detail_unknown_video(self):
         """Token with wrong resource_id should render a 404."""
@@ -678,7 +810,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 404)
+        self.assertEqual(response.status_code, 403)
 
 
 # Old routes to remove
@@ -688,3 +820,7 @@ class LiveSessionRetrieveApiOldTest(LiveSessionRetrieveApiTest):
     def _get_url(self, video, live_session):
         """Return the url to use in tests."""
         return f"/api/livesessions/{live_session.pk}/"
+
+    def assert_user_can_read(self, user, video):
+        """Defuse original assertion for old URLs"""
+        self.assert_user_cannot_read(user, video)
