@@ -1,4 +1,5 @@
 import { ResponsiveContext, ThemeContext, ThemeType } from 'grommet';
+import { Breakpoints } from 'lib-common';
 import { useCallback, useContext } from 'react';
 
 export const useResponsive = () => {
@@ -6,7 +7,10 @@ export const useResponsive = () => {
   const theme = useContext(ThemeContext) as ThemeType;
 
   const isSmallerBreakpoint = useCallback(
-    (breakpointSmaller: string, breakpointBigger: string) => {
+    (
+      breakpointSmaller: Breakpoints | string,
+      breakpointBigger: Breakpoints | string,
+    ) => {
       const breakpointSmallerValue =
         theme?.global?.breakpoints?.[breakpointSmaller]?.value;
       const breakpointBiggerValue =
@@ -22,7 +26,8 @@ export const useResponsive = () => {
   );
 
   return {
-    isDesktop: !isSmallerBreakpoint(breakpoint, 'xsmedium'),
+    isDesktop: !isSmallerBreakpoint(breakpoint, Breakpoints.xsmedium),
+    isMobile: isSmallerBreakpoint(breakpoint, Breakpoints.xsmedium),
     breakpoint,
     isSmallerBreakpoint,
   };

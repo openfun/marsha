@@ -1,7 +1,7 @@
-import { Box, Button, Grid, ResponsiveContext } from 'grommet';
-import { Nullable } from 'lib-common';
-import { Loader, Classroom } from 'lib-components';
-import React, { lazy, Suspense, useContext } from 'react';
+import { Box, Button, Grid } from 'grommet';
+import { Breakpoints, Nullable } from 'lib-common';
+import { Loader, Classroom, useResponsive } from 'lib-components';
+import React, { lazy, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -60,7 +60,7 @@ const DashboardClassroomInstructor = ({
   classroomEnded,
 }: DashboardClassroomInstructorProps) => {
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
+  const { breakpoint, isSmallerBreakpoint } = useResponsive();
 
   const endClassroomMutation = useEndClassroomAction(classroom.id, {
     onSuccess: () => {
@@ -122,7 +122,10 @@ const DashboardClassroomInstructor = ({
     right = (
       <Grid
         gap="small"
-        columns={{ count: size !== 'medium' ? 2 : 1, size: 'auto' }}
+        columns={{
+          count: !isSmallerBreakpoint(breakpoint, Breakpoints.large) ? 2 : 1,
+          size: 'auto',
+        }}
         fill="horizontal"
       >
         <Button

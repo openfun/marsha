@@ -1,10 +1,11 @@
-import { Box, Button, Layer, ResponsiveContext, Text } from 'grommet';
+import { Box, Button, Layer, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme, isFirefox, isIframe } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
 import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 const StyledTitleText = styled(Text)`
   font-family: 'Roboto-Medium';
@@ -27,7 +28,7 @@ export const InfoModal = ({
   onModalClose,
   refWidget,
 }: InfoModalProps) => {
-  const size = React.useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const positionAbove = 200; // px
 
   useEffect(() => {
@@ -58,7 +59,7 @@ export const InfoModal = ({
       onClickOutside={onClose}
       responsive={false}
       style={{
-        width: size === 'small' ? '95%' : '500px',
+        width: isMobile ? '95%' : '500px',
         border: `1px solid ${normalizeColor('blue-active', theme)}`,
         marginTop: `${
           refWidget?.offsetTop

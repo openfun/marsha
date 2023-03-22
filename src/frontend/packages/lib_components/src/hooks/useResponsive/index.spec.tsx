@@ -1,18 +1,11 @@
 import { screen } from '@testing-library/react';
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import { ResponsiveContext } from 'grommet';
-import { deepMerge } from 'grommet/utils';
-import { breakpoints, theme } from 'lib-common';
+import { theme } from 'lib-common';
 import { appendUtilsElement, render } from 'lib-tests';
 import React, { Fragment } from 'react';
 
 import { useResponsive } from '.';
-
-const fullTheme = deepMerge(theme, {
-  global: {
-    breakpoints: breakpoints,
-  },
-});
 
 const TestComponent = ({ breakpointTest }: { breakpointTest: string }) => {
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
@@ -36,7 +29,7 @@ describe('useResponsive', () => {
       </ResponsiveContext.Provider>,
       {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
         },
       },
     );
@@ -53,7 +46,7 @@ describe('useResponsive', () => {
       </ResponsiveContext.Provider>,
       {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
         },
       },
     );
@@ -70,7 +63,7 @@ describe('useResponsive', () => {
       </ResponsiveContext.Provider>,
       {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
         },
       },
     );
@@ -87,7 +80,7 @@ describe('useResponsive', () => {
       </ResponsiveContext.Provider>,
       {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
         },
       },
     );
@@ -101,7 +94,7 @@ describe('useResponsive', () => {
     const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
       return appendUtilsElement(<Fragment>{children}</Fragment>, {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
           responsiveSize: 'xsmall',
         },
       });
@@ -113,13 +106,14 @@ describe('useResponsive', () => {
 
     expect(result.current.breakpoint).toBe('xsmall');
     expect(result.current.isDesktop).toBeFalsy();
+    expect(result.current.isMobile).toBeTruthy();
   });
 
   test('breakpoint hook value desktop', () => {
     const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
       return appendUtilsElement(<Fragment>{children}</Fragment>, {
         grommetOptions: {
-          theme: fullTheme,
+          theme,
           responsiveSize: 'medium',
         },
       });
@@ -131,5 +125,6 @@ describe('useResponsive', () => {
 
     expect(result.current.breakpoint).toBe('medium');
     expect(result.current.isDesktop).toBeTruthy();
+    expect(result.current.isMobile).toBeFalsy();
   });
 });

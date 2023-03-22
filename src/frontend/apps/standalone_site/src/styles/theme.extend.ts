@@ -1,5 +1,5 @@
 import { deepMerge } from 'grommet/utils';
-import { theme, breakpoints } from 'lib-common';
+import { theme } from 'lib-common';
 import { css } from 'styled-components';
 
 export const themeExtend = {
@@ -20,7 +20,6 @@ export const themeExtend = {
         even: '0px 0px 6px 0px rgba(2, 117, 180, 0.3)',
       },
     },
-    breakpoints: breakpoints,
   },
 };
 

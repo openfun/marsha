@@ -1,6 +1,6 @@
-import { Box, Heading, Paragraph, ResponsiveContext } from 'grommet';
-import { useAppConfig } from 'lib-components';
-import React, { CSSProperties, useContext } from 'react';
+import { Box, Heading, Paragraph } from 'grommet';
+import { useAppConfig, useResponsive } from 'lib-components';
+import React, { CSSProperties } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { AdvertisingBox } from '@lib-video/components/live/Student/StudentLiveStarter/StudentLiveAdvertising/AdvertisingBox';
@@ -23,9 +23,9 @@ const messages = defineMessages({
 
 export const StudentLiveWaitingRoom = () => {
   const appData = useAppConfig();
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   let containerStyle: CSSProperties;
-  if (size === 'small') {
+  if (isMobile) {
     containerStyle = { width: '90%', maxWidth: '400px' };
   } else {
     containerStyle = { maxWidth: '40%', minWidth: '600px' };

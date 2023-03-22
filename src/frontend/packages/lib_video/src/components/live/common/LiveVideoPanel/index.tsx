@@ -1,6 +1,10 @@
-import { Tabs, Box, ResponsiveContext, ThemeType, ThemeContext } from 'grommet';
-import { useCurrentResourceContext, ShouldNotHappen } from 'lib-components';
-import React, { useEffect, useContext, Fragment } from 'react';
+import { Tabs, Box, ThemeType, ThemeContext } from 'grommet';
+import {
+  useCurrentResourceContext,
+  ShouldNotHappen,
+  useResponsive,
+} from 'lib-components';
+import React, { useEffect, Fragment } from 'react';
 import styled from 'styled-components';
 
 import { Chat } from '@lib-video/components/live/common/Chat';
@@ -27,7 +31,7 @@ export interface LiveVideoPanelProps {
 }
 
 export const LiveVideoPanel = ({ isLive }: LiveVideoPanelProps) => {
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const [context] = useCurrentResourceContext();
   const { currentItem, availableItems, setPanelVisibility } = useLivePanelState(
     (state) => ({
@@ -44,7 +48,7 @@ export const LiveVideoPanel = ({ isLive }: LiveVideoPanelProps) => {
         display: flex; \
         flex-wrap: nowrap;`,
       },
-      extend: `display: ${size === 'small' ? 'none' : 'flex'};`,
+      extend: `display: ${isMobile ? 'none' : 'flex'};`,
       gap: 'none',
     },
   };

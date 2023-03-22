@@ -1,7 +1,7 @@
-import { Box, Grid, ResponsiveContext, Text } from 'grommet';
-import { Nullable } from 'lib-common';
-import { useAppConfig } from 'lib-components';
-import React, { useContext } from 'react';
+import { Box, Grid, Text } from 'grommet';
+import { Nullable, Breakpoints } from 'lib-common';
+import { useAppConfig, useResponsive } from 'lib-components';
+import React from 'react';
 
 interface DashboardClassroomMessageProps {
   message: string;
@@ -32,12 +32,12 @@ export const DashboardClassroomLayout = ({
   right,
 }: DashboardClassroomLayoutProps) => {
   const appData = useAppConfig();
-  const size = useContext(ResponsiveContext);
+  const { isSmallerBreakpoint, breakpoint, isDesktop } = useResponsive();
   let columns = ['1/2', '1/2'];
-  if (size === 'medium') {
-    columns = ['2/3', '1/3'];
-  } else if (size === 'small') {
+  if (!isDesktop) {
     columns = ['full'];
+  } else if (isSmallerBreakpoint(breakpoint, Breakpoints.large)) {
+    columns = ['2/3', '1/3'];
   }
   return (
     <Box
@@ -81,7 +81,7 @@ export const DashboardClassroomLayout = ({
             </Text>
           </Box>
           <Box
-            align={size !== 'small' ? 'end' : 'center'}
+            align={isDesktop ? 'end' : 'center'}
             direction="row"
             flex={true}
             gap="medium"

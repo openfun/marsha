@@ -1,5 +1,7 @@
-import { Box, Heading, ResponsiveContext } from 'grommet';
-import React, { PropsWithChildren, useContext } from 'react';
+import { Box, Heading } from 'grommet';
+import React, { PropsWithChildren } from 'react';
+
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 interface WhiteCardProps {
   title: string;
@@ -9,13 +11,13 @@ export const WhiteCard = ({
   title,
   children,
 }: PropsWithChildren<WhiteCardProps>) => {
-  const isSmall = useContext(ResponsiveContext) === 'small';
+  const { isDesktop } = useResponsive();
 
   return (
     <Box
       background="bg-marsha"
-      margin={{ left: !isSmall ? 'auto' : undefined }}
-      basis={!isSmall ? '50%' : '100%'}
+      margin={{ left: isDesktop ? 'auto' : undefined }}
+      basis={isDesktop ? '50%' : '100%'}
       justify="center"
       pad="medium"
     >

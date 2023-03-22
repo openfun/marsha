@@ -125,6 +125,24 @@ export const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   },
 };
 
+export enum Breakpoints {
+  xxsmall = 'xxsmall',
+  xsmall = 'xsmall',
+  small = 'small',
+  xsmedium = 'xsmedium',
+  smedium = 'smedium',
+  medium = 'medium',
+  large = 'large',
+}
+
+export const breakpointsExtended = {
+  [Breakpoints.xxsmall]: { value: 380 },
+  [Breakpoints.xsmall]: { value: 540 },
+  [Breakpoints.xsmedium]: { value: 1024 },
+  [Breakpoints.smedium]: { value: 1280 },
+  [Breakpoints.large]: { value: 9999 },
+};
+
 export const theme: ThemeType = {
   box: {
     extend: 'min-height: initial; min-width: initial;',
@@ -182,6 +200,7 @@ export const theme: ThemeType = {
     font: {
       family: 'Roboto-Regular',
     },
+    breakpoints: breakpointsExtended,
   },
   heading: {
     level: {
@@ -491,12 +510,4 @@ export const theme: ThemeType = {
       }
     `,
   },
-};
-
-export const breakpoints = {
-  xxsmall: { value: 380 },
-  xsmall: { value: 540 },
-  xsmedium: { value: 1024 },
-  smedium: { value: 1280 },
-  large: { value: 9999 },
 };

@@ -1,4 +1,4 @@
-import { Box, Button, Layer, ResponsiveContext, Text } from 'grommet';
+import { Box, Button, Layer, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
@@ -6,6 +6,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 const messages = defineMessages({
   confirmButtonLabel: {
@@ -42,7 +43,7 @@ export const ConfirmationModal = ({
   onModalConfirm,
 }: ConfirmationModalProps) => {
   const intl = useIntl();
-  const size = React.useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
 
   return (
     <Layer
@@ -50,7 +51,7 @@ export const ConfirmationModal = ({
       onClickOutside={onModalCloseOrCancel}
       responsive={false}
       style={{
-        width: size === 'small' ? '95%' : '500px',
+        width: isMobile ? '95%' : '500px',
         border: `1px solid ${normalizeColor('blue-active', theme)}`,
       }}
     >

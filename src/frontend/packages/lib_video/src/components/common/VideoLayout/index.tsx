@@ -1,10 +1,11 @@
-import { Box, Button, ResponsiveContext } from 'grommet';
+import { Box, Button } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
   OpenClosePanelSVG,
   useResizer,
   StyledNoSelectElement,
+  useResponsive,
 } from 'lib-components';
 import React, { useRef } from 'react';
 import styled from 'styled-components';
@@ -51,7 +52,7 @@ export const VideoLayout = ({
   mainElement,
   sideElement,
 }: LiveStudentLayoutProps) => {
-  const isLargeLayout = React.useContext(ResponsiveContext) !== 'small';
+  const { isDesktop: isLargeLayout } = useResponsive();
   const containerRef = useRef<Nullable<HTMLDivElement>>(null);
   const isStarted = useLiveStateStarted((state) => state.isStarted);
   const { isPanelOpen, setPanelVisibility } = useLivePanelState((state) => ({

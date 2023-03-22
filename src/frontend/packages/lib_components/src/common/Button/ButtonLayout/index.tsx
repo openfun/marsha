@@ -1,13 +1,15 @@
-import { Box, Text, ResponsiveContext } from 'grommet';
-import React, { useContext } from 'react';
+import { Box, Text } from 'grommet';
+import React from 'react';
 import styled from 'styled-components';
+
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 import type { SvgProps } from '../../../common/SVGIcons';
 
 import { Badge } from './Badge';
 
 interface ResponsiveProps {
-  screenSize: string;
+  isMobile: boolean;
 }
 
 const IconBox = styled(Box)`
@@ -15,8 +17,7 @@ const IconBox = styled(Box)`
   display: block;
   height: 100%;
   justify-content: center;
-  margin: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '0 6px' : '0 8px'};
+  margin: ${({ isMobile }: ResponsiveProps) => (isMobile ? '0 6px' : '0 8px')};
   min-height: 0;
   position: relative;
   text-align: center;
@@ -29,12 +30,12 @@ const TextBox = styled(Box)`
 
 const StyledText = styled(Text)`
   font-weight: normal;
-  font-size: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '0.7rem' : '0.9rem'};
-  letter-spacing: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '-0.3px' : '-0.13px'};
-  line-height: ${({ screenSize }: ResponsiveProps) =>
-    screenSize === 'small' ? '0.8rem' : '0.9rem'};
+  font-size: ${({ isMobile }: ResponsiveProps) =>
+    isMobile ? '0.7rem' : '0.9rem'};
+  letter-spacing: ${({ isMobile }: ResponsiveProps) =>
+    isMobile ? '-0.3px' : '-0.13px'};
+  line-height: ${({ isMobile }: ResponsiveProps) =>
+    isMobile ? '0.8rem' : '0.9rem'};
 `;
 
 export interface ButtonLayoutSubComponentProps {
@@ -59,15 +60,14 @@ export const ButtonLayout = ({
   tintColor,
   textColor,
 }: ButtonLayoutProps) => {
-  const size = useContext(ResponsiveContext);
-
+  const { isMobile } = useResponsive();
   const iconColor = reversed ? reversedColor : tintColor;
   const rectColor = reversed ? tintColor : undefined;
 
   return (
     <Box align="center" flex height="100%">
       {Icon && (
-        <IconBox screenSize={size}>
+        <IconBox isMobile={isMobile}>
           <Icon iconColor={iconColor} focusColor={rectColor} height="100%" />
           {badge && <Badge value={badge} />}
         </IconBox>
@@ -75,7 +75,7 @@ export const ButtonLayout = ({
 
       {label && (
         <TextBox align="center" margin={{ top: '6px' }}>
-          <StyledText color={textColor} screenSize={size}>
+          <StyledText color={textColor} isMobile={isMobile}>
             {label}
           </StyledText>
         </TextBox>
