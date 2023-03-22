@@ -44,5 +44,12 @@ describe('<ClassroomWidgetProvider />', () => {
       screen.getByRole('textbox', { name: 'Description' }),
     ).toBeInTheDocument();
 
+    // Scheduling
+    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+    expect(inputStartingAtDate).toHaveValue('2022/01/13');
+    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+    expect(inputStartingAtTime).toHaveValue('12:00');
+    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
+    expect(inputEstimatedDuration).toHaveValue('0:30');
   });
 });

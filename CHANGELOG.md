@@ -25,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add classroom widgets :
   - InfoBar
   - Description
+  - Scheduling
 
 ### Changed
 

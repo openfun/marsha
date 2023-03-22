@@ -72,6 +72,7 @@ interface SchedulingFieldsProps {
   onEstimatedDurationChange?: (duration: string | null) => void;
   margin?: MarginType;
   disabled?: boolean;
+  vertical?: boolean;
 }
 
 export const SchedulingFields = ({
@@ -81,6 +82,7 @@ export const SchedulingFields = ({
   onEstimatedDurationChange,
   margin,
   disabled,
+  vertical,
 }: SchedulingFieldsProps) => {
   const intl = useIntl();
   Settings.defaultLocale = intl.locale;
@@ -208,7 +210,12 @@ export const SchedulingFields = ({
 
   return (
     <React.Fragment>
-      <Box direction="row" justify="between" margin={margin} gap="small">
+      <Box
+        direction={vertical ? 'column' : 'row'}
+        justify="between"
+        margin={margin}
+        gap="small"
+      >
         <Box>
           <FormField
             label={intl.formatMessage(messages.startingAtDateTextLabel)}
