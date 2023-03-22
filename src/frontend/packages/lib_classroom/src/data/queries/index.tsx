@@ -19,6 +19,7 @@ import {
   ClassroomModelName,
   metadata,
   FetchResponseError,
+  deleteOne,
 } from 'lib-components';
 import {
   useMutation,
@@ -205,6 +206,50 @@ export const useUpdateClassroomDocument = (
         name: 'classroomdocuments',
         id,
         object: updatedClassroomDocument,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('classroomdocuments');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('classroomdocuments');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
+type UseDeleteClassroomDocumentData = string;
+type UseDeleteClassroomDocumentError =
+  | { code: 'exception' }
+  | {
+      code: 'invalid';
+      errors: { [key in keyof UseDeleteClassroomDocumentData]?: string[] }[];
+    };
+type UseDeleteClassroomDocumentOptions = UseMutationOptions<
+  Maybe<ClassroomDocument>,
+  UseDeleteClassroomDocumentError,
+  UseDeleteClassroomDocumentData
+>;
+export const useDeleteClassroomDocument = (
+  options?: UseDeleteClassroomDocumentOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    Maybe<ClassroomDocument>,
+    UseDeleteClassroomDocumentError,
+    UseDeleteClassroomDocumentData
+  >(
+    (classroomDocumentId) =>
+      deleteOne({
+        name: 'classroomdocuments',
+        id: classroomDocumentId,
       }),
     {
       ...options,
