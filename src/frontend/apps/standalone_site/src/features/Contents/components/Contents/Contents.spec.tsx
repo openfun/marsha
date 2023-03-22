@@ -6,7 +6,7 @@ import Contents from './Contents';
 jest.mock('features/Contents', () => ({
   ClassRooms: () => <div>Classrooms Component</div>,
   Videos: () => <div>Videos Component</div>,
-  Lives: () => <div>Lives Component</div>,
+  Lives: () => <div>Webinars Component</div>,
 }));
 
 describe('<Contents />', () => {
@@ -14,9 +14,9 @@ describe('<Contents />', () => {
     render(<Contents />);
     expect(screen.getByText(/My Classrooms/)).toBeInTheDocument();
     expect(screen.getByText(/My Videos/)).toBeInTheDocument();
-    expect(screen.getByText(/My Lives/)).toBeInTheDocument();
+    expect(screen.getByText(/My Webinars/)).toBeInTheDocument();
     expect(screen.getByText(/Classrooms Component/i)).toBeInTheDocument();
-    expect(screen.getByText(/Lives Component/i)).toBeInTheDocument();
+    expect(screen.getByText(/Webinars Component/i)).toBeInTheDocument();
     expect(screen.getByText(/Videos Component/i)).toBeInTheDocument();
     expect(screen.getAllByText(/See Everything/i)).toHaveLength(3);
   });

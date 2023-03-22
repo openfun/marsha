@@ -8,8 +8,8 @@ describe('<Live />', () => {
   test('renders Live', () => {
     const live = videoMockFactory({
       id: '4321',
-      title: 'New live title',
-      description: 'New live description',
+      title: 'New webinar title',
+      description: 'New webinar description',
       playlist: {
         ...videoMockFactory().playlist,
         title: 'New playlist title',
@@ -24,8 +24,8 @@ describe('<Live />', () => {
     ).toHaveStyle(
       `background: url(https://example.com/default_thumbnail/240) no-repeat center / cover`,
     );
-    expect(screen.getByText('New live title')).toBeInTheDocument();
-    expect(screen.getByText('New live description')).toBeInTheDocument();
+    expect(screen.getByText('New webinar title')).toBeInTheDocument();
+    expect(screen.getByText('New webinar description')).toBeInTheDocument();
     expect(screen.getByText('New playlist title')).toBeInTheDocument();
     expect(screen.getByRole('link')).toHaveAttribute(
       'href',
@@ -36,8 +36,8 @@ describe('<Live />', () => {
   test('renders thumbnail', () => {
     const live = videoMockFactory({
       id: '4321',
-      title: 'New live title',
-      description: 'New live description',
+      title: 'New webinar title',
+      description: 'New webinar description',
       playlist: {
         ...videoMockFactory().playlist,
         title: 'New playlist title',
