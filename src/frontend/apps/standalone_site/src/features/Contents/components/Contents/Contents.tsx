@@ -7,10 +7,10 @@ import { ClassRooms, Videos, Lives } from 'features/Contents';
 import { routes } from 'routes';
 
 const messages = defineMessages({
-  MyLives: {
-    defaultMessage: 'My Lives',
-    description: 'My contents page, my lives title',
-    id: 'features.Contents.Contents.MyLives',
+  MyWebinars: {
+    defaultMessage: 'My Webinars',
+    description: 'My contents page, my webinars title',
+    id: 'features.Contents.Contents.MyWebinars',
   },
   MyVideos: {
     defaultMessage: 'My Videos',
@@ -40,7 +40,7 @@ const Contents = () => {
     <Box margin={{ top: 'medium' }}>
       <Box margin={{ top: 'medium' }}>
         <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
-          <Text weight="bolder">{intl.formatMessage(messages.MyLives)}</Text>
+          <Text weight="bolder">{intl.formatMessage(messages.MyWebinars)}</Text>
           <Text weight="bolder">
             <StyledLink to={`${routes.CONTENTS.subRoutes.LIVE.path}`}>
               › {intl.formatMessage(messages.SeeEverything)}

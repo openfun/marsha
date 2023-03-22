@@ -47,8 +47,8 @@ const messages = defineMessages({
     id: 'routes.routes.menuContentsVideosLabel',
   },
   menuContentsLivesLabel: {
-    defaultMessage: 'Lives',
-    description: 'Label for the lives link in the content navigation menu',
+    defaultMessage: 'Webinars',
+    description: 'Label for the webinars link in the content navigation menu',
     id: 'routes.routes.menuContentsLivesLabel',
   },
   menuContentsClassroomLabel: {
