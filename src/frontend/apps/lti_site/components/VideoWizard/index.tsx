@@ -1,5 +1,5 @@
-import { Button, Box, Text, ResponsiveContext } from 'grommet';
-import React, { useContext } from 'react';
+import { Button, Box, Text } from 'grommet';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
 
@@ -10,11 +10,13 @@ import {
   withLink,
   WhiteCard,
   WizardLayout,
+  useResponsive,
 } from 'lib-components';
 import { ConfigureLiveButton, CreateVOD } from 'lib-video';
 import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 
 import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
+import { Breakpoints } from 'lib-common';
 
 const messages = defineMessages({
   chooseActionTitle: {
@@ -40,7 +42,7 @@ const CreateVODButton = withLink(Button);
 const VideoWizard = () => {
   const intl = useIntl();
   const history = useHistory();
-  const size = useContext(ResponsiveContext);
+  const { breakpoint, isSmallerBreakpoint } = useResponsive();
   const appData = useAppConfig();
 
   if (!appData.video) {
@@ -77,7 +79,11 @@ const VideoWizard = () => {
           <Box
             direction="column"
             gap="medium"
-            margin={{ horizontal: size === 'medium' ? 'medium' : 'xlarge' }}
+            margin={{
+              horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
+                ? 'medium'
+                : 'xlarge',
+            }}
           >
             <Text color="blue-active" size="1rem" textAlign="center">
               {intl.formatMessage(messages.descriptionText)}

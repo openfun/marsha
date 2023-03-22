@@ -1,15 +1,16 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
-import { WhiteCard, WizardLayout } from 'lib-components';
-import { Box, Button, ResponsiveContext, Text, TextInput } from 'grommet';
+import { useResponsive, WhiteCard, WizardLayout } from 'lib-components';
+import { Box, Button, Text, TextInput } from 'grommet';
 import {
   LanguageSelector,
   MARKDOWN_EDITOR_ROUTE,
   useSaveTranslations,
 } from 'lib-markdown';
 import { toast } from 'react-hot-toast';
+import { Breakpoints } from 'lib-common';
 
 const messages = defineMessages({
   markdownCreationTitle: {
@@ -53,7 +54,7 @@ type MarkdownWizardProps = {
 
 export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const history = useHistory();
 
   const [language, setLanguage] = React.useState(intl.locale);
@@ -77,7 +78,11 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
         <Box
           direction="column"
           gap="medium"
-          margin={{ horizontal: size === 'medium' ? 'medium' : 'xlarge' }}
+          margin={{
+            horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
+              ? 'medium'
+              : 'xlarge',
+          }}
         >
           <Text
             color="blue-active"

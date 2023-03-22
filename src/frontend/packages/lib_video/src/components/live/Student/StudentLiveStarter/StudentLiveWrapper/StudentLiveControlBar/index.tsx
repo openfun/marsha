@@ -1,6 +1,10 @@
-import { Box, ResponsiveContext } from 'grommet';
-import { JoinMode, LiveModeType, liveState } from 'lib-components';
-import { useContext } from 'react';
+import { Box } from 'grommet';
+import {
+  JoinMode,
+  LiveModeType,
+  liveState,
+  useResponsive,
+} from 'lib-components';
 import styled from 'styled-components';
 
 import { AppsWrapper } from '@lib-video/components/live/common/LiveControls/AppsWrapper';
@@ -20,7 +24,7 @@ const ButtonBox = styled(Box)`
 
 export const StudentLiveControlBar = () => {
   const live = useCurrentLive();
-  const isMobileView = useContext(ResponsiveContext) === 'small';
+  const { isMobile } = useResponsive();
   const { availableItems } = useLivePanelState((state) => ({
     availableItems: state.availableItems,
   }));
@@ -36,9 +40,9 @@ export const StudentLiveControlBar = () => {
     <Box
       direction="row-reverse"
       height="100%"
-      justify={isMobileView ? 'evenly' : undefined}
+      justify={isMobile ? 'evenly' : undefined}
     >
-      {isMobileView && availableItems.includes(LivePanelItem.APPLICATION) && (
+      {isMobile && availableItems.includes(LivePanelItem.APPLICATION) && (
         <Box height="100%" style={{ minWidth: '60px' }}>
           <AppsWrapper />
         </Box>

@@ -1,12 +1,4 @@
-import {
-  Box,
-  Paragraph,
-  Image,
-  Text,
-  ResponsiveContext,
-  Stack,
-  Heading,
-} from 'grommet';
+import { Box, Paragraph, Image, Text, Stack, Heading } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import React from 'react';
@@ -14,9 +6,10 @@ import { useIntl, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
-interface PropsExtended {
-  breakpoint?: string;
+interface ResponsiveProps {
+  isMobile?: boolean;
 }
 
 const LeftCircle = styled(Box)`
@@ -24,20 +17,18 @@ const LeftCircle = styled(Box)`
   transform: translate(-60%);
 `;
 
-const Onomatopoeia = styled(Paragraph)<PropsExtended>`
+const Onomatopoeia = styled(Paragraph)<ResponsiveProps>`
   font-family: 'Roboto-Light';
-  letter-spacing: ${(props) =>
-    props.breakpoint === 'small' ? `-0.104rem;` : '-0.183rem'};
+  letter-spacing: ${({ isMobile }) => (isMobile ? `-0.104rem;` : '-0.183rem')};
 `;
 
-const H2Code = styled(Heading)<PropsExtended>`
+const H2Code = styled(Heading)<ResponsiveProps>`
   font-family: 'Roboto-Bold';
-  letter-spacing: ${(props) =>
-    props.breakpoint === 'small' ? `-0.157rem` : '-0.392rem'};
+  letter-spacing: ${({ isMobile }) => (isMobile ? `-0.157rem` : '-0.392rem')};
 `;
 
-const ErrorMessage = styled(Paragraph)<PropsExtended>`
-  max-width: ${(props) => (props.breakpoint === 'small' ? `90%;` : '338px')};
+const ErrorMessage = styled(Paragraph)<ResponsiveProps>`
+  max-width: ${({ isMobile }) => (isMobile ? `90%;` : '338px')};
 `;
 
 const messages = {
@@ -78,8 +69,7 @@ export const BoundaryScreenError = ({
 }: BoundaryScreenErrorProps) => {
   const appData = useAppConfig();
   const intl = useIntl();
-  const breakpoint = React.useContext(ResponsiveContext);
-  const isSmall = breakpoint === 'small';
+  const { isMobile: isSmall } = useResponsive();
 
   return (
     <Stack>
@@ -143,7 +133,7 @@ export const BoundaryScreenError = ({
           style={{ color: normalizeColor('blue-active', theme) }}
         >
           <Onomatopoeia
-            breakpoint={breakpoint}
+            isMobile={isSmall}
             size={isSmall ? '2.5rem' : '4.375rem'}
             margin="none"
           >
@@ -153,7 +143,7 @@ export const BoundaryScreenError = ({
             margin="none"
             level={2}
             size={isSmall ? '3.75rem' : '9.375rem'}
-            breakpoint={breakpoint}
+            isMobile={isSmall}
           >
             {code}
           </H2Code>

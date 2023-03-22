@@ -1,7 +1,8 @@
-import { Box, Image, ResponsiveContext, Stack } from 'grommet';
-import React, { useContext } from 'react';
+import { Box, Image, Stack } from 'grommet';
+import React from 'react';
 
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
+import { useResponsive } from '@lib-components/hooks/useResponsive';
 
 interface WizardLayoutProps {
   children: React.ReactNode | React.ReactNode[];
@@ -9,7 +10,7 @@ interface WizardLayoutProps {
 
 export const WizardLayout = ({ children }: WizardLayoutProps) => {
   const appData = useAppConfig();
-  const isSmall = useContext(ResponsiveContext) === 'small';
+  const { isMobile: isSmall } = useResponsive();
 
   return (
     <Box flex direction="row">

@@ -1,5 +1,5 @@
-import { Box, Button, Text, ResponsiveContext } from 'grommet';
-import { Nullable } from 'lib-common';
+import { Box, Button, Text } from 'grommet';
+import { Nullable, Breakpoints } from 'lib-common';
 import {
   TextInput,
   useUploadManager,
@@ -8,8 +8,9 @@ import {
   useVideo,
   report,
   WhiteCard,
+  useResponsive,
 } from 'lib-components';
-import React, { useContext, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -81,7 +82,7 @@ export const CreateVOD = ({
 }: CreateVODProps) => {
   const currentVideo = useVideo((state) => state.getVideo(video));
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const [wizardedVideo, setWizardedVideo] = useState<WizardedVideo>({
     title: currentVideo.title,
     videoFile: null,
@@ -154,7 +155,11 @@ export const CreateVOD = ({
         <Box
           direction="column"
           gap="medium"
-          margin={{ horizontal: size === 'medium' ? 'medium' : 'xlarge' }}
+          margin={{
+            horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
+              ? 'medium'
+              : 'xlarge',
+          }}
         >
           <Text
             color="blue-active"

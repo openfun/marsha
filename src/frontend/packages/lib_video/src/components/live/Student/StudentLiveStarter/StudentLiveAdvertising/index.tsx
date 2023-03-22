@@ -1,14 +1,13 @@
-import { Box, Paragraph, ResponsiveContext, Stack, Text } from 'grommet';
+import { Box, Paragraph, Stack, Text } from 'grommet';
 import { Schedule } from 'grommet-icons';
-import { useAppConfig, liveState, ThumbnailDisplayer } from 'lib-components';
+import {
+  useAppConfig,
+  liveState,
+  ThumbnailDisplayer,
+  useResponsive,
+} from 'lib-components';
 import { DateTime, Duration } from 'luxon';
-import React, {
-  CSSProperties,
-  useContext,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react';
+import React, { CSSProperties, useEffect, useMemo, useState } from 'react';
 import ICalendarLink from 'react-icalendar-link';
 import { useIntl, defineMessages } from 'react-intl';
 import styled from 'styled-components';
@@ -53,7 +52,7 @@ const messages = defineMessages({
 export const StudentLiveAdvertising = () => {
   const appData = useAppConfig();
   const live = useCurrentLive();
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const intl = useIntl();
   const liveScheduleStartDate = useMemo(() => {
     if (!live.starting_at) {
@@ -111,7 +110,7 @@ export const StudentLiveAdvertising = () => {
       : { 1080: appData.static.img.liveBackground };
 
   let containerStyle: CSSProperties;
-  if (size === 'small') {
+  if (isMobile) {
     containerStyle = { width: '90%', maxWidth: '400px' };
   } else {
     containerStyle = { maxWidth: '40%', minWidth: '600px' };
