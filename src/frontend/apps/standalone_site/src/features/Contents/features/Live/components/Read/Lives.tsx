@@ -9,8 +9,8 @@ import Live from './Live';
 
 const messages = defineMessages({
   NoLive: {
-    defaultMessage: 'There is no live to display.',
-    description: 'Text when there is no live to display.',
+    defaultMessage: 'There is no webinar to display.',
+    description: 'Text when there is no webinar to display.',
     id: 'features.Contents.features.ReadLives.NoLive',
   },
 });

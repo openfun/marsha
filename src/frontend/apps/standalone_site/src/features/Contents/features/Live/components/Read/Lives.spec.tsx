@@ -20,8 +20,8 @@ const someResponse = {
   results: [
     videoMockFactory({
       id: '4321',
-      title: 'New live title',
-      description: 'New live description',
+      title: 'New webinar title',
+      description: 'New webinar description',
       playlist: {
         ...videoMockFactory().playlist,
         title: 'New playlist title',
@@ -88,7 +88,7 @@ describe('<Lives/>', () => {
     render(<Lives />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
     expect(
-      await screen.findByText(/There is no live to display./i),
+      await screen.findByText(/There is no webinar to display./i),
     ).toBeInTheDocument();
   });
 
@@ -100,8 +100,8 @@ describe('<Lives/>', () => {
 
     render(<Lives />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
-    expect(await screen.findByText(/New live title/)).toBeInTheDocument();
-    expect(screen.getByText(/New live description/)).toBeInTheDocument();
+    expect(await screen.findByText(/New webinar title/)).toBeInTheDocument();
+    expect(screen.getByText(/New webinar description/)).toBeInTheDocument();
     expect(
       screen.queryByLabelText('Pagination Navigation'),
     ).not.toBeInTheDocument();
@@ -151,7 +151,7 @@ describe('<Lives/>', () => {
 
     render(<Lives withPagination={false} limit={1} />);
 
-    expect(await screen.findByText(/New live title/)).toBeInTheDocument();
+    expect(await screen.findByText(/New webinar title/)).toBeInTheDocument();
   });
 
   test('api limit depend the responsive', async () => {
@@ -174,6 +174,6 @@ describe('<Lives/>', () => {
       },
     );
 
-    expect(await screen.findByText('New live title')).toBeInTheDocument();
+    expect(await screen.findByText('New webinar title')).toBeInTheDocument();
   });
 });
