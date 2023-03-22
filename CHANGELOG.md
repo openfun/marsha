@@ -24,6 +24,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a widget provider for the classroom creation form
 - Add classroom widgets :
   - InfoBar
+  - Description
 
 ### Changed
 
