@@ -8,6 +8,7 @@ import {
   useAppConfig,
   appState,
   flags,
+  MarkdownDocument,
 } from 'lib-components';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -22,14 +23,12 @@ import {
 import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
 
 type RedirectOnLoadProps = {
-  isNewDocument?: boolean;
+  markdownDocument?: MarkdownDocument;
 };
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
-export const RedirectOnLoad = ({
-  isNewDocument = false,
-}: RedirectOnLoadProps) => {
+export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
   const appData = useAppConfig();
   const isFeatureEnabled = useIsFeatureEnabled();
 
@@ -54,6 +53,14 @@ export const RedirectOnLoad = ({
   const [context] = useCurrentResourceContext();
 
   if (context.permissions.can_update) {
+    const isNewDocument =
+      markdownDocument?.translations.length === 0 ||
+      markdownDocument?.translations.reduce(
+        (acc, translation) => acc && translation.title === '',
+        true,
+      ) ||
+      false;
+
     if (isNewDocument) {
       return <Redirect push to={MARKDOWN_WIZARD_ROUTE()} />;
     }
