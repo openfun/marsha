@@ -2,7 +2,6 @@ import { act, fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  UploadManagerStatus,
   useUploadManager,
   uploadState,
   ClassroomDocument,
@@ -46,7 +45,7 @@ const mockCreateClassroomDocument =
     typeof createClassroomDocument
   >;
 
-const { PENDING, READY } = uploadState;
+const { READY } = uploadState;
 
 describe('<UploadDocuments />', () => {
   afterEach(() => {
@@ -229,86 +228,6 @@ describe('<UploadDocuments />', () => {
     });
   });
 
-  it('shows the upload progress when the file is uploading', async () => {
-    const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
-    const classroomDocument = classroomDocumentMockFactory({
-      filename: file.name,
-      upload_state: PENDING,
-      uploaded_on: '2020-01-01T00:00:00Z',
-      url: 'https://example.com/file.txt',
-    });
-    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [classroomDocument],
-    });
-
-    fetchMock.mock(
-      '/api/classroomdocuments/',
-      {
-        upload_max_size_bytes: Math.pow(10, 9),
-      },
-      { method: 'OPTIONS' },
-    );
-
-    mockUseUploadManager.mockReturnValue({
-      addUpload: jest.fn(),
-      resetUpload: jest.fn(),
-      uploadManagerState: {
-        [classroomDocument.id]: {
-          file,
-          objectType: modelName.CLASSROOM_DOCUMENTS,
-          objectId: classroomDocument.id,
-          progress: 20,
-          status: UploadManagerStatus.UPLOADING,
-        },
-      },
-    });
-    render(<UploadDocuments classroomId="1" />);
-
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(2));
-    // file exist in both uploadmanager and classrooms.classroomdocuments,
-    // but only the uploadmanager one is rendered.
-    await screen.findByText(file.name);
-    await screen.findByText('20%');
-    await screen.findByText(
-      'Upload in progress... Please do not close or reload this page.',
-    );
-  });
-
-  it('shows existing classroom documents in the list', async () => {
-    const classroomDocument = classroomDocumentMockFactory({
-      filename: 'file.txt',
-      upload_state: READY,
-      uploaded_on: '2020-01-01T00:00:00Z',
-      url: 'https://example.com/file.txt',
-    });
-    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
-      count: 1,
-      next: null,
-      previous: null,
-      results: [classroomDocument],
-    });
-
-    fetchMock.mock(
-      '/api/classroomdocuments/',
-      {
-        upload_max_size_bytes: Math.pow(10, 9),
-      },
-      { method: 'OPTIONS' },
-    );
-
-    render(<UploadDocuments classroomId="1" />);
-
-    await screen.findByText('file.txt');
-    const downloadButton = screen.getByRole('link', { name: 'Download' });
-    expect(downloadButton).toHaveAttribute(
-      'href',
-      'https://example.com/file.txt',
-    );
-  });
-
   it('updates classroom documents defaults', async () => {
     const classroomDocument = classroomDocumentMockFactory({
       filename: 'file.txt',
@@ -346,16 +265,87 @@ describe('<UploadDocuments />', () => {
     render(<UploadDocuments classroomId="1" />);
 
     await screen.findByText('file.txt');
-    const downloadButton = screen.getByRole('button', {
+    const setDefaultButton = screen.getByRole('button', {
       name: 'Click to set as default document',
     });
 
-    userEvent.click(downloadButton);
+    userEvent.click(setDefaultButton);
 
     await waitFor(() =>
       expect(fetchMock.calls()[2]![1]!.body).toEqual(
         JSON.stringify({ is_default: true }),
       ),
+    );
+  });
+
+  it('successfully deletes a classroom document', async () => {
+    const classroomDocument = classroomDocumentMockFactory({
+      filename: 'file.txt',
+      is_default: false,
+      upload_state: READY,
+      uploaded_on: '2020-01-01T00:00:00Z',
+      url: 'https://example.com/file.txt',
+    });
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [classroomDocument],
+    });
+
+    mockUseUploadManager.mockReturnValue({
+      addUpload: jest.fn(),
+      resetUpload: jest.fn(),
+      uploadManagerState: {},
+    });
+
+    fetchMock.delete(`/api/classroomdocuments/${classroomDocument.id}/`, 204);
+
+    render(<UploadDocuments classroomId="1" />);
+
+    await screen.findByRole('link', { name: 'file.txt' });
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'Click on this button to delete the media.',
+    });
+    userEvent.click(deleteButton);
+
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
+    expect(fetchMock.calls()[1]![0]).toEqual(
+      `/api/classroomdocuments/${classroomDocument.id}/`,
+    );
+    expect(fetchMock.calls()[1]![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'DELETE',
+    });
+  });
+
+  it('downloads transcript when the user clicks the download button', async () => {
+    fetchMock.mock('https://example.com/file.txt', 'Super file');
+    const classroomDocument = classroomDocumentMockFactory({
+      filename: 'file.txt',
+      is_default: false,
+      upload_state: READY,
+      uploaded_on: '2020-01-01T00:00:00Z',
+      url: 'https://example.com/file.txt',
+    });
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 1,
+      next: null,
+      previous: null,
+      results: [classroomDocument],
+    });
+
+    render(<UploadDocuments classroomId="1" />);
+
+    const downloadLink = await screen.findByRole('link', {
+      name: 'file.txt',
+    });
+    expect(downloadLink).toHaveAttribute(
+      'href',
+      'https://example.com/file.txt',
     );
   });
 });

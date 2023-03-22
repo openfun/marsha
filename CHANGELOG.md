@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Description
   - Scheduling
   - Invite links
+  - Support sharing
 
 ### Changed
 
