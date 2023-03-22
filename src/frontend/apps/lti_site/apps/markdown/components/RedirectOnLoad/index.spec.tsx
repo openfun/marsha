@@ -9,6 +9,10 @@ import {
   useAppConfig,
   appState,
 } from 'lib-components';
+import {
+  markdownDocumentMockFactory,
+  markdownTranslationMockFactory,
+} from 'lib-markdown';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import render from 'utils/tests/render';
@@ -113,7 +117,7 @@ describe('<RedirectOnLoad />', () => {
     screen.getByText('Markdown editor');
   });
 
-  it('shows wizard for instructor who can update a new document', async () => {
+  it('shows wizard for instructor who can update a document without translation', async () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { markdown: true },
     } as any);
@@ -126,8 +130,12 @@ describe('<RedirectOnLoad />', () => {
         consumer_site: 'consumer_site',
       },
     ] as any);
+    const markdownDocument = markdownDocumentMockFactory({
+      id: '1',
+      translations: [],
+    });
 
-    render(<RedirectOnLoad isNewDocument={true} />, {
+    render(<RedirectOnLoad markdownDocument={markdownDocument} />, {
       routerOptions: {
         routes: [
           {
@@ -138,6 +146,85 @@ describe('<RedirectOnLoad />', () => {
       },
     });
     screen.getByText('Markdown wizard');
+  });
+
+  it('shows wizard for instructor who can update a document which translation has no title', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      flags: { markdown: true },
+    } as any);
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
+        roles: [OrganizationAccessRole.INSTRUCTOR],
+        consumer_site: 'consumer_site',
+      },
+    ] as any);
+    const markdownDocument = markdownDocumentMockFactory({
+      id: '1',
+      translations: [
+        markdownTranslationMockFactory({
+          language_code: 'en',
+          title: '',
+          rendered_content: '<p>English document content.</p>',
+        }),
+      ],
+    });
+
+    render(<RedirectOnLoad markdownDocument={markdownDocument} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: MARKDOWN_WIZARD_ROUTE(),
+            render: () => <span>Markdown wizard</span>,
+          },
+        ],
+      },
+    });
+    screen.getByText('Markdown wizard');
+  });
+
+  it('shows editor for instructor who can update a document if a translation has a title', async () => {
+    mockedUseAppConfig.mockReturnValue({
+      flags: { markdown: true },
+    } as any);
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_update: true,
+        },
+        roles: [OrganizationAccessRole.INSTRUCTOR],
+        consumer_site: 'consumer_site',
+      },
+    ] as any);
+    const markdownDocument = markdownDocumentMockFactory({
+      id: '1',
+      translations: [
+        markdownTranslationMockFactory({
+          language_code: 'en',
+          title: '',
+          rendered_content: '<p>English document content.</p>',
+        }),
+        markdownTranslationMockFactory({
+          language_code: 'fr',
+          title: 'Un titre en français',
+          rendered_content: '<p>Contenu en français.</p>',
+        }),
+      ],
+    });
+
+    render(<RedirectOnLoad markdownDocument={markdownDocument} />, {
+      routerOptions: {
+        routes: [
+          {
+            path: MARKDOWN_EDITOR_ROUTE(),
+            render: () => <span>Markdown editor</span>,
+          },
+        ],
+      },
+    });
+    screen.getByText('Markdown editor');
   });
 
   it('shows viewer for student or instructor who cannot update', async () => {
