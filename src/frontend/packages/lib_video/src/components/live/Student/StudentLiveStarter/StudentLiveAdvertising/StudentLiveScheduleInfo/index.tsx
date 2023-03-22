@@ -1,12 +1,11 @@
-import { Box, Clock, Heading, Paragraph, ResponsiveContext } from 'grommet';
+import { Box, Clock, Heading, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { ChronometerSVG, liveState } from 'lib-components';
+import { ChronometerSVG, liveState, useResponsive } from 'lib-components';
 import { DateTime } from 'luxon';
 import React, {
   Fragment,
   ReactNode,
-  useContext,
   useEffect,
   useMemo,
   useState,
@@ -111,7 +110,7 @@ export const StudentLiveScheduleInfo = ({
   live_state,
 }: StudentLiveScheduleInfoProps) => {
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const split = useMemo(() => {
     if (!startDate) {
       return undefined;
@@ -201,7 +200,7 @@ export const StudentLiveScheduleInfo = ({
           title={
             <Fragment>
               {intl.formatMessage(messages.timeLeft)}
-              {size !== 'small' && (
+              {!isMobile && (
                 <StyledClock
                   color={normalizeColor('blue-active', theme)}
                   margin={{ left: 'xsmall' }}
@@ -214,7 +213,7 @@ export const StudentLiveScheduleInfo = ({
             </Fragment>
           }
         />
-        {size === 'small' && (
+        {isMobile && (
           <Header
             title={
               <StyledClock

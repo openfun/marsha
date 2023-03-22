@@ -1,8 +1,8 @@
-import { Box, Grid, Heading, Paragraph, ResponsiveContext } from 'grommet';
-import React, { useContext } from 'react';
+import { Box, Grid, Heading, Paragraph } from 'grommet';
+import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { Loader, FileDepository } from 'lib-components';
+import { Loader, FileDepository, useResponsive } from 'lib-components';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
@@ -27,7 +27,7 @@ interface DashboardStudentProps {
 }
 
 export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const { data, isError, isLoading } = useDepositedFiles(fileDepository.id, {});
 
   return (
@@ -40,7 +40,7 @@ export const DashboardStudent = ({ fileDepository }: DashboardStudentProps) => {
         round="xsmall"
       >
         <Heading>{fileDepository.title}</Heading>
-        {size === 'small' || size === 'xsmall' ? (
+        {isMobile ? (
           <React.Fragment>
             <Paragraph>{fileDepository.description}</Paragraph>
             <UploadFiles />

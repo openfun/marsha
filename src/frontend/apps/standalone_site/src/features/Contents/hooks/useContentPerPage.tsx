@@ -1,5 +1,4 @@
-import { ResponsiveContext } from 'grommet';
-import { useContext } from 'react';
+import { useResponsive } from 'lib-components';
 
 import { ITEM_PER_PAGE } from 'conf/global';
 
@@ -14,7 +13,7 @@ const breakpointContentPerPage = {
 };
 
 const useContentPerPage = () => {
-  const breakpoint = useContext(ResponsiveContext);
+  const { breakpoint } = useResponsive();
 
   return (
     breakpointContentPerPage[

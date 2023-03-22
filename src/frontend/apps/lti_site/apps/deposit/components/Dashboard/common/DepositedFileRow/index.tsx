@@ -1,11 +1,12 @@
-import { Anchor, Box, ResponsiveContext, Text } from 'grommet';
-import { truncateFilename, DepositedFile } from 'lib-components';
+import { Anchor, Box, Text } from 'grommet';
+import { truncateFilename, DepositedFile, useResponsive } from 'lib-components';
 import { DateTime } from 'luxon';
-import React, { useContext } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { useUpdateDepositedFile } from 'apps/deposit/data/queries';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
+import { Breakpoints } from 'lib-common';
 
 const messages = defineMessages({
   labelDownload: {
@@ -21,7 +22,7 @@ interface DepositedFileProps {
 
 export const DepositedFileRow = ({ file }: DepositedFileProps) => {
   const intl = useIntl();
-  const size = useContext(ResponsiveContext);
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
   const uploadedOn = file.uploaded_on
     ? DateTime.fromISO(file.uploaded_on)
     : null;
@@ -109,9 +110,9 @@ export const DepositedFileRow = ({ file }: DepositedFileProps) => {
       <Box direction="row" fill>
         <Box justify="start" flex>
           <Text title={file.filename} weight={file.read ? 'normal' : 'bolder'}>
-            {size === 'medium'
+            {isSmallerBreakpoint(breakpoint, Breakpoints.large)
               ? truncateFilename(file.filename, 40)
-              : size === 'large'
+              : breakpoint === 'large'
               ? truncateFilename(file.filename, 60)
               : file.filename}
           </Text>

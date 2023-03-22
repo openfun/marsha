@@ -1,6 +1,10 @@
-import { Box, Heading, Paragraph, ResponsiveContext, Stack } from 'grommet';
-import { ThumbnailDisplayer, useAppConfig } from 'lib-components';
-import React, { CSSProperties, useContext } from 'react';
+import { Box, Heading, Paragraph, Stack } from 'grommet';
+import {
+  ThumbnailDisplayer,
+  useAppConfig,
+  useResponsive,
+} from 'lib-components';
+import React, { CSSProperties } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { AdvertisingBox } from '../StudentLiveStarter/StudentLiveAdvertising/AdvertisingBox';
@@ -26,11 +30,11 @@ interface StudentLiveAdvertisingProps {
 
 export const StudentLiveError = ({ error }: StudentLiveAdvertisingProps) => {
   const appData = useAppConfig();
-  const size = useContext(ResponsiveContext);
+  const { isMobile } = useResponsive();
   const intl = useIntl();
 
   let containerStyle: CSSProperties;
-  if (size === 'small') {
+  if (isMobile) {
     containerStyle = { width: '90%', maxWidth: '400px' };
   } else {
     containerStyle = { maxWidth: '40%', minWidth: '600px' };
