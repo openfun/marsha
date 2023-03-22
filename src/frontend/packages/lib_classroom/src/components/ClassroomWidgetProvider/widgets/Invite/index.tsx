@@ -1,0 +1,41 @@
+import { FoldableItem } from 'lib-components';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+
+import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
+import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+
+const messages = defineMessages({
+  title: {
+    defaultMessage: 'Invite',
+    description: 'A title for the widget.',
+    id: 'component.ClassroomForm.invite',
+  },
+  info: {
+    defaultMessage: `This widget provides several links depending on what you want to do:
+    - Invite link: Invite people to participate to this classroom as guest without any account.
+    - LTI link: Special link used to add this classroom in your favorite LMS and have it in a 
+    course activity.
+    `,
+    description: 'Helptext for the widget.',
+    id: 'component.ClassroomForm.info',
+  },
+});
+
+export const Invite = () => {
+  const classroom = useCurrentClassroom();
+  const intl = useIntl();
+
+  return (
+    <FoldableItem
+      infoText={intl.formatMessage(messages.info)}
+      initialOpenValue
+      title={intl.formatMessage(messages.title)}
+    >
+      <DashboardCopyClipboard
+        inviteToken={classroom.invite_token}
+        classroomId={classroom.id}
+      />
+    </FoldableItem>
+  );
+};
