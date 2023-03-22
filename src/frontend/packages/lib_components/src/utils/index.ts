@@ -13,3 +13,4 @@ export * from './useResizer';
 export * from './XAPI';
 export * from './XAPI/DocumentXapiStatement';
 export * from './formatSizeErrorScale';
+export * from './debounce';
