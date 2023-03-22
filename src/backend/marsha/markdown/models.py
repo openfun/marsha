@@ -87,6 +87,7 @@ class MarkdownDocument(TranslatableModelMixin, BaseModel):
             max_length=255,
             verbose_name=_("title"),
             help_text=_("Markdown document's title"),
+            blank=True,
         ),
         content=models.TextField(
             verbose_name=_("Markdown document content"),

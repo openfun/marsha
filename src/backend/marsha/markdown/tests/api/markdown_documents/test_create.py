@@ -57,13 +57,19 @@ class MarkdownCreateAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_create_instructor(self):
-        """An instrustor should not be able to create a Markdown document."""
+        """An instructor should not be able to create a Markdown document."""
         markdown_document = MarkdownDocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=markdown_document)
 
-        response = self.client.get(
-            "/api/markdown-documents/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+        response = self.client.post(
+            "/api/markdown-documents/",
+            {
+                "lti_id": "document_one",
+                "playlist": str(markdown_document.playlist.id),
+                "title": "Some document",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
@@ -111,6 +117,55 @@ class MarkdownCreateAPITest(TestCase):
                         "language_code": "en",
                         "rendered_content": "",
                         "title": "Some document",
+                    }
+                ],
+            },
+        )
+
+    def test_api_document_create_instructor_with_playlist_token_no_title(self):
+        """
+        Create document with playlist token.
+
+        Used in the context of a lti select request (deep linking) without title.
+        """
+        playlist = core_factories.PlaylistFactory()
+
+        jwt_token = PlaylistLtiTokenFactory(playlist=playlist)
+
+        self.assertEqual(MarkdownDocument.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/markdown-documents/",
+            {
+                "lti_id": "document_one",
+                "playlist": str(playlist.id),
+                "title": "",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(MarkdownDocument.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        document = MarkdownDocument.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "id": str(document.id),
+                "images": [],
+                "is_draft": True,
+                "playlist": {
+                    "id": str(playlist.id),
+                    "lti_id": playlist.lti_id,
+                    "title": playlist.title,
+                },
+                "position": 0,
+                "rendering_options": {},
+                "translations": [
+                    {
+                        "content": "",
+                        "language_code": "en",
+                        "rendered_content": "",
+                        "title": "",
                     }
                 ],
             },
