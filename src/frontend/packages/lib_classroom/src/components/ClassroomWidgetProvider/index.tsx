@@ -10,11 +10,13 @@ import React from 'react';
 import { ClassroomDescriptionWidget } from './widgets/ClassroomDescriptionWidget';
 import { Invite } from './widgets/Invite';
 import { Scheduling } from './widgets/Scheduling';
+import { SupportSharing } from './widgets/SupportSharing';
 
 enum WidgetType {
   DESCRIPTION = 'DESCRIPTION',
   SCHEDULING = 'SCHEDULING',
   INVITE = 'INVITE',
+  SUPPORT_SHARING = 'SUPPORT_SHARING',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -30,10 +32,15 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <Invite />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.SUPPORT_SHARING]: {
+    component: <SupportSharing />,
+    size: WidgetSize.DEFAULT,
+  },
 const classroomWidgets: WidgetType[] = [
   WidgetType.DESCRIPTION,
   WidgetType.SCHEDULING,
   WidgetType.INVITE,
+  WidgetType.SUPPORT_SHARING,
 ];
 
 export const ClassroomWidgetProvider = () => {

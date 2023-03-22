@@ -54,5 +54,8 @@ describe('<ClassroomWidgetProvider />', () => {
 
     // Invite
     expect(screen.getByText('Invite')).toBeInTheDocument();
+
+    // Upload Documents
+    expect(screen.getByText('Upload Documents')).toBeInTheDocument();
   });
 });
