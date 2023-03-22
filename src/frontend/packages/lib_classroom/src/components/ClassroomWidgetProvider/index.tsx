@@ -9,6 +9,7 @@ import React from 'react';
 
 import { ClassroomDescriptionWidget } from './widgets/ClassroomDescriptionWidget';
 import { Invite } from './widgets/Invite';
+import { Recordings } from './widgets/Recordings';
 import { Scheduling } from './widgets/Scheduling';
 import { SupportSharing } from './widgets/SupportSharing';
 
@@ -17,6 +18,7 @@ enum WidgetType {
   SCHEDULING = 'SCHEDULING',
   INVITE = 'INVITE',
   SUPPORT_SHARING = 'SUPPORT_SHARING',
+  RECORDINGS = 'RECORDINGS',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -36,11 +38,18 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <SupportSharing />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.RECORDINGS]: {
+    component: <Recordings />,
+    size: WidgetSize.DEFAULT,
+  },
+};
+
 const classroomWidgets: WidgetType[] = [
   WidgetType.DESCRIPTION,
   WidgetType.SCHEDULING,
   WidgetType.INVITE,
   WidgetType.SUPPORT_SHARING,
+  WidgetType.RECORDINGS,
 ];
 
 export const ClassroomWidgetProvider = () => {
