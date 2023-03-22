@@ -88,9 +88,7 @@ const Routes = () => {
           <Route
             path={REDIRECT_ON_LOAD_ROUTE()}
             render={() => (
-              <RedirectOnLoad
-                isNewDocument={markdownDocument.translations.length === 0}
-              />
+              <RedirectOnLoad markdownDocument={markdownDocument} />
             )}
           />
         </UploadManager>
