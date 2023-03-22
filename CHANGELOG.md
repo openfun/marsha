@@ -21,6 +21,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add an attribute to consumer site to deactivate resources in LTI select
 - live transpilation on lib-video (#2150)
 - live transpilation on lib-classroom (#2157)
+- Add a widget provider for the classroom creation form
+- Add classroom widgets :
+  - InfoBar
 
 ### Changed
 
