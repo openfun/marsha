@@ -1,4 +1,4 @@
-import { debounce } from './widgets';
+import { debounce } from './debounce';
 
 const debouncedfunction = jest.fn();
 
