@@ -51,5 +51,8 @@ describe('<ClassroomWidgetProvider />', () => {
     expect(inputStartingAtTime).toHaveValue('12:00');
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
     expect(inputEstimatedDuration).toHaveValue('0:30');
+
+    // Invite
+    expect(screen.getByText('Invite')).toBeInTheDocument();
   });
 });

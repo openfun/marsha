@@ -8,11 +8,13 @@ import {
 import React from 'react';
 
 import { ClassroomDescriptionWidget } from './widgets/ClassroomDescriptionWidget';
+import { Invite } from './widgets/Invite';
 import { Scheduling } from './widgets/Scheduling';
 
 enum WidgetType {
   DESCRIPTION = 'DESCRIPTION',
   SCHEDULING = 'SCHEDULING',
+  INVITE = 'INVITE',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -24,9 +26,14 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <Scheduling />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.INVITE]: {
+    component: <Invite />,
+    size: WidgetSize.DEFAULT,
+  },
 const classroomWidgets: WidgetType[] = [
   WidgetType.DESCRIPTION,
   WidgetType.SCHEDULING,
+  WidgetType.INVITE,
 ];
 
 export const ClassroomWidgetProvider = () => {

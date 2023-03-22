@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - InfoBar
   - Description
   - Scheduling
+  - Invite links
 
 ### Changed
 
