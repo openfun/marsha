@@ -49,9 +49,12 @@ from .defaults import (
     BBB,
     CLASSROOM,
     DEPOSIT,
+    DOCUMENT,
     LIVE_RAW,
     MARKDOWN,
     SENTRY,
+    VIDEO,
+    WEBINAR,
 )
 from .lti import LTI
 from .lti.utils import (
@@ -65,7 +68,7 @@ from .models.account import LTIPassport
 from .serializers import DocumentSerializer, PlaylistLiteSerializer, VideoSerializer
 
 
-# pylint: disable=too-many-lines
+# pylint: disable=too-many-lines,too-many-locals
 
 logger = getLogger(__name__)
 
@@ -117,6 +120,9 @@ class MarshaViewMixin:
                 DEPOSIT: settings.DEPOSIT_ENABLED,
                 LIVE_RAW: settings.LIVE_RAW_ENABLED,
                 MARKDOWN: settings.MARKDOWN_ENABLED,
+                VIDEO: True,
+                WEBINAR: True,
+                DOCUMENT: True,
             },
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN,
@@ -855,6 +861,25 @@ class LTISelectView(BaseResourceView):
         )
 
         app_data = super()._get_app_data()
+
+        # filter out resources that are inactive
+        inactive_resources = self.lti.get_consumer_site().inactive_resources
+        for name, value in app_data.get("flags").items():
+            if name in ["sentry", "raw_live"]:
+                continue
+            if name == "BBB":
+                app_data["flags"][name] = (
+                    value and "classroom" not in inactive_resources
+                )
+                continue
+            app_data["flags"][name] = value and name not in inactive_resources
+
+        lti_select_resources_kind = [
+            resource_kind
+            for resource_kind in lti_select_resources_kind
+            if resource_kind not in inactive_resources
+            and app_data["flags"][resource_kind]
+        ]
 
         if targeted_resource:
             app_data.update(

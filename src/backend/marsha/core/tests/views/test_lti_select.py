@@ -501,3 +501,81 @@ class SelectLTIViewTestCase(TestCase):
         mock_logger.assert_called_once_with(
             "Host domain (wrongserver) does not match registered passport (testserver)."
         )
+
+    def test_views_lti_select_inactive_resources(self):
+        """Only activated resources should be true in flags."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        passport.consumer_site.inactive_resources = ["document"]
+        passport.consumer_site.save()
+
+        response = self.client.post(
+            "/lti/select/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+        flags = context.get("flags")
+        self.assertTrue(flags.get("video"))
+        self.assertTrue(flags.get("webinar"))
+        self.assertFalse(flags.get("document"))
+
+        self.assertIsNotNone(context.get("videos"))
+        self.assertIsNotNone(context.get("webinars"))
+        self.assertIsNone(context.get("documents"))
+
+    def test_views_lti_select_no_active_resources(self):
+        """No resource available if none activated."""
+        lti_consumer_parameters = {
+            "roles": random.choice(["instructor", "administrator"]),
+            "content_item_return_url": "https://lti-consumer.site/lti",
+            "context_id": "sent_lti_context_id",
+            "title": "Sent LMS activity title",
+            "text": "Sent LMS activity text",
+        }
+        lti_parameters, passport = generate_passport_and_signed_lti_parameters(
+            url="http://testserver/lti/select/",
+            lti_parameters=lti_consumer_parameters,
+        )
+
+        passport.consumer_site.inactive_resources = ["video", "webinar", "document"]
+        passport.consumer_site.save()
+
+        response = self.client.post(
+            "/lti/select/",
+            lti_parameters,
+            HTTP_REFERER="http://testserver",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">',
+            response.content.decode("utf-8"),
+        )
+        context = json.loads(unescape(match.group(1)))
+        flags = context.get("flags")
+        self.assertFalse(flags.get("video"))
+        self.assertFalse(flags.get("webinar"))
+        self.assertFalse(flags.get("document"))
+
+        self.assertIsNone(context.get("videos"))
+        self.assertIsNone(context.get("webinars"))
+        self.assertIsNone(context.get("documents"))
