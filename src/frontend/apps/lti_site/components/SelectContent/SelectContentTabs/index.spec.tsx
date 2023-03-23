@@ -16,6 +16,7 @@ import render from 'utils/tests/render';
 
 import { buildContentItems } from '../utils';
 import { SelectContentTabs, SelectContentTabProps } from '.';
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',
@@ -101,8 +102,30 @@ jest.mock(
 
 const mockSetContentItemsValue = jest.fn();
 
+jest.mock(
+  'data/hooks/useIsFeatureEnabled',
+  () =>
+    ({
+      useIsFeatureEnabled: jest.fn(),
+    } as any),
+);
+
+const mockUseIsFeatureEnabled = useIsFeatureEnabled as jest.MockedFunction<
+  typeof useIsFeatureEnabled
+>;
+
 describe('SelectContentTabs', () => {
+  afterEach(() => {
+    jest.resetAllMocks();
+  });
+
   it('renders all tabs', async () => {
+    mockUseIsFeatureEnabled.mockImplementation(() => {
+      return (flag) => {
+        const activeResources = ['webinar', 'video', 'document', 'custom_app'];
+        return activeResources.includes(flag);
+      };
+    });
     render(
       <Suspense fallback="Loading...">
         <SelectContentTabs
@@ -160,6 +183,15 @@ describe('SelectContentTabs', () => {
         />
       </Suspense>,
     );
+
+    expect(screen.getByRole('tab', { name: 'Webinars' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Videos' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('tab', { name: 'Documents' }),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('tab', { name: 'Other custom app tab' }),
+    ).toBeInTheDocument();
 
     // Webinars tab
     expect(
@@ -229,5 +261,38 @@ describe('SelectContentTabs', () => {
         ],
       }),
     );
+  });
+
+  it('renders only active tabs', async () => {
+    mockUseIsFeatureEnabled.mockImplementation(() => {
+      return (flag) => {
+        const activeResources = ['webinar', 'video'];
+        return activeResources.includes(flag);
+      };
+    });
+    render(
+      <Suspense fallback="Loading...">
+        <SelectContentTabs
+          playlist={playlistMockFactory({
+            id: '1',
+            title: 'Playlist 1',
+          })}
+          lti_select_form_data={{
+            lti_response_url: 'https://example.com/lti',
+            lti_message_type: 'ContentItemSelection',
+          }}
+          setContentItemsValue={mockSetContentItemsValue}
+        />
+      </Suspense>,
+    );
+
+    expect(screen.getByRole('tab', { name: 'Webinars' })).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Videos' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('tab', { name: 'Documents' }),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('tab', { name: 'Other custom app tab' }),
+    ).not.toBeInTheDocument();
   });
 });

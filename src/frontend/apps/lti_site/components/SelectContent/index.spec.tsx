@@ -21,6 +21,14 @@ import { buildContentItems } from './utils';
 import { SelectContent } from '.';
 import { initiateLive } from 'lib-video';
 
+jest.mock(
+  'data/hooks/useIsFeatureEnabled',
+  () =>
+    ({
+      useIsFeatureEnabled: () => () => true,
+    } as any),
+);
+
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',
   new_video_url: 'https://example.com/lti/videos/',
