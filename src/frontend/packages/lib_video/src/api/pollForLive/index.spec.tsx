@@ -11,7 +11,6 @@ describe('createPlayer', () => {
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
     jest.useRealTimers();
     fetchMock.restore();
   });
