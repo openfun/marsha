@@ -21,6 +21,9 @@ export enum flags {
   CLASSROOM = 'classroom',
   DEPOSIT = 'deposit',
   MARKDOWN = 'markdown',
+  VIDEO = 'video',
+  WEBINAR = 'webinar',
+  DOCUMENT = 'document',
   SENTRY = 'sentry',
   LIVE_RAW = 'live_raw',
 }
