@@ -88,6 +88,9 @@ CLASSROOM = "classroom"
 DEPOSIT = "deposit"
 LIVE_RAW = "live_raw"
 MARKDOWN = "markdown"
+VIDEO = "video"
+WEBINAR = "webinar"
+DOCUMENT = "document"
 RENATER_FER_SAML = "renater_fer_saml"
 
 # LTI view states expected by the frontend LTI application
