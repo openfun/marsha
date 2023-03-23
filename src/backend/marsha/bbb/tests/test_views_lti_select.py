@@ -9,10 +9,9 @@ from django.test import TestCase, override_settings
 from marsha.bbb.factories import ClassroomFactory
 from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.testing_utils import (
+    clear_select_resource_cache_and_reload_urlconf,
     generate_passport_and_signed_lti_parameters,
-    reload_urlconf,
 )
-from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 
 # We don't enforce arguments documentation in tests
@@ -24,21 +23,13 @@ class SelectLTIViewTestCase(TestCase):
 
     maxDiff = None
 
-    def setUp(self):
-        super().setUp()
-        get_lti_select_resources.cache_clear()
-
     @override_settings(BBB_ENABLED=True)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_bbb_enabled_activated(self):
         """
         Frontend context flag should be enabled when flag is enabled
         and resource is active.
         """
-        # Force URLs reload to use BBB_ENABLED
-        # Some strange behavior if put in setUp
-        # Does not happen when running all tests.
-        reload_urlconf()
-
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",
@@ -77,16 +68,12 @@ class SelectLTIViewTestCase(TestCase):
         )
 
     @override_settings(BBB_ENABLED=True)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_bbb_enabled_not_activated(self):
         """
         Frontend context flag should be disabled when flag is enabled
         and resource is not activated.
         """
-        # Force URLs reload to use BBB_ENABLED
-        # Some strange behavior if put in setUp
-        # Does not happen when running all tests.
-        reload_urlconf()
-
         lti_consumer_parameters = {
             "roles": random.choice(["instructor", "administrator"]),
             "content_item_return_url": "https://lti-consumer.site/lti",
@@ -125,6 +112,7 @@ class SelectLTIViewTestCase(TestCase):
         self.assertIsNone(context.get("classrooms"))
 
     @override_settings(BBB_ENABLED=False)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_bbb_disabled_activated(self):
         """Frontend context flag should be disabled when flag is disabled."""
         lti_consumer_parameters = {

@@ -10,6 +10,7 @@ from django.urls import clear_url_caches
 from oauthlib import oauth1
 
 from marsha.core.factories import ConsumerSiteLTIPassportFactory
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 
 RSA_KEY_MOCK = b"""
@@ -54,6 +55,24 @@ def reload_urlconf():
         reload(sys.modules[settings.ROOT_URLCONF])
         clear_url_caches()
     # Otherwise, the module will be loaded normally by Django
+
+
+def clear_select_resource_cache_and_reload_urlconf(func):
+    """
+    Clear the cache of get_lti_select_resources and reload the urlconf.
+
+    Has to be used as a decorator on a test method, after the override_settings.
+    ie:
+    @override_settings(...)
+    @clear_select_resource_cache_and_reload_urlconf
+    """
+
+    def wrapper_func(*args, **kwargs):
+        get_lti_select_resources.cache_clear()
+        reload_urlconf()
+        func(*args, **kwargs)
+
+    return wrapper_func
 
 
 def generate_passport_and_signed_lti_parameters(
