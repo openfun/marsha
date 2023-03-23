@@ -20,6 +20,7 @@ from marsha.core.lti import LTI
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
+from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 from ...core.models import ADMINISTRATOR
 from ..factories import FileDepositoryFactory
@@ -38,6 +39,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
+        get_lti_select_resources.cache_clear()
 
         # Force URLs reload to use DEPOSIT_ENABLED
         reload_urlconf()
@@ -65,7 +67,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(f"/lti/deposits/{ file_depository.id}", data)
+        response = self.client.post(f"/lti/deposits/{file_depository.id}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -118,9 +120,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(
-            f"/lti/filedepositories/{ file_depository.id}", data
-        )
+        response = self.client.post(f"/lti/filedepositories/{file_depository.id}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -208,7 +208,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
 
         mock_get_consumer_site.return_value = passport.consumer_site
 
-        response = self.client.post(f"/lti/deposits/{ file_depository.pk}", data)
+        response = self.client.post(f"/lti/deposits/{file_depository.pk}", data)
         self.assertEqual(response.status_code, 200)
         self.assertContains(response, "<html>")
         content = response.content.decode("utf-8")
@@ -268,7 +268,7 @@ class FileDepositoryLTIViewTestCase(TestCase):
             playlist__consumer_site=passport.consumer_site,
         )
 
-        response = self.client.get(f"/lti/deposits/{ file_depository.id}")
+        response = self.client.get(f"/lti/deposits/{file_depository.id}")
 
         self.assertEqual(response.status_code, 405)
 
