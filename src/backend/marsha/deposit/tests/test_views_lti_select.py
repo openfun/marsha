@@ -8,10 +8,9 @@ from django.test import TestCase, override_settings
 
 from marsha.core.factories import PlaylistFactory
 from marsha.core.tests.testing_utils import (
+    clear_select_resource_cache_and_reload_urlconf,
     generate_passport_and_signed_lti_parameters,
-    reload_urlconf,
 )
-from marsha.core.utils.lti_select_utils import get_lti_select_resources
 
 from ..factories import FileDepositoryFactory
 
@@ -25,14 +24,8 @@ class SelectLTIViewTestCase(TestCase):
 
     maxDiff = None
 
-    def setUp(self):
-        super().setUp()
-        get_lti_select_resources.cache_clear()
-
-        # Force URLs reload to use DEPOSIT_ENABLED
-        reload_urlconf()
-
     @override_settings(DEPOSIT_ENABLED=True)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_deposit_enabled_activated(self):
         """
         Frontend context flag should be enabled when flag is enabled
@@ -75,6 +68,7 @@ class SelectLTIViewTestCase(TestCase):
         )
 
     @override_settings(DEPOSIT_ENABLED=True)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_deposit_enabled_not_activated(self):
         """
         Frontend context flag should be disabled when flag is enabled
@@ -117,6 +111,7 @@ class SelectLTIViewTestCase(TestCase):
         self.assertIsNone(context.get("deposits"))
 
     @override_settings(DEPOSIT_ENABLED=False)
+    @clear_select_resource_cache_and_reload_urlconf
     def test_views_lti_select_deposit_disabled_activated(self):
         """Frontend context flag should be disabled when flag is disabled."""
         lti_consumer_parameters = {
