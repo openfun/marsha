@@ -7,6 +7,10 @@ from marsha.core.utils.lti_select_utils import get_lti_select_resources
 class LtiSelectUtilsTestCase(TestCase):
     """Tests for lti_select_utils module."""
 
+    def setUp(self):
+        super().setUp()
+        get_lti_select_resources.cache_clear()
+
     @override_settings(BBB_ENABLED=False)
     @override_settings(MARKDOWN_ENABLED=True)
     def test_get_lti_select_resources(self):
@@ -18,8 +22,18 @@ class LtiSelectUtilsTestCase(TestCase):
         """
 
         lti_select_config = get_lti_select_resources()
-        self.assertNotIn("bbb", lti_select_config)
+        self.assertNotIn("classroom", lti_select_config)
         self.assertIn("markdown", lti_select_config)
         self.assertIn("video", lti_select_config)
         self.assertIn("document", lti_select_config)
         self.assertIn("webinar", lti_select_config)
+
+    @override_settings(BBB_ENABLED=True)
+    def test_get_lti_select_resources_classrooms(self):
+        """return lti select config for enabled marsha apps.
+
+        Ensure that BBB/Classroom are the same config.
+        """
+
+        lti_select_config = get_lti_select_resources()
+        self.assertIn("classroom", lti_select_config)
