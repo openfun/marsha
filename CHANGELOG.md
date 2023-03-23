@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a License Manager widget for LTI VOD view
 - Add a title to the classroom file dropzone
 - Add can_edit property on a serialized video
+- Add an attribute to consumer site to deactivate resources in LTI select
 
 ### Changed
 
