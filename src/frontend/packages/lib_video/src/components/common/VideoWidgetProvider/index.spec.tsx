@@ -199,6 +199,13 @@ describe('<VideoWidgetProvider />', () => {
       description: 'An example description',
       thumbnail: mockedThumbnail,
     });
+    fetchMock.mock(
+      `/api/videos/`,
+      {
+        actions: { POST: { license: { options: [] } } },
+      },
+      { method: 'OPTIONS' },
+    );
 
     useThumbnail.getState().addResource(mockedThumbnail);
 
