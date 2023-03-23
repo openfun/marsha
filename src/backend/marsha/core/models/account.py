@@ -11,6 +11,8 @@ from django.utils.translation import gettext_lazy as _
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 
+from ..defaults import CLASSROOM, DEPOSIT, DOCUMENT, MARKDOWN, VIDEO, WEBINAR
+from ..fields import InvertedArrayField
 from .base import BaseModel
 
 
@@ -36,6 +38,15 @@ ROLE_CHOICES = (
     (ADMINISTRATOR, _("administrator")),
     (INSTRUCTOR, _("instructor")),
     (STUDENT, _("student")),
+)
+
+RESOURCES_CHOICES = (
+    (VIDEO, _("video")),
+    (WEBINAR, _("webinar")),
+    (DOCUMENT, _("document")),
+    (CLASSROOM, _("classroom")),
+    (MARKDOWN, _("markdown")),
+    (DEPOSIT, _("deposit file")),
 )
 
 
@@ -247,6 +258,21 @@ class ConsumerSite(BaseModel):
             "default value used for every newly created video to determine"
             " if the links to download a video are shown by default."
         ),
+    )
+
+    # list of resources that are active for this consumer site
+    # stored as a list of inactive resources
+    inactive_resources = InvertedArrayField(
+        models.CharField(
+            choices=RESOURCES_CHOICES,
+            max_length=100,
+            blank=True,
+            null=True,
+        ),
+        verbose_name=_("active resources"),
+        help_text=_("list of resources that are active for this consumer site."),
+        default=list,
+        blank=True,
     )
 
     class Meta:
