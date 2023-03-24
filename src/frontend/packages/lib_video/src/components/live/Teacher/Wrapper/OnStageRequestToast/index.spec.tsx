@@ -5,7 +5,10 @@ import { render } from 'lib-tests';
 import React from 'react';
 import toast from 'react-hot-toast';
 
-import { useLivePanelState, LivePanelItem } from 'hooks/useLivePanelState';
+import {
+  useLivePanelState,
+  LivePanelItem,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { OnStageRequestToast } from '.';
 

@@ -4,10 +4,10 @@ import { Box, Spinner } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useChatItemState } from 'hooks/useChatItemsStore';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { useSetDisplayName } from 'hooks/useSetDisplayName';
-import { converse } from 'utils/window';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
+import { converse } from '@lib-video/utils/window';
 
 import { ChatConversationDisplayer } from '../ChatConversationDisplayer';
 import { InputBar } from '../InputBar';

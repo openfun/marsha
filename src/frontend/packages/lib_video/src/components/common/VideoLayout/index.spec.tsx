@@ -5,7 +5,7 @@ import { useJwt } from 'lib-components';
 import { imageSnapshot, render } from 'lib-tests';
 import React from 'react';
 
-import { useLivePanelState } from 'hooks/useLivePanelState';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
 
 import { VideoLayout } from '.';
 

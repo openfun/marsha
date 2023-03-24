@@ -12,9 +12,9 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { createLiveSession } from 'api/createLiveSession';
-import { getAnonymousId } from 'utils/localstorage';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { createLiveSession } from '@lib-video/api/createLiveSession';
+import { getAnonymousId } from '@lib-video/utils/localstorage';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveRegistration } from '.';
 

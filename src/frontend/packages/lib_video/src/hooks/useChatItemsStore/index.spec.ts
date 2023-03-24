@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon';
 
-import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from 'conf/chat';
+import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from '@lib-video/conf/chat';
 
 import { chatItemType, ReceivedMessageType, useChatItemState } from '.';
 

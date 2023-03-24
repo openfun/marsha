@@ -24,15 +24,15 @@ import videojs, {
   VideoJsPlayerPluginOptions,
 } from 'video.js';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { useAttendance } from 'hooks/useAttendance';
-import { useTranscriptTimeSelector } from 'hooks/useTranscriptTimeSelector';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { useAttendance } from '@lib-video/hooks/useAttendance';
+import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
 import {
   QualityLevels,
   VideoJsExtendedSourceObject,
-} from 'types/libs/video.js/extend';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { isMSESupported } from 'utils/isMSESupported';
+} from '@lib-video/types/libs/video.js/extend';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
+import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { Events } from './videojs/qualitySelectorPlugin/types';
 

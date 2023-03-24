@@ -3,8 +3,8 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useDeleteTimedTextTrack } from 'api/useDeleteTimedTextTrack';
-import { useDeleteTimedTextTrackUploadModal } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { useDeleteTimedTextTrack } from '@lib-video/api/useDeleteTimedTextTrack';
+import { useDeleteTimedTextTrackUploadModal } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
 const messages = defineMessages({
   confirmationModalTitle: {

@@ -4,7 +4,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { usePictureInPicture } from 'hooks/usePictureInPicture';
+import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
 
 const messages = defineMessages({
   playerActive: {

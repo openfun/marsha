@@ -4,9 +4,9 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { navigateSharingDoc } from 'api/navigateSharingDoc';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { useSharedMediaCurrentPage } from 'hooks/useSharedMediaCurrentPage';
+import { navigateSharingDoc } from '@lib-video/api/navigateSharingDoc';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { useSharedMediaCurrentPage } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 const messages = defineMessages({
   title: {

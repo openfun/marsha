@@ -6,8 +6,8 @@ import {
 } from 'lib-components';
 import React from 'react';
 
-import { DeleteSharedLiveMediaModalProvider } from 'hooks/useDeleteSharedLiveMediaModal';
-import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
+import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
 import { DescriptionWidget } from './widgets/DescriptionWidget';
 import { DownloadVideo } from './widgets/DownloadVideo';

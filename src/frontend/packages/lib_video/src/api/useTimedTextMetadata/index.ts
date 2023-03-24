@@ -1,7 +1,7 @@
 import { metadata } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { TimedTextMetadata } from 'types/metadata';
+import { TimedTextMetadata } from '@lib-video/types/metadata';
 
 export const useTimedTextMetadata = (
   locale: string,

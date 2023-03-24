@@ -2,8 +2,8 @@ import { useTimedTextTrack, timedTextMode, Select } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
-import { LanguageChoice } from 'types/SelectOptions';
+import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
   selectLanguageLabel: {

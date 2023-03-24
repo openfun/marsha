@@ -4,25 +4,28 @@ import { useAppConfig, useVideo } from 'lib-components';
 import React, { ReactNode, useEffect, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { PictureInPictureLayer } from 'components/common/PictureInPictureLayer';
-import { VideoLayout } from 'components/common/VideoLayout';
-import { VideoPlayer } from 'components/common/VideoPlayer';
-import DashboardLiveJitsi from 'components/live/common/DashboardLiveJitsi';
-import { AudioControl } from 'components/live/common/JitsiControls/AudioControl';
-import { CameraControl } from 'components/live/common/JitsiControls/CameraControl';
-import { LiveVideoPanel } from 'components/live/common/LiveVideoPanel';
-import { SharedMediaExplorer } from 'components/live/common/SharedMediaExplorer';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { PictureInPictureLayer } from '@lib-video/components/common/PictureInPictureLayer';
+import { VideoLayout } from '@lib-video/components/common/VideoLayout';
+import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
+import DashboardLiveJitsi from '@lib-video/components/live/common/DashboardLiveJitsi';
+import { AudioControl } from '@lib-video/components/live/common/JitsiControls/AudioControl';
+import { CameraControl } from '@lib-video/components/live/common/JitsiControls/CameraControl';
+import { LiveVideoPanel } from '@lib-video/components/live/common/LiveVideoPanel';
+import { SharedMediaExplorer } from '@lib-video/components/live/common/SharedMediaExplorer';
 import {
   InvalidJitsiLiveException,
   MissingSharedLiveSessionUrls,
-} from 'errors';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { usePictureInPicture } from 'hooks/usePictureInPicture';
-import { convertLiveToJitsiLive } from 'utils/convertVideo';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+} from '@lib-video/errors';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
+import { convertLiveToJitsiLive } from '@lib-video/utils/convertVideo';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 
 import { StudentLiveControlBar } from './StudentLiveControlBar';
 import { StudentLiveInfoBar } from './StudentLiveInfoBar';

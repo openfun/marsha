@@ -13,7 +13,7 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { UploadVideoForm } from '.';
 

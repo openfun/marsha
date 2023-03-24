@@ -8,13 +8,13 @@ import { JoinMode } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import {
   useParticipantsStore,
   ParticipantType,
-} from 'hooks/useParticipantsStore';
-import { isAnonymous } from 'utils/chat/chat';
-import { converse } from 'utils/window';
+} from '@lib-video/hooks/useParticipantsStore';
+import { isAnonymous } from '@lib-video/utils/chat/chat';
+import { converse } from '@lib-video/utils/window';
 
 import { ViewersListHeader } from './components/ViewersListHeader';
 import { ViewersListItem } from './components/ViewersListItem';

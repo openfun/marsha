@@ -1,10 +1,10 @@
 import { Box, Grid, Text } from 'grommet';
-import { useCurrentVideo } from 'hooks';
 import { Loader } from 'lib-components';
 import React, { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useStatsVideo } from 'hooks/useVideoStats';
+import { useCurrentVideo } from '@lib-video/hooks';
+import { useStatsVideo } from '@lib-video/hooks/useVideoStats';
 
 const messages = defineMessages({
   viewersStatsDescription: {

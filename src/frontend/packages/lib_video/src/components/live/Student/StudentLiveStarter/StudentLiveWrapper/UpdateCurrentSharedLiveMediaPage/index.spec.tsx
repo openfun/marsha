@@ -9,8 +9,8 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { SharedMediaCurrentPageProvider } from 'hooks/useSharedMediaCurrentPage';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { UpdateCurrentSharedLiveMediaPage } from '.';
 

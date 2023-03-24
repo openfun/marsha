@@ -18,8 +18,11 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { createPlayer } from 'components/common/Player/createPlayer';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { Dashboard } from './Dashboard';
 

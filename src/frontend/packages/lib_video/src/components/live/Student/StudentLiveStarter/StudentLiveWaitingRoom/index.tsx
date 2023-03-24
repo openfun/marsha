@@ -3,9 +3,9 @@ import { useAppConfig } from 'lib-components';
 import React, { CSSProperties, useContext } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { AdvertisingBox } from 'components/live/Student/StudentLiveStarter/StudentLiveAdvertising/AdvertisingBox';
-import { StudentLiveDescription } from 'components/live/Student/StudentLiveStarter/StudentLiveAdvertising/StudentLiveDescription';
-import { InputDisplayName } from 'components/live/common/InputDisplayName';
+import { AdvertisingBox } from '@lib-video/components/live/Student/StudentLiveStarter/StudentLiveAdvertising/AdvertisingBox';
+import { StudentLiveDescription } from '@lib-video/components/live/Student/StudentLiveStarter/StudentLiveAdvertising/StudentLiveDescription';
+import { InputDisplayName } from '@lib-video/components/live/common/InputDisplayName';
 
 const messages = defineMessages({
   title: {

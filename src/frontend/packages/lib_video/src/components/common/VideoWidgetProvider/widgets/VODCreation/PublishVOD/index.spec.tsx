@@ -6,7 +6,7 @@ import { useJwt, videoMockFactory, useVideo } from 'lib-components';
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { PublishVOD } from '.';
 

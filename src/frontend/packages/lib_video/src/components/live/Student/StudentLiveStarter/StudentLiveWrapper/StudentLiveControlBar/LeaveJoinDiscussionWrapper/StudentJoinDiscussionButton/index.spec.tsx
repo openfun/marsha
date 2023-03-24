@@ -2,9 +2,9 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useLiveSession } from 'hooks/useLiveSession';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { converse } from 'utils/window';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { converse } from '@lib-video/utils/window';
 
 import { StudentJoinDiscussionButton } from '.';
 

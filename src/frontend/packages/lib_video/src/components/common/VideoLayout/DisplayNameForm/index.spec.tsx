@@ -4,8 +4,8 @@ import { useJwt, liveMockFactory } from 'lib-components';
 import { render, wrapInIntlProvider } from 'lib-tests';
 import React from 'react';
 
-import { useSetDisplayName } from 'hooks/useSetDisplayName';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { DisplayNameForm } from '.';
 

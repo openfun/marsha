@@ -10,8 +10,8 @@ import {
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { stopLive } from 'api/stopLive';
-import { wrapInLiveModaleProvider } from 'utils/liveModale';
+import { stopLive } from '@lib-video/api/stopLive';
+import { wrapInLiveModaleProvider } from '@lib-video/utils/liveModale';
 
 import { StopLiveButton } from '.';
 

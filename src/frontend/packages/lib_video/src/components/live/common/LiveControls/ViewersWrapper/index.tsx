@@ -1,7 +1,10 @@
 import React from 'react';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { StudentHideViewersButton } from './StudentHideViewersButton';
 import { StudentShowViewersButton } from './StudentShowViewersButton';

@@ -2,7 +2,10 @@ import { Button, ChatSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 const messages = defineMessages({
   chat: {

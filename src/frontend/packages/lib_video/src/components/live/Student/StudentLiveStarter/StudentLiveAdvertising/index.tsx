@@ -13,7 +13,7 @@ import ICalendarLink from 'react-icalendar-link';
 import { useIntl, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
-import { useCurrentLive } from 'hooks/useCurrentVideo';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 
 import { AdvertisingBox } from './AdvertisingBox';
 import { StudentLiveDescription } from './StudentLiveDescription';

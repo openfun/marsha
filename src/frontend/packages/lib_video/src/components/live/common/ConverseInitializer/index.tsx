@@ -8,10 +8,10 @@ import React, {
   useState,
 } from 'react';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { converseMounter } from 'utils/conversejs/converse';
-import { converse } from 'utils/window';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { converseMounter } from '@lib-video/utils/conversejs/converse';
+import { converse } from '@lib-video/utils/window';
 
 export const ConverseInitializer = ({
   children,

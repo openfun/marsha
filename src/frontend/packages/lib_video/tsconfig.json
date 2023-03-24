@@ -1,5 +1,12 @@
 {
   "extends": "marsha-config/tsconfig/tsc-packages.json",
+  "compilerOptions": {
+    "baseUrl": "./src",
+    "paths": {
+      "@lib-video/*": ["./*"],
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"]
+    }
+  },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
   "exclude": ["lib", "node_modules"]
 }

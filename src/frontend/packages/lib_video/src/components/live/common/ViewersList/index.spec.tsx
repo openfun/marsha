@@ -8,10 +8,10 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useParticipantsStore } from 'hooks/useParticipantsStore';
-import { generateAnonymousNickname } from 'utils/chat/chat';
-import { converse } from 'utils/window';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
+import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';
+import { converse } from '@lib-video/utils/window';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { ViewersList } from '.';
 

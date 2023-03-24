@@ -2,12 +2,15 @@ import { Box, ResponsiveContext } from 'grommet';
 import { LiveModeType, liveState } from 'lib-components';
 import React, { useContext, useEffect } from 'react';
 
-import { pollForLive } from 'api/pollForLive';
-import { ChatWrapper } from 'components/live/common/LiveControls/ChatWrapper';
-import { ViewersWrapper } from 'components/live/common/LiveControls/ViewersWrapper';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { useLiveStateStarted } from 'hooks/useLiveStateStarted';
+import { pollForLive } from '@lib-video/api/pollForLive';
+import { ChatWrapper } from '@lib-video/components/live/common/LiveControls/ChatWrapper';
+import { ViewersWrapper } from '@lib-video/components/live/common/LiveControls/ViewersWrapper';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
 
 import { LiveFeedbackWrapper } from './LiveFeedbackWrapper';
 

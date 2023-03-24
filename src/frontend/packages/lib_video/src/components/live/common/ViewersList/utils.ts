@@ -1,7 +1,7 @@
 import { defineMessages, IntlShape } from 'react-intl';
 
-import { ParticipantType } from 'hooks/useParticipantsStore';
-import { isAnonymous } from 'utils/chat/chat';
+import { ParticipantType } from '@lib-video/hooks/useParticipantsStore';
+import { isAnonymous } from '@lib-video/utils/chat/chat';
 
 export const sortParticipantNotOnStage = (
   item1: ParticipantType,

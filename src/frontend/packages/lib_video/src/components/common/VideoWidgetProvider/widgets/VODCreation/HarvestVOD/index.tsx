@@ -3,8 +3,8 @@ import { useFetchButton, useVideo } from 'lib-components';
 import React, { Fragment, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { harvestLive } from 'api/harvestLive';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { harvestLive } from '@lib-video/api/harvestLive';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   harvestLiveMessage: {

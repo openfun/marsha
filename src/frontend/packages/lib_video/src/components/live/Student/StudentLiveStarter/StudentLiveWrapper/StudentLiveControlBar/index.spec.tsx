@@ -9,8 +9,11 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveControlBar } from '.';
 

@@ -2,7 +2,7 @@ import { Box } from 'grommet';
 import { liveState } from 'lib-components';
 import React, { Fragment } from 'react';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { StartRecording } from './StartRecording';
 import { StopRecording } from './StopRecording';

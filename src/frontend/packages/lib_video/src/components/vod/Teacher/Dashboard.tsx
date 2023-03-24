@@ -17,11 +17,11 @@ import styled from 'styled-components';
 import {
   DashboardControlPane,
   PaneTabs,
-} from 'components/common/DashboardControlPane';
-import { TeacherVideoInfoBar } from 'components/common/TeacherVideoInfoBar';
-import { VideoPlayer } from 'components/common/VideoPlayer';
-import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
-import { CurrentVideoProvider } from 'hooks/useCurrentVideo';
+} from '@lib-video/components/common/DashboardControlPane';
+import { TeacherVideoInfoBar } from '@lib-video/components/common/TeacherVideoInfoBar';
+import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
+import { VideoWebSocketInitializer } from '@lib-video/components/common/VideoWebSocketInitializer';
+import { CurrentVideoProvider } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   titleDetails: {

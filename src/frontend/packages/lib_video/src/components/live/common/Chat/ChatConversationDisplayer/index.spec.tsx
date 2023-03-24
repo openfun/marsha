@@ -4,7 +4,7 @@ import { imageSnapshot, render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { useChatItemState } from 'hooks/useChatItemsStore';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
 
 import { ChatConversationDisplayer } from '.';
 

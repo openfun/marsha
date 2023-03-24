@@ -6,8 +6,8 @@ import {
   liveMockFactory,
 } from 'lib-components';
 
-import { useLiveSession } from 'hooks/useLiveSession';
-import { convertVideoToJitsiLive } from 'utils/convertVideo';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { convertVideoToJitsiLive } from '@lib-video/utils/convertVideo';
 
 import { initializeJitsi } from './utils';
 

@@ -4,16 +4,19 @@ import React, { useEffect, useMemo, useState } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { useLiveSessionsQuery } from 'api/useLiveSessions';
-import { VideoLayout } from 'components/common/VideoLayout';
-import { VideoPlayer } from 'components/common/VideoPlayer';
-import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
-import { ConverseInitializer } from 'components/live/common/ConverseInitializer';
-import { LiveVideoPanel } from 'components/live/common/LiveVideoPanel';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { useLiveSessionsQuery } from '@lib-video/api/useLiveSessions';
+import { VideoLayout } from '@lib-video/components/common/VideoLayout';
+import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
+import { VideoWebSocketInitializer } from '@lib-video/components/common/VideoWebSocketInitializer';
+import { ConverseInitializer } from '@lib-video/components/live/common/ConverseInitializer';
+import { LiveVideoPanel } from '@lib-video/components/live/common/LiveVideoPanel';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 
 interface VideoFromLiveDashboardProps {
   video: Video;

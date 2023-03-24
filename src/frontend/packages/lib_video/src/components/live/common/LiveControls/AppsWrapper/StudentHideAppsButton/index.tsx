@@ -2,7 +2,7 @@ import { AppsSVG, Button } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useLivePanelState } from 'hooks/useLivePanelState';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
 
 const messages = defineMessages({
   apps: {

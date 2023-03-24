@@ -1,4 +1,3 @@
-import { useVideoMetadata } from 'api';
 import { Nullable } from 'lib-common';
 import {
   UploadManagerStatus,
@@ -7,6 +6,8 @@ import {
 } from 'lib-components';
 import React, { useState } from 'react';
 import { useIntl } from 'react-intl';
+
+import { useVideoMetadata } from '@lib-video/api';
 
 import { UploadVideoDropzone } from './UploadVideoDropzone';
 import { UploadVideoPreview } from './UploadVideoPreview';

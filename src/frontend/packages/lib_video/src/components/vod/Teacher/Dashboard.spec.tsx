@@ -12,7 +12,7 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { VideoWidgetProvider } from 'components/common';
+import { VideoWidgetProvider } from '@lib-video/components/common';
 
 import { Dashboard } from './Dashboard';
 

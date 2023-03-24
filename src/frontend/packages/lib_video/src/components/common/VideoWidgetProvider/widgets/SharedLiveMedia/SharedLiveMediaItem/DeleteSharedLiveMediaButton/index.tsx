@@ -3,7 +3,7 @@ import { BinSVG, SharedLiveMedia } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useDeleteSharedLiveMediaModal } from 'hooks/useDeleteSharedLiveMediaModal';
+import { useDeleteSharedLiveMediaModal } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 
 const messages = defineMessages({
   buttonLabel: {

@@ -2,7 +2,10 @@ import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { AppsWrapper } from '.';
 

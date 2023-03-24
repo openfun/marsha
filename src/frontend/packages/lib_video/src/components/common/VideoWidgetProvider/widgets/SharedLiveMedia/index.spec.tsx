@@ -17,8 +17,8 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { DeleteSharedLiveMediaModalProvider } from 'hooks/useDeleteSharedLiveMediaModal';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { SharedLiveMediaModalWrapper } from '../../wrappers/SharedLiveMediaModalWrapper';
 

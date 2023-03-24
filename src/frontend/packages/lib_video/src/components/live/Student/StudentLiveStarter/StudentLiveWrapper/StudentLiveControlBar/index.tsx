@@ -2,11 +2,14 @@ import { Box, ResponsiveContext } from 'grommet';
 import { JoinMode, LiveModeType, liveState } from 'lib-components';
 import React, { useContext } from 'react';
 
-import { AppsWrapper } from 'components/live/common/LiveControls/AppsWrapper';
-import { ChatWrapper } from 'components/live/common/LiveControls/ChatWrapper';
-import { ViewersWrapper } from 'components/live/common/LiveControls/ViewersWrapper';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import { AppsWrapper } from '@lib-video/components/live/common/LiveControls/AppsWrapper';
+import { ChatWrapper } from '@lib-video/components/live/common/LiveControls/ChatWrapper';
+import { ViewersWrapper } from '@lib-video/components/live/common/LiveControls/ViewersWrapper';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { LeaveJoinDiscussionWrapper } from './LeaveJoinDiscussionWrapper';
 

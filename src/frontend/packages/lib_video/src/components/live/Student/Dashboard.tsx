@@ -1,15 +1,15 @@
-import { CurrentLiveProvider, CurrentVideoProvider } from 'hooks';
 import { Live, Loader } from 'lib-components';
 import React, { useMemo } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { useLiveSessionsQuery } from 'api/useLiveSessions';
-import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
-import { ConverseInitializer } from 'components/live/common/ConverseInitializer';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { useLiveSessionsQuery } from '@lib-video/api/useLiveSessions';
+import { VideoWebSocketInitializer } from '@lib-video/components/common/VideoWebSocketInitializer';
+import { ConverseInitializer } from '@lib-video/components/live/common/ConverseInitializer';
+import { CurrentLiveProvider, CurrentVideoProvider } from '@lib-video/hooks';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
 
 import { StudentLiveError } from './StudentLiveError';
 import { StudentLiveStarter } from './StudentLiveStarter';

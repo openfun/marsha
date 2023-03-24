@@ -4,8 +4,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { XMPP } from 'lib-components';
 
-import { PROSODY_TIMEOUT_ON_NICKNAME_CHANGE_REQUEST_IN_MS } from 'conf/chat';
-import { converse } from 'utils/window';
+import { PROSODY_TIMEOUT_ON_NICKNAME_CHANGE_REQUEST_IN_MS } from '@lib-video/conf/chat';
+import { converse } from '@lib-video/utils/window';
 
 const PLUGIN_NAME = 'nickname-management-plugin';
 

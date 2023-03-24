@@ -13,10 +13,10 @@ import {
   DEFAULT_PANEL_WIDTH_RATIO,
   MAX_PANEL_WIDTH_RATIO,
   MIN_PANEL_WIDTH_RATIO,
-} from 'conf/livePanel';
-import { useLivePanelState } from 'hooks/useLivePanelState';
-import { useLiveStateStarted } from 'hooks/useLiveStateStarted';
-import { SetDisplayNameProvider } from 'hooks/useSetDisplayName';
+} from '@lib-video/conf/livePanel';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
+import { SetDisplayNameProvider } from '@lib-video/hooks/useSetDisplayName';
 
 import { DisplayNameForm } from './DisplayNameForm';
 

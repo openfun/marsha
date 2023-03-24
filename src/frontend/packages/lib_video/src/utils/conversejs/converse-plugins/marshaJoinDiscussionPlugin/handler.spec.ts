@@ -9,7 +9,7 @@ import {
   JitsiMeetExternalAPI,
 } from 'lib-components';
 
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
 
 import marshaJoinDiscussionPluginHandler from './handler';
 

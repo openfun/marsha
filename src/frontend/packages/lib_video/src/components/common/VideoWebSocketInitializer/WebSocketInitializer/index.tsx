@@ -2,7 +2,7 @@ import RobustWebSocket from 'altamoon-robust-websocket';
 import { Nullable } from 'lib-common';
 import React, { Fragment, PropsWithChildren, useEffect, useRef } from 'react';
 
-import { initWebsocket } from 'utils/websocket';
+import { initWebsocket } from '@lib-video/utils/websocket';
 
 export const WEB_SOCKET_INITIALIZED = 'WEB_SOCKET_INITIALIZED';
 

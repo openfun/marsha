@@ -19,10 +19,10 @@ import React, {
   useState,
 } from 'react';
 
-import { InvalidMedialiveEndpointsException } from 'errors';
-import { useJitsiApi } from 'hooks/useJitsiApi';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { converse } from 'utils/window';
+import { InvalidMedialiveEndpointsException } from '@lib-video/errors';
+import { useJitsiApi } from '@lib-video/hooks/useJitsiApi';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { converse } from '@lib-video/utils/window';
 
 import { initializeJitsi } from './utils';
 

@@ -5,8 +5,8 @@ import './entry.js';
 import { Nullable } from 'lib-common';
 import { Video, XMPP } from 'lib-components';
 
-import { generateAnonymousNickname } from 'utils/chat/chat';
-import { converse } from 'utils/window';
+import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';
+import { converse } from '@lib-video/utils/window';
 
 import { chatPlugin } from './converse-plugins/chatPlugin';
 import { logoutPlugin } from './converse-plugins/logoutPlugin';

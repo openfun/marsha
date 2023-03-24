@@ -2,8 +2,8 @@ import { fireEvent, screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import * as mockWindow from 'utils/window';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import * as mockWindow from '@lib-video/utils/window';
 
 import { StudentLeaveDiscussionButton } from '.';
 

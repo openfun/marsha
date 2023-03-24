@@ -7,10 +7,10 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useStopLiveRecording } from 'api/useStopLiveRecording';
-import { useVideoMetadata } from 'api/useVideoMetadata';
-import { formatSecToTimeStamp } from 'components/live/Teacher/Wrapper/Controls/TeacherLiveRecordingActions/utils';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useStopLiveRecording } from '@lib-video/api/useStopLiveRecording';
+import { useVideoMetadata } from '@lib-video/api/useVideoMetadata';
+import { formatSecToTimeStamp } from '@lib-video/components/live/Teacher/Wrapper/Controls/TeacherLiveRecordingActions/utils';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const BlinkedBox = styled(Box)`
   animation: blink-animation 1s ease-in infinite;

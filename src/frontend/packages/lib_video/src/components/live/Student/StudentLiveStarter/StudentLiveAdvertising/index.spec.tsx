@@ -13,7 +13,7 @@ import { render, Deferred } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveAdvertising } from '.';
 

@@ -11,11 +11,11 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
-import { createPlayer } from 'components/common/Player/createPlayer';
-import { MissingVideoUrlsException } from 'errors';
-import { useVideoProgress } from 'hooks/useVideoProgress';
-import { VideoPlayerInterface } from 'types/VideoPlayer';
+import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
+import { MissingVideoUrlsException } from '@lib-video/errors';
+import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
+import { VideoPlayerInterface } from '@lib-video/types/VideoPlayer';
 
 interface BaseVideoPlayerProps {
   video: Video;

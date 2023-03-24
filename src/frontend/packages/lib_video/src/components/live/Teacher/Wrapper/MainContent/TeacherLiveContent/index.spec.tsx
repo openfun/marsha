@@ -3,7 +3,7 @@ import { LiveModeType, liveState, liveMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherLiveContent } from '.';
 

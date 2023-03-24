@@ -10,7 +10,7 @@ import React, { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useDeleteThumbnail } from 'api/useDeleteThumbnail';
+import { useDeleteThumbnail } from '@lib-video/api/useDeleteThumbnail';
 
 const messages = defineMessages({
   confirmationModalTitle: {
