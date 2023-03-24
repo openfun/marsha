@@ -1,20 +1,5 @@
 {
-  "include": ["src"],
-  "extends": "../../tsconfig.json",
-  "compilerOptions": {
-    "outDir": "lib",
-    "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "declaration": true,
-    "declarationDir": "lib/dts",
-    "rootDir": "./src",
-    "baseUrl": "./src",
-    "paths": {
-      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"]
-    }
-  }
+  "extends": "marsha-config/tsconfig/tsc-packages.json",
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
+  "exclude": ["lib", "node_modules"]
 }
