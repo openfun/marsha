@@ -1,0 +1,8 @@
+{
+  "packages": [
+    {
+      "folder": "lib_video",
+      "alias": "@lib-video"
+    }
+  ]
+}
