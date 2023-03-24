@@ -1,6 +1,8 @@
+const path = require('path');
 const { getLoader, loaderByName } = require('@craco/craco');
 
 const packages = [];
+packages.push(path.join(__dirname, '../../packages/lib_video'));
 
 module.exports = {
   webpack: {

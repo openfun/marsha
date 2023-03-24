@@ -5,7 +5,6 @@ import {
   UploadManager,
 } from 'lib-components';
 import { useVideo, DashboardVideoWrapper, useSetVideoState } from 'lib-video';
-import 'lib-video/lib/esm/style.css';
 import { defineMessages, useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 
