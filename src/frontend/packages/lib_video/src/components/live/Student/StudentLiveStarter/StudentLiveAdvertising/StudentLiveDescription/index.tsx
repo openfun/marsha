@@ -5,7 +5,7 @@ import { DateTime } from 'luxon';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentLive } from 'hooks/useCurrentVideo';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   noTitle: {

@@ -3,8 +3,8 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useDeleteSharedLiveMedia } from 'api/useDeleteSharedLiveMedia';
-import { useDeleteSharedLiveMediaModal } from 'hooks/useDeleteSharedLiveMediaModal';
+import { useDeleteSharedLiveMedia } from '@lib-video/api/useDeleteSharedLiveMedia';
+import { useDeleteSharedLiveMediaModal } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 
 const messages = defineMessages({
   confirmationModalTitle: {

@@ -9,7 +9,7 @@ import {
   JitsiMeetExternalAPI,
 } from 'lib-components';
 
-import { useLiveSession } from 'hooks/useLiveSession';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
 
 const loadScript = (scriptUrl: string) =>
   new Promise((resolve) => {

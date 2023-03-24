@@ -5,7 +5,7 @@ import React, { useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
 
 import { StudentJoinDiscussionButton } from './StudentJoinDiscussionButton';
 import { StudentLeaveDiscussionButton } from './StudentLeaveDiscussionButton';

@@ -4,7 +4,7 @@ import React, { ReactNode } from 'react';
 import {
   CurrentLiveProvider,
   CurrentVideoProvider,
-} from 'hooks/useCurrentVideo';
+} from '@lib-video/hooks/useCurrentVideo';
 
 import { convertVideoToLive } from './convertVideo';
 

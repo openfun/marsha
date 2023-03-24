@@ -1,6 +1,7 @@
 import { metadata, modelName } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
-import { TimedTextMetadata } from 'types';
+
+import { TimedTextMetadata } from '@lib-video/types';
 
 export const useFetchTimedTextTrackLanguageChoices = (
   queryConfig?: UseQueryOptions<

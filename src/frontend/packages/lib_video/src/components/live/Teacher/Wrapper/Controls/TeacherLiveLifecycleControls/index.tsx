@@ -3,7 +3,7 @@ import { liveState } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { StartLiveButton } from './StartLiveButton';
 import { StopLiveButton } from './StopLiveButton';

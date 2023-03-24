@@ -4,7 +4,7 @@ import { Loader, useVideo, LiveModeType, Video } from 'lib-components';
 import React, { ReactElement, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { initiateLive } from 'api/initiateLive';
+import { initiateLive } from '@lib-video/api/initiateLive';
 
 const messages = defineMessages({
   startLiveButtonLabel: {

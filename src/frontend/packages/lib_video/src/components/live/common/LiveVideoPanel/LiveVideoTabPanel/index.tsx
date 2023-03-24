@@ -6,8 +6,8 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { LivePanelItem } from 'hooks/useLivePanelState';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { LivePanelItem } from '@lib-video/hooks/useLivePanelState';
 
 interface StyledTabProps {
   selected?: boolean;

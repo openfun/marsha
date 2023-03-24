@@ -1,14 +1,14 @@
 import { Stack } from 'grommet';
 import React, { Dispatch, SetStateAction } from 'react';
 
-import { PictureInPictureLayer } from 'components/common/PictureInPictureLayer';
-import { AudioControl } from 'components/live/common/JitsiControls/AudioControl';
-import { CameraControl } from 'components/live/common/JitsiControls/CameraControl';
-import { LiveModale } from 'components/live/common/LiveModale';
-import { SharedMediaExplorer } from 'components/live/common/SharedMediaExplorer';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { useLiveModaleConfiguration } from 'hooks/useLiveModale';
-import { usePictureInPicture } from 'hooks/usePictureInPicture';
+import { PictureInPictureLayer } from '@lib-video/components/common/PictureInPictureLayer';
+import { AudioControl } from '@lib-video/components/live/common/JitsiControls/AudioControl';
+import { CameraControl } from '@lib-video/components/live/common/JitsiControls/CameraControl';
+import { LiveModale } from '@lib-video/components/live/common/LiveModale';
+import { SharedMediaExplorer } from '@lib-video/components/live/common/SharedMediaExplorer';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { useLiveModaleConfiguration } from '@lib-video/hooks/useLiveModale';
+import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
 
 import { TeacherLiveContent } from './TeacherLiveContent';
 import { TeacherPIPControls } from './TeacherPIPControls';

@@ -5,9 +5,9 @@ import { decodeJwt, liveSessionFactory, liveMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { createLiveSession } from 'api/createLiveSession';
-import { updateLiveSession } from 'api/updateLiveSession';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { createLiveSession } from '@lib-video/api/createLiveSession';
+import { updateLiveSession } from '@lib-video/api/updateLiveSession';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { RegistrationForm } from '.';
 

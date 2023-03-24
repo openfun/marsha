@@ -2,7 +2,7 @@ import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import React from 'react';
 
-import { VideoInfoBar } from 'components/common/VideoInfoBar';
+import { VideoInfoBar } from '@lib-video/components/common/VideoInfoBar';
 
 interface StudentLiveInfoBarProps {
   startDate: Nullable<string>;

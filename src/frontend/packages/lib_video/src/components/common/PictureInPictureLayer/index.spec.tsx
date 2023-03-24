@@ -4,7 +4,7 @@ import { Box, Button, Paragraph } from 'grommet';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
 
 import { PictureInPictureLayer } from '.';
 

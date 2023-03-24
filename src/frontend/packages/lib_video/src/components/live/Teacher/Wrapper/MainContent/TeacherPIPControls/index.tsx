@@ -1,8 +1,8 @@
 import { Box } from 'grommet';
 import React, { useEffect, useState } from 'react';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { useSharedMediaCurrentPage } from 'hooks/useSharedMediaCurrentPage';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { useSharedMediaCurrentPage } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 import { NextPageButton } from './NextPageButton';
 import { PreviousPageButton } from './PreviousPageButton';

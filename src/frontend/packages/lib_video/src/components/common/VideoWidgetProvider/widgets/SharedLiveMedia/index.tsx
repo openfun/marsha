@@ -10,8 +10,8 @@ import {
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { createSharedLiveMedia } from 'api/createSharedLiveMedia';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { createSharedLiveMedia } from '@lib-video/api/createSharedLiveMedia';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { SharedLiveMediaItem } from './SharedLiveMediaItem';
 

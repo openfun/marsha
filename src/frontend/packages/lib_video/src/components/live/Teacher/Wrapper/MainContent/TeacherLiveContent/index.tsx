@@ -1,13 +1,13 @@
 import { LiveModeType, ShouldNotHappen } from 'lib-components';
 import React, { Dispatch, lazy, SetStateAction } from 'react';
 
-import { InvalidJitsiLiveException } from 'errors';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { convertLiveToJitsiLive } from 'utils/convertVideo';
+import { InvalidJitsiLiveException } from '@lib-video/errors';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { convertLiveToJitsiLive } from '@lib-video/utils/convertVideo';
 
 const TeacherLiveRawWrapper = lazy(() => import('./TeacherLiveRawWrapper'));
 const DashboardLiveJitsi = lazy(
-  () => import('components/live/common/DashboardLiveJitsi'),
+  () => import('@lib-video/components/live/common/DashboardLiveJitsi'),
 );
 
 interface TeacherLiveContentProps {

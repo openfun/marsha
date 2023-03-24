@@ -1,3 +1,4 @@
+/* eslint-disable no-var */
 import JitsiMeetExternalAPI from 'lib-components/lib/types/libs/JitsiMeetExternalAPI/index';
 import converse from 'lib-components/lib/types/libs/converse/index';
 
@@ -5,8 +6,6 @@ import converse from 'lib-components/lib/types/libs/converse/index';
 export {};
 
 declare global {
-  interface Window {
-    converse: converse.Converse;
-    JitsiMeetExternalAPI: JitsiMeetExternalAPI;
-  }
+  var converse: converse.Converse;
+  var JitsiMeetExternalAPI: JitsiMeetExternalAPI;
 }

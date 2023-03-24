@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React from 'react';
 
-import { ChatMessageGroupType } from 'hooks/useChatItemsStore';
+import { ChatMessageGroupType } from '@lib-video/hooks/useChatItemsStore';
 
 import { ChatMessage } from '../ChatMessage';
 import { ChatMessageMetadatas } from '../ChatMessageMetadatas';

@@ -7,12 +7,18 @@
     "allowSyntheticDefaultImports": true,
     "incremental": true,
     "jsx": "react-jsx",
-    "lib": ["dom", "dom.iterable", "esnext"],
+    "lib": ["dom", "dom.iterable", "esnext", "es2015"],
     "module": "esnext",
     "noFallthroughCasesInSwitch": true,
     "noEmit": true,
     "resolveJsonModule": true,
-    "target": "es5"
+    "target": "ES2015",
+    "paths": {
+      "@lib-video/*": ["../../../packages/lib_video/src/*"],
+      "altamoon-robust-websocket": [
+        "../../../packages/lib_video/src/types/libs/altamoon-robust-websocket"
+      ]
+    }
   },
   "exclude": ["node_modules"]
 }

@@ -1,6 +1,6 @@
 import { useJwt, videoMockFactory, PersistentStore } from 'lib-components';
 
-import * as mockWindow from 'utils/window';
+import * as mockWindow from '@lib-video/utils/window';
 
 import { converseMounter } from './converse';
 import { chatPlugin } from './converse-plugins/chatPlugin';

@@ -1,7 +1,7 @@
 import { FetchResponseError, metadata } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { VideoMetadata } from 'types/metadata';
+import { VideoMetadata } from '@lib-video/types/metadata';
 
 export const useVideoMetadata = (
   locale: string,

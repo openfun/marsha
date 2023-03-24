@@ -19,10 +19,10 @@ import { render } from 'lib-tests';
 import React from 'react';
 import videojs from 'video.js';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { useTranscriptTimeSelector } from 'hooks/useTranscriptTimeSelector';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { isMSESupported } from 'utils/isMSESupported';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
+import { isMSESupported } from '@lib-video/utils/isMSESupported';
 
 import { VideoPlayer } from '../VideoPlayer';
 
@@ -445,7 +445,7 @@ describe('createVideoJsPlayer', () => {
       live_state: liveState.RUNNING,
       active_shared_live_media: null,
       active_shared_live_media_page: null,
-    };
+    } as any;
     const tracks = player.textTracks();
     const track = tracks[0];
     player.trigger('loadedmetadata');

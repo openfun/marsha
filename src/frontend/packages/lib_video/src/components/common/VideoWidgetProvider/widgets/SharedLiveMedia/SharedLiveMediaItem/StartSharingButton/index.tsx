@@ -5,8 +5,8 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useStartSharingMedia } from 'api/useStartSharingMedia';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useStartSharingMedia } from '@lib-video/api/useStartSharingMedia';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   updateSharedLiveMediaSucces: {

@@ -12,10 +12,10 @@ import {
 import React, { useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { createLiveSession } from 'api/createLiveSession';
-import { updateLiveSession } from 'api/updateLiveSession';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { getAnonymousId } from 'utils/localstorage';
+import { createLiveSession } from '@lib-video/api/createLiveSession';
+import { updateLiveSession } from '@lib-video/api/updateLiveSession';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { getAnonymousId } from '@lib-video/utils/localstorage';
 
 const formTheme = {
   global: {

@@ -3,7 +3,7 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { VTTCue } from 'vtt.js';
 
-import { useTranscriptTimeSelector } from 'hooks/useTranscriptTimeSelector';
+import { useTranscriptTimeSelector } from '@lib-video/hooks/useTranscriptTimeSelector';
 
 const Sentence = styled(Text)`
   cursor: pointer;

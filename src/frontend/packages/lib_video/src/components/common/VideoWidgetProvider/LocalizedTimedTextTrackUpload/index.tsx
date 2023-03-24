@@ -14,10 +14,10 @@ import React, { useCallback, useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { createTimedTextTrack } from 'api/createTimedTextTrack';
-import { useTimedTextMetadata } from 'api/useTimedTextMetadata';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { LanguageChoice } from 'types/SelectOptions';
+import { createTimedTextTrack } from '@lib-video/api/createTimedTextTrack';
+import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 import { LanguageSelect } from './LanguageSelect';
 import { TimedTextTrackItem } from './TimedTextTrackItem';

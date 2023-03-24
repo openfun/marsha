@@ -6,7 +6,7 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StartRecording } from '.';
 

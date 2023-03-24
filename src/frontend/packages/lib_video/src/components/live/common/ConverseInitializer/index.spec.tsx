@@ -9,8 +9,8 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useLiveSession } from 'hooks/useLiveSession';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { ConverseInitializer } from '.';
 

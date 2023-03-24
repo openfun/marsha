@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { StudentHideChatButton } from './StudentHideChatButton';
 import { StudentShowChatButton } from './StudentShowChatButton';

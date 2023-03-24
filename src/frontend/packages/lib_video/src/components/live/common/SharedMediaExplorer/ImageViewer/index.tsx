@@ -2,7 +2,7 @@ import { Box, Image } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useSharedMediaCurrentPage } from 'hooks/useSharedMediaCurrentPage';
+import { useSharedMediaCurrentPage } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 const messages = defineMessages({
   altMessage: {

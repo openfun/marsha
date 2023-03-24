@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { StudentHideAppsButton } from './StudentHideAppsButton';
 import { StudentShowAppsButton } from './StudentShowAppsButton';

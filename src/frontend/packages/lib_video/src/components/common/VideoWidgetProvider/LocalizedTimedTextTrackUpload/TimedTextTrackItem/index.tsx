@@ -9,7 +9,7 @@ import {
 import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
+import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
 
 import { DeleteTimedTextTrackItemUploadButton } from './DeleteTimedTextTrackItemUploadButton';
 

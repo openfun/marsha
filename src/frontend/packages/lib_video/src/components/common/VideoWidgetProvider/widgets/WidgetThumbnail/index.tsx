@@ -19,9 +19,9 @@ import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { createThumbnail } from 'api/createThumbnail';
-import { useThumbnailMetadata } from 'api/useThumbnailMetadata';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { createThumbnail } from '@lib-video/api/createThumbnail';
+import { useThumbnailMetadata } from '@lib-video/api/useThumbnailMetadata';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { ThumbnailManager } from './ThumbnailManager';
 import { ThumbnailRemoveButton } from './ThumbnailRemoveButton';

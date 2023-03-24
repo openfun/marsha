@@ -3,8 +3,8 @@ import { liveState, DashboardButton } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { usePairingVideo } from 'api/usePairingVideo';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { usePairingVideo } from '@lib-video/api/usePairingVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   pairingSecretLabel: {

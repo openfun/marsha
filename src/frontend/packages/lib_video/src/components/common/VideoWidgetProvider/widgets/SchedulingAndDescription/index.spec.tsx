@@ -11,7 +11,7 @@ import { render } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
 import React from 'react';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { SchedulingAndDescription } from '.';
 

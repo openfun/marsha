@@ -1,10 +1,10 @@
 import React from 'react';
 
-import { LiveModale } from 'components/live/common/LiveModale';
+import { LiveModale } from '@lib-video/components/live/common/LiveModale';
 import {
   LiveModaleConfigurationProvider,
   useLiveModaleConfiguration,
-} from 'hooks/useLiveModale';
+} from '@lib-video/hooks/useLiveModale';
 
 const TestLiveModale = () => {
   const [modaleConfiguration] = useLiveModaleConfiguration();

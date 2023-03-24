@@ -13,7 +13,7 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
 import { TimedTextTrackItem } from '.';
 

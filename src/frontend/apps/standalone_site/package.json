@@ -35,7 +35,7 @@
     "build": "craco build",
     "postbuild": "./postbuild.sh",
     "test": "cross-env CI=true TZ=UTC craco test",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
   },

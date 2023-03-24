@@ -14,17 +14,17 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { setLiveSessionDisplayName } from 'api/setLiveSessionDisplayName';
+import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
-} from 'conf/chat';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { isAnonymous } from 'utils/chat/chat';
-import { getAnonymousId } from 'utils/localstorage';
-import { converse } from 'utils/window';
+} from '@lib-video/conf/chat';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { isAnonymous } from '@lib-video/utils/chat/chat';
+import { getAnonymousId } from '@lib-video/utils/localstorage';
+import { converse } from '@lib-video/utils/window';
 
 import { InputBar } from '../Chat/InputBar';
 

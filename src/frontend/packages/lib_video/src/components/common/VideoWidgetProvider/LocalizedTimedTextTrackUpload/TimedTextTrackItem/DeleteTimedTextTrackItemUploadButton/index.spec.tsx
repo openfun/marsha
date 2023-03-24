@@ -4,7 +4,7 @@ import { timedTextMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
 import { DeleteTimedTextTrackItemUploadButton } from '.';
 

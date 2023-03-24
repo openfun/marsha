@@ -22,15 +22,18 @@ import {
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { pushAttendance } from 'api/pushAttendance';
-import { createPlayer } from 'components/common/Player/createPlayer';
-import { useChatItemState } from 'hooks/useChatItemsStore';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { useLiveStateStarted } from 'hooks/useLiveStateStarted';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture/index';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { pushAttendance } from '@lib-video/api/pushAttendance';
+import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture/index';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveWrapper } from '.';
 

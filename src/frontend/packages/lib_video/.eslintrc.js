@@ -21,15 +21,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(api|components|hooks|types|utils|conf|errors)/**',
-            group: 'internal',
-          },
-          {
-            pattern: 'errors',
-            group: 'internal',
-          },
-          {
-            pattern: 'routes',
+            pattern: '+(@lib-video)/**',
             group: 'internal',
           },
         ],
@@ -38,4 +30,5 @@ module.exports = {
       },
     ],
   },
+  ignorePatterns: ['node_modules/', 'testSetup.ts'],
 };

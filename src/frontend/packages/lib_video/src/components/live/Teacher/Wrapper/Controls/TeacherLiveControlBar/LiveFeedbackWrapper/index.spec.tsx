@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { LiveFeedbackProvider } from 'hooks/useLiveFeedback';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
 
 import { LiveFeedbackWrapper } from '.';
 

@@ -3,9 +3,9 @@ import { ErrorMessage, liveState, ShouldNotHappen } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import { useLiveAttendances } from 'api/useLiveAttendances';
-import { POLL_FOR_ATTENDANCES } from 'conf/sideEffects';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useLiveAttendances } from '@lib-video/api/useLiveAttendances';
+import { POLL_FOR_ATTENDANCES } from '@lib-video/conf/sideEffects';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { DashboardLiveTabAttendanceSession } from './DashboardLiveTabAttendanceSession';
 import { DashboardLiveTabAttendanceWaiting } from './DashboardLiveTabAttendanceWaiting';

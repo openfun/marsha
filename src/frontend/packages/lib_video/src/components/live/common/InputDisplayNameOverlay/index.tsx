@@ -3,7 +3,7 @@ import { ExitCrossSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useSetDisplayName } from 'hooks/useSetDisplayName';
+import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
 
 import { InputDisplayName } from '../InputDisplayName';
 

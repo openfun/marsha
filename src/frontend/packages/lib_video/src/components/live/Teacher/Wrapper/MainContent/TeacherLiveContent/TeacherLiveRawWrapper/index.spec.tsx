@@ -3,9 +3,9 @@ import { videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { VideoPlayer } from 'components/common/VideoPlayer';
-import DashboardLiveRaw from 'components/live/common/DashboardLiveRaw';
-import { LiveFeedbackProvider } from 'hooks/useLiveFeedback';
+import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
+import DashboardLiveRaw from '@lib-video/components/live/common/DashboardLiveRaw';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
 
 import TeacherLiveRawWrapper from '.';
 

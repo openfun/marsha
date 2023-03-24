@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import React, { useEffect, useRef } from 'react';
 
-import { useChatItemState } from 'hooks/useChatItemsStore';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
 
 import { ChatMessageGroupItem } from '../ChatMessageGroupItem';
 

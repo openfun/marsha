@@ -2,7 +2,7 @@ import { Box, Text } from 'grommet';
 import React from 'react';
 import styled from 'styled-components';
 
-import { ChatAvatar } from 'components/live/common/Chat/ChatAvatar';
+import { ChatAvatar } from '@lib-video/components/live/common/Chat/ChatAvatar';
 
 const StyledText = styled(Text)`
   font-family: 'Roboto-Medium';

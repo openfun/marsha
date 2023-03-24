@@ -17,9 +17,9 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { createTimedTextTrack } from 'api/createTimedTextTrack';
-import { DeleteTimedTextTrackUploadModalProvider } from 'hooks/useDeleteTimedTextTrackUploadModal';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { createTimedTextTrack } from '@lib-video/api/createTimedTextTrack';
+import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { LocalizedTimedTextTrackUpload } from '.';
 

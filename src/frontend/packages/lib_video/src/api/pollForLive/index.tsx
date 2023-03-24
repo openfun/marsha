@@ -1,7 +1,7 @@
 import { VideoUrls } from 'lib-components';
 
-import { POLL_FOR_LIVE_TIMEOUT } from 'conf/sideEffects';
-import { resumeLive } from 'utils/resumeLive';
+import { POLL_FOR_LIVE_TIMEOUT } from '@lib-video/conf/sideEffects';
+import { resumeLive } from '@lib-video/utils/resumeLive';
 
 export const pollForLive = async (
   urls: VideoUrls,

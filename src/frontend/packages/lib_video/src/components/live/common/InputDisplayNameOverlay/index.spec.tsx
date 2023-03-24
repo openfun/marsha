@@ -11,15 +11,15 @@ import {
 import { render, renderImageSnapshot, wrapInIntlProvider } from 'lib-tests';
 import React from 'react';
 
-import { setLiveSessionDisplayName } from 'api/setLiveSessionDisplayName';
+import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import {
   ANONYMOUS_ID_PREFIX,
   NICKNAME_MAX_LENGTH,
   NICKNAME_MIN_LENGTH,
-} from 'conf/chat';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { converse } from 'utils/window';
-import { wrapInVideo } from 'utils/wrapInVideo';
+} from '@lib-video/conf/chat';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { converse } from '@lib-video/utils/window';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { InputDisplayNameOverlay } from '.';
 
