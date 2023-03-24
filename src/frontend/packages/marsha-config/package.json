@@ -1,5 +1,10 @@
 {
   "name": "marsha-config",
   "version": "4.0.0-beta.18",
-  "private": true
+  "private": true,
+  "description": "Marsha configuration",
+  "main": "index.js",
+  "files": [
+    "./tsconfig/*"
+  ]
 }

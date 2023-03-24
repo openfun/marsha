@@ -1,14 +1,19 @@
-const path = require('path');
 const { getLoader, loaderByName } = require('@craco/craco');
+const {
+  appPackages: packages,
+  alias,
+  moduleNameMapper,
+} = require('marsha-config');
 
-const packages = [];
-packages.push(path.join(__dirname, '../../packages/lib_video'));
-
+/**
+ * Craco (Create React App Configuration Override) helps us to configure the webpack of our CRA without ejecting.
+ * It is used to add the marsha packages to the babel-loader, @see packages
+ * It is also used to add the packages alias to the webpack alias list, @see alias
+ * It is also used to add the marsha moduleNameMapper to the jest config, @see moduleNameMapper
+ */
 module.exports = {
   webpack: {
-    alias: {
-      '@lib-video': path.resolve(__dirname, '../../packages/lib_video/src/'),
-    },
+    alias,
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(
         webpackConfig,
@@ -26,9 +31,7 @@ module.exports = {
   },
   jest: {
     configure: {
-      moduleNameMapper: {
-        '@lib-video/(.*)': '<rootDir>../../packages/lib_video/src/$1',
-      },
+      moduleNameMapper,
     },
   },
 };
