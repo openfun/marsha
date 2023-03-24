@@ -13,6 +13,7 @@
     "babel-jest": "29.5.0",
     "cross-env": "7.0.3",
     "fetch-mock": "9.11.0",
+    "marsha-config": "*",
     "typescript": "4.9.5"
   },
   "dependencies": {

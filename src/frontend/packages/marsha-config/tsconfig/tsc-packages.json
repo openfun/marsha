@@ -1,0 +1,11 @@
+{
+  "$schema": "https://json.schemastore.org/tsconfig",
+  "display": "Marsha Packages",
+  "extends": "./tsc-base.json",
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "lib": ["ES2015"],
+    "module": "esnext",
+    "target": "es6"
+  }
+}
