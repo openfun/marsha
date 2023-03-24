@@ -4,9 +4,9 @@ import { videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { navigateSharingDoc } from 'api/navigateSharingDoc';
-import { SharedMediaCurrentPageProvider } from 'hooks/useSharedMediaCurrentPage';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { navigateSharingDoc } from '@lib-video/api/navigateSharingDoc';
+import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { PreviousPageButton } from '.';
 

@@ -2,7 +2,7 @@ import { screen, fireEvent } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useLivePanelState } from 'hooks/useLivePanelState';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
 
 import { StudentHideChatButton } from '.';
 

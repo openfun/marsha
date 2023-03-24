@@ -2,9 +2,9 @@ import { Box, Stack } from 'grommet';
 import { SharedLiveMediaUrls } from 'lib-components';
 import React, { PropsWithChildren } from 'react';
 
-import { useLivePanelState } from 'hooks/useLivePanelState';
-import { usePictureInPicture } from 'hooks/usePictureInPicture';
-import { SharedMediaCurrentPageProvider } from 'hooks/useSharedMediaCurrentPage';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
+import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
+import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 import { ImageViewer } from './ImageViewer';
 

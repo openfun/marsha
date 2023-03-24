@@ -9,7 +9,7 @@ import {
 import { render } from 'lib-tests';
 import React, { Suspense } from 'react';
 
-import { LiveModaleConfigurationProvider } from 'hooks/useLiveModale';
+import { LiveModaleConfigurationProvider } from '@lib-video/hooks/useLiveModale';
 
 import { DashboardVideoWrapper } from '.';
 

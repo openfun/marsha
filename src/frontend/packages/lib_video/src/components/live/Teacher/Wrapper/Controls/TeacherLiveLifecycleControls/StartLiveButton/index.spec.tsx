@@ -14,8 +14,8 @@ import {
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { startLive } from 'api/startLive';
-import { wrapInLiveModaleProvider } from 'utils/liveModale';
+import { startLive } from '@lib-video/api/startLive';
+import { wrapInLiveModaleProvider } from '@lib-video/utils/liveModale';
 
 import { StartLiveButton } from '.';
 

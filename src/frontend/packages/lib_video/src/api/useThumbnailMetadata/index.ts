@@ -1,7 +1,7 @@
 import { metadata } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
-import { ThumbnailMetadata } from 'types/metadata';
+import { ThumbnailMetadata } from '@lib-video/types/metadata';
 
 export const useThumbnailMetadata = (
   locale: string,

@@ -2,11 +2,11 @@ import { Box } from 'grommet';
 import { liveState, useTimedTextTrack, Video } from 'lib-components';
 import React from 'react';
 
-import { VideoPlayer } from 'components/common/VideoPlayer';
-import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
-import { VideoWidgetProvider } from 'components/common/VideoWidgetProvider';
-import { MissingVideoUrlsException } from 'errors';
-import { CurrentVideoProvider } from 'hooks/useCurrentVideo';
+import { VideoPlayer } from '@lib-video/components/common/VideoPlayer';
+import { VideoWebSocketInitializer } from '@lib-video/components/common/VideoWebSocketInitializer';
+import { VideoWidgetProvider } from '@lib-video/components/common/VideoWidgetProvider';
+import { MissingVideoUrlsException } from '@lib-video/errors';
+import { CurrentVideoProvider } from '@lib-video/hooks/useCurrentVideo';
 
 import { VideoFromLiveDashboard } from './VideoFromLiveDashboard';
 

@@ -11,10 +11,10 @@ import {
 import React, { Fragment, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useLiveSessionsQuery } from 'api/useLiveSessions';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { getAnonymousId } from 'utils/localstorage';
+import { useLiveSessionsQuery } from '@lib-video/api/useLiveSessions';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { getAnonymousId } from '@lib-video/utils/localstorage';
 
 import { AdvertisingBox } from '../AdvertisingBox';
 

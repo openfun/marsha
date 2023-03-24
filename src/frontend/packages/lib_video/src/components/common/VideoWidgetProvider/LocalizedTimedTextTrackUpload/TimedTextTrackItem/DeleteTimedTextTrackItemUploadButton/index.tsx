@@ -3,7 +3,7 @@ import { BinSVG, TimedText } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useDeleteTimedTextTrackUploadModal } from 'hooks/useDeleteTimedTextTrackUploadModal';
+import { useDeleteTimedTextTrackUploadModal } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
 const messages = defineMessages({
   buttonLabel: {

@@ -12,7 +12,7 @@ import {
   DEFAULT_PICTURE_WIDTH_RATIO,
   MAX_PICTURE_WIDTH_RATIO,
   MIN_PICTURE_WIDTH_RATIO,
-} from 'conf/pictureInPicture';
+} from '@lib-video/conf/pictureInPicture';
 
 import { PictureActionLayer } from './PictureActionLayer';
 import { PictureInPictureElement } from './PictureInPictureElement';

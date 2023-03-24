@@ -6,9 +6,9 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useStartLiveRecording } from 'api/useStartLiveRecording';
-import { formatSecToTimeStamp } from 'components/live/Teacher/Wrapper/Controls/TeacherLiveRecordingActions/utils';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useStartLiveRecording } from '@lib-video/api/useStartLiveRecording';
+import { formatSecToTimeStamp } from '@lib-video/components/live/Teacher/Wrapper/Controls/TeacherLiveRecordingActions/utils';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   title: {

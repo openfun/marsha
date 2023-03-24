@@ -16,8 +16,8 @@ import {
   moveParticipantToDiscussion,
   removeParticipantAskingToJoin,
   removeParticipantFromDiscussion,
-} from 'api/updateLiveParticipants';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
+} from '@lib-video/api/updateLiveParticipants';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
 
 export default async function marshaJoinDiscussionPluginHandler(
   messageStanza: any,

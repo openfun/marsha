@@ -3,7 +3,7 @@ import { liveState, FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { HarvestVOD } from './HarvestVOD';
 import { PublishVOD } from './PublishVOD';

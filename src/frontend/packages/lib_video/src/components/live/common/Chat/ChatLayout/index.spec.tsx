@@ -5,9 +5,9 @@ import { useJwt, liveSessionFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useChatItemState } from 'hooks/useChatItemsStore';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { converse } from 'utils/window';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { converse } from '@lib-video/utils/window';
 
 import { ChatLayout } from '.';
 

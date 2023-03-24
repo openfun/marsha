@@ -11,8 +11,8 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from 'api/useFetchTimedTextTrackLanguageChoices';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { TranscriptReader } from './TranscriptReader';
 

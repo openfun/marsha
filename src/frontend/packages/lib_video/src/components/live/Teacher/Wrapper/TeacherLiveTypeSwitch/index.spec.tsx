@@ -3,8 +3,8 @@ import { useJwt, videoMockFactory, LiveModeType } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { LiveFeedbackProvider } from 'hooks/useLiveFeedback';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherLiveTypeSwitch } from '.';
 

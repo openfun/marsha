@@ -10,9 +10,9 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { setLiveSessionDisplayName } from 'api/setLiveSessionDisplayName';
-import { converse } from 'utils/window';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
+import { converse } from '@lib-video/utils/window';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveWaitingRoom } from '.';
 

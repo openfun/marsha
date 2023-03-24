@@ -6,7 +6,7 @@ import React, { Fragment } from 'react';
 import { VTTCue } from 'vtt.js';
 import 'vtt.js/lib/vttcue';
 
-import { useVideoProgress } from 'hooks/useVideoProgress';
+import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
 
 import { TranscriptReader } from '.';
 

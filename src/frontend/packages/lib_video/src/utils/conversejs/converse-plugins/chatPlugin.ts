@@ -7,8 +7,11 @@
 import { MessageType, XMPP } from 'lib-components';
 import { DateTime } from 'luxon';
 
-import { ReceivedMessageType, useChatItemState } from 'hooks/useChatItemsStore';
-import { converse } from 'utils/window';
+import {
+  ReceivedMessageType,
+  useChatItemState,
+} from '@lib-video/hooks/useChatItemsStore';
+import { converse } from '@lib-video/utils/window';
 
 enum StanzaType {
   IQ = 'iq',

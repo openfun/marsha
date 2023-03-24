@@ -18,13 +18,16 @@ import { render } from 'lib-tests';
 import React, { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
-import { useChatItemState } from 'hooks/useChatItemsStore';
-import { JitsiApiProvider } from 'hooks/useJitsiApi';
-import { LiveModaleConfigurationProvider } from 'hooks/useLiveModale';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture';
-import { converse } from 'utils/window';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
+import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
+import { LiveModaleConfigurationProvider } from '@lib-video/hooks/useLiveModale';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
+import { converse } from '@lib-video/utils/window';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherLiveWrapper } from '.';
 

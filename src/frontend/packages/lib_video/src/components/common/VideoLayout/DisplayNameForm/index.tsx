@@ -2,8 +2,8 @@ import { Layer } from 'grommet';
 import { Nullable } from 'lib-common';
 import React from 'react';
 
-import { InputDisplayNameOverlay } from 'components/live/common/InputDisplayNameOverlay';
-import { useSetDisplayName } from 'hooks/useSetDisplayName';
+import { InputDisplayNameOverlay } from '@lib-video/components/live/common/InputDisplayNameOverlay';
+import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
 
 interface DisplayNameFormProps {
   fullPage?: boolean;

@@ -16,8 +16,8 @@ import {
 import { render } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { createThumbnail } from 'api/createThumbnail';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { createThumbnail } from '@lib-video/api/createThumbnail';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { WidgetThumbnail } from '.';
 

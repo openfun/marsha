@@ -10,15 +10,18 @@ import {
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { TeacherVideoInfoBar } from 'components/common/TeacherVideoInfoBar';
-import { VideoLayout } from 'components/common/VideoLayout';
-import { toolbarButtons } from 'components/live/common/DashboardLiveJitsi/utils';
-import { LiveVideoPanel } from 'components/live/common/LiveVideoPanel';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { useJitsiApi } from 'hooks/useJitsiApi';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { usePictureInPicture } from 'hooks/usePictureInPicture';
-import { converse } from 'utils/window';
+import { TeacherVideoInfoBar } from '@lib-video/components/common/TeacherVideoInfoBar';
+import { VideoLayout } from '@lib-video/components/common/VideoLayout';
+import { toolbarButtons } from '@lib-video/components/live/common/DashboardLiveJitsi/utils';
+import { LiveVideoPanel } from '@lib-video/components/live/common/LiveVideoPanel';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { useJitsiApi } from '@lib-video/hooks/useJitsiApi';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { usePictureInPicture } from '@lib-video/hooks/usePictureInPicture';
+import { converse } from '@lib-video/utils/window';
 
 import { DashboardControlPane } from '../../../common/DashboardControlPane';
 

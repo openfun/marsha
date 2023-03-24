@@ -9,8 +9,8 @@ import React from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
-import { useLiveFeedback } from 'hooks/useLiveFeedback';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
+import { useLiveFeedback } from '@lib-video/hooks/useLiveFeedback';
 
 const messages = defineMessages({
   RAW: {

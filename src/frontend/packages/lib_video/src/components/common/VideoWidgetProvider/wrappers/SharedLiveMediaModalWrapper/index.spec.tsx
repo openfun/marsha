@@ -10,7 +10,7 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useDeleteSharedLiveMediaModal } from 'hooks/useDeleteSharedLiveMediaModal';
+import { useDeleteSharedLiveMediaModal } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 
 import { SharedLiveMediaModalWrapper } from '.';
 

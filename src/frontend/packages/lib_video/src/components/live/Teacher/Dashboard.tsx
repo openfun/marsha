@@ -1,16 +1,16 @@
 import { Live } from 'lib-components';
 import React from 'react';
 
-import { VideoWebSocketInitializer } from 'components/common/VideoWebSocketInitializer';
-import { ConverseInitializer } from 'components/live/common/ConverseInitializer';
+import { VideoWebSocketInitializer } from '@lib-video/components/common/VideoWebSocketInitializer';
+import { ConverseInitializer } from '@lib-video/components/live/common/ConverseInitializer';
 import {
   CurrentLiveProvider,
   CurrentVideoProvider,
-} from 'hooks/useCurrentVideo';
-import { JitsiApiProvider } from 'hooks/useJitsiApi';
-import { LiveFeedbackProvider } from 'hooks/useLiveFeedback';
-import { LiveModaleConfigurationProvider } from 'hooks/useLiveModale';
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture';
+} from '@lib-video/hooks/useCurrentVideo';
+import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
+import { LiveModaleConfigurationProvider } from '@lib-video/hooks/useLiveModale';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
 
 import { TeacherLiveWrapper } from './Wrapper';
 

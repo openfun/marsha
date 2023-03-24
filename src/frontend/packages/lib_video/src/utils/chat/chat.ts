@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { ANONYMOUS_ID_PREFIX } from 'conf/chat';
-import { converse } from 'utils/window';
+import { ANONYMOUS_ID_PREFIX } from '@lib-video/conf/chat';
+import { converse } from '@lib-video/utils/window';
 
 export const generateAnonymousNickname = () => {
   const tokenLength = 8;

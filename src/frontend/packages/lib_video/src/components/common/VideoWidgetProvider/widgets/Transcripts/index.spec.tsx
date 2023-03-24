@@ -13,7 +13,7 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { VTTCue } from 'vtt.js';
 
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { Transcripts } from './index';
 

@@ -1,7 +1,7 @@
 import { createIntl, IntlShape } from 'react-intl';
 
-import { ParticipantType } from 'hooks/useParticipantsStore';
-import { generateAnonymousNickname } from 'utils/chat/chat';
+import { ParticipantType } from '@lib-video/hooks/useParticipantsStore';
+import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';
 
 import {
   generateSimpleViewersMessage,

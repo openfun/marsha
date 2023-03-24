@@ -2,8 +2,8 @@ import { Select } from 'grommet';
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useVideoMetadata } from 'api/useVideoMetadata';
-import { LicenseChoice } from 'types/SelectOptions';
+import { useVideoMetadata } from '@lib-video/api/useVideoMetadata';
+import { LicenseChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
   selectLicenseLabel: {

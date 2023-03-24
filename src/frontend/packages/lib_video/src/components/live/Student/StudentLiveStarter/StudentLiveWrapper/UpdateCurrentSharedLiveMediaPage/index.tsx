@@ -1,8 +1,8 @@
 import { useVideo } from 'lib-components';
 import { useEffect } from 'react';
 
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { useSharedMediaCurrentPage } from 'hooks/useSharedMediaCurrentPage';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { useSharedMediaCurrentPage } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 export const UpdateCurrentSharedLiveMediaPage = () => {
   const live = useCurrentLive();

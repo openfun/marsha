@@ -8,9 +8,12 @@ import {
 import { render, renderImageSnapshot } from 'lib-tests';
 import React from 'react';
 
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { useParticipantsStore } from 'hooks/useParticipantsStore';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { LiveVideoPanel } from '.';
 

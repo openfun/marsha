@@ -6,6 +6,9 @@ packages.push(path.join(__dirname, '../../packages/lib_video'));
 
 module.exports = {
   webpack: {
+    alias: {
+      '@lib-video': path.resolve(__dirname, '../../packages/lib_video/src/'),
+    },
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(
         webpackConfig,
@@ -19,6 +22,13 @@ module.exports = {
         match.loader.include = include.concat(packages);
       }
       return webpackConfig;
+    },
+  },
+  jest: {
+    configure: {
+      moduleNameMapper: {
+        '@lib-video/(.*)': '<rootDir>../../packages/lib_video/src/$1',
+      },
     },
   },
 };

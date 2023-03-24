@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { converse } from 'utils/window';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { converse } from '@lib-video/utils/window';
 
 const PLUGIN_NAME = 'logout-plugin';
 

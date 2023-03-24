@@ -6,14 +6,14 @@ import { DateTime } from 'luxon';
 import React, { useEffect, useMemo } from 'react';
 import { useIntl } from 'react-intl';
 
-import { pollForLive } from 'api/pollForLive';
-import { useCurrentLive } from 'hooks/useCurrentVideo';
-import { JitsiApiProvider } from 'hooks/useJitsiApi';
-import { useLiveSession } from 'hooks/useLiveSession';
-import { useLiveStateStarted } from 'hooks/useLiveStateStarted';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture';
-import { converse } from 'utils/window';
+import { pollForLive } from '@lib-video/api/pollForLive';
+import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
+import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
+import { converse } from '@lib-video/utils/window';
 
 import { StudentLiveAdvertising } from './StudentLiveAdvertising';
 import { StudentLiveWaitingRoom } from './StudentLiveWaitingRoom';

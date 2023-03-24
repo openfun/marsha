@@ -4,10 +4,13 @@ import { videoMockFactory, LiveModeType, liveState } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import * as pollForLiveModule from 'api/pollForLive';
-import { LiveFeedbackProvider } from 'hooks/useLiveFeedback';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import * as pollForLiveModule from '@lib-video/api/pollForLive';
+import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherLiveControlBar } from '.';
 

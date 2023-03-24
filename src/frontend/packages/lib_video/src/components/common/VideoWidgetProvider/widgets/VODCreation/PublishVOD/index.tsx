@@ -11,8 +11,8 @@ import {
 import React, { useEffect } from 'react';
 import { useIntl } from 'react-intl';
 
-import { publishLiveToVod } from 'api/publishLiveToVod';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { publishLiveToVod } from '@lib-video/api/publishLiveToVod';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   buttonLabel: {

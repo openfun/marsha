@@ -1,11 +1,11 @@
 import { useVideo, uploadState, Video } from 'lib-components';
 import React, { useMemo } from 'react';
 
-import { LiveTeacherDashboard } from 'components/live';
-import { VODTeacherDashboard } from 'components/vod';
-import { convertVideoToLive } from 'utils/convertVideo';
-import { getOrInitAnonymousId } from 'utils/getOrInitAnonymousId';
-import { generateVideoWebsocketUrl } from 'utils/websocket';
+import { LiveTeacherDashboard } from '@lib-video/components/live';
+import { VODTeacherDashboard } from '@lib-video/components/vod';
+import { convertVideoToLive } from '@lib-video/utils/convertVideo';
+import { getOrInitAnonymousId } from '@lib-video/utils/getOrInitAnonymousId';
+import { generateVideoWebsocketUrl } from '@lib-video/utils/websocket';
 
 interface DashboardVideoWrapperProps {
   video: Video;

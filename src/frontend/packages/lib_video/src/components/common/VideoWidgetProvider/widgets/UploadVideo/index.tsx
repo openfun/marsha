@@ -12,7 +12,7 @@ import {
 import React, { useEffect, useRef } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   info: {

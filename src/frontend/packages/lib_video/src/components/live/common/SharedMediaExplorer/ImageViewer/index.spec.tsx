@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { SharedMediaCurrentPageProvider } from 'hooks/useSharedMediaCurrentPage';
+import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
 
 import { ImageViewer } from '.';
 

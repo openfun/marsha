@@ -3,7 +3,7 @@ import { renderImageSnapshot } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { ChatMessageGroupType } from 'hooks/useChatItemsStore/index';
+import { ChatMessageGroupType } from '@lib-video/hooks/useChatItemsStore/index';
 
 import { ChatMessageGroupItem } from '.';
 

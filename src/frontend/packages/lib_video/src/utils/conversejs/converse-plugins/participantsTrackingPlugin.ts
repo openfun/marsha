@@ -2,8 +2,8 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
-import { useParticipantsStore } from 'hooks/useParticipantsStore';
-import { converse } from 'utils/window';
+import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
+import { converse } from '@lib-video/utils/window';
 
 const PLUGIN_NAME = 'participants-tracking-plugin';
 

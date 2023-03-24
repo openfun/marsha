@@ -11,7 +11,7 @@
   "scripts": {
     "build": "rollup -c",
     "build:watch": "yarn build --watch",
-    "lint": "eslint src/**/*.{ts,tsx}",
+    "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "test:coverage": "yarn run test -- --coverage",

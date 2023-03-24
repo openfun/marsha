@@ -3,8 +3,8 @@ import { TimedTextTranscript } from 'lib-components';
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { VTTCue } from 'vtt.js';
 
-import { useTranscriptReaderRequest } from 'api/useTranscriptReaderRequest';
-import { useVideoProgress } from 'hooks/useVideoProgress';
+import { useTranscriptReaderRequest } from '@lib-video/api/useTranscriptReaderRequest';
+import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
 
 import { TranscriptSentence } from './TranscriptSentence';
 

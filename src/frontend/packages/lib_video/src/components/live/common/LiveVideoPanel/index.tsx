@@ -3,9 +3,12 @@ import { useCurrentResourceContext, ShouldNotHappen } from 'lib-components';
 import React, { useEffect, useContext, Fragment } from 'react';
 import styled from 'styled-components';
 
-import { Chat } from 'components/live/common/Chat';
-import { ViewersList } from 'components/live/common/ViewersList';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import { Chat } from '@lib-video/components/live/common/Chat';
+import { ViewersList } from '@lib-video/components/live/common/ViewersList';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { LiveVideoTabPanel } from './LiveVideoTabPanel';
 

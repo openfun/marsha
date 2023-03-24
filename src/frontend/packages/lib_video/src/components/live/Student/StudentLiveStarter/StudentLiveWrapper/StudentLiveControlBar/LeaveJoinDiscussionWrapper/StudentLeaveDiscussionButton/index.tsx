@@ -4,8 +4,8 @@ import { Button, JoinDiscussionSVG } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { converse } from 'utils/window';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { converse } from '@lib-video/utils/window';
 
 const messages = defineMessages({
   leaveDiscussion: {

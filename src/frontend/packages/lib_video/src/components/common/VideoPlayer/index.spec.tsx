@@ -15,8 +15,8 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useVideo } from 'api/useVideos';
-import { createPlayer } from 'components/common/Player/createPlayer';
+import { useVideo } from '@lib-video/api/useVideos';
+import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
 
 import { VideoPlayer } from '.';
 

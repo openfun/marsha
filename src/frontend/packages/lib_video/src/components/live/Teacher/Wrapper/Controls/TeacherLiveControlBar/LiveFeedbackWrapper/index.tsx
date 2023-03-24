@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { useLiveFeedback } from 'hooks/useLiveFeedback';
+import { useLiveFeedback } from '@lib-video/hooks/useLiveFeedback';
 
 import { HideLiveFeedback } from './HideLiveFeedback';
 import { ShowLiveFeedback } from './ShowLiveFeedback';

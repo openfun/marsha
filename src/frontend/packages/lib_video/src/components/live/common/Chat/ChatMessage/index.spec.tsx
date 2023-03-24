@@ -3,7 +3,7 @@ import { renderImageSnapshot, render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
-import { ChatMessageType } from 'hooks/useChatItemsStore';
+import { ChatMessageType } from '@lib-video/hooks/useChatItemsStore';
 
 import { ChatMessage } from '.';
 

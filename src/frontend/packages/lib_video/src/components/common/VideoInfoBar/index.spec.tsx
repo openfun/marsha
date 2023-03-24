@@ -10,8 +10,8 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useParticipantsStore } from 'hooks/useParticipantsStore';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { VideoInfoBar } from '.';
 

@@ -13,8 +13,8 @@ import React, { useContext, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useUpdateVideo } from 'api/useUpdateVideo';
-import { CurrentVideoProvider } from 'hooks/useCurrentVideo';
+import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
+import { CurrentVideoProvider } from '@lib-video/hooks/useCurrentVideo';
 
 import { LicenseSelect } from './LicenseSelect';
 import { UploadVideoForm } from './UploadVideoForm';

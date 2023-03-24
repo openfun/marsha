@@ -4,8 +4,8 @@ import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { startLive } from 'api/startLive';
-import { useLiveModaleConfiguration } from 'hooks/useLiveModale';
+import { startLive } from '@lib-video/api/startLive';
+import { useLiveModaleConfiguration } from '@lib-video/hooks/useLiveModale';
 
 const messages = defineMessages({
   title: {

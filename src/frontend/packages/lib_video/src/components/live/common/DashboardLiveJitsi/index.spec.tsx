@@ -9,9 +9,9 @@ import {
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { JitsiApiProvider } from 'hooks/useJitsiApi';
-import { convertVideoToJitsiLive } from 'utils/convertVideo';
-import * as mockWindow from 'utils/window';
+import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
+import { convertVideoToJitsiLive } from '@lib-video/utils/convertVideo';
+import * as mockWindow from '@lib-video/utils/window';
 
 import { initializeJitsi } from './utils';
 

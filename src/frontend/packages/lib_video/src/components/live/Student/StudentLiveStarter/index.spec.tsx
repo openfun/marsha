@@ -13,12 +13,12 @@ import {
 import { render, Deferred } from 'lib-tests';
 import React from 'react';
 
-import { pollForLive } from 'api/pollForLive';
-import { setLiveSessionDisplayName } from 'api/setLiveSessionDisplayName';
-import { useLiveStateStarted } from 'hooks/useLiveStateStarted';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { converse } from 'utils/window';
-import { wrapInVideo } from 'utils/wrapInVideo';
+import { pollForLive } from '@lib-video/api/pollForLive';
+import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
+import { useLiveStateStarted } from '@lib-video/hooks/useLiveStateStarted';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { converse } from '@lib-video/utils/window';
+import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { StudentLiveWrapper } from './StudentLiveWrapper';
 

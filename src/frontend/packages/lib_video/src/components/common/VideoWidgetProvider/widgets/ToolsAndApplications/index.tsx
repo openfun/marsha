@@ -4,8 +4,8 @@ import React, { useEffect, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useUpdateVideo } from 'api/useUpdateVideo';
-import { useCurrentVideo } from 'hooks/useCurrentVideo';
+import { useUpdateVideo } from '@lib-video/api/useUpdateVideo';
+import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   info: {

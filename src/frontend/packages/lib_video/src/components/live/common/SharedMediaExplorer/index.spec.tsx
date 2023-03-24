@@ -2,8 +2,8 @@ import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { useLivePanelState } from 'hooks/useLivePanelState';
-import { PictureInPictureProvider } from 'hooks/usePictureInPicture';
+import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
+import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
 
 import { SharedMediaExplorer } from '.';
 

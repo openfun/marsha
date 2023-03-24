@@ -4,10 +4,10 @@ import { Button as StudentButton, JoinDiscussionSVG } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useLiveSession } from 'hooks/useLiveSession';
-import { useParticipantWorkflow } from 'hooks/useParticipantWorkflow';
-import { useSetDisplayName } from 'hooks/useSetDisplayName';
-import { converse } from 'utils/window';
+import { useLiveSession } from '@lib-video/hooks/useLiveSession';
+import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { useSetDisplayName } from '@lib-video/hooks/useSetDisplayName';
+import { converse } from '@lib-video/utils/window';
 
 const messages = defineMessages({
   askInstructor: {

@@ -10,8 +10,11 @@ import {
 import { render } from 'lib-tests';
 import React, { ReactNode } from 'react';
 
-import { createPlayer } from 'components/common';
-import { LivePanelItem, useLivePanelState } from 'hooks/useLivePanelState';
+import { createPlayer } from '@lib-video/components/common';
+import {
+  LivePanelItem,
+  useLivePanelState,
+} from '@lib-video/hooks/useLivePanelState';
 
 import { VideoFromLiveDashboard } from '.';
 

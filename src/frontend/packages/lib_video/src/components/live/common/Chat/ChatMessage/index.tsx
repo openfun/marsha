@@ -5,7 +5,7 @@ import React, { useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ChatMessageType } from 'hooks/useChatItemsStore';
+import { ChatMessageType } from '@lib-video/hooks/useChatItemsStore';
 
 const messages = defineMessages({
   sentAt: {

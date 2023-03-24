@@ -5,7 +5,7 @@ import React, { Fragment, useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useJitsiApi } from 'hooks/useJitsiApi';
+import { useJitsiApi } from '@lib-video/hooks/useJitsiApi';
 
 const messages = defineMessages({
   disableTitle: {
