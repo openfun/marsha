@@ -4,36 +4,41 @@ module.exports = {
     tsconfigRootDir: __dirname,
     project: ['./tsconfig.json'],
   },
-  rules: {
-    'import/order': [
-      'error',
-      {
-        alphabetize: {
-          order: 'asc',
-        },
-        groups: [
-          'builtin',
-          'external',
-          'internal',
-          'parent',
-          'sibling',
-          'index',
-        ],
-        pathGroups: [
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      rules: {
+        'import/order': [
+          'error',
           {
-            pattern:
-              '+(features|components|utils|routes|styles|assets|conf|hooks|api|__mock__)/**',
-            group: 'internal',
-          },
-          {
-            pattern: 'routes',
-            group: 'internal',
+            alphabetize: {
+              order: 'asc',
+            },
+            groups: [
+              'builtin',
+              'external',
+              'internal',
+              'parent',
+              'sibling',
+              'index',
+            ],
+            pathGroups: [
+              {
+                pattern:
+                  '+(features|components|utils|routes|styles|assets|conf|hooks|api|__mock__)/**',
+                group: 'internal',
+              },
+              {
+                pattern: 'routes',
+                group: 'internal',
+              },
+            ],
+            pathGroupsExcludedImportTypes: ['builtin'],
+            'newlines-between': 'always',
           },
         ],
-        pathGroupsExcludedImportTypes: ['builtin'],
-        'newlines-between': 'always',
       },
-    ],
-  },
-  ignorePatterns: ['node_modules/', '.eslintrc.js', 'src/setupProxy.js'],
+    },
+  ],
+  ignorePatterns: ['node_modules/', '.eslintrc.js', 'craco.config.js'],
 };

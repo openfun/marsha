@@ -17,6 +17,7 @@
     "typescript": "4.9.5"
   },
   "dependencies": {
+    "@craco/craco": "7.1.0",
     "grommet": "*",
     "http-proxy-middleware": "2.0.6",
     "react": "17.0.2",
@@ -29,10 +30,10 @@
     "web-vitals": "3.3.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "craco start",
+    "build": "craco build",
     "postbuild": "./postbuild.sh",
-    "test": "cross-env CI=true TZ=UTC react-scripts test",
+    "test": "cross-env CI=true TZ=UTC craco test",
     "eject": "react-scripts eject",
     "lint": "eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint -- --fix",
