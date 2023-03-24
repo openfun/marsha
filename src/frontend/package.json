@@ -48,6 +48,7 @@
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
     "grommet": "2.31.0",
+    "marsha-config": "4.0.0-beta.18",
     "unist-util-visit": "4.1.2"
   },
   "dependencies": {
