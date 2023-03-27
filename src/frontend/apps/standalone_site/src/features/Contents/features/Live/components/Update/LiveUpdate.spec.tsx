@@ -19,6 +19,7 @@ const mockUseParams = useParams as jest.MockedFunction<
 jest.mock('lib-video', () => ({
   ...jest.requireActual('lib-video'),
   DashboardVideoWrapper: () => <div>My DashboardVideoWrapper</div>,
+  converseCleanup: jest.fn(),
 }));
 
 describe('<LiveUpdate />', () => {

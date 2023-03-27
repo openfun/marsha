@@ -33,6 +33,10 @@ const addChatPlugin = (xmpp: XMPP) =>
     initialize() {
       const _converse = this._converse;
 
+      _converse.api.listen.on('cleanup', () => {
+        useChatItemState.getState().reset();
+      });
+
       _converse.on('initialized', () => {
         _converse.connection.addHandler(
           (stanza: HTMLElement) => {

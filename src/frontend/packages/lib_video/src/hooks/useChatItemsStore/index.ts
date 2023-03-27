@@ -35,6 +35,7 @@ type State = {
   setHasReceivedMessageHistory: (hasReceivedMessageHistory: boolean) => void;
   chatItems: ChatItem[];
   addMessage: (newMessage: ReceivedMessageType) => void;
+  reset: () => void;
 };
 
 export const useChatItemState = create<State>((set) => ({
@@ -42,6 +43,12 @@ export const useChatItemState = create<State>((set) => ({
   setHasReceivedMessageHistory: (hasReceivedMessageHistory) =>
     set({ hasReceivedMessageHistory }),
   chatItems: [],
+  reset: () => {
+    set({
+      hasReceivedMessageHistory: false,
+      chatItems: [],
+    });
+  },
   addMessage: (newReceivedMessage: ReceivedMessageType) =>
     set((state) => {
       // It checks if the last item is a group message
