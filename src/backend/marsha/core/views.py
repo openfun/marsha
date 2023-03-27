@@ -348,6 +348,9 @@ class BaseModelResourceView(ABC, BaseResourceView):
                 "uploadPollInterval": settings.FRONT_UPLOAD_POLL_INTERVAL,
                 # front is expecting duration in milliseconds
                 "attendanceDelay": settings.ATTENDANCE_PUSH_DELAY * 1000,
+                # In certain context, such as embedding the resource in content,
+                # we want to collapse the dashboard.
+                "dashboardCollapsed": "custom_embedded_resource" in self.request.POST,
             }
         )
 
