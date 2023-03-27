@@ -5,8 +5,6 @@
   "private": true,
   "workspaces": {
     "nohoist": [
-      "**/@typescript-eslint/eslint-plugin",
-      "**/@typescript-eslint/parser",
       "**/babel-core",
       "**/babel-jest",
       "**/babel-loader",
@@ -25,7 +23,7 @@
     "compile-lti_site-translations": "node compile-translations.js packages/i18n/* apps/lti_site/i18n/* --outDir=apps/lti_site/translations",
     "compile-standalone_site-translations": "node compile-translations.js packages/i18n/* apps/standalone_site/i18n/* --outDir=apps/standalone_site/src/translations",
     "compile-translations": "yarn compile-lti_site-translations && yarn compile-standalone_site-translations",
-    "lint": "yarn build-tests && yarn workspaces run lint",
+    "lint": "yarn build-tests && yarn workspace lib-components run lint && yarn workspace lib-classroom run lint && yarn workspace lib-common run lint && yarn workspace lib-markdown run lint && yarn workspace lib-tests run lint && yarn workspace lib-video run lint",
     "test-libs": "yarn build-tests && yarn workspace lib-components run test",
     "test-lib-classroom": "yarn build-tests && yarn workspace lib-classroom run test",
     "test-lti": "yarn build-tests && yarn workspace marsha run test",
@@ -36,7 +34,7 @@
     "build-lti": "yarn build-libs && yarn workspace marsha run build",
     "build-site": "yarn build-libs && yarn workspace standalone_site run build",
     "start-site": "yarn build-libs && yarn workspace standalone_site run start",
-    "prettier": "yarn workspaces run prettier"
+    "prettier": "yarn workspace lib-components run prettier && yarn workspace lib-classroom run prettier && yarn workspace lib-common run prettier && yarn workspace lib-markdown run prettier && yarn workspace lib-tests run lint && yarn workspace lib-video run prettier"
   },
   "resolutions": {
     "@codemirror/lang-markdown": "6.1.0",
@@ -47,6 +45,8 @@
     "@types/mdast": "3.0.11",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
+    "eslint": "8.36.0",
+    "eslint-config-marsha": "4.0.0-beta.18",
     "grommet": "2.31.0",
     "marsha-config": "4.0.0-beta.18",
     "typescript": "4.9.5",
@@ -56,17 +56,5 @@
   "dependencies": {
     "cljs-merge": "1.1.1",
     "yargs": "17.7.1"
-  },
-  "devDependencies": {
-    "@typescript-eslint/eslint-plugin": "5.56.0",
-    "@typescript-eslint/parser": "5.56.0",
-    "eslint": "8.36.0",
-    "eslint-config-prettier": "8.8.0",
-    "eslint-plugin-import": "2.27.5",
-    "eslint-plugin-jest": "27.2.1",
-    "eslint-plugin-prettier": "4.2.1",
-    "eslint-plugin-react": "7.32.2",
-    "eslint-plugin-react-hooks": "4.6.0",
-    "eslint-plugin-testing-library": "5.10.2"
   }
 }

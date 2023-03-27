@@ -38,6 +38,7 @@ COPY ./src/frontend/package.json /app/package.json
 COPY ./src/frontend/yarn.lock /app/yarn.lock
 COPY ./src/frontend/apps/lti_site/package.json /app/apps/lti_site/package.json
 COPY ./src/frontend/apps/standalone_site/package.json /app/apps/standalone_site/package.json
+COPY ./src/frontend/packages/eslint-config-marsha/package.json /app/packages/eslint-config-marsha/package.json
 COPY ./src/frontend/packages/marsha-config/package.json /app/packages/marsha-config/package.json
 COPY ./src/frontend/packages/lib_classroom/package.json /app/packages/lib_classroom/package.json
 COPY ./src/frontend/packages/lib_common/package.json /app/packages/lib_common/package.json
