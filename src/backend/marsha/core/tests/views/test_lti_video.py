@@ -179,6 +179,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("attendanceDelay"), 10 * 1000)
         self.assertFalse(context.get("flags").get("live_raw"))
         self.assertTrue(context.get("flags").get("sentry"))
+        self.assertFalse(context.get("dashboardCollapsed"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
@@ -534,9 +535,58 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         self.assertEqual(context.get("release"), "1.2.3")
         self.assertEqual(context.get("player"), "videojs")
         self.assertEqual(context.get("attendanceDelay"), 30 * 1000)
+        self.assertFalse(context.get("dashboardCollapsed"))
         # Make sure we only go through LTI verification once as it is costly (getting passport +
         # signature)
         self.assertEqual(mock_verify.call_count, 1)
+
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(SENTRY_DSN="https://sentry.dsn")
+    @override_settings(RELEASE="1.2.3")
+    @override_settings(VIDEO_PLAYER="videojs")
+    @override_settings(ATTENDANCE_PUSH_DELAY=10)
+    @override_switch(SENTRY, active=True)
+    def test_views_lti_video_post_instructor_dashboard_collapsed(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """
+        When we get an LTI request with custom_embedded_resource set,
+        dashboard_collapsed value in context should be true.
+        """
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(
+            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlist__title="foo bar",
+            playlist__consumer_site=passport.consumer_site,
+        )
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+            "user_id": "56255f3807599c377bf0e5bf072359fd",
+            "launch_presentation_locale": "fr",
+            "lis_person_sourcedid": "jane_doe",
+            "lis_person_contact_email_primary": "jane@test-mooc.fr",
+            "custom_embedded_resource": "1",
+        }
+
+        mock_get_consumer_site.return_value = passport.consumer_site
+        params = {
+            "collapsed": True,
+        }
+        response = self.client.post(f"/lti/videos/{video.pk}", data, params=params)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        self.assertTrue(context.get("dashboardCollapsed"))
 
     @mock.patch.object(LTI, "verify")
     @mock.patch.object(LTI, "get_consumer_site")
