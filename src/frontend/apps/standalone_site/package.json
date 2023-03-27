@@ -6,14 +6,14 @@
   "devDependencies": {
     "@types/fetch-mock": "7.3.5",
     "@types/jest": "29.5.0",
-    "@types/node": "18.15.3",
+    "@types/node": "18.15.10",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
     "@types/react-router-dom": "5.3.3",
     "babel-jest": "29.5.0",
     "cross-env": "7.0.3",
     "fetch-mock": "9.11.0",
-    "typescript": "4.9.5"
+    "typescript": "5.0.2"
   },
   "dependencies": {
     "grommet": "*",

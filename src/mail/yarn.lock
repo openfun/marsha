@@ -9,24 +9,24 @@
   dependencies:
     regenerator-runtime "^0.13.4"
 
-"@html-to/text-cli@0.5.3":
-  version "0.5.3"
-  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.3.tgz#4f988c199ddc46efd31a640358da562129cf97ec"
-  integrity sha512-4zz57WH3/NoLdV/lbnJFpm88FpwtNm78UOz3Xl/TpWU4CCDVyw5bz6YUdOJ4w0qjJy26a009g2k7D/bMaGehow==
+"@html-to/text-cli@0.5.4":
+  version "0.5.4"
+  resolved "https://registry.yarnpkg.com/@html-to/text-cli/-/text-cli-0.5.4.tgz#f40804d139e0eaa43c923c3d845cbf1f8b133acf"
+  integrity sha512-V7WDfiYjXcibHGD6q61oW8HD68UPvBVkKit0X+9v54nTmLe8KDCc+56STleqqP7CzuEK5f/1jqa652fnr9Pmsw==
   dependencies:
-    "@selderee/plugin-htmlparser2" "^0.10.0"
+    "@selderee/plugin-htmlparser2" "^0.11.0"
     aspargvs "^0.6.0"
-    deepmerge "^4.3.0"
-    htmlparser2 "^8.0.1"
-    selderee "^0.10.0"
+    deepmerge "^4.3.1"
+    htmlparser2 "^8.0.2"
+    selderee "^0.11.0"
 
-"@selderee/plugin-htmlparser2@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@selderee/plugin-htmlparser2/-/plugin-htmlparser2-0.10.0.tgz#8a304d18df907e086f3cfc71ea0ced52d6524430"
-  integrity sha512-gW69MEamZ4wk1OsOq1nG1jcyhXIQcnrsX5JwixVw/9xaiav8TCyjESAruu1Rz9yyInhgBXxkNwMeygKnN2uxNA==
+"@selderee/plugin-htmlparser2@^0.11.0":
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/@selderee/plugin-htmlparser2/-/plugin-htmlparser2-0.11.0.tgz#d5b5e29a7ba6d3958a1972c7be16f4b2c188c517"
+  integrity sha512-P33hHGdldxGabLFjPPpaTxVolMrzrcegejx+0GxjrIb9Zv48D8yAIA/QTDR2dFl7Uz7urX8aX6+5bCZslr+gWQ==
   dependencies:
     domhandler "^5.0.3"
-    selderee "^0.10.0"
+    selderee "^0.11.0"
 
 abbrev@1:
   version "1.1.1"
@@ -209,10 +209,10 @@ css-what@^5.0.1, css-what@^5.1.0:
   resolved "https://registry.yarnpkg.com/css-what/-/css-what-5.1.0.tgz#3f7b707aadf633baf62c2ceb8579b545bb40f7fe"
   integrity sha512-arSMRWIIFY0hV8pIxZMEfmMI47Wj3R/aWpZDDxWYCPEiOMv6tfOrnpDtgxBYPEQD4V0Y/958+1TdC3iWTFcUPw==
 
-deepmerge@^4.3.0:
-  version "4.3.0"
-  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.0.tgz#65491893ec47756d44719ae520e0e2609233b59b"
-  integrity sha512-z2wJZXrmeHdvYJp/Ux55wIjqo81G5Bp4c+oELTW+7ar6SogWHajt5a9gO3s3IDaGSAXjDk0vlQKN3rms8ab3og==
+deepmerge@^4.3.1:
+  version "4.3.1"
+  resolved "https://registry.yarnpkg.com/deepmerge/-/deepmerge-4.3.1.tgz#44b5f2147cd3b00d4b56137685966f26fd25dd4a"
+  integrity sha512-3sUqbMEc77XqpdNO7FRyRog+eW3ph+GYCbj+rK+uYyRMuwsVy0rMiVtPn+QJlKFvWP/1PYpapqYn0Me2knFn+A==
 
 detect-node@2.0.4:
   version "2.0.4"
@@ -306,7 +306,7 @@ entities@^2.0.0:
   resolved "https://registry.yarnpkg.com/entities/-/entities-2.2.0.tgz#098dc90ebb83d8dffa089d55256b351d34c4da55"
   integrity sha512-p92if5Nz619I0w+akJrLZH0MX0Pb5DX39XOwQTtXSdQQOaYH03S1uIQp4mhOZtAXrxq4ViO67YTiLBo2638o9A==
 
-entities@^4.2.0, entities@^4.3.0:
+entities@^4.2.0, entities@^4.4.0:
   version "4.4.0"
   resolved "https://registry.yarnpkg.com/entities/-/entities-4.4.0.tgz#97bdaba170339446495e653cfd2db78962900174"
   integrity sha512-oYp7156SP8LkeGD0GF85ad1X9Ai79WtRsZ2gxJqtBuzH+98YUV6jkHEKlZkMbcrjJjIVJNIDP/3WL9wQkoPbWA==
@@ -400,15 +400,15 @@ htmlparser2@^6.1.0:
     domutils "^2.5.2"
     entities "^2.0.0"
 
-htmlparser2@^8.0.1:
-  version "8.0.1"
-  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-8.0.1.tgz#abaa985474fcefe269bc761a779b544d7196d010"
-  integrity sha512-4lVbmc1diZC7GUJQtRQ5yBAeUCL1exyMwmForWkRLnwyzWBFxN633SALPMGYaWZvKe9j1pRZJpauvmxENSp/EA==
+htmlparser2@^8.0.2:
+  version "8.0.2"
+  resolved "https://registry.yarnpkg.com/htmlparser2/-/htmlparser2-8.0.2.tgz#f002151705b383e62433b5cf466f5b716edaec21"
+  integrity sha512-GYdjWKDkbRLkZ5geuHs5NY1puJ+PXwP7+fHPRz06Eirsb9ugf6d8kkXav6ADhcODhFFPMIXyxkxSuMf3D6NCFA==
   dependencies:
     domelementtype "^2.3.0"
-    domhandler "^5.0.2"
+    domhandler "^5.0.3"
     domutils "^3.0.1"
-    entities "^4.3.0"
+    entities "^4.4.0"
 
 inflight@^1.0.4:
   version "1.0.6"
@@ -909,13 +909,13 @@ parse5@^6.0.1:
   resolved "https://registry.yarnpkg.com/parse5/-/parse5-6.0.1.tgz#e1a1c085c569b3dc08321184f19a39cc27f7c30b"
   integrity sha512-Ofn/CTFzRGTTxwpNEs9PP93gXShHcTq255nzRYSKe8AkVpZY7e1fpmTfOyoIvjP5HG7Z2ZM7VS9PPhQGW2pOpw==
 
-parseley@^0.11.0:
-  version "0.11.0"
-  resolved "https://registry.yarnpkg.com/parseley/-/parseley-0.11.0.tgz#1ff817c829a02fcc214c9cc0d96b126d772ee814"
-  integrity sha512-VfcwXlBWgTF+unPcr7yu3HSSA6QUdDaDnrHcytVfj5Z8azAyKBDrYnSIfeSxlrEayndNcLmrXzg+Vxbo6DWRXQ==
+parseley@^0.12.0:
+  version "0.12.0"
+  resolved "https://registry.yarnpkg.com/parseley/-/parseley-0.12.0.tgz#e0dc6b0f99201d136ce756d5f3cec9461ad09830"
+  integrity sha512-uLqDm6IQVb6m50a3dIxF66hI8VWr7wFDYUULtHa1ITRh9mwYIXzFpPTkPM66Cm5V0t+bMyeSHgUCGzoXTV96LQ==
   dependencies:
     leac "^0.6.0"
-    peberminta "^0.8.0"
+    peberminta "^0.9.0"
 
 path-is-absolute@^1.0.0:
   version "1.0.1"
@@ -926,6 +926,11 @@ peberminta@^0.8.0:
   version "0.8.0"
   resolved "https://registry.yarnpkg.com/peberminta/-/peberminta-0.8.0.tgz#acf7b105f3d13c8ac28cad81f2f5fe4698507590"
   integrity sha512-YYEs+eauIjDH5nUEGi18EohWE0nV2QbGTqmxQcqgZ/0g+laPCQmuIqq7EBLVi9uim9zMgfJv0QBZEnQ3uHw/Tw==
+
+peberminta@^0.9.0:
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/peberminta/-/peberminta-0.9.0.tgz#8ec9bc0eb84b7d368126e71ce9033501dca2a352"
+  integrity sha512-XIxfHpEuSJbITd1H3EeQwpcZbTLHc+VVr8ANI9t5sit565tsI4/xK3KWTUFE2e6QiangUkh3B0jihzmGnNrRsQ==
 
 picomatch@^2.0.4, picomatch@^2.2.1:
   version "2.3.1"
@@ -964,12 +969,12 @@ require-directory@^2.1.1:
   resolved "https://registry.yarnpkg.com/require-directory/-/require-directory-2.1.1.tgz#8c64ad5fd30dab1c976e2344ffe7f792a6a6df42"
   integrity sha1-jGStX9MNqxyXbiNE/+f3kqam30I=
 
-selderee@^0.10.0:
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/selderee/-/selderee-0.10.0.tgz#ec83d6044d9026668dc9bd2561acfde99a4e3a1c"
-  integrity sha512-DEL/RW/f4qLw/NrVg97xKaEBC8IpzIG2fvxnzCp3Z4yk4jQ3MXom+Imav9wApjxX2dfS3eW7x0DXafJr85i39A==
+selderee@^0.11.0:
+  version "0.11.0"
+  resolved "https://registry.yarnpkg.com/selderee/-/selderee-0.11.0.tgz#6af0c7983e073ad3e35787ffe20cefd9daf0ec8a"
+  integrity sha512-5TF+l7p4+OsnP8BCCvSyZiSPc4x4//p5uPwK8TCnVPJYRmU2aYKMpOXvw8zM5a5JvuuCGN1jmsMwuU2W02ukfA==
   dependencies:
-    parseley "^0.11.0"
+    parseley "^0.12.0"
 
 semver@^5.6.0:
   version "5.7.1"
