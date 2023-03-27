@@ -26,6 +26,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Move generic widget components from lib-video to lib-components
 - Make video dashboard collapsed by default
 - improve the dropdown languages positionning in the dashboard (#2138)
+- Make video dashboard visible by default, and collapsed when using the
+  Moodle atto plugin
 
 ### Fixed
 
