@@ -11,6 +11,7 @@ export declare namespace converse {
     kickParticipant: (participant: Participant) => void;
     rejectParticipantToJoin: (participant: Participant) => void;
     participantLeaves: () => void;
+    logout?: () => Promise<void>;
     initialize: (options: Options) => void;
     sendMessage: (message: string) => void;
     claimNewNicknameInChatRoom: (

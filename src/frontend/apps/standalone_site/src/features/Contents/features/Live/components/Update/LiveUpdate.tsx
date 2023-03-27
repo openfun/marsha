@@ -6,7 +6,13 @@ import {
   UploadHandlers,
   UploadManager,
 } from 'lib-components';
-import { useVideo, DashboardVideoWrapper, useSetVideoState } from 'lib-video';
+import {
+  converseCleanup,
+  useVideo,
+  DashboardVideoWrapper,
+  useSetVideoState,
+} from 'lib-video';
+import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 
@@ -55,13 +61,21 @@ const LiveUpdate = () => {
 
 const LiveDashboard = ({ liveId }: { liveId: string }) => {
   const intl = useIntl();
+  useEffect(() => {
+    // When the component is unmounted, we remove all connection
+    // to the XMPP chat.
+    return () => {
+      (async () => {
+        await converseCleanup();
+      })();
+    };
+  }, []);
   const {
     isError,
     error,
     isLoading,
     data: currentVideo,
   } = useVideo(liveId, REACT_QUERY_CONF_API);
-
   useSetVideoState(currentVideo);
 
   const resourceContext: ResourceContext = {
