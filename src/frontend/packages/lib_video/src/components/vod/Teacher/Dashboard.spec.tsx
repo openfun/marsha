@@ -24,6 +24,8 @@ const mockedVideo = videoMockFactory({
   upload_state: uploadState.READY,
 });
 
+let mockDashboardCollapsed = false;
+
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   useAppConfig: () => ({
@@ -32,6 +34,7 @@ jest.mock('lib-components', () => ({
         liveBackground: 'https://liveBackground.com/liveBackgroung.png',
       },
     },
+    dashboardCollapsed: mockDashboardCollapsed,
   }),
   decodeJwt: () => ({}),
 }));
@@ -84,10 +87,6 @@ describe('<Dashboard />', () => {
     );
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
-    // show dashboard
-    userEvent.click(
-      screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
-    );
     // TeacherLiveInfoBar
     screen.getByDisplayValue('Title of the video');
 
@@ -122,10 +121,6 @@ describe('<Dashboard />', () => {
     );
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
-    // show dashboard
-    userEvent.click(
-      screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
-    );
     // TeacherLiveInfoBar
     screen.getByDisplayValue('Title of the video');
 
@@ -142,5 +137,34 @@ describe('<Dashboard />', () => {
       },
       {},
     );
+  });
+
+  it('renders the DashboardVOD collapsed', () => {
+    mockDashboardCollapsed = true;
+    const { container } = render(
+      <Dashboard video={mockedVideo} socketUrl="some_url" />,
+    );
+    // Video
+    const videoElement = container.getElementsByTagName('video')[0]!;
+    expect(videoElement).toHaveAttribute(
+      'poster',
+      'https://example.com/default_thumbnail/1080',
+    );
+    expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
+
+    // show dashboard
+    userEvent.click(
+      screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
+    );
+
+    // TeacherLiveInfoBar
+    screen.getByDisplayValue('Title of the video');
+
+    // DashboardControlPane
+    screen.getByRole('tab', { name: 'configuration' });
+    screen.getByRole('tab', { name: 'statistics' });
+
+    // VideoWidgetProvider
+    screen.getByText('VideoWidgetProvider');
   });
 });

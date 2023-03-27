@@ -98,6 +98,7 @@ export interface AppConfig {
   };
   uploadPollInterval: number;
   portability?: PortabilityConfig;
+  dashboardCollapsed?: boolean;
 }
 
 export interface AuthenticatedUser {

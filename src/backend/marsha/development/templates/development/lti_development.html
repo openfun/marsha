@@ -281,6 +281,10 @@
           <label>lis_person_sourcedid</label>
           <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}"/>
         </div>
+        <div class="input-group">
+          <label>custom_embedded_resource</label>
+          <input type="checkbox" name="custom_embedded_resource"/>
+        </div>
         <input type="hidden" name="custom_component_display_name" value="LTI Consumer"/>
         <input type="hidden" name="lti_version" value="LTI-1p0"/>
         <input type="hidden" name="lti_message_type" value="basic-lti-launch-request"/>
@@ -384,6 +388,10 @@
         <div class="input-group">
           <label>lis_person_sourcedid</label>
           <input type="text" name="lis_person_sourcedid" value="{{ lis_result_sourcedid }}"/>
+        </div>
+        <div class="input-group">
+          <label>custom_embedded_resource</label>
+          <input type="checkbox" name="custom_embedded_resource"/>
         </div>
         {% for key, value in oauth_dict.items %}
           <div class="input-group">
