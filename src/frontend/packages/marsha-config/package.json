@@ -6,5 +6,12 @@
   "main": "index.js",
   "files": [
     "./tsconfig/*"
-  ]
+  ],
+  "scripts": {
+    "lint": "eslint \"**/*.js*\""
+  },
+  "devDependencies": {
+    "eslint": "*",
+    "eslint-config-marsha": "*"
+  }
 }

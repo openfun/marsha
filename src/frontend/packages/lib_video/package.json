@@ -7,7 +7,7 @@
   "types": "./src/index.ts",
   "scripts": {
     "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
-    "lint:fix": "yarn run lint -- --fix",
+    "lint:fix": "yarn run lint --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
     "test:coverage": "yarn run test -- --coverage",
     "test:ci": "yarn run lint && yarn run test -- --reporters=jest-junit",
@@ -59,6 +59,8 @@
     "@typescript-eslint/eslint-plugin": "5.56.0",
     "@typescript-eslint/parser": "5.56.0",
     "cross-env": "7.0.3",
+    "eslint": "*",
+    "eslint-config-marsha": "*",
     "faker": "5.5.3",
     "grommet": "*",
     "grommet-icons": "4.10.0",

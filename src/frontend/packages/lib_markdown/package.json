@@ -127,6 +127,8 @@
     "cross-env": "7.0.3",
     "css-loader": "6.7.3",
     "dompurify": "3.0.1",
+    "eslint": "*",
+    "eslint-config-marsha": "*",
     "faker": "5.5.3",
     "grommet": "*",
     "highlight.js": "11.7.0",

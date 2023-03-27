@@ -530,10 +530,10 @@ jobs:
             - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Lint code with tslint or eslint
-          command: yarn workspaces run lint
+          command: yarn lint
       - run:
           name: Lint code with prettier
-          command: yarn workspaces run prettier
+          command: yarn prettier
 
   test-front:
     docker:
