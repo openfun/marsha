@@ -5,7 +5,7 @@
 parameters:
   cache-version:
     type: string
-    default: "{{ .Environment.CACHE_VERSION }}.0"
+    default: '{{ .Environment.CACHE_VERSION }}.0'
 
 aliases:
   - &docker_login
@@ -37,7 +37,7 @@ generate-version-file: &generate-version-file
 version: 2.1
 commands:
   get_last_packages_commit:
-    description: "Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key."
+    description: 'Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key.'
     parameters:
       filename:
         type: string
@@ -435,7 +435,6 @@ jobs:
             - ./packages/lib_tests/lib
             - ./packages/lib_components/lib
             - ./packages/lib_classroom/lib
-            - ./packages/lib_video/lib
             - ./packages/lib_markdown/lib
           key: front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
 
@@ -688,12 +687,12 @@ jobs:
     working_directory: /home/circleci/marsha/src/frontend
     parameters:
       browser:
-        description: "Playwright browser"
-        default: "firefox"
+        description: 'Playwright browser'
+        default: 'firefox'
         type: string
       browser_channel:
-        description: "Playwright browser channel"
-        default: "firefox"
+        description: 'Playwright browser channel'
+        default: 'firefox'
         type: string
     steps:
       - checkout:
@@ -1232,7 +1231,7 @@ jobs:
               ./bin/lambda publish latest
             fi
 
-# ---- Tray jobs (k8s) ----
+  # ---- Tray jobs (k8s) ----
   tray:
     machine:
       image: ubuntu-2004:2022.07.1
@@ -1246,12 +1245,12 @@ jobs:
       - <<: *generate-version-file
       - *docker_login
       - run:
-         name: Build production image
-         command: |
-           export DOCKER_BUILDKIT=1
-           docker build \
-             -t marsha:${CIRCLE_SHA1} \
-             .
+          name: Build production image
+          command: |
+            export DOCKER_BUILDKIT=1
+            docker build \
+              -t marsha:${CIRCLE_SHA1} \
+              .
       - run:
           name: Check built image availability
           command: docker images "marsha:${CIRCLE_SHA1}*"
