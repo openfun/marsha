@@ -50,6 +50,33 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
   );
   const thumbnail = useThumbnail((state) => state.getThumbnail());
 
+  const DashboardContent = () => (
+    <React.Fragment>
+      <StyledLiveVideoInformationBarWrapper
+        align="center"
+        background="white"
+        direction="row-responsive"
+        height="80px"
+        justify="between"
+        margin="small"
+        pad={{
+          vertical: 'small',
+          horizontal: 'medium',
+        }}
+        round="xsmall"
+      >
+        <TeacherVideoInfoBar flex startDate={video.starting_at} />
+      </StyledLiveVideoInformationBarWrapper>
+
+      <DashboardControlPane
+        isLive={false}
+        tabs={
+          video.live_state === null ? [PaneTabs.STATS] : [PaneTabs.ATTENDANCE]
+        }
+      />
+    </React.Fragment>
+  );
+
   return (
     <CurrentVideoProvider value={video}>
       <VideoWebSocketInitializer url={socketUrl} videoId={video.id}>
@@ -72,40 +99,21 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
             </Box>
           )}
 
-          <InfoWidgetModalProvider value={null}>
-            <FoldableItem
-              cardStyle={false}
-              initialOpenValue={false}
-              title={intl.formatMessage(messages.titleDetails, {
-                videoTitle: video.title,
-              })}
-            >
-              <StyledLiveVideoInformationBarWrapper
-                align="center"
-                background="white"
-                direction="row-responsive"
-                height="80px"
-                justify="between"
-                margin="small"
-                pad={{
-                  vertical: 'small',
-                  horizontal: 'medium',
-                }}
-                round="xsmall"
+          {appData && appData.dashboardCollapsed ? (
+            <InfoWidgetModalProvider value={null}>
+              <FoldableItem
+                cardStyle={false}
+                initialOpenValue={false}
+                title={intl.formatMessage(messages.titleDetails, {
+                  videoTitle: video.title,
+                })}
               >
-                <TeacherVideoInfoBar flex startDate={video.starting_at} />
-              </StyledLiveVideoInformationBarWrapper>
-
-              <DashboardControlPane
-                isLive={false}
-                tabs={
-                  video.live_state === null
-                    ? [PaneTabs.STATS]
-                    : [PaneTabs.ATTENDANCE]
-                }
-              />
-            </FoldableItem>
-          </InfoWidgetModalProvider>
+                <DashboardContent />
+              </FoldableItem>
+            </InfoWidgetModalProvider>
+          ) : (
+            <DashboardContent />
+          )}
         </Box>
       </VideoWebSocketInitializer>
     </CurrentVideoProvider>
