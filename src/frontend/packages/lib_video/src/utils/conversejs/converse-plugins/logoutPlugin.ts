@@ -13,11 +13,19 @@ const addLogoutPlugin = () =>
     initialize() {
       const _converse = this._converse;
 
-      window.addEventListener('beforeunload', () => {
+      const logout = async () => {
         if (useParticipantWorkflow.getState().accepted) {
           converse.participantLeaves();
         }
-        _converse.api.user.logout();
+        await _converse.api.user.logout();
+      };
+
+      window.addEventListener('beforeunload', () => {
+        logout();
+      });
+
+      Object.assign(converse, {
+        logout,
       });
     },
   });

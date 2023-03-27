@@ -15,15 +15,19 @@ import { nicknameManagementPlugin } from './converse-plugins/nicknameManagementP
 import { participantsTrackingPlugin } from './converse-plugins/participantsTrackingPlugin';
 
 let isChatInitialized = false;
+let isPluginInitialized = false;
 export const converseMounter = () => {
   return (xmpp: XMPP, video: Video, displayName?: Nullable<string>) => {
-    if (!isChatInitialized) {
+    if (!isPluginInitialized) {
       chatPlugin.addPlugin(xmpp);
       logoutPlugin.addPlugin();
       marshaJoinDiscussionPlugin.addPlugin(xmpp, video);
       nicknameManagementPlugin.addPlugin(xmpp);
       participantsTrackingPlugin.addPlugin();
 
+      isPluginInitialized = true;
+    }
+    if (!isChatInitialized) {
       const nickname = displayName || generateAnonymousNickname();
       // Converse Initialization
       converse.initialize({
@@ -56,4 +60,9 @@ export const converseMounter = () => {
       isChatInitialized = true;
     }
   };
+};
+
+export const converseCleanup = async () => {
+  isChatInitialized = false;
+  await converse.logout?.();
 };

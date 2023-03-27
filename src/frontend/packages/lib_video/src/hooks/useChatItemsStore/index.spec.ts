@@ -5,6 +5,48 @@ import { TIME_TRIGGER_FOR_GROUPING_MESSAGES_IN_MS } from '@lib-video/conf/chat';
 import { chatItemType, ReceivedMessageType, useChatItemState } from '.';
 
 describe('useChatItemState', () => {
+  it('reset the state', () => {
+    useChatItemState.getState().setHasReceivedMessageHistory(true);
+    expect(useChatItemState.getState()).toEqual(
+      expect.objectContaining({
+        hasReceivedMessageHistory: true,
+      }),
+    );
+
+    const johnMessage1: ReceivedMessageType = {
+      content: "This is a John Doe's example message 1",
+      sender: 'John Doe',
+      sentAt: DateTime.fromISO('2020-12-12T12:12:00'),
+    };
+
+    useChatItemState.getState().addMessage(johnMessage1);
+    expect(useChatItemState.getState()).toEqual(
+      expect.objectContaining({
+        chatItems: [
+          {
+            type: chatItemType.GROUP_MESSAGE,
+            messageGroupData: {
+              sender: 'John Doe',
+              messages: [
+                {
+                  content: johnMessage1.content,
+                  sentAt: johnMessage1.sentAt,
+                },
+              ],
+            },
+          },
+        ],
+      }),
+    );
+
+    useChatItemState.getState().reset();
+    expect(useChatItemState.getState()).toEqual(
+      expect.objectContaining({
+        chatItems: [],
+        hasReceivedMessageHistory: false,
+      }),
+    );
+  });
   it('executes useChatItemState/setHasReceivedMessageHistory', () => {
     // initial state
     expect(useChatItemState.getState()).toEqual(
