@@ -1,4 +1,8 @@
-import { screen, within } from '@testing-library/react';
+import {
+  screen,
+  waitForElementToBeRemoved,
+  within,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
 import React, { Suspense } from 'react';
@@ -235,16 +239,18 @@ describe('SelectContentTabs', () => {
       name: 'Other custom app tab',
     });
     userEvent.click(otherCustomAppTab);
-    screen.getByText('Other select app content');
+    await screen.findByText('Other select app content');
     expect(screen.queryByText('Select app content')).not.toBeInTheDocument();
 
     const customAppTab = await screen.findByRole('tab', {
       name: 'Custom app tab',
     });
+
     userEvent.click(customAppTab);
-    expect(
+
+    await waitForElementToBeRemoved(() =>
       screen.queryByText('Other select app content'),
-    ).not.toBeInTheDocument();
+    );
     userEvent.click(screen.getByText('Select app content'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
@@ -266,7 +272,7 @@ describe('SelectContentTabs', () => {
   it('renders only active tabs', async () => {
     mockUseIsFeatureEnabled.mockImplementation(() => {
       return (flag) => {
-        const activeResources = ['webinar', 'video'];
+        const activeResources = ['video'];
         return activeResources.includes(flag);
       };
     });
@@ -282,11 +288,27 @@ describe('SelectContentTabs', () => {
             lti_message_type: 'ContentItemSelection',
           }}
           setContentItemsValue={mockSetContentItemsValue}
+          videos={[
+            videoMockFactory({
+              id: '1',
+              title: 'Video 1',
+              upload_state: uploadState.PROCESSING,
+              is_ready_to_show: false,
+            }),
+            videoMockFactory({
+              id: '2',
+              title: 'Video 2',
+              upload_state: uploadState.READY,
+              is_ready_to_show: true,
+            }),
+          ]}
         />
       </Suspense>,
     );
 
-    expect(screen.getByRole('tab', { name: 'Webinars' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('tab', { name: 'Webinars' }),
+    ).not.toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Videos' })).toBeInTheDocument();
     expect(
       screen.queryByRole('tab', { name: 'Documents' }),
@@ -294,5 +316,9 @@ describe('SelectContentTabs', () => {
     expect(
       screen.queryByRole('tab', { name: 'Other custom app tab' }),
     ).not.toBeInTheDocument();
+
+    // First tab is active
+    screen.getByText('Video 1');
+    screen.getByText('Video 2');
   });
 });
