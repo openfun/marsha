@@ -1,5 +1,4 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
-import 'lib-video/lib/esm/style.css';
 
 import { serviceWorkerRegistration } from 'lib-components';
 import React from 'react';
