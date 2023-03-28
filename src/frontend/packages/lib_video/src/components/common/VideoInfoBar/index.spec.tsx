@@ -39,24 +39,28 @@ describe('<VideoInfoBar />', () => {
       participants: [
         {
           id: 'id-anonymous',
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
           name: 'my anonymous name',
         },
         {
           id: 'id-anonymous-2',
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: true,
           name: 'my anonymous name 2',
         },
         {
           id: 'id-named',
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
           name: 'my name',
         },
         {
           id: 'id-instructor',
+          userJid: 'userJid-anonymous',
           isInstructor: true,
           isOnStage: true,
           name: 'my instructor',
@@ -260,16 +264,19 @@ describe('<VideoInfoBar />', () => {
       participants: [
         {
           ...mockParticipant,
+          userJid: 'userJid-anonymous',
           isInstructor: true,
           isOnStage: false,
         },
         {
           ...mockParticipant,
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: true,
         },
         {
           ...mockParticipant,
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
         },

@@ -2,6 +2,7 @@ import { useParticipantsStore } from '.';
 
 const participant1 = {
   id: 'example.jid.instructor1@prosody.org',
+  userJid: 'userJid-instructor1',
   isInstructor: true,
   isOnStage: true,
   name: 'Instructor 1',
@@ -9,6 +10,7 @@ const participant1 = {
 
 const participant2 = {
   id: 'example.jid.instructor2@prosody.org',
+  userJid: 'userJid-instructor2',
   isInstructor: true,
   isOnStage: true,
   name: 'Instructor 2',
@@ -16,6 +18,7 @@ const participant2 = {
 
 const participant3 = {
   id: 'example.jid.student1@prosody.org',
+  userJid: 'userJid-student1',
   isInstructor: false,
   isOnStage: true,
   name: 'Student 1',
@@ -23,6 +26,7 @@ const participant3 = {
 
 const participant4 = {
   id: 'example.jid.student2@prosody.org',
+  userJid: 'userJid-student2',
   isInstructor: false,
   isOnStage: false,
   name: 'Student 2',
@@ -30,6 +34,7 @@ const participant4 = {
 
 const sameIdParticipant1 = {
   id: 'example.jid.instructor1@prosody.org',
+  userJid: 'userJid-instructor1',
   isInstructor: false,
   isOnStage: false,
   name: 'Generic participant',
@@ -37,6 +42,7 @@ const sameIdParticipant1 = {
 
 const sameNameParticipant1 = {
   id: 'example.jid.generic@prosody.org',
+  userJid: 'userJid-generic',
   isInstructor: false,
   isOnStage: false,
   name: 'Instructor 1',
