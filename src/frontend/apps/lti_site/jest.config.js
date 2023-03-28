@@ -1,3 +1,5 @@
+const { moduleNameMapper } = require('marsha-config');
+
 module.exports = {
   moduleDirectories: [__dirname, 'node_modules', '../../node_modules'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
@@ -6,6 +8,7 @@ module.exports = {
     'is-reference':
       '<rootDir>/../../node_modules/is-reference/dist/is-reference.js',
     'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
+    ...moduleNameMapper,
   },
   reporters: [
     'default',

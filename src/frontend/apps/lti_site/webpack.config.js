@@ -1,6 +1,8 @@
 const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
+const { alias } = require('marsha-config');
+
 const config = {
   // Disable production-specific optimizations by default
   // They can be re-enabled by running the cli with `--mode=production` or making a separate
@@ -39,6 +41,7 @@ const config = {
       buffer: require.resolve('buffer/'),
       stream: require.resolve('stream-browserify'),
     },
+    alias,
   },
 
   module: {

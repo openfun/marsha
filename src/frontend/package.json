@@ -17,7 +17,7 @@
   },
   "scripts": {
     "extract-packages-translations": "formatjs extract './packages/lib_*/src/**/*.{ts,tsx}' --ignore ./packages/lib_*/node_modules --ignore ./packages/lib_*/lib --ignore ./node_modules --ignore './**/*.d.ts' --out-file packages/i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
-    "extract-lti_site_translations": "formatjs extract './apps/lti_site/**/*.ts*' --ignore ./node_modules --ignore ./apps/lti_site/node_modules --ignore './apps/lti_site/**/*.d.ts' --out-file apps/lti_site/i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
+    "extract-lti_site_translations": "formatjs extract './apps/lti_site/**/*.{ts,tsx}' --ignore ./node_modules --ignore ./apps/lti_site/node_modules --ignore './apps/lti_site/**/*.d.ts' --out-file apps/lti_site/i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
     "extract-standalone_site_translations": "formatjs extract './apps/standalone_site/src/**/*.ts*' --ignore ./node_modules --ignore ./apps/standalone_site/node_modules --ignore './apps/standalone_site/src/**/*.d.ts' --out-file apps/standalone_site/i18n/frontend.json --id-interpolation-pattern '[sha512:contenthash:base64:6]' --format crowdin",
     "extract-translations": "yarn extract-packages-translations && yarn extract-lti_site_translations && yarn extract-standalone_site_translations",
     "compile-lti_site-translations": "node compile-translations.js packages/i18n/* apps/lti_site/i18n/* --outDir=apps/lti_site/translations",
