@@ -134,12 +134,27 @@ export const SelectContentTabs = ({
     );
   });
 
+  // Grommet Tabs component does not support dynamic tabs, so we need to
+  // calculate the initial active tab based on the feature flags, and use a
+  // controlled Tabs component to update the active tab.
+  let initialActiveTab: number;
+  if (isFeatureEnabled(flags.WEBINAR)) {
+    initialActiveTab = 0;
+  } else if (isFeatureEnabled(flags.VIDEO)) {
+    initialActiveTab = 1;
+  } else if (isFeatureEnabled(flags.DOCUMENT)) {
+    initialActiveTab = 2;
+  } else {
+    initialActiveTab = 3;
+  }
+  const [activeTab, setActiveTab] = React.useState(initialActiveTab);
+  const onTabChange = (nextTab: number) => setActiveTab(nextTab);
+
   return (
     <Grommet theme={customTheme}>
-      <Tabs>
+      <Tabs activeIndex={activeTab} onActive={onTabChange}>
         {isFeatureEnabled(flags.WEBINAR) && (
           <Tab
-            reverse
             title={
               <RichTabTitle
                 icon={
