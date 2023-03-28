@@ -32,18 +32,21 @@ const mockedParticipantOnStage2 = participantMockFactory();
 
 const mockedParticipantOnStage1Full = {
   ...mockedParticipantOnStage1,
+  userJid: 'userJid-stage1',
   isInstructor: false,
   isOnStage: true,
 };
 
 const mockedParticipantOnStage2Full = {
   ...mockedParticipantOnStage2,
+  userJid: 'userJid-stage2',
   isInstructor: false,
   isOnStage: true,
 };
 
 const participant1 = {
   id: 'example.jid.student1@prosody.org',
+  userJid: 'userJid-student1',
   isInstructor: true,
   isOnStage: false,
   name: 'Student 1',
@@ -51,6 +54,7 @@ const participant1 = {
 
 const participant2 = {
   id: 'example.jid.student2@prosody.org',
+  userJid: 'userJid-student2',
   isInstructor: false,
   isOnStage: false,
   name: 'Student 2',
@@ -58,6 +62,7 @@ const participant2 = {
 
 const participant3 = {
   id: 'example.jid.student3@prosody.org',
+  userJid: 'userJid-student3',
   isInstructor: false,
   isOnStage: false,
   name: 'Student 3',
@@ -230,12 +235,14 @@ describe('<ViewersList /> when user is an instructor', () => {
       participants: [
         {
           id: 'id-anonymous',
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
           name: anonymousName,
         },
         {
           id: 'id-named',
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
           name: 'my name',
@@ -269,6 +276,7 @@ describe('<ViewersList /> when user is a student', () => {
     act(() =>
       useParticipantsStore.getState().addParticipant({
         id: 'example.jid.instructor@prosody.org',
+        userJid: 'userJid-instructor',
         isInstructor: true,
         isOnStage: true,
         name: 'Instructor',
@@ -279,6 +287,7 @@ describe('<ViewersList /> when user is a student', () => {
     act(() =>
       useParticipantsStore.getState().addParticipant({
         id: 'example.jid.student1@prosody.org',
+        userJid: 'userJid-student1',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 1',
@@ -289,6 +298,7 @@ describe('<ViewersList /> when user is a student', () => {
     act(() =>
       useParticipantsStore.getState().addParticipant({
         id: 'example.jid.student2@prosody.org',
+        userJid: 'userJid-student2',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 2',
@@ -304,6 +314,7 @@ describe('<ViewersList /> when user is a student', () => {
     act(() =>
       useParticipantsStore.getState().addParticipant({
         id: 'example.jid.student2@prosody.org',
+        userJid: 'userJid-student2',
         isInstructor: false,
         isOnStage: false,
         name: 'Student 2',

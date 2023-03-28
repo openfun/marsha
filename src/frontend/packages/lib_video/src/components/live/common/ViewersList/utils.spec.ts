@@ -12,24 +12,28 @@ describe('sortParticipantNotOnStage', () => {
   it('sorts participants', () => {
     const anonymous1: ParticipantType = {
       id: 'id1',
+      userJid: 'userJid-id1',
       name: generateAnonymousNickname(),
       isInstructor: false,
       isOnStage: false,
     };
     const anonymous2: ParticipantType = {
       id: 'id2',
+      userJid: 'userJid-id2',
       name: generateAnonymousNickname(),
       isInstructor: false,
       isOnStage: false,
     };
     const registered1: ParticipantType = {
       id: 'id3',
+      userJid: 'userJid-id3',
       name: 'John Wick',
       isInstructor: false,
       isOnStage: false,
     };
     const registered2: ParticipantType = {
       id: 'id4',
+      userJid: 'userJid-id4',
       name: 'Jack Sparrow',
       isInstructor: false,
       isOnStage: false,
