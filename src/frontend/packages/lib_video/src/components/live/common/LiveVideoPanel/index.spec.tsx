@@ -113,6 +113,7 @@ describe('<LiveVideoPanel />', () => {
       participants: [
         {
           ...mockParticipant,
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
         },
@@ -154,6 +155,7 @@ describe('<LiveVideoPanel />', () => {
       participants: [
         {
           ...mockParticipant,
+          userJid: 'userJid-anonymous',
           isInstructor: false,
           isOnStage: false,
         },

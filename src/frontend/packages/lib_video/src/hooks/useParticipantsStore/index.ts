@@ -2,6 +2,7 @@ import { create } from 'zustand';
 
 export type ParticipantType = {
   id: string;
+  userJid: string;
   isInstructor: boolean;
   isOnStage: boolean;
   name: string;
@@ -11,6 +12,7 @@ type State = {
   addParticipant: (newParticipant: ParticipantType) => void;
   participants: ParticipantType[];
   removeParticipant: (participantName: string) => void;
+  removeParticipantFromUserJid: (userJid: string) => void;
 };
 
 export const useParticipantsStore = create<State>((set) => ({
@@ -44,6 +46,12 @@ export const useParticipantsStore = create<State>((set) => ({
     set((state) => ({
       participants: state.participants.filter(
         (participant) => participant.name !== participantName,
+      ),
+    })),
+  removeParticipantFromUserJid: (userJid) =>
+    set((state) => ({
+      participants: state.participants.filter(
+        (participant) => participant.userJid !== userJid,
       ),
     })),
 }));

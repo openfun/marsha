@@ -174,6 +174,7 @@ export const ViewersList = ({ isInstructor }: ViewersListProps) => {
         )
         .map((item) => ({
           id: item.id,
+          userJid: '',
           isInstructor: false,
           isOnStage: false,
           name: item.name,

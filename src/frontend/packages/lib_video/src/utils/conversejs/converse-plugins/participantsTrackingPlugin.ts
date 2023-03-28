@@ -36,6 +36,7 @@ const addParticipantsTrackingPlugin = () =>
                   item.getAttribute('affiliation') === 'owner';
                 useParticipantsStore.getState().addParticipant({
                   id: jid,
+                  userJid: _converse.api.user.jid(),
                   isInstructor: participantIsInstructor,
                   isOnStage: false,
                   name: participantDisplayName,

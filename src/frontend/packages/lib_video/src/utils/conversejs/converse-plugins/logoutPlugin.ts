@@ -3,6 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { useParticipantWorkflow } from '@lib-video/hooks/useParticipantWorkflow';
+import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 import { converse } from '@lib-video/utils/window';
 
 const PLUGIN_NAME = 'logout-plugin';
@@ -17,6 +18,12 @@ const addLogoutPlugin = () =>
         if (useParticipantWorkflow.getState().accepted) {
           converse.participantLeaves();
         }
+        if (_converse.api.user.jid()) {
+          useParticipantsStore
+            .getState()
+            .removeParticipantFromUserJid(_converse.api.user.jid() as string);
+        }
+
         await _converse.api.user.logout();
       };
 
