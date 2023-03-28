@@ -7,7 +7,7 @@ import {
 } from 'lib-components';
 import React from 'react';
 
-import { ClassroomDescriptionWidget } from './widgets/ClassroomDescriptionWidget';
+import { Description } from './widgets/Description';
 import { Invite } from './widgets/Invite';
 import { Recordings } from './widgets/Recordings';
 import { Scheduling } from './widgets/Scheduling';
@@ -23,7 +23,7 @@ enum WidgetType {
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
   [WidgetType.DESCRIPTION]: {
-    component: <ClassroomDescriptionWidget />,
+    component: <Description />,
     size: WidgetSize.DEFAULT,
   },
   [WidgetType.SCHEDULING]: {

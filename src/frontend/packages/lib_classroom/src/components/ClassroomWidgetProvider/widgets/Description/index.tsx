@@ -42,7 +42,7 @@ const messages = defineMessages({
   },
 });
 
-export const ClassroomDescriptionWidget = () => {
+export const Description = () => {
   const classroom = useCurrentClassroom();
   const intl = useIntl();
   const updateClassroomMutation = useUpdateClassroom(classroom.id, {
