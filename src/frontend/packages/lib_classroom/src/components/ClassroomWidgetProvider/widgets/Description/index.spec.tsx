@@ -9,7 +9,7 @@ import React from 'react';
 import { classroomMockFactory } from 'utils/tests/factories';
 import { wrapInClassroom } from 'utils/wrapInClassroom';
 
-import { ClassroomDescriptionWidget } from '.';
+import { Description } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -24,7 +24,7 @@ jest.mock('lib-components', () => ({
 Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 
-describe('<ClassroomDescriptionWidget />', () => {
+describe('<Description />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
   });
@@ -44,7 +44,7 @@ describe('<ClassroomDescriptionWidget />', () => {
     render(
       wrapInClassroom(
         <InfoWidgetModalProvider value={null}>
-          <ClassroomDescriptionWidget />
+          <Description />
         </InfoWidgetModalProvider>,
         classroom,
       ),
@@ -62,7 +62,7 @@ describe('<ClassroomDescriptionWidget />', () => {
     const { rerender } = render(
       wrapInClassroom(
         <InfoWidgetModalProvider value={null}>
-          <ClassroomDescriptionWidget />
+          <Description />
         </InfoWidgetModalProvider>,
         classroom,
       ),
@@ -104,7 +104,7 @@ describe('<ClassroomDescriptionWidget />', () => {
     rerender(
       wrapInClassroom(
         <InfoWidgetModalProvider value={null}>
-          <ClassroomDescriptionWidget />
+          <Description />
         </InfoWidgetModalProvider>,
         classroom,
       ),
