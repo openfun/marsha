@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add can_edit property on a serialized video
 - Add an attribute to consumer site to deactivate resources in LTI select
 - live transpilation on lib-video (#2150)
+- live transpilation on lib-classroom (#2157)
 
 ### Changed
 

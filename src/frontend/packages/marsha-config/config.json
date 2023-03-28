@@ -3,6 +3,10 @@
     {
       "folder": "lib_video",
       "alias": "@lib-video"
+    },
+    {
+      "folder": "lib_classroom",
+      "alias": "@lib-classroom"
     }
   ]
 }
