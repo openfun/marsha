@@ -23,6 +23,7 @@ from marsha.core.api import (
     UserViewSet,
     VideoViewSet,
     XAPIStatementView,
+    get_frontend_configuration,
     pairing_challenge,
     recording_slices_manifest,
     recording_slices_state,
@@ -131,6 +132,7 @@ urlpatterns = [
         recording_slices_state,
         name="recording_slices_state",
     ),
+    path("api/config/", get_frontend_configuration, name="sentry_config"),
     path("api/", include(router.urls)),
     path(
         f"api/{models.Video.RESOURCE_NAME}/<uuid:video_id>/",
