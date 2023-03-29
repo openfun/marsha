@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - List the lives in the contents section (#2104)
   - Live session model
   - Livesession backend rewrite
+  - Add sentry
 - Add a License Manager widget for LTI VOD view
 - Add a title to the classroom file dropzone
 - Add can_edit property on a serialized video

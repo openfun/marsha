@@ -3,6 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useCurrentUser, userMockFactory } from 'lib-components';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
+import { FrontendConfiguration } from 'components/Sentry';
 
 import App from './App';
 
@@ -14,6 +15,11 @@ const consoleWarn = jest
 
 window.scrollTo = jest.fn();
 window.isCDNLoaded = true;
+
+jest.mock('@sentry/browser', () => ({
+  init: jest.fn(),
+  configureScope: jest.fn(),
+}));
 
 const someResponse = {
   count: 1,
@@ -32,6 +38,12 @@ const someResponse = {
   ],
 };
 
+const frontendConfiguration: FrontendConfiguration = {
+  environment: 'some environment',
+  release: 'some release',
+  sentry_dsn: null,
+};
+
 describe('<App />', () => {
   beforeEach(() => {
     useCurrentUser.setState({
@@ -39,6 +51,7 @@ describe('<App />', () => {
     });
 
     fetchMock.get('/api/classrooms/?limit=5&offset=0', someResponse);
+    fetchMock.get('/api/config/', frontendConfiguration);
   });
 
   afterEach(() => {
