@@ -12,8 +12,8 @@ import {
 import { render, Deferred } from 'lib-tests';
 import React, { PropsWithChildren } from 'react';
 
-import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
-import { classroomDocumentMockFactory } from 'utils/tests/factories';
+import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';
+import { classroomDocumentMockFactory } from '@lib-classroom/utils/tests/factories';
 
 import { UploadDocuments } from '.';
 

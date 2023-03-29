@@ -22,7 +22,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(components|data|types|utils)/**',
+            pattern: '+(@lib-classroom)/**',
             group: 'internal',
           },
         ],

@@ -7,7 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   classroomMockFactory,
   classroomDocumentMockFactory,
-} from 'utils/tests/factories';
+} from '@lib-classroom/utils/tests/factories';
 
 import {
   useClassroom,

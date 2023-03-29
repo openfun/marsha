@@ -18,6 +18,10 @@
       "altamoon-robust-websocket": [
         "../../../packages/lib_video/src/types/libs/altamoon-robust-websocket",
         "../../packages/lib_video/src/types/libs/altamoon-robust-websocket"
+      ],
+      "@lib-classroom/*": [
+        "../../../packages/lib_classroom/src/*",
+        "../../packages/lib_classroom/src/*"
       ]
     }
   },
