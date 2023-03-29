@@ -20,8 +20,8 @@ import {
   useClassroomDocuments,
   useClassroomDocumentMetadata,
   useUpdateClassroomDocument,
-} from 'data/queries';
-import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
+} from '@lib-classroom/data/queries';
+import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';
 
 const messages = {
   dropzonePlaceholder: {

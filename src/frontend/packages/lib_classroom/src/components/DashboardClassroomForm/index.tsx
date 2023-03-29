@@ -4,9 +4,9 @@ import React from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { ClassroomForm } from 'components/ClassroomForm';
-import { DashboardClassroomLayout } from 'components/DashboardClassroomLayout';
-import { useCreateClassroomAction } from 'data/queries';
+import { ClassroomForm } from '@lib-classroom/components/ClassroomForm';
+import { DashboardClassroomLayout } from '@lib-classroom/components/DashboardClassroomLayout';
+import { useCreateClassroomAction } from '@lib-classroom/data/queries';
 
 const messages = defineMessages({
   createClassroomFail: {

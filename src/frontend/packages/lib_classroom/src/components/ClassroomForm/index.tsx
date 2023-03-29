@@ -11,9 +11,9 @@ import React, { useEffect, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 
-import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
-import { UploadDocuments } from 'components/UploadDocuments';
-import { useUpdateClassroom } from 'data/queries';
+import DashboardCopyClipboard from '@lib-classroom/components/DashboardCopyClipboard';
+import { UploadDocuments } from '@lib-classroom/components/UploadDocuments';
+import { useUpdateClassroom } from '@lib-classroom/data/queries';
 
 const DEBOUNCE_TIME_MS = 1500;
 

@@ -28,7 +28,7 @@ import {
   UseQueryOptions,
 } from 'react-query';
 
-import { ClassroomDocumentMetadata } from 'types/ClassroomAppData';
+import { ClassroomDocumentMetadata } from '@lib-classroom/types/ClassroomAppData';
 
 type ClassroomsResponse = APIList<ClassroomLite>;
 type UseClassroomsParams = {
