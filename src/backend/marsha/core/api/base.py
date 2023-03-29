@@ -1,11 +1,14 @@
 """Declare API endpoints with Django RestFramework viewsets."""
-
+from django.conf import settings
+from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
+from waffle import switch_is_active
 
 from .. import defaults, serializers
+from ..defaults import SENTRY
 from ..models import Video
 from ..simple_jwt.tokens import ResourceAccessToken
 from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
@@ -151,6 +154,30 @@ def recording_slices_state(request):
 
     video = get_object_or_404(Video, pk=request.data["video_id"])
     return Response(video.get_recording_slices_state())
+
+
+@api_view(["GET"])
+def get_frontend_configuration(request):
+    """View handling GET request to get the frontend configuration.
+
+    Parameters
+    ----------
+    request : Type[django.http.request.HttpRequest]
+        The request on the API endpoint.
+
+    Returns
+    -------
+    Type[rest_framework.response.Response]
+        HttpResponse containing the frontend configuration.
+
+    """
+    return JsonResponse(
+        {
+            "environment": settings.ENVIRONMENT,
+            "release": settings.RELEASE,
+            "sentry_dsn": settings.SENTRY_DSN if switch_is_active(SENTRY) else None,
+        }
+    )
 
 
 class APIViewMixin:
