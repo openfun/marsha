@@ -7,6 +7,7 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
+import { SentryLoader } from 'components/Sentry';
 import { ContentSpinner } from 'components/Spinner';
 import { DEFAULT_LANGUAGE } from 'conf/global';
 import { AppRoutes } from 'routes';
@@ -79,6 +80,7 @@ const App = () => {
     >
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
+        <SentryLoader />
         <Grommet theme={themeExtended}>
           <Toaster
             toastOptions={{
