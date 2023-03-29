@@ -24,7 +24,6 @@
     "react-query": "*",
     "react-router-dom": "5.3.0",
     "styled-components": "*",
-    "typescript": "*",
     "zustand": "*"
   },
   "devDependencies": {
@@ -80,7 +79,7 @@
     "react-intl": "5.24.8",
     "react-query": "3.39.3",
     "react-test-renderer": "17.0.2",
-    "styled-components": "5.3.9",
+    "styled-components": "*",
     "typescript": "*",
     "zustand": "*"
   },

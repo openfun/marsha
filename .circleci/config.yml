@@ -434,7 +434,6 @@ jobs:
             - ./packages/lib_common/lib
             - ./packages/lib_tests/lib
             - ./packages/lib_components/lib
-            - ./packages/lib_classroom/lib
             - ./packages/lib_markdown/lib
           key: front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
 
