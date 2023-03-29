@@ -64,7 +64,7 @@ export const AppInitializer = (
         release: appConfig.release,
       });
       Sentry.configureScope((scope) =>
-        scope.setExtra('application', 'frontend'),
+        scope.setExtra('application', 'standalone'),
       );
 
       setIsSentryReady(true);
