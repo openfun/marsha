@@ -146,7 +146,7 @@
     "reselect": "4.1.7",
     "resize-observer-polyfill": "^1.5.1",
     "stream-browserify": "3.0.0",
-    "styled-components": "5.3.9",
+    "styled-components": "*",
     "styled-reboot": "5.0.0",
     "uuid": "9.0.0",
     "whatwg-fetch": "3.6.2",
