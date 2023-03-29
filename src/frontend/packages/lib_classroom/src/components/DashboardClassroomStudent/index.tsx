@@ -8,8 +8,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'components/DashboardClassroomLayout';
-import { DashboardClassroomStudentCounter } from 'components/DashboardClassroomStudentCounter';
+} from '@lib-classroom/components/DashboardClassroomLayout';
+import { DashboardClassroomStudentCounter } from '@lib-classroom/components/DashboardClassroomStudentCounter';
 
 const DashboardClassRoomTitleDescription = ({
   classroom,

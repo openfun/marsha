@@ -4,7 +4,7 @@ import { ClassroomInfos } from 'lib-components';
 import React, { Fragment } from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 
-import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
+import DashboardCopyClipboard from '@lib-classroom/components/DashboardCopyClipboard';
 
 const messages = defineMessages({
   moderators: {

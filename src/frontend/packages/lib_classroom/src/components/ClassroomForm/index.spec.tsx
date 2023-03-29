@@ -8,7 +8,7 @@ import React from 'react';
 import {
   classroomMockFactory,
   classroomRecordingMockFactory,
-} from 'utils/tests/factories';
+} from '@lib-classroom/utils/tests/factories';
 
 import { ClassroomForm } from '.';
 

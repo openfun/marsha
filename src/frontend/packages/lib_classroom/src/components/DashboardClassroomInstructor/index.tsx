@@ -8,14 +8,14 @@ import { defineMessages, useIntl } from 'react-intl';
 import {
   DashboardClassroomLayout,
   DashboardClassroomMessage,
-} from 'components/DashboardClassroomLayout';
-import { useEndClassroomAction } from 'data/queries';
+} from '@lib-classroom/components/DashboardClassroomLayout';
+import { useEndClassroomAction } from '@lib-classroom/data/queries';
 
 const DashboardClassroomForm = lazy(
-  () => import('components/DashboardClassroomForm'),
+  () => import('@lib-classroom/components/DashboardClassroomForm'),
 );
 const DashboardClassroomInfos = lazy(
-  () => import('components/DashboardClassroomInfos'),
+  () => import('@lib-classroom/components/DashboardClassroomInfos'),
 );
 
 const messages = defineMessages({

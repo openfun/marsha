@@ -11,7 +11,7 @@ import { render, Deferred } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
-import { classroomMockFactory } from 'utils/tests/factories';
+import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
 
 import DashboardClassroom from '.';
 

@@ -3,6 +3,7 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
+    '@lib-classroom/(.*)': '<rootDir>/src/$1',
   },
   reporters: [
     'default',
