@@ -1,5 +1,3 @@
-import { MarkdownImageProgressToast } from 'components/MarkdownImageProgressToast';
-import { createMarkdownImage, pollForMarkdownImage } from 'data';
 import {
   UploadManagerStatus,
   useUploadManager,
@@ -8,6 +6,9 @@ import {
 import React, { useCallback, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
+
+import { MarkdownImageProgressToast } from '@lib-markdown/components/MarkdownImageProgressToast';
+import { createMarkdownImage, pollForMarkdownImage } from '@lib-markdown/data';
 
 const messages = defineMessages({
   uploaded: {
