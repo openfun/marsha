@@ -8,7 +8,7 @@ module.exports = {
     'is-reference':
       '<rootDir>/../../node_modules/is-reference/dist/is-reference.js',
     'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
-    ...moduleNameMapper,
+    ...moduleNameMapper['lti'],
   },
   reporters: [
     'default',

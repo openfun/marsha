@@ -8,6 +8,7 @@
     "./tsconfig/*"
   ],
   "scripts": {
+    "start": "node index.js",
     "lint": "eslint \"**/*.js*\""
   },
   "devDependencies": {

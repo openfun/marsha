@@ -13,7 +13,7 @@ const {
  */
 module.exports = {
   webpack: {
-    alias,
+    alias: alias['website'],
     configure: (webpackConfig) => {
       const { isFound, match } = getLoader(
         webpackConfig,
@@ -24,14 +24,14 @@ module.exports = {
           ? match.loader.include
           : [match.loader.include];
 
-        match.loader.include = include.concat(packages);
+        match.loader.include = include.concat(packages['website']);
       }
       return webpackConfig;
     },
   },
   jest: {
     configure: {
-      moduleNameMapper,
+      moduleNameMapper: moduleNameMapper['website'],
     },
   },
 };
