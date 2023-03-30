@@ -22,9 +22,7 @@
     "react-dropzone": "*",
     "react-hot-toast": "*",
     "react-intl": "*",
-    "react-query": "*",
-    "styled-components": "*",
-    "zustand": "*"
+    "react-query": "*"
   },
   "devDependencies": {
     "@babel/core": "7.21.3",
@@ -77,9 +75,8 @@
     "react-query": "3.39.3",
     "react-router-dom": "5.3.0",
     "source-map-loader": "4.0.1",
-    "styled-components": "*",
     "typescript": "*",
-    "zustand": "*"
+    "xhr-mock": "2.5.1"
   },
   "dependencies": {
     "@codemirror/autocomplete": "6.4.2",
@@ -111,6 +108,8 @@
     "rehype-raw": "6.1.1",
     "remark-code-blocks": "2.0.1",
     "remark-math": "5.1.1",
-    "unist-util-visit": "4.1.2"
+    "styled-components": "*",
+    "unist-util-visit": "4.1.2",
+    "zustand": "*"
   }
 }

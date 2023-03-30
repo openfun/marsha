@@ -20,10 +20,12 @@
   "dependencies": {
     "@craco/craco": "7.1.0",
     "grommet": "*",
+    "grommet-icons": "4.10.0",
     "http-proxy-middleware": "2.0.6",
     "lib-classroom": "4.0.0-beta.18",
     "lib-components": "*",
     "lib-video": "4.0.0-beta.18",
+    "luxon": "3.3.0",
     "marsha-config": "*",
     "react": "17.0.2",
     "react-dom": "17.0.2",
