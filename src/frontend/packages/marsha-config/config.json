@@ -2,11 +2,13 @@
   "packages": [
     {
       "folder": "lib_video",
-      "alias": "@lib-video"
+      "alias": "@lib-video",
+      "apps": ["lti", "website"]
     },
     {
       "folder": "lib_classroom",
-      "alias": "@lib-classroom"
+      "alias": "@lib-classroom",
+      "apps": ["lti", "website"]
     }
   ]
 }
