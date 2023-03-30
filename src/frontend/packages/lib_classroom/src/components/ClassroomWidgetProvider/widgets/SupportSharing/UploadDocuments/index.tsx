@@ -17,8 +17,8 @@ import { FormattedMessage, useIntl } from 'react-intl';
 import {
   useClassroomDocuments,
   useClassroomDocumentMetadata,
-} from 'data/queries';
-import { createClassroomDocument } from 'data/sideEffects/createClassroomDocument';
+} from '@lib-classroom/data/queries';
+import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createClassroomDocument';
 
 import { DocumentRow } from './DocumentRow';
 

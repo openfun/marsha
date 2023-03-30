@@ -1,4 +1,3 @@
-import { useUpdateClassroom } from 'data';
 import { Box, BoxProps, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
@@ -9,7 +8,8 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+import { useUpdateClassroom } from '@lib-classroom/data';
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const StyledTitleTextInput = styled(TextInput)`
   border: 1px solid ${normalizeColor('blue-active', theme)};

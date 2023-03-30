@@ -2,8 +2,8 @@ import { FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import DashboardCopyClipboard from 'components/DashboardCopyClipboard';
-import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+import DashboardCopyClipboard from '@lib-classroom/components/DashboardCopyClipboard';
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const messages = defineMessages({
   title: {

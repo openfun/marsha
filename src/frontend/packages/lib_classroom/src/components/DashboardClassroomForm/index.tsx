@@ -7,10 +7,10 @@ import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { ClassroomInfoBar } from 'components/ClassroomInfoBar';
-import { ClassroomWidgetProvider } from 'components/ClassroomWidgetProvider';
-import { useCreateClassroomAction } from 'data/queries';
-import { CurrentClassroomProvider } from 'hooks/useCurrentClassroom';
+import { ClassroomInfoBar } from '@lib-classroom/components/ClassroomInfoBar';
+import { ClassroomWidgetProvider } from '@lib-classroom/components/ClassroomWidgetProvider';
+import { useCreateClassroomAction } from '@lib-classroom/data/queries';
+import { CurrentClassroomProvider } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const StyledClassroomInformationBarWrapper = styled(Box)`
   -webkit-box-shadow: 0px 0px 7px 5px ${normalizeColor('shadow-1', theme)};
