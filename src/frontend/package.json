@@ -30,7 +30,7 @@
     "test-site": "yarn build-tests && yarn workspace standalone_site run test",
     "test": "yarn test-libs && yarn test-lib-classroom && yarn test-lti && yarn test-site",
     "build-tests": "yarn workspace lib-common run build && yarn workspace lib-tests run build",
-    "build-libs": "yarn build-tests && yarn workspace lib-components run build && yarn workspace lib-markdown run build",
+    "build-libs": "yarn build-tests && yarn workspace lib-components run build",
     "build-lti": "yarn build-libs && yarn workspace marsha run build",
     "build-site": "yarn build-libs && yarn workspace standalone_site run build",
     "start-site": "yarn build-libs && yarn workspace standalone_site run start",
@@ -40,8 +40,8 @@
     "@codemirror/lang-markdown": "6.1.0",
     "@codemirror/language": "6.6.0",
     "@codemirror/language-data": "6.1.0",
-    "@codemirror/view": "6.9.3",
     "@codemirror/state": "6.2.0",
+    "@codemirror/view": "6.9.3",
     "@types/mdast": "3.0.11",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
@@ -51,7 +51,6 @@
     "marsha-config": "4.0.0-beta.18",
     "styled-components": "5.3.9",
     "typescript": "4.9.5",
-    "unist-util-visit": "4.1.2",
     "zustand": "4.3.6"
   },
   "dependencies": {
