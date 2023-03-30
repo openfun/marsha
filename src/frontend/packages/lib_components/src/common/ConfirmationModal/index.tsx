@@ -5,7 +5,7 @@ import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { RoundCrossSVG } from 'common/SVGIcons/RoundCrossSVG';
+import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
 
 const messages = defineMessages({
   confirmButtonLabel: {

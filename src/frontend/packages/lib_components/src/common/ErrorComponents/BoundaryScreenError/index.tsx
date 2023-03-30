@@ -13,7 +13,7 @@ import React from 'react';
 import { useIntl, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { useAppConfig } from 'data/stores/useAppConfig';
+import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 
 interface PropsExtended {
   breakpoint?: string;

@@ -5,12 +5,12 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
+} from '@lib-components/data/stores/actions';
 import {
   ClassroomDocument,
   ClassroomModelName,
-} from 'types/apps/classroom/models';
-import { StoreState } from 'types/stores';
+} from '@lib-components/types/apps/classroom/models';
+import { StoreState } from '@lib-components/types/stores';
 
 type ClassroomDocumentStateResource = {
   [ClassroomModelName.CLASSROOM_DOCUMENTS]: {

@@ -1,4 +1,4 @@
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from '@lib-components/types/jwt';
 
 import { checkLtiToken } from './checkLtiToken';
 

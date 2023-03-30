@@ -5,12 +5,12 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
+} from '@lib-components/data/stores/actions';
 import {
   DepositedFile,
   FileDepositoryModelName,
-} from 'types/apps/deposit/models';
-import { StoreState } from 'types/stores';
+} from '@lib-components/types/apps/deposit/models';
+import { StoreState } from '@lib-components/types/stores';
 
 type DepositedFileStateResource = {
   [FileDepositoryModelName.DepositedFiles]: {

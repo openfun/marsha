@@ -5,10 +5,10 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
-import { Document } from 'types/file';
-import { modelName } from 'types/models';
-import { StoreState } from 'types/stores';
+} from '@lib-components/data/stores/actions';
+import { Document } from '@lib-components/types/file';
+import { modelName } from '@lib-components/types/models';
+import { StoreState } from '@lib-components/types/stores';
 
 type DocumentStateResource = {
   [modelName.DOCUMENTS]: {

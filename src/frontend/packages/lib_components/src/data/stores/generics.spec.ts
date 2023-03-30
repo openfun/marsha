@@ -2,13 +2,13 @@ import {
   addMultipleResources,
   addResource,
   getStoreResource,
-} from 'data/stores/generics';
-import { useDocument } from 'data/stores/useDocument';
-import { useSharedLiveMedia } from 'data/stores/useSharedLiveMedia';
-import { useThumbnail } from 'data/stores/useThumbnail';
-import { useTimedTextTrack } from 'data/stores/useTimedTextTrack';
-import { useVideo } from 'data/stores/useVideo';
-import { modelName } from 'types/models';
+} from '@lib-components/data/stores/generics';
+import { useDocument } from '@lib-components/data/stores/useDocument';
+import { useSharedLiveMedia } from '@lib-components/data/stores/useSharedLiveMedia';
+import { useThumbnail } from '@lib-components/data/stores/useThumbnail';
+import { useTimedTextTrack } from '@lib-components/data/stores/useTimedTextTrack';
+import { useVideo } from '@lib-components/data/stores/useVideo';
+import { modelName } from '@lib-components/types/models';
 
 describe('stores/generics', () => {
   afterEach(() => {

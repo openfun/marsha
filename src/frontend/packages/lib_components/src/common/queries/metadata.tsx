@@ -1,6 +1,6 @@
 import { QueryKey, QueryFunctionContext } from 'react-query';
 
-import { useJwt } from 'hooks/stores/useJwt';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
 
 import { fetchResponseHandler } from './fetchResponseHandler';
 import { fetchWrapper } from './fetchWrapper';

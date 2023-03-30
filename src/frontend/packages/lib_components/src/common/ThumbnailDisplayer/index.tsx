@@ -2,7 +2,7 @@ import { Image } from 'grommet';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { urls, videoSize } from 'types/tracks';
+import { urls, videoSize } from '@lib-components/types/tracks';
 
 import { videoSizeMapping } from './videoSizeMapping';
 

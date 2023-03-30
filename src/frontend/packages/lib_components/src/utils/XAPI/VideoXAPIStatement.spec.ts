@@ -1,9 +1,9 @@
 import fetchMock from 'fetch-mock';
 import { XAPI_ENDPOINT } from 'lib-components';
 
-import { VerbDefinition } from 'types/XAPI';
-import { videoMockFactory } from 'utils/tests/factories';
-import { truncateDecimalDigits } from 'utils/truncateDecimalDigits';
+import { VerbDefinition } from '@lib-components/types/XAPI';
+import { videoMockFactory } from '@lib-components/utils/tests/factories';
+import { truncateDecimalDigits } from '@lib-components/utils/truncateDecimalDigits';
 
 import { VideoXAPIStatement } from './VideoXAPIStatement';
 

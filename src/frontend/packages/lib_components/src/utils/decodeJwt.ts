@@ -1,6 +1,6 @@
 import jwt_decode from 'jwt-decode';
 
-import { DecodedJwt } from 'types/jwt';
+import { DecodedJwt } from '@lib-components/types/jwt';
 
 const isDecodedJwt = (jwt: unknown): jwt is DecodedJwt => {
   if (jwt && typeof jwt === 'object') {

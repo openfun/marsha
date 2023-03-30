@@ -1,4 +1,4 @@
-import { FetchResponseError } from 'utils/errors/exception';
+import { FetchResponseError } from '@lib-components/utils/errors/exception';
 
 interface fetchResponseHandlerOptions {
   errorMessage?: string | { [key: number]: string }; // 'Bad Request' | { 400: 'Bad Request', 401: 'Unauthorized' }

@@ -3,8 +3,8 @@ import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
 
-import { H2 } from 'common/Headings';
-import { LayoutMainArea } from 'common/LayoutMainArea';
+import { H2 } from '@lib-components/common/Headings';
+import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
 
 export * from './BoundaryScreenError';
 export * from './route';

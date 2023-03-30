@@ -1,15 +1,15 @@
 import {
   ClassroomDocument,
   ClassroomModelName,
-} from 'types/apps/classroom/models';
+} from '@lib-components/types/apps/classroom/models';
 import {
   DepositedFile,
   FileDepositoryModelName,
-} from 'types/apps/deposit/models';
+} from '@lib-components/types/apps/deposit/models';
 import {
   MarkdownImage,
   MarkdownDocumentModelName,
-} from 'types/apps/markdown/models';
+} from '@lib-components/types/apps/markdown/models';
 
 import { Document } from './file';
 import { modelName } from './models';

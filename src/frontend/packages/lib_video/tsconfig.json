@@ -4,7 +4,12 @@
     "baseUrl": "./src",
     "paths": {
       "@lib-video/*": ["./*"],
-      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"]
+      "altamoon-robust-websocket": ["types/libs/altamoon-robust-websocket"],
+      "@lib-components/*": ["../../lib_components/src/*"],
+      "converse": ["../../lib_components/src/types/libs/converse"],
+      "JitsiMeetExternalAPI": [
+        "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
+      ]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],

@@ -1,6 +1,6 @@
-import { ClassroomModelName } from 'types/apps/classroom/models';
-import { FileDepositoryModelName } from 'types/apps/deposit/models';
-import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
+import { ClassroomModelName } from '@lib-components/types/apps/classroom/models';
+import { FileDepositoryModelName } from '@lib-components/types/apps/deposit/models';
+import { MarkdownDocumentModelName } from '@lib-components/types/apps/markdown/models';
 
 export enum modelName {
   TIMEDTEXTTRACKS = 'timedtexttracks',
