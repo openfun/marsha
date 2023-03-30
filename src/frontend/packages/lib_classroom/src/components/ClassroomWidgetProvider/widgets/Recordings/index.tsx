@@ -3,7 +3,7 @@ import { ClassroomRecording, FoldableItem, ItemList } from 'lib-components';
 import React from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 
-import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const messages = defineMessages({
   title: {
