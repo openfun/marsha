@@ -74,6 +74,7 @@
     "typescript": "*"
   },
   "dependencies": {
+    "lib-components": "*",
     "react-dropzone": "14.2.3"
   }
 }

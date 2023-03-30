@@ -22,6 +22,7 @@
     "grommet": "*",
     "http-proxy-middleware": "2.0.6",
     "lib-classroom": "4.0.0-beta.18",
+    "lib-components": "*",
     "lib-video": "4.0.0-beta.18",
     "marsha-config": "*",
     "react": "17.0.2",
