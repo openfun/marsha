@@ -41,7 +41,6 @@
     "@testing-library/react-hooks": "8.0.1",
     "@testing-library/user-event": "13.5.0",
     "@types/clipboard": "2.0.1",
-    "@types/dompurify": "3.0.0",
     "@types/faker": "5.5.9",
     "@types/iframe-resizer": "3.5.9",
     "@types/jest": "29.5.0",
