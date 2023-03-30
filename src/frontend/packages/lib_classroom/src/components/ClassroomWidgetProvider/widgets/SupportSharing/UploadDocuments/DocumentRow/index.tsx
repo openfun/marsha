@@ -1,4 +1,3 @@
-import { useDeleteClassroomDocument, useUpdateClassroomDocument } from 'data';
 import { Anchor, Box, Button, Text } from 'grommet';
 import {
   UploadingObject,
@@ -12,6 +11,11 @@ import {
 import React, { useCallback, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import {
+  useDeleteClassroomDocument,
+  useUpdateClassroomDocument,
+} from '@lib-classroom/data';
 
 const StyledAnchor = styled(Anchor)`
   cursor: ${({ isClickable }: { isClickable: boolean }) =>

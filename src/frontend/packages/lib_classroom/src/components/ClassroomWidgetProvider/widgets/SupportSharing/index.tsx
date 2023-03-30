@@ -2,8 +2,8 @@ import { FoldableItem } from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { UploadDocuments } from 'components/ClassroomWidgetProvider/widgets/SupportSharing/UploadDocuments';
-import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+import { UploadDocuments } from '@lib-classroom/components/ClassroomWidgetProvider/widgets/SupportSharing/UploadDocuments';
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const messages = defineMessages({
   title: {

@@ -5,8 +5,8 @@ import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useUpdateClassroom } from 'data/queries';
-import { useCurrentClassroom } from 'hooks/useCurrentClassroom';
+import { useUpdateClassroom } from '@lib-classroom/data/queries';
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
 const messages = defineMessages({
   title: {

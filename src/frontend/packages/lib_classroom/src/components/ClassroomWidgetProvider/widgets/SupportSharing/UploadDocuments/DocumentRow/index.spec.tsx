@@ -8,8 +8,8 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import {
   classroomDocumentMockFactory,
   classroomMockFactory,
-} from 'utils/tests/factories';
-import { wrapInClassroom } from 'utils/wrapInClassroom';
+} from '@lib-classroom/utils/tests/factories';
+import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { DocumentRow } from '.';
 

@@ -5,9 +5,9 @@ import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
-import { classroomMockFactory } from 'utils';
 
-import { wrapInClassroom } from 'utils/wrapInClassroom';
+import { classroomMockFactory } from '@lib-classroom/utils';
+import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { ClassroomWidgetProvider } from '.';
 

@@ -6,8 +6,8 @@ import { render, Deferred } from 'lib-tests';
 import { Settings } from 'luxon';
 import React from 'react';
 
-import { classroomMockFactory } from 'utils/tests/factories';
-import { wrapInClassroom } from 'utils/wrapInClassroom';
+import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
+import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { Description } from '.';
 
