@@ -9,6 +9,11 @@
       "folder": "lib_classroom",
       "alias": "@lib-classroom",
       "apps": ["lti", "website"]
+    },
+    {
+      "folder": "lib_markdown",
+      "alias": "@lib-markdown",
+      "apps": ["lti"]
     }
   ]
 }
