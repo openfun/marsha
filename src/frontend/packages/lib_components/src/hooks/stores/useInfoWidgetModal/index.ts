@@ -1,5 +1,6 @@
 import { Nullable } from 'lib-common';
-import { createStore } from 'utils';
+
+import { createStore } from '@lib-components/utils';
 
 interface InformativeModal {
   title: string;

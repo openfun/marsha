@@ -4,8 +4,8 @@ import Dropzone from 'react-dropzone';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { useUploadManager } from 'common/UploadManager';
-import { uploadableModelName } from 'types/models';
+import { useUploadManager } from '@lib-components/common/UploadManager';
+import { uploadableModelName } from '@lib-components/types/models';
 
 import { DropzonePlaceholder } from './DropzonePlaceholder';
 

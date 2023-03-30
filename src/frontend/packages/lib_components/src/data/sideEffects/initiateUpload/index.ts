@@ -1,10 +1,9 @@
-import { API_ENDPOINT } from 'settings';
-
-import { fetchWrapper } from 'common/queries/fetchWrapper';
-import { useJwt } from 'hooks/stores';
-import { AWSPresignedPost } from 'types/AWSPresignedPost';
-import { uploadableModelName } from 'types/models';
-import { UploadableObject } from 'types/tracks';
+import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
+import { useJwt } from '@lib-components/hooks/stores';
+import { API_ENDPOINT } from '@lib-components/settings';
+import { AWSPresignedPost } from '@lib-components/types/AWSPresignedPost';
+import { uploadableModelName } from '@lib-components/types/models';
+import { UploadableObject } from '@lib-components/types/tracks';
 
 /**
  * Post to an action endpoint that declares the beginning of an upload. Returns the AWS upload

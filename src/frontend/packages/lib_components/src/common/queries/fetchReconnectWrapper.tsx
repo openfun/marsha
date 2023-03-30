@@ -1,5 +1,5 @@
-import { refreshToken } from 'data/sideEffects/refreshToken';
-import { useJwt } from 'hooks/stores/useJwt';
+import { refreshToken } from '@lib-components/data/sideEffects/refreshToken';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
 
 let routesExclude = ['/account/api/token/', '/e2e/api/'];
 let routesInclude = ['/api/', '/xapi/'];

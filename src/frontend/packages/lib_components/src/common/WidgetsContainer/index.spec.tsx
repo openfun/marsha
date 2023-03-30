@@ -2,7 +2,7 @@
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { InfoWidgetModalProvider } from 'hooks/stores/useInfoWidgetModal';
+import { InfoWidgetModalProvider } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
 import { WidgetsContainer, WidgetSize } from '.';
 

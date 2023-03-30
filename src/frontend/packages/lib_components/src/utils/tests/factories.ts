@@ -1,15 +1,15 @@
 import * as faker from 'faker';
 
-import { PortabilityConfig } from 'types/AppData';
-import { Organization } from 'types/Organization';
-import { Participant } from 'types/Participant';
+import { PortabilityConfig } from '@lib-components/types/AppData';
+import { Organization } from '@lib-components/types/Organization';
+import { Participant } from '@lib-components/types/Participant';
 import {
   PortabilityRequest,
   PortabilityRequestState,
-} from 'types/PortabilityRequest';
-import { DecodedJwtPermission } from 'types/ResourceContext';
-import { Document } from 'types/file';
-import { DecodedJwt, DecodedJwtUser } from 'types/jwt';
+} from '@lib-components/types/PortabilityRequest';
+import { DecodedJwtPermission } from '@lib-components/types/ResourceContext';
+import { Document } from '@lib-components/types/file';
+import { DecodedJwt, DecodedJwtUser } from '@lib-components/types/jwt';
 import {
   JoinMode,
   Live,
@@ -25,7 +25,7 @@ import {
   timedTextMode,
   uploadState,
   Video,
-} from 'types/tracks';
+} from '@lib-components/types/tracks';
 
 import { User } from '../../types';
 import { ConsumerSite } from '../../types/ConsumerSite';

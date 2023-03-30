@@ -1,6 +1,6 @@
 import { Nullable } from 'lib-common';
-import { Live } from 'types';
 
+import { Live } from '@lib-components/types';
 import {
   ContextExtensionsDefinition,
   DataPayload,
@@ -15,8 +15,8 @@ import {
   VerbDefinition,
   VideoXAPIStatementInterface,
   XapiResourceType,
-} from 'types/XAPI';
-import { truncateDecimalDigits } from 'utils/truncateDecimalDigits';
+} from '@lib-components/types/XAPI';
+import { truncateDecimalDigits } from '@lib-components/utils/truncateDecimalDigits';
 
 import { sendXAPIStatement } from './sendXAPIStatement';
 

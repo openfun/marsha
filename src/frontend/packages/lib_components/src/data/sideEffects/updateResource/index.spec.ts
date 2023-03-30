@@ -1,8 +1,8 @@
 import fetchMock from 'fetch-mock';
 
-import { useJwt } from 'hooks/stores/useJwt';
-import { modelName } from 'types/models';
-import { Video } from 'types/tracks';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { modelName } from '@lib-components/types/models';
+import { Video } from '@lib-components/types/tracks';
 
 import { updateResource } from '.';
 

@@ -5,7 +5,7 @@ import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import xhrMock, { MockResponse } from 'xhr-mock';
 
-import { modelName } from 'types/models';
+import { modelName } from '@lib-components/types/models';
 
 import { UploadManager, UploadManagerStatus, useUploadManager } from '.';
 

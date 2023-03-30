@@ -1,6 +1,6 @@
 import fetchMock from 'fetch-mock';
 
-import { FetchResponseError } from 'utils/errors/exception';
+import { FetchResponseError } from '@lib-components/utils/errors/exception';
 
 import { fetchResponseHandler } from './fetchResponseHandler';
 

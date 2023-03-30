@@ -3,9 +3,9 @@ import React, { useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { DownArrowSVG } from 'common/SVGIcons/DownArrowSVG';
-import { InfoCircleSVG } from 'common/SVGIcons/InfoCircleSVG';
-import { useInfoWidgetModal } from 'hooks/stores/useInfoWidgetModal';
+import { DownArrowSVG } from '@lib-components/common/SVGIcons/DownArrowSVG';
+import { InfoCircleSVG } from '@lib-components/common/SVGIcons/InfoCircleSVG';
+import { useInfoWidgetModal } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
 const messages = defineMessages({
   helpButtonTitle: {

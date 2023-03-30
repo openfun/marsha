@@ -2,8 +2,8 @@ import ClipboardJS from 'clipboard';
 import { Button, Text } from 'grommet';
 import React, { Fragment, ReactElement, useEffect } from 'react';
 
-import { DashedBoxCustom } from 'common/DashedBoxCustom';
-import { CopySVG } from 'common/SVGIcons/CopySVG';
+import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
+import { CopySVG } from '@lib-components/common/SVGIcons/CopySVG';
 
 interface Props {
   copyId: string;

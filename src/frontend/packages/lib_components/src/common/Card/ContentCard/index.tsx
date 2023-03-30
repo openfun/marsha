@@ -8,9 +8,10 @@ import {
   BoxExtendedProps,
   BoxTypes,
 } from 'grommet';
-import { useResponsive } from 'hooks';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import styled from 'styled-components';
+
+import { useResponsive } from '@lib-components/hooks';
 
 const CardBox = styled(Box)`
   gap: 1.7rem;

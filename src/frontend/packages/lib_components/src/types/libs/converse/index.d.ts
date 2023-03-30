@@ -1,8 +1,8 @@
 import { Nullable } from 'lib-common';
 
-import { Participant } from 'types/Participant';
-import { PersistentStore } from 'types/XMPP';
-import { Video } from 'types/tracks';
+import { Participant } from '@lib-components/types/Participant';
+import { PersistentStore } from '@lib-components/types/XMPP';
+import { Video } from '@lib-components/types/tracks';
 
 export declare namespace converse {
   export interface Converse {

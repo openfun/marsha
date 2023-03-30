@@ -1,6 +1,6 @@
 import { Nullable } from 'lib-common';
 
-import { JitsiMeetExternalAPI } from 'types/libs/JitsiMeetExternalAPI';
+import { JitsiMeetExternalAPI } from '@lib-components/types/libs/JitsiMeetExternalAPI';
 
 import { ConsumerSite } from './ConsumerSite';
 import { Participant } from './Participant';

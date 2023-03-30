@@ -17,7 +17,7 @@
     },
     {
       "folder": "lib_components",
-      "alias": "@lib-omponents",
+      "alias": "@lib-components",
       "apps": ["lti", "website"]
     }
   ]

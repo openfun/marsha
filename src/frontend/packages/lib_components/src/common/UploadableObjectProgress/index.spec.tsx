@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid';
 import {
   UploadManagerContext,
   UploadManagerStatus,
-} from 'common/UploadManager';
+} from '@lib-components/common/UploadManager';
 
 import { UploadableObjectProgress } from '.';
 

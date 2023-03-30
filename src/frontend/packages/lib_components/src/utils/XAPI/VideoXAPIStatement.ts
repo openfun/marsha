@@ -1,8 +1,8 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
 import { Nullable } from 'lib-common';
 import { DateTime, Interval } from 'luxon';
-import { Video } from 'types';
 
+import { Video } from '@lib-components/types';
 import {
   CompletedDataPlayload,
   ContextExtensionsDefinition,
@@ -18,8 +18,8 @@ import {
   VerbDefinition,
   VideoXAPIStatementInterface,
   XapiResourceType,
-} from 'types/XAPI';
-import { truncateDecimalDigits } from 'utils/truncateDecimalDigits';
+} from '@lib-components/types/XAPI';
+import { truncateDecimalDigits } from '@lib-components/utils/truncateDecimalDigits';
 
 import { sendXAPIStatement } from './sendXAPIStatement';
 

@@ -1,8 +1,7 @@
-import { API_ENDPOINT } from 'settings';
-import { Video, VideoJitsiConnectionInfos } from 'types';
-
-import { fetchWrapper } from 'common/queries/fetchWrapper';
-import { useJwt } from 'hooks/stores/useJwt';
+import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { API_ENDPOINT } from '@lib-components/settings';
+import { Video, VideoJitsiConnectionInfos } from '@lib-components/types';
 
 export const fetchJitsiInfo = async (
   video: Video,

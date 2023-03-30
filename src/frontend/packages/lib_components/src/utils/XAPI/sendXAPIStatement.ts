@@ -1,9 +1,9 @@
-import { XAPI_ENDPOINT } from 'settings';
-import { Resource } from 'types';
 import { v4 as uuidv4 } from 'uuid';
 
-import { fetchWrapper } from 'common/queries/fetchWrapper';
-import { DataPayload, XapiResourceType } from 'types/XAPI';
+import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
+import { XAPI_ENDPOINT } from '@lib-components/settings';
+import { Resource } from '@lib-components/types';
+import { DataPayload, XapiResourceType } from '@lib-components/types/XAPI';
 
 export const sendXAPIStatement = (
   data: DataPayload,
