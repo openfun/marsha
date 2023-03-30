@@ -15,7 +15,7 @@ module.exports = {
   setupFilesAfterEnv: [
     'core-js',
     'regenerator-runtime/runtime',
-    './testSetup.ts',
+    './testSetup.js',
   ],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {
