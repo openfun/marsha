@@ -5,9 +5,8 @@
   "directories": {
     "lib": "lib"
   },
-  "main": "lib/cjs/index.js",
-  "module": "lib/esm/index.js",
-  "types": "lib/dts/index.d.ts",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
   "sideEffects": false,
   "scripts": {
     "build": "rollup -c",
