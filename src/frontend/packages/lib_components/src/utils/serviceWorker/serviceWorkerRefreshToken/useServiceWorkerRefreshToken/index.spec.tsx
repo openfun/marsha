@@ -3,9 +3,9 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React, { Fragment } from 'react';
 
-import { useCurrentUser } from 'hooks/stores/useCurrentUser';
-import { useJwt } from 'hooks/stores/useJwt';
-import { EServiceworkerAuthAction } from 'types/serviceWorker';
+import { useCurrentUser } from '@lib-components/hooks/stores/useCurrentUser';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { EServiceworkerAuthAction } from '@lib-components/types/serviceWorker';
 
 import { useServiceWorkerRefreshToken } from './index';
 

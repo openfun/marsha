@@ -6,11 +6,11 @@
  * It will listen predefined routes and try to refresh the token if the response is 401.
  * In order to works, you must include the hook `useServiceWorkerRefreshToken` in your app.
  */
-import { refreshToken } from 'data/sideEffects/refreshToken';
+import { refreshToken } from '@lib-components/data/sideEffects/refreshToken';
 import {
   EServiceworkerAuthAction,
   ServiceworkerAuthMessage,
-} from 'types/serviceWorker';
+} from '@lib-components/types/serviceWorker';
 
 export const init = (
   self: ServiceWorkerGlobalScope,

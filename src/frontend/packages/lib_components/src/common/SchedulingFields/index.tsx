@@ -5,7 +5,7 @@ import { DateTime, Duration, Settings } from 'luxon';
 import React, { useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { FormHelpText } from 'common/Form';
+import { FormHelpText } from '@lib-components/common/Form';
 
 import { mergeDateTime, splitDateTime } from './utils';
 

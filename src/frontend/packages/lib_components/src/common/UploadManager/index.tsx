@@ -6,14 +6,14 @@ import React, {
   useState,
 } from 'react';
 
-import { initiateUpload } from 'data/sideEffects/initiateUpload';
-import { uploadFile } from 'data/sideEffects/uploadFile';
-import { AWSPresignedPost } from 'types/AWSPresignedPost';
-import { ClassroomModelName } from 'types/apps/classroom/models';
-import { FileDepositoryModelName } from 'types/apps/deposit/models';
-import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
-import { modelName, uploadableModelName } from 'types/models';
-import { makeFormData } from 'utils/makeFormData/makeFormData';
+import { initiateUpload } from '@lib-components/data/sideEffects/initiateUpload';
+import { uploadFile } from '@lib-components/data/sideEffects/uploadFile';
+import { AWSPresignedPost } from '@lib-components/types/AWSPresignedPost';
+import { ClassroomModelName } from '@lib-components/types/apps/classroom/models';
+import { FileDepositoryModelName } from '@lib-components/types/apps/deposit/models';
+import { MarkdownDocumentModelName } from '@lib-components/types/apps/markdown/models';
+import { modelName, uploadableModelName } from '@lib-components/types/models';
+import { makeFormData } from '@lib-components/utils/makeFormData/makeFormData';
 
 export enum UploadManagerStatus {
   ERR_POLICY = 'policy_error',

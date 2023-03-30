@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react';
 import React from 'react';
 
-import { modelName } from 'types/models';
-import { uploadState } from 'types/tracks';
+import { modelName } from '@lib-components/types/models';
+import { uploadState } from '@lib-components/types/tracks';
 
 import { useSharedLiveMedia } from '.';
 

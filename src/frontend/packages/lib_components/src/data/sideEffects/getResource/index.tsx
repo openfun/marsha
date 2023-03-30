@@ -1,12 +1,11 @@
-import { API_ENDPOINT } from 'settings';
-
-import { fetchWrapper } from 'common/queries/fetchWrapper';
-import { addResource } from 'data/stores/generics';
-import { useJwt } from 'hooks/stores/useJwt';
-import { requestStatus } from 'types/api';
-import { uploadableModelName } from 'types/models';
-import { UploadableObject } from 'types/tracks';
-import { report } from 'utils/errors/report';
+import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
+import { addResource } from '@lib-components/data/stores/generics';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { API_ENDPOINT } from '@lib-components/settings';
+import { requestStatus } from '@lib-components/types/api';
+import { uploadableModelName } from '@lib-components/types/models';
+import { UploadableObject } from '@lib-components/types/tracks';
+import { report } from '@lib-components/utils/errors/report';
 
 /**
  * Fetch a resource to update its state in our store.

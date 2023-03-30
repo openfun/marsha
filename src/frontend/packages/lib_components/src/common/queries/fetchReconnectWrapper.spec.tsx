@@ -2,9 +2,9 @@ import { waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { Deferred } from 'lib-tests';
 
-import { refreshToken } from 'data/sideEffects/refreshToken';
-import { useJwt } from 'hooks/stores/useJwt';
-import { TokenResponse } from 'types/jwt';
+import { refreshToken } from '@lib-components/data/sideEffects/refreshToken';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { TokenResponse } from '@lib-components/types/jwt';
 
 import { fetchReconnectWrapper } from './fetchReconnectWrapper';
 

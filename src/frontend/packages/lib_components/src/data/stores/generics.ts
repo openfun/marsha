@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-argument */
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { ClassroomModelName } from 'types/apps/classroom/models';
-import { FileDepositoryModelName } from 'types/apps/deposit/models';
-import { MarkdownDocumentModelName } from 'types/apps/markdown/models';
-import { modelName, uploadableModelName } from 'types/models';
-import { UploadableObject } from 'types/tracks';
+import { ClassroomModelName } from '@lib-components/types/apps/classroom/models';
+import { FileDepositoryModelName } from '@lib-components/types/apps/deposit/models';
+import { MarkdownDocumentModelName } from '@lib-components/types/apps/markdown/models';
+import { modelName, uploadableModelName } from '@lib-components/types/models';
+import { UploadableObject } from '@lib-components/types/tracks';
 
 const getStore = async (objectType: uploadableModelName) => {
   switch (objectType) {

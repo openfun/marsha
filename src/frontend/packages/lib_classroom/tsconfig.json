@@ -3,7 +3,12 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@lib-classroom/*": ["./*"]
+      "@lib-classroom/*": ["./*"],
+      "@lib-components/*": ["../../lib_components/src/*"],
+      "converse": ["../../lib_components/src/types/libs/converse"],
+      "JitsiMeetExternalAPI": [
+        "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
+      ]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],

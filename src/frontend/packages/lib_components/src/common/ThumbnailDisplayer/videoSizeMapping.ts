@@ -1,4 +1,4 @@
-import { videoSize } from 'types/tracks';
+import { videoSize } from '@lib-components/types/tracks';
 
 // Mappping object between a video height and its corresponding width in a 16:9 ratio
 export const videoSizeMapping: Readonly<{ [key in videoSize]: string }> = {

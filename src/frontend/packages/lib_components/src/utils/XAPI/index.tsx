@@ -1,5 +1,5 @@
-import { VideoXAPIStatementInterface } from 'types/XAPI';
-import { Video } from 'types/tracks';
+import { VideoXAPIStatementInterface } from '@lib-components/types/XAPI';
+import { Video } from '@lib-components/types/tracks';
 
 import { LiveXAPIStatement } from './LiveXapiStatement';
 import { VideoXAPIStatement } from './VideoXAPIStatement';

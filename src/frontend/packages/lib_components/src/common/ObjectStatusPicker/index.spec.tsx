@@ -3,8 +3,12 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { UploadManagerStatus } from 'common/UploadManager';
-import { liveState, UploadableObject, uploadState } from 'types/tracks';
+import { UploadManagerStatus } from '@lib-components/common/UploadManager';
+import {
+  liveState,
+  UploadableObject,
+  uploadState,
+} from '@lib-components/types/tracks';
 
 import { ObjectStatusPicker } from '.';
 

@@ -1,12 +1,11 @@
-import { Document } from 'types';
-
+import { Document } from '@lib-components/types';
 import {
   ContextDocumentExtensionsDefinition,
   DataPayload,
   DocumentXapiStatementInterface,
   VerbDefinition,
   XapiResourceType,
-} from 'types/XAPI';
+} from '@lib-components/types/XAPI';
 
 import { sendXAPIStatement } from './sendXAPIStatement';
 

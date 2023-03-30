@@ -3,14 +3,14 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'common/ErrorComponents/route';
-import { UploadManager } from 'common/UploadManager';
-import { DASHBOARD_ROUTE } from 'data/routes';
-import { uploadFile } from 'data/sideEffects/uploadFile';
-import { getStoreResource } from 'data/stores/generics';
-import { modelName } from 'types/models';
-import { timedTextMode, uploadState } from 'types/tracks';
-import { videoMockFactory } from 'utils/tests/factories';
+import { FULL_SCREEN_ERROR_ROUTE } from '@lib-components/common/ErrorComponents/route';
+import { UploadManager } from '@lib-components/common/UploadManager';
+import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
+import { uploadFile } from '@lib-components/data/sideEffects/uploadFile';
+import { getStoreResource } from '@lib-components/data/stores/generics';
+import { modelName } from '@lib-components/types/models';
+import { timedTextMode, uploadState } from '@lib-components/types/tracks';
+import { videoMockFactory } from '@lib-components/utils/tests/factories';
 
 import { UploadForm } from '.';
 

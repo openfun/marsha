@@ -4,17 +4,20 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 import { Link, Redirect } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from 'common/ErrorComponents/route';
-import { IframeHeading } from 'common/Headings';
-import { LayoutMainArea } from 'common/LayoutMainArea';
-import { Loader } from 'common/Loader';
-import { UploadField } from 'common/UploadField';
-import { UploadManagerStatus, useUploadManager } from 'common/UploadManager';
-import { DASHBOARD_ROUTE } from 'data/routes';
-import { getStoreResource } from 'data/stores/generics';
-import { useAppConfig } from 'data/stores/useAppConfig';
-import { modelName, uploadableModelName } from 'types/models';
-import { TimedText, UploadableObject } from 'types/tracks';
+import { FULL_SCREEN_ERROR_ROUTE } from '@lib-components/common/ErrorComponents/route';
+import { IframeHeading } from '@lib-components/common/Headings';
+import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
+import { Loader } from '@lib-components/common/Loader';
+import { UploadField } from '@lib-components/common/UploadField';
+import {
+  UploadManagerStatus,
+  useUploadManager,
+} from '@lib-components/common/UploadManager';
+import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
+import { getStoreResource } from '@lib-components/data/stores/generics';
+import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
+import { modelName, uploadableModelName } from '@lib-components/types/models';
+import { TimedText, UploadableObject } from '@lib-components/types/tracks';
 
 const messages = defineMessages({
   linkToDashboard: {

@@ -1,9 +1,8 @@
-import { API_ENDPOINT } from 'settings';
-
-import { fetchWrapper } from 'common/queries/fetchWrapper';
-import { useJwt } from 'hooks/stores';
-import { uploadableModelName } from 'types/models';
-import { Resource } from 'types/tracks';
+import { fetchWrapper } from '@lib-components/common/queries/fetchWrapper';
+import { useJwt } from '@lib-components/hooks/stores';
+import { API_ENDPOINT } from '@lib-components/settings';
+import { uploadableModelName } from '@lib-components/types/models';
+import { Resource } from '@lib-components/types/tracks';
 
 export async function updateResource<R extends Resource>(
   resource: R,

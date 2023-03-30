@@ -4,10 +4,10 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
-import { modelName } from 'types/models';
-import { StoreState } from 'types/stores';
-import { SharedLiveMedia } from 'types/tracks';
+} from '@lib-components/data/stores/actions';
+import { modelName } from '@lib-components/types/models';
+import { StoreState } from '@lib-components/types/stores';
+import { SharedLiveMedia } from '@lib-components/types/tracks';
 
 type ShareLiveMediaStateResource = {
   [modelName.SHAREDLIVEMEDIAS]: {

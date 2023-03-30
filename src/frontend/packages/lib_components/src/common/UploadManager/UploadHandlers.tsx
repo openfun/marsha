@@ -1,8 +1,11 @@
 import React, { useEffect } from 'react';
 
-import { getResource as fetchResource } from 'data/sideEffects/getResource';
-import { updateResource } from 'data/sideEffects/updateResource';
-import { addResource, getStoreResource } from 'data/stores/generics';
+import { getResource as fetchResource } from '@lib-components/data/sideEffects/getResource';
+import { updateResource } from '@lib-components/data/sideEffects/updateResource';
+import {
+  addResource,
+  getStoreResource,
+} from '@lib-components/data/stores/generics';
 
 import { UploadManagerState, UploadManagerStatus, useUploadManager } from '.';
 

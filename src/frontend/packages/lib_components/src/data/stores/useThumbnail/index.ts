@@ -5,10 +5,10 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
-import { modelName } from 'types/models';
-import { StoreState } from 'types/stores';
-import { Thumbnail } from 'types/tracks';
+} from '@lib-components/data/stores/actions';
+import { modelName } from '@lib-components/types/models';
+import { StoreState } from '@lib-components/types/stores';
+import { Thumbnail } from '@lib-components/types/tracks';
 
 type ThumbnailStateResource = {
   [modelName.THUMBNAILS]: {

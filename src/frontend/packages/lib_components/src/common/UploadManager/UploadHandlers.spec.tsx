@@ -3,11 +3,14 @@ import { render } from 'lib-tests';
 import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
-import { getResource as fetchResource } from 'data/sideEffects/getResource';
-import { updateResource } from 'data/sideEffects/updateResource';
-import { addResource, getStoreResource } from 'data/stores/generics';
-import { modelName } from 'types/models';
-import { Thumbnail, Video } from 'types/tracks';
+import { getResource as fetchResource } from '@lib-components/data/sideEffects/getResource';
+import { updateResource } from '@lib-components/data/sideEffects/updateResource';
+import {
+  addResource,
+  getStoreResource,
+} from '@lib-components/data/stores/generics';
+import { modelName } from '@lib-components/types/models';
+import { Thumbnail, Video } from '@lib-components/types/tracks';
 
 import { UploadHandlers } from './UploadHandlers';
 

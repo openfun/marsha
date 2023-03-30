@@ -29,6 +29,14 @@
       "@lib-markdown/*": [
         "../../../packages/lib_markdown/src/*",
         "../../packages/lib_markdown/src/*"
+      ],
+      "@lib-components/*": [
+        "../../../packages/lib_components/src/*",
+        "../../packages/lib_components/src/*"
+      ],
+      "converse": ["../../../packages/lib_components/src/types/libs/converse"],
+      "JitsiMeetExternalAPI": [
+        "../../packages/lib_components/src/types/libs/JitsiMeetExternalAPI"
       ]
     }
   },

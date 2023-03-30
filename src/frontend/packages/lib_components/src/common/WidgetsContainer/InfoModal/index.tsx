@@ -4,7 +4,7 @@ import { theme, isFirefox, isIframe } from 'lib-common';
 import React, { useCallback, useEffect } from 'react';
 import styled from 'styled-components';
 
-import { RoundCrossSVG } from 'common/SVGIcons/RoundCrossSVG';
+import { RoundCrossSVG } from '@lib-components/common/SVGIcons/RoundCrossSVG';
 
 const StyledTitleText = styled(Text)`
   font-family: 'Roboto-Medium';

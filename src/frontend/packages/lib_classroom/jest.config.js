@@ -4,6 +4,7 @@ module.exports = {
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
     '@lib-classroom/(.*)': '<rootDir>/src/$1',
+    '@lib-components/(.*)': '<rootDir>/../lib_components/src/$1',
   },
   reporters: [
     'default',

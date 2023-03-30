@@ -1,15 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Nullable } from 'lib-common';
 
-import { Document } from 'types/file';
-import { modelName } from 'types/models';
+import { Document } from '@lib-components/types/file';
+import { modelName } from '@lib-components/types/models';
 import {
   AppDataRessource,
   Live,
   Playlist,
   Resource,
   Video,
-} from 'types/tracks';
+} from '@lib-components/types/tracks';
 
 export enum appState {
   ERROR = 'error',

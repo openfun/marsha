@@ -5,12 +5,12 @@ import {
   addMultipleResources,
   addResource,
   removeResource,
-} from 'data/stores/actions';
+} from '@lib-components/data/stores/actions';
 import {
   MarkdownImage,
   MarkdownDocumentModelName,
-} from 'types/apps/markdown/models';
-import { StoreState } from 'types/stores';
+} from '@lib-components/types/apps/markdown/models';
+import { StoreState } from '@lib-components/types/stores';
 
 type MarkdownImageStateResource = {
   [MarkdownDocumentModelName.MARKDOWN_IMAGES]: {

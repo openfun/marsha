@@ -6,6 +6,7 @@ module.exports = {
     'is-reference': '<rootDir>/node_modules/is-reference/src/index.js',
     'estree-walker': '<rootDir>/node_modules/estree-walker/src/index.js',
     '@lib-video/(.*)': '<rootDir>/src/$1',
+    '@lib-components/(.*)': '<rootDir>/../lib_components/src/$1',
   },
   reporters: [
     'default',

@@ -1,7 +1,7 @@
 import fetchMock from 'fetch-mock';
 
-import { useJwt } from 'hooks/stores/useJwt';
-import { FetchResponseError } from 'utils/errors/exception';
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { FetchResponseError } from '@lib-components/utils/errors/exception';
 
 import { updateOne } from './updateOne';
 

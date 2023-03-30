@@ -1,4 +1,4 @@
-import { TokenResponse } from 'types/jwt';
+import { TokenResponse } from '@lib-components/types/jwt';
 
 const isValidate = (response: unknown): response is TokenResponse => {
   if (response && typeof response === 'object') {

@@ -2,9 +2,14 @@ import { Box } from 'grommet';
 import React, { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { Spinner } from 'common/Loader';
-import { UploadManagerStatus } from 'common/UploadManager';
-import { liveState, UploadableObject, uploadState, Video } from 'types/tracks';
+import { Spinner } from '@lib-components/common/Loader';
+import { UploadManagerStatus } from '@lib-components/common/UploadManager';
+import {
+  liveState,
+  UploadableObject,
+  uploadState,
+  Video,
+} from '@lib-components/types/tracks';
 
 const { DELETED, ERROR, PENDING, PROCESSING } = uploadState;
 const { HARVESTING } = liveState;
