@@ -1,29 +1,32 @@
-// Jest helpers for styled-components
-import 'jest-styled-components';
 // Jest helpers for testing-library
 import '@testing-library/jest-dom';
-import { setLogger } from 'react-query';
 // Add TextEncoder & TextDecoder to jsdom
 import { TextEncoder, TextDecoder } from 'util';
 
 import { toMatchImageSnapshot } from 'jest-image-snapshot';
+// Jest helpers for styled-components
+import 'jest-styled-components';
+import { setLogger } from 'react-query';
+import ResizeObserver from 'resize-observer-polyfill';
+import { TransformStream } from 'web-streams-polyfill/ponyfill';
+
 expect.extend({ toMatchImageSnapshot });
 
 // see https://github.com/jsdom/jsdom/issues/2524
 global.TextEncoder = TextEncoder;
+// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 // @ts-ignore
 global.TextDecoder = TextDecoder;
 
-import ResizeObserver from 'resize-observer-polyfill';
 global.ResizeObserver = ResizeObserver;
 
 // During tests we want queries to be silent
 // see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
+// eslint-disable-next-line @typescript-eslint/no-empty-function
 setLogger({ log: console.log, warn: console.warn, error: () => {} });
 
 global.Request = require('node-fetch').Request;
 
-import { TransformStream } from 'web-streams-polyfill/ponyfill';
 const tds = {
   start() {
     this.decoder = new TextDecoder(this.encoding, this.options);
@@ -32,10 +35,10 @@ const tds = {
     controller.enqueue(this.decoder.decode(chunk));
   },
 };
-let _jstds_wm = new WeakMap(); /* info holder */
+const _jstds_wm = new WeakMap(); /* info holder */
 class TextDecoderStream extends TransformStream {
   constructor(encoding = 'utf-8', { ...options } = {}) {
-    let t = { ...tds, encoding, options };
+    const t = { ...tds, encoding, options };
 
     super(t);
     _jstds_wm.set(this, t);
