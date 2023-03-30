@@ -14,7 +14,10 @@
     "resolveJsonModule": true,
     "target": "ES2015",
     "paths": {
-      "@lib-video/*": ["../../../packages/lib_video/src/*", "../../packages/lib_video/src/*"],
+      "@lib-video/*": [
+        "../../../packages/lib_video/src/*",
+        "../../packages/lib_video/src/*"
+      ],
       "altamoon-robust-websocket": [
         "../../../packages/lib_video/src/types/libs/altamoon-robust-websocket",
         "../../packages/lib_video/src/types/libs/altamoon-robust-websocket"
@@ -22,6 +25,10 @@
       "@lib-classroom/*": [
         "../../../packages/lib_classroom/src/*",
         "../../packages/lib_classroom/src/*"
+      ],
+      "@lib-markdown/*": [
+        "../../../packages/lib_markdown/src/*",
+        "../../packages/lib_markdown/src/*"
       ]
     }
   },

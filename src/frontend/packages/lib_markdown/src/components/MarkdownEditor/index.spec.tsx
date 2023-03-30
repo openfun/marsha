@@ -18,7 +18,7 @@ import {
   markdownDocumentMockFactory,
   markdownImageMockFactory,
   markdownTranslationMockFactory,
-} from 'utils/tests/factories';
+} from '@lib-markdown/utils/tests/factories';
 
 import { MarkdownEditor } from '.';
 

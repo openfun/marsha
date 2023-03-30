@@ -22,7 +22,7 @@ module.exports = {
         ],
         pathGroups: [
           {
-            pattern: '+(common|hooks|types|utils|data|settings)/**',
+            pattern: '+(@lib-markdown)/**',
             group: 'internal',
           },
         ],

@@ -2,24 +2,6 @@
 /* eslint-disable @typescript-eslint/no-non-null-assertion */
 /* eslint-disable @typescript-eslint/require-await */
 /* eslint-disable react-hooks/exhaustive-deps */
-import {
-  CodeMirrorEditor,
-  useCodemirrorEditor,
-} from 'components/CodeMirrorEditor';
-import { LanguageSelector } from 'components/LanguageSelector';
-import { MarkdownImageDropzone } from 'components/MarkdownImageDropzone';
-import { MdxRenderer } from 'components/MdxRenderer';
-import { MdxRenderingOptionsSelector } from 'components/MdxRenderingOptionsSelector';
-import {
-  ScreenDisposition,
-  ScreenDispositionSelector,
-} from 'components/ScreenDispositionSelector';
-import { useImageUploadManager } from 'components/useImageUploadManager';
-import {
-  useMarkdownDocument,
-  useSaveTranslations,
-  useUpdateMarkdownDocument,
-} from 'data';
 import { Anchor, Box, Button, Footer, Text, TextInput } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocumentRenderingOptions } from 'lib-components';
@@ -27,7 +9,29 @@ import React, { Suspense, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
-import { escapeMarkdown, getMarkdownDocumentTranslatedContent } from 'utils';
+
+import {
+  CodeMirrorEditor,
+  useCodemirrorEditor,
+} from '@lib-markdown/components/CodeMirrorEditor';
+import { LanguageSelector } from '@lib-markdown/components/LanguageSelector';
+import { MarkdownImageDropzone } from '@lib-markdown/components/MarkdownImageDropzone';
+import { MdxRenderer } from '@lib-markdown/components/MdxRenderer';
+import { MdxRenderingOptionsSelector } from '@lib-markdown/components/MdxRenderingOptionsSelector';
+import {
+  ScreenDisposition,
+  ScreenDispositionSelector,
+} from '@lib-markdown/components/ScreenDispositionSelector';
+import { useImageUploadManager } from '@lib-markdown/components/useImageUploadManager';
+import {
+  useMarkdownDocument,
+  useSaveTranslations,
+  useUpdateMarkdownDocument,
+} from '@lib-markdown/data';
+import {
+  escapeMarkdown,
+  getMarkdownDocumentTranslatedContent,
+} from '@lib-markdown/utils';
 
 const messages = defineMessages({
   // Inputs
