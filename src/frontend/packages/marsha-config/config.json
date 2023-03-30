@@ -14,6 +14,11 @@
       "folder": "lib_markdown",
       "alias": "@lib-markdown",
       "apps": ["lti"]
+    },
+    {
+      "folder": "lib_components",
+      "alias": "@lib-omponents",
+      "apps": ["lti", "website"]
     }
   ]
 }
