@@ -10,7 +10,7 @@ import { Code, Parent } from 'mdast';
 import { parseFragment } from 'parse5';
 import { visit } from 'unist-util-visit';
 
-import { markdownRenderLatex } from 'data/queries';
+import { markdownRenderLatex } from '@lib-markdown/data/queries';
 
 const remarkLatexPlugin = (markdownDocumentId: string) => {
   // `markdownDocumentId` is mandatory to allow API calls

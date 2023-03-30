@@ -1,17 +1,11 @@
 {
-  "include": ["src"],
-  "extends": "../../tsconfig.json",
+  "extends": "marsha-config/tsconfig/tsc-packages.json",
   "compilerOptions": {
-    "outDir": "lib",
-    "module": "esnext",
-    "esModuleInterop": true,
-    "moduleResolution": "node",
-    "jsx": "react",
-    "noUnusedLocals": false,
-    "noUnusedParameters": false,
-    "declaration": true,
-    "declarationDir": "lib/dts",
-    "rootDir": "./src",
-    "baseUrl": "./src"
-  }
+    "baseUrl": "./src",
+    "paths": {
+      "@lib-markdown/*": ["./*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
+  "exclude": ["lib", "node_modules"]
 }

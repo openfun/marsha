@@ -3,7 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { MarkdownImage, report } from 'lib-components';
 
-import { fetchOneMarkdownImage } from 'data/queries';
+import { fetchOneMarkdownImage } from '@lib-markdown/data/queries';
 
 export async function pollForMarkdownImage(
   resourceId: string,

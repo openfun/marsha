@@ -2,13 +2,14 @@
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 /* eslint-disable @typescript-eslint/restrict-template-expressions */
 /* eslint-disable array-callback-return */
-import { LanguageSelector } from 'components/LanguageSelector';
 import { Box } from 'grommet';
 import { Nullable } from 'lib-common';
 import { Loader, MarkdownDocument } from 'lib-components';
 import React, { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { getMarkdownDocumentTranslatedContent } from 'utils';
+
+import { LanguageSelector } from '@lib-markdown/components/LanguageSelector';
+import { getMarkdownDocumentTranslatedContent } from '@lib-markdown/utils';
 
 const messages = defineMessages({
   // Messages
