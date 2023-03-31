@@ -68,6 +68,7 @@
     "jest-matchmedia-mock": "1.1.0",
     "jest-styled-components": "7.1.1",
     "jsdom-screenshot": "4.0.0",
+    "lib-tests": "*",
     "luxon": "3.3.0",
     "marsha-config": "*",
     "prettier": "2.8.7",
