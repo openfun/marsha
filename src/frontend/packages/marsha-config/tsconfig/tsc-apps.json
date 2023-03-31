@@ -45,6 +45,10 @@
       "@lib-tests/*": [
         "../../../packages/lib_tests/src/*",
         "../../packages/lib_tests/src/*"
+      ],
+      "@lib-common/*": [
+        "../../../packages/lib_common/src/*",
+        "../../packages/lib_common/src/*"
       ]
     }
   },
