@@ -5,33 +5,40 @@
       "folder": "lib_video",
       "alias": "@lib-video",
       "apps": ["lti", "website"],
-      "dependencies": ["lib-components", "lib-tests"]
+      "dependencies": ["lib-components", "lib-tests", "lib-common"]
     },
     {
       "name": "lib-classroom",
       "folder": "lib_classroom",
       "alias": "@lib-classroom",
       "apps": ["lti", "website"],
-      "dependencies": ["lib-components", "lib-tests"]
+      "dependencies": ["lib-components", "lib-tests", "lib-common"]
     },
     {
       "name": "lib-markdown",
       "folder": "lib_markdown",
       "alias": "@lib-markdown",
       "apps": ["lti"],
-      "dependencies": ["lib-components", "lib-tests"]
+      "dependencies": ["lib-components", "lib-tests", "lib-common"]
     },
     {
       "name": "lib-components",
       "folder": "lib_components",
       "alias": "@lib-components",
       "apps": ["lti", "website"],
-      "dependencies": ["lib-tests"]
+      "dependencies": ["lib-tests", "lib-common"]
     },
     {
       "name": "lib-tests",
       "folder": "lib_tests",
       "alias": "@lib-tests",
+      "apps": ["lti", "website"],
+      "dependencies": ["lib-common"]
+    },
+    {
+      "name": "lib-common",
+      "folder": "lib_common",
+      "alias": "@lib-common",
       "apps": ["lti", "website"],
       "dependencies": []
     }

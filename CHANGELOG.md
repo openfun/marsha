@@ -26,6 +26,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - live transpilation on lib-markdown (#2160)
 - live transpilation on lib-components (#2161)
 - live transpilation on lib-tests (#2163)
+- live transpilation on lib-common (#2164)
 - Add a widget provider for the classroom creation form
 - Add classroom widgets :
   - InfoBar
