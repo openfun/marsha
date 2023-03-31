@@ -68,6 +68,7 @@
     "jest-styled-components": "7.1.1",
     "jest-websocket-mock": "2.4.0",
     "jsdom-screenshot": "4.0.0",
+    "lib-tests": "*",
     "node-fetch": "2.6.7",
     "prettier": "2.8.7",
     "sass": "1.59.3",
