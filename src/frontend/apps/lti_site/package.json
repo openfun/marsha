@@ -94,6 +94,7 @@
     "intl": "1.2.5",
     "katex": "0.16.4",
     "lib-classroom": "4.0.0-beta.18",
+    "lib-common": "4.0.0-beta.18",
     "lib-components": "4.0.0-beta.18",
     "lib-markdown": "4.0.0-beta.18",
     "lib-video": "4.0.0-beta.18",
