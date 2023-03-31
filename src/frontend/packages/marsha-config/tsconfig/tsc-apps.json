@@ -34,9 +34,17 @@
         "../../../packages/lib_components/src/*",
         "../../packages/lib_components/src/*"
       ],
-      "converse": ["../../../packages/lib_components/src/types/libs/converse"],
+      "converse": [
+        "../../packages/lib_components/src/types/libs/converse",
+        "../../../packages/lib_components/src/types/libs/converse"
+      ],
       "JitsiMeetExternalAPI": [
-        "../../packages/lib_components/src/types/libs/JitsiMeetExternalAPI"
+        "../../packages/lib_components/src/types/libs/JitsiMeetExternalAPI",
+        "../../../packages/lib_components/src/types/libs/JitsiMeetExternalAPI"
+      ],
+      "@lib-tests/*": [
+        "../../../packages/lib_tests/src/*",
+        "../../packages/lib_tests/src/*"
       ]
     }
   },

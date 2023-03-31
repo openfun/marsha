@@ -12,6 +12,22 @@ module.exports = {
         alphabetize: {
           order: 'asc',
         },
+        groups: [
+          'builtin',
+          'external',
+          'internal',
+          'parent',
+          'sibling',
+          'index',
+        ],
+        pathGroups: [
+          {
+            pattern: '+(@lib-tests)/**',
+            group: 'internal',
+          },
+        ],
+        pathGroupsExcludedImportTypes: ['builtin'],
+        'newlines-between': 'always',
       },
     ],
     '@typescript-eslint/no-empty-function': 'off',

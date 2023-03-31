@@ -5,7 +5,8 @@
     "paths": {
       "@lib-components/*": ["./*"],
       "converse": ["types/libs/converse"],
-      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"]
+      "JitsiMeetExternalAPI": ["types/libs/JitsiMeetExternalAPI"],
+      "@lib-tests/*": ["../../lib_tests/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
