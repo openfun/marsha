@@ -7739,20 +7739,6 @@ escodegen@^2.0.0:
   optionalDependencies:
     source-map "~0.6.1"
 
-eslint-config-marsha@*:
-  version "4.0.0-beta.18"
-  dependencies:
-    "@typescript-eslint/eslint-plugin" "5.56.0"
-    "@typescript-eslint/parser" "5.56.0"
-    eslint "8.36.0"
-    eslint-config-prettier "8.8.0"
-    eslint-plugin-import "2.27.5"
-    eslint-plugin-jest "27.2.1"
-    eslint-plugin-prettier "4.2.1"
-    eslint-plugin-react "7.32.2"
-    eslint-plugin-react-hooks "4.6.0"
-    eslint-plugin-testing-library "5.10.2"
-
 eslint-config-prettier@8.8.0:
   version "8.8.0"
   resolved "https://registry.yarnpkg.com/eslint-config-prettier/-/eslint-config-prettier-8.8.0.tgz#bfda738d412adc917fd7b038857110efe98c9348"
@@ -11043,19 +11029,6 @@ levn@~0.3.0:
     prelude-ls "~1.1.2"
     type-check "~0.3.2"
 
-lib-components@*:
-  version "4.0.0-beta.18"
-  dependencies:
-    jwt-decode "3.1.2"
-    react-dropzone "14.2.3"
-    styled-components "*"
-    uuid "9.0.0"
-    web-streams-polyfill "3.2.1"
-    zustand "*"
-
-lib-tests@*:
-  version "4.0.0-beta.18"
-
 lie@3.1.1:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
@@ -11319,9 +11292,6 @@ markdown-to-jsx@^7.2.0:
   version "7.2.0"
   resolved "https://registry.yarnpkg.com/markdown-to-jsx/-/markdown-to-jsx-7.2.0.tgz#e7b46b65955f6a04d48a753acd55874a14bdda4b"
   integrity sha512-3l4/Bigjm4bEqjCR6Xr+d4DtM1X6vvtGsMGSjJYyep8RjjIvcWtrXBS8Wbfe1/P+atKNMccpsraESIaWVplzVg==
-
-marsha-config@*:
-  version "4.0.0-beta.18"
 
 match-sorter@^6.0.2:
   version "6.3.1"
