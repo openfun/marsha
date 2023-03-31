@@ -48,6 +48,7 @@
     "eslint": "8.36.0",
     "eslint-config-marsha": "4.0.0-beta.18",
     "grommet": "2.31.0",
+    "lib-common": "4.0.0-beta.18",
     "lib-components": "4.0.0-beta.18",
     "lib-tests": "4.0.0-beta.18",
     "marsha-config": "4.0.0-beta.18",

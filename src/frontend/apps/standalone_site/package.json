@@ -24,6 +24,7 @@
     "grommet-icons": "4.10.0",
     "http-proxy-middleware": "2.0.6",
     "lib-classroom": "4.0.0-beta.18",
+    "lib-common": "4.0.0-beta.18",
     "lib-components": "4.0.0-beta.18",
     "lib-video": "4.0.0-beta.18",
     "luxon": "3.3.0",

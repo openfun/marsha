@@ -80,6 +80,7 @@
   },
   "dependencies": {
     "jwt-decode": "3.1.2",
+    "lib-common": "4.0.0-beta.18",
     "react-dropzone": "14.2.3",
     "styled-components": "*",
     "uuid": "9.0.0",

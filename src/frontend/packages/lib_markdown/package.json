@@ -102,6 +102,7 @@
     "@mdx-js/mdx2": "npm:@mdx-js/mdx@2.3.0",
     "codemirror": "6.0.1",
     "dompurify": "3.0.1",
+    "lib-common": "4.0.0-beta.18",
     "lib-components": "4.0.0-beta.18",
     "mermaid": "9.1.7",
     "rehype-highlight": "6.0.0",
