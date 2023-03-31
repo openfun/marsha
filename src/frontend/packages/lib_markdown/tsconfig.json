@@ -9,7 +9,8 @@
       "JitsiMeetExternalAPI": [
         "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
       ],
-      "@lib-tests/*": ["../../lib_tests/src/*"]
+      "@lib-tests/*": ["../../lib_tests/src/*"],
+      "@lib-common/*": ["../../lib_common/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],

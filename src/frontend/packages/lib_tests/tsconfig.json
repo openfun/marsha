@@ -3,7 +3,8 @@
   "compilerOptions": {
     "baseUrl": "./src",
     "paths": {
-      "@lib-tests/*": ["./*"]
+      "@lib-tests/*": ["./*"],
+      "@lib-common/*": ["../../lib_common/src/*"]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
