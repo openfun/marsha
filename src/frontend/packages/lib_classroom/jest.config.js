@@ -1,10 +1,11 @@
+const { libModuleNameMapper } = require('marsha-config');
+
 module.exports = {
   moduleDirectories: [__dirname, 'node_modules', 'src'],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
-    '@lib-classroom/(.*)': '<rootDir>/src/$1',
-    '@lib-components/(.*)': '<rootDir>/../lib_components/src/$1',
+    ...libModuleNameMapper['lib-classroom'],
   },
   reporters: [
     'default',
