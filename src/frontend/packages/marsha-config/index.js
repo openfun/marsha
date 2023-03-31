@@ -1,10 +1,18 @@
+/**
+ * Helper based on `config.json` to configure the Marsha's apps and libs:
+ *  - craco.config.js
+ *  - jest.config.js
+ *  - webpack.config.js
+ */
+
 const path = require('path');
 
 const { packages: packagesConfig } = require('./config.json');
 
 const appPackages = {};
 const alias = {};
-const moduleNameMapper = {};
+const appModuleNameMapper = {};
+const libModuleNameMapper = {};
 
 for (const packageConfig of packagesConfig) {
   // This is needed for webpack to transpile the packages on the fly
@@ -12,7 +20,7 @@ for (const packageConfig of packagesConfig) {
     if (!appPackages[app]) {
       appPackages[app] = [];
       alias[app] = {};
-      moduleNameMapper[app] = {};
+      appModuleNameMapper[app] = {};
     }
 
     appPackages[app].push(
@@ -26,14 +34,32 @@ for (const packageConfig of packagesConfig) {
     );
 
     // This is needed for jest to work with the alias
-    moduleNameMapper[app][
+    appModuleNameMapper[app][
       `${packageConfig.alias}/(.*)`
     ] = `<rootDir>../../packages/${packageConfig.folder}/src/$1`;
+  }
+
+  if (!libModuleNameMapper[packageConfig.name]) {
+    libModuleNameMapper[packageConfig.name] = {};
+    libModuleNameMapper[packageConfig.name][
+      `${packageConfig.alias}/(.*)`
+    ] = `<rootDir>/src/$1`;
+  }
+
+  for (const dependency of packageConfig.dependencies) {
+    for (const depConf of packagesConfig) {
+      if (depConf.name === dependency) {
+        libModuleNameMapper[packageConfig.name][
+          `${depConf.alias}/(.*)`
+        ] = `<rootDir>/../${depConf.folder}/src/$1`;
+      }
+    }
   }
 }
 
 module.exports = {
   appPackages,
   alias,
-  moduleNameMapper,
+  appModuleNameMapper,
+  libModuleNameMapper,
 };
