@@ -432,7 +432,6 @@ jobs:
       - save_cache:
           paths:
             - ./packages/lib_common/lib
-            - ./packages/lib_tests/lib
           key: front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
 
   build-front:
