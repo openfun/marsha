@@ -2,14 +2,14 @@ const { getLoader, loaderByName } = require('@craco/craco');
 const {
   appPackages: packages,
   alias,
-  moduleNameMapper,
+  appModuleNameMapper,
 } = require('marsha-config');
 
 /**
  * Craco (Create React App Configuration Override) helps us to configure the webpack of our CRA without ejecting.
  * It is used to add the marsha packages to the babel-loader, @see packages
  * It is also used to add the packages alias to the webpack alias list, @see alias
- * It is also used to add the marsha moduleNameMapper to the jest config, @see moduleNameMapper
+ * It is also used to add the marsha moduleNameMapper to the jest config, @see appModuleNameMapper
  */
 module.exports = {
   webpack: {
@@ -31,7 +31,7 @@ module.exports = {
   },
   jest: {
     configure: {
-      moduleNameMapper: moduleNameMapper['website'],
+      moduleNameMapper: appModuleNameMapper['website'],
     },
   },
 };
