@@ -360,7 +360,7 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
 
     expect(page.get_by_text("LTI link for this classroom:")).to_be_visible()
     invite_link_button = page.get_by_role(
-        "button", name="Invite someone with this link:"
+        "button", name="Invite a viewer with this link:"
     )
     invite_link_button.click()
     expect(page.get_by_text("Url copied in clipboard !")).to_be_visible()
