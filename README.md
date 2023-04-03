@@ -201,7 +201,6 @@ Run the build and copy the `iframe-resizer` host-side JS into your local `Django
 #### The "Standalone" frontend
 Run the build for libraries and start the standalone frontend:
 
-    $ yarn build-tests
     $ yarn start-site
 
 Now the standalone frontend is available at [localhost:3000](http://localhost:3000/).
