@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 import React from 'react';
@@ -22,11 +22,21 @@ describe('<DashboardCopyClipboard />', () => {
     jest.resetAllMocks();
   });
 
-  it('should display invite and lti links in standalone site context', () => {
-    render(<DashboardCopyClipboard inviteToken="my-token" classroomId="1" />);
+  it('should display invite and lti links in standalone site context', async () => {
+    render(
+      <DashboardCopyClipboard
+        inviteToken="my-token"
+        instructorToken="my-instructor-token"
+        classroomId="1"
+      />,
+    );
 
     const copyInviteButton = screen.getByRole('button', {
-      name: 'Invite someone with this link:',
+      name: 'Invite a viewer with this link:',
+    });
+
+    const copyInstructorButton = screen.getByRole('button', {
+      name: 'Invite a moderator with this link:',
     });
 
     const copyLtiLinkButton = screen.getByRole('button', {
@@ -34,7 +44,7 @@ describe('<DashboardCopyClipboard />', () => {
     });
 
     expect(
-      screen.getByText('Invite someone with this link:'),
+      screen.getByText('Invite a viewer with this link:'),
     ).toBeInTheDocument();
     expect(copyInviteButton).toBeInTheDocument();
     expect(
@@ -42,6 +52,14 @@ describe('<DashboardCopyClipboard />', () => {
         'http://dummy.com/my-contents/classroom/1/invite/my-token',
       ),
     ).toBeInTheDocument();
+
+    expect(copyInstructorButton).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'http://dummy.com/my-contents/classroom/1/invite/my-instructor-token',
+      ),
+    ).toBeInTheDocument();
+
     expect(
       screen.getByText('LTI link for this classroom:'),
     ).toBeInTheDocument();
@@ -55,23 +73,42 @@ describe('<DashboardCopyClipboard />', () => {
     expect(document.execCommand).toHaveBeenCalledTimes(1);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     expect(screen.getByText('Url copied in clipboard !')).toBeInTheDocument();
+    await waitForElementToBeRemoved(
+      () => screen.queryByText('Url copied in clipboard !'),
+      { timeout: 5000 },
+    );
+
+    userEvent.click(copyInstructorButton);
+    expect(document.execCommand).toHaveBeenCalledTimes(2);
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    expect(screen.getByText('Url copied in clipboard !')).toBeInTheDocument();
 
     userEvent.click(copyLtiLinkButton);
-    expect(document.execCommand).toHaveBeenCalledTimes(2);
+    expect(document.execCommand).toHaveBeenCalledTimes(3);
     expect(document.execCommand).toHaveBeenLastCalledWith('copy');
-  });
+  }, 10000);
 
-  it('should not display invite link if no invite token', () => {
-    render(<DashboardCopyClipboard inviteToken="" classroomId="1" />);
+  it('should not display invite links if no invite tokens', () => {
+    render(<DashboardCopyClipboard classroomId="1" />);
 
     expect(
-      screen.queryByText('Invite someone with this link:'),
+      screen.queryByText('Invite a viewer with this link:'),
     ).not.toBeInTheDocument();
     expect(
       screen.queryByText(
         'http://dummy.com/my-contents/classroom/1/invite/my-token',
       ),
     ).not.toBeInTheDocument();
+
+    expect(
+      screen.queryByText('Invite a moderator with this link:'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(
+        'http://dummy.com/my-contents/classroom/1/invite/my-instructor-token',
+      ),
+    ).not.toBeInTheDocument();
+
     expect(
       screen.getByText('LTI link for this classroom:'),
     ).toBeInTheDocument();

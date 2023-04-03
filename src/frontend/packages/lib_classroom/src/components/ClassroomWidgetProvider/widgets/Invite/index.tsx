@@ -9,7 +9,7 @@ const messages = defineMessages({
   title: {
     defaultMessage: 'Invite',
     description: 'A title for the widget.',
-    id: 'component.ClassroomForm.invite',
+    id: 'component.ClassroomWidgetProvider.Invite.invite',
   },
   info: {
     defaultMessage: `This widget provides several links depending on what you want to do:
@@ -18,7 +18,7 @@ const messages = defineMessages({
     course activity.
     `,
     description: 'Helptext for the widget.',
-    id: 'component.ClassroomForm.info',
+    id: 'component.ClassroomWidgetProvider.Invite.info',
   },
 });
 
@@ -34,6 +34,7 @@ export const Invite = () => {
     >
       <DashboardCopyClipboard
         inviteToken={classroom.invite_token}
+        instructorToken={classroom.instructor_token}
         classroomId={classroom.id}
       />
     </FoldableItem>

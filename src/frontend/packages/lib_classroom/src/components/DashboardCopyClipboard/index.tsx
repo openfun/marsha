@@ -6,41 +6,51 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
 const messages = defineMessages({
-  shareLinkLabel: {
-    defaultMessage: 'Invite someone with this link:',
+  shareViewerLinkLabel: {
+    defaultMessage: 'Invite a viewer with this link:',
     description: 'Label input shareable link with student.',
-    id: 'component.DashboardClassroomInstructor.shareLinkLabel',
+    id: 'component.DashboardCopyClipboard.shareLinkLabel',
+  },
+  shareModeratorLinkLabel: {
+    defaultMessage: 'Invite a moderator with this link:',
+    description: 'Label input shareable link with instructor.',
+    id: 'component.DashboardCopyClipboard.shareModeratorLinkLabel',
   },
   toastCopiedClipboardSuccess: {
     defaultMessage: 'Url copied in clipboard !',
     description: 'Toast message when link copied to clipboard.',
-    id: 'component.DashboardClassroomInstructor.toastCopiedClipboardSuccess',
+    id: 'component.DashboardCopyClipboard.toastCopiedClipboardSuccess',
   },
   ltiLinkLabel: {
     defaultMessage: 'LTI link for this classroom:',
     description: 'Label for LTI classroom link.',
-    id: 'component.DashboardCopyLtiUrl.ltiLinkLabel',
+    id: 'component.DashboardCopyClipboard.ltiLinkLabel',
   },
   ltiLinkCopiedSuccess: {
     defaultMessage: 'Url copied in clipboard !',
     description: 'Toast message when link copied to clipboard.',
-    id: 'component.DashboardCopyLtiUrl.ltiLinkCopiedSuccess',
+    id: 'component.DashboardCopyClipboard.ltiLinkCopiedSuccess',
   },
 });
 
 interface DashboardCopyClipboardProps {
   inviteToken?: Nullable<string>;
+  instructorToken?: Nullable<string>;
   classroomId: string;
 }
 
 const DashboardCopyClipboard = ({
   inviteToken,
+  instructorToken,
   classroomId,
 }: DashboardCopyClipboardProps) => {
   const intl = useIntl();
 
   const inviteLink = inviteToken
     ? `${window.location.origin}/my-contents/classroom/${classroomId}/invite/${inviteToken}`
+    : '';
+  const instructorLink = instructorToken
+    ? `${window.location.origin}/my-contents/classroom/${classroomId}/invite/${instructorToken}`
     : '';
   const ltiLink = `${window.location.origin}/lti/classrooms/${classroomId}`;
 
@@ -50,7 +60,25 @@ const DashboardCopyClipboard = ({
         <CopyClipboard
           copyId={`inviteLink-${classroomId}`}
           text={inviteLink}
-          title={intl.formatMessage(messages.shareLinkLabel)}
+          title={intl.formatMessage(messages.shareViewerLinkLabel)}
+          withLabel={true}
+          onSuccess={() => {
+            toast(intl.formatMessage(messages.toastCopiedClipboardSuccess), {
+              icon: '📋',
+            });
+          }}
+          onError={(event) => {
+            toast.error(event.text, {
+              position: 'bottom-center',
+            });
+          }}
+        />
+      )}
+      {instructorToken && (
+        <CopyClipboard
+          copyId={`instructorLink-${classroomId}`}
+          text={instructorLink}
+          title={intl.formatMessage(messages.shareModeratorLinkLabel)}
           withLabel={true}
           onSuccess={() => {
             toast(intl.formatMessage(messages.toastCopiedClipboardSuccess), {

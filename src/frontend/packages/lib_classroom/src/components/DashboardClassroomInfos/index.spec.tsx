@@ -30,7 +30,7 @@ describe('<DashboardClassroomInfos />', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(classroomInfos.listenerCount)).toBeInTheDocument();
     expect(
-      screen.queryByText('Invite someone with this link:'),
+      screen.queryByText('Invite a viewer with this link:'),
     ).not.toBeInTheDocument();
     expect(
       screen.getByText('LTI link for this classroom:'),
@@ -44,7 +44,7 @@ describe('<DashboardClassroomInfos />', () => {
     render(<DashboardClassroomInfos inviteToken="my-token" classroomId="1" />);
 
     expect(
-      screen.getByText('Invite someone with this link:'),
+      screen.getByText('Invite a viewer with this link:'),
     ).toBeInTheDocument();
     expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
   });

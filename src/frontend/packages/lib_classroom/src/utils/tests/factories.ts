@@ -27,6 +27,7 @@ export const classroomMockFactory = <T extends Partial<Classroom>>(
     starting_at: null,
     estimated_duration: null,
     invite_token: null,
+    instructor_token: null,
     recordings: [],
     ...classroom,
   };
