@@ -40,6 +40,7 @@ describe('<Invite />', () => {
       id: '1',
       started: false,
       invite_token: '1',
+      instructor_token: '2',
     });
 
     render(
@@ -59,6 +60,9 @@ describe('<Invite />', () => {
     ).toBeInTheDocument();
     expect(
       screen.getByText('https://localhost/my-contents/classroom/1/invite/1'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('https://localhost/my-contents/classroom/1/invite/2'),
     ).toBeInTheDocument();
     expect(
       screen.getByText('https://localhost/lti/classrooms/1'),
