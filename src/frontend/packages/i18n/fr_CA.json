@@ -23,6 +23,10 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Show document"
   },
+  "apps.classroom.components.DashboardStudent.UploadFiles.setDefaultDocument": {
+    "description": "Button helper message for setting a document as default.",
+    "message": "Click to set as default document"
+  },
   "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
     "description": "Error message when file is too big.",
     "message": "Uploaded files exceeds allowed size of {uploadMaxSize}."
@@ -115,45 +119,57 @@
     "description": "'Sent at' text for message's datetime display.",
     "message": "sent at {sentAt}"
   },
-  "component.ClassroomForm.descriptionLabel": {
+  "component.ClassroomDescription.descriptionLabel": {
     "description": "Label for description in classroom creation form.",
     "message": "Description"
   },
-  "component.ClassroomForm.downloadRecordingLabel": {
-    "description": "Label for download recording button.",
-    "message": "Download recording"
+  "component.ClassroomDescription.info": {
+    "description": "Helptext for the widget.",
+    "message": "This widget can be used to set a description to the classroom."
   },
-  "component.ClassroomForm.noRecordingsAvailable": {
-    "description": "Message when no recordings are available.",
-    "message": "No recordings available"
+  "component.ClassroomDescription.title": {
+    "description": "A title for the widget.",
+    "message": "Description"
   },
-  "component.ClassroomForm.recordingsLabel": {
-    "description": "Label for recordings in classroom creation form.",
-    "message": "Recordings"
-  },
-  "component.ClassroomForm.requiredTitle": {
-    "description": "Message when classroom title is missing.",
-    "message": "Title is required to launch the classroom."
-  },
-  "component.ClassroomForm.scheduleClassroomLabel": {
-    "description": "Label for confirm button in classroom scheduling form.",
-    "message": "Update classroom scheduling"
-  },
-  "component.ClassroomForm.titleLabel": {
-    "description": "Label for title in classroom creation form.",
-    "message": "Title"
-  },
-  "component.ClassroomForm.updateClassroomFail": {
+  "component.ClassroomDescription.updateClassroomFail": {
     "description": "Message when classroom update failed.",
     "message": "Classroom not updated!"
   },
-  "component.ClassroomForm.updateClassroomSuccess": {
+  "component.ClassroomDescription.updateClassroomSuccess": {
     "description": "Message when classroom update is successful.",
     "message": "Classroom updated."
   },
-  "component.ClassroomForm.welcomeTextLabel": {
+  "component.ClassroomDescription.welcomeTextLabel": {
     "description": "Label for welcome text in classroom creation form.",
     "message": "Welcome text"
+  },
+  "component.ClassroomForm.info": {
+    "description": "Helptext for the widget.",
+    "message": "This widget provides several links depending on what you want to do: - Invite link: Invite people to participate to this classroom as guest without any account. - LTI link: Special link used to add this classroom in your favorite LMS and have it in a course activity."
+  },
+  "component.ClassroomForm.invite": {
+    "description": "A title for the widget.",
+    "message": "Invite"
+  },
+  "component.ClassroomScheduling.info": {
+    "description": "Helptext for the widget.",
+    "message": "This widget can be used to schedule a classroom."
+  },
+  "component.ClassroomScheduling.scheduleClassroomLabel": {
+    "description": "Label for confirm button in classroom scheduling form.",
+    "message": "Update classroom scheduling"
+  },
+  "component.ClassroomScheduling.title": {
+    "description": "A title for the widget.",
+    "message": "Scheduling"
+  },
+  "component.ClassroomScheduling.updateClassroomFail": {
+    "description": "Message when classroom update failed.",
+    "message": "Classroom not updated!"
+  },
+  "component.ClassroomScheduling.updateClassroomSuccess": {
+    "description": "Message when classroom update is successful.",
+    "message": "Classroom updated."
   },
   "component.CreateVOD.descriptionText": {
     "description": "A paragraph presenting the actions below.",
@@ -311,6 +327,14 @@
     "description": "Label for language selector",
     "message": "Select language"
   },
+  "component.LicenseManager.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "Video update has failed !"
+  },
+  "component.LicenseManager.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Video updated."
+  },
   "component.LiveInfoBar.nbViewers": {
     "description": "Number of user connected on the live",
     "message": "{numberOfStudents, plural, =0 {No viewers connected.} one {# viewer connected.} other {# viewers connected}}"
@@ -394,6 +418,22 @@
   "component.MessageMetadatas.senderTitle": {
     "description": "A title describing the div where the sender's name is displayed",
     "message": "The name of the message's sender"
+  },
+  "component.Recordings.downloadRecordingLabel": {
+    "description": "Label for download recording button.",
+    "message": "Download recording"
+  },
+  "component.Recordings.info": {
+    "description": "Helptext for the widget.",
+    "message": "All available recordings can be downloaded here."
+  },
+  "component.Recordings.noRecordingsAvailable": {
+    "description": "Message when no recordings are available.",
+    "message": "No recordings available"
+  },
+  "component.Recordings.title": {
+    "description": "Label for recordings in classroom creation form.",
+    "message": "Recordings"
   },
   "component.RetryUploadButton.buttonLabel": {
     "description": "The label of the retry button.",
@@ -511,6 +551,14 @@
     "description": "Title to advertise a live which has no title set yet.",
     "message": "This live has no title yet."
   },
+  "component.SupportSharing.info": {
+    "description": "Helptext for the widget.",
+    "message": "All documents uploaded here will be added to the classroom when you will start it. If you upload multiple document you can choose the default one display first when the classroom is started."
+  },
+  "component.SupportSharing.title": {
+    "description": "A title for the widget.",
+    "message": "Upload Documents"
+  },
   "component.TeacherLiveLifecycleControls.error": {
     "description": "Message for the error throw if the component is used for a video that is not a live.",
     "message": "This should not happen, you need to check a live is ready for the video before using this component."
@@ -615,6 +663,26 @@
     "description": "Displayed in Markdown image upload status",
     "message": "Uploaded {imageName}"
   },
+  "components.ClassroomInfoBar.noTitle": {
+    "description": "Title placeholder when no title is defined for this classroom",
+    "message": "No title"
+  },
+  "components.ClassroomInfoBar.placeholderTitleInput": {
+    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
+    "message": "Enter title of your classroom here"
+  },
+  "components.ClassroomInfoBar.updateClassroomFail": {
+    "description": "Message displayed when classroom update has failed.",
+    "message": "Classroom update has failed !"
+  },
+  "components.ClassroomInfoBar.updateClassroomSucces": {
+    "description": "Message displayed when classroom is successfully updated.",
+    "message": "Classroom updated."
+  },
+  "components.ClassroomInfoBar.updateTitleBlank": {
+    "description": "Message displayed when the user tried to enter a blank title.",
+    "message": "Title can't be blank !"
+  },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
     "message": "Cancel"
@@ -635,6 +703,10 @@
     "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
     "message": "Enter title of your video here"
   },
+  "components.Dashboard.titleDetails": {
+    "description": "Title of the accordion panel used to display video dashboard",
+    "message": "{videoTitle} dashboard"
+  },
   "components.DashboardClassroomError.notFound.text": {
     "description": "Helpful text for the 404 Not Found error page",
     "message": "This classroom does not exist or has not been published yet. If you are an instructor, please make sure you are properly authenticated."
@@ -642,6 +714,10 @@
   "components.DashboardClassroomError.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "The classroom you are looking for could not be found"
+  },
+  "components.DashboardClassroomForm.titleConfiguration": {
+    "description": "Title of the tab used to configure the live in capital letters",
+    "message": "Configuration"
   },
   "components.DashboardControlPane.DashboardTabStatistics.viewersStatsDescription": {
     "description": "Description of the number of viewers",
@@ -942,6 +1018,22 @@
   "components.LanguageSelect.selectLanguageLabel": {
     "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
     "message": "Select the language for which you want to upload a timed text file"
+  },
+  "components.LicenseManager.info": {
+    "description": "Info of the widget used for managing the license.",
+    "message": "This widget allows you to manage the license of the video."
+  },
+  "components.LicenseManager.noLicenseAvailableLabel": {
+    "description": "The label displayed in the select when there is no license.",
+    "message": "No license available"
+  },
+  "components.LicenseManager.selectLicenseLabel": {
+    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Select the license under which you want to publish your video"
+  },
+  "components.LicenseManager.title": {
+    "description": "Title of the widget used to manage the license of the video.",
+    "message": "License"
   },
   "components.LicenseSelect.noLicenseAvailableLabel": {
     "description": "The label displayed in the select when there is no license.",
@@ -1281,7 +1373,7 @@
   },
   "components.ThumbnailManager.thumbnailUploaded": {
     "description": "A text displayed when the thumbnail is being uploaded.",
-    "message": "Your image is being uploaded."
+    "message": "Your image is being uploaded ({progress}/100)."
   },
   "components.ThumbnailRemoveButton.confirmationModalTitle": {
     "description": "Title of the modal displayed when an instructor wants to delete the live video thumbnail.",

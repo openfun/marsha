@@ -23,6 +23,10 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Afficher le document"
   },
+  "apps.classroom.components.DashboardStudent.UploadFiles.setDefaultDocument": {
+    "description": "Button helper message for setting a document as default.",
+    "message": "Cliquer pour définir comme document par défaut"
+  },
   "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
     "description": "Error message when file is too big.",
     "message": "Les fichiers téléversés dépassent la taille autorisée de {uploadMaxSize}."
@@ -115,45 +119,57 @@
     "description": "'Sent at' text for message's datetime display.",
     "message": "envoyé le {sentAt}"
   },
-  "component.ClassroomForm.descriptionLabel": {
+  "component.ClassroomDescription.descriptionLabel": {
     "description": "Label for description in classroom creation form.",
     "message": "Description"
   },
-  "component.ClassroomForm.downloadRecordingLabel": {
-    "description": "Label for download recording button.",
-    "message": "Télécharger l’enregistrement"
+  "component.ClassroomDescription.info": {
+    "description": "Helptext for the widget.",
+    "message": "Ce widget peut être utilisé pour définir une description à la classe virtuelle."
   },
-  "component.ClassroomForm.noRecordingsAvailable": {
-    "description": "Message when no recordings are available.",
-    "message": "Pas d'enregistrement disponible"
+  "component.ClassroomDescription.title": {
+    "description": "A title for the widget.",
+    "message": "Description"
   },
-  "component.ClassroomForm.recordingsLabel": {
-    "description": "Label for recordings in classroom creation form.",
-    "message": "Enregistrements"
-  },
-  "component.ClassroomForm.requiredTitle": {
-    "description": "Message when classroom title is missing.",
-    "message": "Le titre est requis pour lancer la classe virtuelle."
-  },
-  "component.ClassroomForm.scheduleClassroomLabel": {
-    "description": "Label for confirm button in classroom scheduling form.",
-    "message": "Mettre à jour la date programmée de la classe virtuelle"
-  },
-  "component.ClassroomForm.titleLabel": {
-    "description": "Label for title in classroom creation form.",
-    "message": "Titre"
-  },
-  "component.ClassroomForm.updateClassroomFail": {
+  "component.ClassroomDescription.updateClassroomFail": {
     "description": "Message when classroom update failed.",
     "message": "Classe virtuelle non mise à jour !"
   },
-  "component.ClassroomForm.updateClassroomSuccess": {
+  "component.ClassroomDescription.updateClassroomSuccess": {
     "description": "Message when classroom update is successful.",
     "message": "Classe virtuelle mise à jour."
   },
-  "component.ClassroomForm.welcomeTextLabel": {
+  "component.ClassroomDescription.welcomeTextLabel": {
     "description": "Label for welcome text in classroom creation form.",
     "message": "Texte de bienvenue"
+  },
+  "component.ClassroomForm.info": {
+    "description": "Helptext for the widget.",
+    "message": "Ce widget fournit plusieurs liens en fonction de ce que vous voulez faire: \n- Lien d'invitation : Inviter des personnes à participer à cette classe virtuelle en tant qu'invité sans aucun compte. \n- Lien LTI : lien spécial utilisé pour ajouter cette classe dans votre LMS préféré et l'avoir dans une activité de cours."
+  },
+  "component.ClassroomForm.invite": {
+    "description": "A title for the widget.",
+    "message": "Invitation"
+  },
+  "component.ClassroomScheduling.info": {
+    "description": "Helptext for the widget.",
+    "message": "Ce widget peut être utilisé pour planifier une classe virtuelle."
+  },
+  "component.ClassroomScheduling.scheduleClassroomLabel": {
+    "description": "Label for confirm button in classroom scheduling form.",
+    "message": "Mettre à jour la date programmée de la classe virtuelle"
+  },
+  "component.ClassroomScheduling.title": {
+    "description": "A title for the widget.",
+    "message": "Planification"
+  },
+  "component.ClassroomScheduling.updateClassroomFail": {
+    "description": "Message when classroom update failed.",
+    "message": "Classe virtuelle non mise à jour !"
+  },
+  "component.ClassroomScheduling.updateClassroomSuccess": {
+    "description": "Message when classroom update is successful.",
+    "message": "Classe virtuelle mise à jour."
   },
   "component.CreateVOD.descriptionText": {
     "description": "A paragraph presenting the actions below.",
@@ -311,6 +327,14 @@
     "description": "Label for language selector",
     "message": "Sélectionner la langue"
   },
+  "component.LicenseManager.updateVideoFail": {
+    "description": "Message displayed when video update has failed.",
+    "message": "La mise à jour de la vidéo a échoué !"
+  },
+  "component.LicenseManager.updateVideoSuccess": {
+    "description": "Message displayed when video is successfully updated.",
+    "message": "Vidéo mise à jour."
+  },
   "component.LiveInfoBar.nbViewers": {
     "description": "Number of user connected on the live",
     "message": "{numberOfStudents, plural, =0 {Aucun spectateur connecté.} one {# spectateur connecté.} other {# spectateurs connectés}}"
@@ -394,6 +418,22 @@
   "component.MessageMetadatas.senderTitle": {
     "description": "A title describing the div where the sender's name is displayed",
     "message": "Nom de l'expéditeur du message"
+  },
+  "component.Recordings.downloadRecordingLabel": {
+    "description": "Label for download recording button.",
+    "message": "Télécharger l’enregistrement"
+  },
+  "component.Recordings.info": {
+    "description": "Helptext for the widget.",
+    "message": "Tous les enregistrements disponibles peuvent être téléchargés ici."
+  },
+  "component.Recordings.noRecordingsAvailable": {
+    "description": "Message when no recordings are available.",
+    "message": "Pas d'enregistrement disponible"
+  },
+  "component.Recordings.title": {
+    "description": "Label for recordings in classroom creation form.",
+    "message": "Enregistrements"
   },
   "component.RetryUploadButton.buttonLabel": {
     "description": "The label of the retry button.",
@@ -511,6 +551,14 @@
     "description": "Title to advertise a live which has no title set yet.",
     "message": "Ce webinaire n'a pas encore de titre."
   },
+  "component.SupportSharing.info": {
+    "description": "Helptext for the widget.",
+    "message": "Tous les documents téléversés ici seront ajoutés à la classe virtuelle. Si vous téléversez plusieurs documents, vous pouvez choisir celui qui s'affichera par défaut au début de la classe."
+  },
+  "component.SupportSharing.title": {
+    "description": "A title for the widget.",
+    "message": "Documents partagés"
+  },
   "component.TeacherLiveLifecycleControls.error": {
     "description": "Message for the error throw if the component is used for a video that is not a live.",
     "message": "Cela ne devrait pas arriver, vous devez vérifier qu'un live est prêt pour la vidéo avant d'utiliser ce composant."
@@ -615,6 +663,26 @@
     "description": "Displayed in Markdown image upload status",
     "message": "Téléversé {imageName}"
   },
+  "components.ClassroomInfoBar.noTitle": {
+    "description": "Title placeholder when no title is defined for this classroom",
+    "message": "Sans titre"
+  },
+  "components.ClassroomInfoBar.placeholderTitleInput": {
+    "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
+    "message": "Saisissez le titre de votre classe virtuelle"
+  },
+  "components.ClassroomInfoBar.updateClassroomFail": {
+    "description": "Message displayed when classroom update has failed.",
+    "message": "La mise à jour de la classe virtuelle a échoué !"
+  },
+  "components.ClassroomInfoBar.updateClassroomSucces": {
+    "description": "Message displayed when classroom is successfully updated.",
+    "message": "Classe virtuelle mise à jour."
+  },
+  "components.ClassroomInfoBar.updateTitleBlank": {
+    "description": "Message displayed when the user tried to enter a blank title.",
+    "message": "Le titre ne peut pas être vide !"
+  },
   "components.ConfirmationModal.cancelButtonLabel": {
     "description": "Label of the cancelling button",
     "message": "Annuler"
@@ -635,6 +703,10 @@
     "description": "A placeholder text indicating the purpose of the input and what it is supposed to received.",
     "message": "Saisissez le titre de votre vidéo"
   },
+  "components.Dashboard.titleDetails": {
+    "description": "Title of the accordion panel used to display video dashboard",
+    "message": "Tableau de bord de {videoTitle}"
+  },
   "components.DashboardClassroomError.notFound.text": {
     "description": "Helpful text for the 404 Not Found error page",
     "message": "La classe virtuelle n'existe pas ou n'a pas encore été publiée. Si vous êtes un instructeur assurez vous d'être correctement authentifié."
@@ -642,6 +714,10 @@
   "components.DashboardClassroomError.notFound.title": {
     "description": "Title for the 404 Not Found error page",
     "message": "La classe virtuelle recherchée n'a pu être trouvée"
+  },
+  "components.DashboardClassroomForm.titleConfiguration": {
+    "description": "Title of the tab used to configure the live in capital letters",
+    "message": "Configuration"
   },
   "components.DashboardControlPane.DashboardTabStatistics.viewersStatsDescription": {
     "description": "Description of the number of viewers",
@@ -942,6 +1018,22 @@
   "components.LanguageSelect.selectLanguageLabel": {
     "description": "The label of the select used for choosing the language for which the user wants to upload a file.",
     "message": "Sélectionnez la langue pour laquelle vous souhaitez téléverser la piste de texte"
+  },
+  "components.LicenseManager.info": {
+    "description": "Info of the widget used for managing the license.",
+    "message": "Ce widget vous permet de gérer la licence de la vidéo."
+  },
+  "components.LicenseManager.noLicenseAvailableLabel": {
+    "description": "The label displayed in the select when there is no license.",
+    "message": "Aucune licence disponible"
+  },
+  "components.LicenseManager.selectLicenseLabel": {
+    "description": "The label of the select used for choosing the license under which the instructor wants to publish your video",
+    "message": "Sélectionnez la licence sous laquelle vous souhaitez publier votre vidéo"
+  },
+  "components.LicenseManager.title": {
+    "description": "Title of the widget used to manage the license of the video.",
+    "message": "Licence"
   },
   "components.LicenseSelect.noLicenseAvailableLabel": {
     "description": "The label displayed in the select when there is no license.",
@@ -1281,7 +1373,7 @@
   },
   "components.ThumbnailManager.thumbnailUploaded": {
     "description": "A text displayed when the thumbnail is being uploaded.",
-    "message": "L'image est téléversée."
+    "message": "Votre image est en cours de téléversement ({progress}/100)."
   },
   "components.ThumbnailRemoveButton.confirmationModalTitle": {
     "description": "Title of the modal displayed when an instructor wants to delete the live video thumbnail.",
