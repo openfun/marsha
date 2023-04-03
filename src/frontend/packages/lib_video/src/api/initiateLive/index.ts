@@ -4,6 +4,7 @@ import {
   API_ENDPOINT,
   LiveModeType,
   Video,
+  fetchResponseHandler,
 } from 'lib-components';
 
 /**
@@ -29,9 +30,7 @@ export const initiateLive = async (
     },
   );
 
-  if (!response.ok) {
-    throw new Error(`Failed to initialize a live mode for video ${video.id}.`);
-  }
-
-  return (await response.json()) as Video;
+  return await fetchResponseHandler(response, {
+    errorMessage: `Failed to initialize a live mode for video ${video.id}.`,
+  });
 };

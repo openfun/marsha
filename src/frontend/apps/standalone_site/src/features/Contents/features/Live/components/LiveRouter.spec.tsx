@@ -17,13 +17,34 @@ describe('<LiveRouter/>', () => {
     render(<LiveRouter />, {
       routerOptions: { history: ['/my-contents/lives'] },
     });
+
+    expect(
+      screen.getByRole('button', { name: 'Create Webinar' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('My Lives Read')).toBeInTheDocument();
+  });
+
+  test('render create live', async () => {
+    render(<LiveRouter />, {
+      routerOptions: { history: ['/my-contents/lives/create'] },
+    });
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Create Webinar',
+        level: 2,
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/My Lives Read/i)).toBeInTheDocument();
   });
 
   test('render live no match', () => {
     render(<LiveRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
+
+    expect(
+      screen.getByRole('button', { name: 'Create Webinar' }),
+    ).toBeInTheDocument();
     expect(screen.getByText('My Lives Read')).toBeInTheDocument();
   });
 });

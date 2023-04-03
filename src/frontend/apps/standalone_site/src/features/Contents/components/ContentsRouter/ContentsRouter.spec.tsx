@@ -11,6 +11,7 @@ jest.mock('../Contents/Contents', () => ({
 jest.mock('features/Contents', () => ({
   ClassRoomRouter: () => <div>My ClassRoomRouter</div>,
   VideoRouter: () => <div>My VideoRouter</div>,
+  LiveRouter: () => <div>My LiveRouter</div>,
 }));
 
 describe('<ContentsRouter/>', () => {
@@ -37,5 +38,12 @@ describe('<ContentsRouter/>', () => {
       routerOptions: { history: ['/my-contents/videos'] },
     });
     expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
+  });
+
+  test('render route /my-contents/lives', () => {
+    render(<ContentsRouter />, {
+      routerOptions: { history: ['/my-contents/lives'] },
+    });
+    expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
 });
