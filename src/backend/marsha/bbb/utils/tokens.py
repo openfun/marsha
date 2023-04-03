@@ -4,16 +4,23 @@ from datetime import timedelta
 from django.conf import settings
 from django.utils import timezone
 
+from marsha.core.models import NONE
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
 
 
-def create_classroom_stable_invite_jwt(classroom):
+def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
     """Create a resource JWT to be used in classroom invite links.
 
     Parameters
     ----------
     classroom : Type[models.Classroom]
         The classroom for which we want to create a JWT.
+
+    role : str
+        The role to use in the JWT. If not set, the no role is used.
+
+    permissions : dict
+        The permissions to use in the JWT. If not set, no permissions are used.
 
     Returns
     -------
@@ -24,6 +31,8 @@ def create_classroom_stable_invite_jwt(classroom):
     resource_jwt = ResourceAccessToken.for_resource_id(
         resource_id=str(classroom.id),
         session_id=f"{classroom.id}-invite",
+        roles=[role],
+        permissions=permissions or {},
     )
 
     # Set a fixed JWT ID
