@@ -2,15 +2,9 @@
   "name": "lib-common",
   "version": "4.0.0-beta.18",
   "license": "MIT",
-  "directories": {
-    "lib": "lib"
-  },
   "main": "./src/index.ts",
   "types": "./src/index.ts",
   "scripts": {
-    "build": "rollup -c",
-    "build:watch": "yarn build --watch",
-    "build:no-fail": "yarn lint && yarn test && yarn build",
     "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
@@ -29,26 +23,13 @@
     "@babel/preset-env": "7.20.2",
     "@babel/preset-typescript": "7.21.0",
     "@formatjs/cli": "6.0.4",
-    "@rollup/plugin-babel": "6.0.3",
-    "@rollup/plugin-commonjs": "24.0.1",
-    "@rollup/plugin-json": "6.0.0",
-    "@rollup/plugin-node-resolve": "15.0.1",
     "@types/styled-components": "5.1.26",
-    "babel-jest": "29.5.0",
-    "babel-loader": "9.1.2",
-    "babel-plugin-react-intl": "8.2.25",
-    "babel-preset-react": "7.0.0-beta.3",
     "cross-env": "7.0.3",
     "eslint": "*",
     "eslint-config-marsha": "4.0.0-beta.18",
     "grommet": "*",
     "prettier": "2.8.7",
-    "rollup": "3.20.2",
-    "rollup-plugin-delete": "2.0.0",
-    "rollup-plugin-peer-deps-external": "2.2.4",
-    "rollup-plugin-polyfill-node": "0.12.0",
-    "rollup-plugin-typescript2": "0.34.1",
-    "styled-components": "5.3.9",
-    "typescript": "4.9.5"
+    "styled-components": "*",
+    "typescript": "*"
   }
 }

@@ -386,7 +386,7 @@ jobs:
                 ~/.local/bin/pytest marsha --ignore=marsha/e2e
 
   # ---- Front-end jobs ----
-  build-libs:
+  install-front-dependencies:
     docker:
       - image: cimg/node:16.15
         auth:
@@ -403,9 +403,6 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - restore_cache:
-          keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       # If the yarn.lock file is not up-to-date with the package.json file,
       # using the --frozen-lockfile should fail.
       - run:
@@ -414,9 +411,6 @@ jobs:
       - run:
           name: Compile translations
           command: yarn compile-translations
-      - run:
-          name: Build all libs
-          command: yarn build-libs
       - save_cache:
           paths:
             - ./node_modules
@@ -428,11 +422,9 @@ jobs:
             - ./packages/lib_classroom/node_modules
             - ./packages/lib_video/node_modules
             - ./packages/lib_markdown/node_modules
+            - ./packages/eslint-config-marsha/node_modules
+            - ./packages/marsha-config/node_modules
           key: front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - save_cache:
-          paths:
-            - ./packages/lib_common/lib
-          key: front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
 
   build-front:
     docker:
@@ -452,14 +444,6 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - restore_cache:
-          keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
-      # If the yarn.lock file is not up-to-date with the package.json file,
-      # using the --frozen-lockfile should fail.
-      - run:
-          name: Install front-end dependencies
-          command: yarn install --frozen-lockfile
       - run:
           name: Build front-end lti application
           command: yarn workspace marsha run build
@@ -475,6 +459,11 @@ jobs:
             - src/frontend/apps/lti_site/i18n/frontend.json
             - src/frontend/apps/standalone_site/i18n/frontend.json
             - src/frontend/packages/i18n/frontend.json
+      - save_cache:
+          paths:
+            - ../backend/marsha/static/js/build/lti_site
+            - ../backend/marsha/static/js/build/site
+          key: build-front-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
 
   # ---- mail jobs ----
   build-mails:
@@ -522,9 +511,6 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - restore_cache:
-          keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Lint code with tslint or eslint
           command: yarn lint
@@ -549,9 +535,6 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - restore_cache:
-          keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Install Puppeteer dependencies for visual regression testing
           command: |
@@ -636,9 +619,6 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      - restore_cache:
-          keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
       - run:
           name: Run test on standalone site
           command: yarn workspace standalone_site run test --watchAll=false --maxWorkers=2
@@ -702,7 +682,7 @@ jobs:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - front-libs-<< pipeline.parameters.cache-version >>-{{ checksum "packages-last-commit.txt" }}
+            - build-front-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
@@ -718,12 +698,6 @@ jobs:
           name: Install e2e dependencies
           working_directory: /home/circleci/marsha/src/backend
           command: python3.10 -m pip install --user .[dev,e2e]
-      - run:
-          name: Build front-end LTI application
-          command: yarn workspace marsha run build
-      - run:
-          name: Build front-end site application
-          command: yarn workspace standalone_site run build
       - run:
           name: Copy iframe resizer
           command: yarn workspace marsha run copy-iframe-resizer
@@ -1364,31 +1338,31 @@ workflows:
       # Front-end jobs
       #
       # Build (and later lint and test the front-end app)
-      - build-libs:
+      - install-front-dependencies:
           filters:
             tags:
               only: /.*/
       - build-front:
           requires:
-            - build-libs
+            - install-front-dependencies
           filters:
             tags:
               only: /.*/
       - lint-front:
           requires:
-            - build-libs
+            - install-front-dependencies
           filters:
             tags:
               only: /.*/
       - test-front:
           requires:
-            - build-libs
+            - install-front-dependencies
           filters:
             tags:
               only: /.*/
       - test-website:
           requires:
-            - build-libs
+            - install-front-dependencies
           filters:
             tags:
               only: /.*/
@@ -1494,7 +1468,7 @@ workflows:
       - test-e2e:
           name: test-e2e-firefox
           requires:
-            - build-libs
+            - build-front
           browser: firefox
           browser_channel: firefox
           filters:
@@ -1503,7 +1477,7 @@ workflows:
       - test-e2e:
           name: test-e2e-chromium
           requires:
-            - build-libs
+            - build-front
           browser: chromium
           browser_channel: chrome
           filters:
@@ -1512,7 +1486,7 @@ workflows:
       - test-e2e:
           name: test-e2e-webkit
           requires:
-            - build-libs
+            - build-front
           browser: webkit
           browser_channel: webkit
           filters:
