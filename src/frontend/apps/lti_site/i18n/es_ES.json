@@ -3,25 +3,13 @@
     "description": "Text displayed on a button to add a new classroom.",
     "message": "Add a classroom"
   },
-  "apps.classroom.SelectContent.SelectContentSection.loadingClassrooms": {
-    "description": "Accessible message for the spinner while loading the classrooms in lti select view.",
-    "message": "Loading classrooms..."
-  },
-  "apps.classroom.SelectContent.SelectContentSection.notStarted": {
-    "description": "Text helper displayed if a classroom is not started.",
-    "message": "Not started"
-  },
   "apps.classroom.SelectContent.SelectContentSection.select": {
     "description": "Accessible message for selecting a classroom.",
     "message": "Select {title}"
   },
-  "apps.classroom.SelectContent.SelectContentSection.started": {
-    "description": "Text helper displayed if a classroom is started.",
-    "message": "Started"
-  },
   "apps.classroom.SelectContent.commonMessages.titleClassroom": {
     "description": "section title display for managing classroom resources",
-    "message": "classrooms"
+    "message": "Classrooms"
   },
   "apps.deposit.SelectContent.addFileDepository": {
     "description": "Text displayed on a button to add a new file depository.",
@@ -30,10 +18,6 @@
   "apps.deposit.SelectContent.commonMessages.titleDeposit": {
     "description": "section title display for managing file depository resources",
     "message": "File Depositories"
-  },
-  "apps.deposit.SelectContent.loadingFileDepositories": {
-    "description": "Accessible message for the spinner while loading the file depositories in lti select view.",
-    "message": "Loading file depositories..."
   },
   "apps.deposit.SelectContent.select": {
     "description": "Accessible message for selecting a file depository.",
@@ -131,25 +115,9 @@
     "description": "Tab label to display markdown documents list.",
     "message": "Markdown"
   },
-  "apps.markdown.SelectContent.draft": {
-    "description": "Text helper displayed if a markdown document is still a draft.",
-    "message": "Draft"
-  },
-  "apps.markdown.SelectContent.loadingDocuments": {
-    "description": "Accessible message for the spinner while loading the markdown document in lti select view.",
-    "message": "Loading documents..."
-  },
   "apps.markdown.SelectContent.missingTitle": {
     "description": "Text helper displayed if a markdown document has no translated title.",
     "message": "Missing title"
-  },
-  "apps.markdown.SelectContent.newDocument": {
-    "description": "Default LTI consumer title for a new markdown document.",
-    "message": "New markdown document"
-  },
-  "apps.markdown.SelectContent.published": {
-    "description": "Text helper displayed if a markdown document is published.",
-    "message": "Published"
   },
   "apps.markdown.SelectContent.select": {
     "description": "Accessible message for selecting a markdown document.",
@@ -238,14 +206,6 @@
   "component.PortabilityRequest.resourceRequiresPortability": {
     "description": "Message displayed when the resource is not available for the current LTI context.",
     "message": "The requested resource is not available for this context."
-  },
-  "component.SelectContent.SelectContentSection.playlistTitle": {
-    "description": "Title for the current playlist.",
-    "message": "Playlist {title} ({id})"
-  },
-  "component.SelectContent.playlistTitle": {
-    "description": "Title for the current playlist.",
-    "message": "Playlist {title} ({id})"
   },
   "component.VideoWizard.chooseActionTitle": {
     "description": "Title asking what actions the user wants to do.",
@@ -351,37 +311,9 @@
     "description": "Accessible message for copying a playlist id.",
     "message": "Copy key {text}."
   },
-  "components.SelectContent.SelectContentSection.cancel": {
-    "description": "Text displayed on a button to cancel content selection.",
-    "message": "Cancel"
-  },
-  "components.SelectContent.SelectContentSection.confirm": {
-    "description": "Text displayed on a button to confirm content selection.",
-    "message": "Select"
-  },
-  "components.SelectContent.SelectContentSection.notReadyToShow": {
-    "description": "Text helper displayed if a video or a document is not ready to show to students.",
-    "message": "Not ready to show"
-  },
-  "components.SelectContent.SelectContentSection.notUploaded": {
-    "description": "Text helper displayed if a video or a document is not uploaded.",
-    "message": "Not uploaded"
-  },
-  "components.SelectContent.SelectContentSection.readyToShow": {
-    "description": "Text helper displayed if a video or a document is ready to show to students.",
-    "message": "Ready to show"
-  },
   "components.SelectContent.SelectContentSection.select": {
     "description": "Title used for a video or a document select.",
     "message": "Select {content_title}"
-  },
-  "components.SelectContent.SelectContentSection.titleEdit": {
-    "description": "Label for LTI title content input.",
-    "message": "LTI Content title"
-  },
-  "components.SelectContent.SelectContentSection.uploaded": {
-    "description": "Text helper displayed if a video or a document is uploaded.",
-    "message": "Uploaded"
   },
   "components.SelectContent.commonMessages.addDocument": {
     "description": "Text displayed on a button to add a new document.",
@@ -406,10 +338,6 @@
   "components.SelectContent.commonMessages.titleWebinar": {
     "description": "section title display for managing webinar resources",
     "message": "Webinars"
-  },
-  "components.SelectContent.copied": {
-    "description": "Message displayed when playlist info are copied.",
-    "message": "{text} copied!"
   },
   "components.SidebarUploadsIndicator.title": {
     "description": "Message for the sidebar uploads indicator link.",

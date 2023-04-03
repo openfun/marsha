@@ -183,6 +183,10 @@
     "description": "My contents page, my videos title",
     "message": "Mes vidéos"
   },
+  "features.Contents.Contents.MyWebinars": {
+    "description": "My contents page, my webinars title",
+    "message": "Mes Webinaires"
+  },
   "features.Contents.Contents.SeeEverything": {
     "description": "Label to see all the cards",
     "message": "Tout voir"
@@ -227,6 +231,30 @@
     "description": "Text when there is no classroom to display.",
     "message": "Il n'y a pas de classe virtuelle à afficher."
   },
+  "features.Contents.features.Live.LiveCreateForm.Error": {
+    "description": "Text when there is an error.",
+    "message": "Une erreur s'est produite, veuillez réessayer."
+  },
+  "features.Contents.features.Live.LiveCreateForm.descriptionLabel": {
+    "description": "Label for description in webinar creation form.",
+    "message": "Description"
+  },
+  "features.Contents.features.Live.LiveCreateForm.requiredField": {
+    "description": "Message when webinar field is missing.",
+    "message": "Ce champ est requis pour créer un webinaire."
+  },
+  "features.Contents.features.Live.LiveCreateForm.submitLabel": {
+    "description": "Label for button submit in webinar creation form.",
+    "message": "Ajouter un webinaire"
+  },
+  "features.Contents.features.Live.LiveCreateForm.titleLabel": {
+    "description": "Label for title in webinar creation form.",
+    "message": "Titre"
+  },
+  "features.Contents.features.ReadLives.NoLive": {
+    "description": "Text when there is no webinar to display.",
+    "message": "Aucun webinaire à afficher."
+  },
   "features.Contents.features.ReadVideos.NoVideo": {
     "description": "Text when there is no video to display.",
     "message": "Aucune vidéo à afficher."
@@ -239,6 +267,14 @@
     "description": "Videos title",
     "message": "Vidéos"
   },
+  "features.Contents.features.Video.Dashboard.404": {
+    "description": "Text when the video id is not found in the backend.",
+    "message": "Nous ne trouvons pas la vidéo recherchée."
+  },
+  "features.Contents.features.Video.Dashboard.NoVideo": {
+    "description": "Text when there is no video to display.",
+    "message": "Aucune vidéo à afficher."
+  },
   "features.Contents.features.Video.VideoCreateForm.Error": {
     "description": "Text when there is an error.",
     "message": "Une erreur s'est produite, veuillez réessayer."
@@ -246,6 +282,10 @@
   "features.Contents.features.Video.VideoCreateForm.descriptionLabel": {
     "description": "Label for description in video creation form.",
     "message": "Description"
+  },
+  "features.Contents.features.Video.VideoCreateForm.licenseLabel": {
+    "description": "Label for license in video creation form.",
+    "message": "Licence"
   },
   "features.Contents.features.Video.VideoCreateForm.requiredField": {
     "description": "Message when video field is missing.",
@@ -262,6 +302,14 @@
   "features.Contents.features.Video.VideoCreateForm.titleLabel": {
     "description": "Label for title in video creation form.",
     "message": "Titre"
+  },
+  "features.Contents.features.Webinar.Create.CreateWebinarLabel": {
+    "description": "Text heading create webinar.",
+    "message": "Créer un webinaire"
+  },
+  "features.Contents.features.Webinar.Create.WebinarTitle": {
+    "description": "Webinars title",
+    "message": "Webinaires"
   },
   "features.Header.iconTitle": {
     "description": "Menu user icon title.",
@@ -592,7 +640,7 @@
     "message": "Leçons"
   },
   "routes.routes.menuContentsLivesLabel": {
-    "description": "Label for the lives link in the content navigation menu",
+    "description": "Label for the webinars link in the content navigation menu",
     "message": "Webinaires"
   },
   "routes.routes.menuContentsVideosLabel": {
