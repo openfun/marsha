@@ -443,6 +443,7 @@ jobs:
         environment:
           BUILD_PATH: ../../../backend/marsha/static/js/build/site/
     working_directory: ~/marsha/src/frontend
+    resource_class: medium+
     steps:
       - checkout:
           path: ~/marsha
@@ -681,6 +682,7 @@ jobs:
           POSTGRES_USER: marsha_user
           POSTGRES_PASSWORD: pass
     working_directory: /home/circleci/marsha/src/frontend
+    resource_class: medium+
     parameters:
       browser:
         description: 'Playwright browser'
