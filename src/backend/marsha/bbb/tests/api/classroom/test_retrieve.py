@@ -13,7 +13,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR, NONE
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -78,6 +78,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
             content,
@@ -129,6 +130,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
                 "recordings": [],
                 "invite_token": None,
+                "instructor_token": None,
             },
             content,
         )
@@ -192,6 +194,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
             content,
@@ -216,6 +219,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
         content = json.loads(response.content)
         invite_token = content.pop("invite_token")
+        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -236,6 +240,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
                 "recordings": [],
                 # invite_token is tested below
+                # instructor_token is tested below
             },
             content,
         )
@@ -246,6 +251,13 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertEqual(
             decoded_invite_token.payload["permissions"],
             {"can_update": False, "can_access_dashboard": False},
+        )
+
+        decoded_instructor_token = ResourceAccessToken(instructor_token)
+        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
+        self.assertEqual(
+            decoded_instructor_token.payload["permissions"],
+            {"can_update": True, "can_access_dashboard": True},
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -290,6 +302,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
         content = json.loads(response.content)
         invite_token = content.pop("invite_token")
+        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -310,6 +323,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
                 "recordings": [],
                 # invite_token is tested below
+                # instructor_token is tested below
             },
             content,
         )
@@ -320,6 +334,16 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertEqual(
             decoded_invite_token.payload["permissions"],
             {"can_update": False, "can_access_dashboard": False},
+        )
+
+        decoded_instructor_token = ResourceAccessToken(instructor_token)
+        self.assertEqual(
+            decoded_instructor_token.payload["resource_id"], str(classroom.id)
+        )
+        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
+        self.assertEqual(
+            decoded_instructor_token.payload["permissions"],
+            {"can_update": True, "can_access_dashboard": True},
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
@@ -344,6 +368,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
         content = json.loads(response.content)
         invite_token = content.pop("invite_token")
+        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -364,6 +389,7 @@ class ClassroomRetrieveAPITest(TestCase):
                 "estimated_duration": None,
                 "recordings": [],
                 # invite_token is tested below
+                # instructor_token is tested below
             },
             content,
         )
@@ -374,6 +400,16 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertEqual(
             decoded_invite_token.payload["permissions"],
             {"can_update": False, "can_access_dashboard": False},
+        )
+
+        decoded_instructor_token = ResourceAccessToken(instructor_token)
+        self.assertEqual(
+            decoded_instructor_token.payload["resource_id"], str(classroom.id)
+        )
+        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
+        self.assertEqual(
+            decoded_instructor_token.payload["permissions"],
+            {"can_update": True, "can_access_dashboard": True},
         )
 
         response = self.client.get(
@@ -413,6 +449,7 @@ class ClassroomRetrieveAPITest(TestCase):
 
         content = json.loads(response.content)
         invite_token = content.pop("invite_token")
+        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -448,6 +485,7 @@ class ClassroomRetrieveAPITest(TestCase):
                     },
                 ],
                 # invite_token is tested below
+                # instructor_token is tested below
             },
             content,
         )
@@ -458,4 +496,14 @@ class ClassroomRetrieveAPITest(TestCase):
         self.assertEqual(
             decoded_invite_token.payload["permissions"],
             {"can_update": False, "can_access_dashboard": False},
+        )
+
+        decoded_instructor_token = ResourceAccessToken(instructor_token)
+        self.assertEqual(
+            decoded_instructor_token.payload["resource_id"], str(classroom.id)
+        )
+        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
+        self.assertEqual(
+            decoded_instructor_token.payload["permissions"],
+            {"can_update": True, "can_access_dashboard": True},
         )
