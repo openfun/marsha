@@ -261,6 +261,8 @@ clean-front-modules: ## Clean front application modules
 	rm -rf src/frontend/apps/lti_site/node_modules
 	rm -rf src/frontend/apps/standalone_site/node_modules
 	rm -rf src/frontend/packages/lib_*/node_modules
+	rm -rf src/frontend/packages/eslint-config-marsha/node_modules
+	rm -rf src/frontend/packages/marsha-config/node_modules
 .PHONY: clean-front
 
 clean-front-libs: ## Clean front application libs
