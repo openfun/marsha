@@ -10,7 +10,6 @@ from marsha.core.tests.testing_utils import reload_urlconf
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
-@override_settings(BBB_ENABLE_RECORD=True)
 @override_settings(BBB_ENABLED=True)
 class ClassroomServiceTestCase(TestCase):
     """Test our intentions about the Classroom get_recordings service."""

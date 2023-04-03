@@ -139,6 +139,11 @@ class ClassroomCreateAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
         )
 
@@ -210,6 +215,11 @@ class ClassroomCreateAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
         )
 
@@ -247,6 +257,11 @@ class ClassroomCreateAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
         )
 
@@ -300,6 +315,11 @@ class ClassroomCreateAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
         )
 
@@ -337,5 +357,10 @@ class ClassroomCreateAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
         )

@@ -21,7 +21,6 @@ def build_bbb_jwt(data, secret):
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
 @override_settings(BBB_API_CALLBACK_SECRET="OtherSuperSecret")
-@override_settings(BBB_ENABLE_RECORD=True)
 @override_settings(BBB_ENABLED=True)
 class ClassroomRecordingReadyAPITest(TestCase):
     """Test for the Classroom API."""

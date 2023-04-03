@@ -297,6 +297,11 @@ class ClassroomLTIViewTestCase(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # "invite_token" is tested separately
                 # "instructor_token" is tested separately
             },
@@ -656,6 +661,11 @@ class MeetingLTIViewTestCase(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # "invite_token" is tested separately
                 # "instructor_token" is tested separately
             },

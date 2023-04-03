@@ -31,7 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a widget provider for the classroom creation form
 - Allow delete playlist resources
   - FileDepository
-  - Classroom 
+  - Classroom
   - Document
   - Markdown
 - Allow delete playlist
@@ -47,6 +47,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Support sharing
   - Recordings
 - Add classroom invite link for an instructor
+- Add a "Tools & Applications" widget for classrooms
 
 ### Changed
 
@@ -56,9 +57,9 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - improve the dropdown languages positionning in the dashboard (#2138)
 - Make video dashboard visible by default, and collapsed when using the
   Moodle atto plugin
-- Update live_session api to use mixin to prevent url crafting 
+- Update live_session api to use mixin to prevent url crafting
 - standalone website:
-    - put the creating ressource form submit button disabled when the 
+  - put the creating ressource form submit button disabled when the
     form is invalid (#2175)
 
 ### Fixed

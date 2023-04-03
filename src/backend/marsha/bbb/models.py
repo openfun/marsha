@@ -100,6 +100,24 @@ class Classroom(BaseModel):
         help_text=_("Estimated duration of the classroom in seconds."),
     )
 
+    # Tools & Application widget specific parameters
+    enable_waiting_room = models.BooleanField(
+        default=False, help_text=_("Enable or not waiting room for the classroom")
+    )
+    enable_shared_notes = models.BooleanField(
+        default=True,
+        help_text=_("Enable or not the shared notes option for the classroom"),
+    )
+    enable_chat = models.BooleanField(
+        default=True, help_text=_("Enable or not the chat for the classroom")
+    )
+    enable_presentation_supports = models.BooleanField(
+        default=True, help_text=_("Allow or not to share documents with the classroom")
+    )
+    enable_recordings = models.BooleanField(
+        default=True, help_text=_("Enable or not to record the classroom sessions")
+    )
+
     class Meta:
         """Options for the ``Classroom`` model."""
 
@@ -140,6 +158,19 @@ class Classroom(BaseModel):
         if self.deleted:
             result = _("{:s} [deleted]").format(result)
         return result
+
+    def generate_disabled_features(self):
+        """Generate the right string to pass as parameter in classroom creation"""
+        disabled_features = []
+
+        if not self.enable_chat:
+            disabled_features.append("chat")
+        if not self.enable_shared_notes:
+            disabled_features.append("sharedNotes")
+        if not self.enable_presentation_supports:
+            disabled_features.append("presentation")
+
+        return ",".join(disabled_features)
 
 
 class ClassroomDocument(UploadableFileMixin, BaseModel):
