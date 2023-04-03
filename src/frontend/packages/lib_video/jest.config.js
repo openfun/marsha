@@ -5,8 +5,8 @@ module.exports = {
   moduleFileExtensions: ['ts', 'tsx', 'js', 'css'],
   moduleNameMapper: {
     '\\.(css)$': '<rootDir>/__mocks__/styleMock.js',
-    'is-reference': '<rootDir>/node_modules/is-reference/src/index.js',
-    'estree-walker': '<rootDir>/node_modules/estree-walker/src/index.js',
+    'is-reference': '<rootDir>/../../node_modules/is-reference/src/index.js',
+    'estree-walker': '<rootDir>/../../node_modules/estree-walker/src/index.js',
     ...libModuleNameMapper['lib-video'],
   },
   reporters: [
