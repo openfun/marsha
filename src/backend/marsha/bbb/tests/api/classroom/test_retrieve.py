@@ -80,6 +80,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
             content,
         )
@@ -131,6 +136,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "recordings": [],
                 "invite_token": None,
                 "instructor_token": None,
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
             content,
         )
@@ -196,6 +206,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "invite_token": None,
                 "instructor_token": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True,
             },
             content,
         )
@@ -239,6 +254,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },
@@ -322,6 +342,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },
@@ -388,6 +413,11 @@ class ClassroomRetrieveAPITest(TestCase):
                 "starting_at": None,
                 "estimated_duration": None,
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },
@@ -484,6 +514,11 @@ class ClassroomRetrieveAPITest(TestCase):
                         "video_file_url": classroom_recording_1.video_file_url,
                     },
                 ],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },

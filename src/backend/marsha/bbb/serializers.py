@@ -76,6 +76,12 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "infos",
             "invite_token",
             "instructor_token",
+            # specific for widget fields
+            "enable_waiting_room",
+            "enable_shared_notes",
+            "enable_chat",
+            "enable_presentation_supports",
+            "enable_recordings",
         )
         read_only_fields = (
             "id",

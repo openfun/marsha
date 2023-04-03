@@ -25,6 +25,14 @@ class ApiMeetingException(Exception):
         super().__init__(api_response.get("message"))
 
 
+class GuestPolicyEnum:
+    """Enum that specifies the BBB guestPolicy options"""
+
+    ALWAYS_ACCEPT = "ALWAYS_ACCEPT"
+    ALWAYS_DENY = "ALWAYS_DENY"
+    ASK_MODERATOR = "ASK_MODERATOR"
+
+
 def sign_parameters(action, parameters):
     """Add a checksum to parameters."""
     request = requests.Request(
@@ -105,8 +113,12 @@ def create(classroom: Classroom, recording_ready_callback_url: str):
         "name": classroom.title,
         "role": "moderator",
         "welcome": classroom.welcome_text,
-        "record": settings.BBB_ENABLE_RECORD,
         "meta_bbb-recording-ready-url": recording_ready_callback_url,
+        "record": classroom.enable_recordings,
+        "guestPolicy": GuestPolicyEnum.ASK_MODERATOR
+        if classroom.enable_waiting_room
+        else GuestPolicyEnum.ALWAYS_ACCEPT,
+        "disabledFeatures": classroom.generate_disabled_features(),
     }
 
     documents = classroom.classroom_documents.filter(upload_state="ready")
