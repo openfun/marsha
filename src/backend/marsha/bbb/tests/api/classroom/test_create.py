@@ -137,6 +137,7 @@ class ClassroomCreateAPITest(TestCase):
                 "title": "Some classroom",
                 "welcome_text": "Welcome!",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
         )
@@ -207,6 +208,7 @@ class ClassroomCreateAPITest(TestCase):
                 "title": "Some classroom",
                 "welcome_text": "Welcome!",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
         )
@@ -243,6 +245,7 @@ class ClassroomCreateAPITest(TestCase):
                 "title": "classroom two",
                 "welcome_text": "Welcome!",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
         )
@@ -295,6 +298,7 @@ class ClassroomCreateAPITest(TestCase):
                 "title": "Some classroom",
                 "welcome_text": "Welcome!",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
         )
@@ -331,6 +335,7 @@ class ClassroomCreateAPITest(TestCase):
                 "title": "classroom two",
                 "welcome_text": "Welcome!",
                 "invite_token": None,
+                "instructor_token": None,
                 "recordings": [],
             },
         )

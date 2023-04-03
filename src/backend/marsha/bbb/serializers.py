@@ -19,6 +19,7 @@ from marsha.bbb.utils.bbb_utils import (
     get_url as get_document_url,
 )
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
+from marsha.core.models import INSTRUCTOR
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     UploadableFileWithExtensionSerializerMixin,
@@ -74,6 +75,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             # specific generated fields
             "infos",
             "invite_token",
+            "instructor_token",
         )
         read_only_fields = (
             "id",
@@ -90,6 +92,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
     recordings = ClassroomRecordingSerializer(many=True, read_only=True)
     infos = serializers.SerializerMethodField()
     invite_token = serializers.SerializerMethodField()
+    instructor_token = serializers.SerializerMethodField()
     recordings = serializers.SerializerMethodField()
 
     def get_infos(self, obj):
@@ -103,6 +106,18 @@ class ClassroomSerializer(serializers.ModelSerializer):
         """Get the invite token for the classroom."""
         if self.context.get("is_admin", False):
             return str(create_classroom_stable_invite_jwt(obj))
+        return None
+
+    def get_instructor_token(self, obj):
+        """Get the instructor token for the classroom."""
+        if self.context.get("is_admin", False):
+            return str(
+                create_classroom_stable_invite_jwt(
+                    obj,
+                    role=INSTRUCTOR,
+                    permissions={"can_update": True, "can_access_dashboard": True},
+                )
+            )
         return None
 
     def get_recordings(self, obj):
