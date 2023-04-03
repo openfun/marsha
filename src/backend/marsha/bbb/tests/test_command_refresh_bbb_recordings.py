@@ -14,7 +14,6 @@ from marsha.bbb.models import ClassroomRecording
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
 @override_settings(BBB_API_SECRET="SuperSecret")
 @override_settings(BBB_API_CALLBACK_SECRET="OtherSuperSecret")
-@override_settings(BBB_ENABLE_RECORD=True)
 @override_settings(BBB_ENABLED=True)
 class RefreshBBBRecordingsTestCase(TransactionTestCase):
     """Test the ``refresh_bbb_recordings` management command."""

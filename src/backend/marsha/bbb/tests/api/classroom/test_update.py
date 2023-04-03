@@ -176,6 +176,11 @@ class ClassroomUpdateAPITest(TestCase):
                 .replace("+00:00", "Z"),
                 "estimated_duration": "00:01:00",
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },
@@ -310,6 +315,11 @@ class ClassroomUpdateAPITest(TestCase):
                 "starting_at": "2018-08-08T01:00:00Z",
                 "estimated_duration": "00:01:00",
                 "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "enable_shared_notes": True
                 # invite_token is tested below
                 # instructor_token is tested below
             },
