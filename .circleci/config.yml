@@ -403,11 +403,12 @@ jobs:
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
-      # If the yarn.lock file is not up-to-date with the package.json file,
-      # using the --frozen-lockfile should fail.
       - run:
           name: Install front-end dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: Compile translations
           command: yarn compile-translations
@@ -479,11 +480,12 @@ jobs:
       - restore_cache:
           keys:
             - v5-mail-dependencies-{{ checksum "yarn.lock" }}
-      # If the yarn.lock file is not up-to-date with the package.json file,
-      # using the --frozen-lockfile should fail.
       - run:
           name: Install node dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: Build mails
           command: yarn build-mails
@@ -761,6 +763,9 @@ jobs:
           name: Install configure lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: Run configure lambda tests
           command: yarn test
       - save_cache:
@@ -788,6 +793,9 @@ jobs:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: Run complete lambda tests
           command: yarn test
       - save_cache:
@@ -813,6 +821,9 @@ jobs:
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: Run medialive lambda tests
           command: yarn test
@@ -840,6 +851,9 @@ jobs:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: Run medialive lambda tests
           command: yarn test
       - save_cache:
@@ -865,6 +879,9 @@ jobs:
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: Run medialive routing lambda tests
           command: yarn test
@@ -892,6 +909,9 @@ jobs:
           name: Install configure lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
 
@@ -910,6 +930,9 @@ jobs:
       - run:
           name: Install convert lambda dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
@@ -933,6 +956,9 @@ jobs:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
 
@@ -954,6 +980,9 @@ jobs:
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
@@ -977,6 +1006,9 @@ jobs:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
       - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
 
@@ -998,6 +1030,9 @@ jobs:
       - run:
           name: Install complete lambda dependencies
           command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
       - run:
           name: lint code
           command: yarn prettier --list-different '**/*.+(json|js)'
