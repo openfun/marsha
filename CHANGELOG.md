@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Live session model
   - Livesession backend rewrite
   - Add sentry
+  - Create a live from the website (#2134)
 - Add a License Manager widget for LTI VOD view
 - Add a title to the classroom file dropzone
 - Add can_edit property on a serialized video

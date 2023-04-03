@@ -233,11 +233,6 @@ export const routes: Routes = {
         ),
         subRoutes: {
           CREATE: {
-            label: (
-              <FormattedMessage
-                {...messages.menuContentsClassroomCreateLabel}
-              />
-            ),
             path: `/my-contents/videos/create`,
           },
           UPDATE: {
@@ -256,6 +251,11 @@ export const routes: Routes = {
             title={messages.menuContentsLivesLabel}
           />
         ),
+        subRoutes: {
+          CREATE: {
+            path: `/my-contents/lives/create`,
+          },
+        },
         isNavStrict: true,
       },
       CLASSROOM: {
@@ -270,11 +270,6 @@ export const routes: Routes = {
         ),
         subRoutes: {
           CREATE: {
-            label: (
-              <FormattedMessage
-                {...messages.menuContentsClassroomCreateLabel}
-              />
-            ),
             path: `/my-contents/classroom/create`,
           },
           UPDATE: {
