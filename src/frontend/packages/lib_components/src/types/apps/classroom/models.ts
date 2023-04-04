@@ -17,6 +17,11 @@ export interface Classroom extends Resource {
   invite_token: Nullable<string>;
   instructor_token: Nullable<string>;
   recordings: ClassroomRecording[];
+  enable_waiting_room: boolean;
+  enable_shared_notes: boolean;
+  enable_chat: boolean;
+  enable_presentation_supports: boolean;
+  enable_recordings: boolean;
 }
 
 export type ClassroomLite = Omit<Classroom, 'infos' | 'playlist'>;

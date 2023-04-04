@@ -29,6 +29,11 @@ export const classroomMockFactory = <T extends Partial<Classroom>>(
     invite_token: null,
     instructor_token: null,
     recordings: [],
+    enable_waiting_room: false,
+    enable_shared_notes: true,
+    enable_chat: true,
+    enable_presentation_supports: true,
+    enable_recordings: true,
     ...classroom,
   };
 };

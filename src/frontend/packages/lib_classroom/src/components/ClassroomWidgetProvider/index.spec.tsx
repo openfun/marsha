@@ -60,5 +60,8 @@ describe('<ClassroomWidgetProvider />', () => {
 
     // Recordings
     expect(screen.getByText('Recordings')).toBeInTheDocument();
+
+    // Tools and Applications
+    expect(screen.getByText('Tools and Applications')).toBeInTheDocument();
   });
 });
