@@ -9,7 +9,7 @@ import LiveUpdate from './LiveUpdate';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useParams: jest.fn(),
-  useRouteMatch: () => ({ url: '/my-contents/lives/123456' }),
+  useRouteMatch: () => ({ url: '/my-contents/webinars/123456' }),
 }));
 
 const mockUseParams = useParams as jest.MockedFunction<

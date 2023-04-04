@@ -40,9 +40,9 @@ describe('<ContentsRouter/>', () => {
     expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
   });
 
-  test('render route /my-contents/lives', () => {
+  test('render route /my-contents/webinars', () => {
     render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents/lives'] },
+      routerOptions: { history: ['/my-contents/webinars'] },
     });
     expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
