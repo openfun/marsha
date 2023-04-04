@@ -50,11 +50,7 @@ class ClassroomFilter(django_filters.FilterSet):
 class ClassroomViewSet(
     APIViewMixin,
     ObjectPkMixin,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
+    viewsets.ModelViewSet,
 ):
     """Viewset for the API of the Classroom object."""
 
@@ -83,7 +79,7 @@ class ClassroomViewSet(
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["create"]:
+        if self.action in ["create", "destroy"]:
             permission_classes = [
                 (
                     core_permissions.HasPlaylistToken
@@ -434,6 +430,7 @@ class ClassroomDocumentViewSet(
     ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -451,7 +448,7 @@ class ClassroomDocumentViewSet(
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in ["create", "list", "update", "partial_update"]:
+        if self.action in ["create", "list", "update", "partial_update", "destroy"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
@@ -543,3 +540,18 @@ class ClassroomDocumentViewSet(
         )
 
         return Response(presigned_post)
+
+    def perform_destroy(self, instance):
+        """Change the default document if the instance is the default one"""
+
+        super().perform_destroy(instance)
+        if (
+            instance.is_default and instance.classroom.classroom_documents.count() > 0
+        ):  # If deleted document was the default, the oldest in the new default
+            document = (
+                instance.classroom.classroom_documents.exclude(id=instance.id)
+                .order_by("created_on")
+                .first()
+            )
+            document.is_default = True
+            document.save()

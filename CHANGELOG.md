@@ -29,7 +29,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - live transpilation on lib-common (#2164)
 - Add a widget provider for the classroom creation form
 - Allow delete playlist resources
-  - FileDepository 
+  - FileDepository
+  - Classroom 
 - Add classroom widgets :
   - InfoBar
   - Description
