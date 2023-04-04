@@ -13,9 +13,9 @@ describe('<LiveRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/lives', () => {
+  test('render route /my-contents/webinars', () => {
     render(<LiveRouter />, {
-      routerOptions: { history: ['/my-contents/lives'] },
+      routerOptions: { history: ['/my-contents/webinars'] },
     });
 
     expect(
@@ -26,7 +26,7 @@ describe('<LiveRouter/>', () => {
 
   test('render create live', async () => {
     render(<LiveRouter />, {
-      routerOptions: { history: ['/my-contents/lives/create'] },
+      routerOptions: { history: ['/my-contents/webinars/create'] },
     });
     expect(
       await screen.findByRole('heading', {
