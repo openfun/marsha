@@ -11,6 +11,8 @@ import uuid
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
+from safedelete.managers import SafeDeleteManager
+
 from marsha.core.models import BaseModel, Playlist, UploadableFileMixin
 from marsha.core.utils.time_utils import to_timestamp
 
@@ -18,7 +20,7 @@ from marsha.core.utils.time_utils import to_timestamp
 logger = logging.getLogger(__name__)
 
 
-class ClassroomManager(models.Manager):
+class ClassroomManager(SafeDeleteManager):
     """Model manager for a BBB classroom."""
 
     def create(self, *args, **kwargs):
