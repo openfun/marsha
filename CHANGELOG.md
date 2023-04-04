@@ -42,6 +42,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Invite links
   - Support sharing
   - Recordings
+- Add classroom invite link for an instructor
 
 ### Changed
 
