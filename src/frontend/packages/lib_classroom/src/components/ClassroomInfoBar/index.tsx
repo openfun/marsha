@@ -123,7 +123,8 @@ export const ClassroomInfoBar = ({
     <Box
       direction="column"
       justify="center"
-      style={{ flexBasis: '0%', minWidth: '0' }}
+      style={{ flexBasis: '0%' }}
+      width={{ min: 'small' }}
       {...props}
     >
       <Box
