@@ -84,6 +84,7 @@ export const SharedLiveMediaItem = ({
           direction="row"
           justify="center"
           margin={{ left: 'auto' }}
+          width={{ min: 'auto' }}
         >
           {sharedLiveMedia.upload_state === uploadState.READY ? (
             isLive && (
