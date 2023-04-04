@@ -1,6 +1,10 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { ResourceContext } from 'lib-components';
+import {
+  ltiPublicTokenMockFactory,
+  ResourceContext,
+  useJwt,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 import { useParams } from 'react-router-dom';
@@ -48,10 +52,16 @@ jest.mock('lib-classroom', () => ({
   ),
 }));
 
+const mockGetDecodedJwt = jest.fn();
+
 describe('<ClassRoomUpdate />', () => {
   beforeEach(() => {
     mockUseParams.mockReturnValue({
       classroomId: '123456',
+    });
+    useJwt.setState({
+      jwt: 'some token',
+      getDecodedJwt: mockGetDecodedJwt,
     });
   });
 
@@ -63,25 +73,21 @@ describe('<ClassRoomUpdate />', () => {
     mockUseParams.mockReturnValue({
       classroomId: '',
     });
-    render(<ClassRoomUpdate isInvited={false} />);
+    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
+
+    render(<ClassRoomUpdate />);
 
     expect(
       screen.queryByText(/My DashboardClassroom/i),
     ).not.toBeInTheDocument();
   });
 
-  test('render with classroomId', () => {
-    render(<ClassRoomUpdate isInvited={false} />);
-
-    expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
-    expect(resourceContextSpy.permissions.can_access_dashboard).toBeTruthy();
-    expect(resourceContextSpy.permissions.can_update).toBeTruthy();
-  });
-
   test('render small screen', () => {
+    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
+
     render(
       <ResponsiveContext.Provider value="small">
-        <ClassRoomUpdate isInvited={false} />
+        <ClassRoomUpdate />
       </ResponsiveContext.Provider>,
       {
         grommetOptions: {
@@ -95,10 +101,28 @@ describe('<ClassRoomUpdate />', () => {
     ).toHaveStyle('width: 75%;');
   });
 
-  test('ressource if invited', () => {
-    render(<ClassRoomUpdate isInvited={true} />);
+  test('ressource if viewer invited', () => {
+    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
 
+    render(<ClassRoomUpdate />);
+
+    expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
     expect(resourceContextSpy.permissions.can_access_dashboard).toBeFalsy();
     expect(resourceContextSpy.permissions.can_update).toBeFalsy();
+  });
+
+  test('ressource if moderator invited', () => {
+    mockGetDecodedJwt.mockReturnValue(
+      ltiPublicTokenMockFactory(
+        {},
+        { can_access_dashboard: true, can_update: true },
+      ),
+    );
+
+    render(<ClassRoomUpdate />);
+
+    expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
+    expect(resourceContextSpy.permissions.can_access_dashboard).toBeTruthy();
+    expect(resourceContextSpy.permissions.can_update).toBeTruthy();
   });
 });

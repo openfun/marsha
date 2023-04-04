@@ -10,10 +10,9 @@ jest.mock('./Read/ClassRooms', () => ({
 
 jest.mock('./Update/ClassRoomUpdate', () => ({
   __esModule: true,
-  default: ({ isInvited }: { isInvited: boolean }) => (
+  default: () => (
     <div>
       <p>My ClassRoomUpdate</p>
-      {isInvited && <p>Invited</p>}
     </div>
   ),
 }));
@@ -73,7 +72,6 @@ describe('<ClassRoomRouter/>', () => {
       },
     });
     expect(screen.getByText('My ClassRoomUpdate')).toBeInTheDocument();
-    expect(screen.getByText('Invited')).toBeInTheDocument();
   });
 
   test('render invite classroom without inviteId', () => {

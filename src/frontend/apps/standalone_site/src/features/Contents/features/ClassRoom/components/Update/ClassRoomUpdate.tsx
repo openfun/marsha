@@ -4,9 +4,14 @@ import {
   AppConfig,
   AppConfigProvider,
   CurrentResourceContextProvider,
+  DecodedJwtPermission,
+  isDecodedJwtLTI,
+  isDecodedJwtWeb,
   ResourceContext,
+  useJwt,
   useResponsive,
 } from 'lib-components';
+import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -66,13 +71,28 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
     `}
 `;
 
-interface ClassRoomUpdateProps {
-  isInvited: boolean;
-}
-
-const ClassRoomUpdate = ({ isInvited }: ClassRoomUpdateProps) => {
+const ClassRoomUpdate = () => {
   const { classroomId } = useParams<{ classroomId?: string }>();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
+
+  const decodedJwt = useJwt((state) => state.getDecodedJwt);
+
+  const [permissions, setPermissions] = useState<DecodedJwtPermission>({
+    can_access_dashboard: false,
+    can_update: false,
+  });
+
+  useEffect(() => {
+    const jwt = decodedJwt();
+    if (isDecodedJwtLTI(jwt)) {
+      setPermissions(jwt.permissions);
+    } else if (isDecodedJwtWeb(jwt)) {
+      setPermissions({
+        can_access_dashboard: true,
+        can_update: true,
+      });
+    }
+  }, [decodedJwt]);
 
   if (!classroomId) {
     return null;
@@ -81,10 +101,7 @@ const ClassRoomUpdate = ({ isInvited }: ClassRoomUpdateProps) => {
   const resourceContext: ResourceContext = {
     resource_id: classroomId,
     roles: [],
-    permissions: {
-      can_access_dashboard: !isInvited,
-      can_update: !isInvited,
-    },
+    permissions: permissions,
     isFromWebsite: true,
   };
 
