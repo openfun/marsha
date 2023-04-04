@@ -37,13 +37,13 @@
   "resolutions": {
     "@codemirror/lang-markdown": "6.1.0",
     "@codemirror/language": "6.6.0",
-    "@codemirror/language-data": "6.1.0",
+    "@codemirror/language-data": "6.2.0",
     "@codemirror/state": "6.2.0",
     "@codemirror/view": "6.9.3",
     "@types/mdast": "3.0.11",
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
-    "eslint": "8.36.0",
+    "eslint": "8.37.0",
     "eslint-config-marsha": "4.0.0-beta.18",
     "grommet": "2.31.0",
     "lib-common": "4.0.0-beta.18",
@@ -51,8 +51,8 @@
     "lib-tests": "4.0.0-beta.18",
     "marsha-config": "4.0.0-beta.18",
     "styled-components": "5.3.9",
-    "typescript": "4.9.5",
-    "zustand": "4.3.6"
+    "typescript": "5.0.3",
+    "zustand": "4.3.7"
   },
   "dependencies": {
     "cljs-merge": "1.1.1",
