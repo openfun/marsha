@@ -171,7 +171,7 @@ export const SharedLiveMedia = ({ isLive, isTeacher }: SharedMediaProps) => {
                 }
               }}
               primary
-              style={{ height: '50px', fontFamily: 'Roboto-Medium' }}
+              style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
               title={intl.formatMessage(messages.uploadButtonLabel)}
             />
           </Box>

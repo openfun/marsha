@@ -31,7 +31,6 @@ const messages = defineMessages({
 const StyledButton = styled(Button)`
   font-family: Roboto-Medium;
   font-size: 0.7rem;
-  padding: 0px 3px 0px 3px;
   margin: 0px;
 `;
 
@@ -70,6 +69,7 @@ export const StartSharingButton = ({
       }
       primary
       title={intl.formatMessage(messages.publishSharedLiveMediaBtn)}
+      pad={{ horizontal: 'small', vertical: 'xsmall' }}
     />
   );
 };
