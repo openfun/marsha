@@ -31,5 +31,5 @@ module.exports = {
       },
     ],
   },
-  ignorePatterns: ['node_modules/', 'testSetup.ts'],
+  ignorePatterns: ['node_modules/'],
 };
