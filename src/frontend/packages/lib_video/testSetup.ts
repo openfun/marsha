@@ -6,6 +6,7 @@ import '@testing-library/jest-dom';
 import { TextEncoder, TextDecoder } from 'util';
 
 import { toMatchImageSnapshot } from 'jest-image-snapshot';
+import React from 'react';
 import { setLogger } from 'react-query';
 import ResizeObserver from 'resize-observer-polyfill';
 
@@ -22,3 +23,6 @@ global.ResizeObserver = ResizeObserver;
 // see https://react-query.tanstack.com/guides/testing#turn-off-network-error-logging
 setLogger({ log: console.log, warn: console.warn, error: () => {} });
 global.Request = require('node-fetch').Request;
+
+// To be able to not use the `import React from 'react'` in every tsx file
+global.React = React;
