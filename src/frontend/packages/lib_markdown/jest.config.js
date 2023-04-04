@@ -13,11 +13,11 @@ module.exports = {
     'default',
     'jest-image-snapshot/src/outdated-snapshot-reporter.js',
   ],
-  resolver: '<rootDir>/../../node_modules/marsha-config/jest/resolver.js',
+  resolver: 'marsha-config/jest/resolver.js',
   setupFilesAfterEnv: [
     'core-js',
     'regenerator-runtime/runtime',
-    './testSetup.ts',
+    'marsha-config/jest/testSetup.js',
   ],
   testEnvironment: 'jsdom',
   testEnvironmentOptions: {

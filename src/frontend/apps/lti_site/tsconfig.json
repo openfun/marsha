@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "sourceMap": true,
-    "types": ["jest"]
+    "types": ["jest", "@testing-library/jest-dom"]
     // "paths": 💥 NO PATHS HERE - Because it overides instead of extends (https://github.com/microsoft/TypeScript/issues/20110)
     // - All paths must be defined in marsha-config/tsconfig/app.json
   },
