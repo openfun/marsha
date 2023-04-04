@@ -58,7 +58,7 @@ class MarkdownDeleteAPITest(TestCase):
             f"/api/markdown-documents/{markdown_document.pk}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 204)
 
     def test_api_document_delete_user_access_token(self):
         """A user with UserAccessToken should not be able to delete a Markdown document."""
@@ -70,12 +70,16 @@ class MarkdownDeleteAPITest(TestCase):
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
+            {
+                "playlist": str(playlist.id),
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_delete_user_access_token_organization_admin(self):
-        """An organization administrator should not be able to delete a Markdown document."""
+        """An organization administrator should be able to delete a Markdown document."""
         organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
         playlist = PlaylistFactory(organization=organization_access.organization)
         markdown_document = MarkdownDocumentFactory(playlist=playlist)
@@ -84,12 +88,16 @@ class MarkdownDeleteAPITest(TestCase):
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
+            {
+                "playlist": str(playlist.id),
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 204)
 
     def test_api_document_delete_user_access_token_playlist_admin(self):
-        """An organization administrator should not be able to delete a Markdown document."""
+        """An playlist administrator should be able to delete a Markdown document."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
         markdown_document = MarkdownDocumentFactory(playlist=playlist_access.playlist)
 
@@ -97,6 +105,10 @@ class MarkdownDeleteAPITest(TestCase):
 
         response = self.client.delete(
             f"/api/markdown-documents/{markdown_document.pk}/",
+            {
+                "playlist": str(markdown_document.playlist.id),
+            },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 204)

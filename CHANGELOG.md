@@ -32,6 +32,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - FileDepository
   - Classroom 
   - Document
+  - Markdown
 - Add classroom widgets :
   - InfoBar
   - Description

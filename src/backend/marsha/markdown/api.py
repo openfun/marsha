@@ -36,10 +36,7 @@ class MarkdownDocumentFilter(django_filters.FilterSet):
 class MarkdownDocumentViewSet(
     APIViewMixin,
     ObjectPkMixin,
-    mixins.CreateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
+    viewsets.ModelViewSet,
     viewsets.GenericViewSet,
 ):
     """Viewset for the API of the Markdown document object."""
@@ -81,6 +78,18 @@ class MarkdownDocumentViewSet(
                         | core_permissions.IsTokenAdmin
                     )
                 )
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        core_permissions.IsParamsPlaylistAdmin
+                        | core_permissions.IsParamsPlaylistAdminThroughOrganization
+                    )
+                )
+            ]
+        elif self.action in ["destroy"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
                 | (
                     core_permissions.UserIsAuthenticated  # asserts request.resource is None
                     & (
