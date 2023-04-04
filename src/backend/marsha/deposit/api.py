@@ -48,11 +48,7 @@ class DepositedFileFilter(django_filters.FilterSet):
 class FileDepositoryViewSet(
     APIViewMixin,
     ObjectPkMixin,
-    mixins.CreateModelMixin,
-    mixins.RetrieveModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    viewsets.GenericViewSet,
+    viewsets.ModelViewSet,
 ):
     """Viewset for the API of the FileDepository object."""
 
@@ -105,7 +101,7 @@ class FileDepositoryViewSet(
                 )
                 | IsFileDepositoryPlaylistOrOrganizationAdmin
             ]
-        elif self.action in ["update", "partial_update"]:
+        elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
                 (
                     core_permissions.IsTokenResourceRouteObject
@@ -251,6 +247,7 @@ class DepositedFileViewSet(
     ObjectRelatedMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -282,7 +279,7 @@ class DepositedFileViewSet(
                 | core_permissions.IsTokenStudent
                 | IsRelatedFileDepositoryPlaylistOrOrganizationAdmin,
             ]
-        elif self.action in ["update", "partial_update"]:
+        elif self.action in ["update", "partial_update", "destroy"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
