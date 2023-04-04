@@ -33,6 +33,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Classroom 
   - Document
   - Markdown
+- Allow delete playlist
 - Add classroom widgets :
   - InfoBar
   - Description
