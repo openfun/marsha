@@ -27,8 +27,7 @@ export const DeleteSharedLiveMediaButton = ({
     <Button
       a11yTitle={intl.formatMessage(messages.buttonLabel)}
       onClick={() => setDeleteSharedLiveMediaModal(sharedLiveMedia)}
-      plain
-      style={{ display: 'block', padding: 0 }}
+      style={{ display: 'flex' }}
     >
       <BinSVG height="18px" iconColor="blue-active" width="14px" />
     </Button>

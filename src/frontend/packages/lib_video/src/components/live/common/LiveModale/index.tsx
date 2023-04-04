@@ -20,7 +20,9 @@ export const LiveModale = ({ content, actions }: LiveModaleProps) => {
         margin="auto"
         pad={{ horizontal: 'large', vertical: 'medium' }}
         round="small"
-        style={{ minWidth: '45vw', maxWidth: '600px', width: '50%', zIndex: 1 }}
+        width={{ min: '45vw', max: '600px', width: '50%' }}
+        height={{ min: 'auto' }}
+        style={{ zIndex: 3 }}
       >
         {content}
         {actions.map((action, index) => (
