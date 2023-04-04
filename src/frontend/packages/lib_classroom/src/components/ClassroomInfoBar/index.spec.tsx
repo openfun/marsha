@@ -174,7 +174,7 @@ describe('<ClassroomInfoBar />', () => {
 
     expect(titleInput).toHaveValue('title');
     expect(fetchMock.calls()).toHaveLength(0);
-    screen.getByText("Title can't be blank !");
+    screen.getByText("Title can't be blank!");
   });
 
   it('modifies the input text, but the backend returns an error', async () => {
@@ -212,6 +212,6 @@ describe('<ClassroomInfoBar />', () => {
     });
     expect(textInput).toHaveValue('An existing title');
     expect(report).toHaveBeenCalled();
-    screen.getByText('Classroom update has failed !');
+    screen.getByText('Classroom update has failed!');
   });
 });
