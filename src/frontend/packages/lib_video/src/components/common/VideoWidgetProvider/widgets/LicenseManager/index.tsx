@@ -28,7 +28,7 @@ const messages = defineMessages({
     id: 'component.LicenseManager.updateVideoSuccess',
   },
   updateVideoFail: {
-    defaultMessage: 'Video update has failed !',
+    defaultMessage: 'Video update has failed!',
     description: 'Message displayed when video update has failed.',
     id: 'component.LicenseManager.updateVideoFail',
   },

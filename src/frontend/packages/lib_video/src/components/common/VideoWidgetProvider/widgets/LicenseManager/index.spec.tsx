@@ -168,6 +168,6 @@ describe('<LicenseManager />', () => {
       name: 'Creative Common By Attribution',
     });
     userEvent.click(CreativeCommonButtonOption);
-    await screen.findByText('Video update has failed !');
+    await screen.findByText('Video update has failed!');
   });
 });
