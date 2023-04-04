@@ -163,7 +163,7 @@ describe('<LiveCreateForm />', () => {
     });
 
     await waitFor(() => {
-      expect(history.location.pathname).toBe('/my-contents/lives/1234');
+      expect(history.location.pathname).toBe('/my-contents/webinars/1234');
     });
   });
 

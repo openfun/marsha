@@ -29,7 +29,7 @@ describe('<Live />', () => {
     expect(screen.getByText('New playlist title')).toBeInTheDocument();
     expect(screen.getByRole('link')).toHaveAttribute(
       'href',
-      '/my-contents/lives/4321',
+      '/my-contents/webinars/4321',
     );
   });
 

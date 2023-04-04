@@ -243,7 +243,7 @@ export const routes: Routes = {
       },
       LIVE: {
         label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
-        path: `/my-contents/lives`,
+        path: `/my-contents/webinars`,
         menuIcon: (
           <LoadSVG
             Icon={LiveIcon}
@@ -253,10 +253,10 @@ export const routes: Routes = {
         ),
         subRoutes: {
           CREATE: {
-            path: `/my-contents/lives/create`,
+            path: `/my-contents/webinars/create`,
           },
           UPDATE: {
-            path: `/my-contents/lives/:liveId`,
+            path: `/my-contents/webinars/:liveId`,
           },
         },
         isNavStrict: true,
