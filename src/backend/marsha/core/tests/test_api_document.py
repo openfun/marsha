@@ -259,7 +259,7 @@ class DocumentAPITest(TestCase):
         self.assertEqual(response.status_code, 403)
 
     def test_api_document_delete_instructor(self):
-        """An instructor should not be able to create a document."""
+        """An instructor should be able to delete a document."""
         document = DocumentFactory()
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
@@ -268,7 +268,7 @@ class DocumentAPITest(TestCase):
             f"/api/documents/{document.id}/",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 405)
+        self.assertEqual(response.status_code, 204)
 
     def test_api_document_update_anonymous(self):
         """An anonymous should not be able to update a document."""
