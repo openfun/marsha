@@ -20,11 +20,8 @@ const ClassRoomRouter = () => {
           <ClassRoomCreate />
           <ClassRooms />
         </Route>
-        <Route path={classroomInvitePath} exact>
-          <ClassRoomUpdate isInvited={true} />
-        </Route>
-        <Route path={classroomUpdatePath} exact>
-          <ClassRoomUpdate isInvited={false} />
+        <Route path={[classroomInvitePath, classroomUpdatePath]} exact>
+          <ClassRoomUpdate />
         </Route>
         <Route>
           <ClassRoomCreate />
