@@ -85,14 +85,15 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
           align="center"
           background="white"
           direction="row-responsive"
-          height="80px"
-          justify="between"
+          height={{ min: '80px' }}
+          justify="center"
           margin="small"
           pad={{
             vertical: 'small',
             horizontal: 'medium',
           }}
           round="xsmall"
+          style={{ flexWrap: 'wrap' }}
         >
           <ClassroomInfoBar flex startDate={classroom.starting_at} />
           <Button
