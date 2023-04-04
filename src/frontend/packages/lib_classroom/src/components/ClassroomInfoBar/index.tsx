@@ -44,12 +44,12 @@ const messages = defineMessages({
     id: 'components.ClassroomInfoBar.updateClassroomSucces',
   },
   updateClassroomFail: {
-    defaultMessage: 'Classroom update has failed !',
+    defaultMessage: 'Classroom update has failed!',
     description: 'Message displayed when classroom update has failed.',
     id: 'components.ClassroomInfoBar.updateClassroomFail',
   },
   updateTitleBlank: {
-    defaultMessage: "Title can't be blank !",
+    defaultMessage: "Title can't be blank!",
     description:
       'Message displayed when the user tried to enter a blank title.',
     id: 'components.ClassroomInfoBar.updateTitleBlank',
