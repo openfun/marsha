@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow delete playlist resources
   - FileDepository
   - Classroom 
+  - Document
 - Add classroom widgets :
   - InfoBar
   - Description
