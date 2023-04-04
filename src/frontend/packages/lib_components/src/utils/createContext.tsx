@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState } from 'react';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
 type StoreContextType<TStore> = [
   TStore,
@@ -35,6 +35,11 @@ export function createStore<TStore>(
     value,
   }: ProviderProps<TStore>) => {
     const storeState = useState<TStore>(value);
+    const [, setStore] = storeState;
+
+    useEffect(() => {
+      setStore(value);
+    }, [setStore, value]);
 
     return (
       <StoreContext.Provider value={storeState}>
