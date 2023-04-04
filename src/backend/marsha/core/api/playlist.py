@@ -1,9 +1,11 @@
 """Declare API endpoints for playlist with Django RestFramework viewsets."""
 from django.db.models import Q
+from django.db.models.deletion import ProtectedError
 
 import django_filters
 from rest_framework import filters, viewsets
 from rest_framework.exceptions import ValidationError
+from rest_framework.response import Response
 
 from .. import permissions, serializers
 from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist
@@ -86,6 +88,10 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     & permissions.IsTokenResourceRouteObjectRelatedPlaylist
                 )
             ]
+        elif self.action in ["destroy"]:
+            permission_classes = [
+                permissions.IsPlaylistAdmin | permissions.IsPlaylistOrganizationAdmin
+            ]
         else:
             try:
                 permission_classes = getattr(self, self.action).kwargs.get(
@@ -122,3 +128,9 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             return self._get_list_queryset()
 
         return super().get_queryset()
+
+    def destroy(self, request, *args, **kwargs):
+        try:
+            return super().destroy(request, *args, **kwargs)
+        except ProtectedError:
+            return Response("Resources are still attached to playlist", status=400)
