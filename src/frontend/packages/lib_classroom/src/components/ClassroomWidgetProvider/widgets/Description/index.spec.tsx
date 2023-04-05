@@ -53,7 +53,7 @@ describe('<Description />', () => {
     expect(screen.getByText('Welcome text')).toBeInTheDocument();
   });
 
-  it('schedules a classroom', async () => {
+  it('updates a classroom', async () => {
     let classroom = classroomMockFactory({ id: '1', started: false });
 
     const deferredPatch = new Deferred();
