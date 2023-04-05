@@ -36,15 +36,15 @@ generate-version-file: &generate-version-file
 
 version: 2.1
 commands:
-  get_last_packages_commit:
-    description: 'Get last commit that modified packages and stores it in File. File is used as checksum source for part of frontend caching key.'
+  get_last_frontend_commit:
+    description: 'Get last commit that modified the frontend and stores it in File. File is used as checksum source for part of frontend caching key.'
     parameters:
       filename:
         type: string
     steps:
       - run:
-          name: Get last commit that modified packages
-          command: git log -n 1 --pretty=format:%H -- packages > << parameters.filename >>
+          name: Get last commit that modified frontend
+          command: git log -n 1 --pretty=format:%H -- . > << parameters.filename >>
 jobs:
   # Git jobs
   # Check that the git history is clean and complies with our expectations
@@ -398,8 +398,6 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
@@ -440,8 +438,8 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
+      - get_last_frontend_commit:
+          filename: frontend-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
@@ -464,7 +462,7 @@ jobs:
           paths:
             - ../backend/marsha/static/js/build/lti_site
             - ../backend/marsha/static/js/build/site
-          key: build-front-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
+          key: build-front-<< pipeline.parameters.cache-version >>-{{ checksum "frontend-last-commit.txt" }}
 
   # ---- mail jobs ----
   build-mails:
@@ -508,8 +506,6 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
@@ -532,8 +528,6 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
@@ -616,8 +610,6 @@ jobs:
     steps:
       - checkout:
           path: ~/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
@@ -677,14 +669,14 @@ jobs:
     steps:
       - checkout:
           path: /home/circleci/marsha
-      - get_last_packages_commit:
-          filename: packages-last-commit.txt
+      - get_last_frontend_commit:
+          filename: frontend-last-commit.txt
       - restore_cache:
           keys:
             - front-dependencies-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
       - restore_cache:
           keys:
-            - build-front-<< pipeline.parameters.cache-version >>-{{ checksum "yarn.lock" }}
+            - build-front-<< pipeline.parameters.cache-version >>-{{ checksum "frontend-last-commit.txt" }}
       - run: # Can be removed when switching to mcr.microsoft.com/playwright:jammy
           name: Install Python 3.10
           command: apt update && apt upgrade -y && apt install -y software-properties-common && add-apt-repository -y 'ppa:deadsnakes/ppa' && apt install -y python3.10 python3.10-dev build-essential
