@@ -1,5 +1,5 @@
 """Test medialive utils functions."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 from unittest import mock
 
@@ -1313,7 +1313,7 @@ class MediaLiveUtilsTestCase(TestCase):
             },
         )
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch("datetime.datetime") as mock_dt, Stubber(
             medialive_utils.medialive_client
         ) as mediapackage_client_stubber:

@@ -1,5 +1,5 @@
 """Tests for the Video stop live API of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -252,7 +252,7 @@ class VideoAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # stop a live video,
-        now = datetime(2021, 11, 16, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 16, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch.object(
             api.video, "stop_live_channel"
         ), mock.patch.object(api.video, "update_id3_tags"), mock.patch(
@@ -377,7 +377,7 @@ class VideoAPITest(TestCase):
     @override_settings(LIVE_CHAT_ENABLED=False)
     def test_api_video_instructor_stop_live_recording_slice(self):
         """When a video is stopped during recording, recording should be stopped."""
-        start = datetime(2021, 11, 16, tzinfo=timezone.utc)
+        start = datetime(2021, 11, 16, tzinfo=baseTimezone.utc)
         stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
             id="27a23f52-3379-46a2-94fa-697b59cfe3c7",

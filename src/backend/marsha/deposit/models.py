@@ -156,7 +156,7 @@ class DepositedFile(UploadableFileMixin, BaseModel):
         """Options for the ``DepositedFile`` model."""
 
         db_table = "deposited_file"
-        ordering = ["-uploaded_on"]
+        ordering = ["-uploaded_on", "-created_on"]
         verbose_name = _("Deposited file")
         verbose_name_plural = _("Deposited files")
 

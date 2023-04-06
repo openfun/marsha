@@ -1,5 +1,5 @@
 """Tests for the TimedTextTrack initiate-upload API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -61,7 +61,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -179,7 +179,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory()
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -218,7 +218,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -291,7 +291,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -365,7 +365,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -405,7 +405,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -469,7 +469,7 @@ class TimedTextTrackInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this timed text track
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

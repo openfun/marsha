@@ -1,5 +1,5 @@
 """Tests for the SharedLiveMedia initiate-upload API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -81,7 +81,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -143,7 +143,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -205,7 +205,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -234,7 +234,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=shared_live_media.video)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -325,7 +325,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -401,7 +401,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -515,7 +515,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         jwt_token = UserAccessTokenFactory(user=user)
 
-        now = datetime(2021, 12, 2, tzinfo=timezone.utc)
+        now = datetime(2021, 12, 2, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

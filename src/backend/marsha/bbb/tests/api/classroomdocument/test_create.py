@@ -130,7 +130,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
             {
                 "classroom": str(classroom.id),
                 "filename": "test2.pdf",
-                "id": str(ClassroomDocument.objects.last().id),
+                "id": str(ClassroomDocument.objects.latest("created_on").id),
                 "is_default": False,
                 "upload_state": "pending",
                 "uploaded_on": None,

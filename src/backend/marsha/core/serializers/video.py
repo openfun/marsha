@@ -1,4 +1,5 @@
 """Structure of Video related models API responses with Django Rest Framework serializers."""
+import datetime
 from datetime import timedelta
 from urllib.parse import quote_plus
 
@@ -31,7 +32,7 @@ from .thumbnail import ThumbnailSerializer
 from .timed_text_track import TimedTextTrackSerializer
 
 
-MAX_DATETIME = timezone.datetime.max.replace(tzinfo=timezone.utc)
+MAX_DATETIME = timezone.datetime.max.replace(tzinfo=datetime.timezone.utc)
 
 
 class UpdateLiveStateSerializer(serializers.Serializer):

@@ -1,5 +1,5 @@
 """Tests for the Markdown image retrieve API."""
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 from django.test import TestCase, override_settings
@@ -15,7 +15,6 @@ from marsha.core.simple_jwt.factories import (
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.markdown.api import timezone
 from marsha.markdown.factories import MarkdownDocumentFactory, MarkdownImageFactory
 
 

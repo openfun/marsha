@@ -1,5 +1,5 @@
 """Tests for the models in the ``core`` app of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import random
 from unittest import mock
 
@@ -79,7 +79,7 @@ class VideoModelsTestCase(TestCase):
         for state_choice in STATE_CHOICES:
             video = VideoFactory(
                 upload_state=state_choice[0],
-                uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+                uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             )
 
             self.assertEqual(

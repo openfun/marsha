@@ -1,5 +1,5 @@
 """Tests for the document API."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -61,7 +61,7 @@ class DocumentAPITest(TestCase):
         """An instructor should be able to fetch a document."""
         document = DocumentFactory(
             pk="4c51f469-f91e-4998-b438-e31ee3bd3ea6",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="pdf",
             playlist__title="foo",
@@ -393,7 +393,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -445,7 +445,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -497,7 +497,7 @@ class DocumentAPITest(TestCase):
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=document)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

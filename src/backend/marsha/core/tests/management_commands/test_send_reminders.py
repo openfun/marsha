@@ -1,5 +1,5 @@
 """Tests for send_reminders command."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 from io import StringIO
 import smtplib
 from unittest import mock
@@ -723,7 +723,7 @@ class SendRemindersTest(TestCase):
         """Subscribe to a webinar and mock the time to show all three steps
         reminders are sent."""
 
-        now_past = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_past = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_past):
             video = VideoFactory(
                 live_state=IDLE,

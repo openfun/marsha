@@ -1,5 +1,5 @@
 """Tests for the file_depositories depositedfiles API."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 from unittest import mock
 
 from django.test import TestCase, override_settings
@@ -287,13 +287,13 @@ class FileDepositoryDepositedfilesAPITest(TestCase):
         file_depository = FileDepositoryFactory(
             id="4e126eac-9ca8-47b1-8dcd-157686b43c60"
         )
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         deposited_files = DepositedFileFactory.create_batch(
             3, file_depository=file_depository, uploaded_on=now
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=file_depository)
 
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):

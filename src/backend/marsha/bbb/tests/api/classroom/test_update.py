@@ -1,5 +1,5 @@
 """Tests for the classroom API."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 from unittest import mock
 import zoneinfo
@@ -171,7 +171,7 @@ class ClassroomUpdateAPITest(TestCase):
                     "lti_id": classroom.playlist.lti_id,
                 },
                 # starting_at is stored in UTC : "2018-08-08T01:00:00Z"
-                "starting_at": starting_at.astimezone(timezone.utc)
+                "starting_at": starting_at.astimezone(baseTimezone.utc)
                 .isoformat()
                 .replace("+00:00", "Z"),
                 "estimated_duration": "00:01:00",
@@ -266,7 +266,7 @@ class ClassroomUpdateAPITest(TestCase):
         }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
         estimated_duration = timedelta(seconds=60)
@@ -350,7 +350,7 @@ class ClassroomUpdateAPITest(TestCase):
         }
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=classroom)
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         # set microseconds to 0 to compare date surely as serializer truncate them
         starting_at = (now + timedelta(hours=1)).replace(microsecond=0)
         data = {"starting_at": starting_at}
