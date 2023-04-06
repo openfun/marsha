@@ -1,9 +1,8 @@
 """Utils to handle dates and time."""
 import calendar
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.core.exceptions import ValidationError
-from django.utils import timezone
 
 
 def to_timestamp(value):

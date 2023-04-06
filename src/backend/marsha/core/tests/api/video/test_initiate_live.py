@@ -1,5 +1,5 @@
 """Tests for the Video initiate live API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock
 
@@ -304,7 +304,7 @@ class VideoInitiateLiveAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
-        now = datetime(2022, 5, 4, tzinfo=timezone.utc)
+        now = datetime(2022, 5, 4, tzinfo=baseTimezone.utc)
         with mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video"
         ) as mock_dispatch_video, mock.patch.object(timezone, "now", return_value=now):

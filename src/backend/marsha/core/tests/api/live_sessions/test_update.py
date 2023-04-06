@@ -1,5 +1,5 @@
 """Tests for the livesession update API."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import random
 from unittest import mock
 import uuid
@@ -392,7 +392,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             user__email=None,
         )
 
-        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.patch(
                 self._update_url(video, live_session),
@@ -441,7 +441,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
             is_registered=True,
             lti_user_id="55555",
             lti_id="Maths",
-            registered_at=datetime(2022, 4, 7, tzinfo=timezone.utc),
+            registered_at=datetime(2022, 4, 7, tzinfo=baseTimezone.utc),
             username="Sylvie",
             video=video,
         )
@@ -492,7 +492,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
         )
         is_registered = random.choice([True, False])
         registered_at = (
-            datetime(2022, 4, 7, tzinfo=timezone.utc) if is_registered else None
+            datetime(2022, 4, 7, tzinfo=baseTimezone.utc) if is_registered else None
         )
         live_session = LiveSessionFactory(
             consumer_site=video.playlist.consumer_site,
@@ -734,7 +734,7 @@ class LiveSessionUpdateApiTest(LiveSessionApiTestCase):
 
         jwt_token = ResourceAccessTokenFactory(resource=video)
 
-        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.patch(
                 f"{self._update_url(video, live_session)}?anonymous_id={anonymous_id}",

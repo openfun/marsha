@@ -175,7 +175,7 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
         """Options for the ``ClassroomDocument`` model."""
 
         db_table = "classroom_document"
-        ordering = ["-uploaded_on"]
+        ordering = ["-uploaded_on", "-created_on"]
         verbose_name = _("Classroom document")
         verbose_name_plural = _("Classroom documents")
 

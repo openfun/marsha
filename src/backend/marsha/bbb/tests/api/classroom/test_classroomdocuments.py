@@ -1,8 +1,7 @@
 """Tests for the classroom API."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.test import TestCase, override_settings
-from django.utils import timezone
 
 from marsha.bbb.factories import ClassroomDocumentFactory, ClassroomFactory
 from marsha.core.factories import (

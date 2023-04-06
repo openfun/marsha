@@ -1,5 +1,5 @@
 """Tests for the SharedLiveMedia retrieve API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -87,7 +87,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             extension="pdf",
             title="python structures",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -149,7 +149,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             extension="pdf",
             title="python structures",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -157,7 +157,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -239,7 +239,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             show_download=False,
             title="python structures",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -247,7 +247,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -350,7 +350,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             extension="pdf",
             title="python compound statements",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -415,7 +415,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             extension="pdf",
             title="python compound statements",
             upload_state=defaults.PENDING,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video__id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
         )
@@ -426,7 +426,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):

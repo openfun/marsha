@@ -1,5 +1,5 @@
 """Tests for the serializer base module of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import time
 from unittest import mock
 
@@ -14,7 +14,7 @@ from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 from marsha.core.utils.time_utils import to_timestamp
 
 
-FIXED_TIME = datetime(2018, 8, 8, tzinfo=timezone.utc)
+FIXED_TIME = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
 
 
 @override_settings(

@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   db:
-    image: postgres:10.3
+    image: postgres:12
     env_file: env.d/${ENV_FILE:-development}
     volumes:
       - ./docker/files/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d

@@ -1,8 +1,7 @@
 """Test the time utils of the Marsha core app."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.test import TestCase
-from django.utils import timezone
 
 from marsha.core.utils import time_utils
 

@@ -1,5 +1,5 @@
 """Tests for the Video retrieve API of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -143,7 +143,7 @@ class VideoRetrieveAPITest(TestCase):
         resolutions = [144, 240, 480, 720, 1080]
         video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
@@ -155,7 +155,7 @@ class VideoRetrieveAPITest(TestCase):
             video=video,
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -164,7 +164,7 @@ class VideoRetrieveAPITest(TestCase):
             extension="pdf",
             title="python structures",
             upload_state=READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
         )
         shared_live_media_2 = factories.SharedLiveMediaFactory(
@@ -346,7 +346,7 @@ class VideoRetrieveAPITest(TestCase):
         resolutions = [144, 240, 480, 720, 1080]
         video = factories.VideoFactory(
             id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
@@ -358,7 +358,7 @@ class VideoRetrieveAPITest(TestCase):
             show_download=False,
             title="python expressions",
             upload_state=READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -371,7 +371,7 @@ class VideoRetrieveAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -564,7 +564,7 @@ class VideoRetrieveAPITest(TestCase):
         resolutions = [144, 240, 480, 720, 1080]
         video = factories.VideoFactory(
             id="d9d7049c-5a3f-4070-a494-e6bf0bd8b9fb",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=resolutions,
             playlist__title="foo bar",
@@ -576,7 +576,7 @@ class VideoRetrieveAPITest(TestCase):
             show_download=False,
             title="python expressions",
             upload_state=READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -589,7 +589,7 @@ class VideoRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -989,7 +989,7 @@ class VideoRetrieveAPITest(TestCase):
         """Activating signed urls should add Cloudfront query string authentication parameters."""
         video = factories.VideoFactory(
             pk="a2f27fde-973a-4e89-8dca-cc59e01d255c",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=[144],
             playlist__title="foo",
@@ -998,7 +998,7 @@ class VideoRetrieveAPITest(TestCase):
 
         # Get the video linked to the JWT token
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
                 f"/api/videos/{video.id}/",
@@ -1256,13 +1256,13 @@ class VideoRetrieveAPITest(TestCase):
         """A video with a custom thumbnail should have it in its payload."""
         video = factories.VideoFactory(
             pk="38a91911-9aee-41e2-94dd-573abda6f48f",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             resolutions=[144, 240, 480, 720, 1080],
         )
         thumbnail = factories.ThumbnailFactory(
             video=video,
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
         )
 
