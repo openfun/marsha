@@ -17,9 +17,14 @@ class TimedTextTrackCreateAPITest(TestCase):
 
     maxDiff = None
 
+    def _post_url(self, video):
+        """Return the url to use to create a timed text track."""
+        return f"/api/videos/{video.pk}/timedtexttracks/"
+
     def test_api_timed_text_track_create_anonymous(self):
         """Anonymous users should not be able to create a new timed text track."""
-        response = self.client.post("/api/timedtexttracks/")
+        video = VideoFactory(id="f8c30d0d-2bb4-440d-9e8d-f4b231511f1f")
+        response = self.client.post(self._post_url(video))
         self.assertEqual(response.status_code, 401)
         self.assertFalse(TimedTextTrack.objects.exists())
 
@@ -30,11 +35,10 @@ class TimedTextTrackCreateAPITest(TestCase):
 
         data = {"language": "fr", "size": 10}
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-
         self.assertEqual(response.status_code, 201)
         self.assertEqual(TimedTextTrack.objects.count(), 1)
         content = json.loads(response.content)
@@ -60,7 +64,7 @@ class TimedTextTrackCreateAPITest(TestCase):
 
         data = {"language": "fr"}
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -80,7 +84,7 @@ class TimedTextTrackCreateAPITest(TestCase):
 
         data = {"language": "fr", "video": str(video.pk), "size": 100}
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             data,
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -102,15 +106,17 @@ class TimedTextTrackCreateAPITest(TestCase):
         )
 
         response = self.client.post(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(timed_text_track.video),
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
 
     def test_api_timed_text_track_create_staff_or_user(self):
         """Users authenticated via a session shouldn't be able to create new timed text tracks."""
+        video = VideoFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.post("/api/timedtexttracks/")
+            response = self.client.post(self._post_url(video))
             self.assertEqual(response.status_code, 401)
             self.assertFalse(TimedTextTrack.objects.exists())
 
@@ -126,7 +132,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -152,7 +158,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -192,7 +198,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -233,7 +239,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             {"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -260,7 +266,7 @@ class TimedTextTrackCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/timedtexttracks/",
+            self._post_url(video),
             data={"language": "fr", "video": str(video.id), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -282,3 +288,12 @@ class TimedTextTrackCreateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+# Old routes to remove
+class TimedTextTrackCreateAPIOldTest(TimedTextTrackCreateAPITest):
+    """Test the create API of the timed text track object with old URLs."""
+
+    def _post_url(self, video):
+        """Return the url to use to create a timed text track."""
+        return "/api/timedtexttracks/"

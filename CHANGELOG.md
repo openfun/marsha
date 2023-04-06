@@ -37,6 +37,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow delete playlist
 - add routes related URL:
   - thumbnails
+  - timed_text_track
 - Add classroom widgets :
   - InfoBar
   - Description
