@@ -23,11 +23,16 @@ from marsha.core.simple_jwt.factories import (
 class SharedLiveMediaCreateAPITest(TestCase):
     """Test the create API of the shared live media object."""
 
+    def _post_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/sharedlivemedias/"
+
     maxDiff = None
 
     def test_api_shared_live_media_create_anonymous(self):
         """An anonymous user can't create a shared live media."""
-        response = self.client.post("/api/sharedlivemedias/")
+        video = VideoFactory()
+        response = self.client.post(self._post_url(video))
         self.assertEqual(response.status_code, 401)
         self.assertFalse(SharedLiveMedia.objects.exists())
 
@@ -38,7 +43,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
         )
@@ -71,7 +76,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         )
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -84,7 +89,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -93,9 +98,10 @@ class SharedLiveMediaCreateAPITest(TestCase):
 
     def test_api_shared_live_media_create_staff_or_user(self):
         """Users authenticated via a session shouldn't be able to create new shared live medias."""
+        video = VideoFactory()
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.post("/api/sharedlivemedias/")
+            response = self.client.post(self._post_url(video))
             self.assertEqual(response.status_code, 401)
             self.assertFalse(SharedLiveMedia.objects.exists())
 
@@ -111,7 +117,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -136,7 +142,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -176,7 +182,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -218,7 +224,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -245,7 +251,7 @@ class SharedLiveMediaCreateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/sharedlivemedias/",
+            self._post_url(video),
             {"video": str(video.id)},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -270,3 +276,11 @@ class SharedLiveMediaCreateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+class SharedLiveMediaCreateAPIOldTest(SharedLiveMediaCreateAPITest):
+    """Test the create API of the shared live media object."""
+
+    def _post_url(self, video):
+        """Return the url to use in tests."""
+        return "/api/sharedlivemedias/"

@@ -30,13 +30,19 @@ from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 class SharedLiveMediaRetrieveAPITest(TestCase):
     """Test the retrieve API of the shared live media object."""
 
+    def _get_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/sharedlivemedias/{shared_live_media.pk}/"
+
     maxDiff = None
 
     def test_api_shared_live_media_read_detail_anonymous(self):
         """An anonymous user can not read a shared live media detail"""
         shared_live_media = SharedLiveMediaFactory()
 
-        response = self.client.get(f"/api/sharedlivemedias/{shared_live_media.pk}/")
+        response = self.client.get(
+            self._get_url(shared_live_media.video, shared_live_media)
+        )
 
         self.assertEqual(response.status_code, 401)
 
@@ -51,7 +57,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.pk}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -89,7 +95,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.pk}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -156,7 +162,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
             response = self.client.get(
-                f"/api/sharedlivemedias/{shared_live_media.pk}/",
+                self._get_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -246,7 +252,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
             response = self.client.get(
-                f"/api/sharedlivemedias/{shared_live_media.pk}/",
+                self._get_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -314,7 +320,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.pk}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -355,7 +361,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.pk}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -425,7 +431,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
             response = self.client.get(
-                f"/api/sharedlivemedias/{shared_live_media.pk}/",
+                self._get_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -496,7 +502,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.pk}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -521,7 +527,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -544,7 +550,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -582,7 +588,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -622,7 +628,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -648,7 +654,7 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._get_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -669,3 +675,11 @@ class SharedLiveMediaRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+class SharedLiveMediaRetrieveAPIOldTest(SharedLiveMediaRetrieveAPITest):
+    """Test the retrieve API of the shared live media object."""
+
+    def _get_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/sharedlivemedias/{shared_live_media.id}/"
