@@ -958,7 +958,7 @@ class LiveSessionListAttendancesApiTest(LiveSessionApiTestCase):
         # nothing is already cached
         with self.assertNumQueries(3):
             response = self.client.get(
-                self._get_url(video),
+                self._get_url(video2),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 

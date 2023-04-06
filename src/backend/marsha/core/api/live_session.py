@@ -30,7 +30,12 @@ from ..services.live_session import (
     get_livesession_from_user_id,
     is_lti_token,
 )
-from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+from .base import (
+    APIViewMixin,
+    ObjectPkMixin,
+    ObjectRelatedMixin,
+    ObjectVideoRelatedMixin,
+)
 
 
 logger = getLogger(__name__)
@@ -62,6 +67,7 @@ class LiveSessionViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
+    ObjectVideoRelatedMixin,
     mixins.CreateModelMixin,
     mixins.ListModelMixin,
     mixins.RetrieveModelMixin,
@@ -87,8 +93,8 @@ class LiveSessionViewSet(
         elif self.action in ["create", "set_display_name", "push_attendance"]:
             permission_classes = [
                 permissions.ResourceIsAuthenticated
-                | permissions.HasVideoAdminThroughOrganization
-                | permissions.HasVideoRoleThroughPlaylist
+                | permissions.IsParamsVideoAdminThroughOrganization
+                | permissions.BaseIsParamsVideoRoleThroughPlaylist
             ]
         elif self.action in [
             "partial_update",
@@ -96,16 +102,16 @@ class LiveSessionViewSet(
         ]:
             permission_classes = [
                 permissions.IsTokenResourceRouteObjectRelatedVideo
-                | permissions.HasVideoAdminThroughOrganization
-                | permissions.HasVideoRoleThroughPlaylist
+                | permissions.IsParamsVideoAdminThroughOrganization
+                | permissions.BaseIsParamsVideoRoleThroughPlaylist
             ]
         elif self.action in ["list_attendances"]:
             permission_classes = [
                 permissions.IsTokenInstructor
                 | permissions.IsTokenAdmin
                 # With standalone site, admin can access
-                | permissions.HasVideoAdminThroughOrganization
-                | permissions.HasVideoAdminOrInstructorThroughPlaylist
+                | permissions.IsParamsVideoAdminThroughOrganization
+                | permissions.IsParamsVideoAdminOrInstructorThroughPlaylist
             ]
         elif self.action is None:
             if self.request.method not in self.allowed_methods:
@@ -154,7 +160,7 @@ class LiveSessionViewSet(
         Restrict access to liveSession for user token.
         """
         # (not used yet) To be iso LTI, admin and instructor can retrieve all video's livesession
-        if permissions.HasVideoAdminThroughOrganization().has_permission(
+        if permissions.IsParamsVideoAdminThroughOrganization().has_permission(
             self.request, self
         ):
             return queryset
@@ -163,7 +169,7 @@ class LiveSessionViewSet(
 
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
-        video_id = self._get_related_video_id()
+        video_id = self.get_related_video_id()
 
         if video_id is None:  # backward behavior for stand-alone site context
             return super().get_queryset().none()
@@ -193,14 +199,6 @@ class LiveSessionViewSet(
             return serializers.LiveAttendanceGraphSerializer
         return super().get_serializer_class()
 
-    def get_serializer_context(self):
-        """Extra context provided to the serializer class."""
-        context = super().get_serializer_context()
-
-        context.update({"video_id": self._get_related_video_id()})
-
-        return context
-
     def get_throttles(self):
         """Depending on action, defines a throttle class"""
         throttle_class = []
@@ -208,19 +206,6 @@ class LiveSessionViewSet(
             throttle_class = [LiveSessionThrottle]
 
         return [throttle() for throttle in throttle_class]
-
-    def _get_related_video_id(self):
-        """Get the related video ID from the request."""
-        # Backward compatibility with old routes
-        if self.request.resource is not None:
-            return self.request.resource.id
-
-        # The video ID in the URL will be mandatory when old routes are deleted.
-        video_id = self.kwargs.get("video_id")
-        if video_id is not None:
-            return video_id
-
-        return None
 
     def _send_registration_email(self, livesession):
         """Send a registration email and catch error if needed."""
@@ -302,7 +287,7 @@ class LiveSessionViewSet(
         serializer = serializers.LiveAttendanceSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        video_id = self._get_related_video_id()
+        video_id = self.get_related_video_id()
         video = get_object_or_404(Video, pk=video_id)
 
         try:
@@ -365,7 +350,7 @@ class LiveSessionViewSet(
                 {"detail": "Invalid request."}, status=status.HTTP_400_BAD_REQUEST
             )
 
-        video_id = self._get_related_video_id()
+        video_id = self.get_related_video_id()
         video = get_object_or_404(Video, pk=video_id)
 
         try:
@@ -433,7 +418,7 @@ class LiveSessionViewSet(
         The same one will then be used for all the students on this list.
         Serializer is cached so the listing don't get recalculated too often
         """
-        video_id = self._get_related_video_id()
+        video_id = self.get_related_video_id()
 
         prefix_key = f"{VIDEO_ATTENDANCE_KEY_CACHE}{video_id}"
         cache_key = (

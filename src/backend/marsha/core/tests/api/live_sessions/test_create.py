@@ -1146,7 +1146,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         anonymous_id = uuid.uuid4()
         # With the same email but other video, livesession is possible
         response = self.client.post(
-            self._post_url(video),
+            self._post_url(video2),
             {
                 "anonymous_id": anonymous_id,
                 "email": "chantal@test-fun-mooc.fr",
@@ -1215,7 +1215,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         )
         # With the same email but other video, livesession is possible
         response = self.client.post(
-            self._post_url(video),
+            self._post_url(video2),
             {"email": "chantal@test-fun-mooc.fr", "should_send_reminders": False},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -1301,20 +1301,6 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         self.checkRegistrationEmailSent(
             "salome@test-fun-mooc.fr", video, "Token", created_livesession
         )
-
-    def test_api_livesession_create_with_unknown_video(self):
-        """Token with wrong resource_id should render a 404."""
-        video = VideoFactory()
-
-        # token with no user information
-        jwt_token = ResourceAccessTokenFactory()
-        response = self.client.post(
-            self._post_url(video),
-            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-        self.assertEqual(response.status_code, 404)
 
     def test_list_livesession_role_student_email_wrong_token_email(
         self,
@@ -1545,3 +1531,17 @@ class LiveSessionCreateApiOldTest(LiveSessionCreateApiTest):
     def assert_user_can_create(self, user, video):
         """Defuse original assertion for old URLs"""
         self.assert_user_cannot_create(user, video)
+
+    def test_api_livesession_create_with_unknown_video(self):
+        """Token with wrong resource_id should render a 404."""
+        video = VideoFactory()
+
+        # token with no user information
+        jwt_token = ResourceAccessTokenFactory()
+        response = self.client.post(
+            self._post_url(video),
+            {"email": "salome@test-fun-mooc.fr", "should_send_reminders": True},
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 404)

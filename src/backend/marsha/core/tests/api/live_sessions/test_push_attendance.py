@@ -199,29 +199,6 @@ class LiveSessionPushAttendanceApiTest(LiveSessionApiTestCase):
             response.json(), {"live_attendance": ["This field is required."]}
         )
 
-    def test_api_livesession_post_attendance_token_lti_video_not_existing(
-        self,
-    ):
-        """Pushing an attendance on a not existing video should fail."""
-        video = VideoFactory()
-        jwt_token = LTIResourceAccessTokenFactory(
-            context_id=str(video.playlist.lti_id),
-            consumer_site=str(video.playlist.consumer_site.id),
-            user__email=None,
-        )
-        response = self.client.post(
-            self._post_url(video),
-            {
-                "live_attendance": {
-                    to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
-                }
-            },
-            content_type="application/json",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 404)
-
     def test_api_livesession_post_attendance_token_lti_consumer_site_not_existing(
         self,
     ):
@@ -892,3 +869,26 @@ class LiveSessionPushAttendanceApiOldTest(LiveSessionPushAttendanceApiTest):
     def assert_user_can_push_attendance(self, user, video):
         """Defuse original assertion for old URLs"""
         self.assert_user_cannot_push_attendance(user, video)
+
+    def test_api_livesession_post_attendance_token_lti_video_not_existing(
+        self,
+    ):
+        """Pushing an attendance on a non existing video should fail."""
+        video = VideoFactory()
+        jwt_token = LTIResourceAccessTokenFactory(
+            context_id=str(video.playlist.lti_id),
+            consumer_site=str(video.playlist.consumer_site.id),
+            user__email=None,
+        )
+        response = self.client.post(
+            self._post_url(video),
+            {
+                "live_attendance": {
+                    to_timestamp(timezone.now()): {"sound": "ON", "tabs": "OFF"}
+                }
+            },
+            content_type="application/json",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 404)

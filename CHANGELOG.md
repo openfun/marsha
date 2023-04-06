@@ -56,6 +56,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - improve the dropdown languages positionning in the dashboard (#2138)
 - Make video dashboard visible by default, and collapsed when using the
   Moodle atto plugin
+- Update live_session api to use mixin to prevent url crafting 
 
 ### Fixed
 
