@@ -22,10 +22,16 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
     maxDiff = None
 
+    def _get_url(self, video, track):
+        """Return the url to retrieve a timed text track."""
+        return f"/api/videos/{video.pk}/timedtexttracks/{track.id}/"
+
     def test_api_timed_text_track_read_detail_anonymous(self):
         """Anonymous users should not be allowed to read a timed text track detail."""
         timed_text_track = TimedTextTrackFactory()
-        response = self.client.get(f"/api/timedtexttracks/{timed_text_track.id}/")
+        response = self.client.get(
+            self._get_url(timed_text_track.video, timed_text_track)
+        )
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -38,7 +44,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
         # Get the timed text track using the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -64,7 +70,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -120,7 +126,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -176,7 +182,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -226,7 +232,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -242,7 +248,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed text track using the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -260,7 +266,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed_text_track linked to the JWT token
         response = self.client.get(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._get_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -291,7 +297,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         now = datetime(2018, 8, 8, tzinfo=timezone.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
-                f"/api/timedtexttracks/{timed_text_track.id}/",
+                self._get_url(timed_text_track.video, timed_text_track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -330,7 +336,9 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             timed_text_track = TimedTextTrackFactory()
-            response = self.client.get(f"/api/timedtexttracks/{timed_text_track.id}/")
+            response = self.client.get(
+                self._get_url(timed_text_track.video, timed_text_track)
+            )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
             self.assertEqual(
@@ -351,7 +359,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            self._get_url(track.video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -376,7 +384,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            self._get_url(track.video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -415,7 +423,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            self._get_url(track.video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -455,7 +463,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            self._get_url(track.video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -481,7 +489,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/timedtexttracks/{track.id}/",
+            self._get_url(track.video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -500,3 +508,11 @@ class TimedTextTrackRetrieveAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+class TimedTextTrackRetrieveAPIOldTest(TimedTextTrackRetrieveAPITest):
+    """Test the retrieve API of the timed text track object with old URLs."""
+
+    def _get_url(self, video, track):
+        """Return the url to retrieve a timed text track."""
+        return f"/api/timedtexttracks/{track.id}/"
