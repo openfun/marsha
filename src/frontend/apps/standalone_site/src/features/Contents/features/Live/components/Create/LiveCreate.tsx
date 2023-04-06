@@ -1,11 +1,10 @@
 import { Button, Heading, Text } from 'grommet';
-import { useResponsive } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
 
-import { WhiteCard } from 'components/Cards';
 import { Modal } from 'components/Modal';
+import { ContentsHeader } from 'features/Contents';
 import { routes } from 'routes';
 
 import LiveCreateForm from './LiveCreateForm';
@@ -25,7 +24,6 @@ const messages = defineMessages({
 
 const LiveCreate = () => {
   const intl = useIntl();
-  const { breakpoint } = useResponsive();
   const history = useHistory();
 
   const liveRoute = routes.CONTENTS.subRoutes.LIVE;
@@ -34,15 +32,7 @@ const LiveCreate = () => {
 
   return (
     <Fragment>
-      <WhiteCard
-        flex="shrink"
-        direction={breakpoint === 'xxsmall' ? 'column' : 'row'}
-        gap={breakpoint === 'xxsmall' ? 'small' : 'none'}
-        justify="between"
-        align="center"
-        height={{ min: '5rem' }}
-        margin={{ bottom: 'medium' }}
-      >
+      <ContentsHeader>
         <Text size="large" weight="bold">
           {intl.formatMessage(messages.WebinarTitle)}
         </Text>
@@ -52,7 +42,7 @@ const LiveCreate = () => {
             label={intl.formatMessage(messages.CreateWebinarLabel)}
           />
         </Link>
-      </WhiteCard>
+      </ContentsHeader>
       <Switch>
         <Route path={liveCreatePath} exact>
           <Modal
