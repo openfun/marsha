@@ -41,6 +41,14 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
         cls.organization = OrganizationFactory()
         cls.live = WebinarVideoFactory(playlist__organization=cls.organization)
 
+    def assert_response_resource_not_accessible(self, response):
+        """Assert response resource not the same as video_id"""
+        self.assertEqual(response.status_code, 400)
+        self.assertEqual(
+            response.json(),
+            {"detail": "Resource from token does not match given parameters."},
+        )
+
     def assert_user_cannot_read(self, user, video):
         """Assert a user cannot retrieve with a GET request."""
         livesession = LiveSessionFactory(
@@ -747,7 +755,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_token_lti_wrong_video_token(self):
         """Request with wrong video in token and LTI token."""
@@ -763,7 +771,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_token_public_other_video_context_none_role(self):
         """Public token can't read another video than the one in the token."""
@@ -777,7 +785,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_token_lti_other_video_context_none_role(self):
         """LTI token can't read another video than the one in the token."""
@@ -796,7 +804,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             self._get_url(livesession.video, livesession),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assert_response_resource_not_accessible(response)
 
     def test_api_livesession_read_detail_unknown_video(self):
         """Token with wrong resource_id should render a 404."""
@@ -810,7 +818,7 @@ class LiveSessionRetrieveApiTest(LiveSessionApiTestCase):
             content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
-        self.assertEqual(response.status_code, 403)
+        self.assert_response_resource_not_accessible(response)
 
 
 # Old routes to remove
@@ -824,3 +832,7 @@ class LiveSessionRetrieveApiOldTest(LiveSessionRetrieveApiTest):
     def assert_user_can_read(self, user, video):
         """Defuse original assertion for old URLs"""
         self.assert_user_cannot_read(user, video)
+
+    def assert_response_resource_not_accessible(self, response):
+        """Assert response resource not accessible"""
+        self.assertEqual(response.status_code, 403)
