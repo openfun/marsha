@@ -1,10 +1,9 @@
 """Tests for the retrieve Thumbnail API."""
-from datetime import datetime
+from datetime import datetime, timezone
 import json
 
 from django.test import TestCase, override_settings
 
-from marsha.core.api import timezone
 from marsha.core.factories import (
     ConsumerSiteAccessFactory,
     OrganizationAccessFactory,

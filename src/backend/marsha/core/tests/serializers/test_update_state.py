@@ -1,10 +1,9 @@
 """Tests for the UpdateStateSerializer serializer of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone
 import random
 from uuid import uuid4
 
 from django.test import TestCase
-from django.utils import timezone
 
 from marsha.core.models.video import TimedTextTrack
 from marsha.core.serializers import UpdateStateSerializer

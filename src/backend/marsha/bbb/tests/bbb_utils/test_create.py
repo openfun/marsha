@@ -1,8 +1,7 @@
 """Tests for the create service in the ``bbb`` app of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.test import TestCase, override_settings
-from django.utils import timezone
 
 import responses
 
@@ -379,7 +378,6 @@ class ClassroomServiceTestCase(TestCase):
         api_response = create(
             classroom, "https://example.com/api/classrooms/recording-ready/"
         )
-
         self.assertEqual(
             responses.calls[0].request.body,
             b'<modules><module name="presentation">'

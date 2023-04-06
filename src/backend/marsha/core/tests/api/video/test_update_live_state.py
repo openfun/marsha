@@ -1,5 +1,5 @@
 """Tests for the Video update live state API of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -71,7 +71,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
             "state": "running",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups, mock.patch.object(
@@ -254,7 +254,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
@@ -357,7 +357,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
@@ -376,7 +376,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
         self.assertEqual(video.live_state, HARVESTED)
         self.assertEqual(video.upload_state, PENDING)
         self.assertEqual(
-            video.uploaded_on, datetime.fromtimestamp(1533690000, tz=timezone.utc)
+            video.uploaded_on, datetime.fromtimestamp(1533690000, tz=baseTimezone.utc)
         )
         self.assertEqual(video.starting_at, starting_at)
         self.assertEqual(
@@ -564,7 +564,7 @@ class VideoUpdateLiveStateAPITest(TestCase):
             "state": "stopped",
         }
         signature = generate_hash("shared secret", json.dumps(data).encode("utf-8"))
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:

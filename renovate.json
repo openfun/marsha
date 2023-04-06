@@ -32,16 +32,6 @@
       ]
     },
     {
-      "groupName": "allowed django versions",
-      "matchManagers": [
-        "setup-cfg"
-      ],
-      "matchPackageNames": [
-        "django"
-      ],
-      "allowedVersions": "<4.1"
-    },
-    {
       "groupName": "allowed django channels version",
       "matchManagers": [
         "setup-cfg"

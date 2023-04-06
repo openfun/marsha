@@ -1,5 +1,5 @@
 """Tests for the deposited files initiate-upload API."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -51,7 +51,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -107,7 +107,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -134,7 +134,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = StudentLtiTokenFactory(resource=deposited_file.file_depository)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -233,7 +233,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -295,7 +295,7 @@ class DepositedFileInitiateUploadAPITest(TestCase):
         )
         jwt_token = UserAccessTokenFactory(user=playlist_access.user)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

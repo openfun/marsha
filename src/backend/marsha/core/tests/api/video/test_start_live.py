@@ -1,5 +1,5 @@
 """Tests for the Video start live API of the Marsha project."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import json
 import random
 from unittest import mock
@@ -9,7 +9,6 @@ from django.test import TestCase, override_settings
 from boto3.exceptions import Boto3Error
 
 from marsha.core import api, factories, models
-from marsha.core.api import timezone
 from marsha.core.defaults import (
     HARVESTED,
     IDLE,
@@ -491,7 +490,7 @@ class VideoStartLiveAPITest(TestCase):
 
         Recording slices must be kept.
         """
-        start = timezone.now()
+        start = datetime.utcnow()
         stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
             recording_slices=[
@@ -648,7 +647,7 @@ class VideoStartLiveAPITest(TestCase):
 
         Recording slices and resolutions should be deleted.
         """
-        start = timezone.now()
+        start = datetime.utcnow()
         stop = start + timedelta(minutes=10)
         video = factories.VideoFactory(
             recording_slices=[

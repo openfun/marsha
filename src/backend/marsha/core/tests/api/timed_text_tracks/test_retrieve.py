@@ -1,5 +1,5 @@
 """Tests for the TimedTextTrack retrieve API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -61,7 +61,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -118,7 +118,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
         )
 
@@ -170,7 +170,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -286,7 +286,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
             video__playlist__title="foo",
             mode="cc",
             language="fr",
-            uploaded_on=datetime(2018, 8, 8, tzinfo=timezone.utc),
+            uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="srt",
         )
@@ -294,7 +294,7 @@ class TimedTextTrackRetrieveAPITest(TestCase):
 
         # Get the timed_text_track via the API using the JWT token
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now):
             response = self.client.get(
                 self._get_url(timed_text_track.video, timed_text_track),

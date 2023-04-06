@@ -1,5 +1,5 @@
 """Tests for the Markdown image initiate-upload API."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock
 
@@ -59,7 +59,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
 
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -154,7 +154,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
 
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -215,7 +215,7 @@ class MarkdownImageInitiateUploadApiTest(TestCase):
 
         # Get the upload policy for this Markdown image
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

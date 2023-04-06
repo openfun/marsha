@@ -171,7 +171,7 @@ class UserOrganizationsInline(admin.TabularInline):
 class UserAdmin(DefaultUserAdmin):
     """Admin class for the User model."""
 
-    inlines = DefaultUserAdmin.inlines + [UserOrganizationsInline]
+    inlines = DefaultUserAdmin.inlines + (UserOrganizationsInline,)
 
 
 class ConsumerSiteUsersInline(admin.TabularInline):

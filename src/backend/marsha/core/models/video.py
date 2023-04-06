@@ -243,10 +243,9 @@ class Video(BaseFile):
         constraints = [
             models.CheckConstraint(
                 name="live_type_check",
-                check=models.expressions.RawSQL(
-                    "(live_state IS NULL) = (live_type IS NULL)",
-                    {},
-                    models.fields.BooleanField(),
+                check=models.Q(
+                    models.Q(live_state__isnull=True, live_type__isnull=True)
+                    | models.Q(live_state__isnull=False, live_type__isnull=False),
                 ),
             ),
         ]

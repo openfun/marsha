@@ -1,10 +1,9 @@
 """Tests for the Video list API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone
 
 from django.test import TestCase
 
 from marsha.core import factories
-from marsha.core.api import timezone
 from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,

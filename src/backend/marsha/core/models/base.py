@@ -104,7 +104,7 @@ class BaseModel(SafeDeleteModel):
     # pylint: disable=signature-differs
     def save(self, *args, **kwargs):
         """Enforce validation each time an instance is saved."""
-        self.full_clean()
+        self.full_clean(validate_constraints=False)
         super().save(*args, **kwargs)
 
     @classmethod

@@ -251,7 +251,7 @@ class ClassroomViewSet(
 
         """
         classroom = self.get_object()
-        queryset = classroom.classroom_documents.all()
+        queryset = classroom.classroom_documents.all().order_by("-created_on")
         page = self.paginate_queryset(queryset)
         serializer = serializers.ClassroomDocumentSerializer(
             page,
@@ -440,6 +440,11 @@ class ClassroomDocumentViewSet(
     queryset = ClassroomDocument.objects.all()
     serializer_class = serializers.ClassroomDocumentSerializer
     metadata_class = ClassroomDocumentMetadata
+    filter_backends = [
+        filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_on"]
+    ordering = ["-created_on"]
 
     permission_classes = [
         permissions.IsTokenResourceRouteObjectRelatedClassroom

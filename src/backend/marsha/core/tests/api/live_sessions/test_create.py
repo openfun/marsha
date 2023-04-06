@@ -1,5 +1,5 @@
 """Tests for the livesession create API."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 from logging import Logger
 import smtplib
 from unittest import mock
@@ -262,7 +262,7 @@ class LiveSessionCreateApiTest(LiveSessionApiTestCase):
         # token with no context_id and no user information
         jwt_token = ResourceAccessTokenFactory(resource=video)
         anonymous_id = uuid.uuid4()
-        now = datetime(2022, 4, 7, tzinfo=timezone.utc)
+        now = datetime(2022, 4, 7, tzinfo=baseTimezone.utc)
         with mock.patch.object(LiveSessionTimezone, "now", return_value=now):
             response = self.client.post(
                 self._post_url(video),

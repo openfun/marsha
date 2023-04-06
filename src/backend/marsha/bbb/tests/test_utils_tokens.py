@@ -1,5 +1,5 @@
 """Tests for the specific classroom related simple JWT helpers."""
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone as baseTimezone
 import json
 from unittest import mock
 
@@ -19,12 +19,12 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     def test_jwt_content_starting_at_and_duration(self):
         """Assert the payload contains the expected data."""
-        now_fixed = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
                 created_on=timezone.now(),
-                starting_at=datetime(2020, 8, 20, 14, tzinfo=timezone.utc),
+                starting_at=datetime(2020, 8, 20, 14, tzinfo=baseTimezone.utc),
                 estimated_duration=timedelta(hours=2),
             )
             jwt = create_classroom_stable_invite_jwt(classroom)
@@ -47,12 +47,12 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     def test_jwt_content_starting_at_in_past(self):
         """Assert the payload contains the expected data."""
-        now_fixed = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
-                created_on=datetime(2020, 8, 4, 11, tzinfo=timezone.utc),
-                starting_at=datetime(2020, 8, 4, 14, tzinfo=timezone.utc),
+                created_on=datetime(2020, 8, 4, 11, tzinfo=baseTimezone.utc),
+                starting_at=datetime(2020, 8, 4, 14, tzinfo=baseTimezone.utc),
                 estimated_duration=timedelta(hours=2),
             )
             jwt = create_classroom_stable_invite_jwt(classroom)
@@ -75,12 +75,12 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     def test_jwt_content_starting_at_and_no_duration(self):
         """Assert the payload contains the expected data."""
-        now_fixed = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
                 created_on=timezone.now(),
-                starting_at=datetime(2020, 8, 20, 14, tzinfo=timezone.utc),
+                starting_at=datetime(2020, 8, 20, 14, tzinfo=baseTimezone.utc),
             )
             jwt = create_classroom_stable_invite_jwt(classroom)
 
@@ -107,7 +107,7 @@ class CreateStableInviteJwtTestCase(TestCase):
 
         JWT will be valid for at least 24 hours.
         """
-        now_fixed = datetime(2020, 8, 8, 14, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, 14, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
@@ -133,7 +133,7 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     def test_jwt_content_without_starting_at_and_duration(self):
         """Assert the payload contains the expected data."""
-        now_fixed = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
@@ -194,12 +194,12 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     def test_jwt_content_instructor(self):
         """Assert the payload contains the expected role."""
-        now_fixed = datetime(2020, 8, 8, tzinfo=timezone.utc)
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now_fixed):
             classroom = ClassroomFactory(
                 pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
                 created_on=timezone.now(),
-                starting_at=datetime(2020, 8, 20, 14, tzinfo=timezone.utc),
+                starting_at=datetime(2020, 8, 20, 14, tzinfo=baseTimezone.utc),
                 estimated_duration=timedelta(hours=2),
             )
             jwt = create_classroom_stable_invite_jwt(classroom, role=INSTRUCTOR)

@@ -1,5 +1,5 @@
 """Tests for the Video initiate upload API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 import random
 from unittest import mock
@@ -63,7 +63,7 @@ class VideoInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -159,7 +159,7 @@ class VideoInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -197,7 +197,7 @@ class VideoInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -260,7 +260,7 @@ class VideoInitiateUploadAPITest(TestCase):
 
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -322,7 +322,7 @@ class VideoInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
         # Get the upload policy for this video
         # It should generate a key file with the Unix timestamp of the present time
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -376,7 +376,7 @@ class VideoInitiateUploadAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:
@@ -401,7 +401,7 @@ class VideoInitiateUploadAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
-        now = datetime(2018, 8, 8, tzinfo=timezone.utc)
+        now = datetime(2018, 8, 8, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "datetime.datetime"
         ) as mock_dt:

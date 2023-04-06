@@ -1,5 +1,5 @@
 """Tests for the SharedLiveMedia list API of the Marsha project."""
-from datetime import datetime
+from datetime import datetime, timezone as baseTimezone
 import json
 from unittest import mock
 
@@ -51,14 +51,14 @@ class SharedLiveMediaListAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
             video=video,
         )
         # This shared_live_media belongs to an other video
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
         )
 
@@ -81,7 +81,7 @@ class SharedLiveMediaListAPITest(TestCase):
             extension="pdf",
             title="python expressions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -90,7 +90,7 @@ class SharedLiveMediaListAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
         )
 
@@ -165,7 +165,7 @@ class SharedLiveMediaListAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -175,7 +175,7 @@ class SharedLiveMediaListAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=other_video,
         )
@@ -204,7 +204,7 @@ class SharedLiveMediaListAPITest(TestCase):
             extension="pdf",
             title="python expressions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -216,14 +216,14 @@ class SharedLiveMediaListAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
         )
 
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         # fix the time so that the url signature is deterministic and can be checked
-        now = datetime(2021, 11, 30, tzinfo=timezone.utc)
+        now = datetime(2021, 11, 30, tzinfo=baseTimezone.utc)
         with mock.patch.object(timezone, "now", return_value=now), mock.patch(
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
@@ -352,7 +352,7 @@ class SharedLiveMediaListAPITest(TestCase):
             extension="pdf",
             title="python extensions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -361,7 +361,7 @@ class SharedLiveMediaListAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
@@ -441,7 +441,7 @@ class SharedLiveMediaListAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -451,7 +451,7 @@ class SharedLiveMediaListAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
         )
         PlaylistAccessFactory(user=user, playlist=playlist, role=ADMINISTRATOR)
@@ -508,7 +508,7 @@ class SharedLiveMediaListAPITest(TestCase):
             extension="pdf",
             title="python extensions",
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -520,7 +520,7 @@ class SharedLiveMediaListAPITest(TestCase):
         # payload response
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
         )
 
@@ -600,7 +600,7 @@ class SharedLiveMediaListAPITest(TestCase):
         )
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=3,
             video=video,
         )
@@ -613,7 +613,7 @@ class SharedLiveMediaListAPITest(TestCase):
         other_video = VideoFactory()
         SharedLiveMediaFactory(
             upload_state=defaults.READY,
-            uploaded_on=datetime(2021, 11, 30, tzinfo=timezone.utc),
+            uploaded_on=datetime(2021, 11, 30, tzinfo=baseTimezone.utc),
             nb_pages=5,
             video=other_video,
         )
