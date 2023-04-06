@@ -14,7 +14,12 @@ from .. import defaults, permissions, serializers
 from ..models import Thumbnail
 from ..utils.s3_utils import create_presigned_post
 from ..utils.time_utils import to_timestamp
-from .base import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+from .base import (
+    APIViewMixin,
+    ObjectPkMixin,
+    ObjectRelatedMixin,
+    ObjectVideoRelatedMixin,
+)
 
 
 class ThumbnailFilter(django_filters.FilterSet):
@@ -31,6 +36,7 @@ class ThumbnailViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectRelatedMixin,
+    ObjectVideoRelatedMixin,
     mixins.CreateModelMixin,
     mixins.DestroyModelMixin,
     mixins.RetrieveModelMixin,
@@ -78,30 +84,18 @@ class ThumbnailViewSet(
             raise NotImplementedError(f"Action '{self.action}' is not implemented.")
         return [permission() for permission in permission_classes]
 
-    def _get_list_queryset(self):
-        """Build the queryset used on the list action."""
+    def get_queryset(self):
+        """Redefine the queryset to use based on the current action."""
         queryset = super().get_queryset()
-
-        if self.request.resource:  # aka we are authenticated through LTI
-            queryset = queryset.filter(video__id=self.request.resource.id)
-
-        # Otherwise, we are authenticated through a user JWT.
-        # Filtering is currently not necessary as permissions enforce
-        # a "video" parameter to be present in the request.
-        # See `IsParamsVideoAdminThrough*` permissions.
+        if self.action in ["list"]:
+            video_id = self.get_related_video_id()
+            return queryset.filter(video__id=video_id)
 
         return queryset
 
-    def get_queryset(self):
-        """Redefine the queryset to use based on the current action."""
-        if self.action in ["list"]:
-            return self._get_list_queryset()
-
-        return super().get_queryset()
-
     @action(methods=["post"], detail=True, url_path="initiate-upload")
     # pylint: disable=unused-argument
-    def initiate_upload(self, request, pk=None):
+    def initiate_upload(self, request, pk=None, video_id=None):
         """Get an upload policy for a thumbnail.
 
         Calling the endpoint resets the upload state to `pending` and returns an upload policy to

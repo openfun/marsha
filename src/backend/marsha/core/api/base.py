@@ -4,6 +4,7 @@ from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 
 from rest_framework.decorators import api_view
+from rest_framework.exceptions import APIException
 from rest_framework.response import Response
 from waffle import switch_is_active
 
@@ -40,6 +41,52 @@ class ObjectRelatedMixin:
         """Get the video related to the current object."""
         queryset = self.filter_queryset(self.get_queryset())
         return queryset.get(pk=self.get_object_pk())
+
+
+class ResourceDoesNotMatchParametersException(APIException):
+    """Exception raised when resource token id does not match parameters."""
+
+    status_code = 400
+    default_detail = "Resource from token does not match given parameters."
+    default_code = "resource_parameters_not_match"
+
+
+class ObjectVideoRelatedMixin:
+    """
+    Get the related video id contained in resource.
+
+    It exposes a function used to get the related video.
+    It is also useful to avoid URL crafting (when the url video_id doesn't
+    match token resource video id).
+    """
+
+    def get_related_video_id(self):
+        """Get the related video ID from the request."""
+
+        # The video ID in the URL will be mandatory when old routes are deleted.
+        video_id = (
+            self.kwargs.get("video_id")
+            # Backward compatibility with old routes
+            or self.request.data.get("video")
+            or self.request.query_params.get("video")
+        )
+
+        # Backward compatibility with old routes for LTI context
+        resource = self.request.resource
+        if resource is not None:
+            if resource.id and video_id and str(video_id) != str(resource.id):
+                raise ResourceDoesNotMatchParametersException()
+            return self.request.resource.id
+
+        return video_id
+
+    def get_serializer_context(self):
+        """Extra context provided to the serializer class."""
+        context = super().get_serializer_context()
+
+        context.update({"video_id": self.get_related_video_id()})
+
+        return context
 
 
 @api_view(["POST"])

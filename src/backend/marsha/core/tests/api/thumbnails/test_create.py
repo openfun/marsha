@@ -25,6 +25,10 @@ class ThumbnailCreateApiTest(TestCase):
 
     maxDiff = None
 
+    def _post_url(self, video):
+        """Return the url to use to create a thumbnail."""
+        return f"/api/videos/{video.pk}/thumbnails/"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -39,7 +43,7 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/thumbnails/",
+            self._post_url(video),
             {"video": str(video.pk), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -51,7 +55,7 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            "/api/thumbnails/",
+            self._post_url(video),
             {"video": str(video.pk), "size": 10},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
@@ -74,7 +78,7 @@ class ThumbnailCreateApiTest(TestCase):
 
     def test_api_thumbnail_create_anonymous(self):
         """Anonymous users should not be able to create a thumbnail."""
-        response = self.client.post("/api/thumbnails/")
+        response = self.client.post(self._post_url(self.some_video))
         self.assertEqual(response.status_code, 401)
 
     def test_api_thumbnail_create_by_random_user(self):
@@ -170,7 +174,9 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(video),
+            {"size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 201)
@@ -196,7 +202,9 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", {"size": 100}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(video),
+            {"size": 100},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 400)
         self.assertEqual(
@@ -210,7 +218,7 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
         self.assertEqual(response.status_code, 400)
 
@@ -227,7 +235,9 @@ class ThumbnailCreateApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.post(
-            "/api/thumbnails/", {"size": 10}, HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._post_url(video),
+            {"size": 10},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 400)
@@ -251,3 +261,11 @@ class ThumbnailCreateApiTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 403)
+
+
+class ThumbnailCreateApiOldTest(ThumbnailCreateApiTest):
+    """Test the create API of the thumbnail object."""
+
+    def _post_url(self, video):
+        """Return the url to use to create a thumbnail."""
+        return "/api/thumbnails/"

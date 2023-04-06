@@ -18,11 +18,14 @@ class ThumbnailInitiateUploadApiTest(TestCase):
 
     maxDiff = None
 
+    def _post_url(self, video, thumbnail):
+        return f"/api/videos/{video.pk}/thumbnails/{thumbnail.id}/initiate-upload/"
+
     def test_api_thumbnail_initiate_upload_anonymous(self):
         """Anonymous users are not allowed to initiate an upload."""
         thumbnail = ThumbnailFactory()
 
-        response = self.client.post(f"/api/thumbnails/{thumbnail.id}/initiate-upload/")
+        response = self.client.post(self._post_url(thumbnail.video, thumbnail))
         self.assertEqual(response.status_code, 401)
 
     def test_api_thumbnail_initiate_upload_student(self):
@@ -31,7 +34,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=thumbnail.video)
 
         response = self.client.post(
-            f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+            self._post_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -54,7 +57,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                self._post_url(thumbnail.video, thumbnail),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 200)
@@ -103,7 +106,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         )
 
         response = self.client.post(
-            f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+            self._post_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -124,7 +127,7 @@ class ThumbnailInitiateUploadApiTest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/thumbnails/{thumbnail.id}/initiate-upload/",
+                self._post_url(thumbnail.video, thumbnail),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -137,3 +140,10 @@ class ThumbnailInitiateUploadApiTest(TestCase):
             response.json(),
             {"size": ["File too large, max size allowed is 10 Bytes"]},
         )
+
+
+class ThumbnailInitiateUploadApiOldTest(ThumbnailInitiateUploadApiTest):
+    """Test the initiate-upload API of the thumbnail object."""
+
+    def _post_url(self, video, thumbnail):
+        return f"/api/thumbnails/{thumbnail.id}/initiate-upload/"
