@@ -1,4 +1,3 @@
-const path = require('path');
 const TerserPlugin = require('terser-webpack-plugin');
 
 const { alias } = require('marsha-config');
