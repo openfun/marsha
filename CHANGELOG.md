@@ -67,6 +67,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - thumbnail not reset correctly on the video player (#2137)
 - display title / description when a classroom is not scheduled and not started
 - correctly fetch transcript content in TranscriptReader
+- remove unused 'initiate-live' permissions
 
 ## [4.0.0-beta.18] - 2023-03-06
 

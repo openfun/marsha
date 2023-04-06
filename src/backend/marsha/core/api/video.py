@@ -343,11 +343,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         methods=["post"],
         detail=True,
         url_path="initiate-live",
-        permission_classes=[
-            permissions.IsTokenResourceRouteObject & permissions.IsTokenInstructor
-            | permissions.IsTokenResourceRouteObject & permissions.IsTokenAdmin
-            | permissions.HasPlaylistToken
-        ],
     )
     # pylint: disable=unused-argument
     def initiate_live(self, request, pk=None):
