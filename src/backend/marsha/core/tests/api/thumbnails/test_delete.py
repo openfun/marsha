@@ -24,6 +24,10 @@ class ThumbnailDeleteApiTest(TestCase):
 
     maxDiff = None
 
+    def _delete_url(self, video, thumbnail):
+        """Return the url to use to delete a thumbnail."""
+        return f"/api/videos/{video.pk}/thumbnails/{thumbnail.id}/"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -39,7 +43,7 @@ class ThumbnailDeleteApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/thumbnails/{thumbnail.pk}/",
+            self._delete_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -52,7 +56,7 @@ class ThumbnailDeleteApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/thumbnails/{thumbnail.pk}/",
+            self._delete_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
@@ -65,7 +69,7 @@ class ThumbnailDeleteApiTest(TestCase):
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
 
-        response = self.client.delete(f"/api/thumbnails/{thumbnail.id}/")
+        response = self.client.delete(self._delete_url(video, thumbnail))
         self.assertEqual(response.status_code, 401)
 
     def test_api_thumbnail_delete_by_random_user(self):
@@ -154,7 +158,7 @@ class ThumbnailDeleteApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.delete(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._delete_url(video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -166,7 +170,7 @@ class ThumbnailDeleteApiTest(TestCase):
         self.assertEqual(Thumbnail.objects.count(), 1)
 
         response = self.client.delete(
-            f"/api/thumbnails/{self.some_thumbnail.pk}/",
+            self._delete_url(self.some_video, self.some_thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 204)
@@ -198,7 +202,7 @@ class ThumbnailDeleteApiTest(TestCase):
         )
 
         response = self.client.delete(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._delete_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -213,7 +217,15 @@ class ThumbnailDeleteApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video_token)
 
         response = self.client.delete(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._delete_url(video_other, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+
+class ThumbnailDeleteApiOldTest(ThumbnailDeleteApiTest):
+    """Test the delete API of the thumbnail object."""
+
+    def _delete_url(self, video, thumbnail):
+        """Return the url to use to delete a thumbnail."""
+        return f"/api/thumbnails/{thumbnail.id}/"

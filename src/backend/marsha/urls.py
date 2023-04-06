@@ -60,7 +60,6 @@ router.register(
     TimedTextTrackViewSet,
     basename="timed_text_tracks",
 )
-router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
 router.register("organizations", OrganizationViewSet, basename="organizations")
 router.register("playlists", PlaylistViewSet, basename="playlists")
 router.register(
@@ -85,6 +84,7 @@ router.register(
     LiveSessionViewSet,
     basename="live_sessions",
 )
+router.register(models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails")
 
 # Video related resources (for nested routes)
 video_related_router = DefaultRouter()
@@ -92,6 +92,10 @@ video_related_router.register(
     models.LiveSession.RESOURCE_NAME,
     LiveSessionViewSet,
     basename="live_sessions",
+)
+
+video_related_router.register(
+    models.Thumbnail.RESOURCE_NAME, ThumbnailViewSet, basename="thumbnails"
 )
 
 urlpatterns = [

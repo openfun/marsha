@@ -35,6 +35,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Document
   - Markdown
 - Allow delete playlist
+- add routes related URL:
+  - thumbnails
 - Add classroom widgets :
   - InfoBar
   - Description
