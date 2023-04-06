@@ -27,6 +27,10 @@ class ThumbnailRetrieveApiTest(TestCase):
 
     maxDiff = None
 
+    def _get_url(self, video, thumbnail):
+        """Return the url to use to get a video thumbnail."""
+        return f"/api/videos/{video.pk}/thumbnails/{thumbnail.id}/"
+
     @classmethod
     def setUpTestData(cls):
         super().setUpTestData()
@@ -42,7 +46,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.pk}/",
+            self._get_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -53,7 +57,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -75,7 +79,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         """Anonymous users should not be allowed to retrieve a thumbnail."""
         video = VideoFactory()
         thumbnail = ThumbnailFactory(video=video)
-        response = self.client.get(f"/api/thumbnails/{thumbnail.id}/")
+        response = self.client.get(self._get_url(video, thumbnail))
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
         self.assertEqual(
@@ -172,7 +176,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -188,7 +192,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -205,7 +209,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -234,7 +238,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(thumbnail.video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -254,7 +258,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         )
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -289,7 +293,7 @@ class ThumbnailRetrieveApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            f"/api/thumbnails/{thumbnail.id}/",
+            self._get_url(video, thumbnail),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -318,3 +322,11 @@ class ThumbnailRetrieveApiTest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+class ThumbnailRetrieveApiOldTest(ThumbnailRetrieveApiTest):
+    """Test the retrieve API of the thumbnail object."""
+
+    def _get_url(self, video, thumbnail):
+        """Return the url to use to create a live session."""
+        return f"/api/thumbnails/{thumbnail.id}/"

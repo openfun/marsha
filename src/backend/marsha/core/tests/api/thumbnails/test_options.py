@@ -16,13 +16,23 @@ class ThumbnailOptionsApiTest(TestCase):
 
     maxDiff = None
 
+    def _options_url(self, video):
+        """Return the url to use options a thumbnail."""
+        return f"/api/videos/{video.id}/thumbnails/"
+
+    @classmethod
+    def setUpTestData(cls):
+        super().setUpTestData()
+
+        cls.video = VideoFactory()
+
     def assert_user_can_query_options(self, user):
         """Assert the user can query the thumbnail options' endpoint."""
 
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.options(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._options_url(self.video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -32,7 +42,7 @@ class ThumbnailOptionsApiTest(TestCase):
         """
         Unauthenticated user cannot query the thumbnail options' endpoint.
         """
-        response = self.client.options("/api/thumbnails/")
+        response = self.client.options(self._options_url(self.video))
 
         self.assertEqual(response.status_code, 401)
 
@@ -54,7 +64,7 @@ class ThumbnailOptionsApiTest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.options(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -69,8 +79,16 @@ class ThumbnailOptionsApiTest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.options(
-            "/api/thumbnails/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._options_url(video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.json()["upload_max_size_bytes"], 10)
+
+
+class ThumbnailOptionsApiOldTest(ThumbnailOptionsApiTest):
+    """Test the options API of the thumbnail object."""
+
+    def _options_url(self, video):
+        """Return the url to use to create a live session."""
+        return "/api/thumbnails/"
