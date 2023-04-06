@@ -28,13 +28,18 @@ from marsha.core.tests.testing_utils import RSA_KEY_MOCK
 class SharedLiveMediaListAPITest(TestCase):
     """Test the list API of the shared live media object."""
 
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.id}/sharedlivemedias/"
+
     maxDiff = None
 
     def test_api_shared_live_media_list_anonymous(self):
         """An anonymous user can not list shared live medias."""
         SharedLiveMediaFactory.create_batch(2)
+        video = VideoFactory()
 
-        response = self.client.get("/api/sharedlivemedias/")
+        response = self.client.get(self._get_url(video))
 
         self.assertEqual(response.status_code, 401)
 
@@ -60,7 +65,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            "/api/sharedlivemedias/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -92,7 +97,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            "/api/sharedlivemedias/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -178,22 +183,12 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=video)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={other_video.id}",
+            self._get_url(other_video),
+            content_type="application/json",
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 200)
-
-        content = json.loads(response.content)
-        self.assertEqual(
-            content,
-            {
-                "count": 0,
-                "next": None,
-                "previous": None,
-                "results": [],
-            },
-        )
+        self.assertEqual(response.status_code, 400)
 
     @override_settings(
         CLOUDFRONT_SIGNED_URLS_ACTIVE=True,
@@ -233,7 +228,7 @@ class SharedLiveMediaListAPITest(TestCase):
             "builtins.open", new_callable=mock.mock_open, read_data=RSA_KEY_MOCK
         ):
             response = self.client.get(
-                "/api/sharedlivemedias/",
+                self._get_url(video),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
@@ -315,9 +310,11 @@ class SharedLiveMediaListAPITest(TestCase):
     def test_api_shared_live_media_list_staff_or_user(self):
         """Users authenticated via a session shouldn't be able to list shared live medias."""
         SharedLiveMediaFactory.create_batch(2)
+        video = VideoFactory()
+
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
-            response = self.client.get("/api/sharedlivemedias/")
+            response = self.client.get(self._get_url(video))
             self.assertEqual(response.status_code, 401)
 
     def test_api_shared_live_media_list_by_user_with_no_access(self):
@@ -329,32 +326,9 @@ class SharedLiveMediaListAPITest(TestCase):
         """
         SharedLiveMediaFactory.create_batch(2)
         jwt_token = UserAccessTokenFactory()
-
+        video = VideoFactory()
         response = self.client.get(
-            "/api/sharedlivemedias/",
-            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
-        )
-
-        self.assertEqual(response.status_code, 403)
-
-    def test_api_shared_live_media_list_by_video_playlist_instructor(self):
-        """
-        Playlist instructor token user list shared live medias for a video.
-
-        A user with a user token, who is a playlist instructor, cannot list shared
-        live medias for a video that belongs to that playlist.
-        """
-        user = UserFactory()
-        # A playlist where the user is an instructor, with a video
-        playlist = PlaylistFactory()
-        video = VideoFactory(playlist=playlist)
-        SharedLiveMediaFactory(video=video)
-        PlaylistAccessFactory(user=user, playlist=playlist, role=INSTRUCTOR)
-
-        jwt_token = UserAccessTokenFactory(user=user)
-
-        response = self.client.get(
-            "/api/sharedlivemedias/",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -395,7 +369,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={video.id}",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -485,7 +459,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={other_video.id}",
+            self._get_url(other_video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -509,7 +483,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={video.id}",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -553,7 +527,7 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={video.id}",
+            self._get_url(video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 200)
@@ -647,7 +621,15 @@ class SharedLiveMediaListAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.get(
-            f"/api/sharedlivemedias/?video={other_video.id}",
+            self._get_url(other_video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+
+class SharedLiveMediaListAPIOldTest(SharedLiveMediaListAPITest):
+    """Test the list API of the shared live media object."""
+
+    def _get_url(self, video):
+        """Return the url to use in tests."""
+        return f"/api/sharedlivemedias/?video={video.id}"
