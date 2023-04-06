@@ -69,17 +69,7 @@ class SharedLiveMediaSerializer(
             The "validated_data" dictionary is returned after modification.
 
         """
-        resource = self.context["request"].resource
-
-        # Set the video field from the payload if there is one and the user is identified
-        # as a proper user object through access rights
-        if self.initial_data.get("video") and not resource:
-            validated_data["video_id"] = self.initial_data.get("video")
-
-        # If the request regards a resource, force the video ID on the shared live media
-        if not validated_data.get("video_id") and resource:
-            validated_data["video_id"] = resource.id
-
+        validated_data["video_id"] = self.context["video_id"]
         return super().create(validated_data)
 
     def get_filename(self, obj):

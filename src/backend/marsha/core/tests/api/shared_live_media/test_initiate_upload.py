@@ -28,6 +28,10 @@ from marsha.core.simple_jwt.factories import (
 class SharedLiveMediaInitiateUploadAPITest(TestCase):
     """Test the initiate-upload API of the shared live media object."""
 
+    def _post_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.id}/sharedlivemedias/{shared_live_media.id}/initiate-upload/"
+
     maxDiff = None
 
     def test_api_shared_live_media_initiate_upload_anonymous(self):
@@ -36,7 +40,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         response = self.client.post(
-            f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+            self._post_url(shared_live_media.video, shared_live_media),
             {
                 "filename": "python extensions.pdf",
                 "mimetype": "application/pdf",
@@ -55,7 +59,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.post(
-            f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+            self._post_url(shared_live_media.video, shared_live_media),
             {
                 "filename": "python extensions.pdf",
                 "mimetype": "application/pdf",
@@ -83,7 +87,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions.pdf",
                     "mimetype": "application/pdf",
@@ -145,7 +149,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions",
                     "mimetype": "application/pdf",
@@ -207,7 +211,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {"filename": "python extensions", "mimetype": "", "size": 10},
                 content_type="application/json",
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -236,7 +240,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions",
                     "mimetype": "application/wrong-type",
@@ -262,7 +266,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions.pdf",
                     "mimetype": "application/pdf",
@@ -284,7 +288,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.post(
-            f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+            self._post_url(shared_live_media.video, shared_live_media),
             {
                 "filename": "python extensions.pdf",
                 "mimetype": "application/pdf",
@@ -327,7 +331,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions.pdf",
                     "mimetype": "application/pdf",
@@ -403,7 +407,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions.pdf",
                     "mimetype": "application/pdf",
@@ -470,7 +474,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.post(
-            f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+            self._post_url(shared_live_media.video, shared_live_media),
             {
                 "filename": "python extensions.pdf",
                 "mimetype": "application/pdf",
@@ -517,7 +521,7 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/",
+                self._post_url(shared_live_media.video, shared_live_media),
                 {
                     "filename": "python extensions.pdf",
                     "mimetype": "application/pdf",
@@ -562,3 +566,11 @@ class SharedLiveMediaInitiateUploadAPITest(TestCase):
 
         shared_live_media.refresh_from_db()
         self.assertEqual(shared_live_media.upload_state, defaults.PENDING)
+
+
+class SharedLiveMediaInitiateUploadAPIOldTest(SharedLiveMediaInitiateUploadAPITest):
+    """Test the update API of the shared live media object."""
+
+    def _post_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/sharedlivemedias/{shared_live_media.id}/initiate-upload/"

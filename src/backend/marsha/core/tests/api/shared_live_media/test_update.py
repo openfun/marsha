@@ -25,6 +25,10 @@ from marsha.core.simple_jwt.factories import (
 class SharedLiveMediaUpdateAPITest(TestCase):
     """Test the update API of the shared live media object."""
 
+    def _update_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/sharedlivemedias/{shared_live_media.pk}/"
+
     maxDiff = None
 
     def test_api_shared_live_media_update_anonymous(self):
@@ -32,7 +36,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._update_url(shared_live_media.video, shared_live_media),
             {"title": "you shall not pass!"},
             content_type="application/json",
         )
@@ -46,7 +50,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._update_url(shared_live_media.video, shared_live_media),
             {"title": "you shall not pass!"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -64,7 +68,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
         ) as mock_dispatch_shared_live_media:
             response = self.client.put(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._update_url(shared_live_media.video, shared_live_media),
                 {"title": "Give me the red pill"},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -96,7 +100,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             response = self.client.put(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._update_url(shared_live_media.video, shared_live_media),
                 {"title": "you shall not pass!"},
                 content_type="application/json",
             )
@@ -114,7 +118,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._update_url(shared_live_media.video, shared_live_media),
             {"title": "you shall not pass!"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -148,7 +152,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
         ) as mock_dispatch_shared_live_media:
             response = self.client.put(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._update_url(shared_live_media.video, shared_live_media),
                 {"title": "give me the red pill!"},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -198,7 +202,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
         ) as mock_dispatch_shared_live_media:
             response = self.client.put(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._update_url(shared_live_media.video, shared_live_media),
                 {"title": "give me the red pill!"},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -241,7 +245,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.put(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._update_url(shared_live_media.video, shared_live_media),
             {"title": "you shall not pass!"},
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -278,7 +282,7 @@ class SharedLiveMediaUpdateAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_shared_live_media"
         ) as mock_dispatch_shared_live_media:
             response = self.client.put(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._update_url(shared_live_media.video, shared_live_media),
                 {"title": "give me the red pill!"},
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 content_type="application/json",
@@ -302,3 +306,11 @@ class SharedLiveMediaUpdateAPITest(TestCase):
                 "video": str(video.id),
             },
         )
+
+
+class SharedLiveMediaUpdateAPIOldTest(SharedLiveMediaUpdateAPITest):
+    """Test the update API of the shared live media object."""
+
+    def _update_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/sharedlivemedias/{shared_live_media.id}/"

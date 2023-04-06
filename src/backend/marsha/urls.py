@@ -67,17 +67,17 @@ router.register("users", UserViewSet, basename="users")
 router.register(
     "lti-user-associations", LtiUserAssociationViewSet, basename="lti_user_associations"
 )
-router.register(
-    models.SharedLiveMedia.RESOURCE_NAME,
-    SharedLiveMediaViewSet,
-    basename="sharedlivemedias",
-)
 
 # Old routes to remove
 router.register(
     models.LiveSession.RESOURCE_NAME,
     LiveSessionViewSet,
     basename="live_sessions",
+)
+router.register(
+    models.SharedLiveMedia.RESOURCE_NAME,
+    SharedLiveMediaViewSet,
+    basename="sharedlivemedias",
 )
 router.register(
     models.TimedTextTrack.RESOURCE_NAME,
@@ -98,6 +98,12 @@ video_related_router.register(
     models.TimedTextTrack.RESOURCE_NAME,
     TimedTextTrackViewSet,
     basename="timed_text_tracks",
+)
+
+video_related_router.register(
+    models.SharedLiveMedia.RESOURCE_NAME,
+    SharedLiveMediaViewSet,
+    basename="sharedlivemedias",
 )
 
 video_related_router.register(

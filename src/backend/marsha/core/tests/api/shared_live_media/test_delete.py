@@ -25,6 +25,10 @@ from marsha.core.simple_jwt.factories import (
 class SharedLiveMediaDeleteAPITest(TestCase):
     """Test the delete API of the shared live media object."""
 
+    def _delete_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/videos/{video.pk}/sharedlivemedias/{shared_live_media.pk}/"
+
     maxDiff = None
 
     def test_api_shared_live_media_delete_anonymous(self):
@@ -32,7 +36,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         shared_live_media = SharedLiveMediaFactory()
 
         response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._delete_url(shared_live_media.video, shared_live_media),
         )
 
         self.assertEqual(response.status_code, 401)
@@ -44,7 +48,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         jwt_token = StudentLtiTokenFactory(resource=shared_live_media.video)
 
         response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._delete_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -64,7 +68,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -78,7 +82,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         for user in [UserFactory(), UserFactory(is_staff=True)]:
             self.client.login(username=user.username, password="test")
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 content_type="application/json",
             )
             self.assertEqual(response.status_code, 401)
@@ -95,7 +99,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._delete_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -123,7 +127,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -159,7 +163,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -185,7 +189,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/sharedlivemedias/{shared_live_media.id}/",
+            self._delete_url(shared_live_media.video, shared_live_media),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -222,7 +226,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -251,7 +255,7 @@ class SharedLiveMediaDeleteAPITest(TestCase):
             "marsha.websocket.utils.channel_layers_utils.dispatch_video_to_groups"
         ) as mock_dispatch_video_to_groups:
             response = self.client.delete(
-                f"/api/sharedlivemedias/{shared_live_media.id}/",
+                self._delete_url(shared_live_media.video, shared_live_media),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             mock_dispatch_video_to_groups.assert_called_once_with(video)
@@ -261,3 +265,11 @@ class SharedLiveMediaDeleteAPITest(TestCase):
         video.refresh_from_db()
         self.assertIsNone(video.active_shared_live_media)
         self.assertIsNone(video.active_shared_live_media_page)
+
+
+class SharedLiveMediaDeleteAPIOldTest(SharedLiveMediaDeleteAPITest):
+    """Test the delete API of the shared live media object."""
+
+    def _delete_url(self, video, shared_live_media):
+        """Return the url to use in tests."""
+        return f"/api/sharedlivemedias/{shared_live_media.id}/"

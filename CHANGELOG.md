@@ -38,6 +38,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - add routes related URL:
   - thumbnails
   - timed_text_track
+  - shared_live_media
 - Add classroom widgets :
   - InfoBar
   - Description
