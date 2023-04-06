@@ -20,11 +20,15 @@ class TimedTextTrackOptionsAPITest(TestCase):
 
     maxDiff = None
 
-    def assert_jwt_can_query_options(self, jwt_token):
+    def _options_url(self, video):
+        """Return the url to use to create a live session."""
+        return f"/api/videos/{video.id}/timedtexttracks/"
+
+    def assert_jwt_can_query_options(self, jwt_token, track):
         """Assert the JWT can query the thumbnail options' endpoint."""
 
         response = self.client.options(
-            "/api/timedtexttracks/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
+            self._options_url(track.video), HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
         )
 
         self.assertEqual(response.status_code, 200)
@@ -53,9 +57,10 @@ class TimedTextTrackOptionsAPITest(TestCase):
         Authenticated user without access
         can query the thumbnail options' endpoint.
         """
+        timed_text_track = TimedTextTrackFactory(language="af")
         user = UserFactory()
         jwt_token = UserAccessTokenFactory(user=user)
-        self.assert_jwt_can_query_options(jwt_token)
+        self.assert_jwt_can_query_options(jwt_token, timed_text_track)
 
     def test_api_timed_text_track_options_as_instructor(self):
         """The details of choices fields should be available via http options for an instructor."""
@@ -65,14 +70,14 @@ class TimedTextTrackOptionsAPITest(TestCase):
             permissions__can_update=False,
         )
 
-        self.assert_jwt_can_query_options(jwt_token)
+        self.assert_jwt_can_query_options(jwt_token, timed_text_track)
 
     def test_api_timed_text_track_options_as_student(self):
         """The details of choices fields should be available via http options for a student."""
         timed_text_track = TimedTextTrackFactory(language="af")
         jwt_token = StudentLtiTokenFactory(resource=timed_text_track.video)
 
-        self.assert_jwt_can_query_options(jwt_token)
+        self.assert_jwt_can_query_options(jwt_token, timed_text_track)
 
     def test_api_timed_text_track_options_as_administrator(self):
         """The details of choices fields should be available via http options for an admin."""
@@ -83,11 +88,12 @@ class TimedTextTrackOptionsAPITest(TestCase):
             roles=["administrator"],
         )
 
-        self.assert_jwt_can_query_options(jwt_token)
+        self.assert_jwt_can_query_options(jwt_token, timed_text_track)
 
     def test_api_timed_text_track_options_anonymous(self):
         """The details of choices fields should be available via http options for a student."""
-        response = self.client.options("/api/timedtexttracks/")
+        timed_text_track = TimedTextTrackFactory(language="af")
+        response = self.client.options(self._options_url(timed_text_track))
         self.assertEqual(response.status_code, 401)
 
     def test_api_timed_text_track_options_authenticated(self):
@@ -101,4 +107,12 @@ class TimedTextTrackOptionsAPITest(TestCase):
         )
         jwt_token = InstructorOrAdminLtiTokenFactory(resource=timed_text_track.video)
 
-        self.assert_jwt_can_query_options(jwt_token)
+        self.assert_jwt_can_query_options(jwt_token, timed_text_track)
+
+
+class TimedTextTrackOptionsAPIOldTest(TimedTextTrackOptionsAPITest):
+    """Test the create API of the timed text track object with old URLs."""
+
+    def _options_url(self, video):
+        """Return the url to use options on a timed text track."""
+        return "/api/timedtexttracks/"

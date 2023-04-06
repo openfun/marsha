@@ -17,6 +17,10 @@ class TimedTextTrackDeleteAPITest(TestCase):
 
     maxDiff = None
 
+    def _delete_url(self, video, track):
+        """Return the url to delete a timed text track."""
+        return f"/api/videos/{video.pk}/timedtexttracks/{track.id}/"
+
     def test_api_timed_text_track_patch_by_video_organization_admin(self):
         """
         Organization administrator token user patches a timed text track.
@@ -39,7 +43,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         data = {"language": "en", "size": 10}
 
         response = self.client.patch(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             json.dumps(data),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             content_type="application/json",
@@ -52,7 +56,9 @@ class TimedTextTrackDeleteAPITest(TestCase):
         """Anonymous users should not be allowed to delete a timed text track."""
         timed_text_track = TimedTextTrackFactory()
 
-        response = self.client.delete(f"/api/timedtexttracks/{timed_text_track.id}/")
+        response = self.client.delete(
+            self._delete_url(timed_text_track.video, timed_text_track)
+        )
 
         self.assertEqual(response.status_code, 401)
         content = json.loads(response.content)
@@ -71,7 +77,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
                 resource=timed_text_track.video
             )
             response = self.client.delete(
-                f"/api/timedtexttracks/{timed_text_track.id}/",
+                self._delete_url(timed_text_track.video, timed_text_track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
             self.assertEqual(response.status_code, 204)
@@ -90,7 +96,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
             self.client.login(username=user.username, password="test")
 
             response = self.client.delete(
-                f"/api/timedtexttracks/{timed_text_track.id}/"
+                self._delete_url(timed_text_track.video, timed_text_track),
             )
 
             self.assertEqual(response.status_code, 401)
@@ -110,7 +116,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         )
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{timed_text_track.id}/",
+            self._delete_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -130,7 +136,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory()
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -158,7 +164,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -186,7 +192,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -215,7 +221,7 @@ class TimedTextTrackDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
@@ -244,9 +250,17 @@ class TimedTextTrackDeleteAPITest(TestCase):
         jwt_token = UserAccessTokenFactory(user=user)
 
         response = self.client.delete(
-            f"/api/timedtexttracks/{track.id}/",
+            self._delete_url(video, track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(TimedTextTrack.objects.count(), 0)
+
+
+class TimedTextTrackDeleteAPIOldTest(TimedTextTrackDeleteAPITest):
+    """Test the delete API of the timed text track object with old URLs."""
+
+    def _delete_url(self, video, track):
+        """Return the url to delete a timed text track."""
+        return f"/api/timedtexttracks/{track.id}/"

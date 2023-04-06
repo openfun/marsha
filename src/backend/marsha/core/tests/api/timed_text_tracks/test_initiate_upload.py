@@ -15,17 +15,20 @@ from marsha.core.simple_jwt.factories import (
 )
 
 
-class TimedTextTrackInitiateUIploadAPITest(TestCase):
+class TimedTextTrackInitiateUploadAPITest(TestCase):
     """Test the initiate-upload API of the timed text track object."""
 
     maxDiff = None
+
+    def _post_url(self, video, track):
+        return f"/api/videos/{video.pk}/timedtexttracks/{track.id}/initiate-upload/"
 
     def test_api_timed_text_track_initiate_upload_anonymous_user(self):
         """Anonymous users should not be allowed to initiate an upload."""
         timed_text_track = TimedTextTrackFactory()
 
         response = self.client.post(
-            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
+            self._post_url(timed_text_track.video, timed_text_track),
         )
 
         self.assertEqual(response.status_code, 401)
@@ -64,7 +67,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+                self._post_url(timed_text_track.video, timed_text_track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -114,7 +117,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
 
         # Try initiating an upload for a timed_text_track linked to another video
         response = self.client.post(
-            f"/api/timedtexttracks/{other_ttt_for_other_video.id}/initiate-upload/",
+            self._post_url(other_ttt_for_other_video.video, other_ttt_for_other_video),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -133,7 +136,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ]:
             self.client.login(username=user.username, password="test")
             response = self.client.post(
-                f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/"
+                self._post_url(timed_text_track.video, timed_text_track),
             )
             self.assertEqual(response.status_code, 401)
             content = json.loads(response.content)
@@ -151,7 +154,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         )
 
         response = self.client.post(
-            f"/api/timedtexttracks/{timed_text_track.id}/initiate-upload/",
+            self._post_url(timed_text_track.video, timed_text_track),
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
@@ -182,7 +185,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -221,7 +224,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -294,7 +297,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -368,7 +371,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
         self.assertEqual(response.status_code, 403)
@@ -408,7 +411,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -472,7 +475,7 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
         ) as mock_dt:
             mock_dt.utcnow = mock.Mock(return_value=now)
             response = self.client.post(
-                f"/api/timedtexttracks/{track.id}/initiate-upload/",
+                self._post_url(track.video, track),
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
                 data={
                     "filename": "foo",
@@ -485,3 +488,10 @@ class TimedTextTrackInitiateUIploadAPITest(TestCase):
             response.json(),
             {"size": ["file too large, max size allowed is 10 Bytes"]},
         )
+
+
+class TimedTextTrackInitiateUploadAPIOldTest(TimedTextTrackInitiateUploadAPITest):
+    """Test the create API of the liveSession object with old URLs."""
+
+    def _post_url(self, video, track):
+        return f"/api/timedtexttracks/{track.id}/initiate-upload/"
