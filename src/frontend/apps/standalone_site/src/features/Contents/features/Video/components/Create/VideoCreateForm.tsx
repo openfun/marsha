@@ -72,12 +72,8 @@ const VideoCreateForm = () => {
   });
   const [newVideo, setNewVideo] = useState<Video>();
   const [isUploading, setIsUploading] = useState(false);
-  const { errorPlaylist, selectPlaylist } = useSelectPlaylist((results) => {
-    setVideo((value) => ({
-      ...value,
-      playlist: results[0].id,
-    }));
-  });
+  const { errorPlaylist, selectPlaylist, playlistResponse } =
+    useSelectPlaylist();
   const {
     mutate: createVideo,
     error: errorVideo,
@@ -94,6 +90,17 @@ const VideoCreateForm = () => {
       }
     },
   });
+
+  useEffect(() => {
+    if (!playlistResponse?.results) {
+      return;
+    }
+
+    setVideo((value) => ({
+      ...value,
+      playlist: playlistResponse.results[0].id,
+    }));
+  }, [playlistResponse?.results]);
 
   useEffect(() => {
     if (
