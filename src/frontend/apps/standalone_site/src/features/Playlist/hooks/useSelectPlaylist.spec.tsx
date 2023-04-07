@@ -40,10 +40,7 @@ describe('<useSelectPlaylist />', () => {
 
     const useSelectPlaylistSuccess = new Deferred();
     const { result, waitForNextUpdate } = renderHook(
-      () =>
-        useSelectPlaylist((results) => {
-          useSelectPlaylistSuccess.resolve(results);
-        }),
+      () => useSelectPlaylist(),
       {
         wrapper: Wrapper,
       },
@@ -51,11 +48,17 @@ describe('<useSelectPlaylist />', () => {
 
     await waitForNextUpdate();
 
+    useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
     expect(result.current.errorPlaylist).toBeNull();
-    expect(await useSelectPlaylistSuccess.promise).toEqual([
-      { id: 'some-playlist-id', title: 'some playlist title' },
-      { id: 'an-other-playlist', title: 'an other title' },
-    ]);
+    expect(await useSelectPlaylistSuccess.promise).toEqual({
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        { id: 'some-playlist-id', title: 'some playlist title' },
+        { id: 'an-other-playlist', title: 'an other title' },
+      ],
+    });
 
     render(
       <Form onSubmitError={() => ({})} onSubmit={() => {}}>
@@ -92,10 +95,7 @@ describe('<useSelectPlaylist />', () => {
 
     const useSelectPlaylistSuccess = new Deferred();
     const { result, waitForNextUpdate } = renderHook(
-      () =>
-        useSelectPlaylist((results) => {
-          useSelectPlaylistSuccess.resolve(results);
-        }),
+      () => useSelectPlaylist(),
       {
         wrapper: Wrapper,
       },
@@ -103,6 +103,7 @@ describe('<useSelectPlaylist />', () => {
 
     await waitForNextUpdate();
 
+    useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
     expect(result.current.errorPlaylist?.error).toEqual({
       code: 'exception',
       message: 'Failed to get list of playlists.',

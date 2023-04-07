@@ -1,5 +1,10 @@
-import { Select } from 'grommet';
-import { Playlist, FormField } from 'lib-components';
+import {
+  Select,
+  FormField,
+  FormFieldExtendedProps,
+  SelectExtendedProps,
+} from 'grommet';
+import { Playlist } from 'lib-components';
 import { useState, useEffect, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -15,10 +20,17 @@ const messages = defineMessages({
   },
 });
 
-const useSelectPlaylist = (onSuccess: (playlists: Playlist[]) => void) => {
+interface UseSelectPlaylistOptions {
+  formFieldProps?: Partial<FormFieldExtendedProps>;
+  selectProps?: Partial<SelectExtendedProps>;
+}
+
+const useSelectPlaylist = ({
+  formFieldProps,
+  selectProps,
+}: UseSelectPlaylistOptions = {}) => {
   const intl = useIntl();
   const [currentPlaylistPage, setCurrentPlaylistPage] = useState(0);
-  const [isPlaylistInit, setIsPlaylistInit] = useState(false);
   const { data: playlistResponse, error: errorPlaylist } = usePlaylists(
     {
       offset: `${currentPlaylistPage * ITEM_PER_PAGE}`,
@@ -29,18 +41,6 @@ const useSelectPlaylist = (onSuccess: (playlists: Playlist[]) => void) => {
     {
       keepPreviousData: true,
       staleTime: 20000,
-      onSuccess: (data) => {
-        if (isPlaylistInit) {
-          return;
-        }
-
-        if (!data || data.count === 0) {
-          return;
-        }
-
-        setIsPlaylistInit(true);
-        onSuccess(data.results);
-      },
     },
   );
   const [playlists, setPlaylists] = useState<Playlist[]>([]);
@@ -63,6 +63,7 @@ const useSelectPlaylist = (onSuccess: (playlists: Playlist[]) => void) => {
         htmlFor="select-playlist-id"
         name="playlist"
         required
+        {...formFieldProps}
       >
         <Select
           id="select-playlist-id"
@@ -82,15 +83,17 @@ const useSelectPlaylist = (onSuccess: (playlists: Playlist[]) => void) => {
             }
           }}
           dropHeight="medium"
+          {...selectProps}
         />
       </FormField>
     ),
-    [intl, playlistResponse, playlists],
+    [formFieldProps, intl, playlistResponse, playlists, selectProps],
   );
 
   return {
     errorPlaylist,
     selectPlaylist,
+    playlistResponse,
   };
 };
 
