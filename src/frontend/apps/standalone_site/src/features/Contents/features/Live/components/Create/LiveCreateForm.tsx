@@ -150,6 +150,7 @@ const LiveCreateForm = () => {
             history.push(livePath);
           }}
           isSubmitting={isCreating || isUpdatingToLive}
+          isDisabled={!live.title || !live.playlist}
         />
       </Form>
     </Fragment>

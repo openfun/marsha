@@ -144,6 +144,7 @@ const ClassroomCreateForm = () => {
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => history.push(classroomPath)}
           isSubmitting={isCreating}
+          isDisabled={!classroom.title || !classroom.playlist}
         />
       </Form>
     </Fragment>
