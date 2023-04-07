@@ -1,6 +1,6 @@
 import {
   Select as SelectGrommet,
-  SelectProps as SelectPropsGrommet,
+  SelectExtendedProps as SelectPropsGrommet,
 } from 'grommet';
 import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
 

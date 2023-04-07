@@ -50,7 +50,7 @@ describe('<App />', () => {
       currentUser: undefined,
     });
 
-    fetchMock.get('/api/classrooms/?limit=5&offset=0', someResponse);
+    fetchMock.get('/api/classrooms/?limit=5&offset=0&playlist=', someResponse);
     fetchMock.get('/api/config/', frontendConfiguration);
   });
 
