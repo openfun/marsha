@@ -1,8 +1,9 @@
 import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
 import { useJwt, videoMockFactory } from 'lib-components';
-import { render } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
@@ -30,12 +31,29 @@ const someResponse = {
   ],
 };
 
+const playlistsResponse = {
+  count: 2,
+  next: null,
+  previous: null,
+  results: [
+    { id: 'some-playlist-id', title: 'some playlist title' },
+    { id: 'an-other-playlist-id', title: 'an other title' },
+  ],
+};
+
+const deferredPlaylists = new Deferred();
+
 describe('<Videos/>', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'token',
       getDecodedJwt: mockGetDecodedJwt,
     });
+
+    fetchMock.get(
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
+      deferredPlaylists.promise,
+    );
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -56,7 +74,7 @@ describe('<Videos/>', () => {
     });
 
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -81,7 +99,7 @@ describe('<Videos/>', () => {
       results: [],
     };
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
       someStuff,
     );
 
@@ -94,7 +112,7 @@ describe('<Videos/>', () => {
 
   test('render Videos', async () => {
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
       someResponse,
     );
 
@@ -109,7 +127,7 @@ describe('<Videos/>', () => {
 
   test('render pagination', async () => {
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
       {
         ...someResponse,
         count: 111,
@@ -125,7 +143,7 @@ describe('<Videos/>', () => {
 
   test('render without pagination', async () => {
     fetchMock.get(
-      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
       {
         ...someResponse,
         count: 111,
@@ -143,7 +161,7 @@ describe('<Videos/>', () => {
 
   test('render with limit', async () => {
     fetchMock.get(
-      '/api/videos/?limit=1&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=1&offset=0&ordering=-created_on&is_live=false&playlist=',
       {
         ...someResponse,
       },
@@ -156,7 +174,7 @@ describe('<Videos/>', () => {
 
   test('api limit depend the responsive', async () => {
     fetchMock.get(
-      '/api/videos/?limit=4&offset=0&ordering=-created_on&is_live=false',
+      '/api/videos/?limit=4&offset=0&ordering=-created_on&is_live=false&playlist=',
       {
         ...someResponse,
         count: 111,
@@ -175,5 +193,46 @@ describe('<Videos/>', () => {
     );
 
     expect(await screen.findByText('New video title')).toBeInTheDocument();
+  });
+
+  test('filter playlist state on api call', async () => {
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=an-other-playlist-id',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    deferredPlaylists.resolve(playlistsResponse);
+
+    render(<Videos />);
+
+    screen
+      .getByRole('button', {
+        name: /Filter/i,
+      })
+      .click();
+
+    userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.',
+      }),
+    );
+
+    userEvent.click(
+      await screen.findByRole('option', { name: 'an other title' }),
+    );
+
+    expect(fetchMock.lastUrl()).toEqual(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=an-other-playlist-id',
+    );
   });
 });

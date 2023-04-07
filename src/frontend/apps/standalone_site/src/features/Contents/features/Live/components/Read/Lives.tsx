@@ -1,9 +1,13 @@
 import { useVideos, VideosOrderType } from 'lib-video';
-import { useState } from 'react';
+import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { REACT_QUERY_CONF_API } from 'conf/global';
-import { ContentsWrapper, useContentPerPage } from 'features/Contents/';
+import {
+  ContentsFilter,
+  ContentsWrapper,
+  useContentPerPage,
+} from 'features/Contents/';
 
 import Live from './Live';
 
@@ -24,6 +28,11 @@ const Lives = ({ withPagination = true, limit }: LivesProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
   const contentPerPage = useContentPerPage();
+  const [filter, setFilter] = useState<{
+    playlist: string;
+  }>({
+    playlist: '',
+  });
 
   const apiResponse = useVideos(
     {
@@ -31,21 +40,25 @@ const Lives = ({ withPagination = true, limit }: LivesProps) => {
       limit: `${limit || contentPerPage}`,
       ordering: VideosOrderType.BY_CREATED_ON_REVERSED,
       is_live: 'true',
+      playlist: filter.playlist,
     },
     REACT_QUERY_CONF_API,
   );
 
   return (
-    <ContentsWrapper
-      apiResponse={apiResponse}
-      dataComponent={(live, index) => (
-        <Live key={`live-${live.id}-${index}`} live={live} />
-      )}
-      currentPage={currentPage}
-      setCurrentPage={(page) => setCurrentPage(page)}
-      noContentMessage={intl.formatMessage(messages.NoLive)}
-      withPagination={withPagination}
-    />
+    <Fragment>
+      <ContentsFilter setFilter={(newFilter) => setFilter(newFilter)} />
+      <ContentsWrapper
+        apiResponse={apiResponse}
+        dataComponent={(live, index) => (
+          <Live key={`live-${live.id}-${index}`} live={live} />
+        )}
+        currentPage={currentPage}
+        setCurrentPage={(page) => setCurrentPage(page)}
+        noContentMessage={intl.formatMessage(messages.NoLive)}
+        withPagination={withPagination}
+      />
+    </Fragment>
   );
 };
 

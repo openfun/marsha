@@ -1,4 +1,5 @@
 export { default as Contents } from './components/Contents/Contents';
+export { default as ContentsFilter } from './components/ContentsFilter/ContentsFilter';
 export { default as ContentsHeader } from './components/ContentsHeader/ContentsHeader';
 export { default as ContentsRouter } from './components/ContentsRouter/ContentsRouter';
 export { default as ContentsShuffle } from './components/ContentsShuffle/ContentsShuffle';

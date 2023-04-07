@@ -125,6 +125,16 @@ export const chatFonts: { primary: Font; secondary: Font; tertiary: Font } = {
   },
 };
 
+/**
+ * Breakpoints:
+ * - xxsmall: 380px
+ * - xsmall: 540px
+ * - small: 768px
+ * - xsmedium: 1024px
+ * - smedium: 1280px
+ * - medium: 1536px
+ * - large: 9999px
+ */
 export enum Breakpoints {
   xxsmall = 'xxsmall',
   xsmall = 'xsmall',
@@ -152,7 +162,7 @@ export const theme: ThemeType = {
       background: { color: 'white' },
       border: { color: 'brand', width: '1px', radius: '4px' },
       color: 'blue-active',
-      padding: { vertical: 'xsmall', horizontal: 'small' },
+      padding: { vertical: 'small', horizontal: 'medium' },
     },
     primary: {
       background: { color: 'blue-button' },
@@ -166,7 +176,7 @@ export const theme: ThemeType = {
       background: { color: 'transparent' },
       border: { color: 'brand', width: '1px', radius: '4px' },
       color: 'blue-active',
-      padding: { vertical: 'xsmall', horizontal: 'small' },
+      padding: { vertical: 'small', horizontal: 'medium' },
     },
     border: {
       radius: '4px',
