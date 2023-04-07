@@ -60,9 +60,13 @@ describe('<ClassRoomCreateForm />', () => {
 
     const button = screen.getByRole('button', { name: /Add Classroom/i });
 
+    expect(button).toBeDisabled();
+
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
       target: { value: 'my title' },
     });
+
+    expect(button).toBeDisabled();
 
     userEvent.click(
       await screen.findByRole('button', {

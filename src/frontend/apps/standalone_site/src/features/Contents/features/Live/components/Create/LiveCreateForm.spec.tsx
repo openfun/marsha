@@ -61,9 +61,15 @@ describe('<LiveCreateForm />', () => {
 
     deferredPlaylists.resolve(playlistsResponse);
 
+    const button = screen.getByRole('button', { name: /Add Webinar/i });
+
+    expect(button).toBeDisabled();
+
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
       target: { value: 'my title' },
     });
+
+    expect(button).toBeDisabled();
 
     userEvent.click(
       await screen.findByRole('button', {
@@ -81,11 +87,7 @@ describe('<LiveCreateForm />', () => {
       }),
     ).toBeInTheDocument();
 
-    await waitFor(() =>
-      expect(
-        screen.getByRole('button', { name: /Add Webinar/i }),
-      ).not.toBeDisabled(),
-    );
+    expect(button).not.toBeDisabled();
   });
 
   test('fields are posted correctly', async () => {
