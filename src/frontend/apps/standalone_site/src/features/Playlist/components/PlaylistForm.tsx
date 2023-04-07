@@ -299,6 +299,7 @@ export const PlaylistForm = ({
               : undefined
           }
           isSubmitting={isSubmitting}
+          isDisabled={!formValues.name || !formValues.organizationId}
         />
         {actions}
       </Form>

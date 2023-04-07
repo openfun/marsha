@@ -60,11 +60,13 @@ describe('<PlaylistForm />', () => {
     expect(screen.getByLabelText('Organization*required')).toBeInTheDocument();
     expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
 
-    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+    const submitButton = screen.getByRole('button', { name: 'Save' });
+    expect(submitButton).toBeInTheDocument();
+    expect(submitButton).toBeDisabled();
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
   });
 
-  it('selects the first oranization if any', async () => {
+  it('selects the first organization if any', async () => {
     fetchMock.mock('/api/organizations/?limit=20&offset=0', {
       count: 2,
       results: [
@@ -144,6 +146,8 @@ describe('<PlaylistForm />', () => {
     expect(fetchMock.calls()[0][0]).toEqual(
       '/api/organizations/?limit=20&offset=0',
     );
+
+    expect(screen.queryByRole('button', { name: 'Save' })).not.toBeDisabled();
   });
 
   it('loads organizations until it find the initial one', async () => {
