@@ -1,8 +1,9 @@
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
 import { useJwt } from 'lib-components';
-import { render } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
@@ -30,12 +31,29 @@ const someResponse = {
   ],
 };
 
+const playlistsResponse = {
+  count: 2,
+  next: null,
+  previous: null,
+  results: [
+    { id: 'some-playlist-id', title: 'some playlist title' },
+    { id: 'an-other-playlist-id', title: 'an other title' },
+  ],
+};
+
+const deferredPlaylists = new Deferred();
+
 describe('<ClassRooms/>', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'token',
       getDecodedJwt: mockGetDecodedJwt,
     });
+
+    fetchMock.get(
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
+      deferredPlaylists.promise,
+    );
   });
   afterEach(() => {
     jest.clearAllMocks();
@@ -56,7 +74,7 @@ describe('<ClassRooms/>', () => {
     });
 
     fetchMock.get(
-      '/api/classrooms/?limit=20&offset=0',
+      '/api/classrooms/?limit=20&offset=0&playlist=',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -80,7 +98,7 @@ describe('<ClassRooms/>', () => {
       previous: null,
       results: [],
     };
-    fetchMock.get('/api/classrooms/?limit=20&offset=0', someStuff);
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', someStuff);
 
     render(<ClassRooms />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
@@ -90,7 +108,7 @@ describe('<ClassRooms/>', () => {
   });
 
   test('render ClassRooms', async () => {
-    fetchMock.get('/api/classrooms/?limit=20&offset=0', someResponse);
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', someResponse);
 
     render(<ClassRooms />);
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
@@ -106,10 +124,11 @@ describe('<ClassRooms/>', () => {
     expect(
       screen.queryByLabelText('Pagination Navigation'),
     ).not.toBeInTheDocument();
+    expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
   test('render pagination', async () => {
-    fetchMock.get('/api/classrooms/?limit=20&offset=0', {
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', {
       ...someResponse,
       count: 111,
     });
@@ -122,7 +141,7 @@ describe('<ClassRooms/>', () => {
   });
 
   test('render without pagination', async () => {
-    fetchMock.get('/api/classrooms/?limit=20&offset=0', {
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', {
       ...someResponse,
       count: 111,
     });
@@ -137,7 +156,7 @@ describe('<ClassRooms/>', () => {
   });
 
   test('render with limit', async () => {
-    fetchMock.get('/api/classrooms/?limit=1&offset=0', {
+    fetchMock.get('/api/classrooms/?limit=1&offset=0&playlist=', {
       ...someResponse,
     });
 
@@ -148,7 +167,7 @@ describe('<ClassRooms/>', () => {
   });
 
   test('api limit depend the responsive', async () => {
-    fetchMock.get('/api/classrooms/?limit=4&offset=0', {
+    fetchMock.get('/api/classrooms/?limit=4&offset=0&playlist=', {
       ...someResponse,
       count: 111,
     });
@@ -165,5 +184,44 @@ describe('<ClassRooms/>', () => {
     );
 
     expect(await screen.findByText('some welcome text')).toBeInTheDocument();
+  });
+
+  test('filter playlist state on api call', async () => {
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', {
+      ...someResponse,
+      count: 111,
+    });
+
+    fetchMock.get(
+      '/api/classrooms/?limit=20&offset=0&playlist=an-other-playlist-id',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    deferredPlaylists.resolve(playlistsResponse);
+
+    render(<ClassRooms />);
+
+    screen
+      .getByRole('button', {
+        name: /Filter/i,
+      })
+      .click();
+
+    userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.',
+      }),
+    );
+
+    userEvent.click(
+      await screen.findByRole('option', { name: 'an other title' }),
+    );
+
+    expect(fetchMock.lastUrl()).toEqual(
+      '/api/classrooms/?limit=20&offset=0&playlist=an-other-playlist-id',
+    );
   });
 });

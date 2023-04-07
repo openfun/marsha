@@ -33,9 +33,10 @@ import { ClassroomDocumentMetadata } from '@lib-classroom/types/ClassroomAppData
 
 type ClassroomsResponse = APIList<ClassroomLite>;
 type UseClassroomsParams = {
-  organization?: Maybe<string>;
-  limit?: Maybe<string>;
-  offset?: Maybe<string>;
+  organization?: string;
+  limit?: string;
+  offset?: string;
+  playlist?: string;
 };
 export const useClassrooms = (
   params: UseClassroomsParams,

@@ -8,8 +8,14 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- standalone website:
+  - filter contents by playlist (#2176)
+
 ### Changed
 
+- standalone website:
   - Improve architecture Contents feature (#2183)
 
 ## [4.0.0-beta.20] - 2023-04-20
