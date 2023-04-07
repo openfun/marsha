@@ -2,7 +2,7 @@ import { Text, TextArea, TextInput, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
 import { Form, FormField } from 'lib-components';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
@@ -64,12 +64,8 @@ const ClassroomCreateForm = () => {
   const intl = useIntl();
   const history = useHistory();
   const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
-  const { errorPlaylist, selectPlaylist } = useSelectPlaylist((results) => {
-    setClassroom((value) => ({
-      ...value,
-      playlist: results[0].id,
-    }));
-  });
+  const { errorPlaylist, selectPlaylist, playlistResponse } =
+    useSelectPlaylist();
   const {
     mutate: createClassroom,
     error: errorClassroom,
@@ -87,6 +83,17 @@ const ClassroomCreateForm = () => {
   const errorMessages = {
     [ETypeError.PERMISSION]: intl.formatMessage(messages.ErrorPermission),
   };
+
+  useEffect(() => {
+    if (!playlistResponse?.results) {
+      return;
+    }
+
+    setClassroom((value) => ({
+      ...value,
+      playlist: playlistResponse.results[0].id,
+    }));
+  }, [playlistResponse?.results]);
 
   return (
     <Fragment>

@@ -3,7 +3,7 @@ import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import { Form, FormField, LiveModeType, useResponsive } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
-import { Fragment, useState } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
@@ -59,12 +59,8 @@ const LiveCreateForm = () => {
     title: '',
     live_type: LiveModeType.JITSI,
   });
-  const { errorPlaylist, selectPlaylist } = useSelectPlaylist((results) => {
-    setLive((value) => ({
-      ...value,
-      playlist: results[0].id,
-    }));
-  });
+  const { errorPlaylist, selectPlaylist, playlistResponse } =
+    useSelectPlaylist();
   const {
     mutate: createLive,
     error: errorVideo,
@@ -83,6 +79,17 @@ const LiveCreateForm = () => {
       history.push(`${livePath}/${data.id}`);
     },
   });
+
+  useEffect(() => {
+    if (!playlistResponse?.results) {
+      return;
+    }
+
+    setLive((value) => ({
+      ...value,
+      playlist: playlistResponse.results[0].id,
+    }));
+  }, [playlistResponse?.results]);
 
   return (
     <Fragment>
