@@ -16,6 +16,10 @@ const playlistsResponse = {
 };
 
 describe('<ContentsFilter />', () => {
+  afterEach(() => {
+    fetchMock.restore();
+  });
+
   test('the render and interactions', async () => {
     const deferredPlaylists = new Deferred();
     fetchMock.get(
@@ -26,7 +30,12 @@ describe('<ContentsFilter />', () => {
     let filter = {
       playlist: '',
     };
-    render(<ContentsFilter setFilter={(_filter) => (filter = _filter)} />);
+    render(
+      <ContentsFilter
+        filter={filter}
+        setFilter={(_filter) => (filter = _filter)}
+      />,
+    );
 
     deferredPlaylists.resolve(playlistsResponse);
 
@@ -47,5 +56,27 @@ describe('<ContentsFilter />', () => {
     );
 
     expect(filter.playlist).toBe('an-other-playlist-id');
+  });
+
+  test('the badge render', () => {
+    const deferredPlaylists = new Deferred();
+    fetchMock.get(
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
+      deferredPlaylists.promise,
+    );
+
+    let filter = {
+      playlist: 'my playlist',
+      futurFilter: 'my futur filter',
+    } as any;
+    render(
+      <ContentsFilter
+        filter={filter}
+        setFilter={(_filter) => (filter = _filter)}
+      />,
+    );
+
+    deferredPlaylists.resolve(playlistsResponse);
+    expect(screen.getByText('2')).toBeInTheDocument();
   });
 });
