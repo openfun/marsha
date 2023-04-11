@@ -237,4 +237,20 @@ describe('<Lives/>', () => {
       '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=true&playlist=an-other-playlist-id',
     );
   });
+
+  test('render without filter', async () => {
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=true&playlist=',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    render(<Lives withFilter={false} />);
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Filter')).not.toBeInTheDocument();
+    });
+  });
 });

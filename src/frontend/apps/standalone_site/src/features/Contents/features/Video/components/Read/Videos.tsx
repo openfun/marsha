@@ -1,10 +1,10 @@
 import { useVideos, VideosOrderType } from 'lib-video';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { REACT_QUERY_CONF_API } from 'conf/global';
 import {
-  ContentsFilter,
+  ContentFilter,
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
@@ -21,15 +21,18 @@ const messages = defineMessages({
 
 interface VideosProps {
   withPagination?: boolean;
+  withFilter?: boolean;
   limit?: number;
 }
 
-const Videos = ({ withPagination = true, limit }: VideosProps) => {
+const Videos = ({
+  withPagination = true,
+  withFilter = true,
+  limit,
+}: VideosProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
-  const [filter, setFilter] = useState<{
-    playlist: string;
-  }>({
+  const [filter, setFilter] = useState<ContentFilter>({
     playlist: '',
   });
   const contentPerPage = useContentPerPage();
@@ -46,19 +49,18 @@ const Videos = ({ withPagination = true, limit }: VideosProps) => {
   );
 
   return (
-    <Fragment>
-      <ContentsFilter setFilter={(newFilter) => setFilter(newFilter)} />
-      <ContentsWrapper
-        apiResponse={apiResponse}
-        dataComponent={(video, index) => (
-          <Video key={`video-${video.id}-${index}`} video={video} />
-        )}
-        currentPage={currentPage}
-        setCurrentPage={(page) => setCurrentPage(page)}
-        noContentMessage={intl.formatMessage(messages.NoVideo)}
-        withPagination={withPagination}
-      />
-    </Fragment>
+    <ContentsWrapper
+      apiResponse={apiResponse}
+      dataComponent={(video, index) => (
+        <Video key={`video-${video.id}-${index}`} video={video} />
+      )}
+      currentPage={currentPage}
+      setCurrentPage={(page) => setCurrentPage(page)}
+      setFilter={(newFilter) => setFilter(newFilter)}
+      noContentMessage={intl.formatMessage(messages.NoVideo)}
+      withPagination={withPagination}
+      withFilter={withFilter}
+    />
   );
 };
 

@@ -1,10 +1,10 @@
 import { useClassrooms } from 'lib-classroom';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { REACT_QUERY_CONF_API } from 'conf/global';
 import {
-  ContentsFilter,
+  ContentFilter,
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
@@ -21,16 +21,19 @@ const messages = defineMessages({
 
 interface ClassRoomsProps {
   withPagination?: boolean;
+  withFilter?: boolean;
   limit?: number;
 }
 
-const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
+const ClassRooms = ({
+  withPagination = true,
+  withFilter = true,
+  limit,
+}: ClassRoomsProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
   const contentPerPage = useContentPerPage();
-  const [filter, setFilter] = useState<{
-    playlist: string;
-  }>({
+  const [filter, setFilter] = useState<ContentFilter>({
     playlist: '',
   });
 
@@ -44,22 +47,21 @@ const ClassRooms = ({ withPagination = true, limit }: ClassRoomsProps) => {
   );
 
   return (
-    <Fragment>
-      <ContentsFilter setFilter={(newFilter) => setFilter(newFilter)} />
-      <ContentsWrapper
-        apiResponse={apiResponse}
-        dataComponent={(classroom, index) => (
-          <ClassRoomItem
-            key={`classroom-${classroom.id}-${index}`}
-            classroom={classroom}
-          />
-        )}
-        currentPage={currentPage}
-        setCurrentPage={(page) => setCurrentPage(page)}
-        noContentMessage={intl.formatMessage(messages.NoClassroom)}
-        withPagination={withPagination}
-      />
-    </Fragment>
+    <ContentsWrapper
+      apiResponse={apiResponse}
+      dataComponent={(classroom, index) => (
+        <ClassRoomItem
+          key={`classroom-${classroom.id}-${index}`}
+          classroom={classroom}
+        />
+      )}
+      currentPage={currentPage}
+      setCurrentPage={(page) => setCurrentPage(page)}
+      setFilter={(newFilter) => setFilter(newFilter)}
+      noContentMessage={intl.formatMessage(messages.NoClassroom)}
+      withPagination={withPagination}
+      withFilter={withFilter}
+    />
   );
 };
 

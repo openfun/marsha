@@ -224,4 +224,17 @@ describe('<ClassRooms/>', () => {
       '/api/classrooms/?limit=20&offset=0&playlist=an-other-playlist-id',
     );
   });
+
+  test('render without filter', async () => {
+    fetchMock.get('/api/classrooms/?limit=20&offset=0&playlist=', {
+      ...someResponse,
+      count: 111,
+    });
+
+    render(<ClassRooms withFilter={false} />);
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Filter')).not.toBeInTheDocument();
+    });
+  });
 });
