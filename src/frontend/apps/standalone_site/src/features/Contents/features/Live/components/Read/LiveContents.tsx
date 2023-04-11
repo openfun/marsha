@@ -37,7 +37,7 @@ const LiveContents = () => {
           </StyledLink>
         </Text>
       </BoxText>
-      <Lives withPagination={false} limit={4} />
+      <Lives withPagination={false} withFilter={false} limit={4} />
     </Box>
   );
 };

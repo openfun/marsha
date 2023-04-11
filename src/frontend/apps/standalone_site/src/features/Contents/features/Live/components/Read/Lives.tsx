@@ -1,10 +1,10 @@
 import { useVideos, VideosOrderType } from 'lib-video';
-import { Fragment, useState } from 'react';
+import { useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { REACT_QUERY_CONF_API } from 'conf/global';
 import {
-  ContentsFilter,
+  ContentFilter,
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
@@ -21,16 +21,19 @@ const messages = defineMessages({
 
 interface LivesProps {
   withPagination?: boolean;
+  withFilter?: boolean;
   limit?: number;
 }
 
-const Lives = ({ withPagination = true, limit }: LivesProps) => {
+const Lives = ({
+  withPagination = true,
+  withFilter = true,
+  limit,
+}: LivesProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
   const contentPerPage = useContentPerPage();
-  const [filter, setFilter] = useState<{
-    playlist: string;
-  }>({
+  const [filter, setFilter] = useState<ContentFilter>({
     playlist: '',
   });
 
@@ -46,19 +49,18 @@ const Lives = ({ withPagination = true, limit }: LivesProps) => {
   );
 
   return (
-    <Fragment>
-      <ContentsFilter setFilter={(newFilter) => setFilter(newFilter)} />
-      <ContentsWrapper
-        apiResponse={apiResponse}
-        dataComponent={(live, index) => (
-          <Live key={`live-${live.id}-${index}`} live={live} />
-        )}
-        currentPage={currentPage}
-        setCurrentPage={(page) => setCurrentPage(page)}
-        noContentMessage={intl.formatMessage(messages.NoLive)}
-        withPagination={withPagination}
-      />
-    </Fragment>
+    <ContentsWrapper
+      apiResponse={apiResponse}
+      dataComponent={(live, index) => (
+        <Live key={`live-${live.id}-${index}`} live={live} />
+      )}
+      currentPage={currentPage}
+      setCurrentPage={(page) => setCurrentPage(page)}
+      setFilter={(newFilter) => setFilter(newFilter)}
+      noContentMessage={intl.formatMessage(messages.NoLive)}
+      withPagination={withPagination}
+      withFilter={withFilter}
+    />
   );
 };
 

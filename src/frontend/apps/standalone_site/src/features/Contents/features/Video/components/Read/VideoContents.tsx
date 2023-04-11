@@ -37,7 +37,7 @@ const VideoContents = () => {
           </StyledLink>
         </Text>
       </BoxText>
-      <Videos withPagination={false} limit={4} />
+      <Videos withPagination={false} withFilter={false} limit={4} />
     </Box>
   );
 };
