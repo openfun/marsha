@@ -37,7 +37,7 @@ const ClassRoomContents = () => {
           </StyledLink>
         </Text>
       </BoxText>
-      <ClassRooms withPagination={false} limit={4} />
+      <ClassRooms withPagination={false} withFilter={false} limit={4} />
     </Box>
   );
 };

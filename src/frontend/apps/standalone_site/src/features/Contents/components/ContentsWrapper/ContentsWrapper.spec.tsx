@@ -11,11 +11,13 @@ const TestComponent = ({
   isError = false,
   results = [],
   withPagination = true,
+  withFilter = true,
 }: {
   isLoading?: boolean;
   isError?: boolean;
   results?: string[];
   withPagination?: boolean;
+  withFilter?: boolean;
 }) => {
   return (
     <ContentsWrapper
@@ -34,8 +36,12 @@ const TestComponent = ({
       setCurrentPage={(page) => {
         page;
       }}
+      setFilter={(filter) => {
+        filter;
+      }}
       noContentMessage="No Content Message"
       withPagination={withPagination}
+      withFilter={withFilter}
     />
   );
 };
@@ -46,6 +52,7 @@ describe('<ContentsWrapper />', () => {
     expect(
       screen.getByText(/Sorry, an error has occurred./),
     ).toBeInTheDocument();
+    expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
   test('renders ContentsWrapper with Loading', () => {
@@ -55,6 +62,7 @@ describe('<ContentsWrapper />', () => {
         name: /spinner/i,
       }),
     ).toBeInTheDocument();
+    expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
   test('renders ContentsWrapper with nothing to display', () => {
@@ -64,6 +72,7 @@ describe('<ContentsWrapper />', () => {
 
   test('renders ContentsWrapper with results', () => {
     render(<TestComponent results={['john', 'kent', 'louis']} />);
+    expect(screen.getByText('Filter')).toBeInTheDocument();
     expect(screen.getByText(/john/)).toBeInTheDocument();
     expect(screen.getByText(/kent/)).toBeInTheDocument();
     expect(screen.getByText(/louis/)).toBeInTheDocument();
@@ -71,6 +80,7 @@ describe('<ContentsWrapper />', () => {
 
   test('renders ContentsWrapper with pagination', () => {
     render(<TestComponent results={['john', 'kent', 'louis']} />);
+    expect(screen.getByText('Filter')).toBeInTheDocument();
     expect(screen.getByLabelText(/Go to next page/)).toBeInTheDocument();
   });
 
@@ -81,6 +91,14 @@ describe('<ContentsWrapper />', () => {
         withPagination={false}
       />,
     );
+    expect(screen.getByText('Filter')).toBeInTheDocument();
     expect(screen.queryByLabelText(/Go to next page/)).not.toBeInTheDocument();
+  });
+
+  test('renders ContentsWrapper without filter', () => {
+    render(
+      <TestComponent results={['john', 'kent', 'louis']} withFilter={false} />,
+    );
+    expect(screen.queryByText('Filter')).not.toBeInTheDocument();
   });
 });

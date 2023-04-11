@@ -123,6 +123,7 @@ describe('<Videos/>', () => {
     expect(
       screen.queryByLabelText('Pagination Navigation'),
     ).not.toBeInTheDocument();
+    expect(screen.getByText('Filter')).toBeInTheDocument();
   });
 
   test('render pagination', async () => {
@@ -234,5 +235,21 @@ describe('<Videos/>', () => {
     expect(fetchMock.lastUrl()).toEqual(
       '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=an-other-playlist-id',
     );
+  });
+
+  test('render without filter', async () => {
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    render(<Videos withFilter={false} />);
+
+    await waitFor(() => {
+      expect(screen.queryByLabelText('Filter')).not.toBeInTheDocument();
+    });
   });
 });

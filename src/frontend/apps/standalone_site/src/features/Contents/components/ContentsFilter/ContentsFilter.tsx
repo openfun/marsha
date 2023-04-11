@@ -61,15 +61,15 @@ const ButtonFilter = styled(Button)<ButtonFilterProps>`
     }`}
 `;
 
-interface ContentFilter {
+export interface ContentFilter {
   playlist: string;
 }
 
-interface ContentsFilter {
+export interface ContentsFilterProps {
   setFilter: (filter: ContentFilter) => void;
 }
 
-const ContentsFilter = ({ setFilter }: ContentsFilter) => {
+const ContentsFilter = ({ setFilter }: ContentsFilterProps) => {
   const intl = useIntl();
   const [showFilter, setShowFilter] = useState(false);
   const [playlistOption, setPlaylistOption] = useState<Partial<Playlist>[]>([]);
