@@ -56,6 +56,7 @@ const ClassRooms = ({
         />
       )}
       currentPage={currentPage}
+      filter={filter}
       setCurrentPage={(page) => setCurrentPage(page)}
       setFilter={(newFilter) => setFilter(newFilter)}
       noContentMessage={intl.formatMessage(messages.NoClassroom)}

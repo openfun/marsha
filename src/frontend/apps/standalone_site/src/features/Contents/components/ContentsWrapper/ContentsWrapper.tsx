@@ -25,6 +25,7 @@ const ContentsWrapper = <ContentType,>({
   apiResponse,
   dataComponent,
   currentPage,
+  filter,
   setCurrentPage,
   setFilter,
   withPagination,
@@ -37,7 +38,10 @@ const ContentsWrapper = <ContentType,>({
   return (
     <Fragment>
       {withFilter && (
-        <ContentsFilter setFilter={(newFilter) => setFilter(newFilter)} />
+        <ContentsFilter
+          filter={filter}
+          setFilter={(newFilter) => setFilter(newFilter)}
+        />
       )}
       <ManageAPIState
         isError={isError}

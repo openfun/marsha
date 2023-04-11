@@ -1,4 +1,4 @@
-import { Text, Button } from 'grommet';
+import { Text, Button, Box } from 'grommet';
 import { Filter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
 import { Playlist, useResponsive } from 'lib-components';
@@ -38,7 +38,6 @@ const ButtonFilter = styled(Button)<ButtonFilterProps>`
   border: none;
   display: flex;
   padding: 7px 13px;
-  width: fit-content;
   transition: all 0.3s ease-in-out;
   background: #fff;
   & > span {
@@ -66,10 +65,11 @@ export interface ContentFilter {
 }
 
 export interface ContentsFilterProps {
+  filter: ContentFilter;
   setFilter: (filter: ContentFilter) => void;
 }
 
-const ContentsFilter = ({ setFilter }: ContentsFilterProps) => {
+const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
   const intl = useIntl();
   const [showFilter, setShowFilter] = useState(false);
   const [playlistOption, setPlaylistOption] = useState<Partial<Playlist>[]>([]);
@@ -105,26 +105,33 @@ const ContentsFilter = ({ setFilter }: ContentsFilterProps) => {
     ]);
   }, [playlistResponse?.results, intl]);
 
+  const badgeCounter = Object.values(filter).filter((value) => value).length;
+
   return (
     <Fragment>
-      <ButtonFilter
+      <Box
+        width="fit-content"
         margin={{
           horizontal: 'small',
-          top: 'small',
+          top: '1rem',
           bottom: showFilter ? 'small' : '0px',
         }}
         style={{
           transition: 'all 0.3s ease-in-out',
         }}
-        label={
-          <Text size="small" color="blue-active">
-            <Filter color="blue-active" size="20px" />
-            {intl.formatMessage(messages.labelFilter)}
-          </Text>
-        }
-        onClick={() => setShowFilter(!showFilter)}
-        active={showFilter}
-      />
+      >
+        <ButtonFilter
+          label={
+            <Text size="small" color="blue-active">
+              <Filter color="blue-active" size="20px" />
+              {intl.formatMessage(messages.labelFilter)}
+            </Text>
+          }
+          onClick={() => setShowFilter(!showFilter)}
+          active={showFilter}
+          badge={badgeCounter}
+        />
+      </Box>
       <WhiteCard
         pad={showFilter ? 'medium' : '0px'}
         height={{ max: showFilter ? '300px' : '0px' }}

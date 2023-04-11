@@ -55,6 +55,7 @@ const Videos = ({
         <Video key={`video-${video.id}-${index}`} video={video} />
       )}
       currentPage={currentPage}
+      filter={filter}
       setCurrentPage={(page) => setCurrentPage(page)}
       setFilter={(newFilter) => setFilter(newFilter)}
       noContentMessage={intl.formatMessage(messages.NoVideo)}

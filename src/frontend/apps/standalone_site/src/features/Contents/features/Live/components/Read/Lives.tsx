@@ -55,6 +55,7 @@ const Lives = ({
         <Live key={`live-${live.id}-${index}`} live={live} />
       )}
       currentPage={currentPage}
+      filter={filter}
       setCurrentPage={(page) => setCurrentPage(page)}
       setFilter={(newFilter) => setFilter(newFilter)}
       noContentMessage={intl.formatMessage(messages.NoLive)}

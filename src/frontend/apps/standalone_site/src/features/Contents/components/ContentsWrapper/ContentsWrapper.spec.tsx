@@ -33,6 +33,7 @@ const TestComponent = ({
       }
       dataComponent={(data, index) => <Fragment key={index}>{data}</Fragment>}
       currentPage={1}
+      filter={{ playlist: '' }}
       setCurrentPage={(page) => {
         page;
       }}
