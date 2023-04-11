@@ -35,6 +35,8 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
               textAlign="center"
               size="small"
               margin={{ top: 'small' }}
+              truncate
+              style={{ maxWidth: '85%' }}
             >
               {classroom.welcome_text}
             </Text>
