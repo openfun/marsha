@@ -14,10 +14,10 @@ useContentFeatures.setState({
     <ClassRoomRouter key="classRoomRouter" />,
     <LiveRouter key="liveRouter" />,
   ],
-  featureSamples: [
-    <ClassRoomContents key="classRoomContents" />,
-    <LiveContents key="liveContents" />,
-    <VideoContents key="videoContents" />,
+  featureSamples: (playlistId) => [
+    <ClassRoomContents key="classRoomContents" playlistId={playlistId} />,
+    <LiveContents key="liveContents" playlistId={playlistId} />,
+    <VideoContents key="videoContents" playlistId={playlistId} />,
   ],
   featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
 });

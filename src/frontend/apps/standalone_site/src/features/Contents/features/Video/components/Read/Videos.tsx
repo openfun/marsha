@@ -23,17 +23,19 @@ interface VideosProps {
   withPagination?: boolean;
   withFilter?: boolean;
   limit?: number;
+  playlistId?: string;
 }
 
 const Videos = ({
   withPagination = true,
   withFilter = true,
+  playlistId = '',
   limit,
 }: VideosProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
   const [filter, setFilter] = useState<ContentFilter>({
-    playlist: '',
+    playlist: playlistId,
   });
   const contentPerPage = useContentPerPage();
 

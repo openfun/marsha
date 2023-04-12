@@ -24,20 +24,36 @@ const BoxText = styled(Box)`
   color: #002c84;
 `;
 
-const LiveContents = () => {
+interface LiveContentsProps {
+  playlistId?: string;
+}
+
+const LiveContents = ({ playlistId }: LiveContentsProps) => {
   const intl = useIntl();
+  const amountContents = 4;
+  const queryParam = playlistId ? `?playlist=${playlistId}` : '';
 
   return (
     <Box margin={{ top: 'medium' }}>
       <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
         <Text weight="bolder">{intl.formatMessage(messages.MyWebinars)}</Text>
         <Text weight="bolder">
-          <StyledLink to={`${routes.CONTENTS.subRoutes.LIVE.path}`}>
+          <StyledLink
+            to={{
+              pathname: `${routes.CONTENTS.subRoutes.LIVE.path}`,
+              search: queryParam,
+            }}
+          >
             › {intl.formatMessage(messages.SeeEverything)}
           </StyledLink>
         </Text>
       </BoxText>
-      <Lives withPagination={false} withFilter={false} limit={4} />
+      <Lives
+        withPagination={false}
+        limit={amountContents}
+        playlistId={playlistId}
+        withFilter={false}
+      />
     </Box>
   );
 };
