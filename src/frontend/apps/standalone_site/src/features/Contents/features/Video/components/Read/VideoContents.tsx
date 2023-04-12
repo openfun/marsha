@@ -24,20 +24,36 @@ const BoxText = styled(Box)`
   color: #002c84;
 `;
 
-const VideoContents = () => {
+interface VideoContentsProps {
+  playlistId?: string;
+}
+
+const VideoContents = ({ playlistId }: VideoContentsProps) => {
   const intl = useIntl();
+  const amountContents = 4;
+  const queryParam = playlistId ? `?playlist=${playlistId}` : '';
 
   return (
     <Box margin={{ top: 'medium' }}>
       <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
         <Text weight="bolder">{intl.formatMessage(messages.MyVideos)}</Text>
         <Text weight="bolder">
-          <StyledLink to={`${routes.CONTENTS.subRoutes.VIDEO.path}`}>
+          <StyledLink
+            to={{
+              pathname: `${routes.CONTENTS.subRoutes.VIDEO.path}`,
+              search: queryParam,
+            }}
+          >
             › {intl.formatMessage(messages.SeeEverything)}
           </StyledLink>
         </Text>
       </BoxText>
-      <Videos withPagination={false} withFilter={false} limit={4} />
+      <Videos
+        withPagination={false}
+        limit={amountContents}
+        playlistId={playlistId}
+        withFilter={false}
+      />
     </Box>
   );
 };

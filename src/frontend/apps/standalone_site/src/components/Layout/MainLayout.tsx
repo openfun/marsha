@@ -43,7 +43,7 @@ const MainLayout = ({
         return;
       }
 
-      setHeaderHeight(headerBoxRef.current.offsetHeight);
+      setHeaderHeight(headerBoxRef.current.offsetHeight + 10);
     };
     const observer = new ResizeObserver(handleHeaderHeightChange);
     observer.observe(headerBox);

@@ -24,20 +24,36 @@ const BoxText = styled(Box)`
   color: #002c84;
 `;
 
-const ClassRoomContents = () => {
+interface ClassRoomContentsProps {
+  playlistId?: string;
+}
+
+const ClassRoomContents = ({ playlistId }: ClassRoomContentsProps) => {
   const intl = useIntl();
+  const amountContents = 4;
+  const queryParam = playlistId ? `?playlist=${playlistId}` : '';
 
   return (
     <Box margin={{ top: 'medium' }}>
       <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
         <Text weight="bolder">{intl.formatMessage(messages.MyClassrooms)}</Text>
         <Text weight="bolder">
-          <StyledLink to={`${routes.CONTENTS.subRoutes.CLASSROOM.path}`}>
+          <StyledLink
+            to={{
+              pathname: `${routes.CONTENTS.subRoutes.CLASSROOM.path}`,
+              search: queryParam,
+            }}
+          >
             › {intl.formatMessage(messages.SeeEverything)}
           </StyledLink>
         </Text>
       </BoxText>
-      <ClassRooms withPagination={false} withFilter={false} limit={4} />
+      <ClassRooms
+        withPagination={false}
+        limit={amountContents}
+        playlistId={playlistId}
+        withFilter={false}
+      />
     </Box>
   );
 };

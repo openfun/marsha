@@ -237,4 +237,20 @@ describe('<ClassRooms/>', () => {
       expect(screen.queryByLabelText('Filter')).not.toBeInTheDocument();
     });
   });
+
+  test('api call with playlistId props', () => {
+    fetchMock.get(
+      '/api/classrooms/?limit=20&offset=0&playlist=my-playlist-id',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    render(<ClassRooms playlistId="my-playlist-id" />);
+
+    expect(fetchMock.lastUrl()).toEqual(
+      '/api/classrooms/?limit=20&offset=0&playlist=my-playlist-id',
+    );
+  });
 });

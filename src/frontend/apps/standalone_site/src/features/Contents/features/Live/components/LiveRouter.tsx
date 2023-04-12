@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Switch, useLocation } from 'react-router-dom';
 
 import { routes } from 'routes';
 
@@ -8,6 +8,10 @@ import Lives from './Read/Lives';
 import LiveUpdate from './Update/LiveUpdate';
 
 const LiveRouter = () => {
+  const { search } = useLocation();
+  const searchParams = new URLSearchParams(search);
+  const playlistId = searchParams.get('playlist') || '';
+
   const liveRoute = routes.CONTENTS.subRoutes.LIVE;
   const liveCreatePath = liveRoute.subRoutes?.CREATE?.path || '';
   const liveUpdatePath = liveRoute.subRoutes?.UPDATE?.path || '';
@@ -18,14 +22,14 @@ const LiveRouter = () => {
         <Switch>
           <Route path={liveCreatePath} exact>
             <LiveCreate />
-            <Lives />
+            <Lives playlistId={playlistId} />
           </Route>
           <Route path={liveUpdatePath} exact>
             <LiveUpdate />
           </Route>
           <Route>
             <LiveCreate />
-            <Lives />
+            <Lives playlistId={playlistId} />
           </Route>
         </Switch>
       </Box>

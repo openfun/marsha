@@ -3,12 +3,12 @@ import { create } from 'zustand';
 
 interface UseContentFeatures {
   featureRoutes: ReactNode[];
-  featureSamples: ReactNode[];
+  featureSamples: (playlistId?: string) => ReactNode[];
   featureShuffles: ReactNode[];
 }
 
 export const useContentFeatures = create<UseContentFeatures>(() => ({
   featureRoutes: [],
-  featureSamples: [],
+  featureSamples: () => [],
   featureShuffles: [],
 }));
