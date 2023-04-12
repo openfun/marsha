@@ -9,7 +9,7 @@ export const splitDateTime = (
   }
   const dateTime = DateTime.fromISO(dateTimeISO);
   return {
-    date: dateTime.toISODate(),
+    date: dateTime.toISODate() as string,
     time: dateTime.toLocaleString(DateTime.TIME_24_SIMPLE),
   };
 };
