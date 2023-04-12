@@ -32,6 +32,8 @@ You also have to remove the `DJANGO_CLOUDFRONT_ACCESS_KEY_ID` environment variab
 $ /bin/terraform output cloudfront_publick_key_id
 ```
 
+`DJANGO_STATICFILES_STORAGE` environment variable is not used anymore. You have to replace it by `DJANGO_STORAGES_STATICFILES_BACKEND`.
+
 ## 3.0.0 to 3.1.0
 
 ### After deploying
