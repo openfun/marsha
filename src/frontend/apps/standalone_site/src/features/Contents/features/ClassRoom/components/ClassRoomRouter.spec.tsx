@@ -5,7 +5,9 @@ import ClassRoomRouter from './ClassRoomRouter';
 
 jest.mock('./Read/ClassRooms', () => ({
   __esModule: true,
-  default: () => <div>My ClassroomsRead</div>,
+  default: ({ playlistId }: { playlistId: string }) => (
+    <div>My ClassroomsRead {playlistId}</div>
+  ),
 }));
 
 jest.mock('./Update/ClassRoomUpdate', () => ({
@@ -22,15 +24,19 @@ describe('<ClassRoomRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render classroom', () => {
+  test('render route /my-contents/classroom?playlist=test-playlist-id', () => {
     render(<ClassRoomRouter />, {
-      routerOptions: { history: ['/my-contents/classroom'] },
+      routerOptions: {
+        history: ['/my-contents/classroom?playlist=test-playlist-id'],
+      },
     });
     expect(screen.getByText('Classrooms')).toBeInTheDocument();
     expect(
       screen.getByRole('button', { name: 'Create Classroom' }),
     ).toBeInTheDocument();
-    expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/My ClassroomsRead test-playlist-id/i),
+    ).toBeInTheDocument();
   });
 
   test('render classroom no match', () => {

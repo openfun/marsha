@@ -252,4 +252,20 @@ describe('<Videos/>', () => {
       expect(screen.queryByLabelText('Filter')).not.toBeInTheDocument();
     });
   });
+
+  test('api call with playlistId props', () => {
+    fetchMock.get(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=my-playlist-id',
+      {
+        ...someResponse,
+        count: 111,
+      },
+    );
+
+    render(<Videos playlistId="my-playlist-id" />);
+
+    expect(fetchMock.lastUrl()).toEqual(
+      '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=my-playlist-id',
+    );
+  });
 });

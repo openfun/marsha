@@ -58,7 +58,7 @@ describe('<ContentsFilter />', () => {
     expect(filter.playlist).toBe('an-other-playlist-id');
   });
 
-  test('the badge render', () => {
+  test('the badge render and default filter', () => {
     const deferredPlaylists = new Deferred();
     fetchMock.get(
       '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
@@ -77,6 +77,17 @@ describe('<ContentsFilter />', () => {
     );
 
     deferredPlaylists.resolve(playlistsResponse);
+
     expect(screen.getByText('2')).toBeInTheDocument();
+
+    screen
+      .getByRole('button', {
+        name: /Filter/i,
+      })
+      .click();
+
+    expect(
+      screen.getByLabelText('Choose the playlist., my playlist'),
+    ).toBeInTheDocument();
   });
 });

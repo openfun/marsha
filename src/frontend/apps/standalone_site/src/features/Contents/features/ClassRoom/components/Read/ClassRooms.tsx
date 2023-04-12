@@ -23,18 +23,20 @@ interface ClassRoomsProps {
   withPagination?: boolean;
   withFilter?: boolean;
   limit?: number;
+  playlistId?: string;
 }
 
 const ClassRooms = ({
   withPagination = true,
   withFilter = true,
+  playlistId = '',
   limit,
 }: ClassRoomsProps) => {
   const intl = useIntl();
   const [currentPage, setCurrentPage] = useState(1);
   const contentPerPage = useContentPerPage();
   const [filter, setFilter] = useState<ContentFilter>({
-    playlist: '',
+    playlist: playlistId,
   });
 
   const apiResponse = useClassrooms(

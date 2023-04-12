@@ -5,6 +5,7 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 
 import { WhiteCard } from 'components/Cards';
+import { Contents } from 'features/Contents/';
 import { PlaylistForm } from 'features/Playlist';
 
 import { usePlaylist } from '../api/usePlaylist';
@@ -43,11 +44,11 @@ const messages = defineMessages({
 
 export const UpdatePlaylistPage = () => {
   const intl = useIntl();
-  const params = useParams<{ id: string }>();
+  const { id: playlistId } = useParams<{ id: string }>();
 
-  const { data: playlist, isLoading } = usePlaylist(params.id);
+  const { data: playlist, isLoading } = usePlaylist(playlistId);
   const { mutate: updatePlaylist, isLoading: isSubmitting } = useUpdatePlaylist(
-    params.id,
+    playlistId,
     {
       onSuccess: () => {
         toast.success(intl.formatMessage(messages.updateSuccessMessage));
@@ -65,7 +66,7 @@ export const UpdatePlaylistPage = () => {
   return (
     <Box gap="medium">
       <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={3}>
+        <Heading level={3} margin={{ top: '0' }}>
           {intl.formatMessage(messages.mainInfoTitle)}
         </Heading>
         <Box
@@ -101,13 +102,16 @@ export const UpdatePlaylistPage = () => {
       </WhiteCard>
 
       <WhiteCard height={{ min: 'auto' }}>
-        <Heading level={4}>{intl.formatMessage(messages.accessTitle)}</Heading>
+        <Heading level={3} margin={{ vertical: '0' }}>
+          {intl.formatMessage(messages.accessTitle)}
+        </Heading>
         <AddUserAccessButton
-          playlistId={params.id}
+          playlistId={playlistId}
           excludedUsers={playlist.users}
         />
-        <PlaylistUserList playlistId={params.id} />
+        <PlaylistUserList playlistId={playlistId} />
       </WhiteCard>
+      <Contents playlistId={playlistId} />
     </Box>
   );
 };

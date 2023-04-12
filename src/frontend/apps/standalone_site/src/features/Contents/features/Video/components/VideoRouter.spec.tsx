@@ -5,7 +5,9 @@ import VideoRouter from './VideoRouter';
 
 jest.mock('./Read/Videos', () => ({
   __esModule: true,
-  default: () => <div>My VideosRead</div>,
+  default: ({ playlistId }: { playlistId: string }) => (
+    <div>My VideosRead {playlistId}</div>
+  ),
 }));
 
 jest.mock('./Update/VideoUpdate', () => ({
@@ -22,14 +24,18 @@ describe('<VideoRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/videos', () => {
+  test('render route /my-contents/videos?playlist=test-playlist-id', () => {
     render(<VideoRouter />, {
-      routerOptions: { history: ['/my-contents/videos'] },
+      routerOptions: {
+        history: ['/my-contents/videos?playlist=test-playlist-id'],
+      },
     });
     expect(
       screen.getByRole('button', { name: 'Create Video' }),
     ).toBeInTheDocument();
-    expect(screen.getByText('My VideosRead')).toBeInTheDocument();
+    expect(
+      screen.getByText('My VideosRead test-playlist-id'),
+    ).toBeInTheDocument();
   });
 
   test('render video no match', () => {

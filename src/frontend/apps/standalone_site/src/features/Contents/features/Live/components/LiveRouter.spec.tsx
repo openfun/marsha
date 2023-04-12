@@ -5,7 +5,9 @@ import LiveRouter from './LiveRouter';
 
 jest.mock('./Read/Lives', () => ({
   __esModule: true,
-  default: () => <div>My Lives Read</div>,
+  default: ({ playlistId }: { playlistId: string }) => (
+    <div>My Lives Read {playlistId}</div>
+  ),
 }));
 
 describe('<LiveRouter/>', () => {
@@ -13,15 +15,19 @@ describe('<LiveRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/webinars', () => {
+  test('render route /my-contents/webinars?playlist=test-playlist-id', () => {
     render(<LiveRouter />, {
-      routerOptions: { history: ['/my-contents/webinars'] },
+      routerOptions: {
+        history: ['/my-contents/webinars?playlist=test-playlist-id'],
+      },
     });
 
     expect(
       screen.getByRole('button', { name: 'Create Webinar' }),
     ).toBeInTheDocument();
-    expect(screen.getByText('My Lives Read')).toBeInTheDocument();
+    expect(
+      screen.getByText('My Lives Read test-playlist-id'),
+    ).toBeInTheDocument();
   });
 
   test('render create live', async () => {

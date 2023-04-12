@@ -87,6 +87,7 @@ const ContentsFilter = ({ setFilter, filter }: ContentsFilterProps) => {
       onChange: ({ value }) => {
         setFilter({ playlist: value as string });
       },
+      value: filter.playlist,
     },
   });
 
