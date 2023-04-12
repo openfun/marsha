@@ -15,7 +15,7 @@ export const DashboardClassroomStudentCounter = ({
 
   const updateCounter = useCallback(() => {
     const startingAt = DateTime.fromISO(starting_at).setZone(
-      DateTime.local().zoneName,
+      DateTime.local().zoneName as string,
       { keepLocalTime: true },
     );
 

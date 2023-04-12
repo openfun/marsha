@@ -35,7 +35,9 @@ describe('<DashboardClassroomStudentCounter />', () => {
   it('Displays a countdown when the classroom is scheduled', () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const { container } = render(
-      <DashboardClassroomStudentCounter starting_at={startingAt.toISO()} />,
+      <DashboardClassroomStudentCounter
+        starting_at={startingAt.toISO() as string}
+      />,
     );
 
     const expectCountdown = (

@@ -82,8 +82,8 @@ export const StudentLiveAdvertising = () => {
       return {
         description:
           live.description || intl.formatMessage(messages.defaultDescription),
-        endTime: endDate.toISO(),
-        startTime: startDate.toISO(),
+        endTime: endDate.toISO() as string,
+        startTime: startDate.toISO() as string,
         title: live.title || intl.formatMessage(messages.defaultTitle),
         url,
       };

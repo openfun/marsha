@@ -128,7 +128,10 @@ export const SchedulingFields = ({
     setCurrentStartingAtTime(timeUpdated);
     const updatedStartingAt = mergeDateTime(dateUpdated, timeUpdated);
     if (updatedStartingAt !== startingAt) {
-      if (updatedStartingAt && updatedStartingAt < DateTime.local().toISO()) {
+      if (
+        updatedStartingAt &&
+        updatedStartingAt < (DateTime.local().toISO() as string)
+      ) {
         setStartingAtError(
           intl.formatMessage(messages.invalidStartingAt, {
             updatedStartingAt: DateTime.fromISO(
@@ -241,8 +244,8 @@ export const SchedulingFields = ({
               onChange={onStartingAtDateInputChange}
               calendarProps={{
                 bounds: [
-                  DateTime.local().toISO(),
-                  DateTime.local().plus({ years: 1 }).toISO(),
+                  DateTime.local().toISO() as string,
+                  DateTime.local().plus({ years: 1 }).toISO() as string,
                 ],
               }}
               // TODO : calendar icon still clickable even when component is disabled

@@ -19,12 +19,12 @@ describe('<Recordings />', () => {
       classroomRecordingMockFactory({
         started_at: DateTime.fromJSDate(
           new Date(2022, 1, 29, 11, 0, 0),
-        ).toISO(),
+        ).toISO() as string,
       }),
       classroomRecordingMockFactory({
         started_at: DateTime.fromJSDate(
           new Date(2022, 1, 15, 11, 0, 0),
-        ).toISO(),
+        ).toISO() as string,
       }),
     ];
 
