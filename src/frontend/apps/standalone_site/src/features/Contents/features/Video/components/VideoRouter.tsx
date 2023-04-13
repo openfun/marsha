@@ -13,21 +13,23 @@ const VideoRouter = () => {
   const videoUpdatePath = videoRoute.subRoutes?.UPDATE?.path || '';
 
   return (
-    <Box pad="medium">
-      <Switch>
-        <Route path={videoCreatePath} exact>
-          <VideoCreate />
-          <Videos />
-        </Route>
-        <Route path={videoUpdatePath} exact>
-          <VideoUpdate />
-        </Route>
-        <Route>
-          <VideoCreate />
-          <Videos />
-        </Route>
-      </Switch>
-    </Box>
+    <Route path={videoRoute.path}>
+      <Box pad="medium">
+        <Switch>
+          <Route path={videoCreatePath} exact>
+            <VideoCreate />
+            <Videos />
+          </Route>
+          <Route path={videoUpdatePath} exact>
+            <VideoUpdate />
+          </Route>
+          <Route>
+            <VideoCreate />
+            <Videos />
+          </Route>
+        </Switch>
+      </Box>
+    </Route>
   );
 };
 
