@@ -162,7 +162,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
 
 class ClassroomLiteSerializer(ReadOnlyModelSerializer):
-    """Classroom lite serializer without playlist and infos fetch from the BBB api."""
+    """Classroom lite serializer without infos fetch from the BBB api."""
 
     class Meta:  # noqa
         model = Classroom
@@ -177,7 +177,10 @@ class ClassroomLiteSerializer(ReadOnlyModelSerializer):
             "ended",
             "starting_at",
             "estimated_duration",
+            "playlist",
         )
+
+    playlist = PlaylistLiteSerializer(read_only=True)
 
 
 class ClassroomSelectLTISerializer(ClassroomSerializer):
