@@ -1,6 +1,10 @@
 import { render, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useCurrentUser, userMockFactory } from 'lib-components';
+import {
+  playlistMockFactory,
+  useCurrentUser,
+  userMockFactory,
+} from 'lib-components';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { FrontendConfiguration } from 'components/Sentry';
@@ -34,6 +38,10 @@ const someResponse = {
       ended: true,
       starting_at: '2022-10-18T11:00:00Z',
       estimated_duration: '01:23:00',
+      playlist: {
+        ...playlistMockFactory(),
+        title: 'Nouvelle Playlist title',
+      },
     },
   ],
 };

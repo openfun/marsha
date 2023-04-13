@@ -9,6 +9,7 @@ import {
 import { Fragment } from 'react';
 import { useIntl } from 'react-intl';
 
+import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { routes } from 'routes';
 import { localDate } from 'utils/date';
@@ -64,6 +65,14 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
                 </Text>
               </Box>
             )}
+            <Box gap="small" align="center" direction="row">
+              <Box>
+                <VueListIcon width={20} height={20} color="blue-active" />
+              </Box>
+              <Text size="0.688rem" weight="bold">
+                {classroom.playlist.title}
+              </Text>
+            </Box>
           </Fragment>
         }
         title={classroom.title || ''}

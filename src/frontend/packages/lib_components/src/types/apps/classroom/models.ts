@@ -24,7 +24,7 @@ export interface Classroom extends Resource {
   enable_recordings: boolean;
 }
 
-export type ClassroomLite = Omit<Classroom, 'infos' | 'playlist'>;
+export type ClassroomLite = Omit<Classroom, 'infos'>;
 
 export interface ClassroomInfos {
   returncode: string;
