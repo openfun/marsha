@@ -1,6 +1,10 @@
 import { useContentFeatures } from '../store/contentsStore';
 
-import { ClassRoomRouter, ClassRoomContents } from './ClassRoom';
+import {
+  ClassRoomRouter,
+  ClassRoomContents,
+  ClassRoomShuffle,
+} from './ClassRoom';
 import { LiveRouter, LiveContents } from './Live';
 import { VideoRouter, VideoContents } from './Video';
 
@@ -15,4 +19,5 @@ useContentFeatures.setState({
     <LiveContents key="liveContents" />,
     <VideoContents key="videoContents" />,
   ],
+  featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
 });
