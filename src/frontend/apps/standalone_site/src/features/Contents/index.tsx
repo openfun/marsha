@@ -4,8 +4,6 @@ export { default as ContentsRouter } from './components/ContentsRouter/ContentsR
 export { default as ContentsWrapper } from './components/ContentsWrapper/ContentsWrapper';
 export { default as ManageAPIState } from './components/ManageAPIState/ManageAPIState';
 export { ClassRooms } from './features/ClassRoom/';
-export { Lives } from './features/Live/';
-export { Videos } from './features/Video/';
 export { default as useContentPerPage } from './hooks/useContentPerPage';
 
 import './features/featureFactory';

@@ -1,36 +1,15 @@
 import { Box, Heading, Text } from 'grommet';
 import { Nullable } from 'lib-common';
-import {
-  AnonymousUser,
-  StyledLink,
-  useCurrentUser,
-  useResponsive,
-} from 'lib-components';
+import { AnonymousUser, useCurrentUser, useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
-import styled from 'styled-components';
 
-import { ClassRooms } from 'features/Contents';
-import { routes } from 'routes';
-
-const BoxText = styled(Box)`
-  color: #002c84;
-`;
+import { Contents } from 'features/Contents';
 
 const messages = defineMessages({
   header: {
     defaultMessage: 'My profile',
     description: "Profile page's title.",
     id: 'feature.Profile.ProfilePage.header',
-  },
-  MyClassrooms: {
-    defaultMessage: 'My Classrooms',
-    description: 'HomePage title',
-    id: 'features.Contents.Contents.MyClassrooms',
-  },
-  SeeEverything: {
-    defaultMessage: 'See Everything',
-    description: 'Label to see all the cards',
-    id: 'features.Contents.Contents.SeeEverything',
   },
 });
 
@@ -93,21 +72,7 @@ export const ProfilePage = () => {
           </Box>
         </Box>
       </Box>
-
-      <Box margin={{ top: 'medium' }}>
-        <BoxText direction="row" justify="between" margin={{ bottom: 'small' }}>
-          <Text weight="bolder">
-            {intl.formatMessage(messages.MyClassrooms)}
-          </Text>
-          <Text weight="bolder">
-            <StyledLink to={`${routes.CONTENTS.subRoutes.CLASSROOM.path}`}>
-              › {intl.formatMessage(messages.SeeEverything)}
-            </StyledLink>
-          </Text>
-        </BoxText>
-
-        <ClassRooms />
-      </Box>
+      <Contents />
     </Box>
   );
 };
