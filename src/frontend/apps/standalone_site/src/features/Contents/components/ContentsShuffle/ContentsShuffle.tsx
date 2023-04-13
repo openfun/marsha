@@ -1,7 +1,13 @@
-import { ClassRooms } from 'features/Contents';
+import { Fragment } from 'react';
+
+import { useContentFeatures } from '../../store/contentsStore';
 
 const ContentsShuffle = () => {
-  return <ClassRooms withPagination={false} limit={5} />;
+  const { featureShuffles } = useContentFeatures((state) => ({
+    featureShuffles: state.featureShuffles,
+  }));
+
+  return <Fragment>{featureShuffles}</Fragment>;
 };
 
 export default ContentsShuffle;
