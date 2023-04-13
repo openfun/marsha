@@ -2,7 +2,7 @@ import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
-import { useJwt } from 'lib-components';
+import { playlistMockFactory, useJwt } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
@@ -27,6 +27,10 @@ const someResponse = {
       ended: true,
       starting_at: '2022-10-18T11:00:00Z',
       estimated_duration: '01:23:00',
+      playlist: {
+        ...playlistMockFactory(),
+        title: 'Nouvelle Playlist title',
+      },
     },
   ],
 };
