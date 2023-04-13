@@ -13,7 +13,7 @@ const mockedUseCurrentUser = useCurrentUser as jest.MockedFunction<
 >;
 
 jest.mock('features/Contents', () => ({
-  ClassRooms: () => <span>classrooms</span>,
+  Contents: () => <span>classrooms</span>,
 }));
 
 describe('<ProfilePage />', () => {
