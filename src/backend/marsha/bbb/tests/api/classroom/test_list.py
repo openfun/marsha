@@ -100,6 +100,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms[2].title,
                         "welcome_text": classrooms[2].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": str(playlist_access.playlist.lti_id),
+                            "title": playlist_access.playlist.title,
+                        },
                     },
                     {
                         "description": classrooms[1].description,
@@ -112,6 +117,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms[1].title,
                         "welcome_text": classrooms[1].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": str(playlist_access.playlist.lti_id),
+                            "title": playlist_access.playlist.title,
+                        },
                     },
                     {
                         "description": classrooms[0].description,
@@ -124,6 +134,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms[0].title,
                         "welcome_text": classrooms[0].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_access.playlist.id),
+                            "lti_id": str(playlist_access.playlist.lti_id),
+                            "title": playlist_access.playlist.title,
+                        },
                     },
                 ],
             },
@@ -174,6 +189,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_1_b[2].title,
                         "welcome_text": classrooms_1_b[2].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": str(playlist_1_b.lti_id),
+                            "title": playlist_1_b.title,
+                        },
                     },
                     {
                         "description": classrooms_1_b[1].description,
@@ -186,6 +206,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_1_b[1].title,
                         "welcome_text": classrooms_1_b[1].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": str(playlist_1_b.lti_id),
+                            "title": playlist_1_b.title,
+                        },
                     },
                 ],
             },
@@ -242,6 +267,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classroom.title,
                         "welcome_text": classroom.welcome_text,
+                        "playlist": {
+                            "id": str(playlist.id),
+                            "lti_id": str(playlist.lti_id),
+                            "title": playlist.title,
+                        },
                     },
                 ],
             },
@@ -299,6 +329,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_2_b[2].title,
                         "welcome_text": classrooms_2_b[2].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": str(playlist_2_b.lti_id),
+                            "title": playlist_2_b.title,
+                        },
                     },
                     {
                         "description": classrooms_2_b[1].description,
@@ -311,6 +346,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_2_b[1].title,
                         "welcome_text": classrooms_2_b[1].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_2_b.id),
+                            "lti_id": str(playlist_2_b.lti_id),
+                            "title": playlist_2_b.title,
+                        },
                     },
                 ],
             },
@@ -364,6 +404,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_1_b[2].title,
                         "welcome_text": classrooms_1_b[2].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": str(playlist_1_b.lti_id),
+                            "title": playlist_1_b.title,
+                        },
                     },
                     {
                         "description": classrooms_1_b[1].description,
@@ -376,6 +421,11 @@ class ClassroomListAPITest(TestCase):
                         "starting_at": None,
                         "title": classrooms_1_b[1].title,
                         "welcome_text": classrooms_1_b[1].welcome_text,
+                        "playlist": {
+                            "id": str(playlist_1_b.id),
+                            "lti_id": str(playlist_1_b.lti_id),
+                            "title": playlist_1_b.title,
+                        },
                     },
                 ],
             },
