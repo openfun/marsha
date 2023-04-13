@@ -13,21 +13,23 @@ const LiveRouter = () => {
   const liveUpdatePath = liveRoute.subRoutes?.UPDATE?.path || '';
 
   return (
-    <Box pad="medium">
-      <Switch>
-        <Route path={liveCreatePath} exact>
-          <LiveCreate />
-          <Lives />
-        </Route>
-        <Route path={liveUpdatePath} exact>
-          <LiveUpdate />
-        </Route>
-        <Route>
-          <LiveCreate />
-          <Lives />
-        </Route>
-      </Switch>
-    </Box>
+    <Route path={liveRoute.path}>
+      <Box pad="medium">
+        <Switch>
+          <Route path={liveCreatePath} exact>
+            <LiveCreate />
+            <Lives />
+          </Route>
+          <Route path={liveUpdatePath} exact>
+            <LiveUpdate />
+          </Route>
+          <Route>
+            <LiveCreate />
+            <Lives />
+          </Route>
+        </Switch>
+      </Box>
+    </Route>
   );
 };
 

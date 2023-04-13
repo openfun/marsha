@@ -37,9 +37,9 @@ describe('<VideoRouter/>', () => {
       routerOptions: { history: ['/some/bad/route'] },
     });
     expect(
-      screen.getByRole('button', { name: 'Create Video' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/My VideosRead/i)).toBeInTheDocument();
+      screen.queryByRole('button', { name: 'Create Video' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/My VideosRead/i)).not.toBeInTheDocument();
   });
 
   test('render create video', async () => {

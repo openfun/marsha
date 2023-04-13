@@ -38,9 +38,9 @@ describe('<ClassRoomRouter/>', () => {
       routerOptions: { history: ['/some/bad/route'] },
     });
     expect(
-      screen.getByRole('button', { name: 'Create Classroom' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
+      screen.queryByRole('button', { name: 'Create Classroom' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/My ClassroomsRead/i)).not.toBeInTheDocument();
   });
 
   test('render create classroom', async () => {
