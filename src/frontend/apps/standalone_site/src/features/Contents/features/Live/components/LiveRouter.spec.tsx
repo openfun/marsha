@@ -43,8 +43,8 @@ describe('<LiveRouter/>', () => {
     });
 
     expect(
-      screen.getByRole('button', { name: 'Create Webinar' }),
-    ).toBeInTheDocument();
-    expect(screen.getByText('My Lives Read')).toBeInTheDocument();
+      screen.queryByRole('button', { name: 'Create Webinar' }),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('My Lives Read')).not.toBeInTheDocument();
   });
 });

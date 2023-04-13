@@ -14,21 +14,23 @@ const ClassRoomRouter = () => {
   const classroomInvitePath = classroomRoute.subRoutes?.INVITE?.path || '';
 
   return (
-    <Box pad="medium">
-      <Switch>
-        <Route path={classroomCreatePath} exact>
-          <ClassRoomCreate />
-          <ClassRooms />
-        </Route>
-        <Route path={[classroomInvitePath, classroomUpdatePath]} exact>
-          <ClassRoomUpdate />
-        </Route>
-        <Route>
-          <ClassRoomCreate />
-          <ClassRooms />
-        </Route>
-      </Switch>
-    </Box>
+    <Route path={classroomRoute.path}>
+      <Box pad="medium">
+        <Switch>
+          <Route path={classroomCreatePath} exact>
+            <ClassRoomCreate />
+            <ClassRooms />
+          </Route>
+          <Route path={[classroomInvitePath, classroomUpdatePath]} exact>
+            <ClassRoomUpdate />
+          </Route>
+          <Route>
+            <ClassRoomCreate />
+            <ClassRooms />
+          </Route>
+        </Switch>
+      </Box>
+    </Route>
   );
 };
 

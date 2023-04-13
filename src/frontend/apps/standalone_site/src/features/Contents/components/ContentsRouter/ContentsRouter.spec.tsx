@@ -1,18 +1,27 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 
+import { useContentFeatures } from '../../store/contentsStore';
+
 import ContentsRouter from './ContentsRouter';
 
-jest.mock('../Contents/Contents', () => ({
-  __esModule: true,
-  default: () => <div>My Contents</div>,
+jest.mock('features/Contents', () => ({
+  Contents: () => <div>My Contents</div>,
 }));
 
-jest.mock('features/Contents', () => ({
-  ClassRoomRouter: () => <div>My ClassRoomRouter</div>,
-  VideoRouter: () => <div>My VideoRouter</div>,
-  LiveRouter: () => <div>My LiveRouter</div>,
-}));
+const ClassroomRouter = () => <div>My ClassRoomRouter</div>;
+const VideoRouter = () => <div>My VideoRouter</div>;
+const LiveRouter = () => <div>My LiveRouter</div>;
+useContentFeatures.setState(
+  {
+    featureRoutes: [
+      <ClassroomRouter key="classroomRouter" />,
+      <VideoRouter key="videoRouter" />,
+      <LiveRouter key="liveRouter" />,
+    ],
+  },
+  true,
+);
 
 describe('<ContentsRouter/>', () => {
   afterEach(() => {
@@ -23,27 +32,21 @@ describe('<ContentsRouter/>', () => {
     render(<ContentsRouter />, {
       routerOptions: { history: ['/my-contents'] },
     });
+
     expect(screen.getByText('My Contents')).toBeInTheDocument();
+    expect(screen.queryByText('My ClassRoomRouter')).not.toBeInTheDocument();
+    expect(screen.queryByText('My VideoRouter')).not.toBeInTheDocument();
+    expect(screen.queryByText('My LiveRouter')).not.toBeInTheDocument();
   });
 
-  test('render route /my-contents/classroom', () => {
+  test('render from useContentFeatures', () => {
     render(<ContentsRouter />, {
       routerOptions: { history: ['/my-contents/classroom'] },
     });
+
+    expect(screen.queryByText('My Contents')).not.toBeInTheDocument();
     expect(screen.getByText('My ClassRoomRouter')).toBeInTheDocument();
-  });
-
-  test('render route /my-contents/videos', () => {
-    render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents/videos'] },
-    });
     expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
-  });
-
-  test('render route /my-contents/webinars', () => {
-    render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents/webinars'] },
-    });
     expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
 });
