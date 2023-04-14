@@ -72,6 +72,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - display title / description when a classroom is not scheduled and not started
 - correctly fetch transcript content in TranscriptReader
 - remove unused 'initiate-live' permissions
+- increase debounce time in classroom description widget
 
 ## [4.0.0-beta.18] - 2023-03-06
 
