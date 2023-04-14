@@ -8,6 +8,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useUpdateClassroom } from '@lib-classroom/data/queries';
 import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 
+const DEBOUNCE_TIME_MS = 1500;
+
 const messages = defineMessages({
   title: {
     defaultMessage: 'Description',
@@ -65,7 +67,7 @@ export const Description = () => {
       if (JSON.stringify(updatedClassroom) !== '{}') {
         updateClassroomMutation.mutate(updatedClassroom);
       }
-    }),
+    }, DEBOUNCE_TIME_MS),
   ).current;
 
   const handleChange = (updatedClassroomAttribute: Partial<Classroom>) => {
