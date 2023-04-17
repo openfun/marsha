@@ -29,13 +29,14 @@ from marsha.core.api import (
 )
 
 from . import permissions, serializers
-from ..core.models import ADMINISTRATOR
+from ..core.models import ADMINISTRATOR, Video
+from ..core.utils.convert_lambda_utils import invoke_lambda_convert
 from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
 from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .metadata import ClassroomDocumentMetadata
-from .models import Classroom, ClassroomDocument
+from .models import Classroom, ClassroomDocument, ClassroomRecording
 from .permissions import (
     IsClassroomPlaylistOrOrganizationAdmin,
     IsRelatedClassroomPlaylistOrOrganizationAdmin,
@@ -570,3 +571,85 @@ class ClassroomDocumentViewSet(
             )
             document.is_default = True
             document.save()
+
+
+class ClassroomRecordingViewSet(
+    APIViewMixin,
+    ObjectPkMixin,
+    ObjectRelatedMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    Viewset for the API of the ClassroomRecording object.
+    """
+
+    queryset = ClassroomRecording.objects.all()
+    serializer_class = serializers.ClassroomRecordingSerializer
+    filter_backends = [
+        filters.OrderingFilter,
+    ]
+    ordering_fields = ["created_on"]
+    ordering = ["-created_on"]
+
+    permission_classes = [core_permissions.NotAllowed]
+
+    def get_permissions(self):
+        """Instantiate and return the list of permissions that this view requires."""
+        if self.action in ["create_vod"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | IsRelatedClassroomPlaylistOrOrganizationAdmin
+            ]
+        else:
+            permission_classes = self.permission_classes
+        return [permission() for permission in permission_classes]
+
+    def get_queryset(self):
+        queryset = super().get_queryset()
+
+        queryset = queryset.filter(classroom=self.kwargs.get("classroom_id"))
+
+        return queryset
+
+    @action(methods=["post"], detail=True, url_path="create-vod")
+    # pylint: disable=unused-argument
+    def create_vod(self, request, pk=None, classroom_id=None):
+        """Turn a classroom recording into a VOD.
+
+        Parameters
+        ----------
+        request : Type[django.http.request.HttpRequest]
+            The request on the API endpoint
+        pk: string
+            The primary key of the recording
+        classroom_id: string
+            The primary key of the classroom
+
+        Returns
+        -------
+        Type[rest_framework.response.Response]
+            HttpResponse with the serialized classroom recording vod.
+
+        """
+        classroom_recording = self.get_object()  # check permissions first
+
+        classroom_recording.vod = Video.objects.create(
+            title=request.data.get("title"),
+            playlist=classroom_recording.classroom.playlist,
+        )
+        classroom_recording.save()
+
+        serializer = serializers.ClassroomRecordingSerializer(
+            classroom_recording, context={"request": request, "is_admin": True}
+        )
+
+        now = timezone.now()
+        stamp = to_timestamp(now)
+
+        invoke_lambda_convert(
+            classroom_recording.video_file_url,
+            classroom_recording.vod.get_source_s3_key(stamp=stamp),
+        )
+
+        return Response(serializer.data, status=201)

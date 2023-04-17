@@ -46,7 +46,7 @@ def create_presigned_post(conditions, fields, key):
         the post.
 
     """
-    # Configure S3 client using sugnature V4
+    # Configure S3 client using signature V4
     s3_client = boto3.client(
         "s3",
         aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
