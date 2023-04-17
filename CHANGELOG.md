@@ -61,8 +61,6 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - put the creating ressource form submit button disabled when the
     form is invalid (#2175)
-- `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
-  `DJANGO_STORAGES_STATICFILES_BACKEND`
 
 ### Fixed
 

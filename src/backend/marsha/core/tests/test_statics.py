@@ -85,11 +85,7 @@ class TestMarshaCompressedManifestStaticFilesStorage(TestCase):
     """Test suite for Marsha's collectstatic command."""
 
     @override_settings(
-        STORAGES={
-            "staticfiles": {
-                "BACKEND": "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
-            }
-        }
+        STATICFILES_STORAGE="marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
     )
     def test_collectstatic_marsha(self):
         """Files are excluded correctly"""
@@ -107,11 +103,7 @@ class TestMarshaCompressedManifestStaticFilesStorage(TestCase):
             self.assertFalse(os.path.exists(path), f"{path} exists")
 
     @override_settings(
-        STORAGES={
-            "staticfiles": {
-                "BACKEND": "whitenoise.storage.CompressedManifestStaticFilesStorage",
-            }
-        }
+        STATICFILES_STORAGE="whitenoise.storage.CompressedManifestStaticFilesStorage",
     )
     def test_collectstatic_whitenoise(self):
         """All files are included

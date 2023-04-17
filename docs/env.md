@@ -221,10 +221,10 @@ name of the bucket created by the relevant AWS deployment.
   - `"preprod-marsha-static"` in preprod;
   - `"production-marsha-static"` in production.
 
-### DJANGO_STORAGES_STATICFILES_BACKEND
+### DJANGO_STATICFILES_STORAGE
 
 The static files storage backend that Django should use to serve static files. For more
-information, see [documentation](https://docs.djangoproject.com/en/4.2/ref/contrib/staticfiles/#storages).
+information, see [documentation](https://docs.djangoproject.com/en/2.1/ref/contrib/staticfiles/#storages).
 
 - Type: string
 - Required: No
