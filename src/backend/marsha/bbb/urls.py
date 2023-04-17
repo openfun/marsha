@@ -4,7 +4,7 @@ from django.urls import include, path
 
 from marsha.core.routers import MarshaDefaultRouter
 
-from .api import ClassroomDocumentViewSet, ClassroomViewSet
+from .api import ClassroomDocumentViewSet, ClassroomRecordingViewSet, ClassroomViewSet
 from .views import ClassroomLTIView
 
 
@@ -12,10 +12,14 @@ app_name = "classroom"
 
 router = MarshaDefaultRouter()
 
-
 router.register("classrooms", ClassroomViewSet, basename="classrooms")
 router.register(
     "classroomdocuments", ClassroomDocumentViewSet, basename="classroom_documents"
+)
+
+classroom_related_router = MarshaDefaultRouter()
+classroom_related_router.register(
+    "recordings", ClassroomRecordingViewSet, basename="recordings"
 )
 
 # The following URL patterns are used to support legacy model name.
@@ -36,4 +40,8 @@ urlpatterns = [
         name="meeting_lti_view",
     ),
     path("api/", include(router.urls)),
+    path(
+        "api/classrooms/<uuid:classroom_id>/",
+        include(classroom_related_router.urls),
+    ),
 ]

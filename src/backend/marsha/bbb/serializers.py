@@ -22,10 +22,11 @@ from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.models import INSTRUCTOR
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
+    PlaylistLiteSerializer,
+    ReadOnlyModelSerializer,
     UploadableFileWithExtensionSerializerMixin,
+    VideoFromRecordingSerializer,
 )
-from marsha.core.serializers.base import ReadOnlyModelSerializer
-from marsha.core.serializers.playlist import PlaylistLiteSerializer
 
 
 class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
@@ -39,6 +40,7 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
             "record_id",
             "started_at",
             "video_file_url",
+            "vod",
         )
         read_only_fields = (
             "id",
@@ -46,12 +48,14 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
             "record_id",
             "started_at",
             "video_file_url",
+            "vod",
         )
 
-    # Make sure classroom UUID is converted to a string during serialization
+    # Make sure classroom and vod UUIDs are converted to a string during serialization
     classroom = serializers.PrimaryKeyRelatedField(
         read_only=True, pk_field=serializers.CharField()
     )
+    vod = VideoFromRecordingSerializer(read_only=True)
 
 
 class ClassroomSerializer(serializers.ModelSerializer):
@@ -95,7 +99,6 @@ class ClassroomSerializer(serializers.ModelSerializer):
         )
 
     playlist = PlaylistLiteSerializer(read_only=True)
-    recordings = ClassroomRecordingSerializer(many=True, read_only=True)
     infos = serializers.SerializerMethodField()
     invite_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()

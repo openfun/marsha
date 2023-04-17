@@ -505,6 +505,7 @@ class ClassroomRetrieveAPITest(TestCase):
                         "record_id": str(classroom_recording_2.record_id),
                         "started_at": "2019-08-21T11:00:02Z",
                         "video_file_url": classroom_recording_2.video_file_url,
+                        "vod": None,
                     },
                     {
                         "classroom": str(classroom.id),
@@ -512,6 +513,7 @@ class ClassroomRetrieveAPITest(TestCase):
                         "record_id": str(classroom_recording_1.record_id),
                         "started_at": "2019-08-21T15:00:02Z",
                         "video_file_url": classroom_recording_1.video_file_url,
+                        "vod": None,
                     },
                 ],
                 "enable_waiting_room": False,

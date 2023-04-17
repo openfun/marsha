@@ -430,7 +430,24 @@ class VideoSerializer(VideoBaseSerializer):
         return live_info
 
 
-class VideoSelectLTISerializer(VideoBaseSerializer):
+class VideoFromRecordingSerializer(VideoBaseSerializer):
+    """A serializer to display a Video resource in Classroom recording serializer."""
+
+    class Meta:  # noqa
+        model = Video
+        fields = (
+            "id",
+            "title",
+            "upload_state",
+        )
+        read_only_fields = (
+            "id",
+            "title",
+            "upload_state",
+        )
+
+
+class VideoSelectLTISerializer(VideoFromRecordingSerializer):
     """A serializer to display a Video resource for LTI select content request."""
 
     class Meta:  # noqa
