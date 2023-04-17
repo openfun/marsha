@@ -16,6 +16,7 @@ describe('<DashboardClassroomInfos />', () => {
     render(
       <DashboardClassroomInfos
         inviteToken={null}
+        instructorToken={null}
         infos={classroomInfos}
         classroomId="1"
       />,
@@ -41,10 +42,31 @@ describe('<DashboardClassroomInfos />', () => {
   });
 
   it('displays invite link', () => {
-    render(<DashboardClassroomInfos inviteToken="my-token" classroomId="1" />);
+    render(
+      <DashboardClassroomInfos
+        inviteToken="my-token"
+        instructorToken={null}
+        classroomId="1"
+      />,
+    );
 
     expect(
       screen.getByText('Invite a viewer with this link:'),
+    ).toBeInTheDocument();
+    expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
+  });
+
+  it('displays moderator link', () => {
+    render(
+      <DashboardClassroomInfos
+        inviteToken={null}
+        instructorToken="my-token"
+        classroomId="1"
+      />,
+    );
+
+    expect(
+      screen.getByText('Invite a moderator with this link:'),
     ).toBeInTheDocument();
     expect(screen.getByText(/invite\/my-token/i)).toBeInTheDocument();
   });
