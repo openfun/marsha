@@ -73,6 +73,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - correctly fetch transcript content in TranscriptReader
 - remove unused 'initiate-live' permissions
 - increase debounce time in classroom description widget
+- remove id3 tags upload when live channel is not ready
 - add an invitation link for moderators in a launched classroom if available
 
 ## [4.0.0-beta.18] - 2023-03-06
