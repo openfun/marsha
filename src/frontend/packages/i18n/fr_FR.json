@@ -143,14 +143,6 @@
     "description": "Label for welcome text in classroom creation form.",
     "message": "Texte de bienvenue"
   },
-  "component.ClassroomForm.info": {
-    "description": "Helptext for the widget.",
-    "message": "Ce widget fournit plusieurs liens en fonction de ce que vous voulez faire: \n- Lien d'invitation : Inviter des personnes à participer à cette classe virtuelle en tant qu'invité sans aucun compte. \n- Lien LTI : lien spécial utilisé pour ajouter cette classe dans votre LMS préféré et l'avoir dans une activité de cours."
-  },
-  "component.ClassroomForm.invite": {
-    "description": "A title for the widget.",
-    "message": "Invitation"
-  },
   "component.ClassroomScheduling.info": {
     "description": "Helptext for the widget.",
     "message": "Ce widget peut être utilisé pour planifier une classe virtuelle."
@@ -170,6 +162,14 @@
   "component.ClassroomScheduling.updateClassroomSuccess": {
     "description": "Message when classroom update is successful.",
     "message": "Classe virtuelle mise à jour."
+  },
+  "component.ClassroomWidgetProvider.Invite.info": {
+    "description": "Helptext for the widget.",
+    "message": "Ce widget fournit plusieurs liens en fonction de ce que vous voulez faire : \n- Lien d'invitation : Inviter des personnes à participer à cette classe virtuelle en tant qu'invité sans aucun compte. \n- Lien LTI : lien spécial utilisé pour ajouter cette classe dans votre LMS préféré et l'avoir dans une activité de cours."
+  },
+  "component.ClassroomWidgetProvider.Invite.invite": {
+    "description": "A title for the widget.",
+    "message": "Invitation"
   },
   "component.CreateVOD.descriptionText": {
     "description": "A paragraph presenting the actions below.",
@@ -247,14 +247,6 @@
     "description": "Message when user has joined the classroom.",
     "message": "Vous avez rejoint la classe virtuelle en tant que {joinedAs}."
   },
-  "component.DashboardClassroomInstructor.shareLinkLabel": {
-    "description": "Label input shareable link with student.",
-    "message": "Invitez quelqu'un avec ce lien :"
-  },
-  "component.DashboardClassroomInstructor.toastCopiedClipboardSuccess": {
-    "description": "Toast message when link copied to clipboard.",
-    "message": "Url copiée dans le presse-papier !"
-  },
   "component.DashboardClassroomJoin.joinLinkLabel": {
     "description": "Label for link used to join a classroom.",
     "message": "Cliquez ici pour accéder à la classe virtuelle."
@@ -279,13 +271,25 @@
     "description": "Message when user has joined the classroom.",
     "message": "Vous avez rejoint la classe virtuelle en tant que {joinedAs}."
   },
-  "component.DashboardCopyLtiUrl.ltiLinkCopiedSuccess": {
+  "component.DashboardCopyClipboard.ltiLinkCopiedSuccess": {
     "description": "Toast message when link copied to clipboard.",
-    "message": "Url copiée dans le presse-papier !"
+    "message": "Lien copié dans le presse-papier !"
   },
-  "component.DashboardCopyLtiUrl.ltiLinkLabel": {
+  "component.DashboardCopyClipboard.ltiLinkLabel": {
     "description": "Label for LTI classroom link.",
     "message": "Lien LTI pour cette classe virtuelle :"
+  },
+  "component.DashboardCopyClipboard.shareLinkLabel": {
+    "description": "Label input shareable link with student.",
+    "message": "Invitez un visiteur avec ce lien :"
+  },
+  "component.DashboardCopyClipboard.shareModeratorLinkLabel": {
+    "description": "Label input shareable link with instructor.",
+    "message": "Invitez un modérateur avec ce lien :"
+  },
+  "component.DashboardCopyClipboard.toastCopiedClipboardSuccess": {
+    "description": "Toast message when link copied to clipboard.",
+    "message": "Lien copié dans le presse-papier !"
   },
   "component.DashboardLive.manageRequestBtnLabel": {
     "description": "Label of the button used for opening the manage on-stage request tab.",
@@ -631,9 +635,45 @@
     "description": "Label of the toggle used to use subtitles as transcripts.",
     "message": "Utiliser les sous-titres comme transcription"
   },
+  "component.ToolsAndApplications.enableChat": {
+    "description": "Label for the switch that enables or disables the chat",
+    "message": "Activer le chat"
+  },
+  "component.ToolsAndApplications.enablePresentationSupports": {
+    "description": "Label for the switch that enables or disables presentation support sharing",
+    "message": "Activer le partage des supports de présentation"
+  },
+  "component.ToolsAndApplications.enableRecordings": {
+    "description": "Label for the switch that enables or disables recordings",
+    "message": "Activer l'enregistrement"
+  },
+  "component.ToolsAndApplications.enableSharedNotes": {
+    "description": "Label for the switch that enables or disables shared notes",
+    "message": "Activer les notes partagées"
+  },
+  "component.ToolsAndApplications.enableWaitingRoom": {
+    "description": "Label for the switch that enables or disables waiting room",
+    "message": "Activer la salle d'attente"
+  },
+  "component.ToolsAndApplications.info": {
+    "description": "Helptext for the widget.",
+    "message": "Ce widget vous permet de configurer la classe virtuelle. Pour activer une fonctionnalité, cochez la case correspondante."
+  },
   "component.ToolsAndApplications.liveRecordingToggleLabel": {
     "description": "The label associated to the toggle button reponsible of live recording activation / deactivation.",
     "message": "Activer l'enregistrement"
+  },
+  "component.ToolsAndApplications.title": {
+    "description": "A title for the widget.",
+    "message": "Outils et Applications"
+  },
+  "component.ToolsAndApplications.updateClassroomFail": {
+    "description": "Message when classroom update failed.",
+    "message": "Classe virtuelle non mise à jour !"
+  },
+  "component.ToolsAndApplications.updateClassroomSuccess": {
+    "description": "Message when classroom update is successful.",
+    "message": "Classe virtuelle mise à jour."
   },
   "component.ToolsAndApplications.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
@@ -935,10 +975,6 @@
     "description": "The input bar to write, edit and send messages to the chat conversation.",
     "message": "Message..."
   },
-  "components.InputBar.inputDisplayNamePlaceholder": {
-    "description": "The input bar to fill your display name.",
-    "message": "Entrez votre nom d'affichage désiré..."
-  },
   "components.InputBar.joinChatButton": {
     "description": "Button's label offering the user to join the chat.",
     "message": "Rejoindre la discussion"
@@ -959,6 +995,10 @@
     "description": "An label describing the input below.",
     "message": "Nom d'affichage"
   },
+  "components.InputDisplayName.inputDisplayNamePlaceholder": {
+    "description": "The input bar to fill your display name.",
+    "message": "Entrez votre nom d'affichage désiré..."
+  },
   "components.InputDisplayName.inputNicknameAlreadyExists": {
     "description": "An alert message saying that the user can't select the entered nickname because someone is already using it in the chat.",
     "message": "Ce nom est déjà utilisé. Merci d'en choisir un autre."
@@ -976,38 +1016,6 @@
     "message": "Impossible de vous connecter au chat. Veuillez réessayer."
   },
   "components.InputDisplayName.inputXmppTimeout": {
-    "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
-    "message": "Le serveur a pris trop de temps pour répondre. Veuillez réessayer."
-  },
-  "components.InputDisplayNameOverlay.inputAnonymousKeywordForbiddenAlertMessage": {
-    "description": "An alert message explaining why the entered display name is invalid.",
-    "message": "Le mot clé \"{forbiddenPrefix}\" n'est pas autorisé."
-  },
-  "components.InputDisplayNameOverlay.inputDisplayNameInformative": {
-    "description": "An informative text about the display name which is asked to enter.",
-    "message": "Le nom d'affichage est le pseudonyme avec lequel vous serez authentifié sur ce wébinaire. Vous ne pourrez pas le modifier. Les autres participants vous verront avec ce nom. L'instructeur pourra toutefois voir votre véritable identité si vous vous êtes déjà identifié."
-  },
-  "components.InputDisplayNameOverlay.inputDisplayNameLabel": {
-    "description": "An label describing the input below.",
-    "message": "Nom d'affichage"
-  },
-  "components.InputDisplayNameOverlay.inputNicknameAlreadyExists": {
-    "description": "An alert message saying that the user can't select the entered nickname because someone is already using it in the chat.",
-    "message": "Ce nom d'affichage est déjà utilisé. Merci d'en choisir un autre."
-  },
-  "components.InputDisplayNameOverlay.inputTooLongAlertMessage": {
-    "description": "An alert message explaining why the entered display name is invalid.",
-    "message": "Longueur maximale de {maxLength} caractères."
-  },
-  "components.InputDisplayNameOverlay.inputTooShortAlertMessage": {
-    "description": "An alert message explaining why the entered display name is invalid.",
-    "message": "Longueur minimale de {minLength} caractères."
-  },
-  "components.InputDisplayNameOverlay.inputXmppError": {
-    "description": "An alert message saying that the user cannot be connected.",
-    "message": "Impossible de vous connecter au chat. Veuillez réessayer."
-  },
-  "components.InputDisplayNameOverlay.inputXmppTimeout": {
     "description": "An alert message saying that the servers answer to the nickname change request took too much time.",
     "message": "Le serveur a pris trop de temps pour répondre. Veuillez réessayer."
   },
@@ -1662,6 +1670,30 @@
   "components.useFetchButton.defaultErrorMessage": {
     "description": "Default error toasted on user input error while performing the async action.",
     "message": "Une erreur est survenue, veuillez réessayer plus tard."
+  },
+  "live.common.PanelWebinar.Chat": {
+    "description": "Label for the chat button in the mobile panel",
+    "message": "Chat"
+  },
+  "live.common.PanelWebinar.live": {
+    "description": "Label for the webinar button in the mobile panel",
+    "message": "Webinaire"
+  },
+  "live.common.PanelWebinar.showChat": {
+    "description": "Title for the chat button in the mobile panel",
+    "message": "Afficher le chat"
+  },
+  "live.common.PanelWebinar.showViewers": {
+    "description": "Title for the viewer button in the mobile panel",
+    "message": "Afficher les spectateurs"
+  },
+  "live.common.PanelWebinar.showWebinar": {
+    "description": "Title for the webinar button in the mobile panel",
+    "message": "Afficher le webinaire"
+  },
+  "live.common.PanelWebinar.viewers": {
+    "description": "Label for the viewer button in the mobile panel",
+    "message": "Spectateurs"
   },
   "markdown.MarkdownView.notFound.text": {
     "description": "Base \"resource not found\" text, displayed when no JWT token is provided\"",

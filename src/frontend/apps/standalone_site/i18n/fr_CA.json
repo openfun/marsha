@@ -251,6 +251,14 @@
     "description": "Label for title in webinar creation form.",
     "message": "Title"
   },
+  "features.Contents.features.Live.Update.404": {
+    "description": "Text when the webinar id is not found in the backend.",
+    "message": "We didn't find the webinar you are looking for."
+  },
+  "features.Contents.features.Live.Update.noWebinar": {
+    "description": "Text when there is no webinar to display.",
+    "message": "There is no webinar to display."
+  },
   "features.Contents.features.ReadLives.NoLive": {
     "description": "Text when there is no webinar to display.",
     "message": "There is no webinar to display."

@@ -30,7 +30,7 @@ const appConfig = {
 
 const messages = defineMessages({
   404: {
-    defaultMessage: "We don't find the webinar you are looking for.",
+    defaultMessage: "We didn't find the webinar you are looking for.",
     description: 'Text when the webinar id is not found in the backend.',
     id: 'features.Contents.features.Live.Update.404',
   },

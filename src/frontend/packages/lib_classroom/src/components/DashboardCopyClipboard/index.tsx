@@ -17,7 +17,7 @@ const messages = defineMessages({
     id: 'component.DashboardCopyClipboard.shareModeratorLinkLabel',
   },
   toastCopiedClipboardSuccess: {
-    defaultMessage: 'Url copied in clipboard !',
+    defaultMessage: 'Url copied to clipboard !',
     description: 'Toast message when link copied to clipboard.',
     id: 'component.DashboardCopyClipboard.toastCopiedClipboardSuccess',
   },
@@ -27,7 +27,7 @@ const messages = defineMessages({
     id: 'component.DashboardCopyClipboard.ltiLinkLabel',
   },
   ltiLinkCopiedSuccess: {
-    defaultMessage: 'Url copied in clipboard !',
+    defaultMessage: 'Url copied to clipboard !',
     description: 'Toast message when link copied to clipboard.',
     id: 'component.DashboardCopyClipboard.ltiLinkCopiedSuccess',
   },
