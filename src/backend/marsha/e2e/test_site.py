@@ -160,7 +160,7 @@ def test_site_classroom_invite_link(context: BrowserContext, live_server: LiveSe
         "button", name="Invite a viewer with this link:"
     )
     invite_link_button.click()
-    expect(page.get_by_text("Url copied in clipboard !")).to_be_visible()
+    expect(page.get_by_text("Url copied to clipboard !")).to_be_visible()
 
     invite_page = page.context.new_page()
     # tries to get the clipboard content, if it fails, it uses the data-clipboard-text
@@ -255,7 +255,7 @@ def test_site_classroom_moderator_link(
         "button", name="Invite a moderator with this link:"
     )
     moderator_link_button.click()
-    expect(page.get_by_text("Url copied in clipboard !")).to_be_visible()
+    expect(page.get_by_text("Url copied to clipboard !")).to_be_visible()
 
     moderator_page = page.context.new_page()
     # tries to get the clipboard content, if it fails, it uses the data-clipboard-text

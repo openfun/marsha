@@ -72,16 +72,16 @@ describe('<DashboardCopyClipboard />', () => {
     userEvent.click(copyInviteButton);
     expect(document.execCommand).toHaveBeenCalledTimes(1);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
-    expect(screen.getByText('Url copied in clipboard !')).toBeInTheDocument();
+    expect(screen.getByText('Url copied to clipboard !')).toBeInTheDocument();
     await waitForElementToBeRemoved(
-      () => screen.queryByText('Url copied in clipboard !'),
+      () => screen.queryByText('Url copied to clipboard !'),
       { timeout: 5000 },
     );
 
     userEvent.click(copyInstructorButton);
     expect(document.execCommand).toHaveBeenCalledTimes(2);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
-    expect(screen.getByText('Url copied in clipboard !')).toBeInTheDocument();
+    expect(screen.getByText('Url copied to clipboard !')).toBeInTheDocument();
 
     userEvent.click(copyLtiLinkButton);
     expect(document.execCommand).toHaveBeenCalledTimes(3);

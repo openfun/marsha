@@ -363,7 +363,7 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
         "button", name="Invite a viewer with this link:"
     )
     invite_link_button.click()
-    expect(page.get_by_text("Url copied in clipboard !")).to_be_visible()
+    expect(page.get_by_text("Url copied to clipboard !")).to_be_visible()
 
     invite_page = page.context.new_page()
     # tries to get the clipboard content, if it fails, it uses the data-clipboard-text

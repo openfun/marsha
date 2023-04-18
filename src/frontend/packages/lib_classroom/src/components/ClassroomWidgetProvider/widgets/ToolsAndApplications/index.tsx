@@ -35,7 +35,7 @@ const messages = defineMessages({
     id: 'component.ToolsAndApplications.enableWaitingRoom',
   },
   enablePresentationSupports: {
-    defaultMessage: 'Enable presentation supports sharing',
+    defaultMessage: 'Enable sharing presentation supports',
     description:
       'Label for the switch that enables or disables presentation support sharing',
     id: 'component.ToolsAndApplications.enablePresentationSupports',
