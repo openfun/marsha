@@ -37,6 +37,37 @@ const StyledLiveVideoInformationBarWrapper = styled(Box)`
   flex-wrap: wrap;
 `;
 
+interface DashboardContentProps {
+  video: Video;
+}
+
+const DashboardContent = ({ video }: DashboardContentProps) => (
+  <React.Fragment>
+    <StyledLiveVideoInformationBarWrapper
+      align="center"
+      background="white"
+      direction="row-responsive"
+      height="80px"
+      justify="between"
+      margin="small"
+      pad={{
+        vertical: 'small',
+        horizontal: 'medium',
+      }}
+      round="xsmall"
+    >
+      <TeacherVideoInfoBar flex startDate={video.starting_at} />
+    </StyledLiveVideoInformationBarWrapper>
+
+    <DashboardControlPane
+      isLive={false}
+      tabs={
+        video.live_state === null ? [PaneTabs.STATS] : [PaneTabs.ATTENDANCE]
+      }
+    />
+  </React.Fragment>
+);
+
 interface DashboardProps {
   video: Video;
   socketUrl: string;
@@ -50,33 +81,6 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
     state.getTimedTextTracks(),
   );
   const thumbnail = useThumbnail((state) => state.getThumbnail());
-
-  const DashboardContent = () => (
-    <React.Fragment>
-      <StyledLiveVideoInformationBarWrapper
-        align="center"
-        background="white"
-        direction="row-responsive"
-        height="80px"
-        justify="between"
-        margin="small"
-        pad={{
-          vertical: 'small',
-          horizontal: 'medium',
-        }}
-        round="xsmall"
-      >
-        <TeacherVideoInfoBar flex startDate={video.starting_at} />
-      </StyledLiveVideoInformationBarWrapper>
-
-      <DashboardControlPane
-        isLive={false}
-        tabs={
-          video.live_state === null ? [PaneTabs.STATS] : [PaneTabs.ATTENDANCE]
-        }
-      />
-    </React.Fragment>
-  );
 
   return (
     <CurrentVideoProvider value={video}>
@@ -109,11 +113,11 @@ export const Dashboard = ({ video, socketUrl }: DashboardProps) => {
                   videoTitle: video.title,
                 })}
               >
-                <DashboardContent />
+                <DashboardContent video={video} />
               </FoldableItem>
             </InfoWidgetModalProvider>
           ) : (
-            <DashboardContent />
+            <DashboardContent video={video} />
           )}
         </Box>
       </VideoWebSocketInitializer>
