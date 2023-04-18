@@ -93,7 +93,7 @@ describe('<LiveUpdate />', () => {
     expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
     expect(
       await screen.findByText(
-        /We don't find the webinar you are looking for./i,
+        /We didn't find the webinar you are looking for./i,
       ),
     ).toBeInTheDocument();
   });
