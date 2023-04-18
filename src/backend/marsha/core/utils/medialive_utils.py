@@ -317,6 +317,7 @@ def update_id3_tags(video):
         video.live_info is None
         or video.live_info.get("medialive") is None
         or video.get_medialive_channel() is None
+        or not video.is_live
     ):
         return
 
