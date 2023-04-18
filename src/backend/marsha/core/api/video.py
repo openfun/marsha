@@ -470,7 +470,6 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         channel_layers_utils.dispatch_video_to_groups(video)
 
         serializer = self.get_serializer(video)
-        update_id3_tags(video)
         return Response(serializer.data)
 
     @action(methods=["post"], detail=True, url_path="stop-live")
