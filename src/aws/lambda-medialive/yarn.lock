@@ -2892,7 +2892,7 @@ type-fest@^0.11.0:
   integrity sha512-OdjXJxnCN1AvyLSzeKIgXTXxV+99ZuXl3Hpo9XpJAv9MBcHrrJOQ5kV7ypXOuQie+AmWG25hLbiKdwYTifzcfQ==
 
 "update-state@file:../utils/update-state":
-  version "4.0.0-beta.18"
+  version "4.0.0-beta.19"
   dependencies:
     request "2.88.2"
     request-promise-native "1.0.9"
