@@ -1,6 +1,6 @@
 {
   "name": "lib-tests",
-  "version": "4.0.0-beta.18",
+  "version": "4.0.0-beta.19",
   "license": "MIT",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -46,7 +46,7 @@
     "@types/video.js": "7.3.51",
     "cross-env": "7.0.3",
     "eslint": "*",
-    "eslint-config-marsha": "4.0.0-beta.18",
+    "eslint-config-marsha": "4.0.0-beta.19",
     "faker": "5.5.3",
     "grommet": "*",
     "jest": "29.5.0",
@@ -69,6 +69,6 @@
     "xhr-mock": "2.5.1"
   },
   "dependencies": {
-    "lib-common": "4.0.0-beta.18"
+    "lib-common": "4.0.0-beta.19"
   }
 }
