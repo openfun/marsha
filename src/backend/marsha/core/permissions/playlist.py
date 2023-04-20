@@ -5,134 +5,15 @@ from django.core.exceptions import ImproperlyConfigured, ObjectDoesNotExist
 from django.db.models import Q
 
 from rest_framework import permissions
-from rest_framework.permissions import IsAuthenticated
 
-from . import models
-from .models import Playlist, PlaylistAccess, PortabilityRequest
-from .models.account import (
-    ADMINISTRATOR,
-    INSTRUCTOR,
-    LTI_ROLES,
-    STUDENT,
-    ConsumerSiteAccess,
-    OrganizationAccess,
+from .. import models
+from ..models import Playlist, PlaylistAccess, PortabilityRequest
+from ..models.account import ADMINISTRATOR, ConsumerSiteAccess, OrganizationAccess
+from .base import (
+    HasAdminOrInstructorRoleMixIn,
+    HasAdminRoleMixIn,
+    HasInstructorRoleMixIn,
 )
-
-
-class NotAllowed(permissions.BasePermission):
-    """
-    Utility permission class denies all requests.
-
-    This is used as a default to close requests to unsupported actions.
-    """
-
-    def has_permission(self, request, view):
-        """Deny permission always."""
-        return False
-
-
-class UserOrResourceIsAuthenticated(IsAuthenticated):
-    """This allows access for in user or resource context."""
-
-
-class UserIsAuthenticated(IsAuthenticated):
-    """This allows access only in user context."""
-
-    def has_permission(self, request, view):
-        """Simply checks we are NOT in a resource context."""
-        has_permission = super().has_permission(request, view)
-        return has_permission and request.resource is None
-
-
-class ResourceIsAuthenticated(IsAuthenticated):
-    """This allows access only in resource context."""
-
-    def has_permission(self, request, view):
-        """Simply checks we are in a resource context."""
-        has_permission = super().has_permission(request, view)
-        return has_permission and request.resource is not None
-
-
-class BaseTokenRolePermission(permissions.BasePermission):
-    """Base permission class for JWT Tokens based on token roles.
-
-    These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenResource.
-    """
-
-    role = None
-
-    def check_role(self, token):
-        """Check if the required role is in the token and if can_update is granted."""
-        return LTI_ROLES[self.__class__.role] & set(
-            token.payload.get("roles", [])
-        ) and token.payload.get("permissions", {}).get("can_update", False)
-
-    def has_permission(self, request, view):
-        """
-        Add a check to allow users identified via a JWT token with a given token-granted role.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request that holds the authenticated user
-        view : Type[restframework.viewsets or restframework.views]
-            The API view for which permissions are being checked
-
-        Returns
-        -------
-        boolean
-            True if the request is authorized, False otherwise
-
-        """
-        return request.resource and self.check_role(request.resource.token)
-
-
-class IsTokenInstructor(BaseTokenRolePermission):
-    """Class dedicated to instructor users."""
-
-    role = INSTRUCTOR
-
-
-class IsTokenAdmin(BaseTokenRolePermission):
-    """Class dedicated to administrator users."""
-
-    role = ADMINISTRATOR
-
-
-class IsTokenStudent(BaseTokenRolePermission):
-    """Class dedicated to student users."""
-
-    def check_role(self, token):
-        """Check if the student role is in the token."""
-        return bool(LTI_ROLES[STUDENT] & set(token.payload.get("roles", [])))
-
-
-class IsTokenResourceRouteObject(permissions.BasePermission):
-    """
-    Base permission class for JWT Tokens related to a resource object.
-
-    These permissions grants access to users authenticated with a JWT token built from a
-    resource ie related to a TokenResource.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Add a check to allow the request if the JWT resource matches the object in the url path.
-
-        Parameters
-        ----------
-        request : Type[django.http.request.HttpRequest]
-            The request that holds the authenticated user
-        view : Type[restframework.viewsets or restframework.views]
-            The API view for which permissions are being checked
-
-        Returns
-        -------
-        boolean
-            True if the request is authorized, False otherwise
-        """
-        return request.resource and view.get_object_pk() == request.resource.id
 
 
 class IsTokenResourceRouteObjectRelatedPlaylist(permissions.BasePermission):
@@ -202,123 +83,6 @@ class IsTokenResourceRouteObjectRelatedVideo(permissions.BasePermission):
             )
         except ObjectDoesNotExist:
             return False
-
-
-class HasAdminRoleMixIn:
-    """
-    Mixin to check if the user has an admin role.
-
-    To be combined with one of the Base...Role classes below.
-    """
-
-    role_filter = {"role": ADMINISTRATOR}
-
-
-class HasInstructorRoleMixIn:
-    """
-    Mixin to check if the user has an instructor role.
-
-    To be combined with one of the Base...Role classes below.
-    """
-
-    role_filter = {"role": INSTRUCTOR}
-
-
-class HasAdminOrInstructorRoleMixIn:
-    """
-    Mixin to check if the user has an admin or instructor role.
-
-    To be combined with one of the Base...Role classes below.
-    """
-
-    role_filter = {"role__in": [ADMINISTRATOR, INSTRUCTOR]}
-
-
-class BaseIsOrganizationRole(permissions.BasePermission):
-    """Base permission class for organization roles."""
-
-    role_filter = {}
-
-    def get_organization_id(self, request, view):
-        """Get the organization id."""
-        # Avoid making extra requests to get the organization id through get_object
-        return view.get_object_pk()
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Only if the organization exists and the current logged in user
-        has the proper role.
-        """
-        if not self.role_filter:
-            raise ImproperlyConfigured(
-                f"{self.__class__.__name__} must define a `role_filter`."
-            )
-
-        return models.OrganizationAccess.objects.filter(
-            **self.role_filter,
-            organization_id=self.get_organization_id(request, view),
-            user_id=request.user.id,
-        ).exists()
-
-
-class IsOrganizationAdmin(HasAdminRoleMixIn, BaseIsOrganizationRole):
-    """Permission class to check if the user is one of the organization admin."""
-
-
-class BaseIsUserOrganizationRole(permissions.BasePermission):
-    """
-    Base permission class to check for organization roles against
-    a specific user's organization (a user may belong to several organizations)."""
-
-    role_filter = {}
-
-    def has_object_permission(self, request, view, obj):
-        """
-        Allow the request if the requesting user as a specific
-        role in one of the `obj` user organization.
-        """
-        if not self.role_filter:
-            raise ImproperlyConfigured(
-                f"{self.__class__.__name__} must define a `role_filter`."
-            )
-
-        return models.OrganizationAccess.objects.filter(
-            **self.role_filter,
-            organization_id__in=obj.organization_accesses.values_list(
-                "organization_id",
-                flat=True,
-            ),
-            user_id=request.user.id,
-        ).exists()
-
-
-class IsUserOrganizationAdmin(HasAdminRoleMixIn, BaseIsUserOrganizationRole):
-    """
-    Permission class to check if the user is one of the organization admin
-    of the aimed user (for the user management API).
-    """
-
-
-class BaseIsParamsOrganizationRole(BaseIsOrganizationRole):
-    """Base permission class to check for organization roles."""
-
-    def get_organization_id(self, request, view):
-        """Get the organization id."""
-        # Avoid making extra requests to get the organization id through get_object
-        return request.data.get("organization") or request.query_params.get(
-            "organization"
-        )
-
-
-class IsParamsOrganizationInstructorOrAdmin(
-    HasAdminOrInstructorRoleMixIn,
-    BaseIsParamsOrganizationRole,
-):
-    """
-    Allow access to user with admin or instructor role on the organization provided in parameters.
-    """
 
 
 class BaseIsParamsPlaylistRole(permissions.BasePermission):
@@ -559,64 +323,6 @@ def playlist_organization_role_exists(playlist_id, user_id, roles=None):
     ).exists()
 
 
-class BaseIsPlaylistOrganizationRole(permissions.BasePermission):
-    """Base permission class for playlist's organization roles."""
-
-    role_filter = {}
-
-    def get_playlist_id(self, request, view, obj):  # pylint: disable=unused-argument
-        """Get the playlist id."""
-        return obj.pk
-
-    def has_object_permission(self, request, view, obj):
-        """
-        Allow the request.
-
-        Only if the organization exists and the current logged in user
-        has the proper role.
-        """
-        if not self.role_filter:
-            raise ImproperlyConfigured(
-                f"{self.__class__.__name__} must define a `role_filter`."
-            )
-
-        return playlist_organization_role_exists(
-            playlist_id=self.get_playlist_id(request, view, obj),
-            user_id=request.user.id,
-            roles=self.role_filter,
-        )
-
-
-class IsPlaylistOrganizationAdmin(HasAdminRoleMixIn, BaseIsPlaylistOrganizationRole):
-    """Permission class to check if the user is one of the playlist's organization admin."""
-
-
-class IsPlaylistOrganizationInstructor(
-    HasInstructorRoleMixIn,
-    BaseIsPlaylistOrganizationRole,
-):
-    """Permission class to check if the user is one of the playlist's organization instructor."""
-
-
-class BaseIsObjectPlaylistOrganizationRole(BaseIsPlaylistOrganizationRole):
-    """Base permission class for object's playlist's organization roles."""
-
-    def get_playlist_id(self, request, view, obj):
-        """Get the playlist id."""
-        # Note, use select_related to avoid making extra requests to get the playlist id
-        return obj.playlist_id
-
-
-class IsObjectPlaylistOrganizationAdmin(
-    HasAdminRoleMixIn,
-    BaseIsObjectPlaylistOrganizationRole,
-):
-    """
-    Permission class to check if the user is one of
-    the object's playlist's organization admin.
-    """
-
-
 class BaseIsRelatedVideoPlaylistRole(BaseIsObjectPlaylistRole):
     """Allow request when the user has specific role on the object's video's playlist."""
 
@@ -636,25 +342,6 @@ class IsRelatedVideoPlaylistAdminOrInstructor(
 ):
     """
     Allow request when the user has admin or instructor role on the object's video's playlist.
-    """
-
-
-class BaseIsRelatedVideoPlaylistOrganizationRole(BaseIsPlaylistOrganizationRole):
-    """Base permission class for object's video's playlist's organization roles."""
-
-    def get_playlist_id(self, request, view, obj):
-        """Get the playlist id."""
-        # Note, use select_related to avoid making extra requests to get the video
-        return obj.video.playlist_id
-
-
-class IsRelatedVideoOrganizationAdmin(
-    HasAdminRoleMixIn,
-    BaseIsRelatedVideoPlaylistOrganizationRole,
-):
-    """
-    Permission class to check if the user is one of
-    the object's video's playlist's organization admin.
     """
 
 
@@ -770,4 +457,3 @@ class IsPortabilityRequestOwner(BaseObjectPermission):
             from_user_id=request.user.id,
             pk=view.get_object_pk(),
         ).exists()
- 
