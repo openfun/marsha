@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Fixed
+
+- downgrade python social auth to version 4.3.0 (#2197)
+
 ## [4.0.0-beta.19] - 2023-04-19
 
 ### Added
