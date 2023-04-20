@@ -1,6 +1,6 @@
 {
   "name": "lib-common",
-  "version": "4.0.0-beta.19",
+  "version": "4.0.0-beta.20",
   "license": "MIT",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
@@ -26,7 +26,7 @@
     "@types/styled-components": "5.1.26",
     "cross-env": "7.0.3",
     "eslint": "*",
-    "eslint-config-marsha": "4.0.0-beta.19",
+    "eslint-config-marsha": "4.0.0-beta.20",
     "grommet": "*",
     "prettier": "2.8.7",
     "styled-components": "*",
