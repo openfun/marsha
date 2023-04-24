@@ -20,6 +20,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [4.0.0-beta.20] - 2023-04-20
 
+### Added
+
+- Add a widget to download the available shared notes on the classroom dashboard
+
 ### Fixed
 
 - downgrade python social auth to version 4.3.0 (#2197)

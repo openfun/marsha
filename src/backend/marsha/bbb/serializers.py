@@ -12,7 +12,12 @@ from django.utils import timezone
 
 from rest_framework import serializers
 
-from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
+from marsha.bbb.models import (
+    Classroom,
+    ClassroomDocument,
+    ClassroomRecording,
+    ClassroomSharedNote,
+)
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     get_meeting_infos,
@@ -54,6 +59,30 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
     )
 
 
+class ClassroomSharedNoteSerializer(ReadOnlyModelSerializer):
+    """A serializer to display a ClassroomRecording resource."""
+
+    class Meta:  # noqa
+        model = ClassroomSharedNote
+        fields = (
+            "id",
+            "classroom",
+            "shared_note_url",
+            "updated_on",
+        )
+        read_only_fields = (
+            "id",
+            "classroom",
+            "shared_note_url",
+            "updated_on",
+        )
+
+    # Make sure classroom UUID is converted to a string during serialization
+    classroom = serializers.PrimaryKeyRelatedField(
+        read_only=True, pk_field=serializers.CharField()
+    )
+
+
 class ClassroomSerializer(serializers.ModelSerializer):
     """A serializer to display a Classroom resource."""
 
@@ -72,6 +101,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "starting_at",
             "estimated_duration",
             "recordings",
+            "shared_notes",
             # specific generated fields
             "infos",
             "invite_token",
@@ -100,6 +130,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
     invite_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()
     recordings = serializers.SerializerMethodField()
+    shared_notes = serializers.SerializerMethodField()
 
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
@@ -134,6 +165,17 @@ class ClassroomSerializer(serializers.ModelSerializer):
         if self.context.get("is_admin", True):
             return ClassroomRecordingSerializer(
                 obj.recordings.all(), many=True, context=self.context
+            ).data
+        return []
+
+    def get_shared_notes(self, obj):
+        """Get the shared notes for the classroom.
+
+        Only available for admins.
+        """
+        if self.context.get("is_admin", True):
+            return ClassroomSharedNoteSerializer(
+                obj.shared_notes.all(), many=True, context=self.context
             ).data
         return []
 

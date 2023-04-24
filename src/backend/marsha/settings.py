@@ -375,6 +375,7 @@ class Base(Configuration):
     # BBB
     BBB_ENABLED = values.BooleanValue(False)
     BBB_API_ENDPOINT = values.Value()
+    BBB_SHARED_NOTES_RETRIEVE_LINK = values.Value()
     BBB_API_SECRET = values.Value(None)
     BBB_API_CALLBACK_SECRET = values.Value(None)
     BBB_API_TIMEOUT = values.PositiveIntegerValue(10)

@@ -31,6 +31,7 @@ DJANGO_LTI_CONFIG_CONTACT_EMAIL=fun.dev@fun-mooc.fr
 # BBB server credentials
 DJANGO_BBB_ENABLED=False
 DJANGO_BBB_API_ENDPOINT=https://example.com/bbb/api
+DJANGO_BBB_SHARED_NOTES_RETRIEVE_LINK=https://example.com/bbb
 DJANGO_BBB_API_SECRET=BbbSecret
 # BBB callback through scalelite may use a different secret to sign the sent token
 DJANGO_BBB_API_CALLBACK_SECRET=BbbOtherSecret

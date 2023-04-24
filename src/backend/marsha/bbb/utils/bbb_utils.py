@@ -10,8 +10,9 @@ from dateutil.parser import parse
 import requests
 import xmltodict
 
-from marsha.bbb.models import Classroom, ClassroomRecording
+from marsha.bbb.models import Classroom, ClassroomRecording, ClassroomSharedNote
 from marsha.core.utils import time_utils
+from django.http.response import Http404
 
 
 logger = logging.getLogger(__name__)
@@ -192,6 +193,30 @@ def get_meeting_infos(classroom: Classroom):
         classroom.started = False
         classroom.save(update_fields=["started"])
         raise exception
+
+
+def get_session_shared_note(classroom: Classroom):
+    """Call BBB API to retrieve shared notes."""
+    if not classroom.enable_shared_notes:
+        return
+
+    try:
+        meeting_infos = get_meeting_infos(classroom=classroom)
+        session_id = meeting_infos["internalMeetingID"]
+    except ApiMeetingException as exception:
+        raise exception
+
+    url = f"{settings.BBB_SHARED_NOTES_RETRIEVE_LINK}/{session_id}/notes.html"
+    classroom_shared_note, created = ClassroomSharedNote.objects.get_or_create(
+        classroom=classroom, shared_note_url=url
+    )
+    logger.info(
+        "%s shared note uploaded on %s with url %s",
+        "Created" if created else "Updated",
+        classroom_shared_note.updated_on.isoformat(),
+        classroom_shared_note.shared_note_url,
+    )
+    return classroom_shared_note
 
 
 def get_recordings(meeting_id: str = None, record_id: str = None):

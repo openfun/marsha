@@ -5,7 +5,7 @@ from django.utils.translation import gettext_lazy as _
 
 from marsha.core.admin import link_field
 
-from .models import Classroom, ClassroomDocument
+from .models import Classroom, ClassroomDocument, ClassroomSharedNote
 
 
 class ClassroomDocumentInline(admin.TabularInline):
@@ -93,3 +93,12 @@ class ClassroomDocumentAdmin(admin.ModelAdmin):
         "classroom__playlist__organization__name",
         "filename",
     )
+
+
+@admin.register(ClassroomSharedNote)
+class ClassroomSharedNoteAdmin(admin.ModelAdmin):
+    """Admin class for the ClassroomSharedNote model"""
+
+    verbose_name = _("Classroom shared note")
+    list_display = ("id", link_field("classroom"), "updated_on")
+    readonly_fields = ["id", "updated_on"]
