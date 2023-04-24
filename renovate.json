@@ -52,6 +52,16 @@
         "channels-redis"
       ],
       "allowedVersions": "<4"
+    },
+    {
+      "enabled": false,
+      "groupName": "ignore python dependencies",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "lxml"
+      ]
     }
   ]
 }
