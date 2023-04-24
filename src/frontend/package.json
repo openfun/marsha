@@ -51,7 +51,7 @@
     "lib-tests": "4.0.0-beta.20",
     "marsha-config": "4.0.0-beta.20",
     "styled-components": "5.3.10",
-    "typescript": "5.0.4",
+    "typescript": "4.9.5",
     "zustand": "4.3.7"
   },
   "dependencies": {

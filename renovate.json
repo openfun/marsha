@@ -27,6 +27,7 @@
         "react-query",
         "react-router-dom",
         "react-test-renderer",
+        "typescript",
         "video.js",
         "videojs-contrib-quality-levels"
       ]
