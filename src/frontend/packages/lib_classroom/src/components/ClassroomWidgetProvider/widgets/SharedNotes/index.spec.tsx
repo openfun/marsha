@@ -6,23 +6,23 @@ import React from 'react';
 
 import {
   classroomMockFactory,
-  classroomRecordingMockFactory,
+  classroomSharedNoteMockFactory,
 } from '@lib-classroom/utils/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
-import { Recordings } from '.';
+import { SharedNotes } from '.';
 
-describe('<Recordings />', () => {
-  it('displays a list of available recordings', () => {
+describe('<SharedNotes />', () => {
+  it('displays a list of available shared notes', () => {
     let classroom = classroomMockFactory({ id: '1', started: false });
-    const classroomRecordings = [
-      classroomRecordingMockFactory({
-        started_at:
+    const classroomSharedNotes = [
+      classroomSharedNoteMockFactory({
+        updated_on:
           DateTime.fromJSDate(new Date(2022, 1, 29, 11, 0, 0)).toISO() ||
           undefined,
       }),
-      classroomRecordingMockFactory({
-        started_at:
+      classroomSharedNoteMockFactory({
+        updated_on:
           DateTime.fromJSDate(new Date(2022, 1, 15, 11, 0, 0)).toISO() ||
           undefined,
       }),
@@ -31,31 +31,30 @@ describe('<Recordings />', () => {
     const { rerender } = render(
       wrapInClassroom(
         <InfoWidgetModalProvider value={null}>
-          <Recordings />,
+          <SharedNotes />,
         </InfoWidgetModalProvider>,
         classroom,
       ),
     );
 
-    expect(screen.getByText('Recordings')).toBeInTheDocument();
-    expect(screen.getByText('No recordings available')).toBeInTheDocument();
+    expect(screen.getByText('Shared notes')).toBeInTheDocument();
+    expect(screen.getByText('No shared note available')).toBeInTheDocument();
 
     // simulate updated classroom
     classroom = {
       ...classroom,
-      recordings: classroomRecordings,
+      shared_notes: classroomSharedNotes,
     };
     rerender(
       wrapInClassroom(
         <InfoWidgetModalProvider value={null}>
-          <Recordings />,
+          <SharedNotes />,
         </InfoWidgetModalProvider>,
         classroom,
       ),
     );
-
     expect(
-      screen.queryByText('No recordings available'),
+      screen.queryByText('No shared note available'),
     ).not.toBeInTheDocument();
     expect(
       screen.getByText('Tuesday, March 1, 2022 - 11:00 AM'),

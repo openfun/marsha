@@ -17,6 +17,7 @@ export interface Classroom extends Resource {
   invite_token: Nullable<string>;
   instructor_token: Nullable<string>;
   recordings: ClassroomRecording[];
+  shared_notes: ClassroomSharedNote[];
   enable_waiting_room: boolean;
   enable_shared_notes: boolean;
   enable_chat: boolean;
@@ -131,4 +132,10 @@ export interface ClassroomRecording extends Resource {
   classroom: string;
   video_file_url: string;
   started_at: string;
+}
+
+export interface ClassroomSharedNote extends Resource {
+  classroom: string;
+  shared_note_url: string;
+  updated_on: string;
 }
