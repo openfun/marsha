@@ -95,7 +95,7 @@ const DashboardClassroomForm = ({ classroom }: DashboardClassroomFormProps) => {
           round="xsmall"
           style={{ flexWrap: 'wrap' }}
         >
-          <ClassroomInfoBar flex startDate={classroom.starting_at} />
+          <ClassroomInfoBar flex />
           <Button
             type="submit"
             label={intl.formatMessage(messages.startClassroomLabel)}
