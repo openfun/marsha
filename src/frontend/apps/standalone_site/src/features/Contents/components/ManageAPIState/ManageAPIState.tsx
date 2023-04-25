@@ -22,7 +22,7 @@ const messages = defineMessages({
 const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
   return (
     <Box
-      direction="row"
+      direction="column"
       align="center"
       justify="center"
       margin={{ top: 'medium' }}
@@ -53,7 +53,7 @@ const ManageAPIState = ({
 
   let content = (
     <ContainerInfo>
-      <ContentsIcon width={80} height={80} />
+      <ContentsIcon width={60} height={60} />
       <Text weight="bold">
         {typeof nothingToDisplay === 'string'
           ? nothingToDisplay
