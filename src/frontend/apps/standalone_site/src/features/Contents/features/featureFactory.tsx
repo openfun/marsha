@@ -1,12 +1,12 @@
 import { useContentFeatures } from '../store/contentsStore';
 
 import {
+  classRoomContents,
   ClassRoomRouter,
-  ClassRoomContents,
   ClassRoomShuffle,
 } from './ClassRoom';
-import { LiveRouter, LiveContents } from './Live';
-import { VideoRouter, VideoContents } from './Video';
+import { liveContents, LiveRouter } from './Live';
+import { videoContents, VideoRouter } from './Video';
 
 useContentFeatures.setState({
   featureRoutes: [
@@ -15,9 +15,9 @@ useContentFeatures.setState({
     <LiveRouter key="liveRouter" />,
   ],
   featureSamples: (playlistId) => [
-    <ClassRoomContents key="classRoomContents" playlistId={playlistId} />,
-    <LiveContents key="liveContents" playlistId={playlistId} />,
-    <VideoContents key="videoContents" playlistId={playlistId} />,
+    videoContents(playlistId),
+    liveContents(playlistId),
+    classRoomContents(playlistId),
   ],
   featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
 });

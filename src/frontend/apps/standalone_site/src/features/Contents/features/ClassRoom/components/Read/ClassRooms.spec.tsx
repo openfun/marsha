@@ -8,7 +8,7 @@ import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
 
-import ClassRooms from './ClassRooms';
+import ClassRooms, { classRoomContents } from './ClassRooms';
 
 const fullTheme = getFullThemeExtend();
 
@@ -256,5 +256,24 @@ describe('<ClassRooms/>', () => {
     expect(fetchMock.lastUrl()).toEqual(
       '/api/classrooms/?limit=20&offset=0&playlist=my-playlist-id',
     );
+  });
+});
+
+describe('classRoomContents', () => {
+  test('classRoomContents object', () => {
+    expect(classRoomContents('new-playlist-id')).toEqual({
+      title: expect.objectContaining({
+        defaultMessage: 'My Classrooms',
+      }),
+      route: '/my-contents/classroom',
+      component: (
+        <ClassRooms
+          limit={4}
+          playlistId="new-playlist-id"
+          withFilter={false}
+          withPagination={false}
+        />
+      ),
+    });
   });
 });
