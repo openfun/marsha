@@ -123,7 +123,7 @@ export const ClassroomInfoBar = (props: BoxProps) => {
               iconColor={normalizeColor('blue-chat', theme)}
               width="25px"
               height="25px"
-              containerStyle={{ margin: 'auto', marginRight: '8px' }}
+              containerStyle={{ margin: 'auto' }}
             />
           }
           onBlur={(event) => handleChange(event.target.value)}
@@ -132,7 +132,6 @@ export const ClassroomInfoBar = (props: BoxProps) => {
           title={intl.formatMessage(messages.placeholderTitleInput)}
           value={title}
           plain
-          reverse
         />
       </Box>
     </Box>
