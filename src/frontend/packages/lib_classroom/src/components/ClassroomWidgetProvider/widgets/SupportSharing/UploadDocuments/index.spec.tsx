@@ -54,6 +54,21 @@ describe('<UploadDocuments />', () => {
   });
 
   it('renders a Dropzone with the relevant messages', () => {
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
     render(<UploadDocuments classroomId="1" />);
 
     expect(
@@ -75,6 +90,21 @@ describe('<UploadDocuments />', () => {
       addUpload: mockAddUpload,
       resetUpload: jest.fn(),
       uploadManagerState: {},
+    });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
     });
 
     render(<UploadDocuments classroomId="1" />);
@@ -110,6 +140,21 @@ describe('<UploadDocuments />', () => {
       addUpload: mockAddUpload,
       resetUpload: jest.fn(),
       uploadManagerState: {},
+    });
+
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
+
+    fetchMock.get('/api/classrooms/1/classroomdocuments/?limit=999', {
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
     });
 
     render(<UploadDocuments classroomId="1" />);
@@ -292,6 +337,13 @@ describe('<UploadDocuments />', () => {
       previous: null,
       results: [classroomDocument],
     });
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -310,11 +362,14 @@ describe('<UploadDocuments />', () => {
     });
     userEvent.click(deleteButton);
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
-    expect(fetchMock.calls()[1]![0]).toEqual(
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(5));
+    const deleteCall = fetchMock.calls(
       `/api/classroomdocuments/${classroomDocument.id}/`,
     );
-    expect(fetchMock.calls()[1]![1]).toEqual({
+    expect(deleteCall[0][0]).toEqual(
+      `/api/classroomdocuments/${classroomDocument.id}/`,
+    );
+    expect(deleteCall[0][1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
       },
@@ -337,6 +392,13 @@ describe('<UploadDocuments />', () => {
       previous: null,
       results: [classroomDocument],
     });
+    fetchMock.mock(
+      '/api/classroomdocuments/',
+      {
+        upload_max_size_bytes: Math.pow(10, 9),
+      },
+      { method: 'OPTIONS' },
+    );
 
     render(<UploadDocuments classroomId="1" />);
 
