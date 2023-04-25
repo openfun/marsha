@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - Improve architecture Contents feature (#2183)
 - Move edition icon on title input at the begining of the input
+- Increase description textarea min height
 
 ### Removed
 
