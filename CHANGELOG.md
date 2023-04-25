@@ -19,6 +19,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - standalone website:
   - Improve architecture Contents feature (#2183)
 
+### Removed
+
+- start date under the title on the BBB dashboard
+
 ## [4.0.0-beta.20] - 2023-04-20
 
 ### Fixed
