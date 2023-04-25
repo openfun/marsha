@@ -1,2 +1,2 @@
 export { default as LiveRouter } from './components/LiveRouter';
-export { default as LiveContents } from './components/Read/LiveContents';
+export { liveContents } from './components/Read/Lives';

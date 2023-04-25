@@ -8,7 +8,7 @@ import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
 
-import Videos from './Videos';
+import Videos, { videoContents } from './Videos';
 
 const fullTheme = getFullThemeExtend();
 
@@ -267,5 +267,24 @@ describe('<Videos/>', () => {
     expect(fetchMock.lastUrl()).toEqual(
       '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=false&playlist=my-playlist-id',
     );
+  });
+});
+
+describe('videoContents', () => {
+  test('videoContents object', () => {
+    expect(videoContents('new-playlist-id')).toEqual({
+      title: expect.objectContaining({
+        defaultMessage: 'My Videos',
+      }),
+      route: '/my-contents/videos',
+      component: (
+        <Videos
+          limit={4}
+          playlistId="new-playlist-id"
+          withFilter={false}
+          withPagination={false}
+        />
+      ),
+    });
   });
 });

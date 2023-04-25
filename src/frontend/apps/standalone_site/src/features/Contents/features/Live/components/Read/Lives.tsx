@@ -8,15 +8,34 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
+import { routes } from 'routes';
 
 import Live from './Live';
 
 const messages = defineMessages({
+  MyWebinars: {
+    defaultMessage: 'My Webinars',
+    description: 'My contents page, my webinars title',
+    id: 'features.Contents.features.LiveContents.MyWebinars',
+  },
   NoLive: {
     defaultMessage: 'There is no webinar to display.',
     description: 'Text when there is no webinar to display.',
     id: 'features.Contents.features.ReadLives.NoLive',
   },
+});
+
+export const liveContents = (playlistId?: string) => ({
+  title: messages.MyWebinars,
+  route: routes.CONTENTS.subRoutes.LIVE.path,
+  component: (
+    <Lives
+      withPagination={false}
+      limit={4}
+      playlistId={playlistId}
+      withFilter={false}
+    />
+  ),
 });
 
 interface LivesProps {

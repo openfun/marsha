@@ -8,15 +8,34 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
+import { routes } from 'routes';
 
 import Video from './Video';
 
 const messages = defineMessages({
+  MyVideos: {
+    defaultMessage: 'My Videos',
+    description: 'My contents page, my videos title',
+    id: 'features.Contents.features.VideoContents.MyVideos',
+  },
   NoVideo: {
     defaultMessage: 'There is no video to display.',
     description: 'Text when there is no video to display.',
     id: 'features.Contents.features.ReadVideos.NoVideo',
   },
+});
+
+export const videoContents = (playlistId?: string) => ({
+  title: messages.MyVideos,
+  route: routes.CONTENTS.subRoutes.VIDEO.path,
+  component: (
+    <Videos
+      withPagination={false}
+      limit={4}
+      playlistId={playlistId}
+      withFilter={false}
+    />
+  ),
 });
 
 interface VideosProps {
