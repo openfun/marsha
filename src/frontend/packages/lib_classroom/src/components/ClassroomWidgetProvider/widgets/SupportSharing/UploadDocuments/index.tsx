@@ -12,7 +12,7 @@ import {
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Dropzone from 'react-dropzone';
 import { toast } from 'react-hot-toast';
-import { FormattedMessage, useIntl } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
 import {
   useClassroomDocuments,
@@ -22,7 +22,7 @@ import { createClassroomDocument } from '@lib-classroom/data/sideEffects/createC
 
 import { DocumentRow } from './DocumentRow';
 
-const messages = {
+const messages = defineMessages({
   dropzonePlaceholder: {
     defaultMessage: "Drag 'n' drop some files here, or click to select files",
     description: 'Placeholder for dropzone.',
@@ -70,7 +70,7 @@ const messages = {
     description: 'Label for download button.',
     id: 'apps.classroom.components.DashboardStudent.UploadFiles.downloadButtonLabel',
   },
-};
+});
 
 interface UploadDocumentsProps {
   classroomId: Classroom['id'];
@@ -230,7 +230,7 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
                 <Box direction="row" align="center">
                   <PlusSVG iconColor="#75A7E5" height="35px" width="35px" />
                   <Paragraph color="#75A7E5" textAlign="center" margin="none">
-                    <FormattedMessage {...messages.dropzonePlaceholder} />
+                    {intl.formatMessage(messages.dropzonePlaceholder)}
                   </Paragraph>
                 </Box>
               </div>
