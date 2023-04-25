@@ -8,15 +8,34 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
+import { routes } from 'routes';
 
 import ClassRoomItem from './ClassRoomItem';
 
 const messages = defineMessages({
+  MyClassrooms: {
+    defaultMessage: 'My Classrooms',
+    description: 'My contents page, my classrooms title',
+    id: 'features.Contents.features.ClassRoomContents.MyClassrooms',
+  },
   NoClassroom: {
     defaultMessage: 'There is no classroom to display.',
     description: 'Text when there is no classroom to display.',
     id: 'features.Contents.features.ClassRooms.NoClassroom',
   },
+});
+
+export const classRoomContents = (playlistId?: string) => ({
+  title: messages.MyClassrooms,
+  route: routes.CONTENTS.subRoutes.CLASSROOM.path,
+  component: (
+    <ClassRooms
+      withPagination={false}
+      limit={4}
+      playlistId={playlistId}
+      withFilter={false}
+    />
+  ),
 });
 
 interface ClassRoomsProps {

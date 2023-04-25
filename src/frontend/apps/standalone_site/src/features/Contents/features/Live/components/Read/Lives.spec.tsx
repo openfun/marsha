@@ -8,7 +8,7 @@ import { QueryClient } from 'react-query';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
 
-import Lives from './Lives';
+import Lives, { liveContents } from './Lives';
 
 const fullTheme = getFullThemeExtend();
 
@@ -268,5 +268,24 @@ describe('<Lives/>', () => {
     expect(fetchMock.lastUrl()).toEqual(
       '/api/videos/?limit=20&offset=0&ordering=-created_on&is_live=true&playlist=my-playlist-id',
     );
+  });
+});
+
+describe('liveContents', () => {
+  test('liveContents object', () => {
+    expect(liveContents('new-playlist-id')).toEqual({
+      title: expect.objectContaining({
+        defaultMessage: 'My Webinars',
+      }),
+      route: '/my-contents/webinars',
+      component: (
+        <Lives
+          limit={4}
+          playlistId="new-playlist-id"
+          withFilter={false}
+          withPagination={false}
+        />
+      ),
+    });
   });
 });
