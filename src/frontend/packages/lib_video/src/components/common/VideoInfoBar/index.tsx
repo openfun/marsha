@@ -161,7 +161,6 @@ export const VideoInfoBar = ({ isTeacher, startDate }: VideoInfoBarProps) => {
             title={intl.formatMessage(messages.placeholderTitleInput)}
             value={title}
             plain
-            reverse
             width="100%"
           />
         </StyledBoxTextInput>
