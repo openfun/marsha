@@ -11,4 +11,4 @@ export { default as ContentsWrapper } from './components/ContentsWrapper/Content
 export { default as ManageAPIState } from './components/ManageAPIState/ManageAPIState';
 export { default as useContentPerPage } from './hooks/useContentPerPage';
 
-import './features/featureFactory';
+import './features/featureLoader';
