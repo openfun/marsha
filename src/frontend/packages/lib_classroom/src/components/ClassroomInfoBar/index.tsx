@@ -1,9 +1,8 @@
-import { Box, BoxProps, Paragraph } from 'grommet';
+import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { theme } from 'lib-common';
 import { Classroom, EditionSVG, report, TextInput } from 'lib-components';
-import { DateTime } from 'luxon';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
@@ -56,28 +55,13 @@ const messages = defineMessages({
   },
 });
 
-interface ClassroomInfoBarProps extends BoxProps {
-  startDate: Nullable<string>;
-}
-
-export const ClassroomInfoBar = ({
-  startDate,
-  ...props
-}: ClassroomInfoBarProps) => {
+export const ClassroomInfoBar = (props: BoxProps) => {
   const classroom = useCurrentClassroom();
   const intl = useIntl();
 
   const [title, setTitle] = useState<string>(
     classroom.title || intl.formatMessage(messages.noTitle),
   );
-
-  const localStartDate = useMemo(() => {
-    if (!startDate) {
-      return null;
-    }
-    const dt = DateTime.fromISO(startDate);
-    return dt.isValid ? dt.setLocale(intl.locale).toFormat('D  ·  tt') : null;
-  }, [startDate, intl.locale]);
 
   const classroomMutation = useUpdateClassroom(classroom.id, {
     onSuccess: () => {
@@ -150,17 +134,6 @@ export const ClassroomInfoBar = ({
           plain
           reverse
         />
-      </Box>
-      <Box direction="row">
-        {localStartDate && (
-          <Paragraph
-            color="blue-active"
-            margin={{ right: 'large', bottom: 'small' }}
-            size="xsmall"
-          >
-            {localStartDate}
-          </Paragraph>
-        )}
       </Box>
     </Box>
   );

@@ -1,4 +1,4 @@
-import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { report } from 'lib-components';
@@ -38,65 +38,8 @@ describe('<ClassroomInfoBar />', () => {
       title: 'title',
     });
 
-    render(
-      wrapInClassroom(
-        <ClassroomInfoBar startDate="2023-01-01T07:00:00Z" />,
-        classroom,
-      ),
-    );
-    expect(
-      screen.getByText('1/1/2023  ·  8:00:00 AM', {
-        normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
-      }),
-    ).toBeInTheDocument();
-  });
-
-  it('renders startDate Intl NL - Netherlands', () => {
-    const classroom = classroomMockFactory({
-      id: '1',
-      started: false,
-      title: 'title',
-    });
-
-    render(
-      wrapInClassroom(
-        <ClassroomInfoBar startDate="2023-01-01T07:00:00Z" />,
-        classroom,
-      ),
-      {
-        intlOptions: { locale: 'nl' },
-      },
-    );
-
-    expect(
-      screen.getByText('1-1-2023  ·  08:00:00', {
-        normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
-      }),
-    ).toBeInTheDocument();
-  });
-
-  it('renders startDate Intl fr - France', () => {
-    const classroom = classroomMockFactory({
-      id: '1',
-      started: false,
-      title: 'title',
-    });
-
-    render(
-      wrapInClassroom(
-        <ClassroomInfoBar startDate="2023-01-01T07:00:00Z" />,
-        classroom,
-      ),
-      {
-        intlOptions: { locale: 'fr' },
-      },
-    );
-
-    expect(
-      screen.getByText('01/01/2023  ·  08:00:00', {
-        normalizer: getDefaultNormalizer({ collapseWhitespace: false }),
-      }),
-    ).toBeInTheDocument();
+    render(wrapInClassroom(<ClassroomInfoBar />, classroom));
+    expect(screen.getByDisplayValue('title')).toBeInTheDocument();
   });
 
   it('allows you to edit the title', async () => {
@@ -109,9 +52,7 @@ describe('<ClassroomInfoBar />', () => {
       title: 'new title',
     });
 
-    render(
-      wrapInClassroom(<ClassroomInfoBar startDate="some date" />, classroom),
-    );
+    render(wrapInClassroom(<ClassroomInfoBar />, classroom));
 
     const titleInput = screen.getByRole('textbox', {
       name: 'Enter title of your classroom here',
@@ -138,22 +79,6 @@ describe('<ClassroomInfoBar />', () => {
     screen.getByText('Classroom updated.');
   });
 
-  it('renders with invalid startDate', () => {
-    const classroom = classroomMockFactory({
-      id: '1',
-      started: false,
-      title: 'title',
-    });
-
-    render(
-      wrapInClassroom(<ClassroomInfoBar startDate="some date" />, classroom),
-    );
-
-    expect(screen.getByDisplayValue('title')).toBeInTheDocument();
-    expect(screen.queryByText('some date')).not.toBeInTheDocument();
-    expect(screen.queryByText('Invalid DateTime')).not.toBeInTheDocument();
-  });
-
   it('should stop user from entering an empty title', () => {
     const classroom = classroomMockFactory({
       id: '1',
@@ -161,9 +86,7 @@ describe('<ClassroomInfoBar />', () => {
       title: 'title',
     });
 
-    render(
-      wrapInClassroom(<ClassroomInfoBar startDate="some date" />, classroom),
-    );
+    render(wrapInClassroom(<ClassroomInfoBar />, classroom));
 
     const titleInput = screen.getByRole('textbox', {
       name: 'Enter title of your classroom here',
@@ -186,9 +109,7 @@ describe('<ClassroomInfoBar />', () => {
 
     fetchMock.patch(`/api/classrooms/${classroom.id}/`, 500);
 
-    render(
-      wrapInClassroom(<ClassroomInfoBar startDate="some date" />, classroom),
-    );
+    render(wrapInClassroom(<ClassroomInfoBar />, classroom));
 
     const textInput = screen.getByRole('textbox', {
       name: 'Enter title of your classroom here',
