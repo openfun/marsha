@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - standalone website:
   - filter contents by playlist (#2176)
+- Add a command to sync media channel states and video states
 
 ### Changed
 
