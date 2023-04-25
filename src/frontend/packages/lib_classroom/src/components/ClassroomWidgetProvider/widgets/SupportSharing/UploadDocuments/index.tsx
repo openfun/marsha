@@ -193,6 +193,8 @@ export const UploadDocuments = ({ classroomId }: UploadDocumentsProps) => {
           size: 'xsmall',
           color: 'blue-active',
         }}
+        margin={{ top: 'small' }}
+        pad={{ vertical: 'small' }}
         round="xsmall"
       >
         {classroomDocuments?.results
