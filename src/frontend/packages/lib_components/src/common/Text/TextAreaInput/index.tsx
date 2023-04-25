@@ -23,6 +23,13 @@ export const TextAreaInput = ({
         spellCheck={false}
         title={title}
         value={value}
+        style={{
+          minHeight: '150px',
+        }}
+        onInput={(e) => {
+          e.currentTarget.style.height = 'auto';
+          e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+        }}
       />
     </FormField>
   );

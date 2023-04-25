@@ -114,6 +114,13 @@ export const Description = () => {
               handleChange({ description: e.target.value });
             }}
             resize="vertical"
+            style={{
+              minHeight: '150px',
+            }}
+            onInput={(e) => {
+              e.currentTarget.style.height = 'auto';
+              e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+            }}
           />
         </FormField>
         <FormField
@@ -131,6 +138,13 @@ export const Description = () => {
               handleChange({ welcome_text: e.target.value });
             }}
             resize="vertical"
+            style={{
+              minHeight: '150px',
+            }}
+            onInput={(e) => {
+              e.currentTarget.style.height = 'auto';
+              e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
+            }}
           />
         </FormField>
       </Form>
