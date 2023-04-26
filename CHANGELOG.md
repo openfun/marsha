@@ -10,15 +10,15 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
-- standalone website:
-  - filter contents by playlist (#2176)
-  - add playlist contents on playlist page (#2182)
+- Standalone website:
+  - Filter contents by playlist (#2176)
+  - Add playlist contents on playlist page (#2182)
 - Add a command to sync media channel states and video states
 - pages model api for standalone footer TOS or some legal notices
 
 ### Changed
 
-- standalone website:
+- Standalone website:
   - Improve architecture Contents feature (#2183)
 - Move edition icon on title input at the begining of the input
 - Increase description textarea min height
@@ -28,11 +28,16 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - start date under the title on the BBB dashboard
 
+### Fixed
+
+- Standalone website:
+  - Correctly display creation form when there is no playlist
+
 ## [4.0.0-beta.20] - 2023-04-20
 
 ### Fixed
 
-- downgrade python social auth to version 4.3.0 (#2197)
+- Downgrade python social auth to version 4.3.0 (#2197)
 
 ## [4.0.0-beta.19] - 2023-04-19
 
