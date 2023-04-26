@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Standalone website:
   - Filter contents by playlist (#2176)
   - Add playlist contents on playlist page (#2182)
+  - Add a button to create a playlist from any resource creation form
 - Add a command to sync media channel states and video states
 - pages model api for standalone footer TOS or some legal notices
 

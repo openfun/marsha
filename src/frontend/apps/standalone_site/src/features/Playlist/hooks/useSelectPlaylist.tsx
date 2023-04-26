@@ -1,14 +1,18 @@
 import {
+  Box,
+  Button,
   Select,
   FormField,
   FormFieldExtendedProps,
   SelectExtendedProps,
 } from 'grommet';
-import { Playlist } from 'lib-components';
+import { Playlist, PlusSVG } from 'lib-components';
 import { useState, useEffect, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
+import { Link } from 'react-router-dom';
 
 import { ITEM_PER_PAGE } from 'conf/global';
+import { routes } from 'routes';
 
 import { PlaylistOrderType, usePlaylists } from '../api/usePlaylists';
 
@@ -16,7 +20,13 @@ const messages = defineMessages({
   selectPlaylistLabel: {
     defaultMessage: 'Choose the playlist.',
     description: 'Label select playlist.',
-    id: 'features.Contents.features.Video.VideoCreateForm.selectPlaylistLabel',
+    id: 'features.Playlist.hooks.useSelectPlaylist.selectPlaylistLabel',
+  },
+  createPlaylist: {
+    defaultMessage: 'Create a new playlist',
+    description:
+      'a11y label added to the button redirecting to the playlist creation form',
+    id: 'features.Playlist.hooks.useSelectPlaylist.createPlaylist',
   },
 });
 
@@ -58,34 +68,50 @@ const useSelectPlaylist = ({
 
   const selectPlaylist = useMemo(
     () => (
-      <FormField
-        label={intl.formatMessage(messages.selectPlaylistLabel)}
-        htmlFor="select-playlist-id"
-        name="playlist"
-        required
-        {...formFieldProps}
-      >
-        <Select
-          id="select-playlist-id"
+      <Box direction="row-responsive" pad={{ bottom: 'small' }} gap="small">
+        <FormField
+          label={intl.formatMessage(messages.selectPlaylistLabel)}
+          htmlFor="select-playlist-id"
           name="playlist"
-          size="medium"
-          aria-label={intl.formatMessage(messages.selectPlaylistLabel)}
-          options={playlists}
-          labelKey="title"
-          valueKey={{ key: 'id', reduce: true }}
-          onMore={() => {
-            if (!playlistResponse) {
-              return;
-            }
-
-            if (playlists.length < playlistResponse.count) {
-              setCurrentPlaylistPage((currentPage) => currentPage + 1);
-            }
+          margin="none"
+          required
+          style={{
+            flex: 1,
           }}
-          dropHeight="medium"
-          {...selectProps}
-        />
-      </FormField>
+          {...formFieldProps}
+        >
+          <Select
+            id="select-playlist-id"
+            name="playlist"
+            size="medium"
+            aria-label={intl.formatMessage(messages.selectPlaylistLabel)}
+            options={playlists}
+            labelKey="title"
+            valueKey={{ key: 'id', reduce: true }}
+            onMore={() => {
+              if (!playlistResponse) {
+                return;
+              }
+
+              if (playlists.length < playlistResponse.count) {
+                setCurrentPlaylistPage((currentPage) => currentPage + 1);
+              }
+            }}
+            margin="none"
+            dropHeight="medium"
+            {...selectProps}
+          />
+        </FormField>
+        <Link to={routes.PLAYLIST.subRoutes.CREATE.path}>
+          <Button
+            a11yTitle={intl.formatMessage(messages.createPlaylist)}
+            icon={<PlusSVG iconColor="#055fd2" height="35px" width="35px" />}
+            style={{
+              border: 'transparent',
+            }}
+          />
+        </Link>
+      </Box>
     ),
     [formFieldProps, intl, playlistResponse, playlists, selectProps],
   );

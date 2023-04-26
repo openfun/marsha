@@ -6,6 +6,8 @@ import { Form } from 'lib-components';
 import { render, Deferred, appendUtilsElement } from 'lib-tests';
 import { Fragment } from 'react';
 
+import { routes } from 'routes';
+
 import useSelectPlaylist from './useSelectPlaylist';
 
 const playlistsResponse = {
@@ -66,6 +68,10 @@ describe('<useSelectPlaylist />', () => {
       </Form>,
     );
 
+    expect(
+      screen.getByRole('button', { name: 'Create a new playlist' }),
+    ).toBeInTheDocument();
+
     userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.',
@@ -81,6 +87,60 @@ describe('<useSelectPlaylist />', () => {
         name: 'Choose the playlist.; Selected: an-other-playlist',
       }),
     ).toBeInTheDocument();
+  });
+
+  test('renders useSelectPlaylist and clicks on the create playlist button', async () => {
+    fetchMock.get(
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
+      playlistsResponse,
+    );
+
+    const useSelectPlaylistSuccess = new Deferred();
+    const { result, waitForNextUpdate } = renderHook(
+      () => useSelectPlaylist(),
+      {
+        wrapper: Wrapper,
+      },
+    );
+
+    await waitForNextUpdate();
+
+    useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
+    expect(result.current.errorPlaylist).toBeNull();
+    expect(await useSelectPlaylistSuccess.promise).toEqual({
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        { id: 'some-playlist-id', title: 'some playlist title' },
+        { id: 'an-other-playlist', title: 'an other title' },
+      ],
+    });
+
+    render(
+      <Form onSubmitError={() => ({})} onSubmit={() => {}}>
+        {result.current.selectPlaylist}
+      </Form>,
+      {
+        routerOptions: {
+          routes: [
+            {
+              path: routes.PLAYLIST.subRoutes.CREATE.path,
+              render: () => <div>create playlist page</div>,
+            },
+          ],
+        },
+      },
+    );
+
+    const createPlaylistButton = screen.getByRole('button', {
+      name: 'Create a new playlist',
+    });
+    expect(createPlaylistButton).toBeInTheDocument();
+
+    userEvent.click(createPlaylistButton);
+
+    expect(await screen.findByText('create playlist page')).toBeInTheDocument();
   });
 
   test('renders useSelectPlaylist error', async () => {
