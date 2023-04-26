@@ -134,6 +134,7 @@ class Base(Configuration):
         "marsha.bbb.apps.BbbConfig",
         "marsha.deposit.apps.DepositConfig",
         "marsha.markdown.apps.MarkdownConfig",
+        "marsha.page.apps.PageConfig",
         "marsha.websocket.apps.WebsocketConfig",
     ]
     MIDDLEWARE = [

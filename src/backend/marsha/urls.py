@@ -115,6 +115,7 @@ urlpatterns = [
     path("account/", include("marsha.account.urls")),
     # Admin
     path("admin/", admin.site.urls),
+    path("", include("marsha.page.urls")),
     # LTI
     path("lti/config.xml", LTIConfigView.as_view(), name="config_lti_view"),
     re_path(
