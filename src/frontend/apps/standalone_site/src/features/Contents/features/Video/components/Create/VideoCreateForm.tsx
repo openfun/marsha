@@ -92,7 +92,7 @@ const VideoCreateForm = () => {
   });
 
   useEffect(() => {
-    if (!playlistResponse?.results) {
+    if (!playlistResponse?.results || !playlistResponse?.count) {
       return;
     }
 
@@ -100,7 +100,7 @@ const VideoCreateForm = () => {
       ...value,
       playlist: playlistResponse.results[0].id,
     }));
-  }, [playlistResponse?.results]);
+  }, [playlistResponse?.results, playlistResponse?.count]);
 
   useEffect(() => {
     if (
