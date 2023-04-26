@@ -8,7 +8,7 @@ import { Router } from 'react-router-dom';
 import LiveCreateForm from './LiveCreateForm';
 
 const playlistsResponse = {
-  count: 1,
+  count: 2,
   next: null,
   previous: null,
   results: [
@@ -46,6 +46,30 @@ describe('<LiveCreateForm />', () => {
     expect(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: /description/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Add Webinar/i }),
+    ).toBeInTheDocument();
+  });
+
+  test('renders LiveCreateForm with no existing playlist', async () => {
+    render(<LiveCreateForm />);
+
+    deferredPlaylists.resolve({
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
+    expect(screen.getByRole('textbox', { name: /title/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.',
       }),
     ).toBeInTheDocument();
     expect(

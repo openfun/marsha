@@ -81,7 +81,7 @@ const LiveCreateForm = () => {
   });
 
   useEffect(() => {
-    if (!playlistResponse?.results) {
+    if (!playlistResponse?.results || !playlistResponse?.count) {
       return;
     }
 
@@ -89,7 +89,7 @@ const LiveCreateForm = () => {
       ...value,
       playlist: playlistResponse.results[0].id,
     }));
-  }, [playlistResponse?.results]);
+  }, [playlistResponse?.results, playlistResponse?.count]);
 
   return (
     <Fragment>

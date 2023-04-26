@@ -8,7 +8,7 @@ import { Router } from 'react-router-dom';
 import ClassRoomCreateForm from './ClassRoomCreateForm';
 
 const playlistsResponse = {
-  count: 1,
+  count: 2,
   next: null,
   previous: null,
   results: [
@@ -226,5 +226,27 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
 
     expect(consoleError).toHaveBeenCalled();
+  });
+
+  it('renders correctly the form when there is no existing plyalist', () => {
+    render(<ClassRoomCreateForm />);
+
+    deferred.resolve({
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+
+    expect(screen.getByRole('textbox', { name: /title/i })).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: /playlist/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: /description/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Add classroom/i }),
+    ).toBeInTheDocument();
   });
 });

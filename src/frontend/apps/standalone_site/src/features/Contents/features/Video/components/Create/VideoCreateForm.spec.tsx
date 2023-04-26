@@ -13,7 +13,7 @@ import { Router } from 'react-router-dom';
 import VideoCreateForm from './VideoCreateForm';
 
 const playlistsResponse = {
-  count: 1,
+  count: 2,
   next: null,
   previous: null,
   results: [
@@ -100,6 +100,39 @@ describe('<VideoCreateForm />', () => {
     expect(
       await screen.findByRole('button', {
         name: 'Choose the playlist.; Selected: some-playlist-id',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('textbox', { name: /description/i }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Add a video or drag & drop it'),
+    ).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Add Video/i }),
+    ).toBeInTheDocument();
+  });
+
+  test('renders VideoCreateForm without existing playlist', async () => {
+    render(<VideoCreateForm />);
+
+    deferredPlaylists.resolve({
+      count: 0,
+      next: null,
+      previous: null,
+      results: [],
+    });
+    deferredVideos.resolve(videosResponse);
+
+    expect(screen.getByRole('textbox', { name: /title/i })).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.',
       }),
     ).toBeInTheDocument();
     expect(
