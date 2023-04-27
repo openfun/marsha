@@ -59,8 +59,9 @@ const LiveCreateForm = () => {
     title: '',
     live_type: LiveModeType.JITSI,
   });
-  const { errorPlaylist, selectPlaylist, playlistResponse } =
-    useSelectPlaylist();
+  const { errorPlaylist, selectPlaylist, playlistResponse } = useSelectPlaylist(
+    { withPlaylistCreation: true },
+  );
   const {
     mutate: createLive,
     error: errorVideo,

@@ -49,6 +49,9 @@ describe('<LiveCreateForm />', () => {
       }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole('button', { name: 'Create a new playlist' }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole('textbox', { name: /description/i }),
     ).toBeInTheDocument();
     expect(
@@ -73,6 +76,9 @@ describe('<LiveCreateForm />', () => {
       }),
     ).toBeInTheDocument();
     expect(
+      screen.getByRole('button', { name: 'Create a new playlist' }),
+    ).toBeInTheDocument();
+    expect(
       screen.getByRole('textbox', { name: /description/i }),
     ).toBeInTheDocument();
     expect(
@@ -84,6 +90,10 @@ describe('<LiveCreateForm />', () => {
     render(<LiveCreateForm />);
 
     deferredPlaylists.resolve(playlistsResponse);
+
+    expect(
+      screen.getByRole('button', { name: 'Create a new playlist' }),
+    ).toBeInTheDocument();
 
     const button = screen.getByRole('button', { name: /Add Webinar/i });
 
@@ -140,6 +150,10 @@ describe('<LiveCreateForm />', () => {
     );
 
     deferredPlaylists.resolve(playlistsResponse);
+
+    expect(
+      screen.getByRole('button', { name: 'Create a new playlist' }),
+    ).toBeInTheDocument();
 
     fireEvent.change(screen.getByRole('textbox', { name: /title/i }), {
       target: { value: 'my title' },
