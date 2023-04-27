@@ -23,9 +23,41 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Show document"
   },
+  "apps.classroom.components.DashboardStudent.UploadFiles.downloadButtonLabel": {
+    "description": "Label for download button.",
+    "message": "Download"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.dropzonePlaceholder": {
+    "description": "Placeholder for dropzone.",
+    "message": "Drag 'n' drop some files here, or click to select files"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.dropzoneTitle": {
+    "description": "Title for the dropzone.",
+    "message": "Upload files to your classroom:"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
+    "description": "Error message when file is too big.",
+    "message": "Uploaded files exceeds allowed size of {uploadMaxSize}."
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.errorFileUpload": {
+    "description": "Error message when file upload fails.",
+    "message": "An error occurred when uploading your file. Please retry."
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.isDefaultDocument": {
+    "description": "Helper message for default document.",
+    "message": "Default document"
+  },
   "apps.classroom.components.DashboardStudent.UploadFiles.setDefaultDocument": {
     "description": "Button helper message for setting a document as default.",
     "message": "Click to set as default document"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.uploadButtonLabel": {
+    "description": "Label for upload button.",
+    "message": "Upload"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.uploadingFile": {
+    "description": "Help text to warn user not to navigate away during file upload.",
+    "message": "Upload in progress... Please do not close or reload this page."
   },
   "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
     "description": "Error message when file is too big.",
@@ -273,7 +305,7 @@
   },
   "component.DashboardCopyClipboard.ltiLinkCopiedSuccess": {
     "description": "Toast message when link copied to clipboard.",
-    "message": "Url copied in clipboard !"
+    "message": "Url copied to clipboard !"
   },
   "component.DashboardCopyClipboard.ltiLinkLabel": {
     "description": "Label for LTI classroom link.",

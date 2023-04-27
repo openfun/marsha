@@ -23,9 +23,41 @@
     "description": "Title for picture in picture switch button when player is the main element",
     "message": "Afficher le document"
   },
+  "apps.classroom.components.DashboardStudent.UploadFiles.downloadButtonLabel": {
+    "description": "Label for download button.",
+    "message": "Télécharger"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.dropzonePlaceholder": {
+    "description": "Placeholder for dropzone.",
+    "message": "Faites glisser et déposez des fichiers ici, ou cliquez pour sélectionner des fichiers"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.dropzoneTitle": {
+    "description": "Title for the dropzone.",
+    "message": "Téléverser des fichiers dans la classe virtuelle : "
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
+    "description": "Error message when file is too big.",
+    "message": "Les fichiers téléversés dépassent la taille autorisée de {uploadMaxSize}."
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.errorFileUpload": {
+    "description": "Error message when file upload fails.",
+    "message": "Une erreur s'est produite lors du téléversement de votre fichier. Veuillez réessayer."
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.isDefaultDocument": {
+    "description": "Helper message for default document.",
+    "message": "Document par défaut"
+  },
   "apps.classroom.components.DashboardStudent.UploadFiles.setDefaultDocument": {
     "description": "Button helper message for setting a document as default.",
     "message": "Cliquer pour définir comme document par défaut"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.uploadButtonLabel": {
+    "description": "Label for upload button.",
+    "message": "Téléverser"
+  },
+  "apps.classroom.components.DashboardStudent.UploadFiles.uploadingFile": {
+    "description": "Help text to warn user not to navigate away during file upload.",
+    "message": "Téléversement en cours... Merci de ne pas fermer ni recharger la page."
   },
   "apps.deposit.components.DashboardStudent.UploadFiles.errorFileTooLarge": {
     "description": "Error message when file is too big.",
@@ -1681,7 +1713,7 @@
   },
   "live.common.PanelWebinar.showChat": {
     "description": "Title for the chat button in the mobile panel",
-    "message": "Afficher le chat"
+    "message": "Afficher le tchat"
   },
   "live.common.PanelWebinar.showViewers": {
     "description": "Title for the viewer button in the mobile panel",
