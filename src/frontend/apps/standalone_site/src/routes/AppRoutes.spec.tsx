@@ -1,5 +1,6 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
@@ -29,11 +30,34 @@ jest.mock('features/Playlist', () => ({
   PlaylistRouter: () => <div>My Playlist Page</div>,
 }));
 
+jest.mock('features/PagesApi', () => ({
+  ...jest.requireActual('features/PagesApi'),
+  PagesApi: () => <div>My PagesApi</div>,
+}));
+
 window.scrollTo = jest.fn();
 
 describe('<AppRoutes />', () => {
+  beforeEach(() => {
+    fetchMock.get('/api/pages/', {
+      results: [
+        {
+          slug: 'test',
+          name: 'Test',
+          content: 'My test page',
+        },
+        {
+          slug: 'cgi',
+          name: 'General Conditions',
+          content: 'Bla bla bla',
+        },
+      ],
+    });
+  });
+
   afterEach(() => {
     jest.resetAllMocks();
+    fetchMock.restore();
   });
 
   test('renders AppRoutes', async () => {
@@ -89,5 +113,14 @@ describe('<AppRoutes />', () => {
     });
     expect(screen.getByText('My HeaderLight')).toBeInTheDocument();
     expect(screen.getByText('My ContentsRouter Page')).toBeInTheDocument();
+  });
+
+  test('render generale conditions', async () => {
+    render(<AppRoutes />, {
+      routerOptions: {
+        history: ['/cgi'],
+      },
+    });
+    expect(await screen.findByText('My PagesApi')).toBeInTheDocument();
   });
 });
