@@ -8,6 +8,7 @@ import { ContentSpinner } from 'components/Spinner';
 import { Authenticator, VisitorAuthenticator } from 'features/Authentication';
 import { Header, HeaderLight } from 'features/Header';
 import { Menu } from 'features/Menu';
+import { PagesApi, usePagesApi } from 'features/PagesApi';
 
 import { routes } from './routes';
 
@@ -36,6 +37,7 @@ const messages = defineMessages({
 const AppRoutes = () => {
   const intl = useIntl();
   const location = useLocation();
+  const { routesPagesApi } = usePagesApi();
 
   useEffect(() => {
     window.scrollTo({
@@ -111,6 +113,12 @@ const AppRoutes = () => {
               <Route path={routes.PROFILE.path}>
                 <Suspense fallback={<ContentSpinner />}>
                   <ProfileRouter />
+                </Suspense>
+              </Route>
+
+              <Route path={routesPagesApi}>
+                <Suspense fallback={<ContentSpinner />}>
+                  <PagesApi />
                 </Suspense>
               </Route>
             </Switch>

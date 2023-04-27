@@ -31,7 +31,10 @@ module.exports = {
   },
   jest: {
     configure: {
-      moduleNameMapper: appModuleNameMapper['website'],
+      moduleNameMapper: {
+        ...appModuleNameMapper['website'],
+        'react-markdown': '<rootDir>/src/__mock__/react-markdown.tsx',
+      },
     },
   },
 };
