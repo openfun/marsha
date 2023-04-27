@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-17 08:45+0000\n"
-"PO-Revision-Date: 2023-04-18 17:09\n"
+"POT-Creation-Date: 2023-04-26 13:41+0000\n"
+"PO-Revision-Date: 2023-04-27 12:27\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -739,7 +739,7 @@ msgstr "{user} était {role} de {consumer_site}"
 msgid "{user} is {role} of {consumer_site}"
 msgstr "{user} est {role} de {consumer_site}"
 
-#: marsha/core/models/account.py:402
+#: marsha/core/models/account.py:402 marsha/page/models.py:29
 msgid "name"
 msgstr "nom"
 
@@ -1749,35 +1749,76 @@ msgstr "extension de l'image (ex : \"png\", \"jpg\", etc)."
 msgid "image"
 msgstr "image"
 
-#: marsha/settings.py:307
+#: marsha/page/admin.py:13
+msgid "Page"
+msgstr ""
+
+#: marsha/page/apps.py:12
+msgid "Pages"
+msgstr ""
+
+#: marsha/page/models.py:23
+msgid "slug"
+msgstr ""
+
+#: marsha/page/models.py:24
+#, python-brace-format
+msgid "Page slug (/page/{slug})"
+msgstr ""
+
+#: marsha/page/models.py:30
+msgid "Page displayed name"
+msgstr ""
+
+#: marsha/page/models.py:35
+msgid "content"
+msgstr ""
+
+#: marsha/page/models.py:36
+msgid "Content of the page in Markdown format"
+msgstr ""
+
+#: marsha/page/models.py:41
+msgid "is published"
+msgstr ""
+
+#: marsha/page/models.py:42
+msgid "Is the page ready to be shown publicly"
+msgstr ""
+
+#: marsha/page/models.py:51 marsha/page/models.py:52
+msgid "page"
+msgstr ""
+
+#: marsha/settings.py:308
 msgid "english"
 msgstr "anglais"
 
-#: marsha/settings.py:307
+#: marsha/settings.py:308
 msgid "french"
 msgstr "français"
 
-#: marsha/settings.py:524
+#: marsha/settings.py:525
 msgid "5 minutes"
 msgstr "5 minutes"
 
-#: marsha/settings.py:528
+#: marsha/settings.py:529
 msgid "Live starts in less than 5 minutes"
 msgstr "Le webinaire va démarrer dans moins de 5 minutes"
 
-#: marsha/settings.py:531
+#: marsha/settings.py:532
 msgid "3 hours"
 msgstr "3 heures"
 
-#: marsha/settings.py:537
+#: marsha/settings.py:538
 msgid "Live starts in less than 3 hours"
 msgstr "Le webinaire va débuter dans moins de 3 heures"
 
-#: marsha/settings.py:540
+#: marsha/settings.py:541
 msgid "3 days"
 msgstr "3 jours"
 
-#: marsha/settings.py:545
+#: marsha/settings.py:546
 msgid "Live starts in less than 3 days"
 msgstr "Le webinaire va débuter dans moins de 3 jours"
 
