@@ -33,11 +33,13 @@ const messages = defineMessages({
 interface UseSelectPlaylistOptions {
   formFieldProps?: Partial<FormFieldExtendedProps>;
   selectProps?: Partial<SelectExtendedProps>;
+  withPlaylistCreation?: boolean;
 }
 
 const useSelectPlaylist = ({
   formFieldProps,
   selectProps,
+  withPlaylistCreation,
 }: UseSelectPlaylistOptions = {}) => {
   const intl = useIntl();
   const [currentPlaylistPage, setCurrentPlaylistPage] = useState(0);
@@ -68,16 +70,24 @@ const useSelectPlaylist = ({
 
   const selectPlaylist = useMemo(
     () => (
-      <Box direction="row-responsive" pad={{ bottom: 'small' }} gap="small">
+      <Box
+        direction="row-responsive"
+        pad={withPlaylistCreation ? { bottom: 'small' } : {}}
+        gap="small"
+      >
         <FormField
           label={intl.formatMessage(messages.selectPlaylistLabel)}
           htmlFor="select-playlist-id"
           name="playlist"
           margin="none"
           required
-          style={{
-            flex: 1,
-          }}
+          style={
+            withPlaylistCreation
+              ? {
+                  flex: 1,
+                }
+              : {}
+          }
           {...formFieldProps}
         >
           <Select
@@ -102,18 +112,27 @@ const useSelectPlaylist = ({
             {...selectProps}
           />
         </FormField>
-        <Link to={routes.PLAYLIST.subRoutes.CREATE.path}>
-          <Button
-            a11yTitle={intl.formatMessage(messages.createPlaylist)}
-            icon={<PlusSVG iconColor="#055fd2" height="35px" width="35px" />}
-            style={{
-              border: 'transparent',
-            }}
-          />
-        </Link>
+        {withPlaylistCreation && (
+          <Link to={routes.PLAYLIST.subRoutes.CREATE.path}>
+            <Button
+              a11yTitle={intl.formatMessage(messages.createPlaylist)}
+              icon={<PlusSVG iconColor="#055fd2" height="35px" width="35px" />}
+              style={{
+                border: 'transparent',
+              }}
+            />
+          </Link>
+        )}
       </Box>
     ),
-    [formFieldProps, intl, playlistResponse, playlists, selectProps],
+    [
+      formFieldProps,
+      intl,
+      playlistResponse,
+      playlists,
+      selectProps,
+      withPlaylistCreation,
+    ],
   );
 
   return {

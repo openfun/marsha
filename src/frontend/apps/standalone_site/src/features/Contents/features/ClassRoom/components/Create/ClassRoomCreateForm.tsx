@@ -64,8 +64,9 @@ const ClassroomCreateForm = () => {
   const intl = useIntl();
   const history = useHistory();
   const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
-  const { errorPlaylist, selectPlaylist, playlistResponse } =
-    useSelectPlaylist();
+  const { errorPlaylist, selectPlaylist, playlistResponse } = useSelectPlaylist(
+    { withPlaylistCreation: true },
+  );
   const {
     mutate: createClassroom,
     error: errorClassroom,

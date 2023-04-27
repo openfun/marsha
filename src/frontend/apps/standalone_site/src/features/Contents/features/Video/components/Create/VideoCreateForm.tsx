@@ -72,8 +72,9 @@ const VideoCreateForm = () => {
   });
   const [newVideo, setNewVideo] = useState<Video>();
   const [isUploading, setIsUploading] = useState(false);
-  const { errorPlaylist, selectPlaylist, playlistResponse } =
-    useSelectPlaylist();
+  const { errorPlaylist, selectPlaylist, playlistResponse } = useSelectPlaylist(
+    { withPlaylistCreation: true },
+  );
   const {
     mutate: createVideo,
     error: errorVideo,
