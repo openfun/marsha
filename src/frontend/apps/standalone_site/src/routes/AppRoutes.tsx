@@ -6,7 +6,9 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
 import { Authenticator, VisitorAuthenticator } from 'features/Authentication';
+import { Footer } from 'features/Footer';
 import { Header, HeaderLight } from 'features/Header';
+import { HomePage } from 'features/HomePage';
 import { Menu } from 'features/Menu';
 import { PagesApi, usePagesApi } from 'features/PagesApi';
 
@@ -14,7 +16,6 @@ import { routes } from './routes';
 
 const { AuthRouter } = lazyImport(() => import('features/Authentication'));
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
-const { HomePage } = lazyImport(() => import('features/HomePage'));
 const { PlaylistRouter } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
@@ -60,7 +61,11 @@ const AppRoutes = () => {
         exact
       >
         <VisitorAuthenticator>
-          <MainLayout Header={HeaderLight} direction="column">
+          <MainLayout
+            Header={HeaderLight}
+            direction="column"
+            footer={<Footer />}
+          >
             <Suspense
               fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
             >
@@ -84,12 +89,10 @@ const AppRoutes = () => {
 
       <Route>
         <Authenticator>
-          <MainLayout Header={Header} menu={<Menu />}>
+          <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
             <Switch>
               <Route path={routes.HOMEPAGE.path} exact>
-                <Suspense fallback={<ContentSpinner />}>
-                  <HomePage />
-                </Suspense>
+                <HomePage />
               </Route>
 
               <Route path={routes.PLAYLIST.path}>

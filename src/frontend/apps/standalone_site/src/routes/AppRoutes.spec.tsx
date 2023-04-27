@@ -35,6 +35,10 @@ jest.mock('features/PagesApi', () => ({
   PagesApi: () => <div>My PagesApi</div>,
 }));
 
+jest.mock('features/Footer', () => ({
+  Footer: () => <div>My Footer</div>,
+}));
+
 window.scrollTo = jest.fn();
 
 describe('<AppRoutes />', () => {
@@ -67,9 +71,10 @@ describe('<AppRoutes />', () => {
     ).toBeInTheDocument();
     expect(screen.getByText(/My Header/i)).toBeInTheDocument();
     expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 
-  test('check router', async () => {
+  test('menu interaction with the router', async () => {
     render(<AppRoutes />);
 
     expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
@@ -113,6 +118,7 @@ describe('<AppRoutes />', () => {
     });
     expect(screen.getByText('My HeaderLight')).toBeInTheDocument();
     expect(screen.getByText('My ContentsRouter Page')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 
   test('render generale conditions', async () => {
@@ -122,5 +128,6 @@ describe('<AppRoutes />', () => {
       },
     });
     expect(await screen.findByText('My PagesApi')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 });

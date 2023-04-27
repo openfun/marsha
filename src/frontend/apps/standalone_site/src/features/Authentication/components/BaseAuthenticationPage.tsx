@@ -43,7 +43,7 @@ const ResponsiveBox: React.FC = ({ children }) => {
 
   if (isSmallerBreakpoint(breakpoint, 'xsmedium')) {
     return (
-      <Box height="100vh" background={backgroundImage('30%', '80%')}>
+      <Box height="87vh" background={backgroundImage('30%', '80%')}>
         <HeaderLight bgcolor="transparent" color="white" />
         <WhiteCard
           width="90%"

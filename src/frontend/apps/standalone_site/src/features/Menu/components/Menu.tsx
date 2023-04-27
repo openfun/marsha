@@ -28,9 +28,15 @@ interface PropsExtended {
 }
 
 const MenuBox = styled(Box)<PropsExtended>`
-  box-shadow: 0px 0px 4px 0px rgba(104, 111, 122, 0.3);
+  box-shadow: 0px -4px 4px 0px rgba(104, 111, 122, 0.3);
   z-index: 10;
   transition: margin-left 0.6s;
+  background: linear-gradient(
+    to bottom,
+    #ffffff 0%,
+    #ffffff 83%,
+    #ffffff00 100%
+  );
   ${(props) => (props.isMenuOpen ? `` : `margin-left: -${sizeMenu};`)}
   ${(props) =>
     !props.isDesktop
