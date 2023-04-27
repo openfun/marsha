@@ -175,21 +175,25 @@
     "description": "Text above select box for Renater login",
     "message": "OU SE CONNECTER AVEC"
   },
-  "features.Contents.Contents.MyClassrooms": {
-    "description": "My contents page, my classrooms title",
-    "message": "Mes classes virtuelles"
+  "features.Contents.ContentsFilter.labelFilter": {
+    "description": "Label for filter",
+    "message": "Filtrer"
   },
-  "features.Contents.Contents.MyVideos": {
-    "description": "My contents page, my videos title",
-    "message": "Mes vidéos"
+  "features.Contents.ContentsFilter.noFilterPlaylist": {
+    "description": "Label when no filter",
+    "message": "Tous"
   },
-  "features.Contents.Contents.MyWebinars": {
-    "description": "My contents page, my webinars title",
-    "message": "Mes Webinaires"
+  "features.Contents.ContentsFilter.selectLabelPlaylist": {
+    "description": "Label for the select to filter by playlist",
+    "message": "Filtrer par cours"
   },
-  "features.Contents.Contents.SeeEverything": {
+  "features.Contents.SeeEverything": {
     "description": "Label to see all the cards",
     "message": "Tout voir"
+  },
+  "features.Contents.features.ClassRoomContents.MyClassrooms": {
+    "description": "My contents page, my classrooms title",
+    "message": "Mes classes virtuelles"
   },
   "features.Contents.features.ClassRooms.ClassroomCreateForm.Error": {
     "description": "Text when there is an error.",
@@ -259,6 +263,10 @@
     "description": "Text when there is no webinar to display.",
     "message": "Aucun webinaire à afficher."
   },
+  "features.Contents.features.LiveContents.MyWebinars": {
+    "description": "My contents page, my webinars title",
+    "message": "Mes Webinaires"
+  },
   "features.Contents.features.ReadLives.NoLive": {
     "description": "Text when there is no webinar to display.",
     "message": "Aucun webinaire à afficher."
@@ -299,10 +307,6 @@
     "description": "Message when video field is missing.",
     "message": "Ce champ est requis pour créer une vidéo."
   },
-  "features.Contents.features.Video.VideoCreateForm.selectPlaylistLabel": {
-    "description": "Label select playlist.",
-    "message": "Choisir un cours."
-  },
   "features.Contents.features.Video.VideoCreateForm.submitLabel": {
     "description": "Label for button submit in video creation form.",
     "message": "Ajouter la vidéo"
@@ -310,6 +314,10 @@
   "features.Contents.features.Video.VideoCreateForm.titleLabel": {
     "description": "Label for title in video creation form.",
     "message": "Titre"
+  },
+  "features.Contents.features.VideoContents.MyVideos": {
+    "description": "My contents page, my videos title",
+    "message": "Mes vidéos"
   },
   "features.Contents.features.Webinar.Create.CreateWebinarLabel": {
     "description": "Text heading create webinar.",
@@ -486,6 +494,14 @@
   "features.Playlist.features.UpdatePlaylist.components.UserRoleOptions.studentLabel": {
     "description": "Student role label in playlist access select.",
     "message": "Étudiant"
+  },
+  "features.Playlist.hooks.useSelectPlaylist.createPlaylist": {
+    "description": "a11y label added to the button redirecting to the playlist creation form",
+    "message": "Créer un nouveau cours"
+  },
+  "features.Playlist.hooks.useSelectPlaylist.selectPlaylistLabel": {
+    "description": "Label select playlist.",
+    "message": "Choisir un cours."
   },
   "features.Playlist.noPlaylists": {
     "description": "Message displayed when the user has not playlist yet.",
