@@ -1,6 +1,5 @@
 import { Box, BoxProps } from 'grommet';
-import { normalizeColor } from 'grommet/utils';
-import { Nullable, theme } from 'lib-common';
+import { Nullable } from 'lib-common';
 import React, {
   ForwardRefExoticComponent,
   RefAttributes,
@@ -8,25 +7,19 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import styled from 'styled-components';
-
-const colorMenu = normalizeColor('blue-active', theme);
-
-const MainLayoutBox = styled(Box)`
-  color: ${colorMenu};
-  min-height: 100vh;
-`;
 
 interface MainLayoutProps extends BoxProps {
   children: React.ReactNode;
   Header: ForwardRefExoticComponent<RefAttributes<Nullable<HTMLDivElement>>>;
   menu?: React.ReactNode;
+  footer?: React.ReactNode;
 }
 
 const MainLayout = ({
   children,
   Header,
   menu,
+  footer,
   ...boxProps
 }: MainLayoutProps) => {
   const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
@@ -53,21 +46,29 @@ const MainLayout = ({
   }, []);
 
   return (
-    <MainLayoutBox direction="row" {...boxProps}>
-      <Header ref={headerBoxRef} />
-      {menu}
-      <Box
-        flex
-        background={{ color: 'bg-marsha' }}
-        pad={{
-          bottom: 'small',
-          top: `${headerHeight}px`,
-          horizontal: 'medium',
-        }}
-      >
-        {children}
+    <Box
+      background={{ color: 'bg-marsha' }}
+      color="blue-active"
+      height={{ min: '100vh' }}
+    >
+      <Box direction="row" {...boxProps} height={{ min: '75vh' }}>
+        <Header ref={headerBoxRef} />
+        {menu}
+        <Box flex>
+          <Box
+            pad={{
+              bottom: 'small',
+              top: `${headerHeight}px`,
+              horizontal: 'medium',
+            }}
+            margin={{ bottom: 'medium' }}
+          >
+            {children}
+          </Box>
+        </Box>
       </Box>
-    </MainLayoutBox>
+      {footer}
+    </Box>
   );
 };
 

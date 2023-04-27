@@ -7,6 +7,10 @@ jest.mock('./Login', () => ({
   Login: () => <div>My Login</div>,
 }));
 
+jest.mock('features/Footer', () => ({
+  Footer: () => <div>My Footer</div>,
+}));
+
 jest.mock('./PasswordReset', () => ({
   PasswordReset: () => <div>My PasswordReset1</div>,
   PasswordResetConfirm: () => <div>My PasswordResetConfirm</div>,
@@ -22,6 +26,7 @@ describe('<AuthRouter/>', () => {
       routerOptions: { history: ['/login'] },
     });
     expect(screen.getByText('My Login')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 
   test('render PasswordReset', () => {
@@ -29,6 +34,7 @@ describe('<AuthRouter/>', () => {
       routerOptions: { history: ['/auth/password-reset'] },
     });
     expect(screen.getByText('My PasswordReset1')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 
   test('render PasswordResetConfirm', () => {
@@ -38,5 +44,6 @@ describe('<AuthRouter/>', () => {
       },
     });
     expect(screen.getByText('My PasswordResetConfirm')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
 });
