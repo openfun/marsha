@@ -69,6 +69,64 @@ describe('<useSelectPlaylist />', () => {
     );
 
     expect(
+      screen.queryByRole('button', { name: 'Create a new playlist' }),
+    ).not.toBeInTheDocument();
+
+    userEvent.click(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.',
+      }),
+    );
+
+    userEvent.click(
+      await screen.findByRole('option', { name: 'an other title' }),
+    );
+
+    expect(
+      await screen.findByRole('button', {
+        name: 'Choose the playlist.; Selected: an-other-playlist',
+      }),
+    ).toBeInTheDocument();
+  });
+
+  test('renders useSelectPlaylist success with new playlist creation button', async () => {
+    fetchMock.get(
+      '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
+      playlistsResponse,
+    );
+
+    const useSelectPlaylistSuccess = new Deferred();
+    const { result, waitForNextUpdate } = renderHook(
+      () =>
+        useSelectPlaylist({
+          withPlaylistCreation: true,
+        }),
+      {
+        wrapper: Wrapper,
+      },
+    );
+
+    await waitForNextUpdate();
+
+    useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
+    expect(result.current.errorPlaylist).toBeNull();
+    expect(await useSelectPlaylistSuccess.promise).toEqual({
+      count: 1,
+      next: null,
+      previous: null,
+      results: [
+        { id: 'some-playlist-id', title: 'some playlist title' },
+        { id: 'an-other-playlist', title: 'an other title' },
+      ],
+    });
+
+    render(
+      <Form onSubmitError={() => ({})} onSubmit={() => {}}>
+        {result.current.selectPlaylist}
+      </Form>,
+    );
+
+    expect(
       screen.getByRole('button', { name: 'Create a new playlist' }),
     ).toBeInTheDocument();
 
@@ -97,7 +155,10 @@ describe('<useSelectPlaylist />', () => {
 
     const useSelectPlaylistSuccess = new Deferred();
     const { result, waitForNextUpdate } = renderHook(
-      () => useSelectPlaylist(),
+      () =>
+        useSelectPlaylist({
+          withPlaylistCreation: true,
+        }),
       {
         wrapper: Wrapper,
       },

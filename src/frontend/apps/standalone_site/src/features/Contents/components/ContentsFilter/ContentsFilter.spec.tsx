@@ -39,6 +39,10 @@ describe('<ContentsFilter />', () => {
 
     deferredPlaylists.resolve(playlistsResponse);
 
+    expect(
+      screen.queryByRole('button', { name: 'Create a new playlist' }),
+    ).not.toBeInTheDocument();
+
     screen
       .getByRole('button', {
         name: /Filter/i,
@@ -77,6 +81,10 @@ describe('<ContentsFilter />', () => {
     );
 
     deferredPlaylists.resolve(playlistsResponse);
+
+    expect(
+      screen.queryByRole('button', { name: 'Create a new playlist' }),
+    ).not.toBeInTheDocument();
 
     expect(screen.getByText('2')).toBeInTheDocument();
 
