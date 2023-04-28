@@ -1,8 +1,11 @@
-import { fetchWrapper, useJwt } from 'lib-components';
+import { fetchWrapper, useCurrentUser, useJwt } from 'lib-components';
 
 export const logout = async () => {
   const refreshToken = useJwt.getState().getRefreshJwt();
   useJwt.getState().resetJwt();
+  useCurrentUser.setState({
+    currentUser: null,
+  });
 
   const response = await fetchWrapper('/account/api/logout/', {
     headers: {

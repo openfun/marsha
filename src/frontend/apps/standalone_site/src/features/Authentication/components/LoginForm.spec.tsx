@@ -4,14 +4,16 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
+import { getLocalStorage } from 'utils/browser';
 
 import { LoginForm } from './LoginForm';
 
-const mockHistoryPush = jest.fn();
+const mockHistory = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useHistory: () => ({
-    push: mockHistoryPush,
+    ...jest.requireActual('react-router-dom').useHistory(),
+    replace: mockHistory,
   }),
 }));
 
@@ -101,7 +103,11 @@ describe('<LoginFrom />', () => {
       status: 200,
       ok: true,
     });
-    render(<LoginForm />);
+    render(<LoginForm />, {
+      routerOptions: {
+        history: ['/login'],
+      },
+    });
 
     userEvent.type(
       screen.getByRole('textbox', { name: /username/i }),
@@ -110,6 +116,35 @@ describe('<LoginFrom />', () => {
     userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
     userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
-    await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(mockHistory).toHaveBeenCalledWith('/'));
+  });
+
+  it('checks the login redirection', async () => {
+    fetchMock.post('/account/api/token/', {
+      status: 200,
+      ok: true,
+    });
+    render(<LoginForm />, {
+      routerOptions: {
+        history: ['/not-login-page'],
+      },
+    });
+
+    await waitFor(() => expect(mockHistory).toHaveBeenCalledWith('/login'));
+
+    expect(getLocalStorage()?.getItem('redirect_uri')).toEqual(
+      '/not-login-page',
+    );
+
+    userEvent.type(
+      screen.getByRole('textbox', { name: /username/i }),
+      'my_user',
+    );
+    userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    userEvent.click(screen.getByRole('button', { name: /OK/i }));
+
+    await waitFor(() =>
+      expect(mockHistory).toHaveBeenCalledWith('/not-login-page'),
+    );
   });
 });
