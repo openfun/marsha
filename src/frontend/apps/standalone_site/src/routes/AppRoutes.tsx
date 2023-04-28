@@ -1,7 +1,8 @@
 import { lazyImport } from 'lib-common';
+import { useJwt } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
@@ -38,7 +39,9 @@ const messages = defineMessages({
 const AppRoutes = () => {
   const intl = useIntl();
   const location = useLocation();
-  const { routesPagesApi } = usePagesApi();
+  const { isAuthenticated } = useJwt((state) => ({
+    isAuthenticated: state.jwt,
+  }));
 
   useEffect(() => {
     window.scrollTo({
@@ -54,39 +57,76 @@ const AppRoutes = () => {
       ?.setAttribute('content', intl.formatMessage(messages.metaDescription));
   }, [intl]);
 
+  if (isAuthenticated) {
+    return <AuthenticatedRoutes />;
+  }
+
+  return <AnonymousRoutes />;
+};
+
+const AnonymousRoutes = () => {
+  const { routesPagesApi } = usePagesApi();
+
   return (
     <Switch>
       <Route
         path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
         exact
       >
-        <VisitorAuthenticator>
-          <MainLayout
-            Header={HeaderLight}
-            direction="column"
-            footer={<Footer />}
-          >
-            <Suspense
-              fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-            >
-              <ContentsRouter />
-            </Suspense>
-          </MainLayout>
-        </VisitorAuthenticator>
+        <VisitorAuthenticator />
       </Route>
-      <Route
-        path={[
-          routes.LOGIN.path,
-          routes.PASSWORD_RESET.path,
-          routes.PASSWORD_RESET_CONFIRM.path,
-        ]}
-        exact
-      >
+      <Route path={routesPagesApi} exact>
+        <MainLayout
+          Header={HeaderLight}
+          direction="column"
+          footer={<Footer />}
+          contentBoxProps={{ pad: { horizontal: 'medium', vertical: 'small' } }}
+        >
+          <Suspense
+            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+          >
+            <PagesApi />
+          </Suspense>
+        </MainLayout>
+      </Route>
+
+      <Route>
         <Suspense fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}>
           <AuthRouter />
         </Suspense>
       </Route>
+    </Switch>
+  );
+};
 
+const AuthenticatedRoutes = () => {
+  const history = useHistory();
+  const { pathname } = useLocation();
+  const { routesPagesApi } = usePagesApi();
+
+  /**
+   * Redirect to homepage if user try to access login page when authenticated
+   */
+  useEffect(() => {
+    if (pathname === routes.LOGIN.path) {
+      history.replace(routes.HOMEPAGE.path);
+    }
+  }, [history, pathname]);
+
+  return (
+    <Switch>
+      <Route
+        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
+        exact
+      >
+        <MainLayout Header={HeaderLight} direction="column" footer={<Footer />}>
+          <Suspense
+            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+          >
+            <ContentsRouter />
+          </Suspense>
+        </MainLayout>
+      </Route>
       <Route>
         <Authenticator>
           <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
