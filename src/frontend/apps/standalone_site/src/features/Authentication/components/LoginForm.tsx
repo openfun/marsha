@@ -1,10 +1,11 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
 import { Hide, FormView, Alert } from 'grommet-icons';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
-import { Link, useHistory } from 'react-router-dom';
+import { Link, useHistory, useLocation } from 'react-router-dom';
 
 import { routes } from 'routes/routes';
+import { getLocalStorage } from 'utils/browser';
 
 import { useBasicLogin, UseBasicLoginError } from '../api/basicLogin';
 
@@ -41,20 +42,38 @@ const messages = defineMessages({
   },
 });
 
+const TARGET_URL_STORAGE_KEY = 'redirect_uri';
+
 export const LoginForm = () => {
   const intl = useIntl();
+  const history = useHistory();
+  const { pathname, search } = useLocation();
   const [value, setValue] = useState({ username: '', password: '' });
   const [reveal, setReveal] = useState(false);
   const [message, setMessage] = useState('');
-  const history = useHistory();
   const { mutate: basicLogin } = useBasicLogin({
     onError: (error: UseBasicLoginError) => {
       setMessage(error.detail || intl.formatMessage(messages.error));
     },
     onSuccess: () => {
-      history.push('/');
+      const targetUri = getLocalStorage()?.getItem(TARGET_URL_STORAGE_KEY);
+      getLocalStorage()?.removeItem(TARGET_URL_STORAGE_KEY);
+      // redirect to the originally targeted URL (ie before the authentication loop)
+      // or the root page if no target was set
+      history.replace(targetUri || pathname);
     },
   });
+
+  /**
+   * It is the default route when not logged in,
+   * so if the pathname is not the login route, we redirect to it.
+   */
+  useEffect(() => {
+    if (pathname !== routes.LOGIN.path) {
+      getLocalStorage()?.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
+      history.replace(routes.LOGIN.path);
+    }
+  }, [history, pathname, search]);
 
   return (
     <Form
