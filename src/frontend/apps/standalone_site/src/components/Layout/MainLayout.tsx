@@ -13,6 +13,7 @@ interface MainLayoutProps extends BoxProps {
   Header: ForwardRefExoticComponent<RefAttributes<Nullable<HTMLDivElement>>>;
   menu?: React.ReactNode;
   footer?: React.ReactNode;
+  contentBoxProps?: BoxProps;
 }
 
 const MainLayout = ({
@@ -20,6 +21,7 @@ const MainLayout = ({
   Header,
   menu,
   footer,
+  contentBoxProps,
   ...boxProps
 }: MainLayoutProps) => {
   const headerBoxRef = useRef<Nullable<HTMLDivElement>>(null);
@@ -62,6 +64,7 @@ const MainLayout = ({
               horizontal: 'medium',
             }}
             margin={{ bottom: 'medium' }}
+            {...contentBoxProps}
           >
             {children}
           </Box>

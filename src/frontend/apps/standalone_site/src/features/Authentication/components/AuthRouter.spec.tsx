@@ -46,4 +46,14 @@ describe('<AuthRouter/>', () => {
     expect(screen.getByText('My PasswordResetConfirm')).toBeInTheDocument();
     expect(screen.getByText('My Footer')).toBeInTheDocument();
   });
+
+  test('render random routes', () => {
+    render(<AuthRouter />, {
+      routerOptions: {
+        history: ['/any-route'],
+      },
+    });
+    expect(screen.getByText('My Login')).toBeInTheDocument();
+    expect(screen.getByText('My Footer')).toBeInTheDocument();
+  });
 });
