@@ -1,12 +1,12 @@
 import { Button, Text } from 'grommet';
 import {
+  ButtonLoaderStyle,
   FoldableItem,
   report,
   useCurrentResourceContext,
   Modal,
   ModalButton,
   ModalControlMethods,
-  ModalButtonStyle,
 } from 'lib-components';
 import { useRef } from 'react';
 import toast from 'react-hot-toast';
@@ -104,7 +104,7 @@ export const DeleteVideo = () => {
           label={intl.formatMessage(messages.confirmDeleteTitle)}
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => deleteVideo.mutate(video.id)}
-          style={ModalButtonStyle.DESTRUCTIVE}
+          style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>
       <StyledAnchorButton

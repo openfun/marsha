@@ -8,6 +8,7 @@ import {
   ThemeContext,
 } from 'grommet';
 import {
+  ButtonLoaderStyle,
   FetchResponseError,
   Form,
   FormField,
@@ -17,7 +18,6 @@ import {
   report,
   Modal,
   ModalButton,
-  ModalButtonStyle,
 } from 'lib-components';
 import { ReactNode, useLayoutEffect, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -395,7 +395,7 @@ export const PlaylistForm = ({
                   setIsModalOpen(false);
                   deletePlaylist.mutate(playlistId);
                 }}
-                style={ModalButtonStyle.DESTRUCTIVE}
+                style={ButtonLoaderStyle.DESTRUCTIVE}
               />
             </Modal>
           )}

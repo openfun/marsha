@@ -1,5 +1,6 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
 import { Hide, FormView, Alert } from 'grommet-icons';
+import { ButtonLoader } from 'lib-components';
 import React, { useEffect, useState } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
 import { Link, useHistory, useLocation } from 'react-router-dom';
@@ -51,7 +52,7 @@ export const LoginForm = () => {
   const [value, setValue] = useState({ username: '', password: '' });
   const [reveal, setReveal] = useState(false);
   const [message, setMessage] = useState('');
-  const { mutate: basicLogin } = useBasicLogin({
+  const { mutate: basicLogin, isLoading } = useBasicLogin({
     onError: (error: UseBasicLoginError) => {
       setMessage(error.detail || intl.formatMessage(messages.error));
     },
@@ -141,11 +142,9 @@ export const LoginForm = () => {
         </Box>
       )}
       <Box flex={false} margin={{ top: 'medium' }}>
-        <Button
-          type="submit"
+        <ButtonLoader
           label={intl.formatMessage(messages.labelSubmit)}
-          primary
-          fill
+          isSubmitting={isLoading}
         />
       </Box>
     </Form>
