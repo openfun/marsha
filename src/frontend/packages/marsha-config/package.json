@@ -1,6 +1,6 @@
 {
   "name": "marsha-config",
-  "version": "4.0.0-beta.20",
+  "version": "4.0.0",
   "private": true,
   "description": "Marsha configuration",
   "main": "index.js",
@@ -13,6 +13,6 @@
   },
   "devDependencies": {
     "eslint": "*",
-    "eslint-config-marsha": "4.0.0-beta.20"
+    "eslint-config-marsha": "4.0.0"
   }
 }

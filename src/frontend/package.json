@@ -1,6 +1,6 @@
 {
   "name": "common",
-  "version": "4.0.0-beta.20",
+  "version": "4.0.0",
   "license": "MIT",
   "private": true,
   "workspaces": {
@@ -44,12 +44,12 @@
     "@types/react": "17.0.43",
     "@types/react-dom": "17.0.14",
     "eslint": "8.39.0",
-    "eslint-config-marsha": "4.0.0-beta.20",
+    "eslint-config-marsha": "4.0.0",
     "grommet": "2.31.0",
-    "lib-common": "4.0.0-beta.20",
-    "lib-components": "4.0.0-beta.20",
-    "lib-tests": "4.0.0-beta.20",
-    "marsha-config": "4.0.0-beta.20",
+    "lib-common": "4.0.0",
+    "lib-components": "4.0.0",
+    "lib-tests": "4.0.0",
+    "marsha-config": "4.0.0",
     "styled-components": "5.3.10",
     "typescript": "4.9.5",
     "zustand": "4.3.7"
