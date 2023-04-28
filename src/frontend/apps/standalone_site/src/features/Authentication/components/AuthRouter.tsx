@@ -14,14 +14,14 @@ const AuthRouter = () => {
     <Fragment>
       <BaseAuthenticationPage>
         <Switch>
-          <Route path={routes.LOGIN.path} exact>
-            <Login />
-          </Route>
           <Route path={routes.PASSWORD_RESET.path} exact>
             <PasswordReset />
           </Route>
           <Route path={routes.PASSWORD_RESET_CONFIRM.path} exact>
             <PasswordResetConfirm />
+          </Route>
+          <Route>
+            <Login />
           </Route>
         </Switch>
       </BaseAuthenticationPage>
