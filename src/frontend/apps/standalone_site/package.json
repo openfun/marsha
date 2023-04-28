@@ -1,6 +1,6 @@
 {
   "name": "standalone_site",
-  "version": "4.0.0-beta.20",
+  "version": "4.0.0",
   "license": "MIT",
   "private": true,
   "devDependencies": {
@@ -13,9 +13,9 @@
     "babel-jest": "29.5.0",
     "cross-env": "7.0.3",
     "eslint": "*",
-    "eslint-config-marsha": "4.0.0-beta.20",
+    "eslint-config-marsha": "4.0.0",
     "fetch-mock": "9.11.0",
-    "lib-tests": "4.0.0-beta.20",
+    "lib-tests": "4.0.0",
     "typescript": "*"
   },
   "dependencies": {
@@ -23,12 +23,12 @@
     "grommet": "*",
     "grommet-icons": "4.10.0",
     "http-proxy-middleware": "2.0.6",
-    "lib-classroom": "4.0.0-beta.20",
-    "lib-common": "4.0.0-beta.20",
-    "lib-components": "4.0.0-beta.20",
-    "lib-video": "4.0.0-beta.20",
+    "lib-classroom": "4.0.0",
+    "lib-common": "4.0.0",
+    "lib-components": "4.0.0",
+    "lib-video": "4.0.0",
     "luxon": "3.3.0",
-    "marsha-config": "4.0.0-beta.20",
+    "marsha-config": "4.0.0",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "react-hot-toast": "2.4.0",
