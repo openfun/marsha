@@ -1,31 +1,14 @@
-import {
-  AnonymousUser,
-  isLocalStorageEnabled,
-  Loader,
-  useCurrentUser,
-  useJwt,
-} from 'lib-components';
+import { AnonymousUser, Loader, useCurrentUser, useJwt } from 'lib-components';
 import { Fragment, PropsWithChildren, useEffect } from 'react';
-import { useHistory, useLocation } from 'react-router-dom';
-
-import { routes } from 'routes';
+import { useLocation } from 'react-router-dom';
 
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
 
-const TARGET_URL_STORAGE_KEY = 'redirect_uri';
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
-function getLocalStorage() {
-  if (isLocalStorageEnabled()) {
-    return localStorage;
-  }
-  return undefined;
-}
-
 export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
-  const { pathname, search } = useLocation();
-  const history = useHistory();
+  const { search } = useLocation();
   const code = new URLSearchParams(search).get(
     QUERY_PARAMS_CHALLENGE_TOKEN_NAME,
   );
@@ -35,24 +18,27 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
   }));
   const { jwt, setJwt, setRefreshJwt, resetJwt } = useJwt();
 
+  /**
+   * This useEffect is used when we want to log an anonymous user
+   * thanks to the parameter `token` in the url.
+   */
   useEffect(() => {
-    if (jwt) {
+    if (!code) {
       return;
     }
 
     const fetchJwt = async (validationToken: string) => {
-      const response = await validateChallenge(validationToken);
-      setJwt(response.access);
-      setRefreshJwt(response.refresh);
+      try {
+        const response = await validateChallenge(validationToken);
+        setJwt(response.access);
+        setRefreshJwt(response.refresh);
+      } catch (error) {
+        console.error(error);
+      }
     };
 
-    if (code) {
-      fetchJwt(code);
-    } else {
-      getLocalStorage()?.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
-      history.push(routes.LOGIN.path);
-    }
-  }, [code, history, jwt, pathname, search, setJwt, setRefreshJwt]);
+    fetchJwt(code);
+  }, [code, setJwt, setRefreshJwt]);
 
   useEffect(() => {
     if (!jwt || currentUser) {
@@ -68,19 +54,11 @@ export const Authenticator = ({ children }: PropsWithChildren<unknown>) => {
       }
 
       setCurrentUser(_currentUser);
-
-      const targetUri = getLocalStorage()?.getItem(TARGET_URL_STORAGE_KEY);
-      getLocalStorage()?.removeItem(TARGET_URL_STORAGE_KEY);
-      // redirect to the originally targeted URL (ie before the authentication loop)
-      // or the root page if no target was set
-      history.replace(targetUri || pathname);
     };
     fetchUserData();
-  }, [currentUser, history, jwt, pathname, resetJwt, setCurrentUser]);
+  }, [currentUser, jwt, resetJwt, setCurrentUser]);
 
-  if (!jwt && !code) {
-    return <Fragment />;
-  } else if (!currentUser) {
+  if (!currentUser) {
     return <Loader />;
   }
 
