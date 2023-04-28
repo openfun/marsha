@@ -2,10 +2,10 @@ import { Box, Button, Select, Text } from 'grommet';
 import {
   AnonymousUser,
   BinSVG,
+  ButtonLoaderStyle,
   useCurrentUser,
   Modal,
   ModalButton,
-  ModalButtonStyle,
   ModalControlMethods,
 } from 'lib-components';
 import { Fragment, useRef, useState } from 'react';
@@ -127,7 +127,7 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
           label={intl.formatMessage(messages.deleteUserConfirmButtonTitle)}
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => deleteMutation(playlistAccess.id)}
-          style={ModalButtonStyle.DESTRUCTIVE}
+          style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>
 

@@ -1,9 +1,9 @@
-import { Box, BoxProps, Button, Stack } from 'grommet';
+import { Box, BoxProps, Button } from 'grommet';
 import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Spinner } from '@lib-components/common';
+import { ButtonLoader, ButtonLoaderStyle } from '@lib-components/common/';
 
 export const ModalButtonContainer = ({
   children,
@@ -37,11 +37,6 @@ const ButtonModal = styled(Button)<ButtonModalProps>`
   flex: ${({ flex }) => flex && `${flex}`};
 `;
 
-export enum ModalButtonStyle {
-  DEFAULT = 'DEFAULT',
-  DESTRUCTIVE = 'DESTRUCTIVE',
-}
-
 interface ModalButtonProps {
   label: string;
   labelCancel?: string;
@@ -49,7 +44,7 @@ interface ModalButtonProps {
   isSubmitting?: boolean;
   onClickSubmit?: () => void;
   onClickCancel?: () => void;
-  style?: ModalButtonStyle;
+  style?: ButtonLoaderStyle;
 }
 
 /**
@@ -61,13 +56,9 @@ interface ModalButtonProps {
  * @returns ModalButton component
  */
 const ModalButton = ({
-  label,
   labelCancel,
-  isDisabled,
-  isSubmitting,
-  onClickSubmit,
   onClickCancel,
-  style,
+  ...buttonLabelProps
 }: ModalButtonProps) => {
   const intl = useIntl();
   return (
@@ -79,30 +70,7 @@ const ModalButton = ({
           flex={1}
         />
       )}
-      <Stack
-        style={{ flex: '3' }}
-        guidingChild="first"
-        interactiveChild="first"
-      >
-        <ButtonModal
-          type={onClickSubmit ? 'button' : 'submit'}
-          disabled={isDisabled || isSubmitting}
-          primary
-          label={label}
-          onClick={onClickSubmit}
-          fill="horizontal"
-          color={
-            style === ModalButtonStyle.DESTRUCTIVE ? 'red-active' : undefined
-          }
-        />
-        {isSubmitting && (
-          <Box fill>
-            <Box margin="auto">
-              <Spinner />
-            </Box>
-          </Box>
-        )}
-      </Stack>
+      <ButtonLoader {...buttonLabelProps} />
     </ModalButtonContainer>
   );
 };

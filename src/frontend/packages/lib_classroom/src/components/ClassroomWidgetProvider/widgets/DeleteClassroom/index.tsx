@@ -1,11 +1,11 @@
 import { Button, Text } from 'grommet';
 import {
+  ButtonLoaderStyle,
   FoldableItem,
   report,
   useCurrentResourceContext,
   ModalButton,
   Modal,
-  ModalButtonStyle,
 } from 'lib-components';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -106,7 +106,7 @@ export const DeleteClassroom = () => {
             setIsModalOpen(false);
             deleteClassroom.mutate(classroom.id);
           }}
-          style={ModalButtonStyle.DESTRUCTIVE}
+          style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>
       <StyledAnchorButton

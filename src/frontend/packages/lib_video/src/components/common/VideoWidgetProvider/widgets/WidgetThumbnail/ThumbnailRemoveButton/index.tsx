@@ -1,12 +1,12 @@
 import { Button, Text } from 'grommet';
 import {
   BinSVG,
+  ButtonLoaderStyle,
   useThumbnail,
   Thumbnail,
   report,
   Modal,
   ModalButton,
-  ModalButtonStyle,
   ModalControlMethods,
 } from 'lib-components';
 import React, { useRef } from 'react';
@@ -87,7 +87,7 @@ export const ThumbnailRemoveButton = ({
           label={intl.formatMessage(messages.confirmationModalTitle)}
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => thumbnailDelete.mutate(thumbnail.id)}
-          style={ModalButtonStyle.DESTRUCTIVE}
+          style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>
       {thumbnail && thumbnail.is_ready_to_show && (
