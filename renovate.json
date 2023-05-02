@@ -54,6 +54,16 @@
       "allowedVersions": "<4"
     },
     {
+      "groupName": "allowed urllib3 versions",
+      "matchManagers": [
+        "setup-cfg"
+      ],
+      "matchPackageNames": [
+        "urllib3"
+      ],
+      "allowedVersions": "<1.27"
+    },
+    {
       "enabled": false,
       "groupName": "ignore python dependencies",
       "matchManagers": [
