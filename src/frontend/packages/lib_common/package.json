@@ -26,7 +26,7 @@
     "@types/styled-components": "5.1.26",
     "cross-env": "7.0.3",
     "eslint": "*",
-    "eslint-config-marsha": "4.0.0",
+    "eslint-config-marsha": "*",
     "grommet": "*",
     "prettier": "2.8.8",
     "styled-components": "*",
