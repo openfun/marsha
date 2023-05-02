@@ -260,3 +260,36 @@ class APIViewMixin:
             request.resource = request.user
 
         super().check_permissions(request)
+
+
+class BulkDestroyModelMixin:
+    """
+    Mixin to add the "bulk_destroy" action. It needs ```MarshaDefaultRouter```.
+
+    The action looks for a list of ID in the body and try to delete them.
+    """
+
+    def bulk_destroy(self, request):
+        """
+        The function takes a list of ids from the body and verify if the user
+        has the permissions to delete related objects.
+        If not, nothing is deleted and it returns a 403 error with the
+        list of ids without permissions.
+        """
+        ids = request.data.get("ids", [])
+        objects_to_delete = self.get_queryset().filter(pk__in=ids)
+        # If it fails, it means that one or more Ids is not permitted
+        if objects_to_delete.count() != len(ids):
+            permitted_ids = [
+                str(x) for x in objects_to_delete.values_list("id", flat=True)
+            ]
+            forbidden_ids = [x for x in ids if x not in permitted_ids]
+            return Response(
+                (
+                    "You do not have permission to perform this action for objects:"
+                    f"{str(forbidden_ids)}"
+                ),
+                status=403,
+            )
+        objects_to_delete.delete()
+        return Response(status=204)
