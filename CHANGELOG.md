@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - bulk delete for video and classroom
 
+### Changed
+
+- Use jammy for e2e tests
+
 ### Fixed
 
 - Wrong usage of reduce index in xapiVideo mergeSegments

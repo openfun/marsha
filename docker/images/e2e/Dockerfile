@@ -1,6 +1,6 @@
 FROM marsha:dev as marsha
 
-FROM mcr.microsoft.com/playwright:jammy
+FROM mcr.microsoft.com/playwright:v1.33.0
 
 COPY --from=marsha /app /app
 COPY src/backend/setup.cfg /app/src/backend/
