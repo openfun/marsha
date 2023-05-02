@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- bulk delete for video and classroom
+
 ## [4.0.0] - 2023-05-02
 
 ### Added

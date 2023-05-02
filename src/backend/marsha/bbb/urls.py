@@ -2,7 +2,7 @@
 
 from django.urls import include, path
 
-from rest_framework.routers import DefaultRouter
+from marsha.core.routers import MarshaDefaultRouter
 
 from .api import ClassroomDocumentViewSet, ClassroomViewSet
 from .views import ClassroomLTIView
@@ -10,7 +10,9 @@ from .views import ClassroomLTIView
 
 app_name = "classroom"
 
-router = DefaultRouter()
+router = MarshaDefaultRouter()
+
+
 router.register("classrooms", ClassroomViewSet, basename="classrooms")
 router.register(
     "classroomdocuments", ClassroomDocumentViewSet, basename="classroom_documents"

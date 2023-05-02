@@ -30,6 +30,7 @@ from marsha.core.api import (
     update_state,
 )
 from marsha.core.api.lti_user_association import LtiUserAssociationViewSet
+from marsha.core.routers import MarshaDefaultRouter
 from marsha.core.urls.converters import XAPIResourceKindConverter
 from marsha.core.utils.lti_select_utils import get_lti_select_resources
 from marsha.core.views import (
@@ -52,7 +53,7 @@ LTI_SELECT_ROUTE_PATTERN = (
     rf"lti/select/((?P<resource_kind>{'|'.join(get_lti_select_resources().keys())})/)?$"
 )
 
-router = DefaultRouter()
+router = MarshaDefaultRouter()
 router.register(models.Video.RESOURCE_NAME, VideoViewSet, basename="videos")
 router.register(models.Document.RESOURCE_NAME, DocumentViewSet, basename="documents")
 router.register("organizations", OrganizationViewSet, basename="organizations")
