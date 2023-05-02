@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - use batch/v1 api in cronjob_pipeline manifest
+- Use jammy for e2e tests
 
 ### Fixed
 
