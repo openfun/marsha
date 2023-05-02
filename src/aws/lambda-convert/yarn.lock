@@ -1395,10 +1395,10 @@ available-typed-arrays@^1.0.5:
   resolved "https://registry.yarnpkg.com/available-typed-arrays/-/available-typed-arrays-1.0.5.tgz#92f95616501069d07d10edb2fc37d3e1c65123b7"
   integrity sha512-DMD0KiN46eipeziST1LPP/STfDU0sufISXmjSgvVsoU2tqxctQeASejWcfNtxYKqETM1UxQ8sp2OrSBWpHY6sw==
 
-aws-sdk@2.1363.0:
-  version "2.1363.0"
-  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1363.0.tgz#30c3b7fe999ee2ba1103a533ea27e1b0f5708e1f"
-  integrity sha512-M2MZZXehgi/EMQv5GlzRkn3TlhoOYHg2cYdSAAqhjv67WaEG50MjaQy5vRvfN1i8XvB24aJFJ5pCrx69TaCaIg==
+aws-sdk@2.1369.0:
+  version "2.1369.0"
+  resolved "https://registry.yarnpkg.com/aws-sdk/-/aws-sdk-2.1369.0.tgz#5b6943f4e3c9b824d9405b154fa3ae7f9ad41092"
+  integrity sha512-DdCQjlhQDi9w8J4moqECrrp9ARWCay0UI38adPSS0GG43gh3bl3OoMlgKJ8aZxi4jUvzE48K9yhFHz4y/mazZw==
   dependencies:
     buffer "4.9.2"
     events "1.1.1"
@@ -3127,10 +3127,10 @@ node-int64@^0.4.0:
   resolved "https://registry.yarnpkg.com/node-int64/-/node-int64-0.4.0.tgz#87a9065cdb355d3182d8f94ce11188b825c68a3b"
   integrity sha1-h6kGXNs1XTGC2PlM4RGIuCXGijs=
 
-node-poppler@6.2.1:
-  version "6.2.1"
-  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-6.2.1.tgz#abbd4adec370d074f472e672ad9ffee3630c9c6d"
-  integrity sha512-5Ua1SYyLhDs4NtwwGee1sEL0cgbTgz09BnAN0fLs02rj7nvadzaxAXXHVHwTYE8aMzeemvDQ8nkAEjEBeIKO+Q==
+node-poppler@6.2.2:
+  version "6.2.2"
+  resolved "https://registry.yarnpkg.com/node-poppler/-/node-poppler-6.2.2.tgz#524267a98b41ffe22b264d33b219bee8118733d9"
+  integrity sha512-T3WDpjjv8doif7QBMJIpK/TEtzcH+Sn6Z2PtPmHGEsQkV0yzZ3BEQVcPXPVioX+TW4DlkMez2LfEIRNntksKqw==
   dependencies:
     camelcase "^6.3.0"
     upath "^2.0.1"
