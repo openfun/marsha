@@ -24,7 +24,14 @@ from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
 from ..metadata import VideoMetadata
-from ..models import LivePairing, LiveSession, SharedLiveMedia, Video
+from ..models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    LivePairing,
+    LiveSession,
+    SharedLiveMedia,
+    Video,
+)
 from ..services.video_participants import (
     VideoParticipantsException,
     add_participant_asking_to_join,
@@ -52,7 +59,7 @@ from ..utils.medialive_utils import (
 )
 from ..utils.time_utils import to_timestamp
 from ..utils.xmpp_utils import close_room, create_room, reopen_room_for_vod
-from .base import APIViewMixin, ObjectPkMixin
+from .base import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 
 
 # pylint: disable=too-many-public-methods
@@ -95,7 +102,9 @@ class VideoFilter(django_filters.FilterSet):
         return queryset.filter(Q(live_state__isnull=True) | Q(live_state=ENDED))
 
 
-class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
+class VideoViewSet(
+    APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet, BulkDestroyModelMixin
+):
     """Viewset for the API of the video object."""
 
     queryset = (
@@ -129,7 +138,7 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                 | permissions.IsObjectPlaylistAdminOrInstructor
                 | permissions.IsObjectPlaylistOrganizationAdmin
             ]
-        elif self.action in ["list", "metadata"]:
+        elif self.action in ["list", "metadata", "bulk_destroy"]:
             # Anyone authenticated can list videos (results are filtered in action)
             # or access metadata
             permission_classes = [permissions.UserOrResourceIsAuthenticated]
@@ -219,12 +228,40 @@ class VideoViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
 
         return queryset.distinct()
 
+    def _get_bulk_destroy_queryset(self):
+        """Build the queryset used on the bulk_destroy action."""
+        user_id = self.request.user.id
+
+        queryset = (
+            super()
+            .get_queryset()
+            .filter(
+                (
+                    Q(
+                        playlist__user_accesses__user__id=user_id,
+                        playlist__user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
+                    )
+                )
+                | (
+                    Q(
+                        playlist__organization__user_accesses__user__id=user_id,
+                        playlist__organization__user_accesses__role=ADMINISTRATOR,
+                    )
+                )
+            )
+        )
+
+        return queryset.distinct()
+
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
         queryset = super().get_queryset()
 
         if self.action in ["list"]:
             queryset = self._get_list_queryset()
+
+        if self.action in ["bulk_destroy"]:
+            queryset = self._get_bulk_destroy_queryset()
 
         if self.request.resource is not None:
             # If the request comes from an LTI resource, we force the annotation

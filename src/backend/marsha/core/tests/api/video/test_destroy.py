@@ -189,37 +189,3 @@ class VideoDestroyAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
-
-    def test_api_video_delete_list_anonymous(self):
-        """Anonymous users should not be able to delete a list of videos."""
-        video = factories.VideoFactory()
-
-        response = self.client.delete("/api/videos/")
-
-        self.assertEqual(response.status_code, 405)
-        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
-
-    def test_api_video_delete_list_token_user(self):
-        """A token user associated to a video should not be able to delete a list of videos."""
-        video = factories.VideoFactory()
-        jwt_token = InstructorOrAdminLtiTokenFactory(
-            resource=video,
-            permissions__can_update=False,
-        )
-
-        response = self.client.delete(
-            "/api/videos/", HTTP_AUTHORIZATION=f"Bearer {jwt_token}"
-        )
-        self.assertEqual(response.status_code, 405)
-        self.assertTrue(models.Video.objects.filter(id=video.id).exists())
-
-    def test_api_video_delete_list_staff_or_user(self):
-        """Users authenticated via a session should not be able to delete a list of videos."""
-        video = factories.VideoFactory()
-        for user in [factories.UserFactory(), factories.UserFactory(is_staff=True)]:
-            self.client.login(username=user.username, password="test")
-
-            response = self.client.delete("/api/videos/")
-
-            self.assertEqual(response.status_code, 405)
-        self.assertTrue(models.Video.objects.filter(id=video.id).exists())

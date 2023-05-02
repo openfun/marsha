@@ -21,7 +21,12 @@ from marsha.bbb.utils.bbb_utils import (
     process_recordings,
 )
 from marsha.core import defaults, permissions as core_permissions
-from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
+from marsha.core.api import (
+    APIViewMixin,
+    BulkDestroyModelMixin,
+    ObjectPkMixin,
+    ObjectRelatedMixin,
+)
 
 from . import permissions, serializers
 from ..core.models import ADMINISTRATOR
@@ -48,9 +53,7 @@ class ClassroomFilter(django_filters.FilterSet):
 
 
 class ClassroomViewSet(
-    APIViewMixin,
-    ObjectPkMixin,
-    viewsets.ModelViewSet,
+    APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet, BulkDestroyModelMixin
 ):
     """Viewset for the API of the Classroom object."""
 
@@ -101,7 +104,7 @@ class ClassroomViewSet(
                 core_permissions.IsTokenResourceRouteObject
                 | IsClassroomPlaylistOrOrganizationAdmin
             ]
-        elif self.action in ["list"]:
+        elif self.action in ["list", "bulk_destroy"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
         else:
             permission_classes = self.permission_classes
@@ -144,8 +147,8 @@ class ClassroomViewSet(
             )().has_permission(self.request, self)
         return serializer_context
 
-    def _get_list_queryset(self):
-        """Build the queryset used on the list action."""
+    def _get_filtered_queryset(self):
+        """Build the filtered queryset used on the list and bulk_destroy action."""
         queryset = (
             super()
             .get_queryset()
@@ -166,8 +169,8 @@ class ClassroomViewSet(
 
     def get_queryset(self):
         """Redefine the queryset to use based on the current action."""
-        if self.action in ["list"]:
-            return self._get_list_queryset()
+        if self.action in ["list", "bulk_destroy"]:
+            return self._get_filtered_queryset()
 
         return super().get_queryset()
 
