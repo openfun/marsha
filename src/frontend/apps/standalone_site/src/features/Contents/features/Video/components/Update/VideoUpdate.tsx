@@ -1,8 +1,10 @@
 import {
   AppConfig,
   AppConfigProvider,
+  CurrentResourceContextProvider,
   UploadHandlers,
   UploadManager,
+  ResourceContext,
 } from 'lib-components';
 import { useVideo, DashboardVideoWrapper, useSetVideoState } from 'lib-video';
 import { defineMessages, useIntl } from 'react-intl';
@@ -62,6 +64,16 @@ const VideoDashboard = ({ videoId }: { videoId: string }) => {
 
   useSetVideoState(currentVideo);
 
+  const resourceContext: ResourceContext = {
+    resource_id: videoId,
+    roles: [],
+    permissions: {
+      can_access_dashboard: true,
+      can_update: true,
+    },
+    isFromWebsite: true,
+  };
+
   return (
     <ManageAPIState
       isError={isError}
@@ -76,10 +88,12 @@ const VideoDashboard = ({ videoId }: { videoId: string }) => {
     >
       {currentVideo && (
         <AppConfigProvider value={appConfig}>
-          <UploadManager>
-            <UploadHandlers />
-            <DashboardVideoWrapper video={currentVideo} />
-          </UploadManager>
+          <CurrentResourceContextProvider value={resourceContext}>
+            <UploadManager>
+              <UploadHandlers />
+              <DashboardVideoWrapper video={currentVideo} />
+            </UploadManager>
+          </CurrentResourceContextProvider>
         </AppConfigProvider>
       )}
     </ManageAPIState>

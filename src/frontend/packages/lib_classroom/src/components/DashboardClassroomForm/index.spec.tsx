@@ -1,6 +1,7 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
+import { useCurrentResourceContext } from 'lib-components';
 import { render } from 'lib-tests';
 import { Settings } from 'luxon';
 import React from 'react';
@@ -17,7 +18,13 @@ jest.mock('lib-components', () => ({
       id: '1',
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
@@ -35,6 +42,14 @@ describe('<DashboardClassroomForm />', () => {
   });
 
   it('creates and renders a classroom form', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const classroom = classroomMockFactory({ id: '1', started: false });
     render(
       <ResponsiveContext.Provider value="large">
@@ -48,6 +63,14 @@ describe('<DashboardClassroomForm />', () => {
   });
 
   it('selects the configuration tab by default', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const classroom = classroomMockFactory({ id: '1', started: false });
     render(
       <ResponsiveContext.Provider value="large">
