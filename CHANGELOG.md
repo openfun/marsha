@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - bulk delete for video and classroom
 
+### Fixed
+
+- Wrong usage of reduce index in xapiVideo mergeSegments
+
 ## [4.0.0] - 2023-05-02
 
 ### Added
