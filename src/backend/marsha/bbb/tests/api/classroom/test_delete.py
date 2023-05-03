@@ -77,9 +77,7 @@ class ClassroomDeleteAPITest(TestCase):
 
     def test_api_classroom_delete_instructor_with_playlist_token(self):
         """
-        Delete classroom with playlist token.
-
-        Used in the context of a lti select request (deep linking).
+        Delete classroom with playlist token should not be permitted in LTI.
         """
         playlist = PlaylistFactory()
         classroom = ClassroomFactory(playlist=playlist)
@@ -93,8 +91,7 @@ class ClassroomDeleteAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
 
-        self.assertEqual(response.status_code, 204)
-        self.assertEqual(Classroom.objects.count(), 0)
+        self.assertEqual(response.status_code, 403)
 
     def test_api_classroom_delete_user_access_token(self):
         """A user with UserAccessToken should not be able to delete a classroom."""

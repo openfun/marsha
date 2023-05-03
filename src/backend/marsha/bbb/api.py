@@ -82,7 +82,7 @@ class ClassroomViewSet(
         Default to the actions' self defined permissions if applicable or
         to the ViewSet's default permissions.
         """
-        if self.action in ["create", "destroy"]:
+        if self.action in ["create"]:
             permission_classes = [
                 (
                     core_permissions.HasPlaylistToken
@@ -98,6 +98,13 @@ class ClassroomViewSet(
                         | core_permissions.IsParamsPlaylistAdminThroughOrganization
                     )
                 )
+            ]
+        elif self.action in ["destroy"]:
+            # Not available in LTI
+            # For standalone site, only playlist admin or organization admin can access
+            permission_classes = [
+                core_permissions.IsObjectPlaylistAdminOrInstructor
+                | core_permissions.IsObjectPlaylistOrganizationAdmin
             ]
         elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
