@@ -81,21 +81,22 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
           return a[0] - b[0];
         })
         // once sorted, merge overlapped segments
-        .reduce((acc: number[][], curr: number[], i: number): number[][] => {
+        .reduce((acc: number[][], curr: number[]): number[][] => {
           acc.push(curr);
-          if (i === 0) {
+          const lastIndex = acc.length - 1;
+          if (lastIndex === 0) {
             return acc;
           }
           // segment starting point included in previous segment
-          if (acc[i][0] <= acc[i - 1][1]) {
+          if (acc[lastIndex][0] <= acc[lastIndex - 1][1]) {
             // segments included in previous segments
-            if (acc[i][1] <= acc[i - 1][1]) {
-              // remove "i"nth segments
-              acc.splice(i, 1);
+            if (acc[lastIndex][1] <= acc[lastIndex - 1][1]) {
+              // remove last segment
+              acc.splice(lastIndex, 1);
             } else {
               // remove overlapping part of the current segment with the previous segment
-              acc[i - 1][1] = acc[i][1];
-              acc.splice(i, 1);
+              acc[lastIndex - 1][1] = acc[lastIndex][1];
+              acc.splice(lastIndex, 1);
             }
           }
           return acc;

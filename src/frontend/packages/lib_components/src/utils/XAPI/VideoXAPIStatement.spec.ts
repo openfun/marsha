@@ -73,6 +73,42 @@ describe('VideoXAPIStatement', () => {
 
       // merge identical segments
       expect(xapiStatement.mergeSegments(['0[.]5', '0[.]5'])).toBe('0[.]5');
+
+      // merge overlapping segments and continue with new segments
+      expect(
+        xapiStatement.mergeSegments([
+          '0[.]3.067',
+          '3.092[.]77.944',
+          '81.245[.]81.245',
+          '86.036[.]86.036',
+          '87.833[.]31.721',
+        ]),
+      ).toBe('0[.]3.067[,]3.092[.]87.833');
+      expect(
+        xapiStatement.mergeSegments([
+          '0[.]1.065',
+          '1.257[.]515.048',
+          '0[.]515.048',
+        ]),
+      ).toBe('0[.]515.048');
+      expect(
+        xapiStatement.mergeSegments([
+          '0[.]14.352',
+          '14.532[.]119.96',
+          '0[.]119.96',
+        ]),
+      ).toBe('0[.]119.96');
+      expect(
+        xapiStatement.mergeSegments([
+          '0[.]1.333',
+          '1.337[.]36.429',
+          '36.585[.]250.757',
+          '250.762[.]277.599',
+          '250.714[.]250.714',
+        ]),
+      ).toBe(
+        '0[.]1.333[,]1.337[.]36.429[,]36.585[.]250.757[,]250.762[.]277.599',
+      );
     });
   });
 
