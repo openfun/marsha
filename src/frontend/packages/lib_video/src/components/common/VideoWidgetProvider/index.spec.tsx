@@ -14,6 +14,7 @@ import {
   uploadState,
   useTimedTextTrack,
   liveState,
+  useCurrentResourceContext,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
@@ -28,8 +29,13 @@ jest.mock('lib-components', () => ({
   useAppConfig: () => ({
     static: { img: { liveBackground: 'some_url' } },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
 
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 const currentDate = DateTime.fromISO('2022-01-13T12:00');
 
 const languageChoices = [
@@ -66,6 +72,14 @@ describe('<VideoWidgetProvider />', () => {
   afterEach(() => fetchMock.restore());
 
   it('renders widgets for live teacher', async () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
@@ -183,6 +197,14 @@ describe('<VideoWidgetProvider />', () => {
   });
 
   it('renders widget for vod teacher', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
@@ -242,6 +264,14 @@ describe('<VideoWidgetProvider />', () => {
   });
 
   it('renders widget for vod student', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const videoId = faker.datatype.uuid();
     useTimedTextTrack.getState().addResource({
       active_stamp: 234243242353,

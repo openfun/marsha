@@ -1,6 +1,11 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import { useJwt, videoMockFactory, liveState } from 'lib-components';
+import {
+  useJwt,
+  videoMockFactory,
+  liveState,
+  useCurrentResourceContext,
+} from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -17,7 +22,13 @@ jest.mock('lib-components', () => ({
       },
     },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 describe('<DashboardControlPane />', () => {
   beforeEach(() => {
@@ -27,6 +38,14 @@ describe('<DashboardControlPane />', () => {
   });
 
   it('renders configuration and attendance tabs', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const mockVideo = videoMockFactory({
       id: '5cffe85a-1829-4000-a6ca-a45d4647dc0d',
       live_state: liveState.RUNNING,

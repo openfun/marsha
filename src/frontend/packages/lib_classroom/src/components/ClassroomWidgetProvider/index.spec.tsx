@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentResourceContext, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
@@ -16,7 +16,13 @@ jest.mock('lib-components', () => ({
   useAppConfig: () => ({
     static: { img: { liveBackground: 'some_url' } },
   }),
+  useCurrentResourceContext: jest.fn(),
 }));
+
+const mockedUseCurrentResourceContext =
+  useCurrentResourceContext as jest.MockedFunction<
+    typeof useCurrentResourceContext
+  >;
 
 const currentDate = DateTime.fromISO('2022-01-13T12:00');
 
@@ -28,6 +34,14 @@ describe('<ClassroomWidgetProvider />', () => {
   afterEach(() => fetchMock.restore());
 
   it('renders widgets', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
     const classroomId = faker.datatype.uuid();
     const mockedClassroom = classroomMockFactory({
       id: classroomId,
