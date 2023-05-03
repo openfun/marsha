@@ -1,4 +1,5 @@
 // https://liveaspankaj.gitbooks.io/xapi-video-profile/content/statement_data_model.html
+import * as Sentry from '@sentry/browser';
 import { Nullable } from 'lib-common';
 import { DateTime, Interval } from 'luxon';
 
@@ -444,7 +445,17 @@ export class VideoXAPIStatement implements VideoXAPIStatementInterface {
     const playedSegments =
       this.playedSegments.length === 0 ? [] : this.playedSegments.split('[,]');
     playedSegments.push(`${this.startSegment}[.]${time}`);
-    this.playedSegments = this.mergeSegments(playedSegments);
+    try {
+      this.playedSegments = this.mergeSegments(playedSegments);
+    } catch (err) {
+      Sentry.withScope(function (scope) {
+        scope.setContext('mergedSegments', {
+          playedSegments,
+        });
+        Sentry.captureException(err);
+      });
+    }
+
     this.startSegment = null;
   }
 }
