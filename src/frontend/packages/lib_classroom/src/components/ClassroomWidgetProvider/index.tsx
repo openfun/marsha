@@ -7,6 +7,7 @@ import {
 } from 'lib-components';
 import React from 'react';
 
+import { DeleteClassroom } from './widgets/DeleteClassroom';
 import { Description } from './widgets/Description';
 import { Invite } from './widgets/Invite';
 import { Recordings } from './widgets/Recordings';
@@ -21,6 +22,7 @@ enum WidgetType {
   INVITE = 'INVITE',
   SUPPORT_SHARING = 'SUPPORT_SHARING',
   RECORDINGS = 'RECORDINGS',
+  DELETE_CLASSROOM = 'DELETE_CLASSROOM',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -48,6 +50,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <ToolsAndApplications />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.DELETE_CLASSROOM]: {
+    component: <DeleteClassroom />,
+    size: WidgetSize.DEFAULT,
+  },
 };
 
 const classroomWidgets: WidgetType[] = [
@@ -57,6 +63,7 @@ const classroomWidgets: WidgetType[] = [
   WidgetType.SCHEDULING,
   WidgetType.SUPPORT_SHARING,
   WidgetType.RECORDINGS,
+  WidgetType.DELETE_CLASSROOM,
 ];
 
 export const ClassroomWidgetProvider = () => {
