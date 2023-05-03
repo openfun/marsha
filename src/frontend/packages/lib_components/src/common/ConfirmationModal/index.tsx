@@ -34,6 +34,7 @@ interface ConfirmationModalProps {
   title: string;
   onModalCloseOrCancel: () => void;
   onModalConfirm: () => void;
+  color?: string;
 }
 
 export const ConfirmationModal = ({
@@ -41,6 +42,7 @@ export const ConfirmationModal = ({
   title,
   onModalCloseOrCancel,
   onModalConfirm,
+  color,
 }: ConfirmationModalProps) => {
   const intl = useIntl();
   const { isMobile } = useResponsive();
@@ -84,6 +86,7 @@ export const ConfirmationModal = ({
               primary
               label={intl.formatMessage(messages.confirmButtonLabel)}
               onClick={onModalConfirm}
+              color={color || 'blue-active'}
             />
             <Button
               secondary
