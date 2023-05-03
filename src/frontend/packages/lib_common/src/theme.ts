@@ -49,6 +49,7 @@ const colorsGeneric = {
   'red-hover': '#e22d2d',
   'red-off': '#ec8080',
   'shadow-1': '#dcebf4',
+  'action-danger': 'red-hover',
   'status-critical': 'accent-2',
   'status-disabled': '#cccccc',
   'status-error': 'accent-2',
