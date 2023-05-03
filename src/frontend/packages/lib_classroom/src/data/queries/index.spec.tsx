@@ -18,6 +18,7 @@ import {
   useJoinClassroomAction,
   useClassroomDocuments,
   useUpdateClassroomDocument,
+  useDeleteClassroom,
 } from '.';
 
 jest.mock('lib-components', () => ({
@@ -203,6 +204,57 @@ describe('queries', () => {
           playlist: classroom.playlist.id,
           title: classroom.title,
         }),
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('error');
+    });
+  });
+
+  describe('useDeleteClassroom', () => {
+    it('deletes the resource', async () => {
+      const classroom = classroomMockFactory();
+      fetchMock.delete(`/api/classrooms/${classroom.id}/`, 204);
+
+      const { result, waitFor } = renderHook(() => useDeleteClassroom(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(classroom.id);
+      await waitFor(() => result.current.isSuccess);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      });
+      expect(result.current.data).toEqual(undefined);
+      expect(result.current.status).toEqual('success');
+    });
+
+    it('fails to delete the resource', async () => {
+      const classroom = classroomMockFactory();
+      fetchMock.delete(`/api/classrooms/${classroom.id}/`, 400);
+
+      const { result, waitFor } = renderHook(() => useDeleteClassroom(), {
+        wrapper: Wrapper,
+      });
+      result.current.mutate(classroom.id);
+
+      await waitFor(() => result.current.isError);
+
+      expect(fetchMock.lastCall()![0]).toEqual(
+        `/api/classrooms/${classroom.id}/`,
+      );
+      expect(fetchMock.lastCall()![1]).toEqual({
+        headers: {
+          Authorization: 'Bearer some token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
       });
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
