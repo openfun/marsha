@@ -9,6 +9,7 @@ import React from 'react';
 import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
+import { DeleteVideo } from './widgets/DeleteVideo';
 import { DescriptionWidget } from './widgets/DescriptionWidget';
 import { DownloadVideo } from './widgets/DownloadVideo';
 import { LicenseManager } from './widgets/LicenseManager';
@@ -49,6 +50,7 @@ enum WidgetType {
   SHARED_MEDIA_VOD_TEACHER = 'SHARED_MEDIA_VOD_TEACHER',
   SHARED_MEDIA_VOD_PUBLIC = 'SHARED_MEDIA_VOD_PUBLIC',
   TRANSCRIPTS = 'TRANSCRIPTS',
+  DELETE_VIDEO = 'DELETE_VIDEO',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -140,6 +142,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <LicenseManager key="license_manager" />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.DELETE_VIDEO]: {
+    component: <DeleteVideo key="delete_video" />,
+    size: WidgetSize.DEFAULT,
+  },
 };
 
 const teacherLiveWidgets: WidgetType[] = [
@@ -151,6 +157,7 @@ const teacherLiveWidgets: WidgetType[] = [
   WidgetType.LIVE_PAIRING,
   WidgetType.LIVE_JOIN_MODE,
   WidgetType.SHARED_MEDIA_LIVE_TEACHER,
+  WidgetType.DELETE_VIDEO,
 ];
 const teacherVodWidgets: WidgetType[] = [
   WidgetType.DESCRIPTION,
@@ -164,6 +171,7 @@ const teacherVodWidgets: WidgetType[] = [
   WidgetType.UPLOAD_CLOSED_CAPTATIONS,
   WidgetType.SHARED_MEDIA_VOD_TEACHER,
   WidgetType.TOOLS_AND_APPLICATIONS,
+  WidgetType.DELETE_VIDEO,
 ];
 const publicLiveWidgets: WidgetType[] = [];
 const publicVodWidgets: WidgetType[] = [
