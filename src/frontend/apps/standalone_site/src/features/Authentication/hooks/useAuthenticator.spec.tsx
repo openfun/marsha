@@ -1,9 +1,9 @@
-import { screen, waitFor } from '@testing-library/react';
+import { renderHook } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import { useCurrentUser, useJwt } from 'lib-components';
-import { Deferred, render } from 'lib-tests';
+import { Deferred, wrapperUtils } from 'lib-tests';
 
-import { Authenticator } from './Authenticator';
+import { useAuthenticator } from './useAuthenticator';
 
 const consoleError = jest
   .spyOn(console, 'error')
@@ -19,7 +19,7 @@ const whoAmIResponse200 = {
   organization_accesses: [],
 };
 
-describe('<Authenticator />', () => {
+describe('<useAuthenticator />', () => {
   beforeEach(() => {
     localStorage.removeItem('jwt-storage');
 
@@ -43,17 +43,20 @@ describe('<Authenticator />', () => {
     const useDataDeferred = new Deferred();
     fetchMock.get('/api/users/whoami/', useDataDeferred.promise);
 
-    render(<Authenticator>Loggued page</Authenticator>);
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils(),
+    });
+
+    expect(result.current.isLoading).toBeTruthy();
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual('/api/users/whoami/'),
     );
-    //  the loader is displayed
-    expect(screen.getByRole('status')).toBeInTheDocument();
 
     useDataDeferred.resolve(whoAmIResponse200);
 
-    expect(await screen.findByText('Loggued page')).toBeInTheDocument();
+    await waitFor(() => expect(result.current.isAuthenticated).toBeTruthy());
+    expect(result.current.isLoading).toBeFalsy();
   });
 
   it('checks an AnonymousUser', async () => {
@@ -62,14 +65,16 @@ describe('<Authenticator />', () => {
     });
     fetchMock.get('/api/users/whoami/', 401);
 
-    render(<Authenticator>Loggued page</Authenticator>);
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils(),
+    });
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual('/api/users/whoami/'),
     );
-    //  the loader is displayed
-    expect(screen.getByRole('status')).toBeInTheDocument();
-    expect(useJwt.getState().jwt).toBeUndefined();
+
+    expect(result.current.isLoading).toBeTruthy();
+    await waitFor(() => expect(useJwt.getState().jwt).toBeUndefined());
   });
 
   it('checks successfully the authentication with the token parameter', async () => {
@@ -80,22 +85,26 @@ describe('<Authenticator />', () => {
 
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
-    render(<Authenticator>Loggued page</Authenticator>, {
-      routerOptions: {
-        history: ['/my-page/?token=123456'],
-      },
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils({
+        routerOptions: {
+          history: ['/my-page/?token=123456'],
+        },
+      }),
     });
 
-    expect(await screen.findByText('Loggued page')).toBeInTheDocument();
+    await waitFor(() => expect(result.current.isAuthenticated).toBeTruthy());
   });
 
   it('checks unsuccessfully the authentication with the token parameter', async () => {
     fetchMock.post('/api/auth/challenge/', 500);
 
-    render(<Authenticator>Loggued page</Authenticator>, {
-      routerOptions: {
-        history: ['/my-page/?token=123456'],
-      },
+    const { waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils({
+        routerOptions: {
+          history: ['/my-page/?token=123456'],
+        },
+      }),
     });
 
     expect(fetchMock.lastCall()?.[0]).toEqual('/api/auth/challenge/');
@@ -112,8 +121,33 @@ describe('<Authenticator />', () => {
       } as any,
     });
 
-    render(<Authenticator>Loggued page</Authenticator>);
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils(),
+    });
 
-    expect(await screen.findByText('Loggued page')).toBeInTheDocument();
+    await waitFor(() => expect(result.current.isAuthenticated).toBeTruthy());
+  });
+
+  it('checks classroom invite link', async () => {
+    fetchMock.post('/api/auth/challenge/', {
+      access: 'some-access2',
+      refresh: 'some-refresh2',
+    });
+
+    fetchMock.get('/api/users/whoami/', whoAmIResponse200);
+
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils({
+        routerOptions: {
+          history: [
+            '/my-contents/classroom/my-classroom-id-4321/invite/my-invite-id-1234',
+          ],
+        },
+      }),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy());
+    expect(result.current.isAuthenticated).toBeFalsy();
+    expect(useJwt.getState().jwt).toEqual('my-invite-id-1234');
   });
 });
