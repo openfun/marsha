@@ -156,6 +156,43 @@ export const useUpdateClassroom = (
   );
 };
 
+type UseDeleteClassroomData = string;
+type UseDeleteClassroomError = FetchResponseError<UseDeleteClassroomData>;
+type UseDeleteClassroomOptions = UseMutationOptions<
+  Maybe<Classroom>,
+  UseDeleteClassroomError,
+  UseDeleteClassroomData
+>;
+export const useDeleteClassroom = (options?: UseDeleteClassroomOptions) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    Maybe<Classroom>,
+    UseDeleteClassroomError,
+    UseDeleteClassroomData
+  >(
+    (classroomId) =>
+      deleteOne({
+        name: 'classrooms',
+        id: classroomId,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('classrooms');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('classrooms');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
 type ClassroomDocumentsResponse = APIList<ClassroomDocument>;
 type UseClassroomDocumentParams = Record<string, never>;
 export const useClassroomDocuments = (
