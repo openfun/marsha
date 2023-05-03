@@ -45,7 +45,7 @@ interface GrommetOptions {
  * @property queryOptions options to configure a custom client used by react-query for a test
  * @property grommetOptions options to configure grommet theme, responsive and add style to the mounted base div
  */
-interface RenderOptions {
+export interface RenderOptions {
   grommetOptions: GrommetOptions;
   intlOptions: IntlOptions;
   queryOptions: QueryOptions;
