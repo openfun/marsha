@@ -10,7 +10,9 @@ describe('validateChallenge()', () => {
   it('throws an error if request failed', async () => {
     fetchMock.post('/api/auth/challenge/', 500);
 
-    await expect(validateChallenge('some_code')).rejects.toThrow('failed');
+    await expect(validateChallenge('some_code')).rejects.toThrow(
+      'Internal Server Error',
+    );
   });
 
   it('throws an error if response is not an access token', async () => {

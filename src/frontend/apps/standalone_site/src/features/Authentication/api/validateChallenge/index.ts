@@ -1,4 +1,8 @@
-import { fetchWrapper, TokenResponse } from 'lib-components';
+import {
+  fetchResponseHandler,
+  fetchWrapper,
+  TokenResponse,
+} from 'lib-components';
 
 const isValidateChallenge = (response: unknown): response is TokenResponse => {
   if (response && typeof response === 'object') {
@@ -26,11 +30,7 @@ export const validateChallenge = async (token: string) => {
     body: JSON.stringify({ token }),
   });
 
-  if (!response.ok) {
-    throw new Error('failed');
-  }
-
-  const responseContent: unknown = await response.json();
+  const responseContent = await fetchResponseHandler<TokenResponse>(response);
   if (isValidateChallenge(responseContent)) {
     return responseContent;
   }

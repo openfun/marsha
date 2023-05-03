@@ -1,14 +1,10 @@
 import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useCurrentUser, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 
-import fetchMockAuth from '__mock__/fetchMockAuth.mock';
-
 import AppRoutes from './AppRoutes';
-
-fetchMockAuth();
 
 jest.mock('features/Header', () => {
   const react = jest.requireActual('react');
@@ -67,6 +63,16 @@ describe('<AppRoutes />', () => {
         },
       ],
     });
+
+    fetchMock.get('/api/users/whoami/', {
+      date_joined: 'date_joined',
+      email: 'email',
+      full_name: 'full name',
+      id: 'id',
+      is_staff: false,
+      is_superuser: false,
+      organization_accesses: [],
+    });
   });
 
   afterEach(() => {
@@ -96,6 +102,9 @@ describe('<AppRoutes />', () => {
     beforeEach(() => {
       useJwt.setState({
         jwt: undefined,
+      });
+      useCurrentUser.setState({
+        currentUser: undefined,
       });
     });
 

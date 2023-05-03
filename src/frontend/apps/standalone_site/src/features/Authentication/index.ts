@@ -1,4 +1,3 @@
-export { Authenticator } from './components/Authenticator';
-export { VisitorAuthenticator } from './components/VisitorAuthenticator';
-export { default as AuthRouter } from './components/AuthRouter';
 export { logout } from './api/logout';
+export { default as AuthRouter } from './components/AuthRouter';
+export { useAuthenticator } from './hooks/useAuthenticator';

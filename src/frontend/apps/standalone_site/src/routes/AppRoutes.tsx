@@ -1,12 +1,12 @@
 import { lazyImport } from 'lib-common';
-import { useJwt } from 'lib-components';
+import { Loader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
-import { Authenticator, VisitorAuthenticator } from 'features/Authentication';
+import { useAuthenticator } from 'features/Authentication';
 import { Footer } from 'features/Footer';
 import { Header, HeaderLight } from 'features/Header';
 import { HomePage } from 'features/HomePage';
@@ -39,9 +39,7 @@ const messages = defineMessages({
 const AppRoutes = () => {
   const intl = useIntl();
   const location = useLocation();
-  const { isAuthenticated } = useJwt((state) => ({
-    isAuthenticated: state.jwt,
-  }));
+  const { isAuthenticated, isLoading } = useAuthenticator();
 
   useEffect(() => {
     window.scrollTo({
@@ -56,6 +54,10 @@ const AppRoutes = () => {
       .querySelector("[name='description']")
       ?.setAttribute('content', intl.formatMessage(messages.metaDescription));
   }, [intl]);
+
+  if (isLoading) {
+    return <Loader />;
+  }
 
   if (isAuthenticated) {
     return <AuthenticatedRoutes />;
@@ -73,8 +75,20 @@ const AnonymousRoutes = () => {
         path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
         exact
       >
-        <VisitorAuthenticator />
+        <MainLayout
+          Header={HeaderLight}
+          direction="column"
+          footer={<Footer />}
+          contentBoxProps={{ pad: { horizontal: 'medium', vertical: 'small' } }}
+        >
+          <Suspense
+            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+          >
+            <ContentsRouter />
+          </Suspense>
+        </MainLayout>
       </Route>
+
       <Route path={routesPagesApi} exact>
         <MainLayout
           Header={HeaderLight}
@@ -115,58 +129,44 @@ const AuthenticatedRoutes = () => {
 
   return (
     <Switch>
-      <Route
-        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
-        exact
-      >
-        <MainLayout Header={HeaderLight} direction="column" footer={<Footer />}>
-          <Suspense
-            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-          >
-            <ContentsRouter />
-          </Suspense>
-        </MainLayout>
-      </Route>
       <Route>
-        <Authenticator>
-          <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
-            <Switch>
-              <Route path={routes.HOMEPAGE.path} exact>
-                <HomePage />
-              </Route>
+        <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
+          <Switch>
+            <Route path={routes.HOMEPAGE.path} exact>
+              <HomePage />
+            </Route>
 
-              <Route path={routes.PLAYLIST.path}>
-                <Suspense fallback={<ContentSpinner />}>
-                  <PlaylistRouter />
-                </Suspense>
-              </Route>
+            <Route path={routes.PLAYLIST.path}>
+              <Suspense fallback={<ContentSpinner />}>
+                <PlaylistRouter />
+              </Suspense>
+            </Route>
 
-              <Route path={routes.CONTENTS.path}>
-                <Suspense fallback={<ContentSpinner />}>
-                  <ContentsRouter />
-                </Suspense>
-              </Route>
+            <Route path={routes.CONTENTS.path}>
+              <Suspense fallback={<ContentSpinner />}>
+                <ContentsRouter />
+              </Suspense>
+            </Route>
 
-              <Route path={routes.PORTABILITY_REQUESTS.path} exact>
-                <Suspense fallback={<ContentSpinner />}>
-                  <PortabilityRequestsRouteComponent />
-                </Suspense>
-              </Route>
+            <Route path={routes.PORTABILITY_REQUESTS.path} exact>
+              <Suspense fallback={<ContentSpinner />}>
+                <PortabilityRequestsRouteComponent />
+              </Suspense>
+            </Route>
 
-              <Route path={routes.PROFILE.path}>
-                <Suspense fallback={<ContentSpinner />}>
-                  <ProfileRouter />
-                </Suspense>
-              </Route>
+            <Route path={routes.PROFILE.path}>
+              <Suspense fallback={<ContentSpinner />}>
+                <ProfileRouter />
+              </Suspense>
+            </Route>
 
-              <Route path={routesPagesApi}>
-                <Suspense fallback={<ContentSpinner />}>
-                  <PagesApi />
-                </Suspense>
-              </Route>
-            </Switch>
-          </MainLayout>
-        </Authenticator>
+            <Route path={routesPagesApi}>
+              <Suspense fallback={<ContentSpinner />}>
+                <PagesApi />
+              </Suspense>
+            </Route>
+          </Switch>
+        </MainLayout>
       </Route>
     </Switch>
   );
