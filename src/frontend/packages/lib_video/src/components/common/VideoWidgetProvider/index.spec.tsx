@@ -116,7 +116,7 @@ describe('<VideoWidgetProvider />', () => {
     screen.getByText('Make the video publicly available');
     screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
     screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
+      name: 'Public link:',
     });
 
     // DashboardLiveTabConfigurationchedulingAndDescription
