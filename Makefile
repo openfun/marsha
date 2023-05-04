@@ -230,10 +230,27 @@ build-e2e: ## build the e2e container
 	@$(COMPOSE_BUILD) --no-cache e2e;
 .PHONY: build-e2e
 
-e2e:  ## Run e2e tests for the marsha project.
-	@echo "$(BOLD)Running e2e tests$(RESET)"
-	bin/e2e --browser firefox --browser chromium --browser webkit marsha/e2e/
+e2e: ## Run e2e tests for the marsha project.
+e2e: \
+	e2e-ff \
+	e2e-wk \
+	e2e-cr
 .PHONY: e2e
+
+e2e-ff:  ## Run firefox e2e tests for the marsha project.
+	@echo "$(BOLD)Running firefox e2e tests$(RESET)"
+	bin/e2e --browser firefox --tracing on marsha/e2e/
+.PHONY: e2e-ff
+
+e2e-wk:  ## Run webkit e2e tests for the marsha project.
+	@echo "$(BOLD)Running webkit e2e tests$(RESET)"
+	bin/e2e --browser webkit --tracing on marsha/e2e/
+.PHONY: e2e-wk
+
+e2e-cr:  ## Run chromium e2e tests for the marsha project.
+	@echo "$(BOLD)Running chromium e2e tests$(RESET)"
+	bin/e2e --browser chromium --browser-channel chrome --tracing on marsha/e2e/
+.PHONY: e2e-cr
 
 ## -- Front-end
 

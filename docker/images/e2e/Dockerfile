@@ -20,5 +20,5 @@ RUN apt-get update && \
 RUN pip install .[dev,e2e] && \
     pip uninstall -y marsha
 
-RUN playwright install-deps
-RUN playwright install
+RUN playwright install-deps chrome firefox webkit
+RUN playwright install chrome firefox webkit
