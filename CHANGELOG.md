@@ -31,6 +31,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Add playlist contents on playlist page (#2182)
   - Add a button to create a playlist from any resource creation form
   - new widget for video and classroom dashboard that enables resource deletion
+  - Add a button on playlist edition view to delete the playlist
 - Add a command to sync media channel states and video states
 - pages model api for standalone footer TOS or some legal notices
 

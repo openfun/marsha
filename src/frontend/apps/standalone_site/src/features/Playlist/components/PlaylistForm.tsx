@@ -8,19 +8,29 @@ import {
   ThemeContext,
 } from 'grommet';
 import {
+  FetchResponseError,
   Form,
   FormField,
   FormHelpText,
   Organization,
   Spinner,
+  report,
 } from 'lib-components';
-import { ReactNode, useLayoutEffect, useState } from 'react';
+import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
+import { useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { useOrganizations } from 'api/useOrganizations';
-import ModalButton from 'components/Modal/ModalButton';
+import { Modal } from 'components/Modal';
+import { ModalControlMethods } from 'components/Modal/Modal';
+import ModalButton, { ModalButtonStyle } from 'components/Modal/ModalButton';
 import { ITEM_PER_PAGE } from 'conf/global';
+import { routes } from 'routes';
 import { disableFormTheme } from 'styles/theme.extend';
+
+import { useDeletePlaylist } from '../api/useDeletePlaylist';
 
 const messages = defineMessages({
   errorOrganizations: {
@@ -28,6 +38,18 @@ const messages = defineMessages({
     description:
       'Message displayed in case an error occured while fetching organizations.',
     id: 'feature.Playlist.PlaylistForm.errorOrganizations',
+  },
+  errorAttachedResources: {
+    defaultMessage:
+      'An error occurred, All attached resources must be deleted first.',
+    description:
+      'Message displayed in case there are attached resources to the playlist on delete.',
+    id: 'feature.Playlist.PlaylistForm.errorAttachedResources',
+  },
+  deleteSuccessMessage: {
+    defaultMessage: 'Playlist deleted with success.',
+    description: 'Message displayed when playlist is successfully deleted.',
+    id: 'feature.Playlist.PlaylistForm.DeleteSuccessMessage',
   },
   retryOrganizations: {
     defaultMessage: 'Retry',
@@ -61,7 +83,31 @@ const messages = defineMessages({
     description: 'Message when playlist field is missing.',
     id: 'feature.Playlist.PlaylistForm.requiredField',
   },
+  DeleteButtonText: {
+    defaultMessage: 'Delete playlist',
+    description: 'Delete playlist button text.',
+    id: 'features.Playlist.PlaylistForm.DeleteButtonText',
+  },
+  confirmDeleteTitle: {
+    defaultMessage: 'Confirm delete playlist',
+    description: 'Title of the widget used for confirmation.',
+    id: 'features.Playlist.PlaylistForm.confirmDeleteTitle',
+  },
+  confirmDeleteText: {
+    defaultMessage:
+      'Are you sure you want to delete this playlist ? This action is irreversible and all attached resources must be deleted.',
+    description: 'Text of the widget used for confirmation.',
+    id: 'eatures.Playlist.PlaylistForm.confirmDeleteText',
+  },
 });
+
+const StyledAnchorButton = styled(Button)`
+  height: 50px;
+  font-family: 'Roboto-Medium';
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
 
 interface PlaylistFormValues {
   organizationId?: string;
@@ -69,6 +115,7 @@ interface PlaylistFormValues {
 }
 
 interface PlaylistFormProps {
+  playlistId?: string;
   title?: string;
   initialValues?: Partial<PlaylistFormValues>;
   onSubmit: (values: Partial<PlaylistFormValues>) => void;
@@ -80,6 +127,7 @@ interface PlaylistFormProps {
 }
 
 export const PlaylistForm = ({
+  playlistId,
   title,
   initialValues,
   onSubmit,
@@ -96,8 +144,28 @@ export const PlaylistForm = ({
     organizationId: initialValues?.organizationId,
     name: initialValues?.name || '',
   });
+  const modalActions = useRef<ModalControlMethods>(null);
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
   const [isInitOrganization, setIsInitOrganization] = useState(false);
+  const history = useHistory();
+  const deletePlaylist = useDeletePlaylist({
+    onSuccess: () => {
+      toast.success(intl.formatMessage(messages.deleteSuccessMessage), {
+        position: 'bottom-center',
+      });
+      history.push(routes.PLAYLIST.path);
+    },
+    onError: (err: unknown) => {
+      report(err);
+      (err as FetchResponseError).response['status'] === 400
+        ? toast.error(intl.formatMessage(messages.errorAttachedResources), {
+            position: 'bottom-center',
+          })
+        : toast.error(intl.formatMessage(messages.errorOrganizations), {
+            position: 'bottom-center',
+          });
+    },
+  });
   const {
     isError,
     data: organizationResponse,
@@ -283,24 +351,52 @@ export const PlaylistForm = ({
             </FormHelpText>
           </Box>
         </Box>
+        <Box gap="xsmall">
+          <ModalButton
+            label={submitTitle}
+            onClickCancel={
+              onCancel
+                ? () => {
+                    setFormValues({
+                      organizationId: initialValues?.organizationId,
+                      name: initialValues?.name || '',
+                    });
 
-        <ModalButton
-          label={submitTitle}
-          onClickCancel={
-            onCancel
-              ? () => {
-                  setFormValues({
-                    organizationId: initialValues?.organizationId,
-                    name: initialValues?.name || '',
-                  });
-
-                  onCancel();
-                }
-              : undefined
-          }
-          isSubmitting={isSubmitting}
-          isDisabled={!formValues.name || !formValues.organizationId}
-        />
+                    onCancel();
+                  }
+                : undefined
+            }
+            isSubmitting={isSubmitting}
+            isDisabled={!formValues.name || !formValues.organizationId}
+          />
+          {playlistId && (
+            <StyledAnchorButton
+              a11yTitle={intl.formatMessage(messages.DeleteButtonText)}
+              download
+              fill="horizontal"
+              label={intl.formatMessage(messages.DeleteButtonText)}
+              target="_blank"
+              rel="noopener noreferrer"
+              primary
+              title={intl.formatMessage(messages.DeleteButtonText)}
+              onClick={() => modalActions.current?.open()}
+              color="action-danger"
+            />
+          )}
+          {playlistId && (
+            <Modal controlMethods={modalActions}>
+              <Text margin={{ top: 'small' }}>
+                {intl.formatMessage(messages.confirmDeleteText)}
+              </Text>
+              <ModalButton
+                label={intl.formatMessage(messages.confirmDeleteTitle)}
+                onClickCancel={() => modalActions.current?.close()}
+                onClickSubmit={() => deletePlaylist.mutate(playlistId)}
+                style={ModalButtonStyle.DESTRUCTIVE}
+              />
+            </Modal>
+          )}
+        </Box>
         {actions}
       </Form>
     </ThemeContext.Extend>
