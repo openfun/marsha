@@ -1,5 +1,5 @@
 import ClipboardJS from 'clipboard';
-import { Button, Text } from 'grommet';
+import { Button, Text, TextExtendedProps } from 'grommet';
 import React, { Fragment, ReactElement, useEffect } from 'react';
 
 import { DashedBoxCustom } from '@lib-components/common/DashedBoxCustom';
@@ -14,6 +14,7 @@ interface Props {
   isActive?: boolean;
   withLabel?: boolean;
   textToCopy?: string;
+  textProps?: TextExtendedProps;
 }
 
 export const CopyClipboard = ({
@@ -24,6 +25,7 @@ export const CopyClipboard = ({
   onError,
   withLabel,
   textToCopy,
+  textProps,
   isActive = true,
 }: Props) => {
   useEffect(() => {
@@ -54,6 +56,7 @@ export const CopyClipboard = ({
           size="0.875rem"
           style={{ fontFamily: 'Roboto-Medium' }}
           truncate
+          {...textProps}
         >
           {text}
         </Text>
