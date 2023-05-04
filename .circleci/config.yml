@@ -619,7 +619,7 @@ jobs:
 
   test-e2e:
     docker:
-      - image: mcr.microsoft.com/playwright:v1.33.0
+      - image: mcr.microsoft.com/playwright/python:v1.33.0
         auth:
           username: $DOCKER_HUB_USER
           password: $DOCKER_HUB_PASS
@@ -684,6 +684,14 @@ jobs:
           name: Install e2e dependencies
           working_directory: /home/circleci/marsha/src/backend
           command: python3 -m pip install --user .[dev,e2e]
+      - run:
+          name: Install nodejs
+          command: |
+            curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+            && apt-get install -y nodejs
+      - run:
+          name: Install yarn
+          command: npm install --global yarn
       - run:
           name: Copy iframe resizer
           command: yarn workspace marsha run copy-iframe-resizer

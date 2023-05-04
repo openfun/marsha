@@ -79,7 +79,7 @@
         "docker"
       ],
       "matchPackageNames": [
-        "mcr.microsoft.com/playwright"
+        "mcr.microsoft.com/playwright/python"
       ],
       "versioning": "semver"
     }

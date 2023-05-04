@@ -1,6 +1,6 @@
 FROM marsha:dev as marsha
 
-FROM mcr.microsoft.com/playwright:v1.33.0
+FROM mcr.microsoft.com/playwright/python:v1.33.0
 
 COPY --from=marsha /app /app
 COPY src/backend/setup.cfg /app/src/backend/
@@ -20,6 +20,5 @@ RUN apt-get update && \
 RUN pip install .[dev,e2e] && \
     pip uninstall -y marsha
 
-RUN playwright install-deps
-RUN playwright install
-RUN playwright install chrome
+RUN playwright install-deps chrome firefox webkit
+RUN playwright install chrome firefox webkit
