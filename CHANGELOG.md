@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - bulk delete for video and classroom
 
+### Changed
+
+- use batch/v1 api in cronjob_pipeline manifest
+
 ### Fixed
 
 - Wrong usage of reduce index in xapiVideo mergeSegments
