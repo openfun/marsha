@@ -22,3 +22,4 @@ RUN pip install .[dev,e2e] && \
 
 RUN playwright install-deps
 RUN playwright install
+RUN playwright install chrome
