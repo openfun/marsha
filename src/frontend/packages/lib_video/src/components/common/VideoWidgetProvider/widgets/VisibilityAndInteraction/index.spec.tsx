@@ -8,7 +8,6 @@ import {
   report,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -58,11 +57,14 @@ describe('<VisibilityAndInteraction />', () => {
 
     screen.getByText('https://localhost/videos/'.concat(mockedVideo.id));
     screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
+      name: 'Public link:',
+    });
+    screen.getByRole('button', {
+      name: 'Iframe integration:',
     });
   });
 
-  it('clicks on the toggle button to make the video publicly available, and copy the url in clipboard', async () => {
+  it('clicks on the toggle button to make the video publicly available, and copy the public url in clipboard', async () => {
     const mockedVideo = videoMockFactory({
       is_public: false,
     });
@@ -88,7 +90,7 @@ describe('<VisibilityAndInteraction />', () => {
 
     expect(
       screen.queryByRole('button', {
-        name: "A button to copy the video's publicly available url in clipboard",
+        name: 'Public link:',
       }),
     ).toBe(null);
     expect(
@@ -124,7 +126,7 @@ describe('<VisibilityAndInteraction />', () => {
     );
 
     const copyButtonReRendered = screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
+      name: 'Public link:',
     });
     expect(copyButtonReRendered).not.toBeDisabled();
     screen.getByText('https://localhost/videos/'.concat(mockedVideo.id));
@@ -135,6 +137,73 @@ describe('<VisibilityAndInteraction />', () => {
     await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     await screen.findByText('Url copied in clipboard !');
+  });
+
+  it('checks the iframe code for a VOD and copy the code in clipboard', async () => {
+    const mockedVideo = videoMockFactory({
+      is_public: true,
+    });
+
+    // simulate video update
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <VisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const copyButtonReRendered = screen.getByRole('button', {
+      name: 'Iframe integration:',
+    });
+    expect(copyButtonReRendered).not.toBeDisabled();
+
+    const iframeCode = `<iframe src="https://localhost/videos/${mockedVideo.id}" allowfullscreen="true" allow="encrypted-media *; autoplay *; fullscreen *" />`;
+    screen.getByText(iframeCode);
+
+    expect(document.execCommand).toHaveBeenCalledTimes(0);
+
+    userEvent.click(copyButtonReRendered);
+
+    await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    await screen.findByText('Code copied in clipboard !');
+  });
+
+  it('checks the iframe code for a webinar and copy the code in clipboard', async () => {
+    const mockedVideo = videoMockFactory({
+      is_public: true,
+      is_live: true,
+    });
+
+    // simulate video update
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <VisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const copyButtonReRendered = screen.getByRole('button', {
+      name: 'Iframe integration:',
+    });
+    expect(copyButtonReRendered).not.toBeDisabled();
+
+    const iframeCode =
+      `<iframe src="https://localhost/videos/${mockedVideo.id}" allowfullscreen="true" ` +
+      `allow="microphone *; camera *; midi *; display-capture *; encrypted-media *; autoplay *; fullscreen *" />`;
+    screen.getByText(iframeCode);
+
+    expect(document.execCommand).toHaveBeenCalledTimes(0);
+
+    userEvent.click(copyButtonReRendered);
+
+    await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    await screen.findByText('Code copied in clipboard !');
   });
 
   it('clicks on the toggle button to make the video private', async () => {
@@ -164,7 +233,7 @@ describe('<VisibilityAndInteraction />', () => {
       screen.getByText('https://localhost/videos/'.concat(mockedVideo.id)),
     ).toBeInTheDocument();
     const copyButton = screen.getByRole('button', {
-      name: "A button to copy the video's publicly available url in clipboard",
+      name: 'Public link:',
     });
     expect(copyButton).not.toBeDisabled();
 

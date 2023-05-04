@@ -31,18 +31,29 @@ const messages = defineMessages({
       'The label associated to the toggle button reponsible of video public visibility.',
     id: 'components.VisibilityAndInteraction.publiclyAvailableLabel',
   },
-  copyButtonTitle: {
-    defaultMessage:
-      "A button to copy the video's publicly available url in clipboard",
+  publicLinkCopyButtonTitle: {
+    defaultMessage: 'Public link:',
     description:
       'A message informing the user on the action of the copy-in-clipboard button.',
-    id: 'components.VisibilityAndInteraction.copyButtonTitle',
+    id: 'components.VisibilityAndInteraction.publicLinkCopyButtonTitle',
   },
-  copySuccess: {
+  iFrameCopyButtonTitle: {
+    defaultMessage: 'Iframe integration:',
+    description:
+      'A message informing the user on the action of the copy-in-clipboard button.',
+    id: 'components.VisibilityAndInteraction.iFrameCopyButtonTitle',
+  },
+  publicLinkCopySuccess: {
     defaultMessage: 'Url copied in clipboard !',
     description:
       "Message displayed when video's publicly available url is copied in clipboard.",
-    id: 'components.VisibilityAndInteraction.copySuccess',
+    id: 'components.VisibilityAndInteraction.publicLinkCopySuccess',
+  },
+  iFrameCopySuccess: {
+    defaultMessage: 'Code copied in clipboard !',
+    description:
+      "Message displayed when video's publicly available iframe code is copied in clipboard.",
+    id: 'components.VisibilityAndInteraction.iFrameCopySuccess',
   },
   updateVideoSucces: {
     defaultMessage: 'Video updated.',
@@ -93,6 +104,11 @@ export const VisibilityAndInteraction = () => {
     .concat('/videos/')
     .concat(video.id);
 
+  const parametersWebinar = video.is_live
+    ? 'microphone *; camera *; midi *; display-capture *; '
+    : '';
+  const iframeCode = `<iframe src="${publicVideoUrl}" allowfullscreen="true" allow="${parametersWebinar}encrypted-media *; autoplay *; fullscreen *" />`;
+
   return (
     <FoldableItem
       infoText={intl.formatMessage(messages.info)}
@@ -110,9 +126,9 @@ export const VisibilityAndInteraction = () => {
             copyId={`publicVideoUrl-${video.id}`}
             isActive={video.is_public}
             text={publicVideoUrl}
-            title={intl.formatMessage(messages.copyButtonTitle)}
+            title={intl.formatMessage(messages.publicLinkCopyButtonTitle)}
             onSuccess={() => {
-              toast(intl.formatMessage(messages.copySuccess), {
+              toast(intl.formatMessage(messages.publicLinkCopySuccess), {
                 icon: '📋',
                 position: 'bottom-center',
               });
@@ -122,7 +138,35 @@ export const VisibilityAndInteraction = () => {
                 position: 'bottom-center',
               });
             }}
+            withLabel
           />
+          <Box margin={{ top: 'small' }}>
+            <CopyClipboard
+              copyId={`iframeVideoUrl-${video.id}`}
+              isActive={video.is_public}
+              text={iframeCode}
+              title={intl.formatMessage(messages.iFrameCopyButtonTitle)}
+              onSuccess={() => {
+                toast(intl.formatMessage(messages.iFrameCopySuccess), {
+                  icon: '📋',
+                  position: 'bottom-center',
+                });
+              }}
+              onError={(event) => {
+                toast.error(event.text, {
+                  position: 'bottom-center',
+                });
+              }}
+              withLabel
+              textProps={{
+                style: {
+                  fontFamily: 'monospace',
+                  overflow: 'hidden',
+                },
+                truncate: false,
+              }}
+            />
+          </Box>
         </Collapsible>
       </Box>
     </FoldableItem>

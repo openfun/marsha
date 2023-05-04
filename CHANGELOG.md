@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - bulk delete for video and classroom
+- iframe code to copy to clipboard in dashboard VOD and webinar (#2221)
 
 ### Changed
 
