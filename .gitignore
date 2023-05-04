@@ -134,6 +134,7 @@ src/backend/marsha/static/media
 storybook-static
 playwright-screenshots
 playwright-videos
+src/backend/test-results/
 tsconfig.tsbuildinfo
 
 # Assets
