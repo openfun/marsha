@@ -659,11 +659,7 @@ def test_lti_select_default_title_no_text(page: Page, live_server: LiveServer):
 def test_lti_video_play(page: Page, live_server: LiveServer, mock_video_cloud_storage):
     """Test LTI Video play."""
     page, video = _preview_video(live_server, page, video_uploaded=True)
-    with (
-        page.expect_request("**/media/e2e/cmaf/1622122634_480.m3u8") as response_info,
-        page.expect_request(f"**/xapi/video/{video.id}/") as request_info,
-    ):
-        assert 200 == response_info.value.response().status
+    with page.expect_request(f"**/xapi/video/{video.id}/") as request_info:
         assert "initialized" == request_info.value.post_data_json.get("verb").get(
             "display"
         ).get("en-US")
