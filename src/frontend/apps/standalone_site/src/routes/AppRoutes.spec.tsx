@@ -12,6 +12,7 @@ jest.mock('features/Header', () => {
   return {
     Header: forwardRef(() => <div>My Header</div>),
     HeaderLight: forwardRef(() => <div>My HeaderLight</div>),
+    HeaderLightLink: forwardRef(() => <div>My HeaderLightLink</div>),
   };
 });
 
@@ -133,6 +134,7 @@ describe('<AppRoutes />', () => {
           history: ['/cgi'],
         },
       });
+      expect(await screen.findByText('My HeaderLightLink')).toBeInTheDocument();
       expect(await screen.findByText('My PagesApi')).toBeInTheDocument();
       expect(
         screen.queryByRole(/menuitem/i, { name: /Dashboard/i }),

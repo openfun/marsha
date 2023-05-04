@@ -8,7 +8,7 @@ import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
 import { useAuthenticator } from 'features/Authentication';
 import { Footer } from 'features/Footer';
-import { Header, HeaderLight } from 'features/Header';
+import { Header, HeaderLight, HeaderLightLink } from 'features/Header';
 import { HomePage } from 'features/HomePage';
 import { Menu } from 'features/Menu';
 import { PagesApi, usePagesApi } from 'features/PagesApi';
@@ -91,7 +91,7 @@ const AnonymousRoutes = () => {
 
       <Route path={routesPagesApi} exact>
         <MainLayout
-          Header={HeaderLight}
+          Header={HeaderLightLink}
           direction="column"
           footer={<Footer />}
           contentBoxProps={{ pad: { horizontal: 'medium', vertical: 'small' } }}
