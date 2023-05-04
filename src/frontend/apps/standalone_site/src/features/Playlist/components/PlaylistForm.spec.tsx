@@ -369,6 +369,9 @@ describe('<PlaylistForm />', () => {
 
     expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('button', { name: 'Delete playlist' }),
+    ).not.toBeInTheDocument();
 
     userEvent.click(
       screen.getByRole('button', {
@@ -408,5 +411,176 @@ describe('<PlaylistForm />', () => {
     ).toBeInTheDocument();
     expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
     expect(screen.getByDisplayValue('some initial name')).toBeInTheDocument();
+  });
+
+  it('renders the component with the delete button if a playlistId is provided', async () => {
+    fetchMock.mock('/api/organizations/?limit=20&offset=0', {
+      count: 1,
+      results: [{ id: 'first id', name: 'first organization' }],
+    });
+
+    render(
+      <PlaylistForm
+        title="some form title"
+        onSubmit={jest.fn()}
+        onCancel={jest.fn()}
+        submitTitle="Save"
+        isSubmitting={false}
+        actions={<Button label="Edit" />}
+        playlistId="123"
+      />,
+    );
+
+    expect(
+      await screen.findByLabelText('Organization*required'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Open Drop; Selected: first id',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+
+    expect(screen.getByRole('button', { name: 'Save' })).toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Edit' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Delete playlist' }),
+    ).toBeInTheDocument();
+  });
+
+  it('fails to delete the playlist because of attached resources', async () => {
+    fetchMock.mock('/api/organizations/?limit=20&offset=0', {
+      count: 1,
+      results: [{ id: 'first id', name: 'first organization' }],
+    });
+
+    fetchMock.delete('/api/playlists/123/', 400);
+
+    render(
+      <PlaylistForm
+        title="some form title"
+        onSubmit={jest.fn()}
+        onCancel={jest.fn()}
+        submitTitle="Save"
+        isSubmitting={false}
+        actions={<Button label="Edit" />}
+        playlistId="123"
+      />,
+    );
+
+    expect(
+      await screen.findByLabelText('Organization*required'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Open Drop; Selected: first id',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'Delete playlist',
+    });
+    userEvent.click(deleteButton);
+
+    const confirmDeleteButton = await screen.findByRole('button', {
+      name: 'Confirm delete playlist',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    expect(
+      await screen.findByText(
+        'An error occurred, All attached resources must be deleted first.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('fails to delete the playlist because of permission denied', async () => {
+    fetchMock.mock('/api/organizations/?limit=20&offset=0', {
+      count: 1,
+      results: [{ id: 'first id', name: 'first organization' }],
+    });
+
+    fetchMock.delete('/api/playlists/123/', 403);
+
+    render(
+      <PlaylistForm
+        title="some form title"
+        onSubmit={jest.fn()}
+        onCancel={jest.fn()}
+        submitTitle="Save"
+        isSubmitting={false}
+        actions={<Button label="Edit" />}
+        playlistId="123"
+      />,
+    );
+
+    expect(
+      await screen.findByLabelText('Organization*required'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Open Drop; Selected: first id',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'Delete playlist',
+    });
+    userEvent.click(deleteButton);
+
+    const confirmDeleteButton = await screen.findByRole('button', {
+      name: 'Confirm delete playlist',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    expect(
+      await screen.findByText('An error occurred, please try again later.'),
+    ).toBeInTheDocument();
+  });
+
+  it('successfully deletes the playlist', async () => {
+    fetchMock.mock('/api/organizations/?limit=20&offset=0', {
+      count: 1,
+      results: [{ id: 'first id', name: 'first organization' }],
+    });
+    fetchMock.delete('/api/playlists/123/', 204);
+
+    render(
+      <PlaylistForm
+        title="some form title"
+        onSubmit={jest.fn()}
+        onCancel={jest.fn()}
+        submitTitle="Save"
+        isSubmitting={false}
+        actions={<Button label="Edit" />}
+        playlistId="123"
+      />,
+    );
+
+    expect(
+      await screen.findByLabelText('Organization*required'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Open Drop; Selected: first id',
+      }),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Name*required')).toBeInTheDocument();
+
+    const deleteButton = screen.getByRole('button', {
+      name: 'Delete playlist',
+    });
+    userEvent.click(deleteButton);
+
+    const confirmDeleteButton = await screen.findByRole('button', {
+      name: 'Confirm delete playlist',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    expect(
+      await screen.findByText('Playlist deleted with success.'),
+    ).toBeInTheDocument();
   });
 });
