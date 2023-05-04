@@ -123,6 +123,10 @@ describe('<UpdatePlaylistPage />', () => {
         screen.getByRole('button', { name: 'Open Drop; Selected: id orga' }),
       ).not.toBeDisabled(),
     );
+
+    expect(
+      screen.getByRole('button', { name: 'Delete playlist' }),
+    ).toBeInTheDocument();
   });
 
   it('checks the contents render by playlist', async () => {
