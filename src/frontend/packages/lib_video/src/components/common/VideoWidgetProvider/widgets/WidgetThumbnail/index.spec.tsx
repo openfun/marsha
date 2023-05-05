@@ -272,7 +272,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     userEvent.click(removeButton);
 
     const confirmButton = screen.getByRole('button', {
-      name: 'Confirm',
+      name: 'Delete thumbnail image',
     });
 
     userEvent.click(confirmButton);

@@ -140,7 +140,7 @@ describe('<DeleteVideo />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm',
+      name: 'Confirm delete',
     });
     userEvent.click(confirmDeleteButton);
 
@@ -175,7 +175,7 @@ describe('<DeleteVideo />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm',
+      name: 'Confirm delete',
     });
     userEvent.click(confirmDeleteButton);
 

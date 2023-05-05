@@ -1,11 +1,14 @@
-import { Button } from 'grommet';
+import { Button, Text } from 'grommet';
 import {
-  ConfirmationModal,
   FoldableItem,
   report,
   useCurrentResourceContext,
+  Modal,
+  ModalButton,
+  ModalControlMethods,
+  ModalButtonStyle,
 } from 'lib-components';
-import { useState } from 'react';
+import { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
@@ -66,15 +69,13 @@ export const DeleteVideo = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
   const history = useHistory();
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
+  const modalActions = useRef<ModalControlMethods>(null);
   const video = useCurrentVideo();
   const deleteVideo = useDeleteVideo({
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.videoDeleteSuccess), {
         position: 'bottom-center',
       });
-      setShowDeleteConfirmationModal(false);
       history.goBack();
     },
     onError: (err: unknown) => {
@@ -95,17 +96,17 @@ export const DeleteVideo = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      {showDeleteConfirmationModal && (
-        <ConfirmationModal
-          text={intl.formatMessage(messages.confirmDeleteText)}
-          title={intl.formatMessage(messages.confirmDeleteTitle)}
-          onModalCloseOrCancel={() => setShowDeleteConfirmationModal(false)}
-          onModalConfirm={() => {
-            deleteVideo.mutate(video.id);
-          }}
-          color="action-danger"
+      <Modal controlMethods={modalActions}>
+        <Text margin={{ top: 'small' }}>
+          {intl.formatMessage(messages.confirmDeleteText)}
+        </Text>
+        <ModalButton
+          label={intl.formatMessage(messages.confirmDeleteTitle)}
+          onClickCancel={() => modalActions.current?.close()}
+          onClickSubmit={() => deleteVideo.mutate(video.id)}
+          style={ModalButtonStyle.DESTRUCTIVE}
         />
-      )}
+      </Modal>
       <StyledAnchorButton
         a11yTitle={intl.formatMessage(messages.deleteButtonText)}
         download
@@ -116,7 +117,7 @@ export const DeleteVideo = () => {
         rel="noopener noreferrer"
         primary
         title={intl.formatMessage(messages.deleteButtonText)}
-        onClick={() => setShowDeleteConfirmationModal(true)}
+        onClick={() => modalActions.current?.open()}
         color="action-danger"
       />
     </FoldableItem>

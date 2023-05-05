@@ -1,12 +1,15 @@
-import { Button } from 'grommet';
+import { Button, Text } from 'grommet';
 import {
   BinSVG,
-  ConfirmationModal,
   useThumbnail,
   Thumbnail,
   report,
+  Modal,
+  ModalButton,
+  ModalButtonStyle,
+  ModalControlMethods,
 } from 'lib-components';
-import React, { useState } from 'react';
+import React, { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -55,9 +58,7 @@ export const ThumbnailRemoveButton = ({
   const { removeThumbnail } = useThumbnail((state) => ({
     removeThumbnail: state.removeResource,
   }));
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
-
+  const modalActions = useRef<ModalControlMethods>(null);
   const thumbnailDelete = useDeleteThumbnail({
     onSuccess: () => {
       toast.success(
@@ -67,7 +68,6 @@ export const ThumbnailRemoveButton = ({
         },
       );
       removeThumbnail(thumbnail);
-      setShowDeleteConfirmationModal(false);
     },
     onError: (err: unknown) => {
       report(err);
@@ -79,21 +79,22 @@ export const ThumbnailRemoveButton = ({
 
   return (
     <React.Fragment>
-      {showDeleteConfirmationModal && (
-        <ConfirmationModal
-          text={intl.formatMessage(messages.confirmationModalText)}
-          title={intl.formatMessage(messages.confirmationModalTitle)}
-          onModalCloseOrCancel={() => setShowDeleteConfirmationModal(false)}
-          onModalConfirm={() => {
-            thumbnailDelete.mutate(thumbnail.id);
-          }}
+      <Modal controlMethods={modalActions}>
+        <Text margin={{ top: 'small' }}>
+          {intl.formatMessage(messages.confirmationModalText)}
+        </Text>
+        <ModalButton
+          label={intl.formatMessage(messages.confirmationModalTitle)}
+          onClickCancel={() => modalActions.current?.close()}
+          onClickSubmit={() => thumbnailDelete.mutate(thumbnail.id)}
+          style={ModalButtonStyle.DESTRUCTIVE}
         />
-      )}
+      </Modal>
       {thumbnail && thumbnail.is_ready_to_show && (
         <Button
           a11yTitle={intl.formatMessage(messages.deleteButtonLabel)}
           icon={<BinSVG width="14px" height="18px" iconColor="blue-active" />}
-          onClick={() => setShowDeleteConfirmationModal(true)}
+          onClick={() => modalActions.current?.open()}
           plain
           title={intl.formatMessage(messages.deleteButtonLabel)}
           margin="small"

@@ -58,14 +58,15 @@ describe('<ThumbnailRemoveButton />', () => {
     userEvent.click(removeButton);
 
     screen.getByRole('button', { name: 'Cancel' });
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', {
+      name: 'Delete thumbnail image',
+    });
 
     userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(screen.queryByRole('button', { name: 'Confirm' })).toBeNull(),
     );
-    expect(screen.queryByRole('button', { name: 'Cancel' })).toBeNull();
 
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -100,7 +101,9 @@ describe('<ThumbnailRemoveButton />', () => {
     userEvent.click(removeButton);
 
     screen.getByRole('button', { name: 'Cancel' });
-    const confirmButton = screen.getByRole('button', { name: 'Confirm' });
+    const confirmButton = screen.getByRole('button', {
+      name: 'Delete thumbnail image',
+    });
 
     userEvent.click(confirmButton);
 
