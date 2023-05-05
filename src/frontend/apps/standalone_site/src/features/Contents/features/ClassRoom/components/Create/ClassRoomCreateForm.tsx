@@ -1,12 +1,11 @@
 import { Text, TextArea, TextInput, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
-import { Form, FormField } from 'lib-components';
+import { Form, FormField, ModalButton } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
-import { ModalButton } from 'components/Modal';
 import { useSelectPlaylist } from 'features/Playlist';
 import { routes } from 'routes';
 

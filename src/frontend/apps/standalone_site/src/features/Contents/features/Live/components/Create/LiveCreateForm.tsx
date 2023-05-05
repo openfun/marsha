@@ -1,14 +1,19 @@
 import { Text, TextInput, Box, TextArea } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { Form, FormField, LiveModeType, useResponsive } from 'lib-components';
+import {
+  Form,
+  FormField,
+  LiveModeType,
+  useResponsive,
+  ModalButton,
+} from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 
-import { ModalButton } from 'components/Modal';
 import { useSelectPlaylist } from 'features/Playlist';
 import { routes } from 'routes';
 

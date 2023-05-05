@@ -15,17 +15,17 @@ import {
   Organization,
   Spinner,
   report,
+  Modal,
+  ModalButton,
+  ModalButtonStyle,
 } from 'lib-components';
-import { ReactNode, useLayoutEffect, useRef, useState } from 'react';
+import { ReactNode, useLayoutEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useOrganizations } from 'api/useOrganizations';
-import { Modal } from 'components/Modal';
-import { ModalControlMethods } from 'components/Modal/Modal';
-import ModalButton, { ModalButtonStyle } from 'components/Modal/ModalButton';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { routes } from 'routes';
 import { disableFormTheme } from 'styles/theme.extend';
@@ -89,7 +89,7 @@ const messages = defineMessages({
     id: 'features.Playlist.PlaylistForm.DeleteButtonText',
   },
   confirmDeleteTitle: {
-    defaultMessage: 'Confirm delete playlist',
+    defaultMessage: 'Confirm delete',
     description: 'Title of the widget used for confirmation.',
     id: 'features.Playlist.PlaylistForm.confirmDeleteTitle',
   },
@@ -144,7 +144,7 @@ export const PlaylistForm = ({
     organizationId: initialValues?.organizationId,
     name: initialValues?.name || '',
   });
-  const modalActions = useRef<ModalControlMethods>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
   const [isInitOrganization, setIsInitOrganization] = useState(false);
   const history = useHistory();
@@ -379,19 +379,22 @@ export const PlaylistForm = ({
               rel="noopener noreferrer"
               primary
               title={intl.formatMessage(messages.DeleteButtonText)}
-              onClick={() => modalActions.current?.open()}
+              onClick={() => setIsModalOpen(true)}
               color="action-danger"
             />
           )}
           {playlistId && (
-            <Modal controlMethods={modalActions}>
+            <Modal isOpen={isModalOpen}>
               <Text margin={{ top: 'small' }}>
                 {intl.formatMessage(messages.confirmDeleteText)}
               </Text>
               <ModalButton
                 label={intl.formatMessage(messages.confirmDeleteTitle)}
-                onClickCancel={() => modalActions.current?.close()}
-                onClickSubmit={() => deletePlaylist.mutate(playlistId)}
+                onClickCancel={() => setIsModalOpen(false)}
+                onClickSubmit={() => {
+                  setIsModalOpen(false);
+                  deletePlaylist.mutate(playlistId);
+                }}
                 style={ModalButtonStyle.DESTRUCTIVE}
               />
             </Modal>

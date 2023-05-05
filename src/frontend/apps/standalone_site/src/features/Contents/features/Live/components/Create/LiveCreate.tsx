@@ -1,9 +1,9 @@
 import { Button, Heading, Text } from 'grommet';
+import { Modal } from 'lib-components';
 import { Fragment } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
 
-import { Modal } from 'components/Modal';
 import { ContentsHeader } from 'features/Contents';
 import { routes } from 'routes';
 

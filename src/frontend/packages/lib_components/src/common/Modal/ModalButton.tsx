@@ -1,8 +1,9 @@
 import { Box, BoxProps, Button, Stack } from 'grommet';
-import { Spinner } from 'lib-components';
 import { PropsWithChildren } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { Spinner } from '@lib-components/common';
 
 export const ModalButtonContainer = ({
   children,

@@ -2,7 +2,6 @@ import { Box, Layer, LayerProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { FormClose } from 'grommet-icons';
 import { Nullable, theme } from 'lib-common';
-import { useResponsive } from 'lib-components';
 import {
   forwardRef,
   MutableRefObject,
@@ -13,6 +12,8 @@ import {
 } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
+
+import { useResponsive } from '@lib-components/hooks';
 
 const messages = defineMessages({
   closeButtonTitle: {

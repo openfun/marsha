@@ -484,7 +484,7 @@ describe('<PlaylistForm />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
-      name: 'Confirm delete playlist',
+      name: 'Confirm delete',
     });
     userEvent.click(confirmDeleteButton);
 
@@ -531,7 +531,7 @@ describe('<PlaylistForm />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
-      name: 'Confirm delete playlist',
+      name: 'Confirm delete',
     });
     userEvent.click(confirmDeleteButton);
 
@@ -575,7 +575,7 @@ describe('<PlaylistForm />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = await screen.findByRole('button', {
-      name: 'Confirm delete playlist',
+      name: 'Confirm delete',
     });
     userEvent.click(confirmDeleteButton);
 
