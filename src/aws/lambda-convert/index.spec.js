@@ -25,6 +25,12 @@ jest.doMock('./src/scanDepositedFile', () => mockScanDepositedFile);
 const mockCopyClassroomDocument = jest.fn();
 jest.doMock('./src/copyClassroomDocument', () => mockCopyClassroomDocument);
 
+const mockConvertClassroomRecording = jest.fn();
+jest.doMock(
+  './src/convertClassroomRecording',
+  () => mockConvertClassroomRecording,
+);
+
 const lambda = require('./index.js').handler;
 
 const callback = jest.fn();
@@ -518,6 +524,80 @@ describe('lambda', () => {
       expect(mockUpdateState).toHaveBeenCalledWith(
         'ed08da34-7447-4141-96ff-5740315d7b99/classroomdocument/c5cad053-111a-4e0e-8f78-fe43dec11512/1638403200.pdf',
         'ready',
+      );
+    });
+  });
+
+  describe('called with classroomrecording parameters', () => {
+    it('reports an error when recordUrl parameter is missing', async () => {
+      await lambda(
+        {
+          type: 'convertClassroomRecording',
+          parameters: {
+            vodKey:
+              'c7cd077e-65f4-4d34-8df1-c9f1105ea660/video/c7cd077e-65f4-4d34-8df1-c9f1105ea660/1683275646',
+          },
+        },
+        null,
+        callback,
+      );
+
+      expect(callback).toHaveBeenCalledWith(
+        'convertClassroomRecording should contain recordUrl, vodKey and sourceBucket parameters.',
+      );
+    });
+
+    it('reports an error when vodKey parameter is missing', async () => {
+      await lambda(
+        {
+          type: 'convertClassroomRecording',
+          parameters: {
+            recordUrl: 'https://example.com/recording.mp4',
+          },
+        },
+        null,
+        callback,
+      );
+
+      expect(callback).toHaveBeenCalledWith(
+        'convertClassroomRecording should contain recordUrl, vodKey and sourceBucket parameters.',
+      );
+    });
+
+    it('reports an error when parameters are missing', async () => {
+      await lambda(
+        {
+          type: 'convertClassroomRecording',
+        },
+        null,
+        callback,
+      );
+
+      expect(callback).toHaveBeenCalledWith(
+        'convertClassroomRecording should contain recordUrl, vodKey and sourceBucket parameters.',
+      );
+    });
+
+    it('delegates to convertClassroomRecording and call updateState', async () => {
+      mockConvertClassroomRecording.mockImplementation(() => Promise.resolve());
+      await lambda(
+        {
+          type: 'convertClassroomRecording',
+          parameters: {
+            recordUrl: 'https://example.com/recording.mp4',
+            vodKey:
+              'c7cd077e-65f4-4d34-8df1-c9f1105ea660/video/c7cd077e-65f4-4d34-8df1-c9f1105ea660/1683275646',
+            sourceBucket: 'source bucket',
+          },
+        },
+        null,
+        callback,
+      );
+
+      expect(mockConvertClassroomRecording).toHaveBeenCalledWith(
+        'https://example.com/recording.mp4',
+        'c7cd077e-65f4-4d34-8df1-c9f1105ea660/video/c7cd077e-65f4-4d34-8df1-c9f1105ea660/1683275646',
+        'source bucket',
       );
     });
   });
