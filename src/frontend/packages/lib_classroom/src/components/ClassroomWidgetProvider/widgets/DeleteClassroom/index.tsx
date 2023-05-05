@@ -1,9 +1,11 @@
-import { Button } from 'grommet';
+import { Button, Text } from 'grommet';
 import {
-  ConfirmationModal,
   FoldableItem,
   report,
   useCurrentResourceContext,
+  ModalButton,
+  Modal,
+  ModalButtonStyle,
 } from 'lib-components';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
@@ -27,7 +29,7 @@ const messages = defineMessages({
     id: 'components.DeleteClassroom.title',
   },
   confirmDeleteTitle: {
-    defaultMessage: 'Confirm delete classroom',
+    defaultMessage: 'Confirm delete',
     description: 'Title of the widget used for confirmation.',
     id: 'components.DeleteClassroomConfirm.title',
   },
@@ -66,15 +68,13 @@ export const DeleteClassroom = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
   const history = useHistory();
-  const [showDeleteConfirmationModal, setShowDeleteConfirmationModal] =
-    useState(false);
   const classroom = useCurrentClassroom();
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const deleteClassroom = useDeleteClassroom({
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.classroomDeleteSuccess), {
         position: 'bottom-center',
       });
-      setShowDeleteConfirmationModal(false);
       history.goBack();
     },
     onError: (err: unknown) => {
@@ -95,17 +95,20 @@ export const DeleteClassroom = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      {showDeleteConfirmationModal && (
-        <ConfirmationModal
-          text={intl.formatMessage(messages.confirmDeleteText)}
-          title={intl.formatMessage(messages.confirmDeleteTitle)}
-          onModalCloseOrCancel={() => setShowDeleteConfirmationModal(false)}
-          onModalConfirm={() => {
+      <Modal isOpen={isModalOpen}>
+        <Text margin={{ top: 'small' }}>
+          {intl.formatMessage(messages.confirmDeleteText)}
+        </Text>
+        <ModalButton
+          label={intl.formatMessage(messages.confirmDeleteTitle)}
+          onClickCancel={() => setIsModalOpen(false)}
+          onClickSubmit={() => {
+            setIsModalOpen(false);
             deleteClassroom.mutate(classroom.id);
           }}
-          color="action-danger"
+          style={ModalButtonStyle.DESTRUCTIVE}
         />
-      )}
+      </Modal>
       <StyledAnchorButton
         a11yTitle={intl.formatMessage(messages.deleteButtonText)}
         download
@@ -116,7 +119,7 @@ export const DeleteClassroom = () => {
         rel="noopener noreferrer"
         primary
         title={intl.formatMessage(messages.deleteButtonText)}
-        onClick={() => setShowDeleteConfirmationModal(true)}
+        onClick={() => setIsModalOpen(true)}
         color="action-danger"
       />
     </FoldableItem>
