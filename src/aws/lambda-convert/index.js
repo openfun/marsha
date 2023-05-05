@@ -46,6 +46,7 @@ exports.handler = async (event, context, callback) => {
 
     try {
       await convertClassroomRecording(recordUrl, vodKey, sourceBucket);
+      await updateState(vodKey, PROCESSING);
     } catch (error) {
       return callback(error);
     }

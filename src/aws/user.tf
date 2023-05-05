@@ -188,3 +188,26 @@ resource "aws_iam_user_policy" "live-streaming-policies" {
 }
 POLICY
 }
+
+# Grant user to invoke convert lambda function
+resource "aws_iam_user_policy" "convert-lambda-invocation-policy" {
+  count = var.create_user ? 1 : 0
+  name = "${terraform.workspace}-marsha-convert-lambda-invocation-policy"
+  user = aws_iam_user.marsha_user[0].name
+
+  policy = <<EOF
+{
+  "Version": "2012-10-17",
+  "Statement": [
+    {
+      "Effect": "Allow",
+      "Action": [
+        "lambda:InvokeFunction"
+      ],
+      "Resource": "${aws_lambda_function.marsha_convert_lambda.arn}"
+    }
+  ]
+}
+EOF
+}
+
