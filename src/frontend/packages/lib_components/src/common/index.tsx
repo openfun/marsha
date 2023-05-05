@@ -82,6 +82,7 @@ export * from './ConfirmationModal';
 export * from './NoSelectBox';
 export * from './Form';
 export * from './WizardLayout';
+export * from './Modal';
 
 export * from './FoldableItem';
 export * from './WidgetsContainer';

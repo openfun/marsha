@@ -1,8 +1,7 @@
 import { Box, Button } from 'grommet';
+import { Modal } from 'lib-components';
 import { Fragment, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Modal } from 'components/Modal';
 
 import { AddUserAccessForm } from './AddUserAccessForm';
 

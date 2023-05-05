@@ -2,11 +2,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
 
-import ModaleButton from './ModalButton';
+import ModalButton from './ModalButton';
 
 describe('<ModalButton />', () => {
   it('displays correctly without interaction props', () => {
-    render(<ModaleButton label="My button" />);
+    render(<ModalButton label="My button" />);
 
     expect(screen.getByRole('button', { name: 'My button' })).toHaveAttribute(
       'type',
@@ -16,13 +16,13 @@ describe('<ModalButton />', () => {
   });
 
   it('displays correctly with isDisabled props', () => {
-    render(<ModaleButton label="My button" isDisabled />);
+    render(<ModalButton label="My button" isDisabled />);
     expect(screen.getByRole('button', { name: 'My button' })).toBeDisabled();
     expect(screen.queryByRole('status')).not.toBeInTheDocument();
   });
 
   it('displays correctly with isSubmitting props', () => {
-    render(<ModaleButton label="My button" isSubmitting />);
+    render(<ModalButton label="My button" isSubmitting />);
     expect(screen.getByRole('button', { name: 'My button' })).toBeDisabled();
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
@@ -31,7 +31,7 @@ describe('<ModalButton />', () => {
     const onClickSubmit = jest.fn();
     const onClickCancel = jest.fn();
     render(
-      <ModaleButton
+      <ModalButton
         label="My button"
         onClickSubmit={onClickSubmit}
         onClickCancel={onClickCancel}
@@ -52,7 +52,7 @@ describe('<ModalButton />', () => {
   it('cancels with custom label', () => {
     const onClickCancel = jest.fn();
     render(
-      <ModaleButton
+      <ModalButton
         label="My button"
         labelCancel="My cancel"
         onClickCancel={onClickCancel}

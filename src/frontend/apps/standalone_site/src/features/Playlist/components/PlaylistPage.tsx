@@ -1,12 +1,11 @@
 import { Box, Button, Heading, Text } from 'grommet';
-import { Spinner } from 'lib-components';
+import { Spinner, Modal } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Switch, useHistory } from 'react-router-dom';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { Modal } from 'components/Modal';
 import { commonSortMessages, SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { routes } from 'routes';
