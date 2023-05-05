@@ -10,6 +10,7 @@ const copyDocument = require('./src/copyDocument');
 const copyMarkdownImage = require('./src/copyMarkdownImage');
 const scanDepositedFile = require('./src/scanDepositedFile');
 const copyClassroomDocument = require('./src/copyClassroomDocument');
+const convertClassroomRecording = require('./src/convertClassroomRecording');
 
 const READY = 'ready';
 const PROCESSING = 'processing';
@@ -27,6 +28,33 @@ const ResourceKindEnum = {
 
 exports.handler = async (event, context, callback) => {
   console.log('Received event:', JSON.stringify(event, null, 2));
+
+  if (event.type && event.type === 'convertClassroomRecording') {
+    if (
+      !event.parameters ||
+      !event.parameters.recordUrl ||
+      !event.parameters.vodKey ||
+      !event.parameters.sourceBucket
+    ) {
+      callback(
+        'convertClassroomRecording should contain recordUrl, vodKey and sourceBucket parameters.',
+      );
+      return;
+    }
+
+    const { recordUrl, vodKey, sourceBucket } = event.parameters;
+
+    try {
+      await convertClassroomRecording(recordUrl, vodKey, sourceBucket);
+    } catch (error) {
+      return callback(error);
+    }
+    console.log(
+      `Successfully received and converted classroom recording ${vodKey} from ${recordUrl}.`,
+    );
+
+    return;
+  }
 
   const objectKey = event.Records[0].s3.object.key;
   const sourceBucket = event.Records[0].s3.bucket.name;
