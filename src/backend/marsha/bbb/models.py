@@ -285,3 +285,32 @@ class ClassroomRecording(BaseModel):
         ordering = ["-created_on"]
         verbose_name = _("Classroom recording")
         verbose_name_plural = _("Classroom recordings")
+
+
+class ClassroomSharedNote(BaseModel):
+    """Model representing a shared note in a classroom."""
+
+    classroom = models.ForeignKey(
+        to=Classroom,
+        related_name="shared_notes",
+        verbose_name=_("classroom shared notes"),
+        help_text=_("classroom to which this shared note belongs"),
+        # don't allow hard deleting a classroom if it still contains a recording
+        on_delete=models.PROTECT,
+    )
+
+    shared_note_url = models.CharField(
+        max_length=255,
+        verbose_name=_("shared note url"),
+        help_text=_("url of the classroom shared note"),
+        null=True,
+        blank=True,
+    )
+
+    class Meta:
+        """Options for the ``ClassroomSharedNote`` model."""
+
+        db_table = "classroom_shared_note"
+        ordering = ["-updated_on"]
+        verbose_name = _("Classroom shared note")
+        verbose_name_plural = _("Classroom shared notes")

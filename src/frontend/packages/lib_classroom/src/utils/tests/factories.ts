@@ -6,6 +6,7 @@ import {
   ClassroomDocument,
   ClassroomInfos,
   ClassroomRecording,
+  ClassroomSharedNote,
 } from 'lib-components';
 
 const { READY } = uploadState;
@@ -29,6 +30,7 @@ export const classroomMockFactory = <T extends Partial<Classroom>>(
     invite_token: null,
     instructor_token: null,
     recordings: [],
+    shared_notes: [],
     enable_waiting_room: false,
     enable_shared_notes: true,
     enable_chat: true,
@@ -96,5 +98,17 @@ export const classroomRecordingMockFactory = (
     started_at: faker.date.recent().toISOString(),
     video_file_url: faker.internet.url(),
     ...classroomRecording,
+  };
+};
+
+export const classroomSharedNoteMockFactory = (
+  classroomSharedNote: Partial<ClassroomSharedNote> = {},
+): ClassroomSharedNote => {
+  return {
+    classroom: faker.datatype.uuid(),
+    id: faker.datatype.uuid(),
+    updated_on: faker.date.recent().toISOString(),
+    shared_note_url: faker.internet.url(),
+    ...classroomSharedNote,
   };
 };

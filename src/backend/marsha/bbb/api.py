@@ -17,6 +17,7 @@ from marsha.bbb.utils.bbb_utils import (
     create,
     end,
     get_recordings,
+    get_session_shared_note,
     join,
     process_recordings,
 )
@@ -368,6 +369,7 @@ class ClassroomViewSet(
         Type[rest_framework.response.Response]
             HttpResponse with the serialized classroom.
         """
+        get_session_shared_note(classroom=self.get_object())
         try:
             response = end(classroom=self.get_object())
             status = 200

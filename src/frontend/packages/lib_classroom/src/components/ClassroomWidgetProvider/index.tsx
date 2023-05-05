@@ -11,6 +11,7 @@ import { Description } from './widgets/Description';
 import { Invite } from './widgets/Invite';
 import { Recordings } from './widgets/Recordings';
 import { Scheduling } from './widgets/Scheduling';
+import { SharedNotes } from './widgets/SharedNotes';
 import { SupportSharing } from './widgets/SupportSharing';
 import { ToolsAndApplications } from './widgets/ToolsAndApplications';
 
@@ -21,6 +22,7 @@ enum WidgetType {
   INVITE = 'INVITE',
   SUPPORT_SHARING = 'SUPPORT_SHARING',
   RECORDINGS = 'RECORDINGS',
+  SHARED_NOTES = 'SHARED_NOTES',
 }
 
 const widgetLoader: { [key in WidgetType]: WidgetProps } = {
@@ -48,6 +50,10 @@ const widgetLoader: { [key in WidgetType]: WidgetProps } = {
     component: <ToolsAndApplications />,
     size: WidgetSize.DEFAULT,
   },
+  [WidgetType.SHARED_NOTES]: {
+    component: <SharedNotes />,
+    size: WidgetSize.DEFAULT,
+  },
 };
 
 const classroomWidgets: WidgetType[] = [
@@ -57,6 +63,7 @@ const classroomWidgets: WidgetType[] = [
   WidgetType.SCHEDULING,
   WidgetType.SUPPORT_SHARING,
   WidgetType.RECORDINGS,
+  WidgetType.SHARED_NOTES,
 ];
 
 export const ClassroomWidgetProvider = () => {
