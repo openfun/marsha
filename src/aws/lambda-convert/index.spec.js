@@ -599,6 +599,11 @@ describe('lambda', () => {
         'c7cd077e-65f4-4d34-8df1-c9f1105ea660/video/c7cd077e-65f4-4d34-8df1-c9f1105ea660/1683275646',
         'source bucket',
       );
+      expect(mockUpdateState).toHaveBeenCalledWith(
+        'c7cd077e-65f4-4d34-8df1-c9f1105ea660/video/c7cd077e-65f4-4d34-8df1-c9f1105ea660/1683275646',
+        'processing',
+      );
+      expect(callback).not.toHaveBeenCalled();
     });
   });
 });
