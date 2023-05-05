@@ -1,12 +1,11 @@
 import { Box, Heading, Paragraph, Select } from 'grommet';
 import { Nullable } from 'lib-common';
-import { TextInput } from 'lib-components';
+import { TextInput, ModalButton } from 'lib-components';
 import { debounce } from 'lodash';
 import { Fragment, useEffect, useMemo, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as SearchPeopleIcon } from 'assets/svg/iko_search-people.svg';
-import { ModalButton } from 'components/Modal';
 
 import { useCreatePlaylistAccess } from '../api/useCreatePlaylistAccess';
 import { UserLite } from '../api/useSearchUsers';

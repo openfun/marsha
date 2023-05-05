@@ -9,13 +9,13 @@ import {
   useUploadManager,
   Video,
   useResponsive,
+  ModalButton,
 } from 'lib-components';
 import { LicenseSelect, useCreateVideo, UploadVideoForm } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
-import { ModalButton } from 'components/Modal';
 import { useSelectPlaylist } from 'features/Playlist';
 import { routes } from 'routes';
 

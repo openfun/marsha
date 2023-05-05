@@ -1,12 +1,16 @@
 import { Box, Button, Select, Text } from 'grommet';
-import { AnonymousUser, BinSVG, useCurrentUser } from 'lib-components';
+import {
+  AnonymousUser,
+  BinSVG,
+  useCurrentUser,
+  Modal,
+  ModalButton,
+  ModalButtonStyle,
+  ModalControlMethods,
+} from 'lib-components';
 import { Fragment, useRef, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-
-import { Modal, ModalButton } from 'components/Modal';
-import { ModalControlMethods } from 'components/Modal/Modal';
-import { ModalButtonStyle } from 'components/Modal/ModalButton';
 
 import { useDeletePlaylistAccess } from '../api/useDeletePlaylistAccess';
 import { useUpdatePlaylistAcess } from '../api/useUpdatePlaylistAccess';
