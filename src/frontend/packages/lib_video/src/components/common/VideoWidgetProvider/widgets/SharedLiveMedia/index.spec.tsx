@@ -103,7 +103,10 @@ describe('<SharedLiveMedia />', () => {
       uploadManagerState: {},
     });
 
-    fetchMock.post('/api/sharedlivemedias/', mockedSharedLiveMedia);
+    fetchMock.post(
+      `/api/videos/${videoId}/sharedlivemedias/`,
+      mockedSharedLiveMedia,
+    );
 
     render(
       wrapInVideo(
@@ -135,9 +138,10 @@ describe('<SharedLiveMedia />', () => {
     });
     userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(1);
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/sharedlivemedias/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/${videoId}/sharedlivemedias/`,
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
-      body: JSON.stringify({ video: videoId }),
       headers: {
         Authorization: 'Bearer json web token',
         'Content-Type': 'application/json',
@@ -169,7 +173,10 @@ describe('<SharedLiveMedia />', () => {
     });
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
-    fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      204,
+    );
 
     render(
       wrapInVideo(
@@ -212,7 +219,7 @@ describe('<SharedLiveMedia />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -243,7 +250,10 @@ describe('<SharedLiveMedia />', () => {
     });
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
 
-    fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
+    fetchMock.delete(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      500,
+    );
 
     render(
       wrapInVideo(
@@ -288,7 +298,7 @@ describe('<SharedLiveMedia />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
