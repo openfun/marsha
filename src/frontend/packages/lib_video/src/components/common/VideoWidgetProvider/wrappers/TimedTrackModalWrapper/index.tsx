@@ -67,7 +67,10 @@ export const TimedTrackModalWrapper = () => {
         })}
         title={intl.formatMessage(messages.confirmationModalTitle)}
         onModalConfirm={() => {
-          timedTextTrackDelete.mutate(deleteTimedTextTrackUploadModal.id);
+          timedTextTrackDelete.mutate({
+            videoId: deleteTimedTextTrackUploadModal.video,
+            timedTextTrackId: deleteTimedTextTrackUploadModal.id,
+          });
         }}
         onModalCloseOrCancel={() => setDeleteTimedTextTrackUploadModal(null)}
       />

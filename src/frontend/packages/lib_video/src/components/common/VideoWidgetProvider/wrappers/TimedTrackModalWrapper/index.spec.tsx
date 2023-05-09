@@ -77,7 +77,10 @@ describe('<TimedTrackModalWrapper />', () => {
       mockedTimedTextTrack,
       jest.fn(),
     ]);
-    fetchMock.delete(`/api/timedtexttracks/${mockedTimedTextTrack.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${mockedTimedTextTrack.video}/timedtexttracks/${mockedTimedTextTrack.id}/`,
+      204,
+    );
     const mockRemoveResource = jest.fn();
     useTimedTextTrack.getState().removeResource = mockRemoveResource;
 
@@ -93,7 +96,7 @@ describe('<TimedTrackModalWrapper />', () => {
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/timedtexttracks/${mockedTimedTextTrack.id}/`,
+        `/api/videos/${mockedTimedTextTrack.video}/timedtexttracks/${mockedTimedTextTrack.id}/`,
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -114,7 +117,10 @@ describe('<TimedTrackModalWrapper />', () => {
       mockedTimedTextTrack,
       jest.fn(),
     ]);
-    fetchMock.delete(`/api/timedtexttracks/${mockedTimedTextTrack.id}/`, 500);
+    fetchMock.delete(
+      `/api/videos/${mockedTimedTextTrack.video}/timedtexttracks/${mockedTimedTextTrack.id}/`,
+      500,
+    );
     const mockRemoveResource = jest.fn();
     useTimedTextTrack.getState().removeResource = mockRemoveResource;
 
@@ -130,7 +136,7 @@ describe('<TimedTrackModalWrapper />', () => {
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/timedtexttracks/${mockedTimedTextTrack.id}/`,
+        `/api/videos/${mockedTimedTextTrack.video}/timedtexttracks/${mockedTimedTextTrack.id}/`,
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
