@@ -76,7 +76,7 @@ export const WidgetThumbnail = ({ isLive = true }: WidgetThumbnailProps) => {
     thumbnail: state.getThumbnail(),
   }));
   const hiddenFileInputRef = React.useRef<Nullable<HTMLInputElement>>(null);
-  const { isLoading, data } = useThumbnailMetadata(intl.locale);
+  const { isLoading, data } = useThumbnailMetadata(video.id, intl.locale);
 
   const handleChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
