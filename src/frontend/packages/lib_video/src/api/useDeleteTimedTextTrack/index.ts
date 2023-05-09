@@ -1,14 +1,13 @@
 import { Maybe } from 'lib-common';
-import { deleteOne, TimedText } from 'lib-components';
+import { deleteOne, FetchResponseError, TimedText } from 'lib-components';
 import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
 
-type UseDeleteTimedTextTrackData = string;
+type UseDeleteTimedTextTrackData = {
+  videoId: string;
+  timedTextTrackId: string;
+};
 type UseDeleteTimedTextTrackError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseDeleteTimedTextTrackData]?: string[] }[];
-    };
+  FetchResponseError<UseDeleteTimedTextTrackData>;
 type UseDeleteTimedTextTrackOptions = UseMutationOptions<
   Maybe<TimedText>,
   UseDeleteTimedTextTrackError,
@@ -23,9 +22,9 @@ export const useDeleteTimedTextTrack = (
     UseDeleteTimedTextTrackError,
     UseDeleteTimedTextTrackData
   >(
-    (timedTextTrackId) =>
+    ({ videoId, timedTextTrackId }) =>
       deleteOne({
-        name: 'timedtexttracks',
+        name: `videos/${videoId}/timedtexttracks`,
         id: timedTextTrackId,
       }),
     {
