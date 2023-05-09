@@ -11,7 +11,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
   afterEach(() => fetchMock.restore());
 
   it('creates a new timedtexttrack and returns its id', async () => {
-    fetchMock.mock('/api/timedtexttracks/', {
+    fetchMock.mock('/api/videos/1234/timedtexttracks/', {
       id: '42',
       language: 'en',
       mode: 'st',
@@ -27,7 +27,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
 
     expect(track).toEqual({ id: '42', language: 'en', mode: 'st' });
     expect(fetchArgs.body).toEqual(
-      JSON.stringify({ language: 'en', mode: 'st', size: 10, video: '1234' }),
+      JSON.stringify({ language: 'en', mode: 'st', size: 10 }),
     );
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer some token',
@@ -38,7 +38,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
 
   it('throws when it fails to create the timedtexttrack (request failure)', async () => {
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      '/api/videos/1234/timedtexttracks/',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -53,7 +53,7 @@ describe('sideEffects/createTimedTextTrack()', () => {
   });
 
   it('throws when it fails to create the timedtexttrack (API error)', async () => {
-    fetchMock.mock('/api/timedtexttracks/', 400);
+    fetchMock.mock('/api/videos/1234/timedtexttracks/', 400);
 
     await expect(
       createTimedTextTrack({

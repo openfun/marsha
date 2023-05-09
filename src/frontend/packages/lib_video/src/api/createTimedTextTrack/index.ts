@@ -20,11 +20,12 @@ interface createTimedTextTrackBody {
  * @param language The language for the new timedtexttrack (from the list of available choices).
  * @param mode The mode for the new timedtexttrack.
  */
-export const createTimedTextTrack = async (
-  body: createTimedTextTrackBody,
-): Promise<TimedText> => {
+export const createTimedTextTrack = async ({
+  video,
+  ...body
+}: createTimedTextTrackBody): Promise<TimedText> => {
   const response = await fetchWrapper(
-    `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/`,
+    `${API_ENDPOINT}/videos/${video}/${modelName.TIMEDTEXTTRACKS}/`,
     {
       body: JSON.stringify(body),
       headers: {
