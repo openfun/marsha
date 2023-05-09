@@ -278,7 +278,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       uploadManagerState: {},
     });
 
-    fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 204);
+    fetchMock.delete(`/api/videos/4444/thumbnails/6666/`, 204);
 
     render(
       wrapInVideo(
@@ -300,16 +300,16 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
 
     userEvent.click(confirmButton);
 
-    await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
-    expect(fetchMock.lastCall()![1]).toEqual({
-      headers: {
-        'Accept-Language': 'en',
-        Authorization: 'Bearer json web token',
-        'Content-Type': 'application/json',
-      },
-      method: 'OPTIONS',
-    });
+    await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
+    expect(
+      fetchMock.called(`/api/videos/4444/thumbnails/6666/`, {
+        headers: {
+          Authorization: 'Bearer json web token',
+          'Content-Type': 'application/json',
+        },
+        method: 'DELETE',
+      }),
+    ).toBeTruthy();
 
     screen.getByText('Thumbnail successfully deleted.');
     expect(useThumbnail.getState().thumbnails).toEqual({});
