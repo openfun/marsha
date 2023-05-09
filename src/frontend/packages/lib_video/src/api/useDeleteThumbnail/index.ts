@@ -29,13 +29,13 @@ export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
+        queryClient.invalidateQueries(`videos/${variables.videoId}/thumbnails`);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('thumbnails');
+        queryClient.invalidateQueries(`videos/${variables.videoId}/thumbnails`);
         if (options?.onError) {
           options.onError(error, variables, context);
         }

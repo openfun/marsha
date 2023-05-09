@@ -87,16 +87,22 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('uploads a new image', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
+    const mockedThumbnail = thumbnailMockFactory({
+      upload_state: uploadState.PENDING,
+      video: mockedVideo.id,
+    });
+
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/1234/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
       { method: 'OPTIONS' },
     );
-    const mockedThumbnail = thumbnailMockFactory({
-      upload_state: uploadState.PENDING,
-    });
+
     const mockAddUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
       addUpload: mockAddUpload,
@@ -118,7 +124,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
             <WidgetThumbnail />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
 
@@ -147,16 +153,20 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('ensures upload state is reset when an upload is successful', () => {
+    const mockedVideo = videoMockFactory({
+      id: '4678',
+    });
+    const mockedThumbnail = thumbnailMockFactory({
+      upload_state: uploadState.PENDING,
+      video: mockedVideo.id,
+    });
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/4678/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
       { method: 'OPTIONS' },
     );
-    const mockedThumbnail = thumbnailMockFactory({
-      upload_state: uploadState.PENDING,
-    });
     useThumbnail.getState().addResource(mockedThumbnail);
     const mockResetUpload = jest.fn();
     mockUseUploadManager.mockReturnValue({
@@ -187,7 +197,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
             <WidgetThumbnail />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
 
@@ -203,14 +213,20 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('renders the component with an uploaded thumbnail', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '98874',
+    });
+    const mockedThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+      video: mockedVideo.id,
+    });
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/98874/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
       { method: 'OPTIONS' },
     );
-    const mockedThumbnail = thumbnailMockFactory({ is_ready_to_show: true });
     useThumbnail.getState().addResource(mockedThumbnail);
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -223,7 +239,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         <InfoWidgetModalProvider value={null}>
           <WidgetThumbnail />
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
     const img = await screen.findByRole('img', {
@@ -240,14 +256,21 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('deletes an uploaded thumbnail', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '4444',
+    });
+    const mockedThumbnail = thumbnailMockFactory({
+      is_ready_to_show: true,
+      video: mockedVideo.id,
+      id: '6666',
+    });
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/4444/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
       { method: 'OPTIONS' },
     );
-    const mockedThumbnail = thumbnailMockFactory({ is_ready_to_show: true });
     useThumbnail.getState().addResource(mockedThumbnail);
     mockUseUploadManager.mockReturnValue({
       addUpload: jest.fn(),
@@ -262,7 +285,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         <InfoWidgetModalProvider value={null}>
           <WidgetThumbnail />
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
     const removeButton = await screen.findByRole('button', {
@@ -306,8 +329,11 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('renders the component with default thumbnail in a VOD context', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/1234/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
       },
@@ -324,7 +350,7 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
         <InfoWidgetModalProvider value={null}>
           <WidgetThumbnail isLive={false} />
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
 
@@ -340,8 +366,11 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
   });
 
   it('fails to upload an image if the file is too large and displays an error toaster', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
     fetchMock.mock(
-      `api/thumbnails/`,
+      `/api/videos/1234/thumbnails/`,
       {
         upload_max_size_bytes: Math.pow(10, 6),
       },
@@ -369,10 +398,10 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
             <WidgetThumbnail />
           </UploadManagerContext.Provider>
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
-    expect(fetchMock.called('api/thumbnails/')).toBe(true);
+    expect(fetchMock.called(`/api/videos/1234/thumbnails/`)).toBe(true);
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload an image',
     });
