@@ -52,17 +52,19 @@ describe('useThumbnailMetadata', () => {
         'application/x-www-form-urlencoded',
         'multipart/form-data',
       ],
-
       upload_max_size_bytes: 100,
     };
-    fetchMock.mock(`/api/thumbnails/`, thumbnailMetadata);
+    fetchMock.mock(`/api/videos/1234/thumbnails/`, thumbnailMetadata);
 
-    const { result, waitFor } = renderHook(() => useThumbnailMetadata('fr'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useThumbnailMetadata('1234', 'fr'),
+      {
+        wrapper: Wrapper,
+      },
+    );
     await waitFor(() => result.current.isSuccess);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/1234/thumbnails/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -76,15 +78,18 @@ describe('useThumbnailMetadata', () => {
   });
 
   it('fails to get the thumbnail metadata', async () => {
-    fetchMock.mock(`/api/thumbnails/`, 401);
+    fetchMock.mock(`/api/videos/4567/thumbnails/`, 401);
 
-    const { result, waitFor } = renderHook(() => useThumbnailMetadata('en'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useThumbnailMetadata('4567', 'en'),
+      {
+        wrapper: Wrapper,
+      },
+    );
 
     await waitFor(() => result.current.isError);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/thumbnails/`);
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/4567/thumbnails/`);
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
