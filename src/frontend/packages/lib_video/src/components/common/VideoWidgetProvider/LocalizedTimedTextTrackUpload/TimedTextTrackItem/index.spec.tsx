@@ -23,11 +23,11 @@ jest.mock('lib-components', () => ({
 }));
 
 const languageChoices = [
-  { display_name: 'English', value: 'en' },
-  { display_name: 'French', value: 'fr' },
-  { display_name: 'Spanish', value: 'es' },
-  { display_name: 'Slovenian', value: 'sl' },
-  { display_name: 'Swedish', value: 'sv' },
+  { label: 'English', value: 'en' },
+  { label: 'French', value: 'fr' },
+  { label: 'Spanish', value: 'es' },
+  { label: 'Slovenian', value: 'sl' },
+  { label: 'Swedish', value: 'sv' },
 ];
 
 const mockedOnRetryFailedUpload = jest.fn();
@@ -44,13 +44,6 @@ describe('<TimedTextTrackItem />', () => {
   });
 
   it('renders the component for a correctly uploaded timed text track', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
     const mockedTimedTextTrack = timedTextMockFactory({ language: 'fr-FR' });
 
     render(
@@ -58,6 +51,7 @@ describe('<TimedTextTrackItem />', () => {
         <TimedTextTrackItem
           onRetryFailedUpload={mockedOnRetryFailedUpload}
           timedTextTrack={mockedTimedTextTrack}
+          choices={languageChoices}
         />
       </DeleteTimedTextTrackUploadModalProvider>,
     );
@@ -74,17 +68,11 @@ describe('<TimedTextTrackItem />', () => {
   });
 
   it('renders the component for an uploading timed text track', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PENDING,
     });
+
     const mockedUploadingObject: UploadingObject = {
       file: new File([], 'subtitle.srt'),
       objectType: modelName.TIMEDTEXTTRACKS,
@@ -107,6 +95,7 @@ describe('<TimedTextTrackItem />', () => {
             onRetryFailedUpload={mockedOnRetryFailedUpload}
             timedTextTrack={mockedTimedTextTrack}
             uploadingObject={mockedUploadingObject}
+            choices={languageChoices}
           />
         </DeleteTimedTextTrackUploadModalProvider>
       </UploadManagerContext.Provider>,
@@ -125,17 +114,11 @@ describe('<TimedTextTrackItem />', () => {
   });
 
   it('renders the component for a processing timed text track', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PROCESSING,
     });
+
     const mockedUploadingObject: UploadingObject = {
       file: new File([], 'subtitle.srt'),
       objectType: modelName.TIMEDTEXTTRACKS,
@@ -158,6 +141,7 @@ describe('<TimedTextTrackItem />', () => {
             onRetryFailedUpload={mockedOnRetryFailedUpload}
             timedTextTrack={mockedTimedTextTrack}
             uploadingObject={mockedUploadingObject}
+            choices={languageChoices}
           />
         </DeleteTimedTextTrackUploadModalProvider>
       </UploadManagerContext.Provider>,
@@ -176,13 +160,6 @@ describe('<TimedTextTrackItem />', () => {
   });
 
   it('renders the component for a failed timed text track and retries it', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
       upload_state: uploadState.PENDING,
@@ -193,6 +170,7 @@ describe('<TimedTextTrackItem />', () => {
         <TimedTextTrackItem
           onRetryFailedUpload={mockedOnRetryFailedUpload}
           timedTextTrack={mockedTimedTextTrack}
+          choices={languageChoices}
         />
       </DeleteTimedTextTrackUploadModalProvider>,
     );
@@ -214,7 +192,6 @@ describe('<TimedTextTrackItem />', () => {
     const mockedTimedTextTrack = timedTextMockFactory({
       language: 'fr-FR',
     });
-    fetchMock.mock('/api/timedtexttracks/', 500, { method: 'OPTIONS' });
 
     render(
       <DeleteTimedTextTrackUploadModalProvider value={null}>

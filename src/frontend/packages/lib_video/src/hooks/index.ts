@@ -15,6 +15,5 @@ export * from './usePictureInPicture';
 export * from './useSetDisplayName';
 export * from './useSetVideoState';
 export * from './useSharedMediaCurrentPage';
-export * from '../api/useFetchTimedTextTrackLanguageChoices';
 export * from './useTranscriptTimeSelector';
 export * from './useVideoProgress';

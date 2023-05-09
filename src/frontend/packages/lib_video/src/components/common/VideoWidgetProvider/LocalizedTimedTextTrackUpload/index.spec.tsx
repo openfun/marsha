@@ -165,7 +165,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       type: '*',
     });
     userEvent.upload(hiddenInput, file);
-    expect(fetchMock.calls()).toHaveLength(2);
+    expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/4321/timedtexttracks/`,
     );
@@ -223,7 +223,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
     userEvent.upload(hiddenInput, file);
 
-    expect(fetchMock.calls()).toHaveLength(2);
+    expect(fetchMock.calls()).toHaveLength(1);
     expect(screen.queryByText('subs.srt')).not.toBeInTheDocument();
     expect(
       await screen.findByText('Uploaded files exceeds allowed size of 1 GB.'),
