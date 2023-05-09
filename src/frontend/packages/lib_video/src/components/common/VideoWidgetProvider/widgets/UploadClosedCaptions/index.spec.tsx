@@ -29,8 +29,9 @@ describe('<UploadClosedCaptions />', () => {
   });
 
   it('renders the UploadClosedCaptions', () => {
+    const mockedVideo = videoMockFactory();
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      `/api/videos/${mockedVideo.id}/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
@@ -42,7 +43,7 @@ describe('<UploadClosedCaptions />', () => {
         <InfoWidgetModalProvider value={null}>
           <UploadClosedCaptions />
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
 

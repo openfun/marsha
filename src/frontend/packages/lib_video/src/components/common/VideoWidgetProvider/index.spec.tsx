@@ -42,12 +42,14 @@ const languageChoices = [
   { display_name: 'some_language_label', value: 'some_language' },
 ];
 
+const videoId = faker.datatype.uuid();
+
 describe('<VideoWidgetProvider />', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
 
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      `/api/videos/${videoId}/timedtexttracks/`,
       {
         actions: {
           POST: {
@@ -61,7 +63,7 @@ describe('<VideoWidgetProvider />', () => {
     );
 
     fetchMock.mock(
-      '/api/thumbnails/',
+      `/api/videos/${videoId}/thumbnails/`,
       {
         upload_max_size_bytes: 1000000,
       },
@@ -80,7 +82,6 @@ describe('<VideoWidgetProvider />', () => {
         },
       },
     ] as any);
-    const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
       is_ready_to_show: true,
@@ -205,7 +206,6 @@ describe('<VideoWidgetProvider />', () => {
         },
       },
     ] as any);
-    const videoId = faker.datatype.uuid();
     const mockedThumbnail = thumbnailMockFactory({
       video: videoId,
       is_ready_to_show: true,
@@ -272,7 +272,6 @@ describe('<VideoWidgetProvider />', () => {
         },
       },
     ] as any);
-    const videoId = faker.datatype.uuid();
     useTimedTextTrack.getState().addResource({
       active_stamp: 234243242353,
       id: '1',

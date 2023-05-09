@@ -30,14 +30,14 @@ describe('<UploadSubtitles />', () => {
   });
 
   it('renders the UploadSubtitles', () => {
+    const mockedVideo = videoMockFactory();
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      `/api/videos/${mockedVideo.id}/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
       { method: 'OPTIONS' },
     );
-    const mockedVideo = videoMockFactory();
 
     render(
       wrapInVideo(
