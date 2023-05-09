@@ -1,6 +1,11 @@
 import { Nullable } from 'lib-common';
 
-import { Playlist, Resource, uploadState } from '@lib-components/types/tracks';
+import {
+  Playlist,
+  Resource,
+  uploadState,
+  Video,
+} from '@lib-components/types/tracks';
 
 export interface Classroom extends Resource {
   playlist: Playlist;
@@ -69,6 +74,7 @@ export interface Attendee {
 export enum ClassroomModelName {
   CLASSROOMS = 'classrooms',
   CLASSROOM_DOCUMENTS = 'classroomdocuments',
+  CLASSROOM_RECORDINGS = 'recordings',
 }
 
 export interface CreateClassroomActionRequest {
@@ -127,8 +133,14 @@ export interface ClassroomDocument extends Resource {
   url: string;
 }
 
+export type ClassroomRecordingVod = Pick<
+  Video,
+  'id' | 'title' | 'upload_state'
+>;
+
 export interface ClassroomRecording extends Resource {
   classroom: string;
   video_file_url: string;
   started_at: string;
+  vod: Nullable<ClassroomRecordingVod>;
 }

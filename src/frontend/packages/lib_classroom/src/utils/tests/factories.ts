@@ -6,6 +6,7 @@ import {
   ClassroomDocument,
   ClassroomInfos,
   ClassroomRecording,
+  ClassroomRecordingVod,
 } from 'lib-components';
 
 const { READY } = uploadState;
@@ -95,6 +96,18 @@ export const classroomRecordingMockFactory = (
     id: faker.datatype.uuid(),
     started_at: faker.date.recent().toISOString(),
     video_file_url: faker.internet.url(),
+    vod: null,
     ...classroomRecording,
+  };
+};
+
+export const classroomRecordingVodMockFactory = (
+  classroomRecordingVod: Partial<ClassroomRecordingVod> = {},
+): ClassroomRecordingVod => {
+  return {
+    id: faker.datatype.uuid(),
+    title: faker.name.title(),
+    upload_state: READY,
+    ...classroomRecordingVod,
   };
 };

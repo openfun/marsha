@@ -1,9 +1,9 @@
-import { Box } from 'grommet';
+import { useCurrentClassroom } from 'lib-classroom';
 import { ClassroomRecording, FoldableItem, ItemList } from 'lib-components';
 import React from 'react';
-import { useIntl, defineMessages } from 'react-intl';
+import { defineMessages, useIntl } from 'react-intl';
 
-import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
+import { Recording } from './Recording';
 
 const messages = defineMessages({
   title: {
@@ -12,7 +12,8 @@ const messages = defineMessages({
     id: 'component.Recordings.title',
   },
   info: {
-    defaultMessage: `All available recordings can be downloaded here.`,
+    defaultMessage:
+      'All available recordings can be downloaded and converted to VOD here.',
     description: 'Helptext for the widget.',
     id: 'component.Recordings.info',
   },
@@ -25,6 +26,11 @@ const messages = defineMessages({
     defaultMessage: 'Download recording',
     description: 'Label for download recording button.',
     id: 'component.Recordings.downloadRecordingLabel',
+  },
+  convertVODLabel: {
+    defaultMessage: 'Convert {recordingTitle} to VOD',
+    description: 'Label for convert to VOD button.',
+    id: 'component.Recordings.convertVODLabel',
   },
 });
 
@@ -43,34 +49,11 @@ export const Recordings = () => {
         noItemsMessage={intl.formatMessage(messages.noRecordingsAvailable)}
       >
         {(recording: ClassroomRecording) => (
-          <Box
+          <Recording
             key={recording.id}
-            direction="row"
-            align="center"
-            fill="horizontal"
-            height="60px"
-            gap="medium"
-            pad="small"
-          >
-            <a
-              title={intl.formatMessage(messages.downloadRecordingLabel)}
-              href={recording.video_file_url}
-              target="_blank"
-              rel="noreferrer noopener"
-            >
-              {intl.formatDate(recording.started_at, {
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                weekday: 'long',
-              }) +
-                ' - ' +
-                intl.formatDate(recording.started_at, {
-                  hour: 'numeric',
-                  minute: 'numeric',
-                })}
-            </a>
-          </Box>
+            recording={recording}
+            classroomTitle={classroom.title}
+          />
         )}
       </ItemList>
     </FoldableItem>

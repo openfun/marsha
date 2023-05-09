@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Standalone website:
   - Integrate footer (#2205)
 - Configure SOCIAL_AUTH_LOGIN_ERROR_URL setting
+- Convert classroom recording to vod
 
 ### Changed
 
