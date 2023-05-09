@@ -109,26 +109,6 @@ export const useThumbnail = (
   return useQuery<Thumbnail, 'thumbnails'>(key, fetchOne, queryConfig);
 };
 
-type TimedTextTracksResponse = APIList<TimedText>;
-type UseTimedTextTracksParams = { video: string };
-export const useTimedTextTracks = (
-  params: UseTimedTextTracksParams,
-  queryConfig?: UseQueryOptions<
-    TimedTextTracksResponse,
-    'timedtexttracks',
-    TimedTextTracksResponse,
-    FetchListQueryKey
-  >,
-) => {
-  const key: FetchListQueryKey = ['timedtexttracks', params];
-  return useQuery<
-    TimedTextTracksResponse,
-    'timedtexttracks',
-    TimedTextTracksResponse,
-    FetchListQueryKey
-  >(key, fetchList, queryConfig);
-};
-
 export const useStartLiveRecording = (id: string, onError: () => void) => {
   const queryClient = useQueryClient();
   return useMutation<Video>(
