@@ -65,7 +65,7 @@ export const LocalizedTimedTextTrackUpload = ({
   const retryUploadIdRef = useRef<Nullable<string>>(null);
   const [selectedLanguage, setSelectedLanguage] =
     useState<Nullable<LanguageChoice>>(null);
-  const metadata = useTimedTextMetadata(intl.locale);
+  const metadata = useTimedTextMetadata(video.id, intl.locale);
 
   const handleChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {

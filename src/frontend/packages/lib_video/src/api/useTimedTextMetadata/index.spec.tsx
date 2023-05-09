@@ -55,14 +55,19 @@ describe('useTimedTextMetadata', () => {
 
       upload_max_size_bytes: 100,
     };
-    fetchMock.mock(`/api/timedtexttracks/`, timedtextMetadata);
+    fetchMock.mock(`/api/videos/1234/timedtexttracks/`, timedtextMetadata);
 
-    const { result, waitFor } = renderHook(() => useTimedTextMetadata('fr'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useTimedTextMetadata('1234', 'fr'),
+      {
+        wrapper: Wrapper,
+      },
+    );
     await waitFor(() => result.current.isSuccess);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/1234/timedtexttracks/`,
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',
@@ -76,15 +81,20 @@ describe('useTimedTextMetadata', () => {
   });
 
   it('fails to get the timedtext metadata', async () => {
-    fetchMock.mock(`/api/timedtexttracks/`, 401);
+    fetchMock.mock(`/api/videos/4321/timedtexttracks/`, 401);
 
-    const { result, waitFor } = renderHook(() => useTimedTextMetadata('en'), {
-      wrapper: Wrapper,
-    });
+    const { result, waitFor } = renderHook(
+      () => useTimedTextMetadata('4321', 'en'),
+      {
+        wrapper: Wrapper,
+      },
+    );
 
     await waitFor(() => result.current.isError);
 
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/4321/timedtexttracks/`,
+    );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         Authorization: 'Bearer some token',

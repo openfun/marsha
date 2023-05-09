@@ -63,7 +63,7 @@ describe('<Dashboard />', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
     fetchMock.mock(
-      `/api/timedtexttracks/`,
+      `/api/videos/video_id/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },

@@ -31,13 +31,17 @@ export const useDeleteTimedTextTrack = (
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
+        queryClient.invalidateQueries(
+          `videos/${variables.videoId}/timedtexttracks`,
+        );
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('timedtexttracks');
+        queryClient.invalidateQueries(
+          `videos/${variables.videoId}/timedtexttracks`,
+        );
         if (options?.onError) {
           options.onError(error, variables, context);
         }

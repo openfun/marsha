@@ -63,8 +63,11 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   });
 
   it('renders the component without any uploaded timed text track', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '1234',
+    });
     fetchMock.mock(
-      `/api/timedtexttracks/`,
+      `/api/videos/1234/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
@@ -82,7 +85,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
         <LocalizedTimedTextTrackUpload
           timedTextModeWidget={timedTextMode.SUBTITLE}
         />,
-        videoMockFactory(),
+        mockedVideo,
       ),
       { intlOptions: { locale: 'fr-FR' } },
     );
@@ -101,8 +104,11 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   });
 
   it('uploads a timed text track', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '4321',
+    });
     fetchMock.mock(
-      `/api/timedtexttracks/`,
+      `/api/videos/4321/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
@@ -119,7 +125,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
       upload_state: uploadState.PENDING,
       source_url: 'source_url',
       url: 'url',
-      video: 'video_id',
+      video: mockedVideo.id,
     };
 
     mockCreateTimedTextTrack.mockImplementation(() =>
@@ -145,7 +151,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
             timedTextModeWidget={timedTextMode.SUBTITLE}
           />
         </UploadManagerContext.Provider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
       { intlOptions: { locale: 'fr-FR' } },
     );
@@ -160,7 +166,9 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     });
     userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(2);
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/timedtexttracks/`);
+    expect(fetchMock.lastCall()![0]).toEqual(
+      `/api/videos/4321/timedtexttracks/`,
+    );
     await waitFor(() =>
       expect(mockAddUpload).toHaveBeenLastCalledWith(
         modelName.TIMEDTEXTTRACKS,
@@ -171,12 +179,16 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   });
 
   it('fails to upload a timed text track when the file is too large and displays an error message', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '7894',
+    });
+
     mockCreateTimedTextTrack.mockRejectedValue({
       size: ['File too large !'],
     });
 
     fetchMock.mock(
-      `api/timedtexttracks/`,
+      `/api/videos/7894/timedtexttracks/`,
       {
         upload_max_size_bytes: Math.pow(10, 9),
         actions: { POST: { language: { choices: languageChoices } } },
@@ -196,7 +208,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
             timedTextModeWidget={timedTextMode.SUBTITLE}
           />
         </UploadManagerContext.Provider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
       { intlOptions: { locale: 'fr-FR' } },
     );
@@ -219,8 +231,12 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
   });
 
   it('renders the component with several uploaded and uploading timed text track', async () => {
+    const mockedVideo = videoMockFactory({
+      id: '4466',
+    });
+
     fetchMock.mock(
-      `/api/timedtexttracks/`,
+      `/api/videos/4466/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
@@ -269,7 +285,7 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
           />
           ,
         </DeleteTimedTextTrackUploadModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
       { intlOptions: { locale: 'fr-FR' } },
     );

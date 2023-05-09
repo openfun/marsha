@@ -30,8 +30,9 @@ describe('<UploadTranscripts />', () => {
   });
 
   it('renders the UploadTranscripts', () => {
+    const mockedVideo = videoMockFactory();
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      `/api/videos/${mockedVideo.id}/timedtexttracks/`,
       {
         actions: { POST: { language: { choices: languageChoices } } },
       },
@@ -43,7 +44,7 @@ describe('<UploadTranscripts />', () => {
         <InfoWidgetModalProvider value={null}>
           <UploadTranscripts />
         </InfoWidgetModalProvider>,
-        videoMockFactory(),
+        mockedVideo,
       ),
     );
 
