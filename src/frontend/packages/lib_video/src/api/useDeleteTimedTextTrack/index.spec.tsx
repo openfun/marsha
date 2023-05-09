@@ -44,16 +44,22 @@ describe('useDeleteTimedTextTracks', () => {
 
   it('deletes the resource', async () => {
     const timedTextTracks = timedTextMockFactory();
-    fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,
+      204,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(timedTextTracks.id);
+    result.current.mutate({
+      videoId: timedTextTracks.video,
+      timedTextTrackId: timedTextTracks.id,
+    });
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/timedtexttracks/${timedTextTracks.id}/`,
+      `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -68,16 +74,22 @@ describe('useDeleteTimedTextTracks', () => {
 
   it('fails to delete the resource', async () => {
     const timedTextTracks = timedTextMockFactory();
-    fetchMock.delete(`/api/timedtexttracks/${timedTextTracks.id}/`, 400);
+    fetchMock.delete(
+      `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,
+      400,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(timedTextTracks.id);
+    result.current.mutate({
+      videoId: timedTextTracks.video,
+      timedTextTrackId: timedTextTracks.id,
+    });
     await waitFor(() => result.current.isError);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/timedtexttracks/${timedTextTracks.id}/`,
+      `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
