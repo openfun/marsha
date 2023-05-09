@@ -13,7 +13,7 @@ describe('sideEffects/createSharedLiveMedia', () => {
   afterEach(() => fetchMock.restore());
 
   it('creates a new shared live media and returns it', async () => {
-    fetchMock.mock('/api/sharedlivemedias/', {
+    fetchMock.mock('/api/videos/video_id/sharedlivemedias/', {
       id: 'shared_live_media_id',
       is_ready_to_show: false,
       show_download: true,
@@ -34,7 +34,6 @@ describe('sideEffects/createSharedLiveMedia', () => {
       upload_state: 'pending',
       video: 'video_id',
     });
-    expect(fetchArgs.body).toEqual(JSON.stringify({ video: 'video_id' }));
     expect(fetchArgs.headers).toEqual({
       Authorization: 'Bearer token',
       'Content-Type': 'application/json',
@@ -44,7 +43,7 @@ describe('sideEffects/createSharedLiveMedia', () => {
 
   it('throws when it fails to create the shared live media (request failure)', async () => {
     fetchMock.mock(
-      '/api/sharedlivemedias/',
+      '/api/videos/video_id/sharedlivemedias/',
       Promise.reject(new Error('Failed to perform the request')),
     );
 
@@ -56,7 +55,7 @@ describe('sideEffects/createSharedLiveMedia', () => {
   });
 
   it('throws when it fails to create the shared live media (API error)', async () => {
-    fetchMock.mock('/api/sharedlivemedias/', 400);
+    fetchMock.mock('/api/videos/video_id/sharedlivemedias/', 400);
 
     await expect(
       createSharedLiveMedia({
