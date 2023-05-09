@@ -14,10 +14,7 @@ import {
   ObjectStatusPicker,
 } from 'lib-components';
 import { ActionLink } from '../ActionLink/ActionLink';
-import {
-  LanguageChoice,
-  useFetchTimedTextTrackLanguageChoices,
-} from 'lib-video';
+import { LanguageChoice, useTimedTextMetadata } from 'lib-video';
 
 const messages = defineMessages({
   delete: {
@@ -70,7 +67,7 @@ interface TimedTextListItemProps {
 }
 
 export const TimedTextListItem = ({ track }: TimedTextListItemProps) => {
-  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const { data } = useTimedTextMetadata(track.video);
   const choices = useMemo(
     () =>
       data?.actions.POST.language.choices?.map((choice) => ({

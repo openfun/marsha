@@ -6,10 +6,10 @@ import {
   uploadState,
   TimedText,
 } from 'lib-components';
-import React, { useMemo } from 'react';
+import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 import { DeleteTimedTextTrackItemUploadButton } from './DeleteTimedTextTrackItemUploadButton';
 
@@ -32,23 +32,16 @@ interface TimedTextTrackItemProps {
   onRetryFailedUpload: (timedTextTrackId: TimedText['id']) => void;
   timedTextTrack: TimedText;
   uploadingObject?: UploadingObject;
+  choices?: LanguageChoice[];
 }
 
 export const TimedTextTrackItem = ({
   onRetryFailedUpload,
   timedTextTrack,
   uploadingObject,
+  choices,
 }: TimedTextTrackItemProps) => {
   const intl = useIntl();
-  const { data } = useFetchTimedTextTrackLanguageChoices();
-  const choices = useMemo(
-    () =>
-      data?.actions.POST.language.choices?.map((choice) => ({
-        label: choice.display_name,
-        value: choice.value,
-      })),
-    [data?.actions.POST.language.choices],
-  );
 
   const IS_UPLOAD_IN_PROGRESS =
     (timedTextTrack.upload_state === uploadState.PENDING && uploadingObject) ||

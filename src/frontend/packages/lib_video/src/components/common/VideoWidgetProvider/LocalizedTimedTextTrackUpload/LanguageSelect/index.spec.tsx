@@ -19,11 +19,11 @@ jest.mock('lib-components', () => ({
 const onChangeMock = jest.fn();
 
 const languageChoices = [
-  { display_name: 'English', value: 'en' },
-  { display_name: 'French', value: 'fr' },
-  { display_name: 'Spanish', value: 'es' },
-  { display_name: 'Slovenian', value: 'sl' },
-  { display_name: 'Swedish', value: 'sv' },
+  { label: 'English', value: 'en' },
+  { label: 'French', value: 'fr' },
+  { label: 'Spanish', value: 'es' },
+  { label: 'Slovenian', value: 'sl' },
+  { label: 'Swedish', value: 'sv' },
 ];
 
 describe('<LanguageSelect />', () => {
@@ -34,18 +34,11 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with instructor local language available', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
-
     render(
       <LanguageSelect
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
+        choices={languageChoices}
       />,
       { intlOptions: { locale: 'fr-FR' } },
     );
@@ -68,18 +61,11 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with instructor local language unavailable', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
-
     render(
       <LanguageSelect
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
+        choices={languageChoices}
       />,
       { intlOptions: { locale: 'pg-PG' } },
     );
@@ -102,14 +88,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with some languages already having some subtitles uploaded', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
-
     useTimedTextTrack.getState().addMultipleResources([
       timedTextMockFactory({
         language: 'fr',
@@ -125,6 +103,7 @@ describe('<LanguageSelect />', () => {
       <LanguageSelect
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
+        choices={languageChoices}
       />,
       { intlOptions: { locale: 'fr-FR' } },
     );
@@ -160,8 +139,6 @@ describe('<LanguageSelect />', () => {
   });
 
   it('renders the component with no languages', async () => {
-    fetchMock.mock('/api/timedtexttracks/', 500, { method: 'OPTIONS' });
-
     render(
       <LanguageSelect
         onChange={onChangeMock}
@@ -199,18 +176,11 @@ describe('<LanguageSelect />', () => {
   });
 
   it('changes the selected language', async () => {
-    fetchMock.mock(
-      `/api/timedtexttracks/`,
-      {
-        actions: { POST: { language: { choices: languageChoices } } },
-      },
-      { method: 'OPTIONS' },
-    );
-
     render(
       <LanguageSelect
         onChange={onChangeMock}
         timedTextModeWidget={timedTextMode.SUBTITLE}
+        choices={languageChoices}
       />,
       { intlOptions: { locale: 'fr-FR' } },
     );

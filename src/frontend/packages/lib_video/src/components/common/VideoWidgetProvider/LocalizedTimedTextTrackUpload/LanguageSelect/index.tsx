@@ -2,7 +2,6 @@ import { useTimedTextTrack, timedTextMode, Select } from 'lib-components';
 import React, { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
 import { LanguageChoice } from '@lib-video/types/SelectOptions';
 
 const messages = defineMessages({
@@ -24,11 +23,13 @@ const messages = defineMessages({
 interface LanguageSelectProps {
   onChange: (selection: LanguageChoice) => void;
   timedTextModeWidget: timedTextMode;
+  choices?: LanguageChoice[];
 }
 
 export const LanguageSelect = ({
   onChange,
   timedTextModeWidget,
+  choices,
 }: LanguageSelectProps) => {
   const intl = useIntl();
 
@@ -38,16 +39,6 @@ export const LanguageSelect = ({
       value: 'error',
     }),
     [intl],
-  );
-
-  const { data } = useFetchTimedTextTrackLanguageChoices();
-  const choices = useMemo(
-    () =>
-      data?.actions.POST.language.choices?.map((choice) => ({
-        label: choice.display_name,
-        value: choice.value,
-      })),
-    [data?.actions.POST.language.choices],
   );
 
   const { timedTextTracks } = useTimedTextTrack((state) => ({
