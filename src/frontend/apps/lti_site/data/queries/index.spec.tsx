@@ -19,7 +19,6 @@ import {
   usePlaylist,
   usePlaylists,
   useThumbnail,
-  useTimedTextTracks,
   useUpdatePlaylist,
 } from '.';
 
@@ -309,59 +308,6 @@ describe('queries', () => {
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/thumbnails/${thumbnail.id}/`,
-      );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-      });
-      expect(result.current.data).toEqual(undefined);
-      expect(result.current.status).toEqual('error');
-    });
-  });
-
-  describe('useTimedTextTracks', () => {
-    it('requests the resource list', async () => {
-      const timedTextTracks = Array(4).fill(timedTextMockFactory());
-      fetchMock.mock(
-        '/api/timedtexttracks/?limit=999&video=1',
-        timedTextTracks,
-      );
-
-      const { result, waitFor } = renderHook(
-        () => useTimedTextTracks({ video: '1' }),
-        {
-          wrapper: Wrapper,
-        },
-      );
-      await waitFor(() => result.current.isSuccess);
-
-      expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/timedtexttracks/?limit=999&video=1',
-      );
-      expect(fetchMock.lastCall()![1]).toEqual({
-        headers: {
-          Authorization: 'Bearer some token',
-          'Content-Type': 'application/json',
-        },
-      });
-      expect(result.current.data).toEqual(timedTextTracks);
-      expect(result.current.status).toEqual('success');
-    });
-
-    it('fails to get the resource list', async () => {
-      fetchMock.mock('/api/timedtexttracks/?limit=999&video=1', 404);
-
-      const { result, waitFor } = renderHook(
-        () => useTimedTextTracks({ video: '1' }),
-        { wrapper: Wrapper },
-      );
-
-      await waitFor(() => result.current.isError);
-
-      expect(fetchMock.lastCall()![0]).toEqual(
-        '/api/timedtexttracks/?limit=999&video=1',
       );
       expect(fetchMock.lastCall()![1]).toEqual({
         headers: {
