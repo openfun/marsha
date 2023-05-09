@@ -11,7 +11,7 @@ import {
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 import { TranscriptReader } from './TranscriptReader';
@@ -58,7 +58,7 @@ export const Transcripts = () => {
   );
   const timedTextTracks: TimedText[] = useTimedTextTrack(timeTextFetcher);
 
-  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const { data } = useTimedTextMetadata(video.id);
   const choices = useMemo(
     () =>
       data?.actions.POST.language.choices?.map((choice) => ({

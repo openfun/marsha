@@ -6,7 +6,7 @@ import { TimedTextMetadata } from '@lib-video/types/metadata';
 type UseTimedTextMetadataError = FetchResponseError<TimedTextMetadata>;
 export const useTimedTextMetadata = (
   videoId: string,
-  locale: string,
+  locale?: string,
   queryConfig?: UseQueryOptions<
     TimedTextMetadata,
     UseTimedTextMetadataError,
@@ -14,7 +14,7 @@ export const useTimedTextMetadata = (
     string[]
   >,
 ) => {
-  const key = [`videos/${videoId}/timedtexttracks`, locale];
+  const key = [`videos/${videoId}/timedtexttracks`, locale || 'undefined'];
   return useQuery<
     TimedTextMetadata,
     UseTimedTextMetadataError,

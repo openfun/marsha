@@ -10,7 +10,13 @@ import {
   formatSizeErrorScale,
   report,
 } from 'lib-components';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, {
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -66,6 +72,14 @@ export const LocalizedTimedTextTrackUpload = ({
   const [selectedLanguage, setSelectedLanguage] =
     useState<Nullable<LanguageChoice>>(null);
   const metadata = useTimedTextMetadata(video.id, intl.locale);
+  const choices = useMemo(
+    () =>
+      metadata.data?.actions.POST.language.choices?.map((choice) => ({
+        label: choice.display_name,
+        value: choice.value,
+      })),
+    [metadata.data?.actions.POST.language.choices],
+  );
 
   const handleChange = useCallback(
     async (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -149,6 +163,7 @@ export const LocalizedTimedTextTrackUpload = ({
       <LanguageSelect
         onChange={(option) => setSelectedLanguage(option)}
         timedTextModeWidget={timedTextModeWidget}
+        choices={choices}
       />
 
       <ItemList
@@ -164,6 +179,7 @@ export const LocalizedTimedTextTrackUpload = ({
               (uploadingObject) =>
                 uploadingObject.objectId === timedTextTrack.id,
             )}
+            choices={choices}
           />
         )}
       </ItemList>

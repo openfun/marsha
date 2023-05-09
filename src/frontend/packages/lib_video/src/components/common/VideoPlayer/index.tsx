@@ -11,7 +11,7 @@ import React, { useRef, useMemo, useEffect } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
-import { useFetchTimedTextTrackLanguageChoices } from '@lib-video/api/useFetchTimedTextTrackLanguageChoices';
+import { useTimedTextMetadata } from '@lib-video/api/useTimedTextMetadata';
 import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
 import { MissingVideoUrlsException } from '@lib-video/errors';
 import { useVideoProgress } from '@lib-video/hooks/useVideoProgress';
@@ -42,7 +42,7 @@ export const VideoPlayer = ({
     timedTextTracks,
   });
 
-  const { data } = useFetchTimedTextTrackLanguageChoices();
+  const { data } = useTimedTextMetadata(video.id);
   const choices = useMemo(
     () =>
       data?.actions.POST.language.choices?.map((choice) => ({
