@@ -1,6 +1,5 @@
 /* eslint-disable testing-library/no-node-access */
 import { screen, waitFor } from '@testing-library/react';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   useJwt,
@@ -26,7 +25,9 @@ import {
 
 import { Dashboard } from './Dashboard';
 
-const mockVideo = videoMockFactory();
+const mockVideo = videoMockFactory({
+  id: '1234',
+});
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   getResource: jest.fn().mockResolvedValue(null),
@@ -88,7 +89,7 @@ describe('<Dashboard />', () => {
     });
 
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      '/api/videos/1234/timedtexttracks/',
       {
         actions: {
           POST: {
@@ -112,6 +113,7 @@ describe('<Dashboard />', () => {
 
   it('displays the video player alone', async () => {
     const video = videoMockFactory({
+      ...mockVideo,
       show_download: false,
       has_transcript: false,
       shared_live_medias: [],
@@ -165,7 +167,6 @@ describe('<Dashboard />', () => {
   });
 
   it('displays the video player, the download, SharedLiveMedia and transcripts widgets', async () => {
-    const videoId = faker.datatype.uuid();
     const timedTextTracks = [
       timedTextMockFactory({
         is_ready_to_show: true,
@@ -174,12 +175,12 @@ describe('<Dashboard />', () => {
     ];
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: 'Title of the file',
-      video: videoId,
+      video: mockVideo.id,
     });
     useTimedTextTrack.getState().addMultipleResources(timedTextTracks);
     useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
     const video = videoMockFactory({
-      id: videoId,
+      ...mockVideo,
       has_transcript: true,
       show_download: true,
       timed_text_tracks: timedTextTracks,
@@ -230,6 +231,7 @@ describe('<Dashboard />', () => {
     ];
     useTimedTextTrack.getState().addMultipleResources(timedTextTracks);
     const video = videoMockFactory({
+      ...mockVideo,
       has_transcript: false,
       show_download: true,
       should_use_subtitle_as_transcript: true,
@@ -278,6 +280,7 @@ describe('<Dashboard />', () => {
     mockedDecodeJwt.mockReturnValue({} as any);
 
     const video = videoMockFactory({
+      ...mockVideo,
       show_download: false,
       has_transcript: false,
       shared_live_medias: [],

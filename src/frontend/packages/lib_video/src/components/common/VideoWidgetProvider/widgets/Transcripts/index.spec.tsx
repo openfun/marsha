@@ -64,6 +64,11 @@ const languagechoices = [
   { display_name: 'French', label: 'fr' },
 ];
 
+const mockedVideo = videoMockFactory({
+  id: '42',
+  has_transcript: true,
+});
+
 describe('<Transcripts />', () => {
   beforeEach(() => {
     useJwt.setState({
@@ -71,7 +76,7 @@ describe('<Transcripts />', () => {
     });
 
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      `/api/videos/42/timedtexttracks/`,
       {
         actions: {
           POST: {
@@ -92,10 +97,7 @@ describe('<Transcripts />', () => {
 
   it('displays a list of available transcripts', async () => {
     useTimedTextTrack.getState().addMultipleResources(transcripts);
-    const mockedVideo = videoMockFactory({
-      id: '42',
-      has_transcript: true,
-    });
+
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
@@ -126,10 +128,7 @@ describe('<Transcripts />', () => {
   it('downloads transcript when the user clicks the download button', async () => {
     fetchMock.mock('https://example.com/vtt/fr.vtt', transcriptContent);
     useTimedTextTrack.getState().addMultipleResources(transcripts);
-    const mockedVideo = videoMockFactory({
-      id: '42',
-      has_transcript: true,
-    });
+
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>

@@ -75,7 +75,7 @@ jest.mock('lib-components', () => ({
 describe('VideoPlayer', () => {
   beforeEach(() =>
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      '/api/videos/video-id/timedtexttracks/',
       {
         actions: {
           POST: {
@@ -188,6 +188,7 @@ describe('VideoPlayer', () => {
         mp4: {},
         thumbnails: {},
       },
+      id: 'video-id',
     });
 
     const { container } = render(

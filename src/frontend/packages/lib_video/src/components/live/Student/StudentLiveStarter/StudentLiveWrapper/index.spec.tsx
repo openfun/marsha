@@ -6,7 +6,6 @@ import {
   waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   decodeJwt,
@@ -97,6 +96,8 @@ const mockedUseCurrentResourceContext =
   >;
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
+const videoId = '123456';
+
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -109,7 +110,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     mockedDecodeJwt.mockReturnValue({} as any);
 
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      '/api/videos/123456/timedtexttracks/',
       {
         actions: {
           POST: {
@@ -152,6 +153,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
     useLiveStateStarted.getState().setIsStarted(true);
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -219,6 +221,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     });
     useLiveStateStarted.getState().setIsStarted(true);
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -273,6 +276,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       availableItems: [LivePanelItem.CHAT],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -337,6 +341,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       availableItems: [LivePanelItem.CHAT],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -411,6 +416,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
       availableItems: [],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -455,6 +461,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
   it('prompts for display name when trying to join the chat', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -498,6 +505,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
 
   it('displays no title in the info bar when no one is set in the video', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: null,
       live_state: liveState.RUNNING,
       live_type: LiveModeType.JITSI,
@@ -544,7 +552,6 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
   });
 
   it('displays the video in the picture and shared media in background when a media is shared', async () => {
-    const videoId = faker.datatype.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     const video = liveMockFactory({
       id: videoId,
@@ -655,6 +662,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
     useLiveStateStarted.getState().setIsStarted(true);
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -711,6 +719,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       availableItems: [LivePanelItem.CHAT],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -765,6 +774,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       availableItems: [LivePanelItem.CHAT],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -828,6 +838,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       availableItems: [LivePanelItem.CHAT],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -865,6 +876,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   it('configures live state without chat when chat is disabled', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       has_chat: false,
       live_info: {
@@ -913,6 +925,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   it('prompts for display name when trying to join the chat', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -960,6 +973,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   it('inits the live title bar with the default title', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: null,
       live_info: {
         jitsi: {
@@ -999,6 +1013,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   it('inits the live title bar with title and starting date', async () => {
     const video = liveMockFactory({
+      id: videoId,
       title: "Hello world, it's me",
       starting_at: '2020-10-01T08:00:00Z',
       live_info: {
@@ -1042,7 +1057,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
 
   it('pushes attendance when student is on stage', async () => {
     fetchMock.mock(
-      '/api/timedtexttracks/',
+      '/api/videos/123456/timedtexttracks/',
       {
         actions: {
           POST: {
@@ -1066,6 +1081,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     });
     useLiveStateStarted.getState().setIsStarted(true);
     const video = liveMockFactory({
+      id: videoId,
       title: 'live title',
       live_info: {
         jitsi: {
@@ -1137,7 +1153,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
   });
 
   it('displays the jitsi player in the picture and shared media in background when a media is shared', () => {
-    const videoId = faker.datatype.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     const video = liveMockFactory({
       id: videoId,
@@ -1190,7 +1205,6 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
   });
 
   it('use id3 tags for shared documents instead of video when possible', () => {
-    const videoId = faker.datatype.uuid();
     const sharedLiveMedia = sharedLiveMediaMockFactory({ video: videoId });
     useVideo.getState().setId3Video({
       active_shared_live_media: { id: sharedLiveMedia.id },
@@ -1255,6 +1269,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
       availableItems: [LivePanelItem.CHAT, LivePanelItem.VIEWERS_LIST],
     });
     const video = liveMockFactory({
+      id: videoId,
       title: null,
       live_info: {
         jitsi: {

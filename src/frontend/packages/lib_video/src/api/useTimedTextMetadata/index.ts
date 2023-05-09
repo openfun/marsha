@@ -1,21 +1,23 @@
-import { metadata } from 'lib-components';
+import { FetchResponseError, metadata } from 'lib-components';
 import { useQuery, UseQueryOptions } from 'react-query';
 
 import { TimedTextMetadata } from '@lib-video/types/metadata';
 
+type UseTimedTextMetadataError = FetchResponseError<TimedTextMetadata>;
 export const useTimedTextMetadata = (
+  videoId: string,
   locale: string,
   queryConfig?: UseQueryOptions<
     TimedTextMetadata,
-    'timedtexttracks',
+    UseTimedTextMetadataError,
     TimedTextMetadata,
     string[]
   >,
 ) => {
-  const key = ['timedtexttracks', locale];
+  const key = [`videos/${videoId}/timedtexttracks`, locale];
   return useQuery<
     TimedTextMetadata,
-    'timedtexttracks',
+    UseTimedTextMetadataError,
     TimedTextMetadata,
     string[]
   >(key, metadata, {
