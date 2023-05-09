@@ -44,16 +44,22 @@ describe('useDeleteThumbnail', () => {
 
   it('deletes the resource', async () => {
     const thumbnail = thumbnailMockFactory();
-    fetchMock.delete(`/api/thumbnails/${thumbnail.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
+      204,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteThumbnail(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(thumbnail.id);
+    result.current.mutate({
+      videoId: thumbnail.video,
+      thumbnailId: thumbnail.id,
+    });
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/thumbnails/${thumbnail.id}/`,
+      `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -68,16 +74,22 @@ describe('useDeleteThumbnail', () => {
 
   it('fails to delete the resource', async () => {
     const thumbnail = thumbnailMockFactory();
-    fetchMock.delete(`/api/thumbnails/${thumbnail.id}/`, 400);
+    fetchMock.delete(
+      `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
+      400,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteThumbnail(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(thumbnail.id);
+    result.current.mutate({
+      videoId: thumbnail.video,
+      thumbnailId: thumbnail.id,
+    });
     await waitFor(() => result.current.isError);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/thumbnails/${thumbnail.id}/`,
+      `/api/videos/${thumbnail.video}/thumbnails/${thumbnail.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

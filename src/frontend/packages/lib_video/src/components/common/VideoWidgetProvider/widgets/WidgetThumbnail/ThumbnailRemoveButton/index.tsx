@@ -86,7 +86,12 @@ export const ThumbnailRemoveButton = ({
         <ModalButton
           label={intl.formatMessage(messages.confirmationModalTitle)}
           onClickCancel={() => modalActions.current?.close()}
-          onClickSubmit={() => thumbnailDelete.mutate(thumbnail.id)}
+          onClickSubmit={() =>
+            thumbnailDelete.mutate({
+              videoId: thumbnail.video,
+              thumbnailId: thumbnail.id,
+            })
+          }
           style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>

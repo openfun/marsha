@@ -1,14 +1,12 @@
 import { Maybe } from 'lib-common';
-import { deleteOne, Thumbnail } from 'lib-components';
+import { deleteOne, FetchResponseError, Thumbnail } from 'lib-components';
 import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
 
-type UseDeleteThumbnailData = string;
-type UseDeleteThumbnailError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseDeleteThumbnailData]?: string[] }[];
-    };
+type UseDeleteThumbnailData = {
+  videoId: string;
+  thumbnailId: string;
+};
+type UseDeleteThumbnailError = FetchResponseError<UseDeleteThumbnailData>;
 type UseDeleteThumbnailOptions = UseMutationOptions<
   Maybe<Thumbnail>,
   UseDeleteThumbnailError,
@@ -21,9 +19,9 @@ export const useDeleteThumbnail = (options?: UseDeleteThumbnailOptions) => {
     UseDeleteThumbnailError,
     UseDeleteThumbnailData
   >(
-    (thumbnailId) =>
+    ({ videoId, thumbnailId }) =>
       deleteOne({
-        name: 'thumbnails',
+        name: `videos/${videoId}/thumbnails`,
         id: thumbnailId,
       }),
     {
