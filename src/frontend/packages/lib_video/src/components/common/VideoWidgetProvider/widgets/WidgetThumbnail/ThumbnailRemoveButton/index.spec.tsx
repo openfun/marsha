@@ -47,7 +47,10 @@ describe('<ThumbnailRemoveButton />', () => {
     });
     useThumbnail.getState().addResource(mockedThumbnail);
 
-    fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${mockedThumbnail.video}/thumbnails/${mockedThumbnail.id}/`,
+      204,
+    );
 
     render(<ThumbnailRemoveButton thumbnail={mockedThumbnail} />);
 
@@ -70,7 +73,7 @@ describe('<ThumbnailRemoveButton />', () => {
 
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/thumbnails/${mockedThumbnail.id}/`,
+      `/api/videos/${mockedThumbnail.video}/thumbnails/${mockedThumbnail.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -90,7 +93,10 @@ describe('<ThumbnailRemoveButton />', () => {
     });
     useThumbnail.getState().addResource(mockedThumbnail);
 
-    fetchMock.delete(`/api/thumbnails/${mockedThumbnail.id}/`, 500);
+    fetchMock.delete(
+      `/api/videos/${mockedThumbnail.video}/thumbnails/${mockedThumbnail.id}/`,
+      500,
+    );
 
     render(<ThumbnailRemoveButton thumbnail={mockedThumbnail} />);
 
@@ -109,7 +115,7 @@ describe('<ThumbnailRemoveButton />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/thumbnails/${mockedThumbnail.id}/`,
+      `/api/videos/${mockedThumbnail.video}/thumbnails/${mockedThumbnail.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
