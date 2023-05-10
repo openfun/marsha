@@ -146,7 +146,7 @@ describe('<DeleteClassroom />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm delete',
+      name: 'Confirm delete classroom',
     });
     userEvent.click(confirmDeleteButton);
 
@@ -183,7 +183,7 @@ describe('<DeleteClassroom />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm delete',
+      name: 'Confirm delete classroom',
     });
     userEvent.click(confirmDeleteButton);
 

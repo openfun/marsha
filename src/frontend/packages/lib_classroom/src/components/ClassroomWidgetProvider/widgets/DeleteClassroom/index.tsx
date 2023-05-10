@@ -1,4 +1,4 @@
-import { Button, Text } from 'grommet';
+import { Button, Heading, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
@@ -29,30 +29,35 @@ const messages = defineMessages({
     id: 'components.DeleteClassroom.title',
   },
   confirmDeleteTitle: {
-    defaultMessage: 'Confirm delete',
+    defaultMessage: 'Confirm delete classroom',
     description: 'Title of the widget used for confirmation.',
-    id: 'components.DeleteClassroomConfirm.title',
+    id: 'components.DeleteClassroom.confirmDeleteTitle',
   },
   confirmDeleteText: {
     defaultMessage:
       'Are you sure you want to delete this classroom ? This action is irreversible.',
     description: 'Text of the widget used for confirmation.',
-    id: 'components.DeleteClassroomConfirm.text',
+    id: 'components.DeleteClassroom.confirmDeleteText',
   },
   deleteButtonText: {
     defaultMessage: 'Delete classroom',
     description: 'Text of the delete button.',
-    id: 'components.DeleteClassroomButton.text',
+    id: 'components.DeleteClassroom.deleteButtonText',
   },
   classroomDeleteSuccess: {
     defaultMessage: 'Classroom successfully deleted',
     description: 'Text of the delete confirmation toast.',
-    id: 'components.deleteClassroomSuccess.text',
+    id: 'components.DeleteClassroom.classroomDeleteSuccess',
   },
   classroomDeleteError: {
     defaultMessage: 'Failed to delete the classroom',
     description: 'ext of the delete error toast..',
-    id: 'components.classroomDeleteError.text',
+    id: 'components.DeleteClassroom.classroomDeleteError',
+  },
+  deleteModalTitle: {
+    defaultMessage: 'Delete classroom',
+    description: 'Title of the delete modal.',
+    id: 'components.DeleteClassroom.deleteModalTitle',
   },
 });
 
@@ -95,7 +100,14 @@ export const DeleteClassroom = () => {
       initialOpenValue
       title={intl.formatMessage(messages.title)}
     >
-      <Modal isOpen={isModalOpen}>
+      <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+        <Heading
+          size="3"
+          alignSelf="center"
+          margin={{ top: '0', bottom: 'small' }}
+        >
+          {intl.formatMessage(messages.deleteModalTitle)}
+        </Heading>
         <Text margin={{ top: 'small' }}>
           {intl.formatMessage(messages.confirmDeleteText)}
         </Text>
