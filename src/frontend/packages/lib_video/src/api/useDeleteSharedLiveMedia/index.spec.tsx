@@ -44,16 +44,22 @@ describe('useDeleteSharedLiveMedia', () => {
 
   it('deletes the resource', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory();
-    fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
+      204,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(sharedLiveMedia.id);
+    result.current.mutate({
+      videoId: sharedLiveMedia.video,
+      sharedLiveMediaId: sharedLiveMedia.id,
+    });
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -68,16 +74,22 @@ describe('useDeleteSharedLiveMedia', () => {
 
   it('fails to delete the resource', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory();
-    fetchMock.delete(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
+    fetchMock.delete(
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
+      400,
+    );
 
     const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
       wrapper: Wrapper,
     });
-    result.current.mutate(sharedLiveMedia.id);
+    result.current.mutate({
+      videoId: sharedLiveMedia.video,
+      sharedLiveMediaId: sharedLiveMedia.id,
+    });
     await waitFor(() => result.current.isError);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

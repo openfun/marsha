@@ -21,6 +21,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - use batch/v1 api in cronjob_pipeline manifest
 - Use jammy for e2e tests
 - Homogenize modal use between standalone_site and LTI
+- Nest frontend api routes of video related objects 
+  (thumbnails, timed_text_track, shared_live_media...) (#2228)
 
 ### Fixed
 
