@@ -21,4 +21,15 @@ class Migration(migrations.Migration):
                 verbose_name="classroom recording",
             ),
         ),
+        migrations.AlterField(
+            model_name="classroomdocument",
+            name="classroom",
+            field=models.ForeignKey(
+                help_text="clasroom to which this document belongs",
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name="classroom_documents",
+                to="bbb.classroom",
+                verbose_name="classroom document",
+            ),
+        ),
     ]
