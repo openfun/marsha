@@ -3,8 +3,8 @@
 
 from django.test import TestCase, override_settings
 
-from marsha.bbb.factories import ClassroomFactory
-from marsha.bbb.models import Classroom
+from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
+from marsha.bbb.models import Classroom, ClassroomRecording
 from marsha.core.factories import (
     OrganizationAccessFactory,
     PlaylistAccessFactory,
@@ -146,3 +146,28 @@ class ClassroomDeleteAPITest(TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Classroom.objects.count(), 0)
+
+    def test_api_classroom_delete_with_records(self):
+        """An organization administrator should be able to delete a classroom
+        having video records."""
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        playlist = PlaylistFactory(organization=organization_access.organization)
+        classroom = ClassroomFactory(playlist=playlist)
+        ClassroomRecordingFactory(classroom=classroom)
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 1)
+        self.assertEqual(ClassroomRecording.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/classrooms/{classroom.id}/",
+            {
+                "playlist": str(playlist.id),
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Classroom.objects.count(), 0)
+        self.assertEqual(ClassroomRecording.objects.count(), 0)
