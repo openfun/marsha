@@ -89,7 +89,7 @@ const messages = defineMessages({
     id: 'features.Playlist.PlaylistForm.DeleteButtonText',
   },
   confirmDeleteTitle: {
-    defaultMessage: 'Confirm delete',
+    defaultMessage: 'Confirm delete playlist',
     description: 'Title of the widget used for confirmation.',
     id: 'features.Playlist.PlaylistForm.confirmDeleteTitle',
   },
@@ -98,6 +98,11 @@ const messages = defineMessages({
       'Are you sure you want to delete this playlist ? This action is irreversible and all attached resources must be deleted.',
     description: 'Text of the widget used for confirmation.',
     id: 'eatures.Playlist.PlaylistForm.confirmDeleteText',
+  },
+  deleteModalTitle: {
+    defaultMessage: 'Delete playlist',
+    description: 'Title of the delete modal.',
+    id: 'components.Playlist.PlaylistForm.deleteModalTitle',
   },
 });
 
@@ -384,7 +389,14 @@ export const PlaylistForm = ({
             />
           )}
           {playlistId && (
-            <Modal isOpen={isModalOpen}>
+            <Modal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <Heading
+                size="3"
+                alignSelf="center"
+                margin={{ top: '0', bottom: 'small' }}
+              >
+                {intl.formatMessage(messages.deleteModalTitle)}
+              </Heading>
               <Text margin={{ top: 'small' }}>
                 {intl.formatMessage(messages.confirmDeleteText)}
               </Text>
