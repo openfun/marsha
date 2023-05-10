@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Allow to delete a video with an active shared live media
 - Fix a closing/reopening bug on modals
 - Allow to delete in cascade classroom recording
+- Allow to delete in cascade classroom document
 
 ## [4.0.0] - 2023-05-02
 

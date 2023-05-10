@@ -184,8 +184,8 @@ class ClassroomDocument(UploadableFileMixin, BaseModel):
         related_name="classroom_documents",
         verbose_name=_("classroom document"),
         help_text=_("clasroom to which this document belongs"),
-        # don't allow hard deleting a classroom if it still contains a document
-        on_delete=models.PROTECT,
+        # Delete all documents belonging to this classroom
+        on_delete=models.CASCADE,
     )
 
     filename = models.CharField(
