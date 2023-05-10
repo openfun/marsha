@@ -71,7 +71,10 @@ export const SharedLiveMediaModalWrapper = () => {
         title={intl.formatMessage(messages.confirmationModalTitle)}
         onModalCloseOrCancel={() => setDeleteSharedLiveMediaModal(null)}
         onModalConfirm={() => {
-          sharedLiveMediaDelete.mutate(deleteSharedLiveMediaModal.id);
+          sharedLiveMediaDelete.mutate({
+            videoId: deleteSharedLiveMediaModal.video,
+            sharedLiveMediaId: deleteSharedLiveMediaModal.id,
+          });
         }}
       />
     );

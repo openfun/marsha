@@ -1,14 +1,13 @@
 import { Maybe } from 'lib-common';
-import { deleteOne, SharedLiveMedia } from 'lib-components';
+import { deleteOne, FetchResponseError, SharedLiveMedia } from 'lib-components';
 import { useMutation, UseMutationOptions, useQueryClient } from 'react-query';
 
-type UseDeleteSharedLiveMediaData = string;
+type UseDeleteSharedLiveMediaData = {
+  videoId: string;
+  sharedLiveMediaId: string;
+};
 type UseDeleteSharedLiveMediaError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseDeleteSharedLiveMediaData]?: string[] }[];
-    };
+  FetchResponseError<UseDeleteSharedLiveMediaData>;
 type UseDeleteSharedLiveMediaOptions = UseMutationOptions<
   Maybe<SharedLiveMedia>,
   UseDeleteSharedLiveMediaError,
@@ -23,21 +22,25 @@ export const useDeleteSharedLiveMedia = (
     UseDeleteSharedLiveMediaError,
     UseDeleteSharedLiveMediaData
   >(
-    (sharedLiveMediaId) =>
+    ({ videoId, sharedLiveMediaId }) =>
       deleteOne({
-        name: 'sharedlivemedias',
+        name: `videos/${videoId}/sharedlivemedias`,
         id: sharedLiveMediaId,
       }),
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(
+          `videos/${variables.videoId}/sharedlivemedias`,
+        );
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(
+          `videos/${variables.videoId}/sharedlivemedias`,
+        );
         if (options?.onError) {
           options.onError(error, variables, context);
         }

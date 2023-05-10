@@ -78,7 +78,10 @@ describe('<SharedLiveMediaModalWrapper />', () => {
       mockedSharedLiveMedia,
       jest.fn(),
     ]);
-    fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 204);
+    fetchMock.delete(
+      `/api/videos/${mockedSharedLiveMedia.video}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      204,
+    );
     const mockRemoveResource = jest.fn();
     useSharedLiveMedia.getState().removeResource = mockRemoveResource;
 
@@ -96,7 +99,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+        `/api/videos/${mockedSharedLiveMedia.video}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -117,7 +120,10 @@ describe('<SharedLiveMediaModalWrapper />', () => {
       mockedSharedLiveMedia,
       jest.fn(),
     ]);
-    fetchMock.delete(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
+    fetchMock.delete(
+      `/api/videos/${mockedSharedLiveMedia.video}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      500,
+    );
     const mockRemoveResource = jest.fn();
     useSharedLiveMedia.getState().removeResource = mockRemoveResource;
 
@@ -135,7 +141,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
-        `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+        `/api/videos/${mockedSharedLiveMedia.video}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
       ),
     );
     expect(fetchMock.lastCall()![1]).toEqual({
