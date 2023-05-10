@@ -27,6 +27,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Wrong usage of reduce index in xapiVideo mergeSegments
 - Allow to delete a video with an active shared live media
 - Fix a closing/reopening bug on modals
+- Allow to delete in cascade classroom recording
 
 ## [4.0.0] - 2023-05-02
 

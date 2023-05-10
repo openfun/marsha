@@ -251,8 +251,8 @@ class ClassroomRecording(BaseModel):
         related_name="recordings",
         verbose_name=_("classroom recording"),
         help_text=_("classroom to which this recording belongs"),
-        # don't allow hard deleting a classroom if it still contains a recording
-        on_delete=models.PROTECT,
+        # Delete all records belonging to this classroom
+        on_delete=models.CASCADE,
     )
 
     record_id = models.CharField(
