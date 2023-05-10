@@ -60,9 +60,15 @@ export const SharedLiveMediaItem = ({
     >
       {isTeacher &&
         (sharedLiveMedia.show_download ? (
-          <AllowedDownloadButton sharedLiveMediaId={sharedLiveMedia.id} />
+          <AllowedDownloadButton
+            videoId={sharedLiveMedia.video}
+            sharedLiveMediaId={sharedLiveMedia.id}
+          />
         ) : (
-          <DisallowedDownloadButton sharedLiveMediaId={sharedLiveMedia.id} />
+          <DisallowedDownloadButton
+            videoId={sharedLiveMedia.video}
+            sharedLiveMediaId={sharedLiveMedia.id}
+          />
         ))}
 
       {isTeacher && (

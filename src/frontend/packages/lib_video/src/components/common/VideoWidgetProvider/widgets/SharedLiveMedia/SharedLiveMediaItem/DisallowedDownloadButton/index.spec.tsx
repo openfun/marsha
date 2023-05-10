@@ -32,13 +32,19 @@ describe('<DisallowedDownloadButton />', () => {
       video: videoId,
     });
 
-    fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, {
-      ...mockedSharedLiveMedia,
-      show_download: true,
-    });
+    fetchMock.patch(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      {
+        ...mockedSharedLiveMedia,
+        show_download: true,
+      },
+    );
 
     render(
-      <DisallowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+      <DisallowedDownloadButton
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={videoId}
+      />,
     );
 
     const disallowedDownloadButton = screen.getByRole('button', {
@@ -49,7 +55,7 @@ describe('<DisallowedDownloadButton />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -72,10 +78,16 @@ describe('<DisallowedDownloadButton />', () => {
       video: videoId,
     });
 
-    fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
+    fetchMock.patch(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      500,
+    );
 
     render(
-      <DisallowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+      <DisallowedDownloadButton
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={videoId}
+      />,
     );
 
     const disallowedDownloadButton = screen.getByRole('button', {
@@ -86,7 +98,7 @@ describe('<DisallowedDownloadButton />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
