@@ -1,4 +1,4 @@
-import { Button, Text } from 'grommet';
+import { Button, Heading, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
@@ -26,34 +26,65 @@ const messages = defineMessages({
   },
   title: {
     defaultMessage: 'DANGER ZONE',
-    description: 'Title of the widget used for deleting the video.',
+    description: 'Title of the widget used for deleting the resource.',
     id: 'components.DeleteVideo.title',
   },
-  confirmDeleteTitle: {
-    defaultMessage: 'Confirm delete',
+  confirmDeleteVideoTitle: {
+    defaultMessage: 'Confirm delete video',
     description: 'Title of the widget used for confirmation.',
-    id: 'components.DeleteVideoConfirm.title',
+    id: 'components.DeleteVideo.confirmDeleteVideoTitle',
   },
-  confirmDeleteText: {
+  confirmDeleteLiveTitle: {
+    defaultMessage: 'Confirm delete webinar',
+    description: 'Title of the widget used for confirmation.',
+    id: 'components.DeleteVideo.confirmDeleteLiveTitle',
+  },
+  confirmDeleteVideoText: {
     defaultMessage:
-      'Are you sure you want to delete this resource ? This action is irreversible.',
+      'Are you sure you want to delete this video ? This action is irreversible.',
     description: 'Text of the widget used for confirmation.',
-    id: 'components.DeleteVideoConfirm.text',
+    id: 'components.DeleteVideo.confirmDeleteVideoText',
+  },
+  confirmDeleteLiveText: {
+    defaultMessage:
+      'Are you sure you want to delete this webinar ? This action is irreversible.',
+    description: 'Text of the widget used for confirmation.',
+    id: 'components.DeleteVideo.confirmDeleteLiveText',
   },
   deleteButtonText: {
     defaultMessage: 'Delete',
     description: 'Text of the delete button.',
-    id: 'components.DeleteVideoButton.text',
+    id: 'components.DeleteVideo.deleteButtonText',
   },
   videoDeleteSuccess: {
-    defaultMessage: 'Resource successfully deleted',
+    defaultMessage: 'Video successfully deleted',
     description: 'Text of the delete confirmation toast.',
-    id: 'components.deleteVideoSuccess.text',
+    id: 'components.DeleteVideo.videoDeleteSuccess',
+  },
+  liveDeleteSuccess: {
+    defaultMessage: 'Live successfully deleted',
+    description: 'Text of the delete confirmation toast.',
+    id: 'components.DeleteVideo.liveDeleteSuccess',
   },
   videoDeleteError: {
-    defaultMessage: 'Failed to delete the resource',
-    description: 'ext of the delete error toast..',
-    id: 'components.videoDeleteError.text',
+    defaultMessage: 'Failed to delete the video',
+    description: 'Text of the delete error toast..',
+    id: 'components.DeleteVideo.videoDeleteError',
+  },
+  liveDeleteError: {
+    defaultMessage: 'Failed to delete the webinar',
+    description: 'Text of the delete error toast..',
+    id: 'components.DeleteVideo.liveDeleteError',
+  },
+  videoDeleteModalTitle: {
+    defaultMessage: 'Delete video',
+    description: 'Title of the delete modal.',
+    id: 'components.DeleteVideoButton.videoDeleteModalTitle',
+  },
+  liveDeleteModalTitle: {
+    defaultMessage: 'Delete webinar',
+    description: 'Title of the delete modal.',
+    id: 'components.DeleteVideoButton.liveDeleteModalTitle',
   },
 });
 
@@ -73,16 +104,26 @@ export const DeleteVideo = () => {
   const video = useCurrentVideo();
   const deleteVideo = useDeleteVideo({
     onSuccess: () => {
-      toast.success(intl.formatMessage(messages.videoDeleteSuccess), {
-        position: 'bottom-center',
-      });
+      toast.success(
+        video.is_live
+          ? intl.formatMessage(messages.liveDeleteSuccess)
+          : intl.formatMessage(messages.videoDeleteSuccess),
+        {
+          position: 'bottom-center',
+        },
+      );
       history.goBack();
     },
     onError: (err: unknown) => {
       report(err);
-      toast.error(intl.formatMessage(messages.videoDeleteError), {
-        position: 'bottom-center',
-      });
+      toast.error(
+        video.is_live
+          ? intl.formatMessage(messages.liveDeleteError)
+          : intl.formatMessage(messages.videoDeleteError),
+        {
+          position: 'bottom-center',
+        },
+      );
     },
   });
 
@@ -97,11 +138,26 @@ export const DeleteVideo = () => {
       title={intl.formatMessage(messages.title)}
     >
       <Modal controlMethods={modalActions}>
+        <Heading
+          size="3"
+          alignSelf="center"
+          margin={{ top: '0', bottom: 'small' }}
+        >
+          {video.is_live
+            ? intl.formatMessage(messages.liveDeleteModalTitle)
+            : intl.formatMessage(messages.videoDeleteModalTitle)}
+        </Heading>
         <Text margin={{ top: 'small' }}>
-          {intl.formatMessage(messages.confirmDeleteText)}
+          {video.is_live
+            ? intl.formatMessage(messages.confirmDeleteLiveText)
+            : intl.formatMessage(messages.confirmDeleteVideoText)}
         </Text>
         <ModalButton
-          label={intl.formatMessage(messages.confirmDeleteTitle)}
+          label={
+            video.is_live
+              ? intl.formatMessage(messages.confirmDeleteLiveTitle)
+              : intl.formatMessage(messages.confirmDeleteVideoTitle)
+          }
           onClickCancel={() => modalActions.current?.close()}
           onClickSubmit={() => deleteVideo.mutate(video.id)}
           style={ButtonLoaderStyle.DESTRUCTIVE}

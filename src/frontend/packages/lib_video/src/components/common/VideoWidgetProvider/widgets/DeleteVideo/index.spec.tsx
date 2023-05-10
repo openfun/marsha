@@ -3,6 +3,7 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
+  liveMockFactory,
   useCurrentResourceContext,
   useJwt,
   videoMockFactory,
@@ -110,7 +111,7 @@ describe('<DeleteVideo />', () => {
     userEvent.click(deleteButton);
     expect(
       screen.getByText(
-        'Are you sure you want to delete this resource ? This action is irreversible.',
+        'Are you sure you want to delete this video ? This action is irreversible.',
       ),
     ).toBeInTheDocument();
   });
@@ -140,13 +141,46 @@ describe('<DeleteVideo />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm delete',
+      name: 'Confirm delete video',
     });
     userEvent.click(confirmDeleteButton);
 
     const successMessage = await screen.findByText(
-      'Resource successfully deleted',
+      'Video successfully deleted',
     );
+    expect(successMessage).toBeInTheDocument();
+  });
+
+  it('successfully deletes a webinar', async () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: true,
+        permissions: {
+          can_access_dashboard: true,
+          can_update: true,
+        },
+      },
+    ] as any);
+    const mockedLive = liveMockFactory();
+    fetchMock.delete(`/api/videos/${mockedLive.id}/`, 204);
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <DeleteVideo />
+        </InfoWidgetModalProvider>,
+        mockedLive,
+      ),
+    );
+
+    const deleteButton = screen.getByRole('button', { name: 'Delete' });
+    userEvent.click(deleteButton);
+
+    const confirmDeleteButton = screen.getByRole('button', {
+      name: 'Confirm delete webinar',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    const successMessage = await screen.findByText('Live successfully deleted');
     expect(successMessage).toBeInTheDocument();
   });
 
@@ -175,13 +209,11 @@ describe('<DeleteVideo />', () => {
     userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
-      name: 'Confirm delete',
+      name: 'Confirm delete video',
     });
     userEvent.click(confirmDeleteButton);
 
-    const errorMessage = await screen.findByText(
-      'Failed to delete the resource',
-    );
+    const errorMessage = await screen.findByText('Failed to delete the video');
     expect(errorMessage).toBeInTheDocument();
   });
 });
