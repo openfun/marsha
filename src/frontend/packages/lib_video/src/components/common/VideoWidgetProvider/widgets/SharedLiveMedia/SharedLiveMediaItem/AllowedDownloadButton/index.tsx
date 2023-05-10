@@ -28,27 +28,36 @@ const messages = defineMessages({
 });
 
 interface AllowedDownloadButtonProps {
+  videoId: SharedLiveMedia['video'];
   sharedLiveMediaId: SharedLiveMedia['id'];
 }
 
 export const AllowedDownloadButton = ({
+  videoId,
   sharedLiveMediaId,
 }: AllowedDownloadButtonProps) => {
   const intl = useIntl();
 
-  const sharedLiveMediaMutation = useUpdateSharedLiveMedia(sharedLiveMediaId, {
-    onSuccess: () => {
-      toast.success(intl.formatMessage(messages.updateSharedLiveMediaSucces), {
-        position: 'bottom-center',
-      });
+  const sharedLiveMediaMutation = useUpdateSharedLiveMedia(
+    videoId,
+    sharedLiveMediaId,
+    {
+      onSuccess: () => {
+        toast.success(
+          intl.formatMessage(messages.updateSharedLiveMediaSucces),
+          {
+            position: 'bottom-center',
+          },
+        );
+      },
+      onError: (err: unknown) => {
+        report(err);
+        toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
+          position: 'bottom-center',
+        });
+      },
     },
-    onError: (err: unknown) => {
-      report(err);
-      toast.error(intl.formatMessage(messages.updateSharedLiveMediaFail), {
-        position: 'bottom-center',
-      });
-    },
-  });
+  );
 
   return (
     <Button

@@ -45,12 +45,12 @@ describe('useUpdateSharedLiveMedia', () => {
   it('updates the resource', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory();
     fetchMock.patch(
-      `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
       sharedLiveMedia,
     );
 
     const { result, waitFor } = renderHook(
-      () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
+      () => useUpdateSharedLiveMedia(sharedLiveMedia.video, sharedLiveMedia.id),
       {
         wrapper: Wrapper,
       },
@@ -61,7 +61,7 @@ describe('useUpdateSharedLiveMedia', () => {
     await waitFor(() => result.current.isSuccess);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -79,10 +79,13 @@ describe('useUpdateSharedLiveMedia', () => {
 
   it('fails to update the resource', async () => {
     const sharedLiveMedia = sharedLiveMediaMockFactory();
-    fetchMock.patch(`/api/sharedlivemedias/${sharedLiveMedia.id}/`, 400);
+    fetchMock.patch(
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
+      400,
+    );
 
     const { result, waitFor } = renderHook(
-      () => useUpdateSharedLiveMedia(sharedLiveMedia.id),
+      () => useUpdateSharedLiveMedia(sharedLiveMedia.video, sharedLiveMedia.id),
       {
         wrapper: Wrapper,
       },
@@ -93,7 +96,7 @@ describe('useUpdateSharedLiveMedia', () => {
     await waitFor(() => result.current.isError);
 
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${sharedLiveMedia.id}/`,
+      `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {

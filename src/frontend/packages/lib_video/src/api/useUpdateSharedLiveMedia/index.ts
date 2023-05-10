@@ -14,6 +14,7 @@ type UseUpdateSharedLiveMediaOptions = UseMutationOptions<
   UseUpdateSharedLiveMediaData
 >;
 export const useUpdateSharedLiveMedia = (
+  videoId: string,
   id: string,
   options?: UseUpdateSharedLiveMediaOptions,
 ) => {
@@ -25,20 +26,20 @@ export const useUpdateSharedLiveMedia = (
   >(
     (updatedSharedLiveMedia) =>
       updateOne({
-        name: 'sharedlivemedias',
+        name: `videos/${videoId}/sharedlivemedias`,
         id,
         object: updatedSharedLiveMedia,
       }),
     {
       ...options,
       onSuccess: (data, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(`videos/${videoId}/sharedlivemedias`);
         if (options?.onSuccess) {
           options.onSuccess(data, variables, context);
         }
       },
       onError: (error, variables, context) => {
-        queryClient.invalidateQueries('sharedlivemedias');
+        queryClient.invalidateQueries(`videos/${videoId}/sharedlivemedias`);
         if (options?.onError) {
           options.onError(error, variables, context);
         }

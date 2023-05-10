@@ -32,13 +32,19 @@ describe('<AllowedDownloadButton />', () => {
       video: videoId,
     });
 
-    fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, {
-      ...mockedSharedLiveMedia,
-      show_download: false,
-    });
+    fetchMock.patch(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      {
+        ...mockedSharedLiveMedia,
+        show_download: false,
+      },
+    );
 
     render(
-      <AllowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+      <AllowedDownloadButton
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={videoId}
+      />,
     );
 
     const allowedDownloadButton = screen.getByRole('button', {
@@ -49,7 +55,7 @@ describe('<AllowedDownloadButton />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
@@ -72,10 +78,16 @@ describe('<AllowedDownloadButton />', () => {
       video: videoId,
     });
 
-    fetchMock.patch(`/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`, 500);
+    fetchMock.patch(
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      500,
+    );
 
     render(
-      <AllowedDownloadButton sharedLiveMediaId={mockedSharedLiveMedia.id} />,
+      <AllowedDownloadButton
+        sharedLiveMediaId={mockedSharedLiveMedia.id}
+        videoId={videoId}
+      />,
     );
 
     const allowedDownloadButton = screen.getByRole('button');
@@ -84,7 +96,7 @@ describe('<AllowedDownloadButton />', () => {
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
-      `/api/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
+      `/api/videos/${videoId}/sharedlivemedias/${mockedSharedLiveMedia.id}/`,
     );
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
