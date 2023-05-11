@@ -1,3 +1,4 @@
+import { act } from '@testing-library/react';
 import faker from 'faker';
 import {
   sharedLiveMediaMockFactory,
@@ -7,7 +8,6 @@ import {
   useVideo,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -119,10 +119,12 @@ describe('<UpdateCurrentSharedLiveMediaPage />', () => {
       imageUrl: `https://example.com/sharedLiveMedia/${sharedLiveMedia.id}/1`,
     });
 
-    useVideo.getState().setId3Video({
-      active_shared_live_media: { id: sharedLiveMedia.id },
-      active_shared_live_media_page: 2,
-      live_state: liveState.RUNNING,
+    act(() => {
+      useVideo.getState().setId3Video({
+        active_shared_live_media: { id: sharedLiveMedia.id },
+        active_shared_live_media_page: 2,
+        live_state: liveState.RUNNING,
+      });
     });
 
     // it simulates an update of the video object
