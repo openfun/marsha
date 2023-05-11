@@ -10,6 +10,15 @@ jest.mock('./Read/ClassRooms', () => ({
   ),
 }));
 
+jest.mock('./Create/ClassRoomCreate', () => ({
+  __esModule: true,
+  default: () => (
+    <div>
+      <p>My ClassRoomCreate</p>
+    </div>
+  ),
+}));
+
 jest.mock('./Update/ClassRoomUpdate', () => ({
   __esModule: true,
   default: () => (
@@ -30,10 +39,7 @@ describe('<ClassRoomRouter/>', () => {
         history: ['/my-contents/classroom?playlist=test-playlist-id'],
       },
     });
-    expect(screen.getByText('Classrooms')).toBeInTheDocument();
-    expect(
-      screen.getByRole('button', { name: 'Create Classroom' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/My ClassRoomCreate/i)).toBeInTheDocument();
     expect(
       screen.getByText(/My ClassroomsRead test-playlist-id/i),
     ).toBeInTheDocument();
@@ -43,23 +49,15 @@ describe('<ClassRoomRouter/>', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
-    expect(
-      screen.queryByRole('button', { name: 'Create Classroom' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/My ClassRoomCreate/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My ClassroomsRead/i)).not.toBeInTheDocument();
   });
 
-  test('render create classroom', async () => {
+  test('render create classroom', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/create'] },
     });
-    expect(screen.getByText('Classrooms')).toBeInTheDocument();
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Create Classroom',
-        level: 2,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/My ClassRoomCreate/i)).toBeInTheDocument();
     expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
   });
 

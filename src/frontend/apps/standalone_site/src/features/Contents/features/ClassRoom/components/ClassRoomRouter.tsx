@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
-import { routes } from 'routes';
+import { routes } from 'routes/routes';
 
 import ClassRoomCreate from './Create/ClassRoomCreate';
 import ClassRooms from './Read/ClassRooms';

@@ -11,6 +11,11 @@ import { setLogger } from 'react-query';
 
 import { PlaylistForm } from './PlaylistForm';
 
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
+
 setLogger({
   log: console.log,
   warn: console.warn,
