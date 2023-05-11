@@ -22,7 +22,6 @@ from marsha.core.factories import (
     OrganizationFactory,
     PlaylistAccessFactory,
     PlaylistFactory,
-    SharedLiveMediaFactory,
     SignTrackFactory,
     TimedTextTrackFactory,
     UserFactory,
@@ -492,13 +491,3 @@ class DeletionTestCase(TestCase):
             ),
             user=user,
         )
-
-    def test_shared_live_media_deletion(self):
-        """An active shared live media should not be deleted."""
-        shared_live_media = SharedLiveMediaFactory()
-        shared_live_media.video.active_shared_live_media = shared_live_media
-        shared_live_media.video.save()
-        with self.assertRaises(ProtectedError):
-            shared_live_media.delete(force_policy=HARD_DELETE)
-        self.assertIsVisible(shared_live_media)
-        self.assertIsVisible(shared_live_media.video)

@@ -189,3 +189,32 @@ class VideoDestroyAPITest(TestCase):
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
         )
         self.assertEqual(response.status_code, 403)
+
+    def test_api_video_delete_with_active_shared_live_media(self):
+        """
+        Deleting a video with an active shared live media is allowed
+        """
+        user = factories.UserFactory()
+        playlist = factories.PlaylistFactory()
+        factories.PlaylistAccessFactory(
+            role=models.INSTRUCTOR, playlist=playlist, user=user
+        )
+        video = factories.VideoFactory(playlist=playlist)
+        shared_live_media = factories.SharedLiveMediaFactory(video=video)
+        video.active_shared_live_media = shared_live_media
+        video.active_shared_live_media_page = 1
+        video.save()
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        self.assertEqual(models.Video.objects.count(), 1)
+        self.assertEqual(models.SharedLiveMedia.objects.count(), 1)
+
+        response = self.client.delete(
+            f"/api/videos/{video.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(models.Video.objects.count(), 0)
+        self.assertEqual(models.SharedLiveMedia.objects.count(), 0)
+        self.assertEqual(response.status_code, 204)
