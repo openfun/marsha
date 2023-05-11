@@ -25,6 +25,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Wrong usage of reduce index in xapiVideo mergeSegments
+- Allow to delete a video with an active shared live media
 
 ## [4.0.0] - 2023-05-02
 

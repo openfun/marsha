@@ -113,7 +113,7 @@ class Video(BaseFile):
         "SharedLiveMedia",
         blank=True,
         null=True,
-        on_delete=models.PROTECT,
+        on_delete=models.SET_NULL,
         related_name="active_video",
         verbose_name=_("Video"),
     )
