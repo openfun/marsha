@@ -94,6 +94,8 @@ describe('<LicenseManager />', () => {
     // Set by default with an All rights reserved license
     const mockedVideo = videoMockFactory();
 
+    fetchMock.mock(`/api/videos/${mockedVideo.id}/`, 200, { method: 'PATCH' });
+
     render(
       wrapInVideo(
         <InfoWidgetModalProvider value={null}>
