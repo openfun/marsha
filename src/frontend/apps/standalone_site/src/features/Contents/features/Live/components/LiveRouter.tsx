@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
-import { routes } from 'routes';
+import { routes } from 'routes/routes';
 
 import LiveCreate from './Create/LiveCreate';
 import Lives from './Read/Lives';

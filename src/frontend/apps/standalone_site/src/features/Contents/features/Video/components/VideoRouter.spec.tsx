@@ -10,6 +10,15 @@ jest.mock('./Read/Videos', () => ({
   ),
 }));
 
+jest.mock('./Create/VideoCreate', () => ({
+  __esModule: true,
+  default: () => (
+    <div>
+      <p>My VideoCreate</p>
+    </div>
+  ),
+}));
+
 jest.mock('./Update/VideoUpdate', () => ({
   __esModule: true,
   default: () => (
@@ -30,9 +39,7 @@ describe('<VideoRouter/>', () => {
         history: ['/my-contents/videos?playlist=test-playlist-id'],
       },
     });
-    expect(
-      screen.getByRole('button', { name: 'Create Video' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText(/My VideoCreate/i)).toBeInTheDocument();
     expect(
       screen.getByText('My VideosRead test-playlist-id'),
     ).toBeInTheDocument();
@@ -42,22 +49,16 @@ describe('<VideoRouter/>', () => {
     render(<VideoRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
-    expect(
-      screen.queryByRole('button', { name: 'Create Video' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/My VideoCreate/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My VideosRead/i)).not.toBeInTheDocument();
   });
 
-  test('render create video', async () => {
+  test('render create video', () => {
     render(<VideoRouter />, {
       routerOptions: { history: ['/my-contents/videos/create'] },
     });
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Create Video',
-        level: 2,
-      }),
-    ).toBeInTheDocument();
+
+    expect(screen.getByText(/My VideoCreate/i)).toBeInTheDocument();
     expect(screen.getByText(/My VideosRead/i)).toBeInTheDocument();
   });
 
