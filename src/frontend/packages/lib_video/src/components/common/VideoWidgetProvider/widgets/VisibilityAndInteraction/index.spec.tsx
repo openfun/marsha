@@ -55,13 +55,24 @@ describe('<VisibilityAndInteraction />', () => {
     expect(visibilityToggleButton).toBeChecked();
     screen.getByText('Make the video publicly available');
 
-    screen.getByText('https://localhost/videos/'.concat(mockedVideo.id));
-    screen.getByRole('button', {
-      name: 'Public link:',
-    });
-    screen.getByRole('button', {
-      name: 'Iframe integration:',
-    });
+    expect(
+      screen.getByText(`https://localhost/videos/${mockedVideo.id}`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Public link:',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'Iframe integration:',
+      }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'LTI link:',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('clicks on the toggle button to make the video publicly available, and copy the public url in clipboard', async () => {
@@ -92,10 +103,15 @@ describe('<VisibilityAndInteraction />', () => {
       screen.queryByRole('button', {
         name: 'Public link:',
       }),
-    ).toBe(null);
-    expect(
-      screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
     ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText(`https://localhost/videos/${mockedVideo.id}`),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('button', {
+        name: 'LTI link:',
+      }),
+    ).toBeInTheDocument();
 
     userEvent.click(visibilityToggleButton);
 
@@ -129,7 +145,41 @@ describe('<VisibilityAndInteraction />', () => {
       name: 'Public link:',
     });
     expect(copyButtonReRendered).not.toBeDisabled();
-    screen.getByText('https://localhost/videos/'.concat(mockedVideo.id));
+    expect(
+      screen.getByText(`https://localhost/videos/${mockedVideo.id}`),
+    ).toBeInTheDocument();
+    expect(document.execCommand).toHaveBeenCalledTimes(0);
+
+    userEvent.click(copyButtonReRendered);
+
+    await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
+    expect(document.execCommand).toHaveBeenCalledWith('copy');
+    await screen.findByText('Url copied in clipboard !');
+  });
+
+  it('checks the lti link and copy the code in clipboard', async () => {
+    const mockedVideo = videoMockFactory({
+      is_public: false,
+    });
+
+    render(
+      wrapInVideo(
+        <InfoWidgetModalProvider value={null}>
+          <VisibilityAndInteraction />
+        </InfoWidgetModalProvider>,
+        mockedVideo,
+      ),
+    );
+
+    const copyButtonReRendered = screen.getByRole('button', {
+      name: 'LTI link:',
+    });
+    expect(copyButtonReRendered).not.toBeDisabled();
+
+    expect(
+      screen.getByText(`https://localhost/lti/videos/${mockedVideo.id}`),
+    ).toBeInTheDocument();
+
     expect(document.execCommand).toHaveBeenCalledTimes(0);
 
     userEvent.click(copyButtonReRendered);
@@ -230,7 +280,7 @@ describe('<VisibilityAndInteraction />', () => {
     });
     expect(visibilityToggleButton).toBeChecked();
     expect(
-      screen.getByText('https://localhost/videos/'.concat(mockedVideo.id)),
+      screen.getByText(`https://localhost/videos/${mockedVideo.id}`),
     ).toBeInTheDocument();
     const copyButton = screen.getByRole('button', {
       name: 'Public link:',
@@ -267,7 +317,7 @@ describe('<VisibilityAndInteraction />', () => {
 
     await waitFor(() =>
       expect(
-        screen.queryByText('https://localhost/videos/'.concat(mockedVideo.id)),
+        screen.queryByText(`https://localhost/videos/${mockedVideo.id}`),
       ).not.toBeInTheDocument(),
     );
     expect(
