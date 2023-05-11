@@ -10,6 +10,24 @@ jest.mock('./Read/Lives', () => ({
   ),
 }));
 
+jest.mock('./Create/LiveCreate', () => ({
+  __esModule: true,
+  default: () => (
+    <div>
+      <p>My WebinarCreate</p>
+    </div>
+  ),
+}));
+
+jest.mock('./Update/LiveUpdate', () => ({
+  __esModule: true,
+  default: () => (
+    <div>
+      <p>My WebinarUpdate</p>
+    </div>
+  ),
+}));
+
 describe('<LiveRouter/>', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -22,24 +40,17 @@ describe('<LiveRouter/>', () => {
       },
     });
 
-    expect(
-      screen.getByRole('button', { name: 'Create Webinar' }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('My WebinarCreate')).toBeInTheDocument();
     expect(
       screen.getByText('My Lives Read test-playlist-id'),
     ).toBeInTheDocument();
   });
 
-  test('render create live', async () => {
+  test('render create live', () => {
     render(<LiveRouter />, {
       routerOptions: { history: ['/my-contents/webinars/create'] },
     });
-    expect(
-      await screen.findByRole('heading', {
-        name: 'Create Webinar',
-        level: 2,
-      }),
-    ).toBeInTheDocument();
+    expect(screen.getByText('My WebinarCreate')).toBeInTheDocument();
     expect(screen.getByText(/My Lives Read/i)).toBeInTheDocument();
   });
 
@@ -48,9 +59,17 @@ describe('<LiveRouter/>', () => {
       routerOptions: { history: ['/some/bad/route'] },
     });
 
-    expect(
-      screen.queryByRole('button', { name: 'Create Webinar' }),
-    ).not.toBeInTheDocument();
+    expect(screen.queryByText(/My WebinarCreate/i)).not.toBeInTheDocument();
     expect(screen.queryByText('My Lives Read')).not.toBeInTheDocument();
+  });
+
+  test('render update video', () => {
+    render(<LiveRouter />, {
+      routerOptions: {
+        history: ['/my-contents/webinars/123456/'],
+      },
+    });
+
+    expect(screen.getByText('My WebinarUpdate')).toBeInTheDocument();
   });
 });
