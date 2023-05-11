@@ -14,8 +14,10 @@ import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 
 const messages = defineMessages({
   info: {
-    defaultMessage:
-      'This widget allows you to make the video publicly available.',
+    defaultMessage: `This widget allows you to make the video publicly available and provides several links depending on what you want to do: 
+      - Public link: Invite people to participate to this content as guest without any account. 
+      - IFrame Integration: Code to integrate it without control access.
+      - LTI link: Special link used to add this video in your favorite LMS and have it in a course activity.`,
     description: 'Info of the widget used for setting live features.',
     id: 'components.VisibilityAndInteraction.info',
   },
@@ -43,11 +45,11 @@ const messages = defineMessages({
       'A message informing the user on the action of the copy-in-clipboard button.',
     id: 'components.VisibilityAndInteraction.iFrameCopyButtonTitle',
   },
-  publicLinkCopySuccess: {
+  urlCopySuccess: {
     defaultMessage: 'Url copied in clipboard !',
     description:
       "Message displayed when video's publicly available url is copied in clipboard.",
-    id: 'components.VisibilityAndInteraction.publicLinkCopySuccess',
+    id: 'components.VisibilityAndInteraction.urlCopySuccess',
   },
   iFrameCopySuccess: {
     defaultMessage: 'Code copied in clipboard !',
@@ -64,6 +66,11 @@ const messages = defineMessages({
     defaultMessage: 'Video update has failed !',
     description: 'Message displayed when video update has failed.',
     id: 'component.VisibilityAndInteraction.updateVideoFail',
+  },
+  ltiLinkLabel: {
+    defaultMessage: 'LTI link:',
+    description: 'Label for LTI video link.',
+    id: 'component.VisibilityAndInteraction.ltiLinkLabel',
   },
 });
 
@@ -100,14 +107,12 @@ export const VisibilityAndInteraction = () => {
     });
   };
 
-  const publicVideoUrl = window.location.origin
-    .concat('/videos/')
-    .concat(video.id);
-
+  const publicVideoUrl = `${window.location.origin}/videos/${video.id}`;
   const parametersWebinar = video.is_live
     ? 'microphone *; camera *; midi *; display-capture *; '
     : '';
   const iframeCode = `<iframe src="${publicVideoUrl}" allowfullscreen="true" allow="${parametersWebinar}encrypted-media *; autoplay *; fullscreen *" />`;
+  const ltiLink = `${window.location.origin}/lti/videos/${video.id}`;
 
   return (
     <FoldableItem
@@ -128,7 +133,7 @@ export const VisibilityAndInteraction = () => {
             text={publicVideoUrl}
             title={intl.formatMessage(messages.publicLinkCopyButtonTitle)}
             onSuccess={() => {
-              toast(intl.formatMessage(messages.publicLinkCopySuccess), {
+              toast(intl.formatMessage(messages.urlCopySuccess), {
                 icon: '📋',
                 position: 'bottom-center',
               });
@@ -168,6 +173,24 @@ export const VisibilityAndInteraction = () => {
             />
           </Box>
         </Collapsible>
+        <Box>
+          <CopyClipboard
+            copyId={`ltiLink-${video.id}`}
+            text={ltiLink}
+            title={intl.formatMessage(messages.ltiLinkLabel)}
+            withLabel={true}
+            onSuccess={() => {
+              toast(intl.formatMessage(messages.urlCopySuccess), {
+                icon: '📋',
+              });
+            }}
+            onError={(event) => {
+              toast.error(event.text, {
+                position: 'bottom-center',
+              });
+            }}
+          />
+        </Box>
       </Box>
     </FoldableItem>
   );

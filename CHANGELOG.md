@@ -12,6 +12,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - bulk delete for video and classroom
 - iframe code to copy to clipboard in dashboard VOD and webinar (#2221)
+- lti code to copy to clipboard in dashboard VOD and webinar (#2227)
 
 ### Changed
 

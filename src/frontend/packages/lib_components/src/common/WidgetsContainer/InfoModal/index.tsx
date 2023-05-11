@@ -93,7 +93,11 @@ export const InfoModal = ({
           <StyledTitleText color="blue-active" size="1.125rem" truncate>
             {title}
           </StyledTitleText>
-          <StyledText color="blue-active" size="0.875rem">
+          <StyledText
+            color="blue-active"
+            size="0.875rem"
+            style={{ whiteSpace: 'pre-line' }}
+          >
             {text}
           </StyledText>
         </Box>
