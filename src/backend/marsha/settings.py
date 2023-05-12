@@ -617,6 +617,8 @@ class Base(Configuration):
         ),
     }
 
+    SOCIAL_AUTH_LOGIN_ERROR_URL = values.Value("/login?error=social-auth")
+
     # SOCIAL_AUTH_SAML_FER_SP_ENTITY_ID should be a URL that includes a domain name you own
     SOCIAL_AUTH_SAML_FER_SP_ENTITY_ID = values.Value()
     # SOCIAL_AUTH_SAML_FER_SP_PUBLIC_CERT X.509 certificate for the key pair that
