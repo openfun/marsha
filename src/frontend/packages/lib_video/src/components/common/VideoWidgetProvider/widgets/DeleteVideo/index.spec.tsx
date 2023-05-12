@@ -180,7 +180,9 @@ describe('<DeleteVideo />', () => {
     });
     userEvent.click(confirmDeleteButton);
 
-    const successMessage = await screen.findByText('Live successfully deleted');
+    const successMessage = await screen.findByText(
+      'Webinar successfully deleted',
+    );
     expect(successMessage).toBeInTheDocument();
   });
 
