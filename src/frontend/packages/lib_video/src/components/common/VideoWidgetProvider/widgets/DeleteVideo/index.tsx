@@ -62,7 +62,7 @@ const messages = defineMessages({
     id: 'components.DeleteVideo.videoDeleteSuccess',
   },
   liveDeleteSuccess: {
-    defaultMessage: 'Live successfully deleted',
+    defaultMessage: 'Webinar successfully deleted',
     description: 'Text of the delete confirmation toast.',
     id: 'components.DeleteVideo.liveDeleteSuccess',
   },
