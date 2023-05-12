@@ -5,10 +5,10 @@ import { render } from 'lib-tests';
 
 import { RenaterAuthenticator } from './RenaterAuthenticator';
 
-const replace = jest.fn();
+const assign = jest.fn();
 Object.defineProperty(window, 'location', {
   value: {
-    replace,
+    assign,
   },
 });
 
@@ -145,7 +145,7 @@ describe('<RenaterAuthenticator />', () => {
     );
 
     await waitFor(() =>
-      expect(replace).toHaveBeenCalledWith('http://local-accepting-idp'),
+      expect(assign).toHaveBeenCalledWith('http://local-accepting-idp'),
     );
   });
 
