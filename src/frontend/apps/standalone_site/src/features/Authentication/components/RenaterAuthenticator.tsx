@@ -1,7 +1,8 @@
 import { Box, FormField, Image, Text, ThemeContext } from 'grommet';
-import { useResponsive, Select } from 'lib-components';
-import { useEffect, useState } from 'react';
+import { useResponsive, Select, ClosingCard } from 'lib-components';
+import { Fragment, useEffect, useState, useMemo } from 'react';
 import { useIntl, defineMessages } from 'react-intl';
+import { useLocation } from 'react-router-dom';
 
 import {
   getRenaterFerIdpList,
@@ -19,6 +20,11 @@ const messages = defineMessages({
     description: 'Label for select box for Renater login',
     id: 'features.Authentication.components.RenaterAuthenticator.labelSelectRenater',
   },
+  errorMessage: {
+    defaultMessage: 'Sorry, a problem occured. Please try again.',
+    description: 'Label when error query string Renater login',
+    id: 'features.Authentication.components.RenaterAuthenticator.errorMessage',
+  },
 });
 
 export const RenaterAuthenticator = () => {
@@ -26,6 +32,13 @@ export const RenaterAuthenticator = () => {
   const [optionsDefault, setOptionsDefault] = useState<RenaterSamlFerIdp[]>([]);
   const [options, setOptions] = useState<RenaterSamlFerIdp[]>([]);
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
+
+  const { search } = useLocation();
+  const [errorQuery, messageErrorQuery] = useMemo(() => {
+    const searchParam = new URLSearchParams(search);
+    return [searchParam.get('error'), searchParam.get('message')];
+  }, [search]);
+  const ERRORTOKEN = 'social-auth';
 
   const renderOption = (option: RenaterSamlFerIdp) => (
     <Box align="center" direction="row">
@@ -71,6 +84,25 @@ export const RenaterAuthenticator = () => {
       }}
       round="xsmall"
     >
+      {errorQuery && errorQuery === ERRORTOKEN && (
+        <ClosingCard
+          message={
+            <Fragment>
+              <Text size="small" weight="bold">
+                {intl.formatMessage(messages.errorMessage)}
+              </Text>
+              {messageErrorQuery && (
+                <Text size="small" weight="bold" margin={{ top: '2px' }}>
+                  {messageErrorQuery}
+                </Text>
+              )}
+            </Fragment>
+          }
+          background="status-error"
+          width="full"
+          margin={{ bottom: 'small' }}
+        />
+      )}
       <Box
         margin={{ bottom: 'medium' }}
         direction="row"
