@@ -15,6 +15,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - lti code to copy to clipboard in dashboard VOD and webinar (#2227)
 - Standalone website:
   - Integrate footer (#2205)
+  - Display an error when renater auth fails(#2240)
 - Configure SOCIAL_AUTH_LOGIN_ERROR_URL setting
 - Convert classroom recording to vod
 

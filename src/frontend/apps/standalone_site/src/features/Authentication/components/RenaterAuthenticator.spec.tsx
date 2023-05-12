@@ -148,4 +148,45 @@ describe('<RenaterAuthenticator />', () => {
       expect(replace).toHaveBeenCalledWith('http://local-accepting-idp'),
     );
   });
+
+  it('checks error card is displayed correctly', async () => {
+    render(<RenaterAuthenticator />, {
+      routerOptions: {
+        history: ['/?error=social-auth'],
+      },
+    });
+
+    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+
+    expect(
+      await screen.findByRole('option', { name: /Fake IdP 1/i }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Sorry, a problem occured. Please try again./i),
+    ).toBeInTheDocument();
+  });
+
+  it('checks error card message is displayed correctly', async () => {
+    render(<RenaterAuthenticator />, {
+      routerOptions: {
+        history: [
+          '/?error=social-auth&message=Authentication%20failed%3A%20SAML%20login%20failed',
+        ],
+      },
+    });
+
+    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+
+    expect(
+      await screen.findByRole('option', { name: /Fake IdP 1/i }),
+    ).toBeInTheDocument();
+
+    expect(
+      screen.getByText(/Sorry, a problem occured. Please try again./i),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(/Authentication failed: SAML login failed/i),
+    ).toBeInTheDocument();
+  });
 });
