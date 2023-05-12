@@ -129,7 +129,7 @@ export const RenaterAuthenticator = () => {
             size="medium"
             options={options}
             onChange={({ option }: { option: RenaterSamlFerIdp }) => {
-              window.location.replace(option.login_url);
+              window.location.assign(option.login_url);
             }}
             onSearch={(text) => {
               // The line below escapes regular expression special characters:
