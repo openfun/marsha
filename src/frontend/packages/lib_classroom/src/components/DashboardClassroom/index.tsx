@@ -1,10 +1,10 @@
 import { Box } from 'grommet';
 import {
   AnonymousUser,
-  Loader,
   useCurrentResourceContext,
   useCurrentUser,
   Classroom,
+  Spinner,
 } from 'lib-components';
 import React, {
   useState,
@@ -144,9 +144,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
     case 'idle':
     case 'loading':
     default:
-      content = (
-        <Loader aria-label={intl.formatMessage(messages.loadingClassroom)} />
-      );
+      content = <Spinner />;
       break;
 
     case 'error':
@@ -213,7 +211,7 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
 
   return (
     <Box align="center">
-      <Suspense fallback={<Loader />}>{content}</Suspense>
+      <Suspense fallback={<Spinner />}>{content}</Suspense>
     </Box>
   );
 };

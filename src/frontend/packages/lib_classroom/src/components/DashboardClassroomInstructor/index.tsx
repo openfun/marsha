@@ -1,6 +1,6 @@
 import { Box, Button, Grid } from 'grommet';
 import { Breakpoints, Nullable } from 'lib-common';
-import { Loader, Classroom, useResponsive } from 'lib-components';
+import { Classroom, useResponsive, Spinner } from 'lib-components';
 import React, { lazy, Suspense } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -78,7 +78,7 @@ const DashboardClassroomInstructor = ({
 
   if (!classroom.started) {
     return (
-      <Suspense fallback={<Loader />}>
+      <Suspense fallback={<Spinner />}>
         <DashboardClassroomForm classroom={classroom} />
       </Suspense>
     );
@@ -148,7 +148,7 @@ const DashboardClassroomInstructor = ({
   }
 
   return (
-    <Suspense fallback={<Loader />}>
+    <Suspense fallback={<Spinner />}>
       <DashboardClassroomLayout left={left} right={right} />
     </Suspense>
   );
