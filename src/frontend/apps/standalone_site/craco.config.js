@@ -35,6 +35,7 @@ module.exports = {
         ...appModuleNameMapper['website'],
         'react-markdown': '<rootDir>/src/__mock__/react-markdown.tsx',
       },
+      setupFilesAfterEnv: ['<rootDir>/testSetup.js'],
     },
   },
 };
