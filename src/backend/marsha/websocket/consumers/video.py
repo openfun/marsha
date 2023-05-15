@@ -175,8 +175,12 @@ class VideoConsumer(AsyncJsonWebsocketConsumer):
         # Leave room group
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
         if not await self._is_admin():
-            live_session = await self.retrieve_live_session()
-            await self.reset_live_session(live_session)
+            try:
+                live_session = await self.retrieve_live_session()
+                await self.reset_live_session(live_session)
+            except ConnectionRefusedError:
+                # No live session found, nothing to do
+                pass
 
     async def video_updated(self, event):
         """Listener for the video_updated event."""

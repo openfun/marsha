@@ -655,6 +655,28 @@ class VideoConsumerTest(TransactionTestCase):
 
         await communicator.disconnect()
 
+    async def test_video_delete_channel_layer(self):
+        """Disconnecting from a deleted video should not raise."""
+
+        playlist_access = await self._get_playlist_access(
+            playlist=self.some_video.playlist,
+            role=ADMINISTRATOR,
+        )
+
+        jwt_token = await self._get_user_access_token(user=playlist_access.user)
+
+        communicator = WebsocketCommunicator(
+            base_application,
+            f"ws/video/{self.some_video.id}/?jwt={jwt_token}",
+        )
+
+        connected, _subprotocol = await communicator.connect()
+        self.assertTrue(connected)
+
+        await sync_to_async(self.some_video.delete)()
+
+        await communicator.disconnect()
+
     async def test_thumbnail_update_channel_layer(self):
         """Message received on thumbnail_updated event."""
         thumbnail = await self._get_thumbnail()
