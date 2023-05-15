@@ -52,8 +52,6 @@ jest.mock('lib-classroom', () => ({
   ),
 }));
 
-const mockGetDecodedJwt = jest.fn();
-
 describe('<ClassRoomUpdate />', () => {
   beforeEach(() => {
     mockUseParams.mockReturnValue({
@@ -61,7 +59,7 @@ describe('<ClassRoomUpdate />', () => {
     });
     useJwt.setState({
       jwt: 'some token',
-      getDecodedJwt: mockGetDecodedJwt,
+      internalDecodedJwt: ltiPublicTokenMockFactory(),
     });
   });
 
@@ -73,7 +71,6 @@ describe('<ClassRoomUpdate />', () => {
     mockUseParams.mockReturnValue({
       classroomId: '',
     });
-    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
 
     render(<ClassRoomUpdate />);
 
@@ -83,8 +80,6 @@ describe('<ClassRoomUpdate />', () => {
   });
 
   test('render small screen', () => {
-    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
-
     render(
       <ResponsiveContext.Provider value="small">
         <ClassRoomUpdate />
@@ -102,8 +97,6 @@ describe('<ClassRoomUpdate />', () => {
   });
 
   test('ressource if viewer invited', () => {
-    mockGetDecodedJwt.mockReturnValue(ltiPublicTokenMockFactory());
-
     render(<ClassRoomUpdate />);
 
     expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
@@ -112,12 +105,13 @@ describe('<ClassRoomUpdate />', () => {
   });
 
   test('ressource if moderator invited', () => {
-    mockGetDecodedJwt.mockReturnValue(
-      ltiPublicTokenMockFactory(
+    useJwt.setState({
+      jwt: 'some token',
+      internalDecodedJwt: ltiPublicTokenMockFactory(
         {},
         { can_access_dashboard: true, can_update: true },
       ),
-    );
+    });
 
     render(<ClassRoomUpdate />);
 
