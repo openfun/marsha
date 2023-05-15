@@ -22,7 +22,6 @@ const whoAmIResponse200 = {
 describe('<useAuthenticator />', () => {
   beforeEach(() => {
     localStorage.removeItem('jwt-storage');
-
     useJwt.getState().resetJwt();
     useCurrentUser.setState({
       currentUser: null,
@@ -57,11 +56,16 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isAuthenticated).toBeTruthy());
     expect(result.current.isLoading).toBeFalsy();
+    expect(useCurrentUser.getState().currentUser).toEqual(whoAmIResponse200);
+    expect(useJwt.getState().internalDecodedJwt).toEqual(
+      'some-internalDecodedJwt',
+    );
   });
 
   it('checks an AnonymousUser', async () => {
     useJwt.setState({
       jwt: 'some-jwt',
+      internalDecodedJwt: 'some-internalDecodedJwt 1234' as any,
     });
     fetchMock.get('/api/users/whoami/', 401);
 
@@ -75,6 +79,10 @@ describe('<useAuthenticator />', () => {
 
     expect(result.current.isLoading).toBeTruthy();
     await waitFor(() => expect(useJwt.getState().jwt).toBeUndefined());
+    await waitFor(() =>
+      expect(useJwt.getState().internalDecodedJwt).toBeUndefined(),
+    );
+    expect(result.current.isLoading).toBeFalsy();
   });
 
   it('checks successfully the authentication with the token parameter', async () => {
@@ -94,6 +102,9 @@ describe('<useAuthenticator />', () => {
     });
 
     await waitFor(() => expect(result.current.isAuthenticated).toBeTruthy());
+    expect(useJwt.getState().internalDecodedJwt).toEqual(
+      'some-internalDecodedJwt',
+    );
   });
 
   it('checks unsuccessfully the authentication with the token parameter', async () => {

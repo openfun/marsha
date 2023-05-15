@@ -24,7 +24,7 @@ export const useAuthenticator = () => {
     currentUser: state.currentUser,
     setCurrentUser: state.setCurrentUser,
   }));
-  const { jwt, setJwt, setRefreshJwt, resetJwt } = useJwt();
+  const { jwt, setJwt, setRefreshJwt, resetJwt, setDecodedJwt } = useJwt();
 
   const [isAuthenticated, setIsAuthenticated] = useState(
     currentUser !== AnonymousUser.ANONYMOUS && !!currentUser,
@@ -89,12 +89,21 @@ export const useAuthenticator = () => {
         return;
       }
 
+      setDecodedJwt(jwt);
       setCurrentUser(_currentUser);
       setIsAuthenticated(true);
       setIsLoading(false);
     };
     fetchUserData();
-  }, [currentUser, jwt, resetJwt, setCurrentUser, history, inviteId]);
+  }, [
+    currentUser,
+    jwt,
+    resetJwt,
+    setCurrentUser,
+    setDecodedJwt,
+    history,
+    inviteId,
+  ]);
 
   return {
     isAuthenticated,

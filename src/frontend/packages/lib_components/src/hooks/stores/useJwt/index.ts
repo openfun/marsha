@@ -62,6 +62,7 @@ export const persistentStore = create<JwtStoreInterface>((set, get) => ({
   },
   setJwt: (jwt) => {
     jwt ? localStorage.setItem(JWT_KEY, jwt) : localStorage.removeItem(JWT_KEY);
+    get().setDecodedJwt(jwt);
     set((state) => ({ ...state, jwt }));
   },
   getRefreshJwt() {
