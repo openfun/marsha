@@ -16,7 +16,14 @@ const TestJwtComponent = ({
 };
 
 describe('useJwt', () => {
-  beforeEach(() => {});
+  beforeEach(() => {
+    useJwt.setState({
+      setDecodedJwt: () =>
+        useJwt.setState({
+          internalDecodedJwt: 'some-internalDecodedJwt' as any,
+        }),
+    });
+  });
 
   afterEach(() => {
     act(() => {

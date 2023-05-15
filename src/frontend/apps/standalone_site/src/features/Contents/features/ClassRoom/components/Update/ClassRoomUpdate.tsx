@@ -4,14 +4,13 @@ import {
   AppConfig,
   AppConfigProvider,
   CurrentResourceContextProvider,
-  DecodedJwtPermission,
   isDecodedJwtLTI,
   isDecodedJwtWeb,
   ResourceContext,
   useJwt,
   useResponsive,
 } from 'lib-components';
-import { useEffect, useState } from 'react';
+import { useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -75,24 +74,28 @@ const ClassRoomUpdate = () => {
   const { classroomId } = useParams<{ classroomId?: string }>();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
-  const decodedJwt = useJwt((state) => state.getDecodedJwt);
+  const internalDecodedJwt = useJwt((state) => state.internalDecodedJwt);
+  const permissions = useMemo(() => {
+    const permissions = {
+      can_access_dashboard: false,
+      can_update: false,
+    };
 
-  const [permissions, setPermissions] = useState<DecodedJwtPermission>({
-    can_access_dashboard: false,
-    can_update: false,
-  });
+    if (!internalDecodedJwt) {
+      return permissions;
+    }
 
-  useEffect(() => {
-    const jwt = decodedJwt();
-    if (isDecodedJwtLTI(jwt)) {
-      setPermissions(jwt.permissions);
-    } else if (isDecodedJwtWeb(jwt)) {
-      setPermissions({
+    if (isDecodedJwtLTI(internalDecodedJwt)) {
+      return internalDecodedJwt.permissions;
+    } else if (isDecodedJwtWeb(internalDecodedJwt)) {
+      return {
         can_access_dashboard: true,
         can_update: true,
-      });
+      };
     }
-  }, [decodedJwt]);
+
+    return permissions;
+  }, [internalDecodedJwt]);
 
   if (!classroomId) {
     return null;
