@@ -3,12 +3,10 @@
 from django.test import TestCase
 
 from social_django.utils import load_strategy
-from social_edu_federation.backends.saml_fer import FERSAMLAuth
-from social_edu_federation.testing.certificates import get_dev_certificate
 
 from marsha.account.models import IdpOrganizationAssociation
 from marsha.account.social_pipeline.organization import create_organization_from_saml
-from marsha.account.tests.utils import override_saml_fer_settings
+from marsha.account.tests.utils import MockedFERSAMLAuth, override_saml_fer_settings
 from marsha.core.factories import OrganizationFactory, UserFactory
 from marsha.core.models import (
     INSTRUCTOR,
@@ -17,38 +15,6 @@ from marsha.core.models import (
     Organization,
     OrganizationAccess,
 )
-
-
-class MockedFERSAMLAuth(FERSAMLAuth):
-    """Mocking the base SAML backend to ease testing."""
-
-    def __init__(
-        self,
-        *args,
-        idp_name="marsha-local-idp",
-        entity_id="http://marcha.local/idp/",
-        organization_display_name="Marsha organization",
-        **kwargs
-    ):
-        super().__init__(*args, **kwargs)
-        self.idp_name = idp_name
-        self.entity_id = entity_id
-        self.organization_display_name = organization_display_name
-
-    def get_idp(self, idp_name):
-        """Always return our simple Identity Provider configuration."""
-        return self.edu_fed_saml_idp_class.create_from_config_dict(
-            name=self.idp_name,
-            entityId=self.entity_id,
-            singleSignOnService={"url": "http://marcha.local/idp/sso/"},  # unused
-            singleLogoutService={"url": "http://marcha.local/idp/slo/"},  # unused
-            x509cert=get_dev_certificate(),  # unused
-            edu_fed_data={
-                "display_name": "Marsha local IdP",  # unused
-                "organization_name": "Marsha organization name",  # unused
-                "organization_display_name": self.organization_display_name,
-            },
-        )
 
 
 @override_saml_fer_settings()
