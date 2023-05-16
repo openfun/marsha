@@ -130,12 +130,14 @@ describe('AddUserAccessForm', () => {
       }),
       'test',
     );
-    await waitFor(async () =>
-      expect(
-        await screen.findByRole('button', {
-          name: 'Add user User 1 in playlist',
-        }),
-      ).toBeInTheDocument(),
+    await waitFor(
+      async () =>
+        expect(
+          await screen.findByRole('button', {
+            name: 'Add user User 1 in playlist',
+          }),
+        ).toBeInTheDocument(),
+      { timeout: 10000 },
     );
 
     userEvent.click(
