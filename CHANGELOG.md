@@ -18,6 +18,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - Display an error when renater auth fails(#2240)
 - Configure SOCIAL_AUTH_LOGIN_ERROR_URL setting
 - Convert classroom recording to vod
+- Add a middleware to deal with social auth exception
 
 ### Changed
 
