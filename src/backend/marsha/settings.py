@@ -150,7 +150,7 @@ class Base(Configuration):
         "django.middleware.clickjacking.XFrameOptionsMiddleware",
         "dockerflow.django.middleware.DockerflowMiddleware",
         "waffle.middleware.WaffleMiddleware",
-        "social_django.middleware.SocialAuthExceptionMiddleware",
+        "marsha.account.middleware.SocialAuthExceptionMiddleware",
     ]
 
     ROOT_URLCONF = "marsha.urls"
