@@ -1,8 +1,12 @@
-import { getDefaultNormalizer, screen } from '@testing-library/react';
+import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { classroomMockFactory } from 'lib-classroom';
 import { playlistMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
+
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import ClassRoom from './ClassRoomItem';
 
@@ -19,7 +23,7 @@ const classroom = {
 };
 
 describe('<ClassRoom />', () => {
-  test('renders ClassRoom', () => {
+  it('renders ClassRoom', () => {
     render(<ClassRoom classroom={classroomMockFactory(classroom)} />);
 
     expect(screen.getByText(/Welcome!/i)).toBeInTheDocument();
@@ -34,5 +38,34 @@ describe('<ClassRoom />', () => {
     ).toBeInTheDocument();
     expect(screen.getByText('01:23:00')).toBeInTheDocument();
     expect(screen.getByText('Nouvelle Playlist title')).toBeInTheDocument();
+  });
+
+  it('successfully selects and unselects a classroom', async () => {
+    const classroom = classroomMockFactory({
+      id: '4321',
+      title: 'New classroom title',
+      description: 'New video description',
+      playlist: {
+        ...classroomMockFactory().playlist,
+        title: 'New playlist title',
+      },
+    });
+    render(<ClassRoom classroom={classroom} />);
+
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: [],
+      }),
+    );
+
+    const videoCardCheckBox = screen.getByRole('checkbox');
+    expect(videoCardCheckBox).not.toBeChecked();
+
+    const card = screen.getByRole('contentinfo');
+    userEvent.click(card);
+    await waitFor(() => expect(videoCardCheckBox).toBeChecked());
+    userEvent.click(card);
+    await waitFor(() => expect(videoCardCheckBox).not.toBeChecked());
   });
 });
