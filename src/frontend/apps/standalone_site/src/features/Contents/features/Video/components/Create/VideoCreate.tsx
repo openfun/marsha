@@ -15,7 +15,8 @@ import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import VideoCreateForm from './VideoCreateForm';
 
@@ -80,9 +81,9 @@ const VideoCreate = () => {
   const intl = useIntl();
   const history = useHistory();
 
-  const videoRoute = routes.CONTENTS.subRoutes.VIDEO;
+  const videoRoute = routes.VIDEO;
   const videoPath = videoRoute.path;
-  const videoCreatePath = videoRoute.subRoutes?.CREATE?.path || '';
+  const videoCreatePath = videoRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
     switchSelectEnabled,
