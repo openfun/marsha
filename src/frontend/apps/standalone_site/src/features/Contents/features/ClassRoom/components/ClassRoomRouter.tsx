@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { Route, Switch, useLocation } from 'react-router-dom';
 
-import { routes } from 'routes/routes';
+import routes from '../routes';
 
 import ClassRoomCreate from './Create/ClassRoomCreate';
 import ClassRooms from './Read/ClassRooms';
@@ -12,10 +12,10 @@ const ClassRoomRouter = () => {
   const searchParams = new URLSearchParams(search);
   const playlistId = searchParams.get('playlist') || '';
 
-  const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
-  const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
-  const classroomUpdatePath = classroomRoute.subRoutes?.UPDATE?.path || '';
-  const classroomInvitePath = classroomRoute.subRoutes?.INVITE?.path || '';
+  const classroomRoute = routes.CLASSROOM;
+  const classroomCreatePath = classroomRoute.subRoutes.CREATE.path;
+  const classroomUpdatePath = classroomRoute.subRoutes.UPDATE.path;
+  const classroomInvitePath = classroomRoute.subRoutes.INVITE.path;
 
   return (
     <Route path={classroomRoute.path}>

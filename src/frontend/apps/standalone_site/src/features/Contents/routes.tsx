@@ -1,23 +1,12 @@
 import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
-import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { LoadSVG } from 'components/Assets';
 import { RouteRequired } from 'routes';
 
 import { useContentFeatures } from './store/contentsStore';
 
 const messages = defineMessages({
-  menuContentsClassroomLabel: {
-    defaultMessage: 'Classrooms',
-    description: 'Label for the Classroom link in the content navigation menu',
-    id: 'routes.routes.menuContentsClassroomsLabel',
-  },
-  menuContentsClassroomCreateLabel: {
-    defaultMessage: 'Create Classroom',
-    description: 'Label for the Create Classrooms link',
-    id: 'routes.routes.menuContentsClassroomsCreateLabel',
-  },
   menuContentsLessonsLabel: {
     defaultMessage: 'Lessons',
     description: 'Label for the Lessons link in the content navigation menu',
@@ -45,29 +34,6 @@ const routes: Record<'CONTENTS', RouteRequired> = {
     ),
     subRoutes: {
       ...routesContent,
-      CLASSROOM: {
-        label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
-        path: `/my-contents/classroom`,
-        menuIcon: (
-          <LoadSVG
-            Icon={ClassroomsIcon}
-            aria-label="svg-menu-my-contents-classroom"
-            title={messages.menuContentsClassroomLabel}
-          />
-        ),
-        subRoutes: {
-          CREATE: {
-            path: `/my-contents/classroom/create`,
-          },
-          UPDATE: {
-            path: `/my-contents/classroom/:classroomId`,
-          },
-          INVITE: {
-            path: `/my-contents/classroom/:classroomId/invite/:inviteId`,
-          },
-        },
-        isNavStrict: true,
-      },
       // LESSON: {
       //   label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
       //   path: `/my-contents/lessons`,

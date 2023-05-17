@@ -12,6 +12,7 @@ import {
   classRoomContents,
   ClassRoomRouter,
   ClassRoomShuffle,
+  routesClassRoom,
 } from './ClassRoom';
 import { liveContents, LiveRouter, routesLive } from './Live';
 import { videoContents, VideoRouter, routesVideo } from './Video';
@@ -22,7 +23,7 @@ useContentFeatures.setState({
     <ClassRoomRouter key="classRoomRouter" />,
     <LiveRouter key="liveRouter" />,
   ],
-  featureRoutes: { ...routesVideo, ...routesLive },
+  featureRoutes: { ...routesVideo, ...routesLive, ...routesClassRoom },
   featureSamples: (playlistId) => [
     videoContents(playlistId),
     liveContents(playlistId),

@@ -8,7 +8,8 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import ClassRoomItem from './ClassRoomItem';
 
@@ -27,7 +28,7 @@ const messages = defineMessages({
 
 export const classRoomContents = (playlistId?: string) => ({
   title: messages.MyClassrooms,
-  route: routes.CONTENTS.subRoutes.CLASSROOM.path,
+  route: routes.CLASSROOM.path,
   component: (
     <ClassRooms
       withPagination={false}

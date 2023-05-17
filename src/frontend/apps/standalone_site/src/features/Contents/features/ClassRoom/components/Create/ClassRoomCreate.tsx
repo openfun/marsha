@@ -9,7 +9,8 @@ import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import ClassroomCreateForm from './ClassRoomCreateForm';
 
@@ -74,9 +75,9 @@ const ClassRoomCreate = () => {
   const intl = useIntl();
   const history = useHistory();
 
-  const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
+  const classroomRoute = routes.CLASSROOM;
   const classroomPath = classroomRoute.path;
-  const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
+  const classroomCreatePath = classroomRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
     switchSelectEnabled,
