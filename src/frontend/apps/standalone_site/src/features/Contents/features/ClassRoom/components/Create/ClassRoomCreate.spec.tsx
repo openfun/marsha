@@ -1,24 +1,199 @@
+import { useJwt } from '@lib-components/hooks';
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
+import { act } from 'react-dom/test-utils';
+
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import ClassRoomCreate from './ClassRoomCreate';
 
+jest.mock('./ClassRoomCreateForm', () => ({
+  __esModule: true,
+  default: () => <div>My ClassroomCreate Form</div>,
+}));
+
 describe('<ClassRoomCreate />', () => {
-  test('renders ClassRoomCreate', () => {
+  beforeEach(() => {
+    useJwt.setState({
+      jwt: 'json web token',
+    });
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
+    fetchMock.restore();
+  });
+
+  it('renders ClassRoomCreate', () => {
     render(<ClassRoomCreate />);
 
-    const button = screen.getByRole('button', { name: /Create Classroom/i });
-    expect(button).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: /Create Classroom/i }),
+    ).toBeInTheDocument();
     expect(
       screen.queryByRole('heading', { name: /Create Classroom/i }),
     ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Select' })).toBeInTheDocument();
+  });
 
-    userEvent.click(button);
+  it('shows classroom creation Modal', () => {
+    render(<ClassRoomCreate />);
+    const createButton = screen.getByRole('button', {
+      name: /Create Classroom/i,
+    });
+    userEvent.click(createButton);
 
     expect(
       screen.getByRole('heading', { name: /Create Classroom/i }),
     ).toBeInTheDocument();
+    expect(screen.getByText('My ClassroomCreate Form')).toBeInTheDocument();
+  });
+
+  it('switches into selection mode on select button click', () => {
+    render(<ClassRoomCreate />);
+    const selectButton = screen.getByRole('button', { name: 'Select' });
+    userEvent.click(selectButton);
+    expect(
+      screen.queryByRole('button', { name: 'Select' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Delete 0 classroom' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Delete 0 classroom' }),
+    ).toBeDisabled();
+  });
+
+  it('counts the right amount of selected items (1)', () => {
+    render(<ClassRoomCreate />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: ['id1'],
+      }),
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Select' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Delete 1 classroom' }),
+    ).toBeInTheDocument();
+  });
+
+  it('counts the right amount of selected items (3)', () => {
+    render(<ClassRoomCreate />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: ['id1', 'id2', 'id3'],
+      }),
+    );
+    expect(
+      screen.queryByRole('button', { name: 'Select' }),
+    ).not.toBeInTheDocument();
+    expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Delete 3 classrooms' }),
+    ).toBeInTheDocument();
+  });
+
+  it('opens the delete confirmation modal', () => {
+    render(<ClassRoomCreate />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: ['id1', 'id2', 'id3'],
+      }),
+    );
+    const deleteButon = screen.getByRole('button', {
+      name: 'Delete 3 classrooms',
+    });
+    userEvent.click(deleteButon);
+
+    expect(screen.getByText('Confirm delete 3 classrooms')).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        'Are you sure you want to delete 3 classrooms ? This action is irreversible.',
+      ),
+    ).toBeInTheDocument();
+  });
+
+  it('successfully deletes classrooms', async () => {
+    fetchMock.delete('/api/classrooms/', {
+      status: 204,
+      body: { ids: ['id1', 'id2'] },
+    });
+
+    render(<ClassRoomCreate />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: ['id1', 'id2'],
+      }),
+    );
+    const deleteButon = screen.getByRole('button', {
+      name: 'Delete 2 classrooms',
+    });
+    userEvent.click(deleteButon);
+
+    const confirmDeleteButton = screen.getByRole('button', {
+      name: 'Confirm delete 2 classrooms',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    expect(
+      await screen.findByText('2 classrooms successfully deleted'),
+    ).toBeInTheDocument();
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: `{"ids":["id1","id2"]}`,
+      method: 'DELETE',
+    });
+  });
+
+  it('fails to delete classrooms', async () => {
+    fetchMock.delete('/api/classrooms/', {
+      status: 400,
+      body: { ids: ['id1', 'id2'] },
+    });
+
+    render(<ClassRoomCreate />);
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: ['id1', 'id2'],
+      }),
+    );
+    const deleteButon = screen.getByRole('button', {
+      name: 'Delete 2 classrooms',
+    });
+    userEvent.click(deleteButon);
+
+    const confirmDeleteButton = screen.getByRole('button', {
+      name: 'Confirm delete 2 classrooms',
+    });
+    userEvent.click(confirmDeleteButton);
+
+    expect(
+      await screen.findByText('Failed to delete 2 classrooms'),
+    ).toBeInTheDocument();
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: `{"ids":["id1","id2"]}`,
+      method: 'DELETE',
+    });
   });
 });

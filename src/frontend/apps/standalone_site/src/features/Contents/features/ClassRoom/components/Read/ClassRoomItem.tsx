@@ -1,4 +1,4 @@
-import { Text, Box } from 'grommet';
+import { Text, Box, CheckBox } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
 import {
   ClassroomLite,
@@ -6,11 +6,12 @@ import {
   ContentCard,
   TextTruncated,
 } from 'lib-components';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import { routes } from 'routes';
 import { localDate } from 'utils/date';
 
@@ -18,9 +19,33 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   const intl = useIntl();
   const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
 
+  const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
+  const [isClassroomSelected, setIsClassroomSelected] = useState<boolean>(
+    () => selectedItems.includes(classroom.id) || false,
+  );
+
+  useEffect(() => {
+    if (!isSelectionEnabled) {
+      setIsClassroomSelected(false);
+    }
+  }, [isSelectionEnabled, setIsClassroomSelected]);
+
   return (
-    <StyledLink to={`${classroomPath}/${classroom.id}`}>
+    <StyledLink
+      to={isSelectionEnabled ? '#' : `${classroomPath}/${classroom.id}`}
+    >
       <ContentCard
+        style={
+          isClassroomSelected
+            ? {
+                boxShadow:
+                  'inset 0px 0px 0px 0px #45a3ff, #81ade6 1px 1px 1px 9px',
+              }
+            : undefined
+        }
+        onClick={() =>
+          selectItem(classroom.id, isClassroomSelected, setIsClassroomSelected)
+        }
         header={
           <Box
             width="100%"
@@ -28,7 +53,19 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
             align="center"
             justify="center"
             background="radial-gradient(ellipse at center, #8682bc 0%,#6460c3 100%);"
+            style={{ position: 'relative' }}
           >
+            <Box
+              style={{
+                position: 'absolute',
+                top: '21px',
+                left: '21px',
+                background: 'white',
+                borderRadius: '6px',
+              }}
+            >
+              {isSelectionEnabled && <CheckBox checked={isClassroomSelected} />}
+            </Box>
             <ClassroomsIcon width={70} height={70} color="white" />
             <Text
               weight="bold"
