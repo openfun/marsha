@@ -10,10 +10,11 @@ import { Fragment, useEffect, useState } from 'react';
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 const Video = ({ video }: { video: IVideo }) => {
-  const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
+  const videoPath = routes.VIDEO.path;
   const thumbnail =
     video.thumbnail?.urls?.[240] || video.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
