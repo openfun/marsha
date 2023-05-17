@@ -2,8 +2,8 @@ import { Route, Switch } from 'react-router-dom';
 
 import { Text404 } from 'components/Text';
 import { Contents } from 'features/Contents';
-import { routes } from 'routes';
 
+import routes from '../../routes';
 import { useContentFeatures } from '../../store/contentsStore';
 
 const ContentsRouter = () => {
