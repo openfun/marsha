@@ -77,7 +77,7 @@ const AnonymousRoutes = () => {
   return (
     <Switch>
       <Route
-        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path}
+        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE.path}
         exact
       >
         <MainLayout
