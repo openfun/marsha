@@ -47,7 +47,7 @@ const AppRoutes = () => {
       top: 0,
       behavior: 'smooth',
     });
-  }, [location]);
+  }, [location.pathname]);
 
   useEffect(() => {
     document.title = intl.formatMessage(messages.metaTitle);
