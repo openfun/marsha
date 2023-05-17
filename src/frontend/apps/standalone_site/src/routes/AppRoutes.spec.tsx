@@ -184,5 +184,16 @@ describe('<AppRoutes />', () => {
       ).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
     });
+
+    test('render 404', async () => {
+      render(<AppRoutes />, {
+        routerOptions: {
+          history: ['/my-404'],
+        },
+      });
+      expect(
+        await screen.findByText(/Sorry, this page does not exist./i),
+      ).toBeInTheDocument();
+    });
   });
 });

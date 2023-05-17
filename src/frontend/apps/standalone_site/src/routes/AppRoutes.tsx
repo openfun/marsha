@@ -6,6 +6,7 @@ import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
+import { Text404 } from 'components/Text';
 import { useAuthenticator } from 'features/Authentication';
 import { Footer } from 'features/Footer';
 import { Header, HeaderLight, HeaderLightLink } from 'features/Header';
@@ -164,6 +165,10 @@ const AuthenticatedRoutes = () => {
               <Suspense fallback={<ContentSpinner />}>
                 <PagesApi />
               </Suspense>
+            </Route>
+
+            <Route>
+              <Text404 />
             </Route>
           </Switch>
         </MainLayout>
