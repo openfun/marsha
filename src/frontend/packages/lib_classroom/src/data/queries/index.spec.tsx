@@ -1,6 +1,7 @@
 import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
+import { WrapperReactQuery } from 'lib-tests';
 import React from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
@@ -19,6 +20,7 @@ import {
   useClassroomDocuments,
   useUpdateClassroomDocument,
   useDeleteClassroom,
+  useDeleteClassrooms,
 } from '.';
 
 jest.mock('lib-components', () => ({
@@ -589,5 +591,70 @@ describe('queries', () => {
       expect(result.current.data).toEqual(undefined);
       expect(result.current.status).toEqual('error');
     });
+  });
+});
+
+describe('useDeleteClassrooms', () => {
+  beforeEach(() => {
+    useJwt.getState().setJwt('some token');
+    Wrapper = WrapperReactQuery;
+  });
+
+  afterEach(() => {
+    fetchMock.restore();
+    jest.resetAllMocks();
+  });
+
+  it('deletes multiples resources', async () => {
+    const classroom1 = classroomMockFactory();
+    const classroom2 = classroomMockFactory();
+
+    fetchMock.delete('/api/classrooms/', {
+      status: 204,
+      body: { ids: [classroom1.id, classroom2.id] },
+    });
+    const { result, waitFor } = renderHook(() => useDeleteClassrooms(), {
+      wrapper: Wrapper,
+    });
+    result.current.mutate({ ids: [classroom1.id, classroom2.id] });
+    await waitFor(() => result.current.isSuccess);
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer some token',
+        'Content-Type': 'application/json',
+      },
+      body: `{"ids":["${classroom1.id}","${classroom2.id}"]}`,
+      method: 'DELETE',
+    });
+    expect(result.current.data).toEqual(undefined);
+    expect(result.current.status).toEqual('success');
+  });
+
+  it('fails to delete the resources', async () => {
+    const classroom = classroomMockFactory();
+    fetchMock.delete('/api/classrooms/', {
+      status: 400,
+    });
+
+    const { result, waitFor } = renderHook(() => useDeleteClassrooms(), {
+      wrapper: Wrapper,
+    });
+    result.current.mutate({ ids: [classroom.id] });
+
+    await waitFor(() => result.current.isError);
+
+    expect(fetchMock.lastCall()![0]).toEqual(`/api/classrooms/`);
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        Authorization: 'Bearer some token',
+        'Content-Type': 'application/json',
+      },
+      body: `{"ids":["${classroom.id}"]}`,
+      method: 'DELETE',
+    });
+    expect(result.current.data).toEqual(undefined);
+    expect(result.current.status).toEqual('error');
   });
 });
