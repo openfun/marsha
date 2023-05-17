@@ -100,19 +100,22 @@ class ClassroomViewSet(
                     )
                 )
             ]
-        elif self.action in ["destroy"]:
+        elif self.action in ["destroy", "bulk_destroy"]:
             # Not available in LTI
             # For standalone site, only playlist admin or organization admin can access
             permission_classes = [
-                core_permissions.IsObjectPlaylistAdminOrInstructor
-                | core_permissions.IsObjectPlaylistOrganizationAdmin
+                core_permissions.UserIsAuthenticated
+                & (
+                    core_permissions.IsObjectPlaylistAdminOrInstructor
+                    | core_permissions.IsObjectPlaylistOrganizationAdmin
+                )
             ]
         elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
                 core_permissions.IsTokenResourceRouteObject
                 | IsClassroomPlaylistOrOrganizationAdmin
             ]
-        elif self.action in ["list", "bulk_destroy"]:
+        elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
         else:
             permission_classes = self.permission_classes

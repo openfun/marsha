@@ -138,7 +138,7 @@ class VideoViewSet(
                 | permissions.IsObjectPlaylistAdminOrInstructor
                 | permissions.IsObjectPlaylistOrganizationAdmin
             ]
-        elif self.action in ["list", "metadata", "bulk_destroy"]:
+        elif self.action in ["list", "metadata"]:
             # Anyone authenticated can list videos (results are filtered in action)
             # or access metadata
             permission_classes = [permissions.UserOrResourceIsAuthenticated]
@@ -153,12 +153,15 @@ class VideoViewSet(
                     & (permissions.IsTokenInstructor | permissions.IsTokenAdmin)
                 )
             ]
-        elif self.action in ["destroy"]:
+        elif self.action in ["destroy", "bulk_destroy"]:
             # Not available in LTI
             # For standalone site, only playlist admin or organization admin can access
             permission_classes = [
-                permissions.IsObjectPlaylistAdminOrInstructor
-                | permissions.IsObjectPlaylistOrganizationAdmin
+                permissions.IsAuthenticated
+                & (
+                    permissions.IsObjectPlaylistAdminOrInstructor
+                    | permissions.IsObjectPlaylistOrganizationAdmin
+                )
             ]
         elif self.action in ["initiate_live"]:
             permission_classes = [
