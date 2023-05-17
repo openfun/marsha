@@ -1,6 +1,7 @@
 /**
  * Init the contents feature state by loading the necessary children components:
- *  - featureRoutes: Load the routes of the children features (/my-contents/videos, /my-contents/classroom...) @see ContentsRouter
+ *  - featureRouter: Load the router of the children features (/my-contents/videos, /my-contents/classroom...) @see ContentsRouter
+ *  - featureRoutes: Load the routes and the link menu of the children features @see routes
  *  - featureSamples: Load the samples of the children features, used in the contents page and playlist page @see Contents
  *  - featureShuffles: Load the shuffles of the children features, used in the frontend page @see ContentsShuffle
  */
@@ -13,7 +14,7 @@ import {
   ClassRoomShuffle,
 } from './ClassRoom';
 import { liveContents, LiveRouter } from './Live';
-import { videoContents, VideoRouter } from './Video';
+import { videoContents, VideoRouter, routesVideo } from './Video';
 
 useContentFeatures.setState({
   featureRouter: [
@@ -21,6 +22,7 @@ useContentFeatures.setState({
     <ClassRoomRouter key="classRoomRouter" />,
     <LiveRouter key="liveRouter" />,
   ],
+  featureRoutes: { ...routesVideo },
   featureSamples: (playlistId) => [
     videoContents(playlistId),
     liveContents(playlistId),

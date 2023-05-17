@@ -8,7 +8,8 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import Video from './Video';
 
@@ -27,7 +28,7 @@ const messages = defineMessages({
 
 export const videoContents = (playlistId?: string) => ({
   title: messages.MyVideos,
-  route: routes.CONTENTS.subRoutes.VIDEO.path,
+  route: routes.VIDEO.path,
   component: (
     <Videos
       withPagination={false}

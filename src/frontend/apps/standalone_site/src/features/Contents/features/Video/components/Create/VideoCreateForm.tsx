@@ -17,7 +17,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -64,7 +65,7 @@ const VideoCreateForm = () => {
   const intl = useIntl();
   const history = useHistory();
   const { isDesktop } = useResponsive();
-  const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
+  const videoPath = routes.VIDEO.path;
   const { addUpload, uploadManagerState } = useUploadManager();
   const [video, setVideo] = useState<VideoCreate>({
     playlist: '',
