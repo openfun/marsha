@@ -33,7 +33,7 @@ describe('<LiveRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/webinars?playlist=test-playlist-id', () => {
+  it('renders route /my-contents/webinars?playlist=test-playlist-id', () => {
     render(<LiveRouter />, {
       routerOptions: {
         history: ['/my-contents/webinars?playlist=test-playlist-id'],
@@ -46,7 +46,7 @@ describe('<LiveRouter/>', () => {
     ).toBeInTheDocument();
   });
 
-  test('render create live', () => {
+  it('renders create live', () => {
     render(<LiveRouter />, {
       routerOptions: { history: ['/my-contents/webinars/create'] },
     });
@@ -54,7 +54,7 @@ describe('<LiveRouter/>', () => {
     expect(screen.getByText(/My Lives Read/i)).toBeInTheDocument();
   });
 
-  test('render live no match', () => {
+  it('renders live no match', () => {
     render(<LiveRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
@@ -63,7 +63,7 @@ describe('<LiveRouter/>', () => {
     expect(screen.queryByText('My Lives Read')).not.toBeInTheDocument();
   });
 
-  test('render update video', () => {
+  it('renders update live', () => {
     render(<LiveRouter />, {
       routerOptions: {
         history: ['/my-contents/webinars/123456/'],
