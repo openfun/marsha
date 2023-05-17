@@ -158,6 +158,9 @@ export const theme: ThemeType = {
   box: {
     extend: 'min-height: initial; min-width: initial;',
   },
+  checkBox: {
+    hover: { border: { color: 'blue-active' } },
+  },
   button: {
     default: {
       background: { color: 'white' },

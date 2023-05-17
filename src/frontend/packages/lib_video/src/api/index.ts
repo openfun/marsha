@@ -14,6 +14,7 @@ export * from './stopLive';
 export * from './updateLiveParticipants';
 export * from './updateLiveSession';
 export * from './useCreateVideo';
+export * from './useDeleteVideos';
 export * from './useDeleteSharedLiveMedia';
 export * from './useDeleteThumbnail';
 export * from './useDeleteTimedTextTrack';

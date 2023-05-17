@@ -20,6 +20,7 @@ import {
   metadata,
   FetchResponseError,
   deleteOne,
+  bulkDelete,
 } from 'lib-components';
 import {
   useMutation,
@@ -400,4 +401,37 @@ export const useClassroomDocumentMetadata = (
     staleTime: Infinity,
     ...queryConfig,
   });
+};
+
+type UseDeleteClassroomsData = { ids: string[] };
+type UseDeleteClassroomsError = FetchResponseError<UseDeleteClassroomsData>;
+type UseDeleteClassroomsOptions = UseMutationOptions<
+  void,
+  UseDeleteClassroomsError,
+  UseDeleteClassroomsData
+>;
+export const useDeleteClassrooms = (options?: UseDeleteClassroomsOptions) => {
+  const queryClient = useQueryClient();
+  return useMutation<void, UseDeleteClassroomsError, UseDeleteClassroomsData>(
+    (classroomIds) =>
+      bulkDelete({
+        name: 'classrooms',
+        objects: classroomIds,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries('classrooms');
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries('classrooms');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
 };
