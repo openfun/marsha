@@ -2,12 +2,10 @@ import { defineMessages, FormattedMessage } from 'react-intl';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
-import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
-import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
-import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { LoadSVG } from 'components/Assets';
+import routesContent from 'features/Contents/routes';
 
 const messages = defineMessages({
   menuHomePageLabel: {
@@ -36,36 +34,6 @@ const messages = defineMessages({
       'Label for the My Organizations link in the main navigation menu',
     id: 'routes.routes.menuMyOrganizationsLabel',
   },
-  menuMyContentsLabel: {
-    defaultMessage: 'My Contents',
-    description: 'Label for the MyContents link in the main navigation menu',
-    id: 'routes.routes.menuMyContentsLabel',
-  },
-  menuContentsVideosLabel: {
-    defaultMessage: 'Videos',
-    description: 'Label for the video link in the content navigation menu',
-    id: 'routes.routes.menuContentsVideosLabel',
-  },
-  menuContentsLivesLabel: {
-    defaultMessage: 'Webinars',
-    description: 'Label for the webinars link in the content navigation menu',
-    id: 'routes.routes.menuContentsLivesLabel',
-  },
-  menuContentsClassroomLabel: {
-    defaultMessage: 'Classrooms',
-    description: 'Label for the Classroom link in the content navigation menu',
-    id: 'routes.routes.menuContentsClassroomsLabel',
-  },
-  menuContentsClassroomCreateLabel: {
-    defaultMessage: 'Create Classroom',
-    description: 'Label for the Create Classrooms link',
-    id: 'routes.routes.menuContentsClassroomsCreateLabel',
-  },
-  menuContentsLessonsLabel: {
-    defaultMessage: 'Lessons',
-    description: 'Label for the Lessons link in the content navigation menu',
-    id: 'routes.routes.menuContentsLessonsLabel',
-  },
 });
 
 enum ERouteNames {
@@ -81,12 +49,6 @@ enum ERouteNames {
   PASSWORD_RESET = 'PASSWORD_RESET',
   PASSWORD_RESET_CONFIRM = 'PASSWORD_RESET_CONFIRM',
 }
-enum EMyContentsSubRouteNames {
-  VIDEO = 'VIDEO',
-  LIVE = 'LIVE',
-  CLASSROOM = 'CLASSROOM',
-  //LESSON = 'LESSON',
-}
 enum EMyProfileSubRoutesNames {
   PROFILE_SETTINGS = 'PROFILE_SETTINGS',
 }
@@ -97,37 +59,24 @@ enum EPlaylistSubRouteNames {
 
 type BasicRoute = Omit<Route, 'subRoutes'>;
 
-export interface Route {
+export interface Route<TSubRoute extends string = string> {
   label?: React.ReactNode;
   path: string;
   alias?: string[];
   menuIcon?: React.ReactNode;
   isNavStrict?: boolean; // if true, all the subroutes will be active in the menu
-  subRoutes?: { [key in string]: SubRoute };
+  subRoutes?: Record<TSubRoute, SubRoute>;
 }
+export type RouteRequired<T extends string = string> = BasicRoute &
+  Pick<Required<Route<T>>, 'subRoutes'>;
 type SubRoute = Route & { hideSubRoute?: boolean };
 
 type Routes = {
-  [key in ERouteNames as Exclude<
-    ERouteNames,
-    'CONTENTS' | 'PROFILE' | 'PLAYLIST'
-  >]: BasicRoute;
+  [key in ERouteNames]: BasicRoute;
 } & {
-  [ERouteNames.CONTENTS]: Route & {
-    subRoutes: {
-      [key in EMyContentsSubRouteNames]: SubRoute;
-    };
-  };
-  [ERouteNames.PROFILE]: Route & {
-    subRoutes: {
-      [key in EMyProfileSubRoutesNames]: SubRoute;
-    };
-  };
-  [ERouteNames.PLAYLIST]: Route & {
-    subRoutes: {
-      [key in EPlaylistSubRouteNames]: SubRoute;
-    };
-  };
+  [ERouteNames.CONTENTS]: RouteRequired;
+  [ERouteNames.PROFILE]: RouteRequired<EMyProfileSubRoutesNames>;
+  [ERouteNames.PLAYLIST]: RouteRequired<EPlaylistSubRouteNames>;
 };
 
 export const routes: Routes = {
@@ -210,92 +159,5 @@ export const routes: Routes = {
       />
     ),
   },
-  CONTENTS: {
-    label: <FormattedMessage {...messages.menuMyContentsLabel} />,
-    path: `/my-contents`,
-    menuIcon: (
-      <LoadSVG
-        Icon={VueListIcon}
-        aria-label="svg-menu-my-contents"
-        title={messages.menuMyContentsLabel}
-      />
-    ),
-    subRoutes: {
-      VIDEO: {
-        label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
-        path: `/my-contents/videos`,
-        menuIcon: (
-          <LoadSVG
-            Icon={VideoIcon}
-            aria-label="svg-menu-my-contents-videos"
-            title={messages.menuContentsVideosLabel}
-          />
-        ),
-        subRoutes: {
-          CREATE: {
-            path: `/my-contents/videos/create`,
-          },
-          UPDATE: {
-            path: `/my-contents/videos/:videoId`,
-          },
-        },
-        isNavStrict: true,
-      },
-      LIVE: {
-        label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
-        path: `/my-contents/webinars`,
-        menuIcon: (
-          <LoadSVG
-            Icon={LiveIcon}
-            aria-label="svg-menu-my-contents-live"
-            title={messages.menuContentsLivesLabel}
-          />
-        ),
-        subRoutes: {
-          CREATE: {
-            path: `/my-contents/webinars/create`,
-          },
-          UPDATE: {
-            path: `/my-contents/webinars/:liveId`,
-          },
-        },
-        isNavStrict: true,
-      },
-      CLASSROOM: {
-        label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
-        path: `/my-contents/classroom`,
-        menuIcon: (
-          <LoadSVG
-            Icon={ClassroomsIcon}
-            aria-label="svg-menu-my-contents-classroom"
-            title={messages.menuContentsClassroomLabel}
-          />
-        ),
-        subRoutes: {
-          CREATE: {
-            path: `/my-contents/classroom/create`,
-          },
-          UPDATE: {
-            path: `/my-contents/classroom/:classroomId`,
-          },
-          INVITE: {
-            path: `/my-contents/classroom/:classroomId/invite/:inviteId`,
-          },
-        },
-        isNavStrict: true,
-      },
-      // LESSON: {
-      //   label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
-      //   path: `/my-contents/lessons`,
-      //   menuIcon: (
-      //     <CheckListIcon
-      //       width={30}
-      //       height={30}
-      //       role="img"
-      //       aria-label="svg-menu-my-contents-lessons"
-      //     />
-      //   ),
-      // },
-    },
-  },
+  ...routesContent,
 };

@@ -22,6 +22,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Legale pages not accessible from url (#2266)
 - Remove old svg from the back to the front application (#1485)
 
+### Changed
+
+- Refacto routes contents website (#2253)
+
 ## [4.1.0] - 2023-05-23
 
 ### Added
