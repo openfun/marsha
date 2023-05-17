@@ -33,7 +33,7 @@ describe('<VideoRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/videos?playlist=test-playlist-id', () => {
+  it('renders route /my-contents/videos?playlist=test-playlist-id', () => {
     render(<VideoRouter />, {
       routerOptions: {
         history: ['/my-contents/videos?playlist=test-playlist-id'],
@@ -45,7 +45,7 @@ describe('<VideoRouter/>', () => {
     ).toBeInTheDocument();
   });
 
-  test('render video no match', () => {
+  it('renders video no match', () => {
     render(<VideoRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
@@ -53,7 +53,7 @@ describe('<VideoRouter/>', () => {
     expect(screen.queryByText(/My VideosRead/i)).not.toBeInTheDocument();
   });
 
-  test('render create video', () => {
+  it('renders create video', () => {
     render(<VideoRouter />, {
       routerOptions: { history: ['/my-contents/videos/create'] },
     });
@@ -62,7 +62,7 @@ describe('<VideoRouter/>', () => {
     expect(screen.getByText(/My VideosRead/i)).toBeInTheDocument();
   });
 
-  test('render update video', () => {
+  it('renders update video', () => {
     render(<VideoRouter />, {
       routerOptions: {
         history: ['/my-contents/videos/123456/'],

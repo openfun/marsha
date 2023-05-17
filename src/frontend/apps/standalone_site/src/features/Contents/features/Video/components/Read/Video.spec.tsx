@@ -1,11 +1,15 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { thumbnailMockFactory, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
+import { act } from 'react-dom/test-utils';
+
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import Video from './Video';
 
 describe('<Video />', () => {
-  test('renders Video', () => {
+  it('renders Video', () => {
     const video = videoMockFactory({
       id: '4321',
       title: 'New video title',
@@ -33,7 +37,7 @@ describe('<Video />', () => {
     );
   });
 
-  test('renders thumbnail', () => {
+  it('renders thumbnail', () => {
     const video = videoMockFactory({
       id: '4321',
       title: 'New video title',
@@ -59,5 +63,34 @@ describe('<Video />', () => {
     ).toHaveStyle(
       `background: url(https://example.com/240) no-repeat center / cover`,
     );
+  });
+
+  it('successfully selects and unselects a video', async () => {
+    const video = videoMockFactory({
+      id: '4321',
+      title: 'New video title',
+      description: 'New video description',
+      playlist: {
+        ...videoMockFactory().playlist,
+        title: 'New playlist title',
+      },
+    });
+    render(<Video video={video} />);
+
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: [],
+      }),
+    );
+
+    const videoCardCheckBox = screen.getByRole('checkbox');
+    expect(videoCardCheckBox).not.toBeChecked();
+
+    const card = screen.getByRole('contentinfo');
+    userEvent.click(card);
+    await waitFor(() => expect(videoCardCheckBox).toBeChecked());
+    userEvent.click(card);
+    await waitFor(() => expect(videoCardCheckBox).not.toBeChecked());
   });
 });

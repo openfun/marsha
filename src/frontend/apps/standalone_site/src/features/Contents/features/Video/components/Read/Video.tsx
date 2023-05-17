@@ -1,24 +1,46 @@
-import { Text, Box } from 'grommet';
+import { Text, Box, CheckBox } from 'grommet';
 import {
   ContentCard,
   StyledLink,
   TextTruncated,
   Video as IVideo,
 } from 'lib-components';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 
 import { ReactComponent as VideoIcon } from 'assets/svg/iko_next.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import { routes } from 'routes';
 
 const Video = ({ video }: { video: IVideo }) => {
   const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
   const thumbnail =
     video.thumbnail?.urls?.[240] || video.urls?.thumbnails?.[240];
+  const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
+  const [isVideoSelected, setIsVideoSelected] = useState<boolean>(
+    () => selectedItems.includes(video.id) || false,
+  );
+
+  useEffect(() => {
+    if (!isSelectionEnabled) {
+      setIsVideoSelected(false);
+    }
+  }, [isSelectionEnabled, setIsVideoSelected]);
 
   return (
-    <StyledLink to={`${videoPath}/${video.id}`}>
+    <StyledLink to={isSelectionEnabled ? '#' : `${videoPath}/${video.id}`}>
       <ContentCard
+        style={
+          isVideoSelected
+            ? {
+                boxShadow:
+                  'inset 0px 0px 0px 0px #45a3ff, #81ade6 1px 1px 1px 9px',
+              }
+            : undefined
+        }
+        onClick={() =>
+          selectItem(video.id, isVideoSelected, setIsVideoSelected)
+        }
         header={
           <Box
             aria-label="thumbnail"
@@ -34,8 +56,20 @@ const Video = ({ video }: { video: IVideo }) => {
                   : `radial-gradient(ellipse at center, #45a3ff 0%,#2169ff 100%)`
               }
             `}
+            style={{ position: 'relative' }}
           >
-            <VideoIcon width={80} height={80} color="white" />
+            <Box
+              style={{
+                position: 'absolute',
+                top: '21px',
+                left: '21px',
+                background: 'white',
+                borderRadius: '6px',
+              }}
+            >
+              {isSelectionEnabled && <CheckBox checked={isVideoSelected} />}
+            </Box>
+            <VideoIcon width={75} height={75} color="white" />
           </Box>
         }
         footer={
