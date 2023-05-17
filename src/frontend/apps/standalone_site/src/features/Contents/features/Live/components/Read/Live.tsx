@@ -6,7 +6,8 @@ import styled from 'styled-components';
 import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 const TextTruncated = styled(Text)`
   display: -webkit-box;
@@ -16,7 +17,7 @@ const TextTruncated = styled(Text)`
 `;
 
 const Live = ({ live }: { live: Video }) => {
-  const livePath = routes.CONTENTS.subRoutes.LIVE.path;
+  const livePath = routes.LIVE.path;
   const thumbnail = live.thumbnail?.urls?.[240] || live.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isLiveSelected, setIsLiveSelected] = useState<boolean>(

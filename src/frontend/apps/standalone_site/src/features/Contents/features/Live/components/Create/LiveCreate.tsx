@@ -9,7 +9,8 @@ import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import LiveCreateForm from './LiveCreateForm';
 
@@ -74,9 +75,9 @@ const LiveCreate = () => {
   const intl = useIntl();
   const history = useHistory();
 
-  const liveRoute = routes.CONTENTS.subRoutes.LIVE;
+  const liveRoute = routes.LIVE;
   const livePath = liveRoute.path;
-  const liveCreatePath = liveRoute.subRoutes?.CREATE?.path || '';
+  const liveCreatePath = liveRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
     switchSelectEnabled,

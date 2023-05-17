@@ -15,7 +15,8 @@ import { useQueryClient } from 'react-query';
 import { useHistory } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -58,7 +59,7 @@ const LiveCreateForm = () => {
   const history = useHistory();
   const { isDesktop } = useResponsive();
   const [isUpdatingToLive, setIsUpdatingToLive] = useState(false);
-  const livePath = routes.CONTENTS.subRoutes.LIVE.path;
+  const livePath = routes.LIVE.path;
   const [live, setLive] = useState<LiveCreate>({
     playlist: '',
     title: '',
