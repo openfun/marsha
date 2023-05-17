@@ -1,10 +1,11 @@
-import { Text, Box } from 'grommet';
+import { Text, Box, CheckBox } from 'grommet';
 import { StyledLink, Video, ContentCard } from 'lib-components';
-import { Fragment } from 'react';
+import { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 import { ReactComponent as LiveIcon } from 'assets/svg/iko_live.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import { routes } from 'routes';
 
 const TextTruncated = styled(Text)`
@@ -17,10 +18,29 @@ const TextTruncated = styled(Text)`
 const Live = ({ live }: { live: Video }) => {
   const livePath = routes.CONTENTS.subRoutes.LIVE.path;
   const thumbnail = live.thumbnail?.urls?.[240] || live.urls?.thumbnails?.[240];
+  const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
+  const [isLiveSelected, setIsLiveSelected] = useState<boolean>(
+    () => selectedItems.includes(live.id) || false,
+  );
+
+  useEffect(() => {
+    if (!isSelectionEnabled) {
+      setIsLiveSelected(false);
+    }
+  }, [isSelectionEnabled, setIsLiveSelected]);
 
   return (
-    <StyledLink to={`${livePath}/${live.id}`}>
+    <StyledLink to={isSelectionEnabled ? '#' : `${livePath}/${live.id}`}>
       <ContentCard
+        style={
+          isLiveSelected
+            ? {
+                boxShadow:
+                  'inset 0px 0px 0px 0px #45a3ff, #81ade6 1px 1px 1px 9px',
+              }
+            : undefined
+        }
+        onClick={() => selectItem(live.id, isLiveSelected, setIsLiveSelected)}
         header={
           <Box
             aria-label="thumbnail"
@@ -36,7 +56,19 @@ const Live = ({ live }: { live: Video }) => {
                   : `radial-gradient(ellipse at center, #96b6db 0%,#4c46ab 100%)`
               }
             `}
+            style={{ position: 'relative' }}
           >
+            <Box
+              style={{
+                position: 'absolute',
+                top: '21px',
+                left: '21px',
+                background: 'white',
+                borderRadius: '6px',
+              }}
+            >
+              {isSelectionEnabled && <CheckBox checked={isLiveSelected} />}
+            </Box>
             <LiveIcon width={80} height={80} color="white" />
           </Box>
         }

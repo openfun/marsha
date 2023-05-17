@@ -1,11 +1,15 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { thumbnailMockFactory, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
+import { act } from 'react-dom/test-utils';
+
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import Live from './Live';
 
 describe('<Live />', () => {
-  test('renders Live', () => {
+  it('renders Live', () => {
     const live = videoMockFactory({
       id: '4321',
       title: 'New webinar title',
@@ -33,7 +37,7 @@ describe('<Live />', () => {
     );
   });
 
-  test('renders thumbnail', () => {
+  it('renders thumbnail', () => {
     const live = videoMockFactory({
       id: '4321',
       title: 'New webinar title',
@@ -59,5 +63,35 @@ describe('<Live />', () => {
     ).toHaveStyle(
       `background: url(https://example.com/240) no-repeat center / cover`,
     );
+  });
+
+  it('successfully selects and unselects a webinar', async () => {
+    const live = videoMockFactory({
+      id: '4321',
+      title: 'New video title',
+      description: 'New video description',
+      is_live: true,
+      playlist: {
+        ...videoMockFactory().playlist,
+        title: 'New playlist title',
+      },
+    });
+    render(<Live live={live} />);
+
+    act(() =>
+      useSelectFeatures.setState({
+        isSelectionEnabled: true,
+        selectedItems: [],
+      }),
+    );
+
+    const liveCardCheckBox = screen.getByRole('checkbox');
+    expect(liveCardCheckBox).not.toBeChecked();
+
+    const card = screen.getByRole('contentinfo');
+    userEvent.click(card);
+    await waitFor(() => expect(liveCardCheckBox).toBeChecked());
+    userEvent.click(card);
+    await waitFor(() => expect(liveCardCheckBox).not.toBeChecked());
   });
 });
