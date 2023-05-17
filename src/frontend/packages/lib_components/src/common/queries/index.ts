@@ -7,3 +7,4 @@ export * from './fetchWrapper';
 export * from './fetchResponseHandler';
 export * from './metadata';
 export * from './updateOne';
+export * from './bulkDelete';
