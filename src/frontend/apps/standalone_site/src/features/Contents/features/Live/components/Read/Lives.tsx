@@ -8,7 +8,8 @@ import {
   ContentsWrapper,
   useContentPerPage,
 } from 'features/Contents/';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 import Live from './Live';
 
@@ -27,7 +28,7 @@ const messages = defineMessages({
 
 export const liveContents = (playlistId?: string) => ({
   title: messages.MyWebinars,
-  route: routes.CONTENTS.subRoutes.LIVE.path,
+  route: routes.LIVE.path,
   component: (
     <Lives
       withPagination={false}
