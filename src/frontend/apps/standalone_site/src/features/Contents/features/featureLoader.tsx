@@ -16,7 +16,7 @@ import { liveContents, LiveRouter } from './Live';
 import { videoContents, VideoRouter } from './Video';
 
 useContentFeatures.setState({
-  featureRoutes: [
+  featureRouter: [
     <VideoRouter key="videoRouter" />,
     <ClassRoomRouter key="classRoomRouter" />,
     <LiveRouter key="liveRouter" />,

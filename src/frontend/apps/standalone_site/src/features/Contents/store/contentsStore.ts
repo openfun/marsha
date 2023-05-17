@@ -3,7 +3,7 @@ import { MessageDescriptor } from 'react-intl';
 import { create } from 'zustand';
 
 interface UseContentFeatures {
-  featureRoutes: ReactNode[];
+  featureRouter: ReactNode[];
   featureSamples: (playlistId?: string) => {
     title: MessageDescriptor;
     route: string;
@@ -13,7 +13,7 @@ interface UseContentFeatures {
 }
 
 export const useContentFeatures = create<UseContentFeatures>(() => ({
-  featureRoutes: [],
+  featureRouter: [],
   featureSamples: () => [],
   featureShuffles: [],
 }));

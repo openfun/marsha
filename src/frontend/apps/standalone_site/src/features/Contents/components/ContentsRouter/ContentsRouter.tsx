@@ -7,8 +7,8 @@ import { routes } from 'routes';
 import { useContentFeatures } from '../../store/contentsStore';
 
 const ContentsRouter = () => {
-  const { featureRoutes } = useContentFeatures((state) => ({
-    featureRoutes: state.featureRoutes,
+  const { featureRouter } = useContentFeatures((state) => ({
+    featureRouter: state.featureRouter,
   }));
 
   const videoPath = routes.CONTENTS.subRoutes.VIDEO.path;
@@ -21,7 +21,7 @@ const ContentsRouter = () => {
         <Contents />
       </Route>
       <Route path={[videoPath, classroomPath, webinarPath]}>
-        {featureRoutes}
+        {featureRouter}
       </Route>
       <Route>
         <Text404 />
