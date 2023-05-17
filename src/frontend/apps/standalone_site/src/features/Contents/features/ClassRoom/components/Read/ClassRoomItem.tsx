@@ -12,12 +12,13 @@ import { useIntl } from 'react-intl';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { ReactComponent as ClassroomsIcon } from 'assets/svg/iko_webinairesvg.svg';
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
-import { routes } from 'routes';
 import { localDate } from 'utils/date';
+
+import routes from '../../routes';
 
 const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   const intl = useIntl();
-  const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
+  const classroomPath = routes.CLASSROOM.path;
 
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isClassroomSelected, setIsClassroomSelected] = useState<boolean>(

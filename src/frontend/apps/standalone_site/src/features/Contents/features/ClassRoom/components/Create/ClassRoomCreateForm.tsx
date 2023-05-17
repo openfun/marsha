@@ -7,7 +7,8 @@ import { defineMessages, useIntl } from 'react-intl';
 import { useHistory } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';
-import { routes } from 'routes';
+
+import routes from '../../routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -62,7 +63,7 @@ enum ETypeError {
 const ClassroomCreateForm = () => {
   const intl = useIntl();
   const history = useHistory();
-  const classroomPath = routes.CONTENTS.subRoutes.CLASSROOM.path;
+  const classroomPath = routes.CLASSROOM.path;
   const { errorPlaylist, selectPlaylist, playlistResponse } = useSelectPlaylist(
     { withPlaylistCreation: true },
   );

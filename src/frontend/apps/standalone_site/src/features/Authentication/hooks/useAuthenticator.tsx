@@ -11,7 +11,7 @@ const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
 export const useAuthenticator = () => {
   const match = useRouteMatch(
-    routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE?.path || '',
+    routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE.path || '',
   ) as { params?: { inviteId?: string } } | null;
   const inviteId = match?.params?.inviteId;
 
