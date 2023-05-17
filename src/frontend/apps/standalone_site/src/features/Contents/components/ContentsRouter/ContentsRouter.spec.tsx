@@ -14,7 +14,7 @@ const VideoRouter = () => <div>My VideoRouter</div>;
 const LiveRouter = () => <div>My LiveRouter</div>;
 useContentFeatures.setState(
   {
-    featureRoutes: [
+    featureRouter: [
       <ClassroomRouter key="classroomRouter" />,
       <VideoRouter key="videoRouter" />,
       <LiveRouter key="liveRouter" />,
