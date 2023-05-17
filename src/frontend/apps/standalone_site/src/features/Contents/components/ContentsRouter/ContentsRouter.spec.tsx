@@ -49,4 +49,14 @@ describe('<ContentsRouter/>', () => {
     expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
     expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
+
+  test('render bad route', () => {
+    render(<ContentsRouter />, {
+      routerOptions: { history: ['/my-contents/bad-road'] },
+    });
+
+    expect(
+      screen.getByText(/Sorry, this page does not exist./i),
+    ).toBeInTheDocument();
+  });
 });
