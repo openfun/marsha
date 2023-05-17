@@ -1,10 +1,14 @@
-import { Button, Heading, Text } from 'grommet';
-import { Modal } from 'lib-components';
-import { Fragment } from 'react';
+import { Box, Button, Heading, Text } from 'grommet';
+import { useDeleteClassrooms } from 'lib-classroom';
+import { ButtonLoaderStyle, Modal, ModalButton, report } from 'lib-components';
+import { Fragment, useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, Route, Switch, useHistory } from 'react-router-dom';
+import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
+import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import { routes } from 'routes';
 
 import ClassroomCreateForm from './ClassRoomCreateForm';
@@ -17,10 +21,54 @@ const messages = defineMessages({
   },
   CreateClassroomLabel: {
     defaultMessage: 'Create Classroom',
-    description: 'Text heading create classroom.',
+    description: 'Button label to select classrooms',
     id: 'features.Contents.features.ClassRooms.Create.CreateClassroomLabel',
   },
+  SelectButtonLabel: {
+    defaultMessage: 'Select',
+    description: 'Text heading select classrooms.',
+    id: 'features.Contents.features.ClassRooms.Create.SelectButtonLabel',
+  },
+  DeleteButtonLabel: {
+    defaultMessage: `Delete {item_count, plural,  =0 {0 classroom} one {# classroom} other {# classrooms}}`,
+    description: 'Button label to delete single classroom.',
+    id: 'features.Contents.features.ClassRooms.Create.DeleteButtonSingularLabel',
+  },
+  CancelSelectionLabel: {
+    defaultMessage: 'Cancel',
+    description: 'Button label to cancel classroom selection.',
+    id: 'features.Contents.features.ClassRooms.Create.CancelSelectionLabel',
+  },
+  classroomsDeleteModalTitle: {
+    defaultMessage: `Delete {item_count, plural, one {# classroom} other {# classrooms}}`,
+    description: 'Title of the classroom delete modal.',
+    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteModalTitle',
+  },
+  confirmDeleteClassroomsTitle: {
+    defaultMessage: `Confirm delete {item_count, plural, one {# classroom} other {# classrooms}}`,
+    description: 'Title of the widget used for classroom delete confirmation.',
+    id: 'features.Contents.features.ClassRooms.Create.confirmDeleteClassroomsTitle',
+  },
+  confirmDeleteClassroomsText: {
+    defaultMessage: `Are you sure you want to delete {item_count, plural, one {# classroom} other {# classrooms}} ? This action is irreversible.`,
+    description: 'Text of the widget used for classroom delete confirmation.',
+    id: 'features.Contents.features.ClassRooms.Create.confirmDeleteClassroomsText',
+  },
+  classroomsDeleteSuccess: {
+    defaultMessage: `{item_count, plural, one {# classroom} other {# classrooms}} successfully deleted`,
+    description: 'Text of the classroom delete confirmation toast.',
+    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteSuccess',
+  },
+  classroomsDeleteError: {
+    defaultMessage: `Failed to delete {item_count, plural, one {# classroom} other {# classrooms}}`,
+    description: 'Text of the classroom delete error toast.',
+    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteError',
+  },
 });
+
+const ButtonStyled = styled(Button)`
+  color: white;
+`;
 
 const ClassRoomCreate = () => {
   const intl = useIntl();
@@ -29,6 +77,44 @@ const ClassRoomCreate = () => {
   const classroomRoute = routes.CONTENTS.subRoutes.CLASSROOM;
   const classroomPath = classroomRoute.path;
   const classroomCreatePath = classroomRoute.subRoutes?.CREATE?.path || '';
+  const {
+    isSelectionEnabled,
+    switchSelectEnabled,
+    resetSelection,
+    selectedItems,
+  } = useSelectFeatures();
+
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState<boolean>(false);
+
+  const deleteClassrooms = useDeleteClassrooms({
+    onSuccess: () => {
+      toast.success(
+        intl.formatMessage(messages.classroomsDeleteSuccess, {
+          item_count: selectedItems.length,
+        }),
+        {
+          position: 'bottom-center',
+        },
+      );
+    },
+    onError: (err: unknown) => {
+      report(err);
+      toast.error(
+        intl.formatMessage(messages.classroomsDeleteError, {
+          item_count: selectedItems.length,
+        }),
+        {
+          position: 'bottom-center',
+        },
+      );
+    },
+  });
+
+  useEffect(() => {
+    if (!isSelectionEnabled) {
+      resetSelection();
+    }
+  }, [isSelectionEnabled, resetSelection]);
 
   return (
     <Fragment>
@@ -36,12 +122,39 @@ const ClassRoomCreate = () => {
         <Text size="large" weight="bold">
           {intl.formatMessage(messages.ClassroomTitle)}
         </Text>
-        <Link to={classroomCreatePath}>
-          <Button
-            primary
-            label={intl.formatMessage(messages.CreateClassroomLabel)}
-          />
-        </Link>
+        {!isSelectionEnabled && (
+          <Box direction="row" gap="small">
+            <Button
+              secondary
+              label={intl.formatMessage(messages.SelectButtonLabel)}
+              onClick={switchSelectEnabled}
+            />
+            <Link to={classroomCreatePath}>
+              <Button
+                primary
+                label={intl.formatMessage(messages.CreateClassroomLabel)}
+              />
+            </Link>
+          </Box>
+        )}
+        {isSelectionEnabled && (
+          <Box direction="row" gap="small">
+            <Button
+              secondary
+              label={intl.formatMessage(messages.CancelSelectionLabel)}
+              onClick={switchSelectEnabled}
+            />
+            <ButtonStyled
+              primary
+              color="action-danger"
+              label={intl.formatMessage(messages.DeleteButtonLabel, {
+                item_count: selectedItems.length,
+              })}
+              disabled={selectedItems.length < 1}
+              onClick={() => setIsDeleteModalOpen(true)}
+            />
+          </Box>
+        )}
       </ContentsHeader>
       <Switch>
         <Route path={classroomCreatePath} exact>
@@ -63,6 +176,41 @@ const ClassRoomCreate = () => {
           </Modal>
         </Route>
       </Switch>
+      <Modal
+        isOpen={isDeleteModalOpen}
+        onClose={() => {
+          setIsDeleteModalOpen(false);
+        }}
+      >
+        <Heading
+          size="3"
+          alignSelf="center"
+          margin={{ top: '0', bottom: 'small' }}
+        >
+          {intl.formatMessage(messages.classroomsDeleteModalTitle, {
+            item_count: selectedItems.length,
+          })}
+        </Heading>
+        <Text margin={{ top: 'small' }}>
+          {intl.formatMessage(messages.confirmDeleteClassroomsText, {
+            item_count: selectedItems.length,
+          })}
+        </Text>
+        <ModalButton
+          label={intl.formatMessage(messages.confirmDeleteClassroomsTitle, {
+            item_count: selectedItems.length,
+          })}
+          onClickCancel={() => {
+            setIsDeleteModalOpen(false);
+          }}
+          onClickSubmit={() => {
+            deleteClassrooms.mutate({ ids: selectedItems });
+            setIsDeleteModalOpen(false);
+            switchSelectEnabled();
+          }}
+          style={ButtonLoaderStyle.DESTRUCTIVE}
+        />
+      </Modal>
     </Fragment>
   );
 };

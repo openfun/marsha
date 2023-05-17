@@ -33,7 +33,7 @@ describe('<ClassRoomRouter/>', () => {
     jest.resetAllMocks();
   });
 
-  test('render route /my-contents/classroom?playlist=test-playlist-id', () => {
+  it('renders route /my-contents/classroom?playlist=test-playlist-id', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
         history: ['/my-contents/classroom?playlist=test-playlist-id'],
@@ -45,7 +45,7 @@ describe('<ClassRoomRouter/>', () => {
     ).toBeInTheDocument();
   });
 
-  test('render classroom no match', () => {
+  it('renders classroom no match', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
@@ -53,7 +53,7 @@ describe('<ClassRoomRouter/>', () => {
     expect(screen.queryByText(/My ClassroomsRead/i)).not.toBeInTheDocument();
   });
 
-  test('render create classroom', () => {
+  it('renders create classroom', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/create'] },
     });
@@ -61,7 +61,7 @@ describe('<ClassRoomRouter/>', () => {
     expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
   });
 
-  test('render update classroom', () => {
+  it('renders update classroom', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/123456'] },
     });
@@ -69,7 +69,7 @@ describe('<ClassRoomRouter/>', () => {
     expect(screen.queryByText('Invited')).not.toBeInTheDocument();
   });
 
-  test('render invite classroom', () => {
+  it('renders invite classroom', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
         history: ['/my-contents/classroom/123456/invite/123456'],
@@ -78,7 +78,7 @@ describe('<ClassRoomRouter/>', () => {
     expect(screen.getByText('My ClassRoomUpdate')).toBeInTheDocument();
   });
 
-  test('render invite classroom without inviteId', () => {
+  it('renders invite classroom without inviteId', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
         history: ['/my-contents/classroom/123456/invite/'],
