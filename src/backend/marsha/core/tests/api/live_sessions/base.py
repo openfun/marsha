@@ -21,6 +21,8 @@ class LiveSessionApiTestCase(TestCase):
         # check we send it to the right email
         self.assertEqual(mail.outbox[0].to[0], email)
 
+        self.assertEqual(mail.outbox[0].from_email, "contact@marsha.education")
+
         # check it's the right email content
         self.assertEqual(
             mail.outbox[0].subject, f"Registration validated! {video.title}"

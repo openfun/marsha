@@ -29,6 +29,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Nest frontend api routes of video related objects
   (thumbnails, timed_text_track, shared_live_media...) (#2228)
 - Change wording on modals
+- use existing setting DEFAULT_FROM_EMAIL instead of EMAIL_FROM
 
 ### Fixed
 
