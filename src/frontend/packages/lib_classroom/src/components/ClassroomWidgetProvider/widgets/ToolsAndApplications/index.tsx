@@ -1,6 +1,11 @@
 import { Box } from 'grommet';
-import { Classroom, FoldableItem, ToggleInput } from 'lib-components';
-import React, { useEffect, useState } from 'react';
+import {
+  Classroom,
+  FoldableItem,
+  TextAreaInput,
+  ToggleInput,
+} from 'lib-components';
+import React, { useEffect, useRef, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -55,6 +60,11 @@ const messages = defineMessages({
     description: 'Message when classroom update failed.',
     id: 'component.ToolsAndApplications.updateClassroomFail',
   },
+  recordingPurpose: {
+    defaultMessage: 'Recording purpose',
+    description: 'Label for the recording purpose textarea.',
+    id: 'component.ToolsAndApplications.recordingPurpose',
+  },
 });
 
 interface ToolsAndApplicationCheckboxProps {
@@ -93,23 +103,28 @@ export const ToolsAndApplications = () => {
       setUpdatedClassroomState(classroom);
     },
   });
-  const [updatedClassroomState, setUpdatedClassroomState] = useState<
-    Partial<Classroom>
-  >({});
+  const [updatedClassroomState, setUpdatedClassroomState] =
+    useState<Classroom>(classroom);
 
+  const timeoutRef = useRef<NodeJS.Timeout>();
   const handleChange = (updatedClassroomAttribute: Partial<Classroom>) => {
-    const updatedClassroom = {
+    const timeout = 1000;
+
+    setUpdatedClassroomState({
       ...updatedClassroomState,
       ...updatedClassroomAttribute,
-    };
-    setUpdatedClassroomState(updatedClassroom);
-    if (JSON.stringify(updatedClassroom) !== '{}') {
-      updateClassroomMutation.mutate(updatedClassroom);
+    });
+
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
     }
+    timeoutRef.current = setTimeout(() => {
+      updateClassroomMutation.mutate(updatedClassroomAttribute);
+    }, timeout);
   };
 
   useEffect(() => {
-    setUpdatedClassroomState({});
+    setUpdatedClassroomState(classroom);
   }, [classroom]);
 
   return (
@@ -119,25 +134,27 @@ export const ToolsAndApplications = () => {
       title={intl.formatMessage(messages.title)}
     >
       <ToolsAndApplicationCheckbox
-        checked={classroom.enable_chat}
+        checked={updatedClassroomState.enable_chat}
         message={intl.formatMessage(messages.enableChat)}
-        onChange={() => handleChange({ enable_chat: !classroom.enable_chat })}
+        onChange={() =>
+          handleChange({ enable_chat: !updatedClassroomState.enable_chat })
+        }
       />
       <ToolsAndApplicationCheckbox
-        checked={classroom.enable_shared_notes}
+        checked={updatedClassroomState.enable_shared_notes}
         message={intl.formatMessage(messages.enableSharedNotes)}
         onChange={() =>
           handleChange({
-            enable_shared_notes: !classroom.enable_shared_notes,
+            enable_shared_notes: !updatedClassroomState.enable_shared_notes,
           })
         }
       />
       <ToolsAndApplicationCheckbox
-        checked={classroom.enable_waiting_room}
+        checked={updatedClassroomState.enable_waiting_room}
         message={intl.formatMessage(messages.enableWaitingRoom)}
         onChange={() =>
           handleChange({
-            enable_waiting_room: !classroom.enable_waiting_room,
+            enable_waiting_room: !updatedClassroomState.enable_waiting_room,
           })
         }
       />
@@ -158,12 +175,32 @@ export const ToolsAndApplications = () => {
       /> 
       */}
       <ToolsAndApplicationCheckbox
-        checked={classroom.enable_recordings}
+        checked={updatedClassroomState.enable_recordings}
         message={intl.formatMessage(messages.enableRecordings)}
         onChange={() =>
-          handleChange({ enable_recordings: !classroom.enable_recordings })
+          handleChange({
+            enable_recordings: !updatedClassroomState.enable_recordings,
+          })
         }
       />
+      {updatedClassroomState.enable_recordings && (
+        <TextAreaInput
+          title={intl.formatMessage(messages.recordingPurpose)}
+          placeholder={intl.formatMessage(messages.recordingPurpose)}
+          value={
+            { ...classroom, ...updatedClassroomState }.recording_purpose || ''
+          }
+          setValue={(recording_purpose) => {
+            handleChange({ recording_purpose });
+          }}
+          formFieldProps={{
+            margin: { bottom: 'medium' },
+            style: {
+              minHeight: 'auto',
+            },
+          }}
+        />
+      )}
     </FoldableItem>
   );
 };

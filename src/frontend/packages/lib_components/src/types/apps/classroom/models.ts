@@ -27,6 +27,7 @@ export interface Classroom extends Resource {
   enable_chat: boolean;
   enable_presentation_supports: boolean;
   enable_recordings: boolean;
+  recording_purpose: Nullable<string>;
 }
 
 export type ClassroomLite = Omit<Classroom, 'infos'>;
