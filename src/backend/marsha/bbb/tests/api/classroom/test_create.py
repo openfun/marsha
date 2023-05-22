@@ -143,6 +143,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_chat": True,
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
+                "recording_purpose": None,
                 "enable_shared_notes": True,
             },
         )
@@ -219,6 +220,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_chat": True,
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
+                "recording_purpose": None,
                 "enable_shared_notes": True,
             },
         )
@@ -261,6 +263,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_chat": True,
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
+                "recording_purpose": None,
                 "enable_shared_notes": True,
             },
         )
@@ -319,6 +322,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_chat": True,
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
+                "recording_purpose": None,
                 "enable_shared_notes": True,
             },
         )
@@ -361,6 +365,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_chat": True,
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
+                "recording_purpose": None,
                 "enable_shared_notes": True,
             },
         )

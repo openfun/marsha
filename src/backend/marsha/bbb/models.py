@@ -117,6 +117,12 @@ class Classroom(BaseModel):
     enable_recordings = models.BooleanField(
         default=True, help_text=_("Enable or not to record the classroom sessions")
     )
+    recording_purpose = models.TextField(
+        verbose_name=_("record purpose"),
+        help_text=_("A text to explain what is the record purpose"),
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         """Options for the ``Classroom`` model."""
