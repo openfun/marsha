@@ -23,6 +23,7 @@ class ClassroomFactory(DjangoModelFactory):
     description = factory.Faker("paragraph")
     playlist = factory.SubFactory(PlaylistFactory)
     meeting_id = factory.Faker("uuid4")
+    recording_purpose = factory.Faker("paragraph")
 
 
 class ClassroomDocumentFactory(DjangoModelFactory):

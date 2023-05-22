@@ -86,6 +86,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "enable_chat",
             "enable_presentation_supports",
             "enable_recordings",
+            "recording_purpose",
         )
         read_only_fields = (
             "id",
@@ -181,6 +182,7 @@ class ClassroomLiteSerializer(ReadOnlyModelSerializer):
             "starting_at",
             "estimated_duration",
             "playlist",
+            "recording_purpose",
         )
 
     playlist = PlaylistLiteSerializer(read_only=True)

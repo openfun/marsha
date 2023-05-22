@@ -40,6 +40,7 @@ class ClassroomAdmin(admin.ModelAdmin):
         "welcome_text",
         "starting_at",
         "estimated_duration",
+        "recording_purpose",
     )
     inlines = (ClassroomDocumentInline,)
     readonly_fields = [
