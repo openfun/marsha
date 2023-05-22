@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-26 13:41+0000\n"
-"PO-Revision-Date: 2023-04-27 12:27\n"
+"POT-Creation-Date: 2023-05-16 11:46+0000\n"
+"PO-Revision-Date: 2023-05-22 14:27\n"
 "Last-Translator: \n"
 "Language-Team: Spanish\n"
 "Language: es_ES\n"
@@ -298,11 +298,19 @@ msgstr ""
 msgid "Start date and time of the record."
 msgstr ""
 
-#: marsha/bbb/models.py:286
+#: marsha/bbb/models.py:284
+msgid "vod"
+msgstr ""
+
+#: marsha/bbb/models.py:285
+msgid "vod made from the recording"
+msgstr ""
+
+#: marsha/bbb/models.py:296
 msgid "Classroom recording"
 msgstr ""
 
-#: marsha/bbb/models.py:287
+#: marsha/bbb/models.py:297
 msgid "Classroom recordings"
 msgstr ""
 
