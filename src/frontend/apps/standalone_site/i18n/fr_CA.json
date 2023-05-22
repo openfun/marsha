@@ -7,13 +7,9 @@
     "description": "Text when there is nothing to display.",
     "message": "There is nothing to display."
   },
-  "components.Modal.ButtonCancelModal": {
-    "description": "Label for cancel button in modal.",
-    "message": "Cancel"
-  },
-  "components.Modal.closeButtonTitle": {
-    "description": "Accessibility title for close modal button title.",
-    "message": "Close the modal"
+  "components.Playlist.PlaylistForm.deleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Delete playlist"
   },
   "components.Profile.components.SettingsProfilePage.account": {
     "description": "Account tab title in settings page, to update password and link to other site.",
@@ -43,6 +39,14 @@
     "description": "Sort table objects by descending title.",
     "message": "Title (reversed)"
   },
+  "components.Text.Text404": {
+    "description": "Website page 404",
+    "message": "Sorry, this page does not exist."
+  },
+  "eatures.Playlist.PlaylistForm.confirmDeleteText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Are you sure you want to delete this playlist ? This action is irreversible and all attached resources must be deleted."
+  },
   "feature.Playlist.CreatePlaylistForm.createPlaylistButtonTitle": {
     "description": "Create playlist button title to submit create form.",
     "message": "Create playlist"
@@ -50,6 +54,14 @@
   "feature.Playlist.CreatePlaylistForm.formTitle": {
     "description": "Create playlist modale title",
     "message": "Create a playlist"
+  },
+  "feature.Playlist.PlaylistForm.DeleteSuccessMessage": {
+    "description": "Message displayed when playlist is successfully deleted.",
+    "message": "Playlist deleted with success."
+  },
+  "feature.Playlist.PlaylistForm.errorAttachedResources": {
+    "description": "Message displayed in case there are attached resources to the playlist on delete.",
+    "message": "An error occurred, All attached resources must be deleted first."
   },
   "feature.Playlist.PlaylistForm.errorOrganizations": {
     "description": "Message displayed in case an error occured while fetching organizations.",
@@ -166,6 +178,10 @@
   "features.Authentication.components.PasswordResetForm.successText": {
     "description": "Displayed text when password reset request succeeded.",
     "message": "Password reset e-mail has been sent."
+  },
+  "features.Authentication.components.RenaterAuthenticator.errorMessage": {
+    "description": "Label when error query string Renater login",
+    "message": "Sorry, a problem occured. Please try again."
   },
   "features.Authentication.components.RenaterAuthenticator.labelSelectRenater": {
     "description": "Label for select box for Renater login",
@@ -362,6 +378,14 @@
   "features.Menu.menuTypeContentLabel": {
     "description": "Label types of content in the menu",
     "message": "TYPES OF CONTENT"
+  },
+  "features.Playlist.PlaylistForm.DeleteButtonText": {
+    "description": "Delete playlist button text.",
+    "message": "Delete playlist"
+  },
+  "features.Playlist.PlaylistForm.confirmDeleteTitle": {
+    "description": "Title of the widget used for confirmation.",
+    "message": "Confirm delete playlist"
   },
   "features.Playlist.create": {
     "description": "Create playlist button title",

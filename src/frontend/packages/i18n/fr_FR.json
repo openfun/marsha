@@ -455,13 +455,45 @@
     "description": "A title describing the div where the sender's name is displayed",
     "message": "Nom de l'expéditeur du message"
   },
+  "component.Recording.convertVODLabel": {
+    "description": "Label for convert to VOD button.",
+    "message": "Convertir en VOD"
+  },
+  "component.Recording.convertVODTitle": {
+    "description": "Title for convert to VOD button.",
+    "message": "Convertir {recordingTitle} en VOD"
+  },
+  "component.Recording.downloadRecordingLabel": {
+    "description": "Label for download recording button.",
+    "message": "Télécharger l’enregistrement"
+  },
+  "component.Recording.ltiLinkCopiedSuccess": {
+    "description": "Toast message when link copied to clipboard.",
+    "message": "Lien copié dans le presse-papier !"
+  },
+  "component.Recording.ltiLinkLabel": {
+    "description": "Label for LTI VOD link.",
+    "message": "Lien LTI pour ce VOD :"
+  },
+  "component.Recording.ltiLinkLabelWithUploadState": {
+    "description": "Label for LTI VOD link with upload state.",
+    "message": "Lien LTI pour ce VOD: ({uploadState})"
+  },
+  "component.Recording.vodDashboardLabel": {
+    "description": "Label for VOD dashboard link.",
+    "message": "Accéder au tableau de bord VOD"
+  },
+  "component.Recordings.convertVODLabel": {
+    "description": "Label for convert to VOD button.",
+    "message": "Convertir {recordingTitle} en VOD"
+  },
   "component.Recordings.downloadRecordingLabel": {
     "description": "Label for download recording button.",
     "message": "Télécharger l’enregistrement"
   },
   "component.Recordings.info": {
     "description": "Helptext for the widget.",
-    "message": "Tous les enregistrements disponibles peuvent être téléchargés ici."
+    "message": "Tous les enregistrements disponibles peuvent être téléchargés et convertis en VOD ici."
   },
   "component.Recordings.noRecordingsAvailable": {
     "description": "Message when no recordings are available.",
@@ -715,6 +747,10 @@
     "description": "Message displayed when video is successfully updated.",
     "message": "Vidéo mise à jour."
   },
+  "component.VisibilityAndInteraction.ltiLinkLabel": {
+    "description": "Label for LTI video link.",
+    "message": "Lien LTI :"
+  },
   "component.VisibilityAndInteraction.updateVideoFail": {
     "description": "Message displayed when video update has failed.",
     "message": "La mise à jour de la vidéo a échoué !"
@@ -903,6 +939,38 @@
     "description": "Label of the button used for creating a new live.",
     "message": "Démarrer le webinaire"
   },
+  "components.DeleteClassroom.classroomDeleteError": {
+    "description": "ext of the delete error toast..",
+    "message": "Échec de la suppression de la classe virtuelle"
+  },
+  "components.DeleteClassroom.classroomDeleteSuccess": {
+    "description": "Text of the delete confirmation toast.",
+    "message": "Classe virtuelle supprimée avec succès"
+  },
+  "components.DeleteClassroom.confirmDeleteText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Voulez-vous vraiment supprimer cette classe virtuelle ? Cette action est irréversible."
+  },
+  "components.DeleteClassroom.confirmDeleteTitle": {
+    "description": "Title of the widget used for confirmation.",
+    "message": "Confirmer la suppression de la classe virtuelle"
+  },
+  "components.DeleteClassroom.deleteButtonText": {
+    "description": "Text of the delete button.",
+    "message": "Supprimer la classe virtuelle"
+  },
+  "components.DeleteClassroom.deleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Supprimer la classe virtuelle"
+  },
+  "components.DeleteClassroom.info": {
+    "description": "Info of the widget used for deleting the classroom.",
+    "message": "ZONE DE DANGER : Ce widget vous permet de supprimer définitivement la classe virtuelle."
+  },
+  "components.DeleteClassroom.title": {
+    "description": "Title of the widget used for deleting the classroom.",
+    "message": "ZONE DE DANGER"
+  },
   "components.DeleteSharedLiveMediaButton.buttonLabel": {
     "description": "The label of the button to delete a media.",
     "message": "Cliquez sur ce bouton pour supprimer le document partagé."
@@ -910,6 +978,58 @@
   "components.DeleteTimedTextTrackItemUploadButton.buttonLabel": {
     "description": "The label of the button to delete the timed text track.",
     "message": "Cliquez sur ce bouton pour supprimer la piste de texte."
+  },
+  "components.DeleteVideo.confirmDeleteLiveText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Voulez-vous vraiment supprimer ce webinaire ? Cette action est irréversible."
+  },
+  "components.DeleteVideo.confirmDeleteLiveTitle": {
+    "description": "Title of the widget used for confirmation.",
+    "message": "Confirmer la suppression du webinaire"
+  },
+  "components.DeleteVideo.confirmDeleteVideoText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Êtes-vous sûr de vouloir supprimer cette vidéo ? Cette action est irréversible."
+  },
+  "components.DeleteVideo.confirmDeleteVideoTitle": {
+    "description": "Title of the widget used for confirmation.",
+    "message": "Confirmer la suppression de la vidéo"
+  },
+  "components.DeleteVideo.deleteButtonText": {
+    "description": "Text of the delete button.",
+    "message": "Supprimer"
+  },
+  "components.DeleteVideo.info": {
+    "description": "Info of the widget used for deleting the video.",
+    "message": "ZONE DE DANGER : Ce widget vous permet de supprimer définitivement cette ressource."
+  },
+  "components.DeleteVideo.liveDeleteError": {
+    "description": "Text of the delete error toast..",
+    "message": "Impossible de supprimer le webinaire"
+  },
+  "components.DeleteVideo.liveDeleteSuccess": {
+    "description": "Text of the delete confirmation toast.",
+    "message": "Webinaire supprimé avec succès"
+  },
+  "components.DeleteVideo.title": {
+    "description": "Title of the widget used for deleting the resource.",
+    "message": "ZONE DE DANGER"
+  },
+  "components.DeleteVideo.videoDeleteError": {
+    "description": "Text of the delete error toast..",
+    "message": "Impossible de supprimer la vidéo"
+  },
+  "components.DeleteVideo.videoDeleteSuccess": {
+    "description": "Text of the delete confirmation toast.",
+    "message": "Vidéo supprimée avec succès"
+  },
+  "components.DeleteVideoButton.liveDeleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Supprimer le webinaire"
+  },
+  "components.DeleteVideoButton.videoDeleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Supprimer la vidéo"
   },
   "components.DescriptionWidget.info": {
     "description": "Info of the widget used for setting title and live recording.",
@@ -1138,6 +1258,14 @@
   "components.LivePairingButton.pairingSecretLabel": {
     "description": "Button label to request a secret for pairing an external device.",
     "message": "Appairer un appareil externe"
+  },
+  "components.Modal.ButtonCancelModal": {
+    "description": "Label for cancel button in modal.",
+    "message": "Annuler"
+  },
+  "components.Modal.closeButtonTitle": {
+    "description": "Accessibility title for close modal button title.",
+    "message": "Fermer la fenêtre"
   },
   "components.PictureInPictureLayer.PictureActionLayer.moveOptionTitle": {
     "description": "More options button title used when the picture is too small to display all actions.",
@@ -1659,17 +1787,21 @@
     "description": "Message displayed in the users list when no viewers are connected",
     "message": "Aucun spectateur n'est actuellement connecté au direct."
   },
-  "components.VisibilityAndInteraction.copyButtonTitle": {
+  "components.VisibilityAndInteraction.iFrameCopyButtonTitle": {
     "description": "A message informing the user on the action of the copy-in-clipboard button.",
-    "message": "Un bouton pour copier l'url publique de la vidéo dans le presse-papiers"
+    "message": "Intégration Iframe :"
   },
-  "components.VisibilityAndInteraction.copySuccess": {
-    "description": "Message displayed when video's publicly available url is copied in clipboard.",
-    "message": "Url copiée dans le presse-papier !"
+  "components.VisibilityAndInteraction.iFrameCopySuccess": {
+    "description": "Message displayed when video's publicly available iframe code is copied in clipboard.",
+    "message": "Lien copié dans le presse-papier !"
   },
   "components.VisibilityAndInteraction.info": {
     "description": "Info of the widget used for setting live features.",
-    "message": "Ce widget vous permet de rendre la vidéo accessible au public."
+    "message": "Ce widget vous permet de rendre la vidéo accessible au public et fournit plusieurs liens en fonction de ce que vous voulez faire: \n- Lien public: Invitez des gens à participer à ce contenu en tant qu'invité sans aucun compte. \n- Intégration IFrame : Code pour l’intégrer sans contrôle d'accès. \n- Lien LTI : Lien spécial utilisé pour ajouter cette vidéo dans votre LMS préféré et l'intégrer dans une activité de cours."
+  },
+  "components.VisibilityAndInteraction.publicLinkCopyButtonTitle": {
+    "description": "A message informing the user on the action of the copy-in-clipboard button.",
+    "message": "Lien public :"
   },
   "components.VisibilityAndInteraction.publiclyAvailableLabel": {
     "description": "The label associated to the toggle button reponsible of video public visibility.",
@@ -1678,6 +1810,10 @@
   "components.VisibilityAndInteraction.title": {
     "description": "Title of the widget used for set the public availability of the video.",
     "message": "Paramètres de visibilité et d'interaction"
+  },
+  "components.VisibilityAndInteraction.urlCopySuccess": {
+    "description": "Message displayed when video's publicly available url is copied in clipboard.",
+    "message": "Lien copié dans le presse-papier !"
   },
   "components.WidgetTemplate.helpButtonTitle": {
     "description": "title for widget help button",
