@@ -231,10 +231,10 @@ class LiveSessionViewSet(
                 # pylint:disable=redefined-builtin
                 object = _("Registration validated!")
                 send_mail(
-                    f"{object} {video.title}",
-                    msg_plain,
-                    settings.EMAIL_FROM,
-                    [livesession.email],
+                    subject=f"{object} {video.title}",
+                    message=msg_plain,
+                    from_email=None,
+                    recipient_list=[livesession.email],
                     html_message=msg_html,
                     fail_silently=False,
                 )

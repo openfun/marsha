@@ -495,7 +495,7 @@ class Base(Configuration):
     EMAIL_HOST_PASSWORD = values.Value(None)
     EMAIL_PORT = values.PositiveIntegerValue(None)
     EMAIL_USE_TLS = values.BooleanValue(False)
-    EMAIL_FROM = values.Value("from@fun-mooc.fr")
+    DEFAULT_FROM_EMAIL = values.Value("contact@marsha.education")
 
     # REMINDERS SENT for scheduled webinars
     REMINDER_1, REMINDER_2, REMINDER_3, REMINDER_DATE_UPDATED, REMINDER_ERROR = (
