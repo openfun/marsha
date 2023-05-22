@@ -58,6 +58,7 @@ export const ToggleButton = ({
       <CheckBox
         a11yTitle={title}
         checked={checked}
+        aria-checked={checked}
         disabled={disabled}
         onChange={onChange}
         title={title}

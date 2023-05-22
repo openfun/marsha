@@ -372,7 +372,7 @@ export const theme: ThemeType = {
   textArea: {
     extend: css`
       & {
-        margin-top: 1rem;
+        margin-top: 1.4rem;
       }
       &:focus-within {
         color: ${colorsGeneric['blue-focus']};
