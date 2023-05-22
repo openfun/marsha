@@ -7,13 +7,9 @@
     "description": "Text when there is nothing to display.",
     "message": "Aucune ressource à afficher."
   },
-  "components.Modal.ButtonCancelModal": {
-    "description": "Label for cancel button in modal.",
-    "message": "Annuler"
-  },
-  "components.Modal.closeButtonTitle": {
-    "description": "Accessibility title for close modal button title.",
-    "message": "Fermer la fenêtre"
+  "components.Playlist.PlaylistForm.deleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Supprimer le cours"
   },
   "components.Profile.components.SettingsProfilePage.account": {
     "description": "Account tab title in settings page, to update password and link to other site.",
@@ -43,6 +39,14 @@
     "description": "Sort table objects by descending title.",
     "message": "Titre (décroissant)"
   },
+  "components.Text.Text404": {
+    "description": "Website page 404",
+    "message": "Désolé, cette page n'existe pas."
+  },
+  "eatures.Playlist.PlaylistForm.confirmDeleteText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Êtes-vous sûr de vouloir supprimer ce cours ? Cette action est irréversible et toutes les ressources existantes doivent être supprimées au préalable."
+  },
   "feature.Playlist.CreatePlaylistForm.createPlaylistButtonTitle": {
     "description": "Create playlist button title to submit create form.",
     "message": "Créer un cours"
@@ -50,6 +54,14 @@
   "feature.Playlist.CreatePlaylistForm.formTitle": {
     "description": "Create playlist modale title",
     "message": "Créer un cours"
+  },
+  "feature.Playlist.PlaylistForm.DeleteSuccessMessage": {
+    "description": "Message displayed when playlist is successfully deleted.",
+    "message": "Cours supprimé avec succès."
+  },
+  "feature.Playlist.PlaylistForm.errorAttachedResources": {
+    "description": "Message displayed in case there are attached resources to the playlist on delete.",
+    "message": "Une erreur est survenue, toutes les ressources existantes doivent d'abord être supprimées."
   },
   "feature.Playlist.PlaylistForm.errorOrganizations": {
     "description": "Message displayed in case an error occured while fetching organizations.",
@@ -166,6 +178,10 @@
   "features.Authentication.components.PasswordResetForm.successText": {
     "description": "Displayed text when password reset request succeeded.",
     "message": "Un e-mail avec les instructions pour réinitialiser votre mot de passe vous a été envoyé."
+  },
+  "features.Authentication.components.RenaterAuthenticator.errorMessage": {
+    "description": "Label when error query string Renater login",
+    "message": "Une erreur s'est produite, veuillez réessayer."
   },
   "features.Authentication.components.RenaterAuthenticator.labelSelectRenater": {
     "description": "Label for select box for Renater login",
@@ -363,6 +379,14 @@
     "description": "Label types of content in the menu",
     "message": "Type de contenu"
   },
+  "features.Playlist.PlaylistForm.DeleteButtonText": {
+    "description": "Delete playlist button text.",
+    "message": "Supprimer le cours"
+  },
+  "features.Playlist.PlaylistForm.confirmDeleteTitle": {
+    "description": "Title of the widget used for confirmation.",
+    "message": "Confirmer la suppression du cours"
+  },
   "features.Playlist.create": {
     "description": "Create playlist button title",
     "message": "Créer un cours"
@@ -373,7 +397,7 @@
   },
   "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.accessTitle": {
     "description": "Update playlist page, playlist access bloc title.",
-    "message": "Accès à la liste de lecture"
+    "message": "Accès au cours"
   },
   "features.Playlist.features.UpdatePlaylist.UpdatePlaylistPage.mainInfoTitle": {
     "description": "Update playlist page, main info bloc title.",

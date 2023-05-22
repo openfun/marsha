@@ -343,22 +343,6 @@
     "description": "Message for the sidebar uploads indicator link.",
     "message": "File uploads"
   },
-  "components.TimedTextListItem.delete": {
-    "description": "Link text to delete a subtitle/transcript/captions item.",
-    "message": "Delete"
-  },
-  "components.TimedTextListItem.download": {
-    "description": "Link text to download a subtitle/transcript/captions item.",
-    "message": "Download"
-  },
-  "components.TimedTextListItem.replace": {
-    "description": "Link text to replace a subtitle/transcript/captions item with a new file (for the same language).",
-    "message": "Replace"
-  },
-  "components.TimedTextListItem.upload": {
-    "description": "Link text to upload a missing subtitle/transcript/captions item file.",
-    "message": "Upload"
-  },
   "components.UploadableObjectStatusBadge.deleted": {
     "description": "Badge text for an uploadable object that was deleted.",
     "message": "Deleted"

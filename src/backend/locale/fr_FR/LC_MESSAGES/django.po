@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: marsha\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2023-04-26 13:41+0000\n"
-"PO-Revision-Date: 2023-04-27 12:27\n"
+"POT-Creation-Date: 2023-05-16 11:46+0000\n"
+"PO-Revision-Date: 2023-05-22 14:27\n"
 "Last-Translator: \n"
 "Language-Team: French\n"
 "Language: fr_FR\n"
@@ -299,11 +299,19 @@ msgstr "Date et heure du début de l'enregistrement"
 msgid "Start date and time of the record."
 msgstr "Date et heure de debut de l'enregistrement."
 
-#: marsha/bbb/models.py:286
+#: marsha/bbb/models.py:284
+msgid "vod"
+msgstr "vod"
+
+#: marsha/bbb/models.py:285
+msgid "vod made from the recording"
+msgstr "vod fait à partir de l'enregistrement"
+
+#: marsha/bbb/models.py:296
 msgid "Classroom recording"
 msgstr "Enregistrement classe virtuelle"
 
-#: marsha/bbb/models.py:287
+#: marsha/bbb/models.py:297
 msgid "Classroom recordings"
 msgstr "Enregistrements classe virtuelle"
 
@@ -1751,44 +1759,44 @@ msgstr "image"
 
 #: marsha/page/admin.py:13
 msgid "Page"
-msgstr ""
+msgstr "Page"
 
 #: marsha/page/apps.py:12
 msgid "Pages"
-msgstr ""
+msgstr "Pages"
 
 #: marsha/page/models.py:23
 msgid "slug"
-msgstr ""
+msgstr "slug"
 
 #: marsha/page/models.py:24
 #, python-brace-format
 msgid "Page slug (/page/{slug})"
-msgstr ""
+msgstr "Identifiant de la page (/page/{slug})"
 
 #: marsha/page/models.py:30
 msgid "Page displayed name"
-msgstr ""
+msgstr "Nom affiché de la page"
 
 #: marsha/page/models.py:35
 msgid "content"
-msgstr ""
+msgstr "contenu"
 
 #: marsha/page/models.py:36
 msgid "Content of the page in Markdown format"
-msgstr ""
+msgstr "Contenu de la page au format Markdown"
 
 #: marsha/page/models.py:41
 msgid "is published"
-msgstr ""
+msgstr "est publié"
 
 #: marsha/page/models.py:42
 msgid "Is the page ready to be shown publicly"
-msgstr ""
+msgstr "La page est-elle prête à être affichée publiquement"
 
 #: marsha/page/models.py:51 marsha/page/models.py:52
 msgid "page"
-msgstr ""
+msgstr "page"
 
 #: marsha/settings.py:308
 msgid "english"
