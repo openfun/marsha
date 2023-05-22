@@ -1,11 +1,16 @@
-import { FormField, TextArea } from 'grommet';
-import React from 'react';
+import {
+  FormField,
+  FormFieldExtendedProps,
+  TextArea,
+  TextAreaExtendedProps,
+} from 'grommet';
 
-interface TextAreaInputProps {
-  placeholder?: string;
+interface TextAreaInputProps extends TextAreaExtendedProps {
   setValue: (inputText: string) => void;
-  title?: string;
   value: string;
+  placeholder?: string;
+  title?: string;
+  formFieldProps?: FormFieldExtendedProps;
 }
 
 export const TextAreaInput = ({
@@ -13,9 +18,11 @@ export const TextAreaInput = ({
   setValue,
   title,
   value,
+  formFieldProps,
+  ...textAreaProps
 }: TextAreaInputProps) => {
   return (
-    <FormField label={placeholder}>
+    <FormField label={placeholder} {...formFieldProps}>
       <TextArea
         a11yTitle={title}
         onChange={(event) => setValue(event.target.value)}
@@ -30,6 +37,7 @@ export const TextAreaInput = ({
           e.currentTarget.style.height = 'auto';
           e.currentTarget.style.height = `${e.currentTarget.scrollHeight}px`;
         }}
+        {...textAreaProps}
       />
     </FormField>
   );

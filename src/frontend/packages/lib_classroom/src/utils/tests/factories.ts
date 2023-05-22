@@ -35,6 +35,7 @@ export const classroomMockFactory = <T extends Partial<Classroom>>(
     enable_chat: true,
     enable_presentation_supports: true,
     enable_recordings: true,
+    recording_purpose: faker.lorem.text(),
     ...classroom,
   };
 };

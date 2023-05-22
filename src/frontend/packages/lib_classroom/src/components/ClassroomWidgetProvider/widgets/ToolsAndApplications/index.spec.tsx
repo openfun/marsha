@@ -1,12 +1,11 @@
-import { screen } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { InfoWidgetModalProvider } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
+import { useCurrentClassroom } from '@lib-classroom/hooks/useCurrentClassroom';
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
-import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
 
 import { ToolsAndApplications } from '.';
 
@@ -20,6 +19,13 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
+jest.mock('@lib-classroom/hooks/useCurrentClassroom', () => ({
+  useCurrentClassroom: jest.fn(),
+}));
+const mockedUseCurrentClassroom = useCurrentClassroom as jest.MockedFunction<
+  typeof useCurrentClassroom
+>;
+
 describe('<ToolsAndApplications />', () => {
   afterEach(() => {
     jest.resetAllMocks();
@@ -28,14 +34,12 @@ describe('<ToolsAndApplications />', () => {
 
   it('renders the widget', () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
 
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     expect(screen.getByText('Tools and Applications')).toBeInTheDocument();
@@ -47,17 +51,16 @@ describe('<ToolsAndApplications />', () => {
 
   it('updates the classroom enable_chat on toggle click', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
     fetchMock.patch('/api/classrooms/1/', {
       ...classroom,
       enable_chat: false,
     });
+
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     const toggleEnableChat = screen.getByRole('checkbox', {
@@ -78,17 +81,15 @@ describe('<ToolsAndApplications />', () => {
 
   it('updates the classroom enable_shared_notes on toggle click', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
     fetchMock.patch('/api/classrooms/1/', {
       ...classroom,
       enable_shared_notes: false,
     });
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     const toggleEnableSharedNotes = screen.getByRole('checkbox', {
@@ -109,17 +110,15 @@ describe('<ToolsAndApplications />', () => {
 
   it('updates the classroom enable_waiting_room on toggle click', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
     fetchMock.patch('/api/classrooms/1/', {
       ...classroom,
       enable_waiting_room: true,
     });
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     const toggleEnableWaitingRoom = screen.getByRole('checkbox', {
@@ -139,24 +138,37 @@ describe('<ToolsAndApplications />', () => {
   });
 
   it('updates the classroom enable_recordings on toggle click', async () => {
-    const classroom = classroomMockFactory({ id: '1', started: false });
+    const classroom = classroomMockFactory({
+      id: '1',
+      started: false,
+      recording_purpose: 'This is my record purpose',
+    });
     fetchMock.patch('/api/classrooms/1/', {
       ...classroom,
       enable_recordings: false,
     });
+
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
+
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     const toggleEnableRecordings = screen.getByRole('checkbox', {
       name: 'Enable recordings',
+      checked: true,
     });
-    expect(toggleEnableRecordings).toBeChecked();
+    expect(toggleEnableRecordings).toBeInTheDocument();
+    expect(screen.getByLabelText('Recording purpose')).toBeInTheDocument();
+    expect(screen.getByText('This is my record purpose')).toBeInTheDocument();
+
+    mockedUseCurrentClassroom.mockReturnValue({
+      ...classroom,
+      enable_recordings: false,
+    });
+
     userEvent.click(toggleEnableRecordings);
 
     expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
@@ -167,18 +179,75 @@ describe('<ToolsAndApplications />', () => {
       method: 'PATCH',
       body: '{"enable_recordings":false}',
     });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole('checkbox', {
+          name: 'Enable recordings',
+          checked: true,
+        }),
+      ).not.toBeInTheDocument();
+    });
+    expect(
+      screen.queryByLabelText('Recording purpose'),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByText('This is my record purpose'),
+    ).not.toBeInTheDocument();
+  });
+
+  it('updates the classroom recording purpose by typing in the textarea', async () => {
+    const recording_purpose = 'This is my record purpose';
+    const recording_purpose_updated = 'This is my new record purpose';
+    const classroom = classroomMockFactory({
+      id: '1',
+      started: false,
+      recording_purpose,
+    });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
+    fetchMock.patch('/api/classrooms/1/', {
+      ...classroom,
+      recording_purpose: recording_purpose_updated,
+    });
+
+    render(
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
+    );
+
+    const textAreaRecordPurpose = screen.getByText(recording_purpose);
+    expect(textAreaRecordPurpose).toBeInTheDocument();
+
+    userEvent.clear(textAreaRecordPurpose);
+    userEvent.type(textAreaRecordPurpose, recording_purpose_updated);
+
+    mockedUseCurrentClassroom.mockReturnValue({
+      ...classroom,
+      recording_purpose: recording_purpose_updated,
+    });
+
+    expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
+    expect(fetchMock.lastCall()![1]).toEqual({
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      method: 'PATCH',
+      body: `{"recording_purpose":"${recording_purpose_updated}"}`,
+    });
+
+    expect(screen.getByText(recording_purpose_updated)).toBeInTheDocument();
   });
 
   it('fails to udpate the classroom', async () => {
     const classroom = classroomMockFactory({ id: '1', started: false });
+    mockedUseCurrentClassroom.mockReturnValue(classroom);
     fetchMock.patch('/api/classrooms/1/', 500);
+
     render(
-      wrapInClassroom(
-        <InfoWidgetModalProvider value={null}>
-          <ToolsAndApplications />
-        </InfoWidgetModalProvider>,
-        classroom,
-      ),
+      <InfoWidgetModalProvider value={null}>
+        <ToolsAndApplications />
+      </InfoWidgetModalProvider>,
     );
 
     const toggleEnableRecordings = screen.getByRole('checkbox', {
