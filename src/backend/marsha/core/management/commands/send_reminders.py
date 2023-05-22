@@ -89,10 +89,10 @@ class Command(BaseCommand):
 
                     try:
                         send_mail(
-                            _(mail_object),
-                            msg_plain,
-                            settings.EMAIL_FROM,
-                            [livesession.email],
+                            subject=_(mail_object),
+                            message=msg_plain,
+                            from_email=None,
+                            recipient_list=[livesession.email],
                             html_message=msg_html,
                             fail_silently=False,
                         )
