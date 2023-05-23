@@ -419,6 +419,8 @@ class Base(Configuration):
     VIDEO_ATTENDANCES_CACHE_DURATION = values.Value(300)  # 5 minutes
 
     SENTRY_DSN = values.Value(None)
+    SENTRY_TRACES_SAMPLE_RATE = values.FloatValue(1.0)
+    SENTRY_PROFILES_SAMPLE_RATE = values.FloatValue(1.0)
 
     # Resource max file size
     DOCUMENT_SOURCE_MAX_SIZE = values.PositiveIntegerValue(2**30)  # 1GB
@@ -798,6 +800,8 @@ class Base(Configuration):
                 environment=cls._get_environment(),
                 release=get_release(),
                 integrations=[DjangoIntegration()],
+                traces_sample_rate=cls.SENTRY_TRACES_SAMPLE_RATE,
+                profiles_sample_rate=cls.SENTRY_PROFILES_SAMPLE_RATE,
             )
             with sentry_sdk.configure_scope() as scope:
                 scope.set_extra("application", "backend")
