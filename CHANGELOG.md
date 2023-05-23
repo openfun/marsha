@@ -8,6 +8,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+## [4.1.0] - 2023-05-23
+
 ### Added
 
 - bulk delete for video and classroom
@@ -1670,7 +1672,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Minor fixes and improvements on features and tests
 
-[unreleased]: https://github.com/openfun/marsha/compare/v4.0.0...master
+[unreleased]: https://github.com/openfun/marsha/compare/v4.1.0...master
+[4.1.0]: https://github.com/openfun/marsha/compare/v4.0.0...v4.1.0
 [4.0.0]: https://github.com/openfun/marsha/compare/v4.0.0-beta.20...v4.0.0
 [4.0.0-beta.20]: https://github.com/openfun/marsha/compare/v4.0.0-beta.19...v4.0.0-beta.20
 [4.0.0-beta.19]: https://github.com/openfun/marsha/compare/v4.0.0-beta.18...v4.0.0-beta.19
