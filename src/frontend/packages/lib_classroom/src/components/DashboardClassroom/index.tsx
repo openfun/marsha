@@ -17,20 +17,22 @@ import React, {
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { DashboardClassroomError } from '@lib-classroom/components/DashboardClassroomError';
 import {
   useJoinClassroomAction,
   useClassroom,
 } from '@lib-classroom/data/queries';
+
+import {
+  DashboardClassroomAskUsernameStudent,
+  DashboardClassroomAskUsername,
+} from '../DashboardClassroomAskUsername';
+import { DashboardClassroomError } from '../DashboardClassroomError';
 
 const DashboardClassroomStudent = lazy(
   () => import('@lib-classroom/components/DashboardClassroomStudent'),
 );
 const DashboardClassroomInstructor = lazy(
   () => import('@lib-classroom/components/DashboardClassroomInstructor'),
-);
-const DashboardClassroomAskUsername = lazy(
-  () => import('@lib-classroom/components/DashboardClassroomAskUsername'),
 );
 const DashboardClassroomJoin = lazy(
   () => import('@lib-classroom/components/DashboardClassroomJoin'),
@@ -167,10 +169,12 @@ const DashboardClassroom = ({ classroomId }: DashboardClassroomProps) => {
         } else {
           // Students can not cancel joining a classroom
           content = (
-            <DashboardClassroomAskUsername
+            <DashboardClassroomAskUsernameStudent
               userFullname={userFullname}
               setUserFullname={setUserFullname}
               onJoin={joinClassroomAction}
+              isRecordingEnabled={classroom.enable_recordings}
+              recordingPurpose={classroom.recording_purpose}
             />
           );
         }

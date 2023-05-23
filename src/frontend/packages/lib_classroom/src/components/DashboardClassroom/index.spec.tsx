@@ -183,6 +183,12 @@ describe('<DashboardClassroom />', () => {
     const inputUsername = screen.getByRole('textbox');
     fireEvent.change(inputUsername, { target: { value: 'Joe' } });
 
+    screen
+      .getByRole('checkbox', {
+        name: /Do you accept to be recorded/i,
+      })
+      .click();
+
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
     fireEvent.click(screen.getByText('Join'));
