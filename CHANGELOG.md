@@ -30,6 +30,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   (thumbnails, timed_text_track, shared_live_media...) (#2228)
 - Change wording on modals
 - use existing setting DEFAULT_FROM_EMAIL instead of EMAIL_FROM
+- enable sentry performance and profiling in django
 
 ### Fixed
 
