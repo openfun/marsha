@@ -10,6 +10,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Added
 
+- Add checkbox of recording consent (#2259)
 - Setting for instructor classroom invitation link expiration
 - Add a downloadable ICS file to scheduled student classrooms
 
