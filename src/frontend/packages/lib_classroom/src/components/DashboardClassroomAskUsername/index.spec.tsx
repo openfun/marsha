@@ -2,7 +2,10 @@ import { fireEvent, screen } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import DashboardClassroomAskUsername from '.';
+import {
+  DashboardClassroomAskUsername,
+  DashboardClassroomAskUsernameStudent,
+} from '.';
 
 const onJoin = jest.fn();
 const onCancel = jest.fn();
@@ -51,5 +54,63 @@ describe('<DashboardClassroomAskUsername />', () => {
     const cancelButton = screen.queryByText('Cancel');
     expect(cancelButton).toBeNull();
     expect(mockSetUserFullname).toHaveBeenCalledTimes(0);
+  });
+
+  describe('<DashboardClassroomAskUsernameStudent />', () => {
+    it('checks the recording checkbox interaction with the join button', () => {
+      const userFullname = 'Initial value';
+      const mockSetUserFullname = jest.fn();
+      render(
+        <DashboardClassroomAskUsernameStudent
+          userFullname={userFullname}
+          setUserFullname={mockSetUserFullname}
+          onJoin={onJoin}
+          isRecordingEnabled
+          recordingPurpose="My recording purpose"
+        />,
+      );
+
+      const joinButton = screen.getByRole('button', {
+        name: /Join/i,
+      });
+      expect(screen.getByText('My recording purpose')).toBeInTheDocument();
+      expect(joinButton).toBeDisabled();
+
+      screen
+        .getByRole('checkbox', {
+          name: /Do you accept to be recorded/i,
+        })
+        .click();
+
+      expect(joinButton).toBeEnabled();
+    });
+
+    it('displays without recording enabled', () => {
+      const userFullname = 'Initial value';
+      const mockSetUserFullname = jest.fn();
+      render(
+        <DashboardClassroomAskUsernameStudent
+          userFullname={userFullname}
+          setUserFullname={mockSetUserFullname}
+          onJoin={onJoin}
+          isRecordingEnabled={false}
+          recordingPurpose="My recording purpose"
+        />,
+      );
+
+      expect(
+        screen.queryByRole('checkbox', {
+          name: /Do you accept to be recorded/i,
+        }),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText('My recording purpose'),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.getByRole('button', {
+          name: /Join/i,
+        }),
+      ).toBeEnabled();
+    });
   });
 });
