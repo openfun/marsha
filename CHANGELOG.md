@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Setting for instructor classroom invitation link expiration 
+
 ## [4.1.0] - 2023-05-23
 
 ### Added

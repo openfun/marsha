@@ -158,6 +158,66 @@ class CreateStableInviteJwtTestCase(TestCase):
             },
         )
 
+    @override_settings(BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION=60)
+    def test_jwt_content_without_starting_at_and_no_duration_instructor(self):
+        """
+        Assert the payload contains the expected data,
+        when classroom has no starting time and no duration.
+
+        JWT will be valid for at least 24 hours.
+        """
+        now_fixed = datetime(2020, 8, 8, 14, tzinfo=baseTimezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now_fixed):
+            classroom = ClassroomFactory(
+                pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
+                created_on=timezone.now(),
+            )
+            jwt = create_classroom_stable_invite_jwt(classroom, role=INSTRUCTOR)
+
+        self.assertDictEqual(
+            jwt.payload,
+            {
+                "exp": 1602028800,  # Wednesday 7 October 2020 00:00:00 UTC
+                "iat": 1596895200,  # Saturday 8 August 2020 14:00:00 UTC
+                "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-08",
+                "locale": "en_US",
+                "maintenance": False,
+                "permissions": {"can_access_dashboard": False, "can_update": False},
+                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "roles": ["instructor"],
+                "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
+                "token_type": "resource_access",
+            },
+        )
+
+    @override_settings(BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION=60)
+    def test_jwt_content_without_starting_at_and_duration_instructor(self):
+        """Assert the payload contains the expected data."""
+        now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
+        with mock.patch.object(timezone, "now", return_value=now_fixed):
+            classroom = ClassroomFactory(
+                pk="ad0395fd-3023-45da-8801-93d1ce64acd5",
+                created_on=timezone.now(),
+                estimated_duration=timedelta(hours=2),
+            )
+            jwt = create_classroom_stable_invite_jwt(classroom, role=INSTRUCTOR)
+
+        self.assertDictEqual(
+            jwt.payload,
+            {
+                "exp": 1602028800,  # Wednesday 7 October 2020 00:00:00 UTC
+                "iat": 1596844800,  # Saturday 8 August 2020 00:00:00 UTC
+                "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-08",
+                "locale": "en_US",
+                "maintenance": False,
+                "permissions": {"can_access_dashboard": False, "can_update": False},
+                "resource_id": "ad0395fd-3023-45da-8801-93d1ce64acd5",
+                "roles": ["instructor"],
+                "session_id": "ad0395fd-3023-45da-8801-93d1ce64acd5-invite",
+                "token_type": "resource_access",
+            },
+        )
+
     def test_jwt_content_when_called_twice(self):
         """Assert the payload contains the same data for several calls for same classroom."""
         classroom = ClassroomFactory()

@@ -381,6 +381,7 @@ class Base(Configuration):
     BBB_API_TIMEOUT = values.PositiveIntegerValue(10)
     ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES = values.ListValue(["application/pdf"])
     BBB_INVITE_JWT_DEFAULT_DAYS_DURATION = values.PositiveIntegerValue(30)
+    BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION = values.PositiveIntegerValue(30)
 
     # deposit application
     DEPOSIT_ENABLED = values.BooleanValue(False)
