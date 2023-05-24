@@ -1,9 +1,12 @@
-import { Box, Button, Text } from 'grommet';
+import { Box, Button, Paragraph, Text } from 'grommet';
+import { Schedule } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import { Classroom } from 'lib-components';
+import { Classroom, useResponsive } from 'lib-components';
 import { DateTime, Duration, Settings } from 'luxon';
-import React, { useEffect } from 'react';
+import React, { CSSProperties, Fragment, useEffect, useMemo } from 'react';
+import ICalendarLink from 'react-icalendar-link';
 import { defineMessages, useIntl } from 'react-intl';
+import styled from 'styled-components';
 
 import {
   DashboardClassroomLayout,
@@ -34,6 +37,11 @@ const DashboardClassRoomTitleDescription = ({
   );
 };
 
+const StyledText = styled(Text)`
+  padding-left: 10px;
+  vertical-align: bottom;
+`;
+
 const messages = defineMessages({
   joinedAs: {
     defaultMessage: 'You have joined the classroom as {joinedAs}.',
@@ -60,6 +68,28 @@ const messages = defineMessages({
     description: 'Message when classroom is started.',
     id: 'component.DashboardClassroomStudent.classroomStarted',
   },
+  a11AddCalendar: {
+    defaultMessage: 'Click to add the event to your calendar',
+    description: 'Title on icon to click to add the event to my calendar',
+    id: 'component.DashboardClassroomStudent.a11AddCalendar',
+  },
+  addCalendar: {
+    defaultMessage: 'Add to my calendar',
+    description: 'Title of the link to add this event to my calendar',
+    id: 'component.DashboardClassroomStudent.addCalendar',
+  },
+  defaultTitle: {
+    defaultMessage: "Don't miss the classroom!",
+    description:
+      'Title to advertise a classroom in a ics file which has no title set yet.',
+    id: 'component.DashboardClassroomStudentdefaultTitle',
+  },
+  defaultDescription: {
+    defaultMessage: 'Come and join us!',
+    description:
+      'Description to advertise a classroom in a ics file which has no description set yet.',
+    id: 'component.DashboardClassroomStudent.defaultDescription',
+  },
 });
 
 interface DashboardClassroomStudentProps {
@@ -76,7 +106,7 @@ const DashboardClassroomStudent = ({
   classroomEnded,
 }: DashboardClassroomStudentProps) => {
   const intl = useIntl();
-
+  const { isMobile } = useResponsive();
   Settings.defaultLocale = intl.locale;
 
   const startingAt = DateTime.fromISO(classroom.starting_at || '');
@@ -85,7 +115,47 @@ const DashboardClassroomStudent = ({
     DateTime.TIME_24_SIMPLE,
   );
 
+  const isScheduledPassed = useMemo(() => {
+    if (!classroom.starting_at) {
+      return undefined;
+    }
+    const classroomScheduleStartDate = DateTime.fromISO(
+      classroom.starting_at,
+    ).setLocale(intl.locale);
+
+    return (
+      (classroomScheduleStartDate &&
+        classroomScheduleStartDate < DateTime.now()) ||
+      !classroomScheduleStartDate
+    );
+  }, [classroom.starting_at, intl.locale]);
+
   let displayedEventTime = `${displayedStartingAt} - ${displayedStartingTime}`;
+
+  const scheduledEvent = useMemo(() => {
+    if (classroom.starting_at) {
+      const startDate = DateTime.fromISO(classroom.starting_at);
+      const duration = classroom.estimated_duration
+        ? Duration.fromISOTime(classroom.estimated_duration)
+        : { hours: 1 };
+      const endDate = startDate.plus(duration);
+      return {
+        description:
+          classroom.description ||
+          intl.formatMessage(messages.defaultDescription),
+        endTime: endDate.toISO() as string,
+        startTime: startDate.toISO() as string,
+        title: classroom.title || intl.formatMessage(messages.defaultTitle),
+      };
+    }
+    return undefined;
+  }, [
+    classroom.description,
+    classroom.estimated_duration,
+    classroom.starting_at,
+    classroom.title,
+    intl,
+  ]);
 
   if (classroom.estimated_duration) {
     const estimatedDuration = Duration.fromISOTime(
@@ -95,6 +165,13 @@ const DashboardClassroomStudent = ({
       .plus(estimatedDuration)
       .toLocaleString(DateTime.TIME_24_SIMPLE);
     displayedEventTime += ` > ${displayedEndingAt}`;
+  }
+
+  let containerStyle: CSSProperties;
+  if (isMobile) {
+    containerStyle = { width: '90%', maxWidth: '400px' };
+  } else {
+    containerStyle = { maxWidth: '40%', minWidth: '600px' };
   }
 
   useEffect(() => {
@@ -138,7 +215,7 @@ const DashboardClassroomStudent = ({
   } else if (classroom.starting_at) {
     // classroom scheduled
     left = (
-      <React.Fragment>
+      <Fragment>
         <DashboardClassRoomTitleDescription classroom={classroom} />
         <Box
           margin={{ top: 'large', horizontal: 'small' }}
@@ -155,7 +232,26 @@ const DashboardClassroomStudent = ({
           </Text>
         </Box>
         <DashboardClassroomStudentCounter starting_at={classroom.starting_at} />
-      </React.Fragment>
+        <Box
+          margin="auto"
+          pad={{ horizontal: 'none', vertical: 'large' }}
+          style={containerStyle}
+        >
+          {scheduledEvent && !isScheduledPassed && (
+            <Paragraph alignSelf="center" textAlign="justify">
+              <ICalendarLink event={scheduledEvent}>
+                <Schedule
+                  a11yTitle={intl.formatMessage(messages.a11AddCalendar)}
+                  color="blue-active"
+                />
+                <StyledText color="blue-active">
+                  {intl.formatMessage(messages.addCalendar)}
+                </StyledText>
+              </ICalendarLink>
+            </Paragraph>
+          )}
+        </Box>
+      </Fragment>
     );
   } else {
     // classroom exists but not started
