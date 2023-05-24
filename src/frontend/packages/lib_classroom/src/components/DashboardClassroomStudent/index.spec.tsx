@@ -18,11 +18,38 @@ jest.mock('lib-components', () => ({
   }),
 }));
 
+jest.mock(
+  'react-icalendar-link',
+  () =>
+    (props: {
+      event: {
+        description: string;
+        endTime: string;
+        startTime: string;
+        title: string;
+        url: string;
+      };
+    }) => {
+      return (
+        <span>
+          <span>Add to my calendar</span>
+          <span>description:{props.event.description}</span>
+          <span>title:{props.event.title}</span>
+          <span>startTime:{props.event.startTime}</span>
+          <span>endlive:{props.event.endTime}</span>
+          {props.event.url && <span>url:{props.event.url}</span>}
+        </span>
+      );
+    },
+);
+
 Settings.defaultLocale = 'en';
 // Settings.defaultZone = 'utc';
 const currentDate = DateTime.local(2022, 1, 27, 14, 22, 15);
 
 describe('<DashboardClassroomStudent />', () => {
+  const nextYear = new Date().getFullYear() + 1;
+
   beforeEach(() => {
     jest.useFakeTimers();
     jest.setSystemTime(currentDate.toJSDate());
@@ -91,6 +118,9 @@ describe('<DashboardClassroomStudent />', () => {
       `${displayedStartingDate} - ${displayedStartingTime} > ${displayedEndingTime}`,
     );
     expect(classroomEnded).toHaveBeenCalledTimes(0);
+    expect(screen.getByText('Add to my calendar')).toBeInTheDocument();
+    expect(screen.getByText('Title')).toBeInTheDocument();
+    expect(screen.getByText('Description')).toBeInTheDocument();
 
     // classroom scheduled without estimated duration
     rerender(
@@ -146,5 +176,116 @@ describe('<DashboardClassroomStudent />', () => {
     screen.getByText('Classroom ended.');
     expect(joinClassroomAction).toHaveBeenCalledTimes(1);
     expect(classroomEnded).toHaveBeenCalledTimes(1);
+  });
+
+  it("doesn't add a link to add to my calendar if there is no starting_at date", () => {
+    const classroom = classroomMockFactory({
+      title: 'classroom title',
+      description: 'classroom description',
+      started: false,
+      ended: false,
+    });
+
+    const joinClassroomAction = jest.fn();
+    const classroomEnded = jest.fn();
+
+    render(
+      <DashboardClassroomStudent
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
+    );
+
+    expect(
+      screen.queryByRole('button', { name: 'Register' }),
+    ).not.toBeInTheDocument();
+
+    screen.getByText('classroom title');
+    screen.getByText('classroom description');
+    expect(
+      screen.queryByLabelText('Click to add the event to your calendar'),
+    ).not.toBeInTheDocument();
+    expect(screen.queryByText('Add to my calendar')).not.toBeInTheDocument();
+  });
+
+  it('uses default values for description, duration and title when the classroom has none for the ics link', () => {
+    const classroom = classroomMockFactory({
+      starting_at: DateTime.fromJSDate(
+        new Date(nextYear, 1, 25, 11, 0, 0),
+      ).toISO(),
+      description: '',
+      is_public: false,
+      title: '',
+      started: false,
+      ended: false,
+    });
+
+    const joinClassroomAction = jest.fn();
+    const classroomEnded = jest.fn();
+
+    render(
+      <DashboardClassroomStudent
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
+    );
+    screen.getByText('Add to my calendar');
+    // default title
+    screen.getByText("title:Don't miss the classroom!");
+    // default description
+    screen.getByText('description:Come and join us!');
+    // date of the ics link
+    screen.getByText(`startTime:${nextYear}-02-25T11:00:00.000+00:00`);
+    // one hour has been added for the end
+    screen.getByText(`endlive:${nextYear}-02-25T12:00:00.000+00:00`);
+    // public is false, there is no URL
+    expect(screen.queryByText('url:')).not.toBeInTheDocument();
+  });
+
+  it("creates a link when the classroom is public and uses video's info for the ics link", () => {
+    const estimatedDuration = Duration.fromObject({ hours: 6, minutes: 15 });
+    const year = new Date().getFullYear() + 1;
+    const classroom = classroomMockFactory({
+      starting_at: DateTime.fromJSDate(new Date(year, 1, 25, 11, 0, 0)).toISO(),
+      estimated_duration: estimatedDuration.toISOTime({
+        suppressMilliseconds: true,
+      }),
+      description: 'this is the description',
+      is_public: true,
+      title: 'this is the title',
+      started: false,
+      ended: false,
+    });
+    const joinClassroomAction = jest.fn();
+    const classroomEnded = jest.fn();
+
+    render(
+      <DashboardClassroomStudent
+        classroom={classroom}
+        joinedAs={false}
+        joinClassroomAction={joinClassroomAction}
+        classroomEnded={classroomEnded}
+      />,
+    );
+    expect(screen.getByText('Add to my calendar')).toBeInTheDocument();
+
+    // default title
+    expect(screen.getByText('title:this is the title')).toBeInTheDocument();
+    // default description
+    expect(
+      screen.getByText('description:this is the description'),
+    ).toBeInTheDocument();
+    // date of the ics link
+    expect(
+      screen.getByText(`startTime:${year}-02-25T11:00:00.000+00:00`),
+    ).toBeInTheDocument();
+    // duration has been added to calculate the end
+    expect(
+      screen.getByText(`endlive:${year}-02-25T17:15:00.000+00:00`),
+    ).toBeInTheDocument();
   });
 });
