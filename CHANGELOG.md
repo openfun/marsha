@@ -12,6 +12,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Setting for instructor classroom invitation link expiration 
 
+### Fixed
+
+- remove initial / from page slug to use it in the API fetch
+
 ## [4.1.0] - 2023-05-23
 
 ### Added

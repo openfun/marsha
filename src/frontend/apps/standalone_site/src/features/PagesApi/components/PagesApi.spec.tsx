@@ -7,7 +7,7 @@ import PagesApi from './PagesApi';
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
   useLocation: () => ({
-    pathname: 'cgi',
+    pathname: '/cgi',
   }),
 }));
 

@@ -24,7 +24,7 @@ const BoxMarkdown = styled(Box)`
 
 const PagesApi = () => {
   const location = useLocation();
-  const { data, isLoading } = usePageApi(location.pathname);
+  const { data, isLoading } = usePageApi(location.pathname.slice(1));
 
   return (
     <Box margin={{ top: 'auto' }}>
