@@ -3,7 +3,7 @@ import { useMemo } from 'react';
 import { usePagesApi as usePages } from '../api/usePagesApi';
 
 export const usePagesApi = () => {
-  const { data } = usePages({
+  const { data, isLoading } = usePages({
     keepPreviousData: true,
     staleTime: Infinity,
   });
@@ -16,5 +16,6 @@ export const usePagesApi = () => {
   return {
     pagesApi: data?.results || [],
     routesPagesApi,
+    isPagesLoading: isLoading,
   };
 };
