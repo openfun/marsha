@@ -68,7 +68,11 @@ const AppRoutes = () => {
 };
 
 const AnonymousRoutes = () => {
-  const { routesPagesApi } = usePagesApi();
+  const { routesPagesApi, isPagesLoading } = usePagesApi();
+
+  if (isPagesLoading) {
+    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+  }
 
   return (
     <Switch>
@@ -117,7 +121,7 @@ const AnonymousRoutes = () => {
 const AuthenticatedRoutes = () => {
   const history = useHistory();
   const { pathname } = useLocation();
-  const { routesPagesApi } = usePagesApi();
+  const { routesPagesApi, isPagesLoading } = usePagesApi();
 
   /**
    * Redirect to homepage if user try to access login page when authenticated
@@ -127,6 +131,10 @@ const AuthenticatedRoutes = () => {
       history.replace(routes.HOMEPAGE.path);
     }
   }, [history, pathname]);
+
+  if (isPagesLoading) {
+    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+  }
 
   return (
     <Switch>

@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - remove initial / from page slug to use it in the API fetch
 - Blacklist the refresh token on the frontend side (#2265)
+- Legale pages not accessible from url (#2266)
 
 ## [4.1.0] - 2023-05-23
 

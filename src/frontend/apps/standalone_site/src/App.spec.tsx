@@ -60,6 +60,9 @@ describe('<App />', () => {
 
     fetchMock.get('/api/classrooms/?limit=5&offset=0&playlist=', someResponse);
     fetchMock.get('/api/config/', frontendConfiguration);
+    fetchMock.get('/api/pages/', {
+      results: [{ slug: '/my-test', name: 'My test link' }],
+    });
   });
 
   afterEach(() => {
@@ -84,6 +87,10 @@ describe('<App />', () => {
     expect(
       await screen.findByText(/some welcome classroom/i),
     ).toBeInTheDocument();
+    expect(
+      await screen.findByText(/some welcome classroom/i),
+    ).toBeInTheDocument();
+    expect(await screen.findByText(/My test link/i)).toBeInTheDocument();
   });
 
   test('renders with another language', async () => {
