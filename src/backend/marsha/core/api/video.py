@@ -224,8 +224,17 @@ class VideoViewSet(
             super()
             .get_queryset()
             .filter(
-                Q(playlist__user_accesses__user__id=user_id)
-                | Q(playlist__organization__user_accesses__user__id=user_id)
+                Q(
+                    playlist__user_accesses__user__id=user_id,
+                    playlist__user_accesses__role__in=[
+                        ADMINISTRATOR,
+                        INSTRUCTOR,
+                    ],
+                )
+                | Q(
+                    playlist__organization__user_accesses__user__id=user_id,
+                    playlist__organization__user_accesses__role=ADMINISTRATOR,
+                )
             )
         )
 

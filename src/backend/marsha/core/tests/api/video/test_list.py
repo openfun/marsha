@@ -150,18 +150,20 @@ class VideoListAPITest(TestCase):
             },
         )
 
-    def test_api_video_read_list_user_with_organization_access(self):
+    def test_api_video_read_list_user_with_admin_organization_access(self):
         """
-        Token user with organization access lists videos.
+        Token user with an admin access on an organization lists videos.
 
-        A user with a user token, with access to an organization should get only videos from
+        A user with a user token, with admin access on an organization should get only videos from
         that organization no matter the playlist they are in, and not from other playlists or
         organizations.
         """
         user = factories.UserFactory()
         # An organization where the user has access
         organization_1 = factories.OrganizationFactory()
-        factories.OrganizationAccessFactory(user=user, organization=organization_1)
+        factories.OrganizationAccessFactory(
+            user=user, organization=organization_1, role=ADMINISTRATOR
+        )
         # In this organization, two playlists where the user has no direct access
         organization_1_playlist_1 = factories.PlaylistFactory(
             organization=organization_1
@@ -197,7 +199,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media": None,
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
-                        "can_edit": False,
+                        "can_edit": True,
                         "allow_recording": True,
                         "description": video_1.description,
                         "estimated_duration": None,
@@ -240,7 +242,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
-                        "can_edit": False,
+                        "can_edit": True,
                         "description": video_2.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -381,9 +383,9 @@ class VideoListAPITest(TestCase):
 
     def test_api_video_read_list_by_playlist_user_with_org_access(self):
         """
-        Token user with organization access lists videos by playlist.
+        Token user with admin role access on an organization lists videos by playlist.
 
-        A user with a user token, with an organization access, can list videos
+        A user with a user token, with admin role access on an organization, can list videos
         for a playlist that belongs to that organization.
         """
         user = factories.UserFactory()
@@ -391,7 +393,9 @@ class VideoListAPITest(TestCase):
         first_organization = factories.OrganizationFactory()
         first_playlist = factories.PlaylistFactory(organization=first_organization)
         video = factories.VideoFactory(playlist=first_playlist)
-        factories.OrganizationAccessFactory(user=user, organization=first_organization)
+        factories.OrganizationAccessFactory(
+            user=user, organization=first_organization, role=ADMINISTRATOR
+        )
         # Another one where the user has no access, with a video
         other_organization = factories.OrganizationFactory()
         other_playlist = factories.PlaylistFactory(organization=other_organization)
@@ -416,7 +420,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
-                        "can_edit": False,
+                        "can_edit": True,
                         "description": video.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -560,9 +564,9 @@ class VideoListAPITest(TestCase):
             },
         )
 
-    def test_api_video_read_list_by_org_user_with_org_access(self):
+    def test_api_video_read_list_by_org_user_with_admin_org_access(self):
         """
-        Token user with organization access lists videos by organization.
+        Token user with administrator role on an organization can lists videos.
 
         A user with a user token, with an organization access, can list videos for the
         organization, no matter the playlist they belong to.
@@ -570,7 +574,9 @@ class VideoListAPITest(TestCase):
         user = factories.UserFactory()
         # The organization for both our playlists
         organization = factories.OrganizationFactory()
-        factories.OrganizationAccessFactory(organization=organization, user=user)
+        factories.OrganizationAccessFactory(
+            organization=organization, user=user, role=ADMINISTRATOR
+        )
         # Two separate playlists for the organization, with a video each
         playlist_1 = factories.PlaylistFactory(organization=organization)
         video_1 = factories.VideoFactory(playlist=playlist_1, title="First video")
@@ -596,7 +602,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
-                        "can_edit": False,
+                        "can_edit": True,
                         "description": video_1.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -638,7 +644,7 @@ class VideoListAPITest(TestCase):
                         "active_shared_live_media_page": None,
                         "active_stamp": None,
                         "allow_recording": True,
-                        "can_edit": False,
+                        "can_edit": True,
                         "description": video_2.description,
                         "estimated_duration": None,
                         "has_chat": True,
@@ -676,6 +682,40 @@ class VideoListAPITest(TestCase):
                         "license": None,
                     },
                 ],
+            },
+        )
+
+    def test_api_video_read_list_by_org_user_with_org_access(self):
+        """
+        Token user with organization access lists videos by organization.
+
+        A user with a user token, with an organization access, will have no result if
+        he has not the administrator role.
+        """
+        user = factories.UserFactory()
+        # The organization for both our playlists
+        organization = factories.OrganizationFactory()
+        factories.OrganizationAccessFactory(organization=organization, user=user)
+        # Two separate playlists for the organization, with a video each
+        playlist_1 = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=playlist_1, title="First video")
+        playlist_2 = factories.PlaylistFactory(organization=organization)
+        factories.VideoFactory(playlist=playlist_2, title="Second video")
+
+        jwt_token = UserAccessTokenFactory(user=user)
+
+        response = self.client.get(
+            f"/api/videos/?organization={organization.id}",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "count": 0,
+                "next": None,
+                "previous": None,
+                "results": [],
             },
         )
 

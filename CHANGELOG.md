@@ -16,6 +16,11 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - frontend bulk delete for videos, webinars and classrooms
 - Can choose inactive resource by site (#2276)
 
+### Changed
+
+- Restrict video list endpoint to organisation admin
+  and playlist admin or instructor
+
 ### Fixed
 
 - remove initial / from page slug to use it in the API fetch
