@@ -14,7 +14,7 @@ import { HomePage } from 'features/HomePage';
 import { Menu } from 'features/Menu';
 import { PagesApi, usePagesApi } from 'features/PagesApi';
 
-import { routes } from './routes';
+import { useRoutes } from './useRoutes';
 
 const { AuthRouter } = lazyImport(() => import('features/Authentication'));
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
@@ -69,6 +69,7 @@ const AppRoutes = () => {
 
 const AnonymousRoutes = () => {
   const { routesPagesApi, isPagesLoading } = usePagesApi();
+  const routes = useRoutes();
 
   if (isPagesLoading) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;
@@ -77,7 +78,7 @@ const AnonymousRoutes = () => {
   return (
     <Switch>
       <Route
-        path={routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE.path}
+        path={routes.CONTENTS.subRoutes?.CLASSROOM?.subRoutes?.INVITE.path}
         exact
       >
         <MainLayout
@@ -119,6 +120,7 @@ const AnonymousRoutes = () => {
 };
 
 const AuthenticatedRoutes = () => {
+  const routes = useRoutes();
   const history = useHistory();
   const { pathname } = useLocation();
   const { routesPagesApi, isPagesLoading } = usePagesApi();
@@ -130,7 +132,7 @@ const AuthenticatedRoutes = () => {
     if (pathname === routes.LOGIN.path) {
       history.replace(routes.HOMEPAGE.path);
     }
-  }, [history, pathname]);
+  }, [history, pathname, routes]);
 
   if (isPagesLoading) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;

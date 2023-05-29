@@ -6,6 +6,11 @@ import ReactTestUtils from 'react-dom/test-utils';
 import HomePage from './HomePage';
 
 jest.mock('features/Contents', () => ({
+  useContentRoutes: () => ({
+    CONTENTS: {
+      path: '/contents',
+    },
+  }),
   ContentsShuffle: () => <div>My ContentsShuffle</div>,
 }));
 

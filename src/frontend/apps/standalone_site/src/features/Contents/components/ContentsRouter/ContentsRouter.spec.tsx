@@ -5,8 +5,9 @@ import { useContentFeatures } from '../../store/contentsStore';
 
 import ContentsRouter from './ContentsRouter';
 
-jest.mock('features/Contents', () => ({
-  Contents: () => <div>My Contents</div>,
+jest.mock('../Contents/Contents', () => ({
+  default: () => <div>My Contents</div>,
+  __esModule: true,
 }));
 
 const ClassroomRouter = () => <div>My ClassRoomRouter</div>;
@@ -19,6 +20,17 @@ useContentFeatures.setState(
       <VideoRouter key="videoRouter" />,
       <LiveRouter key="liveRouter" />,
     ],
+    featureRoutes: {
+      CLASSROOM: {
+        path: '/my-contents/classroom',
+      },
+      VIDEO: {
+        path: '/my-contents/videos',
+      },
+      LIVE: {
+        path: '/my-contents/webinars',
+      },
+    },
   },
   true,
 );
@@ -39,13 +51,13 @@ describe('<ContentsRouter/>', () => {
     expect(screen.queryByText('My LiveRouter')).not.toBeInTheDocument();
   });
 
-  test('render from useContentFeatures', () => {
+  test('render from useContentFeatures', async () => {
     render(<ContentsRouter />, {
       routerOptions: { history: ['/my-contents/classroom'] },
     });
 
     expect(screen.queryByText('My Contents')).not.toBeInTheDocument();
-    expect(screen.getByText('My ClassRoomRouter')).toBeInTheDocument();
+    expect(await screen.findByText('My ClassRoomRouter')).toBeInTheDocument();
     expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
     expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
