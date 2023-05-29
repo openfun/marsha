@@ -5,7 +5,6 @@ import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
 import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { LoadSVG } from 'components/Assets';
-import routesContent from 'features/Contents/routes';
 
 const messages = defineMessages({
   menuHomePageLabel: {
@@ -44,7 +43,6 @@ enum ERouteNames {
 
   PLAYLIST = 'PLAYLIST',
   ORGANIZATION = 'ORGANIZATION',
-  CONTENTS = 'CONTENTS',
   LOGIN = 'LOGIN',
   PASSWORD_RESET = 'PASSWORD_RESET',
   PASSWORD_RESET_CONFIRM = 'PASSWORD_RESET_CONFIRM',
@@ -71,15 +69,14 @@ export type RouteRequired<T extends string = string> = BasicRoute &
   Pick<Required<Route<T>>, 'subRoutes'>;
 type SubRoute = Route & { hideSubRoute?: boolean };
 
-type Routes = {
+export type MainRoutes = {
   [key in ERouteNames]: BasicRoute;
 } & {
-  [ERouteNames.CONTENTS]: RouteRequired;
   [ERouteNames.PROFILE]: RouteRequired<EMyProfileSubRoutesNames>;
   [ERouteNames.PLAYLIST]: RouteRequired<EPlaylistSubRouteNames>;
 };
 
-export const routes: Routes = {
+export const routes: MainRoutes = {
   HOMEPAGE: {
     label: <FormattedMessage {...messages.menuHomePageLabel} />,
     path: `/`,
@@ -159,5 +156,4 @@ export const routes: Routes = {
       />
     ),
   },
-  ...routesContent,
 };

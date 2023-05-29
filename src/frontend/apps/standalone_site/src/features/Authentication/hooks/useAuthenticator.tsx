@@ -2,7 +2,7 @@ import { AnonymousUser, useCurrentUser, useJwt } from 'lib-components';
 import { useEffect, useState } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
-import { routes } from 'routes';
+import { useRoutes } from 'routes/useRoutes';
 
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
@@ -10,8 +10,9 @@ import { validateChallenge } from '../api/validateChallenge';
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
 export const useAuthenticator = () => {
+  const routes = useRoutes();
   const match = useRouteMatch(
-    routes.CONTENTS.subRoutes.CLASSROOM.subRoutes?.INVITE.path || '',
+    routes.CONTENTS.subRoutes?.CLASSROOM?.subRoutes?.INVITE.path || '',
   ) as { params?: { inviteId?: string } } | null;
   const inviteId = match?.params?.inviteId;
 

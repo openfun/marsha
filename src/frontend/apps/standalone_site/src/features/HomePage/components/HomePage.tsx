@@ -7,7 +7,7 @@ import styled from 'styled-components';
 import banner from 'assets/img/homepage-banner.png';
 import { ContentsShuffle } from 'features/Contents';
 import { useMenu } from 'features/Menu';
-import { routes } from 'routes';
+import { useRoutes } from 'routes/useRoutes';
 
 const messages = defineMessages({
   SeeEverything: {
@@ -64,6 +64,7 @@ const TextBanner = styled(Text)<LayoutProps>`
 
 const HomePage = () => {
   const intl = useIntl();
+  const routes = useRoutes();
   const { isSmallerBreakpoint, breakpoint, isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
   const [isBannerLoaded, setIsBannerLoaded] = useState(false);

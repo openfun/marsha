@@ -3,12 +3,10 @@ import { APIList, ContentCards } from 'lib-components';
 import { Fragment } from 'react';
 import { UseQueryResult } from 'react-query';
 
-import {
-  useContentPerPage,
-  ContentsFilter,
+import useContentPerPage from '../../hooks/useContentPerPage';
+import ContentsFilter, {
   ContentsFilterProps,
-} from 'features/Contents';
-
+} from '../ContentsFilter/ContentsFilter';
 import ManageAPIState from '../ManageAPIState/ManageAPIState';
 
 interface ContentsWrapperProps<ContentType> extends ContentsFilterProps {
