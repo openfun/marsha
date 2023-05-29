@@ -5,7 +5,7 @@ import { useResponsive } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
-import { Route, routes } from 'routes';
+import { Route, useRoutes } from 'routes';
 
 import { useMenu } from '../store/menuStore';
 
@@ -52,6 +52,7 @@ const Menu = () => {
   const intl = useIntl();
   const { isDesktop } = useResponsive();
   const { isMenuOpen } = useMenu();
+  const routes = useRoutes();
   const topRoutes: Route[] = [routes.HOMEPAGE, routes.PROFILE];
   const contents: Route[] = [routes.PLAYLIST, routes.CONTENTS];
 
