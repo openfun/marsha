@@ -35,7 +35,7 @@ class DocumentSerializer(
             "upload_state",
             "url",
             "show_download",
-            "playlist",
+            "playlists",
         )
         read_only_fields = (
             "active_stamp",
@@ -53,7 +53,7 @@ class DocumentSerializer(
     filename = serializers.SerializerMethodField()
     url = serializers.SerializerMethodField()
     is_ready_to_show = serializers.BooleanField(read_only=True)
-    playlist = PlaylistLiteSerializer(read_only=True)
+    playlists = PlaylistLiteSerializer(read_only=True, many=True)
 
     def _get_extension_string(self, obj):
         """Document extension with the leading dot.
@@ -86,7 +86,11 @@ class DocumentSerializer(
             The document's filename
 
         """
-        return self._get_filename(obj.title, obj.extension, obj.playlist.title)
+        return self._get_filename(
+            obj.title,
+            obj.extension,
+            obj.playlists.first().title if obj.playlists.first() else None,
+        )
 
     def get_url(self, obj):
         """Url of the Document.

@@ -64,8 +64,9 @@ class DocumentAPITest(TestCase):
             uploaded_on=datetime(2018, 8, 8, tzinfo=baseTimezone.utc),
             upload_state="ready",
             extension="pdf",
-            playlist__title="foo",
-            playlist__lti_id="course-v1:ufr+mathematics+00001",
+            playlists=[
+                PlaylistFactory(title="foo", lti_id="course-v1:ufr+mathematics+00001")
+            ],
             title="bar baz",
         )
 
@@ -91,11 +92,13 @@ class DocumentAPITest(TestCase):
                 "document/1533686400.pdf"
                 "?response-content-disposition=attachment%3B+filename%3Dfoo_bar-baz.pdf",
                 "show_download": True,
-                "playlist": {
-                    "id": str(document.playlist.id),
-                    "title": "foo",
-                    "lti_id": "course-v1:ufr+mathematics+00001",
-                },
+                "playlists": [
+                    {
+                        "id": str(document.playlists.first().id),
+                        "title": "foo",
+                        "lti_id": "course-v1:ufr+mathematics+00001",
+                    }
+                ],
             },
         )
 
@@ -206,7 +209,7 @@ class DocumentAPITest(TestCase):
             "/api/documents/",
             {
                 "lti_id": "document_one",
-                "playlist": str(playlist.id),
+                "playlists": str(playlist.id),
                 "title": "Some document",
             },
             HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
@@ -223,11 +226,13 @@ class DocumentAPITest(TestCase):
                 "filename": "playlist_some-document",
                 "id": str(document.id),
                 "is_ready_to_show": False,
-                "playlist": {
-                    "id": str(playlist.id),
-                    "lti_id": playlist.lti_id,
-                    "title": playlist.title,
-                },
+                "playlists": [
+                    {
+                        "id": str(playlist.id),
+                        "lti_id": playlist.lti_id,
+                        "title": playlist.title,
+                    }
+                ],
                 "show_download": True,
                 "title": "Some document",
                 "upload_state": "pending",

@@ -109,6 +109,16 @@ class PlaylistFactory(DjangoModelFactory):
     lti_id = factory.Sequence("playlist#{:d}".format)
 
 
+class PlaylistVideoFactory(DjangoModelFactory):
+    """Factory for the PlaylistVideo model."""
+
+    class Meta:  # noqa
+        model = models.PlaylistVideo
+
+    playlist = factory.SubFactory(PlaylistFactory)
+    video = factory.SubFactory("marsha.core.factories.VideoFactory")
+
+
 class PlaylistAccessFactory(DjangoModelFactory):
     """Factory for the PlaylistAccess model."""
 
@@ -128,7 +138,10 @@ class VideoFactory(DjangoModelFactory):
     title = factory.Sequence("Video {:03d}".format)
     description = factory.Faker("catch_phrase")
     position = fuzzy.FuzzyInteger(0)
-    playlist = factory.SubFactory(PlaylistFactory)
+    playlists = factory.RelatedFactory(
+        PlaylistVideoFactory,
+        factory_related_name="video",
+    )
     lti_id = factory.Sequence("video#{:d}".format)
 
 
@@ -195,6 +208,16 @@ class ThumbnailFactory(DjangoModelFactory):
         model = models.Thumbnail
 
 
+class PlaylistDocumentFactory(DjangoModelFactory):
+    """Factory for the PlaylistDocument model."""
+
+    playlist = factory.SubFactory(PlaylistFactory)
+    document = factory.SubFactory("marsha.core.factories.DocumentFactory")
+
+    class Meta:  # noqa
+        model = models.PlaylistDocument
+
+
 class DocumentFactory(DjangoModelFactory):
     """Factory for the Document model."""
 
@@ -202,8 +225,15 @@ class DocumentFactory(DjangoModelFactory):
         model = models.Document
 
     title = factory.Sequence("Document {:03d}".format)
-    playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("document#{:d}".format)
+
+    @factory.post_generation
+    def playlists(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for playlist in extracted:
+                PlaylistDocumentFactory(document=self, playlist=playlist)
 
 
 class UploadedDocumentFactory(DocumentFactory):
