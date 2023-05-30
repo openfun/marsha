@@ -1,3 +1,4 @@
+import { useJwt } from '@lib-components/hooks/stores/useJwt';
 import { TokenResponse } from '@lib-components/types/jwt';
 
 const isValidate = (response: unknown): response is TokenResponse => {
@@ -19,6 +20,12 @@ export const refreshToken = async (
   refreshToken: string,
   signal?: AbortSignal,
 ) => {
+  if (useJwt.getState().refreshJwtBlackListed === refreshToken) {
+    throw new Error('Refresh token is blacklisted');
+  }
+
+  useJwt.getState().setRefreshJwtBlackListed(refreshToken);
+
   const response = await fetch('/account/api/token/refresh/', {
     headers: {
       'Content-Type': 'application/json',
