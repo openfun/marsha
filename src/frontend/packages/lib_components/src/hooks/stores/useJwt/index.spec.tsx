@@ -84,4 +84,10 @@ describe('useJwt', () => {
 
     expect(useJwt.getState().getJwt()).toEqual('another token');
   });
+
+  it('checks refreshJwtBlackListed', () => {
+    expect(useJwt.getState().refreshJwtBlackListed).toEqual(undefined);
+    useJwt.getState().setRefreshJwtBlackListed('some token');
+    expect(useJwt.getState().refreshJwtBlackListed).toEqual('some token');
+  });
 });
