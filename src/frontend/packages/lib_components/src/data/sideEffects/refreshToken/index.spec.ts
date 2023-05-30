@@ -1,5 +1,7 @@
 import fetchMock from 'fetch-mock';
 
+import { useJwt } from '@lib-components/hooks';
+
 import { refreshToken } from '.';
 
 describe('refreshToken()', () => {
@@ -35,5 +37,31 @@ describe('refreshToken()', () => {
       access: 'some access token',
       refresh: 'some refresh token',
     });
+  });
+
+  it('blacklists the refresh token', async () => {
+    fetchMock.post('/account/api/token/refresh/', {
+      access: 'new access token',
+      refresh: 'new refresh token',
+    });
+
+    await refreshToken('some refresh token');
+
+    expect(useJwt.getState().refreshJwtBlackListed).toEqual(
+      'some refresh token',
+    );
+  });
+
+  it('throws an error if refresh token is blacklisted', async () => {
+    useJwt.getState().setRefreshJwtBlackListed('some_token');
+
+    fetchMock.post('/account/api/token/refresh/', {
+      access: 'some access token',
+      refresh: 'some refresh token',
+    });
+
+    await expect(refreshToken('some_token')).rejects.toThrow(
+      'Refresh token is blacklisted',
+    );
   });
 });

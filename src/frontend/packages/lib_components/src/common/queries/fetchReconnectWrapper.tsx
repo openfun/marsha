@@ -1,5 +1,6 @@
 import { refreshToken } from '@lib-components/data/sideEffects/refreshToken';
 import { useJwt } from '@lib-components/hooks/stores/useJwt';
+import { sleep } from '@lib-components/utils/system';
 
 let routesExclude = ['/account/api/token/', '/e2e/api/'];
 let routesInclude = ['/api/', '/xapi/'];
@@ -65,6 +66,8 @@ export const fetchReconnectWrapper = async (
        * - If multiple requests are made very quickly, the refresh token can be blacklisted,
        *   in this case, we try to reconnect with the potential new access token.
        */
+      await sleep(400);
+
       jwt = useJwt.getState().getJwt();
       if (jwt) {
         try {

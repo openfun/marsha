@@ -7,6 +7,7 @@ const JWT_KEY = 'JWT';
 const REFRESH_JWT_KEY = 'REFRESH_JWT';
 
 interface JwtStoreInterface {
+  refreshJwtBlackListed?: string;
   jwt?: string;
   refreshJwt?: string;
   internalDecodedJwt?: DecodedJwt;
@@ -14,12 +15,14 @@ interface JwtStoreInterface {
   setJwt: (jwt: JwtStoreInterface['jwt']) => void;
   getRefreshJwt: () => JwtStoreInterface['refreshJwt'];
   setRefreshJwt: (refreshJwt: JwtStoreInterface['refreshJwt']) => void;
+  setRefreshJwtBlackListed: (refreshJwt: string) => void;
   setDecodedJwt: (jwt: JwtStoreInterface['jwt']) => void;
   getDecodedJwt: () => JwtStoreInterface['internalDecodedJwt'];
   resetJwt: () => void;
 }
 
 const localStore = create<JwtStoreInterface>((set, get) => ({
+  refreshJwtBlackListed: undefined,
   jwt: undefined,
   refreshJwt: undefined,
   internalDecodedJwt: undefined,
@@ -27,6 +30,12 @@ const localStore = create<JwtStoreInterface>((set, get) => ({
   setJwt: (jwt) => set((state) => ({ ...state, jwt })),
   getRefreshJwt: () => get().refreshJwt,
   setRefreshJwt: (refreshJwt) => set((state) => ({ ...state, refreshJwt })),
+  setRefreshJwtBlackListed: (refreshJwt) => {
+    set((state) => ({
+      ...state,
+      refreshJwtBlackListed: refreshJwt,
+    }));
+  },
   setDecodedJwt: (jwt) => {
     const decoded = decodeJwt(jwt);
     set((state) => ({ ...state, internalDecodedJwt: decoded }));
@@ -50,6 +59,7 @@ const localStore = create<JwtStoreInterface>((set, get) => ({
 }));
 
 export const persistentStore = create<JwtStoreInterface>((set, get) => ({
+  refreshJwtBlackListed: undefined,
   jwt: localStorage.getItem(JWT_KEY) || undefined,
   refreshJwt: localStorage.getItem(REFRESH_JWT_KEY) || undefined,
   internalDecodedJwt: undefined,
@@ -77,6 +87,12 @@ export const persistentStore = create<JwtStoreInterface>((set, get) => ({
       ? localStorage.setItem(REFRESH_JWT_KEY, refreshJwt)
       : localStorage.removeItem(REFRESH_JWT_KEY);
     set((state) => ({ ...state, refreshJwt }));
+  },
+  setRefreshJwtBlackListed: (refreshJwt) => {
+    set((state) => ({
+      ...state,
+      refreshJwtBlackListed: refreshJwt,
+    }));
   },
   setDecodedJwt: (jwt) => {
     if (jwt) {
