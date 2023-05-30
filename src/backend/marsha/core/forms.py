@@ -13,7 +13,7 @@ class DocumentForm(ModelForm):
         """Meta for DocumentForm."""
 
         model = models.Document
-        fields = ["description", "is_public", "lti_id", "playlist", "title"]
+        fields = ["description", "is_public", "lti_id", "playlists", "title"]
 
 
 class VideoForm(ModelForm):
@@ -32,7 +32,7 @@ class VideoForm(ModelForm):
             "description",
             "is_public",
             "lti_id",
-            "playlist",
+            "playlists",
             "title",
             "upload_state",
         ]

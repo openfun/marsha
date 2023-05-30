@@ -6,7 +6,6 @@ from ..defaults import PENDING, STATE_CHOICES
 from ..utils.time_utils import to_timestamp
 from .account import User
 from .base import BaseModel
-from .playlist import Playlist
 
 
 class UploadableFileMixin(models.Model):
@@ -115,14 +114,6 @@ class BaseFile(UploadableFileMixin, BaseModel):
         null=True,
         blank=True,
     )
-    playlist = models.ForeignKey(
-        to=Playlist,
-        related_name="%(class)ss",
-        verbose_name=_("playlist"),
-        help_text=_("playlist to which this file belongs"),
-        # don't allow hard deleting a playlist if it still contains files
-        on_delete=models.PROTECT,
-    )
     duplicated_from = models.ForeignKey(
         to="self",
         related_name="duplicates",
@@ -173,7 +164,7 @@ class Document(BaseFile):
     playlists = models.ManyToManyField(
         to="Playlist",
         through="PlaylistDocument",
-        related_name="documents_many_to_many",
+        related_name="documents",
         verbose_name=_("playlists"),
         help_text=_("playlists to which this document belongs"),
         # don't allow hard deleting a playlist if it still contains documents
@@ -201,13 +192,13 @@ class Document(BaseFile):
         db_table = "document"
         verbose_name = _("document")
         verbose_name_plural = _("documents")
-        constraints = [
-            models.UniqueConstraint(
-                fields=["lti_id", "playlist"],
-                condition=models.Q(deleted=None),
-                name="document_unique_idx",
-            )
-        ]
+        # constraints = [
+        #     models.UniqueConstraint(
+        #         fields=["lti_id", "playlist"],
+        #         condition=models.Q(deleted=None),
+        #         name="document_unique_idx",
+        #     )
+        # ]
 
     def get_source_s3_key(self, stamp=None, extension=None):
         """Compute the S3 key in the source bucket (ID of the file + version stamp).

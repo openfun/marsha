@@ -192,7 +192,7 @@ class Video(BaseFile):
     playlists = models.ManyToManyField(
         to="Playlist",
         through="PlaylistVideo",
-        related_name="videos_many_to_many",
+        related_name="videos",
         verbose_name=_("playlists"),
         help_text=_("The playlists this video belongs to."),
     )
