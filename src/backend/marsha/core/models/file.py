@@ -64,6 +64,30 @@ class UploadableFileMixin(models.Model):
         return self.uploaded_on is not None
 
 
+class PlaylistDocument(BaseModel):
+    """Model for the relationship between a playlist and a document."""
+
+    playlist = models.ForeignKey(
+        to="Playlist",
+        related_name="playlist_documents",
+        verbose_name=_("playlist"),
+        help_text=_("playlist to which this document belongs"),
+        on_delete=models.CASCADE,
+    )
+    document = models.ForeignKey(
+        to="Document",
+        related_name="playlist_documents",
+        verbose_name=_("document"),
+        on_delete=models.CASCADE,
+    )
+
+    class Meta:
+        """Options for the ``PlaylistDocument`` model."""
+
+        db_table = "playlist_document"
+        unique_together = ("playlist", "document")
+
+
 class BaseFile(UploadableFileMixin, BaseModel):
     """Base file model used by all our File based models."""
 
@@ -145,6 +169,16 @@ class Document(BaseFile):
 
     RESOURCE_NAME = "documents"
     S3_IDENTIFIER = "document"
+
+    playlists = models.ManyToManyField(
+        to="Playlist",
+        through="PlaylistDocument",
+        related_name="documents_many_to_many",
+        verbose_name=_("playlists"),
+        help_text=_("playlists to which this document belongs"),
+        # don't allow hard deleting a playlist if it still contains documents
+        # on_delete=models.PROTECT,
+    )
 
     extension = models.CharField(
         blank=True,

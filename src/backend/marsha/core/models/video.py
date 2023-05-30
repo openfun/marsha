@@ -103,6 +103,33 @@ class VideoQueryset(SafeDeleteQueryset):
         )
 
 
+class PlaylistVideo(BaseModel):
+    """Model for the relationship between a playlist and a video."""
+
+    playlist = models.ForeignKey(
+        to="Playlist",
+        on_delete=models.CASCADE,
+        related_name="playlist_videos",
+        verbose_name=_("playlist"),
+    )
+    video = models.ForeignKey(
+        to="Video",
+        on_delete=models.CASCADE,
+        related_name="playlist_videos",
+        verbose_name=_("video"),
+    )
+
+    class Meta:
+        """Options for the ``PlaylistVideo`` model."""
+
+        db_table = "playlist_video"
+        unique_together = ("playlist", "video")
+
+    def __str__(self):
+        """Return the representation string of the instance."""
+        return f"{self.playlist} - {self.video}"
+
+
 class Video(BaseFile):
     """Model representing a video, created by an author."""
 
@@ -161,6 +188,13 @@ class Video(BaseFile):
         default=list,
         verbose_name=_("live participants"),
         help_text=_("Current participants list for the live."),
+    )
+    playlists = models.ManyToManyField(
+        to="Playlist",
+        through="PlaylistVideo",
+        related_name="videos_many_to_many",
+        verbose_name=_("playlists"),
+        help_text=_("The playlists this video belongs to."),
     )
     recording_slices = models.JSONField(
         blank=True,
@@ -950,7 +984,7 @@ class LiveSession(BaseModel):
         """Returns url to access video from mails."""
         return (
             f"//{Site.objects.get_current()}"
-            f"{reverse('video_direct_access',kwargs={'uuid': self.video.pk})}"
+            f"{reverse('video_direct_access', kwargs={'uuid': self.video.pk})}"
             f"?lrpk={self.pk}&key={self.get_generate_salted_hmac()}"
         )
 

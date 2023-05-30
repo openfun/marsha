@@ -96,7 +96,7 @@ class BaseFileAdmin(admin.ModelAdmin):
         "id",
         "title",
         "description",
-        "playlist",
+        # "playlist",
         "lti_id",
         "upload_state",
         "created_by",
@@ -114,16 +114,16 @@ class BaseFileAdmin(admin.ModelAdmin):
         "uploaded_on",
         "updated_on",
     )
-    list_filter = ("upload_state", "playlist__consumer_site__domain")
+    list_filter = ("upload_state",)
     search_fields = (
         "id",
         "lti_id",
-        "playlist__consumer_site__domain",
-        "playlist__consumer_site__name",
-        "playlist__id",
-        "playlist__lti_id",
-        "playlist__title",
-        "playlist__organization__name",
+        # "playlist__consumer_site__domain",
+        # "playlist__consumer_site__name",
+        # "playlist__id",
+        # "playlist__lti_id",
+        # "playlist__title",
+        # "playlist__organization__name",
         "title",
     )
 
@@ -134,7 +134,7 @@ class BaseFileInline(admin.TabularInline):
     fields = (
         "id",
         "title",
-        "playlist",
+        # "playlist",
         "lti_id",
         "upload_state",
         "uploaded_on",
@@ -336,12 +336,12 @@ class DocumentAdmin(BaseFileAdmin):
     verbose_name = _("Document")
 
 
-class DocumentsInline(BaseFileInline):
-    """Inline for documents in a playlist."""
-
-    model = Document
-    verbose_name = _("document")
-    verbose_name_plural = _("documents")
+# class DocumentsInline(BaseFileInline):
+#     """Inline for documents in a playlist."""
+#
+#     model = Document
+#     verbose_name = _("document")
+#     verbose_name_plural = _("documents")
 
 
 @admin.register(Playlist)
@@ -350,8 +350,8 @@ class PlaylistAdmin(admin.ModelAdmin):
 
     exclude = ("duplicated_from",)
     inlines = [
-        DocumentsInline,
-        VideosInline,
+        # DocumentsInline,
+        # VideosInline,
         PlaylistAccessesInline,
         PlaylistPortabilityInline,
     ]
