@@ -4,6 +4,7 @@ import { render } from 'lib-tests';
 import { Fragment } from 'react';
 import { BrowserRouter } from 'react-router-dom';
 
+import { featureContentLoader } from 'features/Contents';
 import { getFullThemeExtend } from 'styles/theme.extend';
 
 import { useMenu } from '../store/menuStore';
@@ -19,6 +20,8 @@ describe('<Menu />', () => {
   });
 
   test('renders Menu', () => {
+    featureContentLoader();
+
     render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
       screen.getByRole(/menuitem/i, { name: /My playlists/i }),

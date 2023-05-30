@@ -17,17 +17,21 @@ import {
 import { liveContents, LiveRouter, routesLive } from './Live';
 import { videoContents, VideoRouter, routesVideo } from './Video';
 
-useContentFeatures.setState({
-  featureRouter: [
-    <VideoRouter key="videoRouter" />,
-    <ClassRoomRouter key="classRoomRouter" />,
-    <LiveRouter key="liveRouter" />,
-  ],
-  featureRoutes: { ...routesVideo, ...routesLive, ...routesClassRoom },
-  featureSamples: (playlistId) => [
-    videoContents(playlistId),
-    liveContents(playlistId),
-    classRoomContents(playlistId),
-  ],
-  featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
-});
+const featureLoader = () => {
+  useContentFeatures.setState({
+    featureRouter: [
+      <VideoRouter key="videoRouter" />,
+      <ClassRoomRouter key="classRoomRouter" />,
+      <LiveRouter key="liveRouter" />,
+    ],
+    featureRoutes: { ...routesVideo, ...routesLive, ...routesClassRoom },
+    featureSamples: (playlistId) => [
+      videoContents(playlistId),
+      liveContents(playlistId),
+      classRoomContents(playlistId),
+    ],
+    featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
+  });
+};
+
+export default featureLoader;
