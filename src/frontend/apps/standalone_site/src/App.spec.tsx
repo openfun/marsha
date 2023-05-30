@@ -1,4 +1,4 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   playlistMockFactory,
@@ -8,6 +8,7 @@ import {
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
 import { FrontendConfiguration } from 'components/Sentry';
+import { useContentFeatures } from 'features/Contents/';
 
 import App from './App';
 
@@ -119,5 +120,13 @@ describe('<App />', () => {
     expect(
       await screen.findByText(/some welcome classroom/i),
     ).toBeInTheDocument();
+  });
+
+  test('the content features are correcty loaded', async () => {
+    await waitFor(() => {
+      expect(
+        useContentFeatures.getState().featureRouter.length,
+      ).toBeGreaterThan(0);
+    });
   });
 });

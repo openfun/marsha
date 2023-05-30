@@ -4,6 +4,8 @@ import fetchMock from 'fetch-mock';
 import { Playlist } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 
+import { featureContentLoader } from 'features/Contents';
+
 import { UpdatePlaylistPage } from './UpdatePlaylistPage';
 
 jest.mock('react-router-dom', () => ({
@@ -130,6 +132,8 @@ describe('<UpdatePlaylistPage />', () => {
   });
 
   it('checks the contents render by playlist', async () => {
+    featureContentLoader();
+
     render(<UpdatePlaylistPage />);
 
     deferredPlaylist.resolve(playlist);
