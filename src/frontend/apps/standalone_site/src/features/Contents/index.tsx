@@ -9,8 +9,7 @@ export { default as ContentsRouter } from './components/ContentsRouter/ContentsR
 export { default as ContentsShuffle } from './components/ContentsShuffle/ContentsShuffle';
 export { default as ContentsWrapper } from './components/ContentsWrapper/ContentsWrapper';
 export { default as ManageAPIState } from './components/ManageAPIState/ManageAPIState';
+export { default as featureContentLoader } from './features/featureLoader';
 export { default as useContentPerPage } from './hooks/useContentPerPage';
 export { default as useContentRoutes } from './hooks/useContentRoutes';
 export * from './store/contentsStore';
-
-import './features/featureLoader';

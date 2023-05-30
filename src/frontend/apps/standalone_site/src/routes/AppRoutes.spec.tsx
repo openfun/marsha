@@ -4,6 +4,8 @@ import fetchMock from 'fetch-mock';
 import { useCurrentUser, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 
+import featureContentLoader from 'features/Contents/features/featureLoader';
+
 import AppRoutes from './AppRoutes';
 
 jest.mock('features/Header', () => {
@@ -21,6 +23,7 @@ jest.mock('features/HomePage', () => ({
 }));
 
 jest.mock('features/Contents/', () => ({
+  ...jest.requireActual('features/Contents/'),
   ContentsRouter: () => <div>My ContentsRouter Page</div>,
 }));
 
@@ -43,6 +46,8 @@ jest.mock('features/Authentication', () => ({
 }));
 
 window.scrollTo = jest.fn();
+
+featureContentLoader();
 
 describe('<AppRoutes />', () => {
   beforeEach(() => {
@@ -163,7 +168,7 @@ describe('<AppRoutes />', () => {
 
       expect(await screen.findByText(/My Playlist Page/i)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole(/menuitem/i, { name: /Classrooms/i }));
+      userEvent.click(screen.getByRole(/menuitem/i, { name: /My Contents/i }));
 
       await waitFor(() => {
         expect(screen.getByText(/My ContentsRouter Page/i)).toBeInTheDocument();

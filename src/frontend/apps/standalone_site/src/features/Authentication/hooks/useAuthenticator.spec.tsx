@@ -3,6 +3,8 @@ import fetchMock from 'fetch-mock';
 import { useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, wrapperUtils } from 'lib-tests';
 
+import { featureContentLoader } from 'features/Contents';
+
 import { useAuthenticator } from './useAuthenticator';
 
 const consoleError = jest
@@ -140,6 +142,8 @@ describe('<useAuthenticator />', () => {
   });
 
   it('checks classroom invite link', async () => {
+    featureContentLoader();
+
     fetchMock.post('/api/auth/challenge/', {
       access: 'some-access2',
       refresh: 'some-refresh2',
