@@ -152,6 +152,11 @@ check-django:  ## Run the Django "check" command
 	@$(COMPOSE_RUN_APP) python manage.py check
 .PHONY: check-django
 
+makemigrations:  ## Apply potential migrations
+	@echo "$(BOLD)Apply potential migrations$(RESET)"
+	@$(COMPOSE_RUN_APP) python manage.py makemigrations
+.PHONY: makemigrations
+
 check-migrations:  ## Check that all needed migrations exist
 	@echo "$(BOLD)Checking migrations$(RESET)"
 	@$(COMPOSE_RUN_APP) python manage.py makemigrations --check --dry-run
