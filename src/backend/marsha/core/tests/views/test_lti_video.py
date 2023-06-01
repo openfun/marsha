@@ -123,7 +123,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
         self.assertEqual(
@@ -279,7 +278,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
         self.assertEqual(
@@ -460,7 +458,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
         self.assertEqual(
@@ -681,7 +678,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
         self.assertEqual(
@@ -1681,7 +1677,6 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
         self.assertEqual(context.get("player"), "videojs")

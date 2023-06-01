@@ -127,9 +127,6 @@ class MarshaViewMixin:
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN,
             "static": {
-                "svg": {
-                    "icons": static("svg/icons.svg"),
-                },
                 "img": {
                     "liveBackground": static("img/liveBackground.jpg"),
                     "liveErrorBackground": static("img/liveErrorBackground.jpg"),

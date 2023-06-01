@@ -67,7 +67,6 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
                     "marshaWhiteLogo": "/static/img/marshaWhiteLogo.png",
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
 
