@@ -13,13 +13,6 @@ import { UploadsView } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
-  useAppConfig: () => ({
-    static: {
-      svg: {
-        icons: '/path/to/icons.svg',
-      },
-    },
-  }),
 }));
 
 describe('<UploadsView />', () => {
