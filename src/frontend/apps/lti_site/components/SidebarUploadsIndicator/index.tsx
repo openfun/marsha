@@ -6,12 +6,11 @@ import {
   UploadManagerStatus,
   useUploadManager,
   StyledLink,
+  UploadSVG,
 } from 'lib-components';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
 import styled from 'styled-components';
-
-import { Icon } from '../Icon';
 
 const messages = defineMessages({
   title: {
@@ -67,7 +66,7 @@ export const SidebarUploadsIndicator = () => {
         gap="small"
         align="center"
       >
-        <Icon name="icon-upload" />
+        <UploadSVG iconColor="brand" />
         <div className="link-underlined-part">
           <FormattedMessage {...messages.title} />
         </div>

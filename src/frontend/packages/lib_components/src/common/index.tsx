@@ -49,6 +49,7 @@ export * from './SVGIcons/ViewDocumentSVG';
 export * from './SVGIcons/ViewersSVG';
 export * from './SVGIcons/WaitingJoinDiscussionSVG';
 export * from './SVGIcons/WebinarSVG';
+export * from './SVGIcons/UploadSVG';
 export * from './BreadCrumbs';
 
 export * from './queries';
