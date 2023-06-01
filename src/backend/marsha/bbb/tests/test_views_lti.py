@@ -124,9 +124,6 @@ class ClassroomLTIViewTestCase(TestCase):
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
-                },
             },
         )
 
@@ -189,9 +186,6 @@ class ClassroomLTIViewTestCase(TestCase):
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
-                },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
                 },
             },
         )
@@ -340,9 +334,6 @@ class ClassroomLTIViewTestCase(TestCase):
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
-                },
             },
         )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
@@ -489,9 +480,6 @@ class MeetingLTIViewTestCase(TestCase):
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
-                },
             },
         )
 
@@ -554,9 +542,6 @@ class MeetingLTIViewTestCase(TestCase):
                     "videoWizardBackground": "/static/img/videoWizardBackground.png",
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
-                },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
                 },
             },
         )
@@ -705,9 +690,6 @@ class MeetingLTIViewTestCase(TestCase):
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
-                "svg": {
-                    "icons": "/static/svg/icons.svg",
-                },
             },
         )
         # Make sure we only go through LTI verification once as it is costly (getting passport +
@@ -786,7 +768,6 @@ class ClassroomLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
                     "bbbBackground": "/static/img/bbbBackground.png",
                     "bbbLogo": "/static/img/bbbLogo.png",
                 },
-                "svg": {"icons": "/static/svg/icons.svg"},
             },
         )
 
