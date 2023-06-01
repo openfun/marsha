@@ -5,12 +5,11 @@ import {
   UploadManagerStatus,
   useUploadManager,
   UploadableObjectProgress,
+  UploadSVG,
 } from 'lib-components';
 import { useVideo } from 'lib-video';
 import React from 'react';
 import { defineMessages, FormattedMessage } from 'react-intl';
-
-import { Icon } from 'components/Icon';
 
 const messages = defineMessages({
   completedUploads: {
@@ -53,7 +52,7 @@ const UploadsListItem = ({ state, progress }: UploadsListItemProps) => {
       align="center"
     >
       <Text color="dark-5">
-        <Icon name="icon-play-circled" size="3rem" />
+        <UploadSVG iconColor="brand" />
       </Text>
       <Box direction="column" flex="grow" gap="small">
         {status === 'success' && !!data!.title ? (
