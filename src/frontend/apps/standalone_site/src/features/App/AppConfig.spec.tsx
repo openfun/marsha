@@ -4,7 +4,7 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
 
-import { SentryLoader } from '.';
+import AppConfig from './AppConfig';
 
 const mockInit = jest.spyOn(Sentry, 'init').mockImplementation();
 const mockConfigureScope = jest
@@ -24,7 +24,7 @@ describe('SentryLoader', () => {
       sentry_dsn: 'some dsn',
     });
 
-    render(<SentryLoader />);
+    render(<AppConfig />);
 
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
@@ -53,7 +53,7 @@ describe('SentryLoader', () => {
       },
       { overwriteRoutes: true },
     );
-    render(<SentryLoader />);
+    render(<AppConfig />);
 
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {

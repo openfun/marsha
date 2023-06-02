@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 
 import { useConfig } from 'api/useConfig';
 
-export const SentryLoader = () => {
+const AppConfig = () => {
   const setSentry = useSentry((state) => state.setSentry);
   const { data: config } = useConfig({
     keepPreviousData: true,
@@ -27,3 +27,5 @@ export const SentryLoader = () => {
 
   return null;
 };
+
+export default AppConfig;
