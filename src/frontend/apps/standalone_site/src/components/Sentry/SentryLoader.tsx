@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import { fetchWrapper, useSentry } from 'lib-components';
 import { useEffect } from 'react';
 
@@ -24,27 +23,18 @@ export const getFrontendConfiguration =
   };
 
 export const SentryLoader = () => {
-  const setIsSentryReady = useSentry((state) => state.setIsSentryReady);
+  const setSentry = useSentry((state) => state.setSentry);
 
   useEffect(() => {
     const initSentry = async () => {
       const { environment, release, sentry_dsn } =
         await getFrontendConfiguration();
       if (sentry_dsn) {
-        Sentry.init({
-          dsn: sentry_dsn,
-          environment: environment,
-          release: release,
-        });
-        Sentry.configureScope((scope) =>
-          scope.setExtra('application', 'standalone'),
-        );
-
-        setIsSentryReady(true);
+        setSentry(sentry_dsn, environment, release, 'standalone');
       }
     };
     initSentry();
-  }, [setIsSentryReady]);
+  }, [setSentry]);
 
   return null;
 };
