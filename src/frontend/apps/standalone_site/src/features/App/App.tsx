@@ -7,15 +7,14 @@ import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
 import { BrowserRouter } from 'react-router-dom';
 
-import { SentryLoader } from 'components/Sentry';
 import { ContentSpinner } from 'components/Spinner';
 import { DEFAULT_LANGUAGE } from 'conf/global';
 import { featureContentLoader } from 'features/Contents';
-import { AppRoutes } from 'routes';
 import { getFullThemeExtend } from 'styles/theme.extend';
 import { getCurrentTranslation, getLanguage, getLocaleCode } from 'utils/lang';
 
-import './App.css';
+import AppConfig from './AppConfig';
+import AppRoutes from './AppRoutes';
 
 const themeExtended = getFullThemeExtend();
 
@@ -83,7 +82,7 @@ const App = () => {
     >
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
-        <SentryLoader />
+        <AppConfig />
         <Grommet theme={themeExtended}>
           <Toaster
             toastOptions={{
