@@ -13,8 +13,7 @@ import { Header, HeaderLight, HeaderLightLink } from 'features/Header';
 import { HomePage } from 'features/HomePage';
 import { Menu } from 'features/Menu';
 import { PagesApi, usePagesApi } from 'features/PagesApi';
-
-import { useRoutes } from './useRoutes';
+import { useRoutes } from 'routes/useRoutes';
 
 const { AuthRouter } = lazyImport(() => import('features/Authentication'));
 const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
