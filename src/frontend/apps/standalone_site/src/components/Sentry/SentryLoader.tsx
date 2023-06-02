@@ -1,40 +1,29 @@
-import { fetchWrapper, useSentry } from 'lib-components';
+import { useSentry } from 'lib-components';
 import { useEffect } from 'react';
 
-export type FrontendConfiguration = {
-  sentry_dsn: string | null;
-  environment: string;
-  release: string;
-};
-
-export const getFrontendConfiguration =
-  async (): Promise<FrontendConfiguration> => {
-    const response = await fetchWrapper(`/api/config/`, {
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    if (!response.ok) {
-      throw new Error(`Failed to get sentry config : ${response.status}.`);
-    }
-
-    return (await response.json()) as FrontendConfiguration;
-  };
+import { useConfig } from 'api/useConfig';
 
 export const SentryLoader = () => {
   const setSentry = useSentry((state) => state.setSentry);
+  const { data: config } = useConfig({
+    keepPreviousData: true,
+    staleTime: Infinity,
+  });
 
   useEffect(() => {
-    const initSentry = async () => {
-      const { environment, release, sentry_dsn } =
-        await getFrontendConfiguration();
-      if (sentry_dsn) {
-        setSentry(sentry_dsn, environment, release, 'standalone');
-      }
-    };
-    initSentry();
-  }, [setSentry]);
+    if (!config) {
+      return;
+    }
+
+    if (config.sentry_dsn) {
+      setSentry(
+        config.sentry_dsn,
+        config.environment,
+        config.release,
+        'standalone',
+      );
+    }
+  }, [setSentry, config]);
 
   return null;
 };
