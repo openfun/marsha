@@ -124,3 +124,12 @@ LICENCES_CHOICES = (
 
 LTI_DOCUMENT_ROUTE = "/lti/documents/"
 LTI_VIDEO_ROUTE = "/lti/videos/"
+
+RESOURCES_CHOICES = (
+    (VIDEO, _("video")),
+    (WEBINAR, _("webinar")),
+    (DOCUMENT, _("document")),
+    (CLASSROOM, _("classroom")),
+    (MARKDOWN, _("markdown")),
+    (DEPOSIT, _("deposit file")),
+)

@@ -333,3 +333,12 @@ class SiteFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = Site
+
+
+class SiteConfigFactory(DjangoModelFactory):
+    """Factory for the Site Config model"""
+
+    site = factory.SubFactory(SiteFactory)
+
+    class Meta:  # noqa
+        model = models.SiteConfig

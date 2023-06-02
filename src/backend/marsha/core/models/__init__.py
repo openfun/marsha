@@ -4,4 +4,5 @@ from .account import *  # noqa isort:skip
 from .file import *  # noqa isort:skip
 from .playlist import *  # noqa isort:skip
 from .portability_request import *  # noqa isort:skip
+from .site import *  # noqa isort:skip
 from .video import *  # noqa isort:skip
