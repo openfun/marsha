@@ -1,4 +1,3 @@
-import * as Sentry from '@sentry/browser';
 import {
   decodeJwt,
   useJwt,
@@ -34,7 +33,7 @@ export const AppInitializer = (
 
   const appConfig = useAppConfig();
   const jwt = useJwt((state) => state.getJwt());
-  const setIsSentryReady = useSentry((state) => state.setIsSentryReady);
+  const setSentry = useSentry((state) => state.setSentry);
   useSetVideoState(appConfig.video);
   const addDocument = useDocument((state) => state.addResource);
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
@@ -59,22 +58,13 @@ export const AppInitializer = (
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
-      Sentry.init({
-        dsn: appConfig.sentry_dsn,
-        environment: appConfig.environment,
-        release: appConfig.release,
-      });
-      Sentry.configureScope((scope) =>
-        scope.setExtra('application', 'frontend'),
-      );
-
-      setIsSentryReady(true);
+      setSentry(appConfig.sentry_dsn, appConfig.environment, appConfig.release, 'frontend');
     }
   }, [
     appConfig.sentry_dsn,
     appConfig.environment,
     appConfig.release,
-    setIsSentryReady,
+    setSentry,
     isFeatureEnabled,
   ]);
 

@@ -16,11 +16,6 @@ import render from 'utils/tests/render';
 
 import { AppInitializer } from '.';
 
-jest.mock('@sentry/browser', () => ({
-  init: jest.fn(),
-  configureScope: jest.fn(),
-}));
-
 const mockedVideo = {
   id: 'my-video-id',
   timed_text_tracks: [{ id: 'my-timed-text-track-id' }],
@@ -45,6 +40,8 @@ jest.mock('lib-components', () => ({
 
 describe('<AppInitializer />', () => {
   it('initializes stores before render content', async () => {
+    useSentry.setState({ setSentry: ()=> useSentry.setState({ isSentryReady: true }) });
+
     expect(useSentry.getState().isSentryReady).toEqual(false);
     expect(useVideo.getState().videos).toEqual({});
     expect(useTimedTextTrack.getState().timedtexttracks).toEqual({});
