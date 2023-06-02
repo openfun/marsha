@@ -29,7 +29,7 @@ from marsha.core.api import (
 )
 
 from . import permissions, serializers
-from ..core.models import ADMINISTRATOR, Video
+from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from ..core.utils.convert_lambda_utils import invoke_lambda_convert
 from ..core.utils.s3_utils import create_presigned_post
 from ..core.utils.time_utils import to_timestamp
@@ -37,10 +37,7 @@ from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .metadata import ClassroomDocumentMetadata
 from .models import Classroom, ClassroomDocument, ClassroomRecording
-from .permissions import (
-    IsClassroomPlaylistOrOrganizationAdmin,
-    IsRelatedClassroomPlaylistOrOrganizationAdmin,
-)
+from .permissions import IsRelatedClassroomPlaylistOrOrganizationAdmin
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -73,7 +70,13 @@ class ClassroomViewSet(
             core_permissions.IsTokenResourceRouteObject
             & (core_permissions.IsTokenInstructor | core_permissions.IsTokenAdmin)
         )
-        | IsClassroomPlaylistOrOrganizationAdmin
+        | (
+            core_permissions.UserIsAuthenticated  # asserts request.resource is None
+            & (
+                core_permissions.IsObjectPlaylistAdminOrInstructor
+                | core_permissions.IsObjectPlaylistOrganizationAdmin
+            )
+        )
     ]
 
     def get_permissions(self):
@@ -113,7 +116,13 @@ class ClassroomViewSet(
         elif self.action in ["retrieve", "service_join"]:
             permission_classes = [
                 core_permissions.IsTokenResourceRouteObject
-                | IsClassroomPlaylistOrOrganizationAdmin
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        core_permissions.IsObjectPlaylistAdminOrInstructor
+                        | core_permissions.IsObjectPlaylistOrganizationAdmin
+                    )
+                )
             ]
         elif self.action in ["list"]:
             permission_classes = [core_permissions.UserIsAuthenticated]
@@ -144,7 +153,10 @@ class ClassroomViewSet(
                 # For standalone site
                 (
                     core_permissions.UserIsAuthenticated
-                    & IsClassroomPlaylistOrOrganizationAdmin
+                    & (
+                        core_permissions.IsObjectPlaylistAdminOrInstructor
+                        | core_permissions.IsObjectPlaylistOrganizationAdmin
+                    )
                 )
                 # For LTI
                 | (
@@ -170,7 +182,7 @@ class ClassroomViewSet(
                 )
                 | Q(
                     playlist__user_accesses__user_id=self.request.user.id,
-                    playlist__user_accesses__role=ADMINISTRATOR,
+                    playlist__user_accesses__role__in=[ADMINISTRATOR, INSTRUCTOR],
                 )
             )
             .distinct()
@@ -242,7 +254,13 @@ class ClassroomViewSet(
         permission_classes=[
             core_permissions.IsTokenInstructor
             | core_permissions.IsTokenAdmin
-            | IsClassroomPlaylistOrOrganizationAdmin
+            | (
+                core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                & (
+                    core_permissions.IsObjectPlaylistAdminOrInstructor
+                    | core_permissions.IsObjectPlaylistOrganizationAdmin
+                )
+            )
         ],
     )
     # pylint: disable=unused-argument
