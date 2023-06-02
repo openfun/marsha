@@ -142,7 +142,7 @@ describe('<useAuthenticator />', () => {
   });
 
   it('checks classroom invite link', async () => {
-    featureContentLoader();
+    featureContentLoader([]);
 
     fetchMock.post('/api/auth/challenge/', {
       access: 'some-access2',

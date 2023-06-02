@@ -4,14 +4,16 @@ import { create } from 'zustand';
 
 import { Route } from 'routes';
 
-interface UseContentFeatures {
+export type FeatureSample = {
+  title: MessageDescriptor;
+  route: string;
+  component: ReactNode;
+};
+
+export interface UseContentFeatures {
   featureRouter: ReactNode[];
   featureRoutes: Record<string, Route>;
-  featureSamples: (playlistId?: string) => {
-    title: MessageDescriptor;
-    route: string;
-    component: ReactNode;
-  }[];
+  featureSamples: (playlistId?: string) => FeatureSample[];
   featureShuffles: ReactNode[];
 }
 

@@ -132,7 +132,7 @@ describe('<UpdatePlaylistPage />', () => {
   });
 
   it('checks the contents render by playlist', async () => {
-    featureContentLoader();
+    featureContentLoader([]);
 
     render(<UpdatePlaylistPage />);
 

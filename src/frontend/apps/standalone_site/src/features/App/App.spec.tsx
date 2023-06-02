@@ -21,11 +21,6 @@ const consoleWarn = jest
 window.scrollTo = jest.fn();
 window.isCDNLoaded = true;
 
-jest.mock('@sentry/browser', () => ({
-  init: jest.fn(),
-  configureScope: jest.fn(),
-}));
-
 const someResponse = {
   count: 1,
   next: null,
@@ -61,7 +56,7 @@ describe('<App />', () => {
     });
 
     fetchMock.get('/api/classrooms/?limit=5&offset=0&playlist=', someResponse);
-    fetchMock.get('/api/config/', frontendConfiguration);
+    fetchMock.get('/api/config/?domain=localhost', frontendConfiguration);
     fetchMock.get('/api/pages/', {
       results: [{ slug: '/my-test', name: 'My test link' }],
     });

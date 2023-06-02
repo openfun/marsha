@@ -9,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ContentSpinner } from 'components/Spinner';
 import { DEFAULT_LANGUAGE } from 'conf/global';
-import { featureContentLoader } from 'features/Contents';
 import { getFullThemeExtend } from 'styles/theme.extend';
 import { getCurrentTranslation, getLanguage, getLocaleCode } from 'utils/lang';
 
@@ -31,8 +30,6 @@ const App = () => {
     const language = getLanguage();
     setLanguage(language);
     setLocalCode(getLocaleCode(language));
-
-    featureContentLoader();
   }, []);
 
   /**

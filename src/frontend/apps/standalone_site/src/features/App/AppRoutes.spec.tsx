@@ -47,7 +47,7 @@ jest.mock('features/Authentication', () => ({
 
 window.scrollTo = jest.fn();
 
-featureContentLoader();
+featureContentLoader([]);
 
 describe('<AppRoutes />', () => {
   beforeEach(() => {

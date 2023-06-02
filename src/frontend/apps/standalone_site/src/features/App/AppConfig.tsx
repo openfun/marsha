@@ -2,6 +2,7 @@ import { useSentry } from 'lib-components';
 import { useEffect } from 'react';
 
 import { useConfig } from 'api/useConfig';
+import { featureContentLoader } from 'features/Contents';
 
 const AppConfig = () => {
   const setSentry = useSentry((state) => state.setSentry);
@@ -23,6 +24,8 @@ const AppConfig = () => {
         'standalone',
       );
     }
+
+    featureContentLoader(config.inactive_content_types);
   }, [setSentry, config]);
 
   return null;
