@@ -2,6 +2,7 @@
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as DefaultUserAdmin
+from django.contrib.sites.models import Site
 from django.urls import reverse
 from django.utils.html import format_html
 from django.utils.translation import gettext_lazy as _
@@ -22,6 +23,7 @@ from marsha.core.models import (
     PlaylistPortability,
     PortabilityRequest,
     SignTrack,
+    SiteConfig,
     TimedTextTrack,
     User,
     Video,
@@ -498,3 +500,27 @@ class PortabilityRequestAdmin(admin.ModelAdmin):
     readonly_fields = [
         "id",
     ]
+
+
+class SiteConfigInline(admin.TabularInline):
+    """Inline for sites with config fields."""
+
+    model = SiteConfig
+    can_delete = False
+    verbose_name = _("Config field")
+    verbose_name_plural = _("Config fields")
+
+
+class SiteAdmin(admin.ModelAdmin):
+    """Admin class for the CustomSite model."""
+
+    list_display = ("id", "name", "domain")
+    search_fields = ("name", "domain")
+    inlines = [
+        SiteConfigInline,
+    ]
+
+
+# Unregister the original Site admin
+admin.site.unregister(Site)
+admin.site.register(Site, SiteAdmin)

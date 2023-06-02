@@ -333,3 +333,13 @@ class SiteFactory(DjangoModelFactory):
 
     class Meta:  # noqa
         model = Site
+
+
+class SiteConfigFactory(DjangoModelFactory):
+    """Factory for the Site Config model"""
+
+    site = factory.SubFactory(SiteFactory)
+    inactive_content_types = ["video", "webinar"]
+
+    class Meta:  # noqa
+        model = models.SiteConfig
