@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 
-from ..defaults import CLASSROOM, DEPOSIT, DOCUMENT, MARKDOWN, VIDEO, WEBINAR
+from ..defaults import RESOURCES_CHOICES
 from ..fields import InvertedArrayField
 from .base import BaseModel
 
@@ -38,15 +38,6 @@ ROLE_CHOICES = (
     (ADMINISTRATOR, _("administrator")),
     (INSTRUCTOR, _("instructor")),
     (STUDENT, _("student")),
-)
-
-RESOURCES_CHOICES = (
-    (VIDEO, _("video")),
-    (WEBINAR, _("webinar")),
-    (DOCUMENT, _("document")),
-    (CLASSROOM, _("classroom")),
-    (MARKDOWN, _("markdown")),
-    (DEPOSIT, _("deposit file")),
 )
 
 
