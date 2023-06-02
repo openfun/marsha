@@ -1,12 +1,32 @@
+import { init, configureScope } from '@sentry/browser';
 import { create } from 'zustand';
 
 interface SentryStore {
   isSentryReady: boolean;
-  setIsSentryReady: (config: boolean) => void;
+  setSentry: (
+    sentry_dsn: string,
+    environment: string,
+    release: string,
+    application: string,
+  ) => void;
 }
 
 export const useSentry = create<SentryStore>((set) => ({
   isSentryReady: false,
-  setIsSentryReady: (config: boolean) =>
-    set((state) => ({ ...state, isSentryReady: config })),
+  setSentry: (
+    dsn: string,
+    environment: string,
+    release: string,
+    application: string,
+  ) => {
+    init({
+      dsn,
+      environment,
+      release,
+    });
+
+    configureScope((scope) => scope.setExtra('application', application));
+
+    set((state) => ({ ...state, isSentryReady: true }));
+  },
 }));
