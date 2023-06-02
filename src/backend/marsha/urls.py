@@ -150,7 +150,7 @@ urlpatterns = [
         recording_slices_state,
         name="recording_slices_state",
     ),
-    path("api/config/", get_frontend_configuration, name="sentry_config"),
+    path("api/config/", get_frontend_configuration, name="config"),
     path("api/", include(router.urls)),
     path(
         f"api/{models.Video.RESOURCE_NAME}/<uuid:video_id>/",

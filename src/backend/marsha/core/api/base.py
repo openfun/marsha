@@ -10,7 +10,7 @@ from waffle import switch_is_active
 
 from .. import defaults, serializers
 from ..defaults import SENTRY
-from ..models import Video
+from ..models import SiteConfig, Video
 from ..simple_jwt.tokens import ResourceAccessToken
 from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
 
@@ -218,11 +218,23 @@ def get_frontend_configuration(request):
         HttpResponse containing the frontend configuration.
 
     """
+
+    domain = request.get_host()
+    inactive_resources = []
+    if domain:
+        try:
+            inactive_resources = SiteConfig.objects.get(
+                site__domain=domain
+            ).inactive_resources
+        except SiteConfig.DoesNotExist:
+            pass
+
     return JsonResponse(
         {
             "environment": settings.ENVIRONMENT,
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN if switch_is_active(SENTRY) else None,
+            "inactive_resources": inactive_resources,
         }
     )
 
