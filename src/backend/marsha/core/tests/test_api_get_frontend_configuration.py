@@ -4,6 +4,7 @@ from django.test import TestCase, override_settings
 from waffle.testutils import override_switch
 
 from marsha.core.defaults import SENTRY
+from marsha.core.factories import SiteConfigFactory
 
 
 @override_settings(
@@ -32,6 +33,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "environment": "development",
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
+                "inactive_content_types": [],
             },
         )
 
@@ -51,5 +53,45 @@ class TestGetFrontendConfiguration(TestCase):
                 "environment": "development",
                 "release": "1.2.3",
                 "sentry_dsn": None,
+                "inactive_content_types": [],
+            },
+        )
+
+    @override_switch(SENTRY, active=True)
+    def test_api_get_frontend_configuration_domain_param_site_not_existing(self):
+        """
+        Check the response when the domain param is set and the site does not exist.
+        """
+        response = self.client.get("/api/config/?domain=not.existing")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "environment": "development",
+                "release": "1.2.3",
+                "sentry_dsn": "https://sentry.dsn",
+                "inactive_content_types": [],
+            },
+        )
+
+    @override_switch(SENTRY, active=True)
+    def test_api_get_frontend_configuration_domain_param_site_existing(self):
+        """
+        Check the response when the domain param is set and the site does not exist.
+        """
+        SiteConfigFactory(
+            inactive_content_types=["video"], site__domain="marsha.education"
+        )
+        response = self.client.get("/api/config/?domain=marsha.education")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "environment": "development",
+                "release": "1.2.3",
+                "sentry_dsn": "https://sentry.dsn",
+                "inactive_content_types": ["video"],
             },
         )
