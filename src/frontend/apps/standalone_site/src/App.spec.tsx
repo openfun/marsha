@@ -7,7 +7,7 @@ import {
 } from 'lib-components';
 
 import fetchMockAuth from '__mock__/fetchMockAuth.mock';
-import { FrontendConfiguration } from 'components/Sentry';
+import { ConfigResponse } from 'api/useConfig';
 import { useContentFeatures } from 'features/Contents/';
 
 import App from './App';
@@ -47,10 +47,11 @@ const someResponse = {
   ],
 };
 
-const frontendConfiguration: FrontendConfiguration = {
+const frontendConfiguration: ConfigResponse = {
   environment: 'some environment',
   release: 'some release',
   sentry_dsn: null,
+  inactive_content_types: [],
 };
 
 describe('<App />', () => {
