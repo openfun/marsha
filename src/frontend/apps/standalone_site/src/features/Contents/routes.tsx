@@ -7,11 +7,6 @@ import { RouteRequired } from 'routes';
 import { useContentFeatures } from './store/contentsStore';
 
 const messages = defineMessages({
-  menuContentsLessonsLabel: {
-    defaultMessage: 'Lessons',
-    description: 'Label for the Lessons link in the content navigation menu',
-    id: 'Contents.routes.menuContentsLessonsLabel',
-  },
   menuMyContentsLabel: {
     defaultMessage: 'My Contents',
     description: 'Label for the MyContents link in the main navigation menu',
@@ -34,18 +29,6 @@ const routes: Record<'CONTENTS', RouteRequired> = {
     ),
     subRoutes: {
       ...routesContent,
-      // LESSON: {
-      //   label: <FormattedMessage {...messages.menuContentsLessonsLabel} />,
-      //   path: `/my-contents/lessons`,
-      //   menuIcon: (
-      //     <CheckListIcon
-      //       width={30}
-      //       height={30}
-      //       role="img"
-      //       aria-label="svg-menu-my-contents-lessons"
-      //     />
-      //   ),
-      // },
     },
   },
 };
