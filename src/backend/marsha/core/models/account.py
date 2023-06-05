@@ -421,6 +421,36 @@ class Organization(BaseModel):
         help_text=_("users who have been granted access to this organization"),
     )
 
+    # list of resources that are active for this consumer site
+    # stored as a list of inactive resources
+    inactive_resources = InvertedArrayField(
+        models.CharField(
+            choices=RESOURCES_CHOICES,
+            max_length=100,
+            blank=True,
+            null=True,
+        ),
+        verbose_name=_("active resources"),
+        help_text=_("list of resources that are active for this organization."),
+        default=list,
+        blank=True,
+    )
+
+    # list of features that are active for this consumer site
+    # stored as a list of inactive features
+    inactive_features = InvertedArrayField(
+        models.CharField(
+            choices=FEATURES_CHOICES,
+            max_length=100,
+            blank=True,
+            null=True,
+        ),
+        verbose_name=_("active features"),
+        help_text=_("list of features that are active for this organization."),
+        default=list,
+        blank=True,
+    )
+
     class Meta:
         """Options for the ``Organization`` model."""
 

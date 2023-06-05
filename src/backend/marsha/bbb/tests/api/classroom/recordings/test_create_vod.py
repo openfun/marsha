@@ -57,6 +57,24 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             },
         )
 
+    def test_api_classroom_recording_create_anonymous_unknown_recording(self):
+        """An anonymous should not be able to convert an unknown recording to a VOD."""
+        recording = ClassroomRecordingFactory()
+
+        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}"
+                f"/recordings/{recording.classroom.id}/create-vod/",
+            )
+
+        self.assertEqual(response.status_code, 401)
+        self.assertEqual(
+            response.json(),
+            {
+                "detail": "Authentication credentials were not provided.",
+            },
+        )
+
     def test_api_classroom_recording_create_vod_student(self):
         """Students should not be able to convert a recording to a VOD."""
         recording = ClassroomRecordingFactory()
@@ -127,6 +145,37 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             recording.vod.get_source_s3_key(stamp=to_timestamp(now)),
         )
 
+    def test_api_classroom_recording_create_vod_instructor_or_admin_unknown_recording(
+        self,
+    ):
+        """Instructors and admins should not be able to convert an unknown recording to a VOD."""
+        recording = ClassroomRecordingFactory(
+            started_at="2019-08-21T15:00:02Z",
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=recording.classroom)
+
+        self.assertEqual(Video.objects.count(), 0)
+
+        now = timezone.now()
+
+        with mock.patch.object(
+            timezone, "now", return_value=now
+        ), self.assertNumQueries(1):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}"
+                f"/recordings/{recording.classroom.id}/create-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={"title": "My title"},
+            )
+
+        self.assertEqual(Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 404)
+
+        self.assertDictEqual(
+            response.json(),
+            {"detail": "Not found."},
+        )
+
     def test_api_classroom_recording_create_vod_user_access_token(self):
         """A user with UserAccessToken should not be able to convert a recording to a VOD."""
         organization_access = OrganizationAccessFactory()
@@ -160,6 +209,55 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 201)
+
+    def test_api_classroom_recording_create_vod_from_standalone_site_no_consumer_site(
+        self,
+    ):
+        """
+        An organization administrator should be able to convert a recording to a VOD
+        from standalone site.
+        """
+        organization_access = OrganizationAccessFactory(role=ADMINISTRATOR)
+        recording = ClassroomRecordingFactory(
+            classroom__playlist__organization=organization_access.organization,
+            classroom__playlist__consumer_site=None,
+            classroom__playlist__lti_id=None,
+        )
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_api_classroom_recording_create_vod_from_standalone_site_inactive_conversion(
+        self,
+    ):
+        """
+        An organization administrator should not be able to convert a recording to a VOD
+        from standalone site when inactive.
+        """
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization__inactive_features=["vod_convert"],
+        )
+        recording = ClassroomRecordingFactory(
+            classroom__playlist__organization=organization_access.organization,
+            classroom__playlist__consumer_site=None,
+            classroom__playlist__lti_id=None,
+        )
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 405)
 
     def test_api_classroom_recording_create_vod_user_access_token_playlist_admin(
         self,
@@ -261,7 +359,10 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
     def test_api_classroom_recording_create_vod_instructor_or_admin_inactive_conversion(
         self,
     ):
-        """Instructors and admins should be able to convert a recording to a VOD."""
+        """
+        Instructors and admins should not be able to convert a recording to a VOD
+        from LTI when inactive.
+        """
         recording = ClassroomRecordingFactory(
             started_at="2019-08-21T15:00:02Z",
             classroom__playlist__consumer_site__inactive_features=["vod_convert"],

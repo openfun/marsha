@@ -110,6 +110,8 @@ class PlaylistAccessRetrieveAPITest(TestCase):
                             "organization_name": organization_access.organization.name,
                             "role": "administrator",
                             "user": str(playlist_access.user.pk),
+                            "inactive_features": [],
+                            "inactive_resources": [],
                         }
                     ],
                 },

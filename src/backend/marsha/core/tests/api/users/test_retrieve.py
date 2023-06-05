@@ -63,6 +63,8 @@ class UserRetrieveAPITest(TestCase):
                         "organization_name": self.organization.name,
                         "role": "instructor",
                         "user": str(self.user_to_retrieve.pk),
+                        "inactive_features": [],
+                        "inactive_resources": [],
                     }
                 ],
             },
