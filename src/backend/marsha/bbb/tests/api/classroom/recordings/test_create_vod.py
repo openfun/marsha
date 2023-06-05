@@ -91,6 +91,8 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             "marsha.bbb.api.invoke_lambda_convert"
         ) as mock_invoke_lambda_convert, mock.patch.object(
             timezone, "now", return_value=now
+        ), self.assertNumQueries(
+            9
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
@@ -255,3 +257,41 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
             )
 
         self.assertEqual(response.status_code, 403)
+
+    def test_api_classroom_recording_create_vod_instructor_or_admin_inactive_conversion(
+        self,
+    ):
+        """Instructors and admins should be able to convert a recording to a VOD."""
+        recording = ClassroomRecordingFactory(
+            started_at="2019-08-21T15:00:02Z",
+            classroom__playlist__consumer_site__inactive_features=["vod_convert"],
+        )
+        jwt_token = InstructorOrAdminLtiTokenFactory(resource=recording.classroom)
+
+        self.assertEqual(Video.objects.count(), 0)
+
+        now = timezone.now()
+
+        with mock.patch(
+            "marsha.bbb.api.invoke_lambda_convert"
+        ) as mock_invoke_lambda_convert, mock.patch.object(
+            timezone, "now", return_value=now
+        ), self.assertNumQueries(
+            1
+        ):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+                data={"title": "My title"},
+            )
+
+        self.assertEqual(Video.objects.count(), 0)
+        self.assertEqual(response.status_code, 405)
+
+        recording.refresh_from_db()
+        self.assertDictEqual(
+            response.json(),
+            {"error": "VOD conversion is disabled."},
+        )
+        self.assertEqual(Video.objects.count(), 0)
+        mock_invoke_lambda_convert.assert_not_called()

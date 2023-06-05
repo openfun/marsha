@@ -92,6 +92,7 @@ VIDEO = "video"
 WEBINAR = "webinar"
 DOCUMENT = "document"
 RENATER_FER_SAML = "renater_fer_saml"
+VOD_CONVERT = "vod_convert"
 
 # LTI view states expected by the frontend LTI application
 APP_DATA_STATE_ERROR = "error"
@@ -133,3 +134,5 @@ RESOURCES_CHOICES = (
     (MARKDOWN, _("markdown")),
     (DEPOSIT, _("deposit file")),
 )
+
+FEATURES_CHOICES = ((VOD_CONVERT, _("VOD conversion")),)

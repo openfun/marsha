@@ -145,6 +145,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -222,6 +223,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -265,6 +267,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -324,6 +327,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -367,6 +371,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -426,6 +431,7 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )
 
@@ -469,5 +475,6 @@ class ClassroomCreateAPITest(TestCase):
                 "enable_recordings": True,
                 "recording_purpose": None,
                 "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
             },
         )

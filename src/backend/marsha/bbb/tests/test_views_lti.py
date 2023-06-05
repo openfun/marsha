@@ -296,7 +296,8 @@ class ClassroomLTIViewTestCase(TestCase):
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
                 "recording_purpose": classroom.recording_purpose,
-                "enable_shared_notes": True
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
                 # "invite_token" is tested separately
                 # "instructor_token" is tested separately
             },
@@ -652,7 +653,8 @@ class MeetingLTIViewTestCase(TestCase):
                 "enable_presentation_supports": True,
                 "enable_recordings": True,
                 "recording_purpose": classroom.recording_purpose,
-                "enable_shared_notes": True
+                "enable_shared_notes": True,
+                "vod_conversion_enabled": True,
                 # "invite_token" is tested separately
                 # "instructor_token" is tested separately
             },
