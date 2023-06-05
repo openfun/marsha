@@ -1,65 +1,138 @@
-import * as Sentry from '@sentry/browser';
-import { waitFor } from '@testing-library/react';
+import { waitFor, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { render } from 'lib-tests';
-import React from 'react';
+import { useSentry } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
+
+import { useContentFeatures } from 'features/Contents';
 
 import AppConfig from './AppConfig';
 
-const mockInit = jest.spyOn(Sentry, 'init').mockImplementation();
-const mockConfigureScope = jest
-  .spyOn(Sentry, 'configureScope')
-  .mockImplementation();
+useSentry.setState({
+  setSentry: () => useSentry.setState({ isSentryReady: true }),
+});
 
-describe('SentryLoader', () => {
+describe('AppConfig', () => {
+  beforeEach(() => {
+    useSentry.setState({
+      isSentryReady: false,
+    });
+    useContentFeatures.setState({
+      featureRouter: [],
+      featureRoutes: {},
+      featureSamples: () => [],
+      featureShuffles: [],
+      isFeatureLoaded: false,
+    });
+  });
+
   afterEach(() => {
-    jest.resetAllMocks();
     fetchMock.restore();
   });
 
   it('should init Sentry when active', async () => {
-    fetchMock.get('/api/config/', {
+    fetchMock.get('/api/config/?domain=localhost', {
       environment: 'some environment',
       release: 'some release',
       sentry_dsn: 'some dsn',
+      inactive_content_types: [],
     });
+
+    expect(useSentry.getState().isSentryReady).toEqual(false);
 
     render(<AppConfig />);
 
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
-      expect(mockInit).toHaveBeenCalledWith({
-        dsn: 'some dsn',
-        environment: 'some environment',
-        release: 'some release',
-      });
+      expect(useSentry.getState().isSentryReady).toEqual(true);
     });
-
-    expect(mockConfigureScope).toHaveBeenCalledWith(expect.any(Function));
-    expect(mockConfigureScope.mock.calls[0][0]).toEqual(expect.any(Function));
-    const passedFunction = mockConfigureScope.mock.calls[0][0];
-    const scope = { setExtra: jest.fn() } as any;
-    passedFunction(scope);
-    expect(scope.setExtra).toHaveBeenCalledWith('application', 'standalone');
   });
 
   it('should not init Sentry when not active', async () => {
     fetchMock.get(
-      '/api/config/',
+      '/api/config/?domain=localhost',
       {
         environment: 'some environment',
         release: 'some release',
         sentry_dsn: null,
+        inactive_content_types: [],
       },
       { overwriteRoutes: true },
     );
+    expect(useSentry.getState().isSentryReady).toEqual(false);
+
     render(<AppConfig />);
 
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
-      expect(mockInit).not.toHaveBeenCalled();
+      expect(useSentry.getState().isSentryReady).toEqual(false);
+    });
+  });
+
+  it('should have features active', async () => {
+    const deferred = new Deferred();
+
+    fetchMock.get('/api/config/?domain=localhost', deferred.promise);
+
+    expect(useSentry.getState().isSentryReady).toEqual(false);
+
+    render(<AppConfig>My app</AppConfig>);
+
+    expect(
+      screen.getByRole('alert', {
+        name: /spinner/i,
+      }),
+    ).toBeInTheDocument();
+
+    deferred.resolve({
+      environment: 'some environment',
+      release: 'some release',
+      sentry_dsn: 'some dsn',
+      inactive_content_types: [],
     });
 
-    expect(mockConfigureScope).not.toHaveBeenCalled();
+    expect(await screen.findByText('My app')).toBeInTheDocument();
+
+    expect(fetchMock.called('/api/config/')).toBe(true);
+
+    expect(useContentFeatures.getState().featureRouter).toEqual(
+      expect.arrayContaining([
+        expect.anything(),
+        expect.anything(),
+        expect.anything(),
+      ]),
+    );
+    expect(useContentFeatures.getState().featureRoutes).toEqual({
+      VIDEO: expect.any(Object),
+      LIVE: expect.any(Object),
+      CLASSROOM: expect.any(Object),
+    });
+    expect(useContentFeatures.getState().featureSamples()).toEqual([
+      expect.any(Object),
+      expect.any(Object),
+      expect.any(Object),
+    ]);
+    expect(useContentFeatures.getState().featureShuffles).toEqual([
+      expect.anything(),
+    ]);
+  });
+
+  it('should inactive features', async () => {
+    fetchMock.get('/api/config/', {
+      environment: 'some environment',
+      release: 'some release',
+      sentry_dsn: 'some dsn',
+      inactive_resources: ['classroom', 'webinar', 'video'],
+    });
+
+    expect(useSentry.getState().isSentryReady).toEqual(false);
+
+    render(<AppConfig>My app</AppConfig>);
+
+    expect(await screen.findByText('My app')).toBeInTheDocument();
+    expect(fetchMock.called('/api/config/')).toBe(true);
+    expect(useContentFeatures.getState().featureRouter).toEqual([]);
+    expect(useContentFeatures.getState().featureRoutes).toEqual({});
+    expect(useContentFeatures.getState().featureSamples()).toEqual([]);
+    expect(useContentFeatures.getState().featureShuffles).toEqual([]);
   });
 });

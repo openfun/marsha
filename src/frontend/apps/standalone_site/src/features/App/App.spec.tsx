@@ -21,11 +21,6 @@ const consoleWarn = jest
 window.scrollTo = jest.fn();
 window.isCDNLoaded = true;
 
-jest.mock('@sentry/browser', () => ({
-  init: jest.fn(),
-  configureScope: jest.fn(),
-}));
-
 const someResponse = {
   count: 1,
   next: null,

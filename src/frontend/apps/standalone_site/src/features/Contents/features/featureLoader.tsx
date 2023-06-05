@@ -6,7 +6,9 @@
  *  - featureShuffles: Load the shuffles of the children features, used in the frontend page @see ContentsShuffle
  */
 
-import { useContentFeatures } from '../store/contentsStore';
+import { Fragment } from 'react';
+
+import { FeatureSample, useContentFeatures } from '../store/contentsStore';
 
 import {
   classRoomContents,
@@ -17,20 +19,68 @@ import {
 import { liveContents, LiveRouter, routesLive } from './Live';
 import { videoContents, VideoRouter, routesVideo } from './Video';
 
-const featureLoader = () => {
+enum RESOURCES_CHOICES {
+  VIDEO = 'video',
+  WEBINAR = 'webinar',
+  CLASSROOM = 'classroom',
+}
+
+const featureLoader = (inactiveResources: string[]) => {
+  const featureRouter = [];
+  let featureRoutes = {};
+  const featureSamples: ((playlistId?: string) => FeatureSample)[] = [];
+  const featureShuffles = [];
+
+  const activeVideos = !inactiveResources.includes(RESOURCES_CHOICES.VIDEO);
+  if (activeVideos) {
+    featureRouter.push(
+      <Fragment key="videoRouter">
+        <VideoRouter />
+      </Fragment>,
+    );
+    featureSamples.push(videoContents);
+    featureRoutes = { ...featureRoutes, ...routesVideo };
+  }
+
+  const activeWebinars = !inactiveResources.includes(RESOURCES_CHOICES.WEBINAR);
+  if (activeWebinars) {
+    featureRouter.push(
+      <Fragment key="liveRouter">
+        <LiveRouter />
+      </Fragment>,
+    );
+    featureSamples.push(liveContents);
+    featureRoutes = { ...featureRoutes, ...routesLive };
+  }
+
+  const activeClassrooms = !inactiveResources.includes(
+    RESOURCES_CHOICES.CLASSROOM,
+  );
+  if (activeClassrooms) {
+    featureRouter.push(
+      <Fragment key="classRoomRouter">
+        <ClassRoomRouter />
+      </Fragment>,
+    );
+    featureSamples.push(classRoomContents);
+    featureRoutes = { ...featureRoutes, ...routesClassRoom };
+    featureShuffles.push(
+      <Fragment key="classRoomShuffle">
+        <ClassRoomShuffle />
+      </Fragment>,
+    );
+  }
+
   useContentFeatures.setState({
-    featureRouter: [
-      <VideoRouter key="videoRouter" />,
-      <ClassRoomRouter key="classRoomRouter" />,
-      <LiveRouter key="liveRouter" />,
-    ],
-    featureRoutes: { ...routesVideo, ...routesLive, ...routesClassRoom },
-    featureSamples: (playlistId) => [
-      videoContents(playlistId),
-      liveContents(playlistId),
-      classRoomContents(playlistId),
-    ],
-    featureShuffles: [<ClassRoomShuffle key="classRoomShuffle" />],
+    featureRouter,
+    featureRoutes,
+    featureSamples: (playlistId) => {
+      return featureSamples.map((sample) => {
+        return sample(playlistId);
+      });
+    },
+    featureShuffles,
+    isFeatureLoaded: true,
   });
 };
 

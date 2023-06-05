@@ -9,7 +9,6 @@ import { BrowserRouter } from 'react-router-dom';
 
 import { ContentSpinner } from 'components/Spinner';
 import { DEFAULT_LANGUAGE } from 'conf/global';
-import { featureContentLoader } from 'features/Contents';
 import { getFullThemeExtend } from 'styles/theme.extend';
 import { getCurrentTranslation, getLanguage, getLocaleCode } from 'utils/lang';
 
@@ -31,8 +30,6 @@ const App = () => {
     const language = getLanguage();
     setLanguage(language);
     setLocalCode(getLocaleCode(language));
-
-    featureContentLoader();
   }, []);
 
   /**
@@ -82,7 +79,6 @@ const App = () => {
     >
       <QueryClientProvider client={queryClient}>
         <ReactQueryDevtools />
-        <AppConfig />
         <Grommet theme={themeExtended}>
           <Toaster
             toastOptions={{
@@ -100,13 +96,15 @@ const App = () => {
               },
             }}
           />
-          <BrowserRouter>
-            {isDomReady ? (
-              <AppRoutes />
-            ) : (
-              <ContentSpinner boxProps={{ height: '100vh' }} />
-            )}
-          </BrowserRouter>
+          <AppConfig>
+            <BrowserRouter>
+              {isDomReady ? (
+                <AppRoutes />
+              ) : (
+                <ContentSpinner boxProps={{ height: '100vh' }} />
+              )}
+            </BrowserRouter>
+          </AppConfig>
         </Grommet>
       </QueryClientProvider>
     </IntlProvider>
