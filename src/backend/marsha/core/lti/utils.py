@@ -3,6 +3,7 @@ from django.core.exceptions import FieldDoesNotExist
 from django.db.models import Q
 
 from ..defaults import PENDING
+from ..factories import UserFactory
 from ..models import (
     ADMINISTRATOR,
     ConsumerSiteAccess,
@@ -145,6 +146,8 @@ def get_or_create_resource(model, lti):
         "pk": lti.resource_id,
         "lti_id": lti.resource_link_id,
         "playlist": playlist,
+        # TODO: mikado 1: remove this when we have a proper way to handle the created_by_id
+        "created_by_id": UserFactory().id,
     }
 
     # Apply attributes when the resource allows it

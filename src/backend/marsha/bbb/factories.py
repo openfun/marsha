@@ -3,7 +3,7 @@
 import factory
 from factory.django import DjangoModelFactory
 
-from marsha.core.factories import PlaylistFactory
+from marsha.core.factories import PlaylistFactory, UserFactory
 
 from . import models
 
@@ -22,6 +22,7 @@ class ClassroomFactory(DjangoModelFactory):
     title = factory.Sequence("Classroom {:03d}".format)
     description = factory.Faker("paragraph")
     playlist = factory.SubFactory(PlaylistFactory)
+    created_by = factory.SubFactory(UserFactory)
     meeting_id = factory.Faker("uuid4")
     recording_purpose = factory.Faker("paragraph")
 

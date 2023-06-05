@@ -10,7 +10,7 @@ import logging
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
-from marsha.core.models import BaseModel, Playlist, UploadableFileMixin
+from marsha.core.models import BaseModel, Playlist, UploadableFileMixin, User
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -29,6 +29,14 @@ class FileDepository(BaseModel):
         help_text=_("playlist to which this file depository belongs"),
         # don't allow hard deleting a playlist if it still contains file_depository
         on_delete=models.PROTECT,
+    )
+    created_by = models.ForeignKey(
+        to=User,
+        related_name="created_%(class)s",
+        verbose_name=_("owner"),
+        help_text=_("owner of the file depository"),
+        # file is (soft-)deleted if author is (soft-)deleted
+        on_delete=models.CASCADE,
     )
     lti_id = models.CharField(
         max_length=255,

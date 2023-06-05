@@ -11,4 +11,4 @@ class FileDepositoryForm(ModelForm):
         """Meta for FileDepositoryForm."""
 
         model = models.FileDepository
-        fields = ["description", "lti_id", "playlist", "title"]
+        fields = ["description", "lti_id", "playlist", "title", "created_by"]

@@ -13,7 +13,14 @@ class DocumentForm(ModelForm):
         """Meta for DocumentForm."""
 
         model = models.Document
-        fields = ["description", "is_public", "lti_id", "playlist", "title"]
+        fields = [
+            "description",
+            "is_public",
+            "lti_id",
+            "playlist",
+            "title",
+            "created_by",
+        ]
 
 
 class VideoForm(ModelForm):
@@ -35,6 +42,7 @@ class VideoForm(ModelForm):
             "playlist",
             "title",
             "upload_state",
+            "created_by",
         ]
 
     def clean_upload_state(self):

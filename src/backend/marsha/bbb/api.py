@@ -27,6 +27,7 @@ from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 from . import permissions, serializers
 from ..core.api.base import ResourceDoesNotMatchParametersException
 from ..core.defaults import VOD_CONVERT
+from ..core.factories import UserFactory
 from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from ..core.utils.convert_lambda_utils import invoke_lambda_convert
 from ..core.utils.s3_utils import create_presigned_post
@@ -227,7 +228,10 @@ class ClassroomViewSet(
     def create(self, request, *args, **kwargs):
         """Create one classroom based on the request payload."""
         try:
-            form = ClassroomForm(request.data)
+            # TODO: mikado 1: remove this when we have a proper authentication
+            data = request.data.copy()
+            data["created_by"] = UserFactory().id
+            form = ClassroomForm(data)
             classroom = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)
@@ -738,6 +742,8 @@ class ClassroomRecordingViewSet(
         classroom_recording.vod = Video.objects.create(
             title=request.data.get("title"),
             playlist=classroom_recording.classroom.playlist,
+            # TODO: mikado 1: remove this when we have a proper authentication
+            created_by_id=UserFactory().id,
         )
         classroom_recording.save()
 

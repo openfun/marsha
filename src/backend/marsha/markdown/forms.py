@@ -11,4 +11,4 @@ class MarkdownDocumentForm(TranslatableModelForm):
         """Meta for DocumentForm."""
 
         model = models.MarkdownDocument
-        fields = ["is_public", "lti_id", "playlist", "title"]
+        fields = ["is_public", "lti_id", "playlist", "title", "created_by"]

@@ -130,6 +130,7 @@ class VideoFactory(DjangoModelFactory):
     position = fuzzy.FuzzyInteger(0)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("video#{:d}".format)
+    created_by = factory.SubFactory(UserFactory)
 
 
 class WebinarVideoFactory(VideoFactory):
@@ -204,6 +205,7 @@ class DocumentFactory(DjangoModelFactory):
     title = factory.Sequence("Document {:03d}".format)
     playlist = factory.SubFactory(PlaylistFactory)
     lti_id = factory.Sequence("document#{:d}".format)
+    created_by = factory.SubFactory(UserFactory)
 
 
 class UploadedDocumentFactory(DocumentFactory):

@@ -110,7 +110,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
         ) as mock_invoke_lambda_convert, mock.patch.object(
             timezone, "now", return_value=now
         ), self.assertNumQueries(
-            9
+            13
         ):
             response = self.client.post(
                 f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",

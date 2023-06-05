@@ -11,4 +11,4 @@ class ClassroomForm(ModelForm):
         """Meta for ClassroomForm."""
 
         model = models.Classroom
-        fields = ["description", "lti_id", "playlist", "title"]
+        fields = ["description", "lti_id", "playlist", "title", "created_by"]

@@ -23,6 +23,7 @@ from marsha.core.defaults import ENDED, JITSI
 from marsha.websocket.utils import channel_layers_utils
 
 from .. import defaults, forms, permissions, serializers, storage
+from ..factories import UserFactory
 from ..metadata import VideoMetadata
 from ..models import (
     ADMINISTRATOR,
@@ -342,7 +343,10 @@ class VideoViewSet(
     def create(self, request, *args, **kwargs):
         """Create one video based on the request payload."""
         try:
-            form = forms.VideoForm(request.data)
+            # TODO: mikado 1: remove this when we have a proper authentication
+            data = request.data.copy()
+            data["created_by"] = UserFactory().id
+            form = forms.VideoForm(data)
             video = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)

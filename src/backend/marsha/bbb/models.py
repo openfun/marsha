@@ -13,7 +13,7 @@ from django.utils.translation import gettext_lazy as _
 
 from safedelete.managers import SafeDeleteManager
 
-from marsha.core.models import BaseModel, Playlist, UploadableFileMixin, Video
+from marsha.core.models import BaseModel, Playlist, UploadableFileMixin, User, Video
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -43,6 +43,14 @@ class Classroom(BaseModel):
         help_text=_("playlist to which this classroom belongs"),
         # don't allow hard deleting a playlist if it still contains classroom
         on_delete=models.PROTECT,
+    )
+    created_by = models.ForeignKey(
+        to=User,
+        related_name="created_%(class)s",
+        verbose_name=_("owner"),
+        help_text=_("owner of the classroom"),
+        # file is (soft-)deleted if author is (soft-)deleted
+        on_delete=models.CASCADE,
     )
     lti_id = models.CharField(
         max_length=255,

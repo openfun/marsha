@@ -7,6 +7,7 @@ from rest_framework.decorators import action
 from rest_framework.response import Response
 
 from .. import defaults, permissions, serializers, storage
+from ..factories import UserFactory
 from ..forms import DocumentForm
 from ..models import Document
 from .base import APIViewMixin, ObjectPkMixin
@@ -48,7 +49,10 @@ class DocumentViewSet(
     def create(self, request, *args, **kwargs):
         """Create one document based on the request payload."""
         try:
-            form = DocumentForm(request.data)
+            # TODO: mikado 1: remove this when we have a proper authentication
+            data = request.data.copy()
+            data["created_by"] = UserFactory().id
+            form = DocumentForm(data)
             document = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)

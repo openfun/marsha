@@ -65,8 +65,6 @@ class MarkdownDocument(TranslatableModelMixin, BaseModel):
         help_text=_("author of the file"),
         # file is (soft-)deleted if author is (soft-)deleted
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
     )
     is_public = models.BooleanField(
         default=False,

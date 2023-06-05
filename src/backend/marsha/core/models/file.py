@@ -88,8 +88,6 @@ class BaseFile(UploadableFileMixin, BaseModel):
         help_text=_("author of the file"),
         # file is (soft-)deleted if author is (soft-)deleted
         on_delete=models.CASCADE,
-        null=True,
-        blank=True,
     )
     playlist = models.ForeignKey(
         to=Playlist,

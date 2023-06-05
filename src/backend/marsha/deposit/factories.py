@@ -3,7 +3,7 @@
 import factory
 from factory.django import DjangoModelFactory
 
-from marsha.core.factories import PlaylistFactory
+from marsha.core.factories import PlaylistFactory, UserFactory
 
 from . import models
 
@@ -22,6 +22,7 @@ class FileDepositoryFactory(DjangoModelFactory):
     title = factory.Sequence("FileDepository {:03d}".format)
     description = factory.Faker("paragraph")
     playlist = factory.SubFactory(PlaylistFactory)
+    created_by = factory.SubFactory(UserFactory)
 
 
 class DepositedFileFactory(DjangoModelFactory):

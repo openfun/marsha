@@ -14,6 +14,7 @@ from marsha.core.api import APIViewMixin, ObjectPkMixin, ObjectRelatedMixin
 from marsha.core.utils.time_utils import to_timestamp
 
 from . import permissions as markdown_permissions, serializers
+from ..core.factories import UserFactory
 from ..core.models import ADMINISTRATOR
 from ..core.utils.s3_utils import create_presigned_post
 from .defaults import LTI_ROUTE
@@ -134,7 +135,10 @@ class MarkdownDocumentViewSet(
     def create(self, request, *args, **kwargs):
         """Create one document based on the request payload."""
         try:
-            form = MarkdownDocumentForm(request.data)
+            # TODO: remove this when we have a proper authentication
+            data = request.data.copy()
+            data["created_by"] = UserFactory().id
+            form = MarkdownDocumentForm(data)
             document = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)

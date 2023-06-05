@@ -14,6 +14,7 @@ from marsha.core.utils.s3_utils import create_presigned_post
 from marsha.core.utils.time_utils import to_timestamp
 
 from . import permissions, serializers
+from ..core.factories import UserFactory
 from ..core.models import ADMINISTRATOR, LTI_ROLES, STUDENT
 from .defaults import LTI_ROUTE
 from .forms import FileDepositoryForm
@@ -148,7 +149,10 @@ class FileDepositoryViewSet(
     def create(self, request, *args, **kwargs):
         """Create one file_depository based on the request payload."""
         try:
-            form = FileDepositoryForm(request.data)
+            # TODO: mikado 1: remove this when we have a proper authentication
+            data = request.data.copy()
+            data["created_by"] = UserFactory().id
+            form = FileDepositoryForm(data)
             file_depository = form.save()
         except ValueError:
             return Response({"errors": [dict(form.errors)]}, status=400)

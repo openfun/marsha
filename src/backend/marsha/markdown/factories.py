@@ -6,7 +6,7 @@ from django.utils import lorem_ipsum
 import factory
 from factory.django import DjangoModelFactory
 
-from marsha.core.factories import PlaylistFactory
+from marsha.core.factories import PlaylistFactory, UserFactory
 
 from . import models
 
@@ -39,6 +39,7 @@ class MarkdownDocumentFactory(DjangoModelFactory):
 
     lti_id = factory.Faker("uuid4")
     playlist = factory.SubFactory(PlaylistFactory)
+    created_by = factory.SubFactory(UserFactory)
 
     translations = factory.RelatedFactory(
         MarkdownDocumenTranslationFactory,

@@ -48,6 +48,7 @@ class SiteViewTestCase(TestCase):
         )
 
     @override_switch("site", active=True)
+    @override_settings(BASE_STATIC_DIR="missing")
     def test_site_site_template_missing(self):
         """Test site with missing index file should return a 501."""
         response = self.client.get("/")
