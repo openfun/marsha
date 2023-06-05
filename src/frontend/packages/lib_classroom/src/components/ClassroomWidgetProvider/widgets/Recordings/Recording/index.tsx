@@ -41,6 +41,11 @@ const messages = defineMessages({
     description: 'Title for convert to VOD button.',
     id: 'component.Recording.convertVODTitle',
   },
+  conversionDisabled: {
+    defaultMessage: 'VOD conversion is disabled',
+    description: 'Message when VOD conversion is disabled.',
+    id: 'component.Recording.conversionDisabled',
+  },
   ltiLinkLabel: {
     defaultMessage: 'LTI link for this VOD:',
     description: 'Label for LTI VOD link.',
@@ -85,9 +90,14 @@ const buildRecordingTitle = (
 interface RecordingProps {
   recording: ClassroomRecording;
   classroomTitle?: Nullable<string>;
+  conversionEnabled?: boolean;
 }
 
-const VodNotReady = ({ recording, classroomTitle }: RecordingProps) => {
+const VodNotReady = ({
+  recording,
+  classroomTitle,
+  conversionEnabled,
+}: RecordingProps) => {
   const intl = useIntl();
   const { refetch: refetchClassroom } = useClassroom(recording.classroom);
 
@@ -141,15 +151,24 @@ const VodNotReady = ({ recording, classroomTitle }: RecordingProps) => {
         </Text>
       ) : (
         <Button
-          a11yTitle={intl.formatMessage(messages.convertVODTitle, {
-            recordingTitle: buildRecordingTitle(recording, intl),
-          })}
-          title={intl.formatMessage(messages.convertVODTitle, {
-            recordingTitle: buildRecordingTitle(recording, intl),
-          })}
+          a11yTitle={
+            conversionEnabled
+              ? intl.formatMessage(messages.convertVODTitle, {
+                  recordingTitle: buildRecordingTitle(recording, intl),
+                })
+              : intl.formatMessage(messages.conversionDisabled)
+          }
+          title={
+            conversionEnabled
+              ? intl.formatMessage(messages.convertVODTitle, {
+                  recordingTitle: buildRecordingTitle(recording, intl),
+                })
+              : intl.formatMessage(messages.conversionDisabled)
+          }
           label={intl.formatMessage(messages.convertVODLabel)}
           onClick={() => convertVOD(recording)}
           size="xsmall"
+          disabled={!conversionEnabled}
         />
       )}
     </Box>
@@ -201,7 +220,11 @@ const VodReady = ({ recording }: RecordingProps) => {
   );
 };
 
-export const Recording = ({ recording, classroomTitle }: RecordingProps) => (
+export const Recording = ({
+  recording,
+  classroomTitle,
+  conversionEnabled,
+}: RecordingProps) => (
   <React.Fragment>
     {recording.vod ? (
       <Box
@@ -219,7 +242,11 @@ export const Recording = ({ recording, classroomTitle }: RecordingProps) => (
         )}
       </Box>
     ) : (
-      <VodNotReady recording={recording} classroomTitle={classroomTitle} />
+      <VodNotReady
+        recording={recording}
+        classroomTitle={classroomTitle}
+        conversionEnabled={conversionEnabled}
+      />
     )}
   </React.Fragment>
 );

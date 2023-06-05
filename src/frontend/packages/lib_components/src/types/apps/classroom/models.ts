@@ -28,6 +28,7 @@ export interface Classroom extends Resource {
   enable_presentation_supports: boolean;
   enable_recordings: boolean;
   recording_purpose: Nullable<string>;
+  vod_conversion_enabled: boolean;
 }
 
 export type ClassroomLite = Omit<Classroom, 'infos'>;

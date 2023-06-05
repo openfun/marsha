@@ -106,4 +106,53 @@ describe('<Recordings />', () => {
       }),
     ).toBeInTheDocument();
   });
+
+  it('displays a list of available recordings with VOD conversion disabled', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
+    const classroomRecordings = [
+      classroomRecordingMockFactory({
+        started_at: DateTime.fromJSDate(
+          new Date(2022, 1, 29, 11, 0, 0),
+        ).toISO() as string,
+      }),
+      classroomRecordingMockFactory({
+        started_at: DateTime.fromJSDate(
+          new Date(2022, 1, 15, 11, 0, 0),
+        ).toISO() as string,
+      }),
+    ];
+    const classroom = classroomMockFactory({
+      id: '1',
+      started: false,
+      vod_conversion_enabled: false,
+      recordings: classroomRecordings,
+    });
+
+    render(
+      wrapInClassroom(
+        <InfoWidgetModalProvider value={null}>
+          <Recordings />,
+        </InfoWidgetModalProvider>,
+        classroom,
+      ),
+    );
+
+    expect(
+      screen.getByText('Tuesday, March 1, 2022 - 11:00 AM'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Tuesday, February 15, 2022 - 11:00 AM'),
+    ).toBeInTheDocument();
+    const convertButtons = screen.getAllByRole('button', {
+      name: 'VOD conversion is disabled',
+    });
+    expect(convertButtons).toHaveLength(2);
+    for (const convertButton of convertButtons) {
+      expect(convertButton).toBeDisabled();
+    }
+  });
 });
