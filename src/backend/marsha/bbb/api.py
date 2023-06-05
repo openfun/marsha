@@ -21,14 +21,10 @@ from marsha.bbb.utils.bbb_utils import (
     process_recordings,
 )
 from marsha.core import defaults, permissions as core_permissions
-from marsha.core.api import (
-    APIViewMixin,
-    BulkDestroyModelMixin,
-    ObjectPkMixin,
-    ObjectRelatedMixin,
-)
+from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 
 from . import permissions, serializers
+from ..core.api.base import ResourceDoesNotMatchParametersException
 from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from ..core.utils.convert_lambda_utils import invoke_lambda_convert
 from ..core.utils.s3_utils import create_presigned_post
@@ -37,7 +33,36 @@ from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .metadata import ClassroomDocumentMetadata
 from .models import Classroom, ClassroomDocument, ClassroomRecording
-from .permissions import IsRelatedClassroomPlaylistOrOrganizationAdmin
+
+
+class ObjectClassroomRelatedMixin:
+    """
+    Get the related classroom id contained in resource.
+
+    It exposes a function used to get the related classroom.
+    It is also useful to avoid URL crafting (when the url classroom_id doesn't
+    match token resource classroom id).
+    """
+
+    def get_related_classroom_id(self):
+        """Get the related classroom ID from the request."""
+
+        # The video ID in the URL will be mandatory when old routes are deleted.
+        classroom_id = (
+            self.kwargs.get("classroom_id")
+            # Backward compatibility with old routes
+            or self.request.data.get("classroom")
+            or self.request.query_params.get("classroom")
+        )
+
+        # Backward compatibility with old routes for LTI context
+        resource = self.request.resource
+        if resource is not None:
+            if resource.id and classroom_id and str(classroom_id) != str(resource.id):
+                raise ResourceDoesNotMatchParametersException()
+            return self.request.resource.id
+
+        return classroom_id
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -98,7 +123,7 @@ class ClassroomViewSet(
                 | (
                     core_permissions.UserIsAuthenticated  # asserts request.resource is None
                     & (
-                        core_permissions.IsParamsPlaylistAdmin
+                        core_permissions.IsParamsPlaylistAdminOrInstructor
                         | core_permissions.IsParamsPlaylistAdminThroughOrganization
                     )
                 )
@@ -459,7 +484,7 @@ class ClassroomViewSet(
 class ClassroomDocumentViewSet(
     APIViewMixin,
     ObjectPkMixin,
-    ObjectRelatedMixin,
+    ObjectClassroomRelatedMixin,
     mixins.CreateModelMixin,
     mixins.UpdateModelMixin,
     mixins.DestroyModelMixin,
@@ -469,7 +494,7 @@ class ClassroomDocumentViewSet(
     Viewset for the API of the ClassroomDocument object.
     """
 
-    queryset = ClassroomDocument.objects.all()
+    queryset = ClassroomDocument.objects.all().select_related("classroom")
     serializer_class = serializers.ClassroomDocumentSerializer
     metadata_class = ClassroomDocumentMetadata
     filter_backends = [
@@ -480,16 +505,35 @@ class ClassroomDocumentViewSet(
 
     permission_classes = [
         permissions.IsTokenResourceRouteObjectRelatedClassroom
-        | IsRelatedClassroomPlaylistOrOrganizationAdmin
+        | (
+            core_permissions.UserIsAuthenticated  # asserts request.resource is None
+            & (
+                permissions.IsRelatedClassroomPlaylistAdminOrInstructor
+                | permissions.IsRelatedClassroomOrganizationAdmin
+            )
+        )
     ]
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in ["create", "list", "update", "partial_update", "destroy"]:
+        if self.action in ["create", "list"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
-                | IsRelatedClassroomPlaylistOrOrganizationAdmin
+                | permissions.IsParamsClassroomAdminOrInstructorThroughPlaylist
+                | permissions.IsParamsClassroomAdminThroughOrganization
+            ]
+        elif self.action in ["update", "partial_update", "destroy"]:
+            permission_classes = [
+                core_permissions.IsTokenInstructor
+                | core_permissions.IsTokenAdmin
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        permissions.IsRelatedClassroomPlaylistAdminOrInstructor
+                        | permissions.IsRelatedClassroomOrganizationAdmin
+                    )
+                )
             ]
         elif self.action in ["metadata"]:
             permission_classes = [core_permissions.UserOrResourceIsAuthenticated]
@@ -597,14 +641,14 @@ class ClassroomDocumentViewSet(
 class ClassroomRecordingViewSet(
     APIViewMixin,
     ObjectPkMixin,
-    ObjectRelatedMixin,
+    ObjectClassroomRelatedMixin,
     viewsets.GenericViewSet,
 ):
     """
     Viewset for the API of the ClassroomRecording object.
     """
 
-    queryset = ClassroomRecording.objects.all()
+    queryset = ClassroomRecording.objects.all().select_related("classroom")
     serializer_class = serializers.ClassroomRecordingSerializer
     filter_backends = [
         filters.OrderingFilter,
@@ -620,7 +664,13 @@ class ClassroomRecordingViewSet(
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
-                | IsRelatedClassroomPlaylistOrOrganizationAdmin
+                | (
+                    core_permissions.UserIsAuthenticated  # asserts request.resource is None
+                    & (
+                        permissions.IsRelatedClassroomPlaylistAdminOrInstructor
+                        | permissions.IsRelatedClassroomOrganizationAdmin
+                    )
+                )
             ]
         else:
             permission_classes = self.permission_classes

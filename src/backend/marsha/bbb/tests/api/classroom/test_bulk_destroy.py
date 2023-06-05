@@ -10,7 +10,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     PlaylistLtiTokenFactory,
@@ -190,6 +190,42 @@ class ClassroomBulkDestroyAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 204)
         self.assertEqual(Classroom.objects.count(), 0)
+
+    def test_api_classroom_bulk_delete_user_access_token_playlist_instructor(self):
+        """A playlist instructor should be able to delete a list of classroom."""
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
+        classroom1 = ClassroomFactory(playlist=playlist_access.playlist)
+        classroom2 = ClassroomFactory(playlist=playlist_access.playlist)
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 2)
+
+        response = self.client.delete(
+            self._api_url(),
+            {"ids": [str(classroom1.pk), str(classroom2.pk)]},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(Classroom.objects.count(), 0)
+
+    def test_api_classroom_bulk_delete_user_access_token_playlist_student(self):
+        """A playlist student should not be able to delete a list of classroom."""
+        playlist_access = PlaylistAccessFactory(role=STUDENT)
+        classroom1 = ClassroomFactory(playlist=playlist_access.playlist)
+        classroom2 = ClassroomFactory(playlist=playlist_access.playlist)
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 2)
+
+        response = self.client.delete(
+            self._api_url(),
+            {"ids": [str(classroom1.pk), str(classroom2.pk)]},
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(Classroom.objects.count(), 2)
 
     def test_api_classroom_bulk_delete_user_access_token_playlist_admin_partial_permission(
         self,

@@ -12,7 +12,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     PlaylistLtiTokenFactory,
@@ -274,6 +274,108 @@ class ClassroomCreateAPITest(TestCase):
     ):
         """A playlist administrator should be able to create a classroom."""
         playlist_access = PlaylistAccessFactory(role=ADMINISTRATOR)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(Classroom.objects.count(), 0)
+
+        response = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_one",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "Some classroom",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(Classroom.objects.count(), 1)
+        self.assertEqual(response.status_code, 201)
+        classroom = Classroom.objects.first()
+        self.assertEqual(
+            response.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_one",
+                "meeting_id": str(classroom.meeting_id),
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "Some classroom",
+                "welcome_text": "Welcome!",
+                "invite_token": None,
+                "instructor_token": None,
+                "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": None,
+                "enable_shared_notes": True,
+            },
+        )
+
+        response2 = self.client.post(
+            "/api/classrooms/",
+            {
+                "lti_id": "classroom_two",
+                "playlist": str(playlist_access.playlist.id),
+                "title": "classroom two",
+            },
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response2.status_code, 201)
+        self.assertEqual(Classroom.objects.count(), 2)
+        classroom2 = Classroom.objects.latest("created_on")
+        self.assertEqual(
+            response2.json(),
+            {
+                "description": "",
+                "ended": False,
+                "estimated_duration": None,
+                "id": str(classroom2.id),
+                "infos": {"returncode": "SUCCESS", "running": "true"},
+                "lti_id": "classroom_two",
+                "meeting_id": str(classroom2.meeting_id),
+                "playlist": {
+                    "id": str(playlist_access.playlist.id),
+                    "lti_id": playlist_access.playlist.lti_id,
+                    "title": playlist_access.playlist.title,
+                },
+                "started": False,
+                "starting_at": None,
+                "title": "classroom two",
+                "welcome_text": "Welcome!",
+                "invite_token": None,
+                "instructor_token": None,
+                "recordings": [],
+                "enable_waiting_room": False,
+                "enable_chat": True,
+                "enable_presentation_supports": True,
+                "enable_recordings": True,
+                "recording_purpose": None,
+                "enable_shared_notes": True,
+            },
+        )
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_create_user_access_token_playlist_instructor(
+        self, mock_get_meeting_infos
+    ):
+        """A playlist instructor should be able to create a classroom."""
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
         mock_get_meeting_infos.return_value = {
             "returncode": "SUCCESS",
             "running": "true",

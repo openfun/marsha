@@ -7,7 +7,7 @@ from django.utils import timezone
 from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 from marsha.core.defaults import PENDING
 from marsha.core.factories import OrganizationAccessFactory, PlaylistAccessFactory
-from marsha.core.models import ADMINISTRATOR, Video
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT, Video
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -177,6 +177,41 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
 
         self.assertEqual(response.status_code, 201)
 
+    def test_api_classroom_recording_create_vod_user_access_token_playlist_instructor(
+        self,
+    ):
+        """A playlist instructor should be able to convert a recording to a VOD."""
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
+        recording = ClassroomRecordingFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        with mock.patch("marsha.bbb.api.invoke_lambda_convert"):
+            response = self.client.post(
+                f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
+                HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            )
+
+        self.assertEqual(response.status_code, 201)
+
+    def test_api_classroom_recording_create_vod_user_access_token_playlist_student(
+        self,
+    ):
+        """A playlist student should not be able to convert a recording to a VOD."""
+        playlist_access = PlaylistAccessFactory(role=STUDENT)
+        recording = ClassroomRecordingFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.post(
+            f"/api/classrooms/{recording.classroom.id}/recordings/{recording.id}/create-vod/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+
+        self.assertEqual(response.status_code, 403)
+
     def test_api_classroom_recording_create_vod_user_access_token_other_playlist_admin(
         self,
     ):
@@ -197,7 +232,7 @@ class ClassroomRecordingCreateVodAPITest(TestCase):
                 HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
             )
 
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_api_classroom_recording_create_vod_admin_other_playlist_access(
         self,
