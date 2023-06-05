@@ -1,15 +1,31 @@
-import { waitFor, screen } from '@testing-library/react';
+import { waitFor, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useSentry } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
+import { defineMessages, useIntl } from 'react-intl';
 
+import { ConfigResponse } from 'api/useConfig';
 import { useContentFeatures } from 'features/Contents';
 
 import AppConfig from './AppConfig';
 
+const consoleWarn = jest
+  .spyOn(console, 'warn')
+  .mockImplementation(() => jest.fn());
+
+window.isCDNLoaded = true;
+
 useSentry.setState({
   setSentry: () => useSentry.setState({ isSentryReady: true }),
 });
+
+let deferredConfig: Deferred<unknown>;
+const config: ConfigResponse = {
+  environment: 'some environment',
+  release: 'some release',
+  sentry_dsn: 'some dsn',
+  inactive_resources: [],
+};
 
 describe('AppConfig', () => {
   beforeEach(() => {
@@ -23,19 +39,19 @@ describe('AppConfig', () => {
       featureShuffles: [],
       isFeatureLoaded: false,
     });
+
+    deferredConfig = new Deferred();
+    fetchMock.get('/api/config/', deferredConfig.promise);
   });
 
   afterEach(() => {
     fetchMock.restore();
+    jest.resetAllMocks();
+    consoleWarn.mockClear();
   });
 
   it('should init Sentry when active', async () => {
-    fetchMock.get('/api/config/?domain=localhost', {
-      environment: 'some environment',
-      release: 'some release',
-      sentry_dsn: 'some dsn',
-      inactive_content_types: [],
-    });
+    deferredConfig.resolve(config);
 
     expect(useSentry.getState().isSentryReady).toEqual(false);
 
@@ -48,16 +64,10 @@ describe('AppConfig', () => {
   });
 
   it('should not init Sentry when not active', async () => {
-    fetchMock.get(
-      '/api/config/?domain=localhost',
-      {
-        environment: 'some environment',
-        release: 'some release',
-        sentry_dsn: null,
-        inactive_content_types: [],
-      },
-      { overwriteRoutes: true },
-    );
+    deferredConfig.resolve({
+      ...config,
+      sentry_dsn: null,
+    });
     expect(useSentry.getState().isSentryReady).toEqual(false);
 
     render(<AppConfig />);
@@ -69,12 +79,6 @@ describe('AppConfig', () => {
   });
 
   it('should have features active', async () => {
-    const deferred = new Deferred();
-
-    fetchMock.get('/api/config/?domain=localhost', deferred.promise);
-
-    expect(useSentry.getState().isSentryReady).toEqual(false);
-
     render(<AppConfig>My app</AppConfig>);
 
     expect(
@@ -83,12 +87,7 @@ describe('AppConfig', () => {
       }),
     ).toBeInTheDocument();
 
-    deferred.resolve({
-      environment: 'some environment',
-      release: 'some release',
-      sentry_dsn: 'some dsn',
-      inactive_content_types: [],
-    });
+    deferredConfig.resolve(config);
 
     expect(await screen.findByText('My app')).toBeInTheDocument();
 
@@ -117,14 +116,10 @@ describe('AppConfig', () => {
   });
 
   it('should inactive features', async () => {
-    fetchMock.get('/api/config/', {
-      environment: 'some environment',
-      release: 'some release',
-      sentry_dsn: 'some dsn',
+    deferredConfig.resolve({
+      ...config,
       inactive_resources: ['classroom', 'webinar', 'video'],
     });
-
-    expect(useSentry.getState().isSentryReady).toEqual(false);
 
     render(<AppConfig>My app</AppConfig>);
 
@@ -134,5 +129,60 @@ describe('AppConfig', () => {
     expect(useContentFeatures.getState().featureRoutes).toEqual({});
     expect(useContentFeatures.getState().featureSamples()).toEqual([]);
     expect(useContentFeatures.getState().featureShuffles).toEqual([]);
+  });
+
+  it('should translate to another language', async () => {
+    const messages = defineMessages({
+      testMessage: {
+        defaultMessage: 'My test',
+        id: 'test',
+      },
+    });
+
+    const TestComponent = () => {
+      const intl = useIntl();
+
+      return <div>{intl.formatMessage(messages.testMessage)}</div>;
+    };
+
+    jest.mock(
+      'translations/fr_FR.json',
+      () => ({
+        test: 'Mon test',
+      }),
+      { virtual: true },
+    );
+    const languageGetter = jest.spyOn(window.navigator, 'language', 'get');
+    languageGetter.mockReturnValue('fr');
+
+    deferredConfig.resolve(config);
+
+    render(
+      <AppConfig>
+        <TestComponent />
+      </AppConfig>,
+    );
+
+    expect(await screen.findByText(/Mon test/i)).toBeInTheDocument();
+  });
+
+  it('should load when the CDN is ready', async () => {
+    window.isCDNLoaded = false;
+
+    deferredConfig.resolve(config);
+    render(<AppConfig>My app</AppConfig>);
+
+    expect(
+      screen.getByRole('alert', {
+        name: /spinner/i,
+      }),
+    ).toBeInTheDocument();
+
+    window.isCDNLoaded = true;
+    act(() => {
+      document.dispatchEvent(new Event('CDNLoaded'));
+    });
+
+    expect(await screen.findByText('My app')).toBeInTheDocument();
   });
 });
