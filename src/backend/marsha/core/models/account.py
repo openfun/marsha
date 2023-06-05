@@ -11,7 +11,7 @@ from django.utils.translation import gettext_lazy as _
 from safedelete import HARD_DELETE
 from safedelete.managers import SafeDeleteManager
 
-from ..defaults import RESOURCES_CHOICES
+from ..defaults import FEATURES_CHOICES, RESOURCES_CHOICES
 from ..fields import InvertedArrayField
 from .base import BaseModel
 
@@ -262,6 +262,21 @@ class ConsumerSite(BaseModel):
         ),
         verbose_name=_("active resources"),
         help_text=_("list of resources that are active for this consumer site."),
+        default=list,
+        blank=True,
+    )
+
+    # list of features that are active for this consumer site
+    # stored as a list of inactive features
+    inactive_features = InvertedArrayField(
+        models.CharField(
+            choices=FEATURES_CHOICES,
+            max_length=100,
+            blank=True,
+            null=True,
+        ),
+        verbose_name=_("active features"),
+        help_text=_("list of features that are active for this consumer site."),
         default=list,
         blank=True,
     )

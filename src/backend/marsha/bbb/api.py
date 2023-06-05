@@ -26,6 +26,7 @@ from marsha.core.api import APIViewMixin, BulkDestroyModelMixin, ObjectPkMixin
 
 from . import permissions, serializers
 from ..core.api.base import ResourceDoesNotMatchParametersException
+from ..core.defaults import VOD_CONVERT
 from ..core.models import ADMINISTRATOR, INSTRUCTOR, Video
 from ..core.utils.convert_lambda_utils import invoke_lambda_convert
 from ..core.utils.s3_utils import create_presigned_post
@@ -705,7 +706,15 @@ class ClassroomRecordingViewSet(
             HttpResponse with the serialized classroom recording vod.
 
         """
-        classroom_recording = self.get_object()  # check permissions first
+        classroom_recording = ClassroomRecording.objects.select_related(
+            "classroom__playlist__consumer_site"
+        ).get(id=pk)
+
+        if (
+            VOD_CONVERT
+            in classroom_recording.classroom.playlist.consumer_site.inactive_features
+        ):
+            return Response({"error": "VOD conversion is disabled."}, status=405)
 
         classroom_recording.vod = Video.objects.create(
             title=request.data.get("title"),

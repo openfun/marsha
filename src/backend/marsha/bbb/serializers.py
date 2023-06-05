@@ -19,6 +19,7 @@ from marsha.bbb.utils.bbb_utils import (
     get_url as get_document_url,
 )
 from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
+from marsha.core.defaults import VOD_CONVERT
 from marsha.core.models import INSTRUCTOR
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
@@ -76,6 +77,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "starting_at",
             "estimated_duration",
             "recordings",
+            "vod_conversion_enabled",
             # specific generated fields
             "infos",
             "invite_token",
@@ -96,6 +98,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "started",
             "ended",
             "recordings",
+            "vod_conversion_enabled",
             "infos",
         )
 
@@ -104,6 +107,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
     invite_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()
     recordings = serializers.SerializerMethodField()
+    vod_conversion_enabled = serializers.SerializerMethodField()
 
     def get_infos(self, obj):
         """Meeting infos from BBB server."""
@@ -163,6 +167,10 @@ class ClassroomSerializer(serializers.ModelSerializer):
                 )
 
         return value
+
+    def get_vod_conversion_enabled(self, obj):
+        """Return whether the classroom recordings can be converted to a VOD."""
+        return VOD_CONVERT not in obj.playlist.consumer_site.inactive_features
 
 
 class ClassroomLiteSerializer(ReadOnlyModelSerializer):

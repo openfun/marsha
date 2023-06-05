@@ -224,6 +224,7 @@ class ConsumerSiteAdmin(admin.ModelAdmin):
         "lrs_xapi_version",
         "video_show_download_default",
         "inactive_resources",
+        "inactive_features",
     )
     readonly_fields = ["id", "created_on", "updated_on"]
 
