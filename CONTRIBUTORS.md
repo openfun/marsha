@@ -18,6 +18,7 @@
 - [Raphael Fernandes](https://github.com/RaphaelFernandes92) <rfer92@gmail.com>
 - [Ronan Le Viennesse](https://github.com/roro-lv) <ronan.le-viennesse@polyconseil.fr>
 - [Quentin Bey](https://github.com/qbey) <quentin.bey@polyconseil.fr>
+- [Anthony Le Courric](https://github.com/AntoLC) <anthony.le-courric@polyconseil.fr>
 - [Anthony Le Courric](https://github.com/AntoLC) <freelance.anthony@gmail.com>
 - [Alfred Pichard](https://github.com/AlfredPichard) <alfred.pichard@polyconseil.fr>
 - [Théo Clement](https://github.com/Kitero) <theoclementtheo@gmail.com>
