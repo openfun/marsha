@@ -73,6 +73,8 @@ class OrganizationListAPITest(TestCase):
                             "id": str(organization.pk),
                             "name": organization.name,
                             "users": [str(user.pk)],
+                            "inactive_features": [],
+                            "inactive_resources": [],
                         }
                     ],
                 )

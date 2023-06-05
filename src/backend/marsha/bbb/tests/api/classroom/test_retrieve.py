@@ -643,20 +643,12 @@ class ClassroomRetrieveAPITest(TestCase):
         )
 
     @mock.patch.object(serializers, "get_meeting_infos")
-    def test_api_classroom_fetch_with_recordings_inactive_conversion(
+    def test_api_classroom_fetch_from_LTI_inactive_conversion(
         self, mock_get_meeting_infos
     ):
-        """Existing recordings should be retrieved."""
+        """When consumer site has inactive VOD conversion, it should appear from LTI."""
         classroom = ClassroomFactory(
             playlist__consumer_site__inactive_features=["vod_convert"],
-        )
-        classroom_recording_1 = ClassroomRecordingFactory(
-            classroom=classroom,
-            started_at="2019-08-21T15:00:02Z",
-        )
-        classroom_recording_2 = ClassroomRecordingFactory(
-            classroom=classroom,
-            started_at="2019-08-21T11:00:02Z",
         )
         mock_get_meeting_infos.return_value = {
             "returncode": "SUCCESS",
@@ -671,54 +663,34 @@ class ClassroomRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 200)
 
-        content = json.loads(response.content)
-        _ = content.pop("invite_token")
-        _ = content.pop("instructor_token")
-        self.assertDictEqual(
-            {
-                "id": str(classroom.id),
-                "infos": {"returncode": "SUCCESS", "running": "true"},
-                "lti_id": str(classroom.lti_id),
-                "title": classroom.title,
-                "description": classroom.description,
-                "started": False,
-                "ended": False,
-                "meeting_id": str(classroom.meeting_id),
-                "welcome_text": classroom.welcome_text,
-                "playlist": {
-                    "id": str(classroom.playlist.id),
-                    "title": classroom.playlist.title,
-                    "lti_id": classroom.playlist.lti_id,
-                },
-                "starting_at": None,
-                "estimated_duration": None,
-                "recordings": [
-                    {
-                        "classroom": str(classroom.id),
-                        "id": str(classroom_recording_2.id),
-                        "record_id": str(classroom_recording_2.record_id),
-                        "started_at": "2019-08-21T11:00:02Z",
-                        "video_file_url": classroom_recording_2.video_file_url,
-                        "vod": None,
-                    },
-                    {
-                        "classroom": str(classroom.id),
-                        "id": str(classroom_recording_1.id),
-                        "record_id": str(classroom_recording_1.record_id),
-                        "started_at": "2019-08-21T15:00:02Z",
-                        "video_file_url": classroom_recording_1.video_file_url,
-                        "vod": None,
-                    },
-                ],
-                "enable_waiting_room": False,
-                "enable_chat": True,
-                "enable_presentation_supports": True,
-                "enable_recordings": True,
-                "recording_purpose": classroom.recording_purpose,
-                "enable_shared_notes": True,
-                "vod_conversion_enabled": False,
-                # invite_token is tested below
-                # instructor_token is tested below
-            },
-            content,
+        self.assertFalse(response.json()["vod_conversion_enabled"])
+
+    @mock.patch.object(serializers, "get_meeting_infos")
+    def test_api_classroom_fetch_from_standalone_site_inactive_conversion(
+        self, mock_get_meeting_infos
+    ):
+        """When organization has inactive VOD conversion, it should appear from standalone site."""
+        organization_access = OrganizationAccessFactory(
+            role=ADMINISTRATOR,
+            organization__inactive_features=["vod_convert"],
         )
+        playlist = PlaylistFactory(
+            organization=organization_access.organization,
+            consumer_site=None,
+            lti_id=None,
+        )
+        classroom = ClassroomFactory(playlist=playlist)
+        mock_get_meeting_infos.return_value = {
+            "returncode": "SUCCESS",
+            "running": "true",
+        }
+
+        jwt_token = UserAccessTokenFactory(user=organization_access.user)
+
+        response = self.client.get(
+            f"/api/classrooms/{classroom.id!s}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+        )
+        self.assertEqual(response.status_code, 200)
+
+        self.assertFalse(response.json()["vod_conversion_enabled"])

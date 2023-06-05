@@ -684,6 +684,12 @@ class ClassroomRecordingViewSet(
 
         queryset = queryset.filter(classroom=self.kwargs.get("classroom_id"))
 
+        if self.action == "create_vod":
+            queryset = queryset.select_related(
+                "classroom__playlist__consumer_site",
+                "classroom__playlist__organization",
+            )
+
         return queryset
 
     @action(methods=["post"], detail=True, url_path="create-vod")
@@ -706,14 +712,27 @@ class ClassroomRecordingViewSet(
             HttpResponse with the serialized classroom recording vod.
 
         """
-        classroom_recording = ClassroomRecording.objects.select_related(
-            "classroom__playlist__consumer_site"
-        ).get(id=pk)
+        classroom_recording = self.get_object()  # check permissions first
 
-        if (
-            VOD_CONVERT
-            in classroom_recording.classroom.playlist.consumer_site.inactive_features
-        ):
+        try:
+            consumer_site_inactive_features = (
+                classroom_recording.classroom.playlist.consumer_site.inactive_features
+            )
+        except AttributeError:
+            consumer_site_inactive_features = []
+
+        try:
+            organization_inactive_features = (
+                classroom_recording.classroom.playlist.organization.inactive_features
+            )
+        except AttributeError:
+            organization_inactive_features = []
+
+        inactive_features = (
+            consumer_site_inactive_features + organization_inactive_features
+        )
+
+        if VOD_CONVERT in inactive_features:
             return Response({"error": "VOD conversion is disabled."}, status=405)
 
         classroom_recording.vod = Video.objects.create(

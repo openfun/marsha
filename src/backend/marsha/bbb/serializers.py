@@ -170,7 +170,23 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     def get_vod_conversion_enabled(self, obj):
         """Return whether the classroom recordings can be converted to a VOD."""
-        return VOD_CONVERT not in obj.playlist.consumer_site.inactive_features
+        try:
+            consumer_site_inactive_features = (
+                obj.playlist.consumer_site.inactive_features
+            )
+        except AttributeError:
+            consumer_site_inactive_features = []
+
+        try:
+            organization_inactive_features = obj.playlist.organization.inactive_features
+        except AttributeError:
+            organization_inactive_features = []
+
+        inactive_features = (
+            consumer_site_inactive_features + organization_inactive_features
+        )
+
+        return VOD_CONVERT not in inactive_features
 
 
 class ClassroomLiteSerializer(ReadOnlyModelSerializer):

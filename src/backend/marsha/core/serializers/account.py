@@ -42,8 +42,6 @@ class OrganizationAccessSerializer(serializers.ModelSerializer):
     level of access.
     """
 
-    organization_name = serializers.SerializerMethodField()
-
     class Meta:
         """Meta for OrganizationAccessSerializer."""
 
@@ -53,7 +51,13 @@ class OrganizationAccessSerializer(serializers.ModelSerializer):
             "organization_name",
             "role",
             "user",
+            "inactive_resources",
+            "inactive_features",
         ]
+
+    organization_name = serializers.SerializerMethodField()
+    inactive_resources = serializers.SerializerMethodField()
+    inactive_features = serializers.SerializerMethodField()
 
     def get_organization_name(self, organization_access):
         """
@@ -63,6 +67,24 @@ class OrganizationAccessSerializer(serializers.ModelSerializer):
         additional object just for one string.
         """
         return organization_access.organization.name
+
+    def get_inactive_resources(self, organization_access):
+        """
+        Get field for Serializer Method.
+
+        Add the inactive resource on organization accesses directly, to avoid nesting an
+        additional object.
+        """
+        return organization_access.organization.inactive_resources
+
+    def get_inactive_features(self, organization_access):
+        """
+        Get field for Serializer Method.
+
+        Add the inactive features on organization accesses directly, to avoid nesting an
+        additional object.
+        """
+        return organization_access.organization.inactive_features
 
 
 class OrganizationSerializer(serializers.ModelSerializer):
@@ -78,8 +100,14 @@ class OrganizationSerializer(serializers.ModelSerializer):
             "id",
             "name",
             "users",
+            "inactive_resources",
+            "inactive_features",
         ]
-        read_only_fields = ("id",)
+        read_only_fields = [
+            "id",
+            "inactive_resources",
+            "inactive_features",
+        ]
 
 
 class OrganizationLiteSerializer(ReadOnlyModelSerializer):

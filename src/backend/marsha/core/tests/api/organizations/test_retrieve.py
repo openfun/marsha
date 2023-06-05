@@ -68,5 +68,7 @@ class OrganizationRetrieveAPITest(TestCase):
                 "id": str(organization.id),
                 "name": organization.name,
                 "users": [str(user.id)],
+                "inactive_features": [],
+                "inactive_resources": [],
             },
         )

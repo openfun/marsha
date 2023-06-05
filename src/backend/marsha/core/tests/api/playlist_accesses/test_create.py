@@ -125,6 +125,8 @@ class PlaylistAccessCreateAPITest(TestCase):
                             "organization_name": organization_access.organization.name,
                             "role": "administrator",
                             "user": str(user.pk),
+                            "inactive_features": [],
+                            "inactive_resources": [],
                         }
                     ],
                 },

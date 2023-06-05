@@ -68,6 +68,8 @@ class UserUpdateAPITest(TestCase):
                         "organization_name": self.organization.name,
                         "role": "instructor",
                         "user": str(self.user_to_update.pk),
+                        "inactive_features": [],
+                        "inactive_resources": [],
                     }
                 ],
             },
