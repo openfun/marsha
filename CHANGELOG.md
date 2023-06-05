@@ -20,6 +20,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
   - delete BBB recordings
   - delete ClassroomsRecording
 - Delete BBB recording when VOD from a ClassroomRecording is created
+- Add an attribute to consumer site to deactivate classroom recording
+  conversion to VOD
 
 ### Changed
 

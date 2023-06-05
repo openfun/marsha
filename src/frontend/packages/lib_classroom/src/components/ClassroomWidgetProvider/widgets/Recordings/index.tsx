@@ -53,6 +53,7 @@ export const Recordings = () => {
             key={recording.id}
             recording={recording}
             classroomTitle={classroom.title}
+            conversionEnabled={classroom.vod_conversion_enabled}
           />
         )}
       </ItemList>

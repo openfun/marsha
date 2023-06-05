@@ -123,6 +123,7 @@ describe('<Recordings />', () => {
       <Recording
         recording={classroomRecording}
         classroomTitle={classroom.title}
+        conversionEnabled={classroom.vod_conversion_enabled}
       />,
     );
 
@@ -284,5 +285,34 @@ describe('<Recordings />', () => {
     expect(
       screen.getByText(classroomRecording.vod!.upload_state as string),
     ).toBeInTheDocument();
+  });
+
+  it('displays disabled button when conversion to VOD is disabled', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
+    const classroom = classroomMockFactory({
+      vod_conversion_enabled: false,
+    });
+    const classroomRecording = classroomRecordingMockFactory({
+      classroom: classroom.id,
+    });
+
+    fetchMock.mock(`/api/classrooms/${classroom.id}/`, { classroom });
+
+    render(
+      <Recording
+        recording={classroomRecording}
+        conversionEnabled={classroom.vod_conversion_enabled}
+      />,
+    );
+
+    expect(
+      screen.getByRole('button', {
+        name: 'VOD conversion is disabled',
+      }),
+    ).toBeDisabled();
   });
 });
