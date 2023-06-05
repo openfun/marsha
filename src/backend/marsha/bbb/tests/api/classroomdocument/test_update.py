@@ -10,7 +10,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -185,3 +185,49 @@ class ClassroomDocumentUpdateAPITest(TestCase):
                 "url": None,
             },
         )
+
+    def test_api_classroom_document_update_user_access_token_playlist_instructor(self):
+        """A playlist instructor should be able to update a classroom_document."""
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
+        classroom_document = ClassroomDocumentFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+        data = {"filename": "updated_name.pdf", "size": 100}
+
+        response = self.client.patch(
+            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(classroom_document.classroom.id),
+                "filename": "updated_name.pdf",
+                "id": str(classroom_document.id),
+                "is_default": False,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
+        )
+
+    def test_api_classroom_document_update_user_access_token_playlist_student(self):
+        """A playlist student should not be able to update a classroom_document."""
+        playlist_access = PlaylistAccessFactory(role=STUDENT)
+        classroom_document = ClassroomDocumentFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+        data = {"filename": "updated_name.pdf", "size": 100}
+
+        response = self.client.patch(
+            f"/api/classroomdocuments/{classroom_document.id!s}/",
+            data,
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+        self.assertEqual(response.status_code, 403)

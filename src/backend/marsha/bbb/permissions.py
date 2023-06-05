@@ -1,35 +1,8 @@
 """Custom permission classes for the BBB app."""
-from django.core.exceptions import ObjectDoesNotExist
 
 from rest_framework import permissions
 
-from marsha.core import models
-
-
-def _is_organization_admin(user_id, classroom_id):
-    """Check if user is an admin of the organization containing a classroom."""
-
-    if not user_id or not classroom_id:
-        return False
-
-    return models.OrganizationAccess.objects.filter(
-        role=models.ADMINISTRATOR,
-        organization__playlists__classrooms__id=classroom_id,
-        user__id=user_id,
-    ).exists()
-
-
-def _is_playlist_admin(user_id, classroom_id):
-    """Check if user is an admin of the playlist containing a classroom."""
-
-    if not user_id or not classroom_id:
-        return False
-
-    return models.PlaylistAccess.objects.filter(
-        role=models.ADMINISTRATOR,
-        playlist__classrooms__id=classroom_id,
-        user__id=user_id,
-    ).exists()
+from marsha.core import models, permissions as core_permissions
 
 
 class IsTokenResourceRouteObjectRelatedClassroom(permissions.BasePermission):
@@ -59,65 +32,97 @@ class IsTokenResourceRouteObjectRelatedClassroom(permissions.BasePermission):
         """
         if not request.resource:
             return False
-        try:
-            return str(view.get_related_object().classroom.id) == request.resource.id
-        except ObjectDoesNotExist:
-            return False
+
+        return str(view.get_related_classroom_id()) == request.resource.id
 
 
-class IsClassroomPlaylistOrOrganizationAdmin(permissions.BasePermission):
+class BaseIsRelatedClassroomPlaylistRoleMixin:
+    """Allow request when the user has specific role on the object's classroom's playlist."""
+
+    # pylint: disable=unused-argument
+    def get_playlist_id(self, request, view, obj):
+        """Get the playlist id."""
+        # Note, use select_related to avoid making extra requests to get the classroom
+        return obj.classroom.playlist_id
+
+
+class BaseIsRelatedClassroomPlaylistRole(
+    BaseIsRelatedClassroomPlaylistRoleMixin, core_permissions.BaseIsObjectPlaylistRole
+):
+    """Allow request when the user has specific role on the object's classroom's playlist."""
+
+
+class IsRelatedClassroomPlaylistAdminOrInstructor(
+    core_permissions.HasAdminOrInstructorRoleMixIn,
+    BaseIsRelatedClassroomPlaylistRole,
+):
+    """
+    Allow request when the user has admin or instructor role on the object's classroom's playlist.
+    """
+
+
+class BaseIsRelatedClassroomPlaylistOrganizationRole(
+    BaseIsRelatedClassroomPlaylistRoleMixin,
+    core_permissions.BaseIsPlaylistOrganizationRole,
+):
+    """Base permission class for object's classroom's playlist's organization roles."""
+
+
+class IsRelatedClassroomOrganizationAdmin(
+    core_permissions.HasAdminRoleMixIn,
+    BaseIsRelatedClassroomPlaylistOrganizationRole,
+):
+    """
+    Permission class to check if the user is one of
+    the object's classroom's playlist's organization admin.
+    """
+
+
+class IsParamsClassroomAdminOrInstructorThroughPlaylist(
+    core_permissions.HasAdminOrInstructorRoleMixIn, permissions.BasePermission
+):
+    """
+    Allow access to user with admin or instructor role on the classroom's playlist
+    provided in parameters.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request only if the classroom from the params or body of the request exists and
+        the current logged in user has a specific role of the playlist to which
+        this classroom belongs.
+        """
+        classroom_id = view.get_related_classroom_id()
+        return models.PlaylistAccess.objects.filter(
+            **self.role_filter,
+            playlist__classrooms__id=classroom_id,
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsParamsClassroomAdminThroughOrganization(
+    core_permissions.HasAdminRoleMixIn,
+    permissions.BasePermission,
+):
     """
     Allow a request to proceed. Permission class.
 
-    Permission to allow a request to proceed only if the user is an admin for the playlist
-    the classroom is a part of or admin of the linked organization.
+    Permission to allow a request to proceed only if the user provides the ID for an existing
+    classroom, and has an access to this classroom's parent organization with an administrator
+    role.
     """
 
     def has_permission(self, request, view):
         """
         Allow the request.
 
-        Allow the request only if there is a classroom id in the path of the request, which exists,
-        and if the current user is an admin for the playlist this video is a part of or
-        admin of the linked organization.
+        Allow the request only if the classroom from the params or body of the request exists and
+        the current logged in user is one of the administrators of the organization to which
+        this classroom's playlist belongs.
         """
-        return _is_playlist_admin(
-            user_id=request.user.id,
-            classroom_id=view.get_object_pk(),
-        ) or _is_organization_admin(
-            user_id=request.user.id,
-            classroom_id=view.get_object_pk(),
-        )
-
-
-class IsRelatedClassroomPlaylistOrOrganizationAdmin(permissions.BasePermission):
-    """
-    Allow a request to proceed. Permission class.
-
-    Permission to allow a request to proceed only if the user is an admin for the playlist
-    the classroom is a part of or admin of the linked organization.
-    """
-
-    def has_permission(self, request, view):
-        """
-        Allow the request.
-
-        Allow the request only if there is a classroom id in the path of the request, which exists,
-        and if the current user is an admin for the playlist this video is a part of or
-        admin of the linked organization.
-        """
-        try:
-            classroom_id = view.get_related_object().classroom.id
-        except (AttributeError, ObjectDoesNotExist):
-            classroom_id = request.data.get("classroom")
-
-        if not classroom_id:
-            return False
-
-        return _is_playlist_admin(
-            user_id=request.user.id,
-            classroom_id=classroom_id,
-        ) or _is_organization_admin(
-            user_id=request.user.id,
-            classroom_id=classroom_id,
-        )
+        classroom_id = view.get_related_classroom_id()
+        return models.OrganizationAccess.objects.filter(
+            **self.role_filter,
+            organization__playlists__classrooms__id=classroom_id,
+            user__id=request.user.id,
+        ).exists()

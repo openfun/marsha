@@ -10,7 +10,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -148,6 +148,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
         organization_access = OrganizationAccessFactory()
         playlist = PlaylistFactory(organization=organization_access.organization)
         classroom = ClassroomFactory(playlist=playlist)
+
         jwt_token = UserAccessTokenFactory(user=organization_access.user)
 
         response = self.client.post(
@@ -158,6 +159,7 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 {
                     "filename": "test.pdf",
                     "size": 100,
+                    "classroom": str(classroom.id),
                 }
             ),
         )
@@ -244,6 +246,70 @@ class ClassroomDocumentCreateAPITest(TestCase):
                 "url": None,
             },
         )
+
+    def test_api_classroom_document_create_user_access_token_playlist_instructor(self):
+        """
+        A playlist instructor should be able to create a document
+        for an existing classroom.
+
+        First created document should be the default one.
+        """
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
+        classroom = ClassroomFactory(playlist=playlist_access.playlist)
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                    "size": 100,
+                    "classroom": str(classroom.id),
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(ClassroomDocument.objects.count(), 1)
+        self.assertEqual(
+            response.json(),
+            {
+                "classroom": str(classroom.id),
+                "filename": "test.pdf",
+                "id": str(ClassroomDocument.objects.first().id),
+                "is_default": True,
+                "upload_state": "pending",
+                "uploaded_on": None,
+                "url": None,
+            },
+        )
+
+    def test_api_classroom_document_create_user_access_token_playlist_student(self):
+        """
+        A playlist student should not be able to create a document
+        for an existing classroom.
+        """
+        playlist_access = PlaylistAccessFactory(role=STUDENT)
+        classroom = ClassroomFactory(playlist=playlist_access.playlist)
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        response = self.client.post(
+            "/api/classroomdocuments/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "filename": "test.pdf",
+                    "size": 100,
+                    "classroom": str(classroom.id),
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
 
     def test_api_classroom_document_create_user_access_token_admin_other_playlist(self):
         """

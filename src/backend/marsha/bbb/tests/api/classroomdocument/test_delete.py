@@ -8,7 +8,7 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR
+from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, STUDENT
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
@@ -200,6 +200,50 @@ class ClassroomDocumentDeleteAPITest(TestCase):
 
         self.assertEqual(response.status_code, 204)
         self.assertEqual(ClassroomDocument.objects.count(), 0)
+
+    def test_api_classroom_document_delete_user_access_token_playlist_instructor(self):
+        """
+        A playlist instructor should be able to delete a document
+        for an existing classroom.
+
+        First deleted document should be the default one.
+        """
+        playlist_access = PlaylistAccessFactory(role=INSTRUCTOR)
+        classroom_document = ClassroomDocumentFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(ClassroomDocument.objects.count(), 1)
+        response = self.client.delete(
+            f"/api/classroomdocuments/{classroom_document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 204)
+        self.assertEqual(ClassroomDocument.objects.count(), 0)
+
+    def test_api_classroom_document_delete_user_access_token_playlist_student(self):
+        """
+        A playlist student should not be able to delete a document
+        for an existing classroom.
+        """
+        playlist_access = PlaylistAccessFactory(role=STUDENT)
+        classroom_document = ClassroomDocumentFactory(
+            classroom__playlist=playlist_access.playlist
+        )
+        jwt_token = UserAccessTokenFactory(user=playlist_access.user)
+
+        self.assertEqual(ClassroomDocument.objects.count(), 1)
+        response = self.client.delete(
+            f"/api/classroomdocuments/{classroom_document.id}/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+        )
+
+        self.assertEqual(response.status_code, 403)
+        self.assertEqual(ClassroomDocument.objects.count(), 1)
 
     def test_api_classroom_document_delete_user_access_token_admin_other_playlist(self):
         """
