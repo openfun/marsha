@@ -1,14 +1,17 @@
 import { useSentry } from 'lib-components';
-import { useEffect } from 'react';
+import { Fragment, PropsWithChildren, useEffect } from 'react';
 
 import { useConfig } from 'api/useConfig';
+import { ContentSpinner } from 'components/Spinner';
+import { featureContentLoader, useContentFeatures } from 'features/Contents';
 
-const AppConfig = () => {
+const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const setSentry = useSentry((state) => state.setSentry);
   const { data: config } = useConfig({
     keepPreviousData: true,
     staleTime: Infinity,
   });
+  const isFeatureLoaded = useContentFeatures((state) => state.isFeatureLoaded);
 
   useEffect(() => {
     if (!config) {
@@ -23,9 +26,15 @@ const AppConfig = () => {
         'standalone',
       );
     }
+
+    featureContentLoader(config.inactive_resources);
   }, [setSentry, config]);
 
-  return null;
+  if (!isFeatureLoaded) {
+    return <ContentSpinner boxProps={{ height: '100vh' }} />;
+  }
+
+  return <Fragment>{children}</Fragment>;
 };
 
 export default AppConfig;

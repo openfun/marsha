@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Setting for instructor classroom invitation link expiration
 - Add a downloadable ICS file to scheduled student classrooms
 - frontend bulk delete for videos, webinars and classrooms
+- Can choose inactive resource by site (#2276)
 
 ### Fixed
 

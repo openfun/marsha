@@ -20,7 +20,7 @@ describe('<Menu />', () => {
   });
 
   test('renders Menu', () => {
-    featureContentLoader();
+    featureContentLoader([]);
 
     render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
