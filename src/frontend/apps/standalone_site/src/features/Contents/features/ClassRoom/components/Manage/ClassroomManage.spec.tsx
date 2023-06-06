@@ -8,14 +8,14 @@ import { act } from 'react-dom/test-utils';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
-import ClassRoomCreate from './ClassRoomCreate';
+import ClassroomManage from './ClassroomManage';
 
 jest.mock('./ClassRoomCreateForm', () => ({
   __esModule: true,
   default: () => <div>My ClassroomCreate Form</div>,
 }));
 
-describe('<ClassRoomCreate />', () => {
+describe('<ClassroomManage />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -27,8 +27,8 @@ describe('<ClassRoomCreate />', () => {
     fetchMock.restore();
   });
 
-  it('renders ClassRoomCreate', () => {
-    render(<ClassRoomCreate />);
+  it('renders ClassroomManage', () => {
+    render(<ClassroomManage />);
 
     expect(
       screen.getByRole('button', { name: /Create Classroom/i }),
@@ -40,7 +40,7 @@ describe('<ClassRoomCreate />', () => {
   });
 
   it('shows classroom creation Modal', () => {
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     const createButton = screen.getByRole('button', {
       name: /Create Classroom/i,
     });
@@ -53,7 +53,7 @@ describe('<ClassRoomCreate />', () => {
   });
 
   it('switches into selection mode on select button click', () => {
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     const selectButton = screen.getByRole('button', { name: 'Select' });
     userEvent.click(selectButton);
     expect(
@@ -69,7 +69,7 @@ describe('<ClassRoomCreate />', () => {
   });
 
   it('counts the right amount of selected items (1)', () => {
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -86,7 +86,7 @@ describe('<ClassRoomCreate />', () => {
   });
 
   it('counts the right amount of selected items (3)', () => {
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -103,7 +103,7 @@ describe('<ClassRoomCreate />', () => {
   });
 
   it('opens the delete confirmation modal', () => {
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -129,7 +129,7 @@ describe('<ClassRoomCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -166,7 +166,7 @@ describe('<ClassRoomCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<ClassRoomCreate />);
+    render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
