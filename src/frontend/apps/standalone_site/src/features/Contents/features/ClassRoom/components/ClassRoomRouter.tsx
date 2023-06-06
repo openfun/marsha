@@ -3,7 +3,7 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 
 import routes from '../routes';
 
-import ClassRoomCreate from './Create/ClassRoomCreate';
+import ClassroomManage from './Manage/ClassroomManage';
 import ClassRooms from './Read/ClassRooms';
 import ClassRoomUpdate from './Update/ClassRoomUpdate';
 
@@ -22,14 +22,14 @@ const ClassRoomRouter = () => {
       <Box pad="medium">
         <Switch>
           <Route path={classroomCreatePath} exact>
-            <ClassRoomCreate />
+            <ClassroomManage />
             <ClassRooms playlistId={playlistId} />
           </Route>
           <Route path={[classroomInvitePath, classroomUpdatePath]} exact>
             <ClassRoomUpdate />
           </Route>
           <Route>
-            <ClassRoomCreate />
+            <ClassroomManage />
             <ClassRooms playlistId={playlistId} />
           </Route>
         </Switch>

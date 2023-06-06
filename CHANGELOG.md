@@ -36,6 +36,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Refacto routes contents website (#2253)
+- Change names of Classroom/Live/Video Create components into Manage
 
 ## [4.1.0] - 2023-05-23
 

@@ -18,52 +18,52 @@ const messages = defineMessages({
   ClassroomTitle: {
     defaultMessage: 'Classrooms',
     description: 'Classrooms title',
-    id: 'features.Contents.features.ClassRooms.Create.ClassroomTitle',
+    id: 'features.Contents.features.ClassRooms.Manage.ClassroomTitle',
   },
   CreateClassroomLabel: {
     defaultMessage: 'Create Classroom',
     description: 'Button label to select classrooms',
-    id: 'features.Contents.features.ClassRooms.Create.CreateClassroomLabel',
+    id: 'features.Contents.features.ClassRooms.Manage.CreateClassroomLabel',
   },
   SelectButtonLabel: {
     defaultMessage: 'Select',
     description: 'Text heading select classrooms.',
-    id: 'features.Contents.features.ClassRooms.Create.SelectButtonLabel',
+    id: 'features.Contents.features.ClassRooms.Manage.SelectButtonLabel',
   },
   DeleteButtonLabel: {
     defaultMessage: `Delete {item_count, plural,  =0 {0 classroom} one {# classroom} other {# classrooms}}`,
     description: 'Button label to delete single classroom.',
-    id: 'features.Contents.features.ClassRooms.Create.DeleteButtonSingularLabel',
+    id: 'features.Contents.features.ClassRooms.Manage.DeleteButtonSingularLabel',
   },
   CancelSelectionLabel: {
     defaultMessage: 'Cancel',
     description: 'Button label to cancel classroom selection.',
-    id: 'features.Contents.features.ClassRooms.Create.CancelSelectionLabel',
+    id: 'features.Contents.features.ClassRooms.Manage.CancelSelectionLabel',
   },
   classroomsDeleteModalTitle: {
     defaultMessage: `Delete {item_count, plural, one {# classroom} other {# classrooms}}`,
     description: 'Title of the classroom delete modal.',
-    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteModalTitle',
+    id: 'features.Contents.features.ClassRooms.Manage.classroomsDeleteModalTitle',
   },
   confirmDeleteClassroomsTitle: {
     defaultMessage: `Confirm delete {item_count, plural, one {# classroom} other {# classrooms}}`,
     description: 'Title of the widget used for classroom delete confirmation.',
-    id: 'features.Contents.features.ClassRooms.Create.confirmDeleteClassroomsTitle',
+    id: 'features.Contents.features.ClassRooms.Manage.confirmDeleteClassroomsTitle',
   },
   confirmDeleteClassroomsText: {
     defaultMessage: `Are you sure you want to delete {item_count, plural, one {# classroom} other {# classrooms}} ? This action is irreversible.`,
     description: 'Text of the widget used for classroom delete confirmation.',
-    id: 'features.Contents.features.ClassRooms.Create.confirmDeleteClassroomsText',
+    id: 'features.Contents.features.ClassRooms.Manage.confirmDeleteClassroomsText',
   },
   classroomsDeleteSuccess: {
     defaultMessage: `{item_count, plural, one {# classroom} other {# classrooms}} successfully deleted`,
     description: 'Text of the classroom delete confirmation toast.',
-    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteSuccess',
+    id: 'features.Contents.features.ClassRooms.Manage.classroomsDeleteSuccess',
   },
   classroomsDeleteError: {
     defaultMessage: `Failed to delete {item_count, plural, one {# classroom} other {# classrooms}}`,
     description: 'Text of the classroom delete error toast.',
-    id: 'features.Contents.features.ClassRooms.Create.classroomsDeleteError',
+    id: 'features.Contents.features.ClassRooms.Manage.classroomsDeleteError',
   },
 });
 
@@ -71,7 +71,7 @@ const ButtonStyled = styled(Button)`
   color: white;
 `;
 
-const ClassRoomCreate = () => {
+const ClassroomManage = () => {
   const intl = useIntl();
   const history = useHistory();
 
@@ -216,4 +216,4 @@ const ClassRoomCreate = () => {
   );
 };
 
-export default ClassRoomCreate;
+export default ClassroomManage;

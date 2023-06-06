@@ -10,11 +10,11 @@ jest.mock('./Read/ClassRooms', () => ({
   ),
 }));
 
-jest.mock('./Create/ClassRoomCreate', () => ({
+jest.mock('./Manage/ClassroomManage', () => ({
   __esModule: true,
   default: () => (
     <div>
-      <p>My ClassRoomCreate</p>
+      <p>My ClassroomManage</p>
     </div>
   ),
 }));
@@ -39,7 +39,7 @@ describe('<ClassRoomRouter/>', () => {
         history: ['/my-contents/classroom?playlist=test-playlist-id'],
       },
     });
-    expect(screen.getByText(/My ClassRoomCreate/i)).toBeInTheDocument();
+    expect(screen.getByText(/My ClassroomManage/i)).toBeInTheDocument();
     expect(
       screen.getByText(/My ClassroomsRead test-playlist-id/i),
     ).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('<ClassRoomRouter/>', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
-    expect(screen.queryByText(/My ClassRoomCreate/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/My ClassroomManage/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My ClassroomsRead/i)).not.toBeInTheDocument();
   });
 
@@ -57,7 +57,7 @@ describe('<ClassRoomRouter/>', () => {
     render(<ClassRoomRouter />, {
       routerOptions: { history: ['/my-contents/classroom/create'] },
     });
-    expect(screen.getByText(/My ClassRoomCreate/i)).toBeInTheDocument();
+    expect(screen.getByText(/My ClassroomManage/i)).toBeInTheDocument();
     expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
   });
 
