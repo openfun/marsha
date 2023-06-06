@@ -3,7 +3,7 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 
 import routes from '../routes';
 
-import VideoCreate from './Create/VideoCreate';
+import VideoManage from './Manage/VideoManage';
 import Videos from './Read/Videos';
 import VideoUpdate from './Update/VideoUpdate';
 
@@ -21,14 +21,14 @@ const VideoRouter = () => {
       <Box pad="medium">
         <Switch>
           <Route path={videoCreatePath} exact>
-            <VideoCreate />
+            <VideoManage />
             <Videos playlistId={playlistId} />
           </Route>
           <Route path={videoUpdatePath} exact>
             <VideoUpdate />
           </Route>
           <Route>
-            <VideoCreate />
+            <VideoManage />
             <Videos playlistId={playlistId} />
           </Route>
         </Switch>

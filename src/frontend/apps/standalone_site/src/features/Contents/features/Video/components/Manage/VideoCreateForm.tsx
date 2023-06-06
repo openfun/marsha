@@ -53,7 +53,7 @@ const messages = defineMessages({
   },
 });
 
-type VideoCreate = {
+type VideoManage = {
   playlist: string;
   title: string;
   description?: string;
@@ -67,7 +67,7 @@ const VideoCreateForm = () => {
   const { isDesktop } = useResponsive();
   const videoPath = routes.VIDEO.path;
   const { addUpload, uploadManagerState } = useUploadManager();
-  const [video, setVideo] = useState<VideoCreate>({
+  const [video, setVideo] = useState<VideoManage>({
     playlist: '',
     title: '',
   });

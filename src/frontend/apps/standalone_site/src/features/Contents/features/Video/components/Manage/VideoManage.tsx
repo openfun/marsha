@@ -24,52 +24,52 @@ const messages = defineMessages({
   VideoTitle: {
     defaultMessage: 'Videos',
     description: 'Videos title',
-    id: 'features.Contents.features.Video.Create.VideoTitle',
+    id: 'features.Contents.features.Video.Manage.VideoTitle',
   },
   CreateVideoLabel: {
     defaultMessage: 'Create Video',
     description: 'Text heading create video.',
-    id: 'features.Contents.features.Video.Create.CreateVideoLabel',
+    id: 'features.Contents.features.Video.Manage.CreateVideoLabel',
   },
   SelectButtonLabel: {
     defaultMessage: 'Select',
     description: 'Button label to select videos.',
-    id: 'features.Contents.features.Video.Create.SelectButtonLabel',
+    id: 'features.Contents.features.Video.Manage.SelectButtonLabel',
   },
   DeleteButtonLabel: {
     defaultMessage: `Delete {item_count, plural,  =0 {0 video} one {# video} other {# videos}}`,
     description: 'Button label to delete single video.',
-    id: 'features.Contents.features.Video.Create.DeleteButtonSingularLabel',
+    id: 'features.Contents.features.Video.Manage.DeleteButtonSingularLabel',
   },
   CancelSelectionLabel: {
     defaultMessage: 'Cancel',
     description: 'Button label to cancel video selection.',
-    id: 'features.Contents.features.Video.Create.CancelSelectionLabel',
+    id: 'features.Contents.features.Video.Manage.CancelSelectionLabel',
   },
   videosDeleteModalTitle: {
     defaultMessage: `Delete {item_count, plural, one {# video} other {# videos}}`,
     description: 'Title of the delete video modal.',
-    id: 'features.Contents.features.Video.Create.videoDeleteModalTitle',
+    id: 'features.Contents.features.Video.Manage.videoDeleteModalTitle',
   },
   confirmDeleteVideosTitle: {
     defaultMessage: `Confirm delete {item_count, plural, one {# video} other {# videos}}`,
     description: 'Title of the widget used for delete video confirmation.',
-    id: 'cfeatures.Contents.features.Video.Create.confirmDeleteVideoTitle',
+    id: 'cfeatures.Contents.features.Video.Manage.confirmDeleteVideoTitle',
   },
   confirmDeleteVideosText: {
     defaultMessage: `Are you sure you want to delete {item_count, plural, one {# video} other {# videos}} ? This action is irreversible.`,
     description: 'Text of the widget used for delete video confirmation.',
-    id: 'features.Contents.features.Video.Create.confirmDeleteVideoText',
+    id: 'features.Contents.features.Video.Manage.confirmDeleteVideoText',
   },
   videosDeleteSuccess: {
     defaultMessage: `{item_count, plural,  =0 {0 video} one {# video} other {# videos}} successfully deleted`,
     description: 'Text of the delete video confirmation toast.',
-    id: 'features.Contents.features.Video.Create.videoDeleteSuccess',
+    id: 'features.Contents.features.Video.Manage.videoDeleteSuccess',
   },
   videosDeleteError: {
     defaultMessage: `Failed to delete {item_count, plural,  =0 {0 video} one {# video} other {# videos}}`,
     description: 'Text of the delete video error toast.',
-    id: 'features.Contents.features.Video.Create.videoDeleteError',
+    id: 'features.Contents.features.Video.Manage.videoDeleteError',
   },
 });
 
@@ -77,7 +77,7 @@ const ButtonStyled = styled(Button)`
   color: white;
 `;
 
-const VideoCreate = () => {
+const VideoManage = () => {
   const intl = useIntl();
   const history = useHistory();
 
@@ -227,4 +227,4 @@ const VideoCreate = () => {
   );
 };
 
-export default VideoCreate;
+export default VideoManage;

@@ -10,11 +10,11 @@ jest.mock('./Read/Videos', () => ({
   ),
 }));
 
-jest.mock('./Create/VideoCreate', () => ({
+jest.mock('./Manage/VideoManage', () => ({
   __esModule: true,
   default: () => (
     <div>
-      <p>My VideoCreate</p>
+      <p>My VideoManage</p>
     </div>
   ),
 }));
@@ -39,7 +39,7 @@ describe('<VideoRouter/>', () => {
         history: ['/my-contents/videos?playlist=test-playlist-id'],
       },
     });
-    expect(screen.getByText(/My VideoCreate/i)).toBeInTheDocument();
+    expect(screen.getByText(/My VideoManage/i)).toBeInTheDocument();
     expect(
       screen.getByText('My VideosRead test-playlist-id'),
     ).toBeInTheDocument();
@@ -49,7 +49,7 @@ describe('<VideoRouter/>', () => {
     render(<VideoRouter />, {
       routerOptions: { history: ['/some/bad/route'] },
     });
-    expect(screen.queryByText(/My VideoCreate/i)).not.toBeInTheDocument();
+    expect(screen.queryByText(/My VideoManage/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My VideosRead/i)).not.toBeInTheDocument();
   });
 
@@ -58,7 +58,7 @@ describe('<VideoRouter/>', () => {
       routerOptions: { history: ['/my-contents/videos/create'] },
     });
 
-    expect(screen.getByText(/My VideoCreate/i)).toBeInTheDocument();
+    expect(screen.getByText(/My VideoManage/i)).toBeInTheDocument();
     expect(screen.getByText(/My VideosRead/i)).toBeInTheDocument();
   });
 
