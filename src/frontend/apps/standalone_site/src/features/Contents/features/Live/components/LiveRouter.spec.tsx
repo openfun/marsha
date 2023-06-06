@@ -10,7 +10,7 @@ jest.mock('./Read/Lives', () => ({
   ),
 }));
 
-jest.mock('./Create/LiveCreate', () => ({
+jest.mock('./Manage/LiveManage', () => ({
   __esModule: true,
   default: () => (
     <div>
