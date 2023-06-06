@@ -7,14 +7,14 @@ import { act } from 'react-dom/test-utils';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
-import LiveCreate from './LiveCreate';
+import LiveManage from './LiveManage';
 
 jest.mock('./LiveCreateForm', () => ({
   __esModule: true,
   default: () => <div>My WebinarCreate Form</div>,
 }));
 
-describe('<LiveCreate />', () => {
+describe('<LiveManage />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -26,8 +26,8 @@ describe('<LiveCreate />', () => {
     fetchMock.restore();
   });
 
-  it('renders LiveCreate', () => {
-    render(<LiveCreate />);
+  it('renders LiveManage', () => {
+    render(<LiveManage />);
 
     expect(
       screen.getByRole('button', { name: /Create Webinar/i }),
@@ -39,7 +39,7 @@ describe('<LiveCreate />', () => {
   });
 
   it('shows video creation Modal', () => {
-    render(<LiveCreate />);
+    render(<LiveManage />);
     const createButton = screen.getByRole('button', {
       name: /Create Webinar/i,
     });
@@ -52,7 +52,7 @@ describe('<LiveCreate />', () => {
   });
 
   it('switches into selection mode on select button click', () => {
-    render(<LiveCreate />);
+    render(<LiveManage />);
     const selectButton = screen.getByRole('button', { name: 'Select' });
     userEvent.click(selectButton);
     expect(
@@ -68,7 +68,7 @@ describe('<LiveCreate />', () => {
   });
 
   it('counts the right amount of selected items (1)', () => {
-    render(<LiveCreate />);
+    render(<LiveManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -85,7 +85,7 @@ describe('<LiveCreate />', () => {
   });
 
   it('counts the right amount of selected items (3)', () => {
-    render(<LiveCreate />);
+    render(<LiveManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -102,7 +102,7 @@ describe('<LiveCreate />', () => {
   });
 
   it('opens the delete confirmation modal', () => {
-    render(<LiveCreate />);
+    render(<LiveManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -128,7 +128,7 @@ describe('<LiveCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<LiveCreate />);
+    render(<LiveManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -165,7 +165,7 @@ describe('<LiveCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<LiveCreate />);
+    render(<LiveManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,

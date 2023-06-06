@@ -46,7 +46,7 @@ const messages = defineMessages({
   },
 });
 
-type LiveCreate = {
+type LiveManage = {
   playlist: string;
   title: string;
   description?: string;
@@ -60,7 +60,7 @@ const LiveCreateForm = () => {
   const { isDesktop } = useResponsive();
   const [isUpdatingToLive, setIsUpdatingToLive] = useState(false);
   const livePath = routes.LIVE.path;
-  const [live, setLive] = useState<LiveCreate>({
+  const [live, setLive] = useState<LiveManage>({
     playlist: '',
     title: '',
     live_type: LiveModeType.JITSI,

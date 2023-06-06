@@ -18,52 +18,52 @@ const messages = defineMessages({
   WebinarTitle: {
     defaultMessage: 'Webinars',
     description: 'Webinars title',
-    id: 'features.Contents.features.Webinar.Create.WebinarTitle',
+    id: 'features.Contents.features.Webinar.Manage.WebinarTitle',
   },
   CreateWebinarLabel: {
     defaultMessage: 'Create Webinar',
     description: 'Text heading create webinar.',
-    id: 'features.Contents.features.Webinar.Create.CreateWebinarLabel',
+    id: 'features.Contents.features.Webinar.Manage.CreateWebinarLabel',
   },
   SelectButtonLabel: {
     defaultMessage: 'Select',
     description: 'Button label to select webinars.',
-    id: 'features.Contents.features.Webinar.Create.SelectButtonLabel',
+    id: 'features.Contents.features.Webinar.Manage.SelectButtonLabel',
   },
   DeleteButtonLabel: {
     defaultMessage: `Delete {item_count, plural,  =0 {0 webinar} one {# webinar} other {# webinars}}`,
     description: 'Button label to delete webinar.',
-    id: 'features.Contents.features.Webinar.Create.DeleteButtonSingularLabel',
+    id: 'features.Contents.features.Webinar.Manage.DeleteButtonSingularLabel',
   },
   CancelSelectionLabel: {
     defaultMessage: 'Cancel',
     description: 'Button label to cancel webinar selection.',
-    id: 'features.Contents.features.Webinar.Create.CancelSelectionLabel',
+    id: 'features.Contents.features.Webinar.Manage.CancelSelectionLabel',
   },
   webinarsDeleteModalTitle: {
     defaultMessage: `Delete {item_count, plural, one {# webinar} other {# webinars}}`,
     description: 'Title of the webinar delete modal.',
-    id: 'features.Contents.features.Webinar.Create.webinarDeleteModalTitle',
+    id: 'features.Contents.features.Webinar.Manage.webinarDeleteModalTitle',
   },
   confirmDeleteWebinarsTitle: {
     defaultMessage: `Confirm delete {item_count, plural,  =0 {0 webinar} one {# webinar} other {# webinars}}`,
     description: 'Title of the widget used for webinar delete confirmation.',
-    id: 'features.Contents.features.Webinar.Create.confirmDeleteWebinarsTitle',
+    id: 'features.Contents.features.Webinar.Manage.confirmDeleteWebinarsTitle',
   },
   confirmDeleteWebinarsText: {
     defaultMessage: `Are you sure you want to delete {item_count, plural, one {# webinar} other {# webinars}} ? This action is irreversible.`,
     description: 'Text of the widget used for webinar delete confirmation.',
-    id: 'features.Contents.features.Webinar.Create.confirmDeleteWebinarsText',
+    id: 'features.Contents.features.Webinar.Manage.confirmDeleteWebinarsText',
   },
   webinarsDeleteSuccess: {
     defaultMessage: `{item_count, plural, one {# webinar} other {# webinars}} successfully deleted`,
     description: 'Text of the webinar delete confirmation toast.',
-    id: 'features.Contents.features.Webinar.Create.webinarsDeleteSuccess',
+    id: 'features.Contents.features.Webinar.Manage.webinarsDeleteSuccess',
   },
   webinarsDeleteError: {
     defaultMessage: `Failed to delete {item_count, plural, one {# webinar} other {# webinars}}`,
     description: 'Text of the webinar delete error toast.',
-    id: 'features.Contents.features.Webinar.Create.webinarsDeleteError',
+    id: 'features.Contents.features.Webinar.Manage.webinarsDeleteError',
   },
 });
 
@@ -71,7 +71,7 @@ const ButtonStyled = styled(Button)`
   color: white;
 `;
 
-const LiveCreate = () => {
+const LiveManage = () => {
   const intl = useIntl();
   const history = useHistory();
 
@@ -217,4 +217,4 @@ const LiveCreate = () => {
   );
 };
 
-export default LiveCreate;
+export default LiveManage;

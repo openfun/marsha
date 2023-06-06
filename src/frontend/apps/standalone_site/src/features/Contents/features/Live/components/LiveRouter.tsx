@@ -3,7 +3,7 @@ import { Route, Switch, useLocation } from 'react-router-dom';
 
 import routes from '../routes';
 
-import LiveCreate from './Create/LiveCreate';
+import LiveManage from './Manage/LiveManage';
 import Lives from './Read/Lives';
 import LiveUpdate from './Update/LiveUpdate';
 
@@ -21,14 +21,14 @@ const LiveRouter = () => {
       <Box pad="medium">
         <Switch>
           <Route path={liveCreatePath} exact>
-            <LiveCreate />
+            <LiveManage />
             <Lives playlistId={playlistId} />
           </Route>
           <Route path={liveUpdatePath} exact>
             <LiveUpdate />
           </Route>
           <Route>
-            <LiveCreate />
+            <LiveManage />
             <Lives playlistId={playlistId} />
           </Route>
         </Switch>
