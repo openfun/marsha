@@ -7,14 +7,14 @@ import { act } from 'react-dom/test-utils';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
-import VideoCreate from './VideoCreate';
+import VideoManage from './VideoManage';
 
 jest.mock('./VideoCreateForm', () => ({
   __esModule: true,
-  default: () => <div>My VideoCreate Form</div>,
+  default: () => <div>My VideoManage Form</div>,
 }));
 
-describe('<VideoCreate />', () => {
+describe('<VideoManage />', () => {
   beforeEach(() => {
     useJwt.setState({
       jwt: 'json web token',
@@ -26,8 +26,8 @@ describe('<VideoCreate />', () => {
     fetchMock.restore();
   });
 
-  it('renders VideoCreate', () => {
-    render(<VideoCreate />);
+  it('renders VideoManage', () => {
+    render(<VideoManage />);
 
     expect(
       screen.getByRole('button', { name: /Create Video/i }),
@@ -39,18 +39,18 @@ describe('<VideoCreate />', () => {
   });
 
   it('shows video creation Modal', () => {
-    render(<VideoCreate />);
+    render(<VideoManage />);
     const createButton = screen.getByRole('button', { name: /Create Video/i });
     userEvent.click(createButton);
 
     expect(
       screen.getByRole('heading', { name: /Create Video/i }),
     ).toBeInTheDocument();
-    expect(screen.getByText('My VideoCreate Form')).toBeInTheDocument();
+    expect(screen.getByText('My VideoManage Form')).toBeInTheDocument();
   });
 
   it('switches into selection mode on select button click', () => {
-    render(<VideoCreate />);
+    render(<VideoManage />);
     const selectButton = screen.getByRole('button', { name: 'Select' });
     userEvent.click(selectButton);
     expect(
@@ -66,7 +66,7 @@ describe('<VideoCreate />', () => {
   });
 
   it('counts the right amount of selected items (1)', () => {
-    render(<VideoCreate />);
+    render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -83,7 +83,7 @@ describe('<VideoCreate />', () => {
   });
 
   it('counts the right amount of selected items (3)', () => {
-    render(<VideoCreate />);
+    render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -100,7 +100,7 @@ describe('<VideoCreate />', () => {
   });
 
   it('opens the delete confirmation modal', () => {
-    render(<VideoCreate />);
+    render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -124,7 +124,7 @@ describe('<VideoCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<VideoCreate />);
+    render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
@@ -159,7 +159,7 @@ describe('<VideoCreate />', () => {
       body: { ids: ['id1', 'id2'] },
     });
 
-    render(<VideoCreate />);
+    render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
         isSelectionEnabled: true,
