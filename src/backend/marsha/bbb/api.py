@@ -15,6 +15,7 @@ from rest_framework.response import Response
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     create,
+    delete_recording,
     end,
     get_recordings,
     join,
@@ -642,6 +643,7 @@ class ClassroomRecordingViewSet(
     APIViewMixin,
     ObjectPkMixin,
     ObjectClassroomRelatedMixin,
+    mixins.DestroyModelMixin,
     viewsets.GenericViewSet,
 ):
     """
@@ -660,7 +662,7 @@ class ClassroomRecordingViewSet(
 
     def get_permissions(self):
         """Instantiate and return the list of permissions that this view requires."""
-        if self.action in ["create_vod"]:
+        if self.action in ["create_vod", "destroy"]:
             permission_classes = [
                 core_permissions.IsTokenInstructor
                 | core_permissions.IsTokenAdmin
@@ -724,3 +726,17 @@ class ClassroomRecordingViewSet(
         )
 
         return Response(serializer.data, status=201)
+
+    def destroy(self, request, *args, **kwargs):
+        """
+        Delete the ClassroomRecording object.
+        To avoid untracked recordings on BBB,
+        the recording should be deleted on BBB first.
+        If it succeeds, we proceed to delete.
+        """
+        classroom_recording = self.get_object()
+        try:
+            delete_recording([classroom_recording])
+        except ApiMeetingException:
+            return Response("BBB API failed to delete the recording", status=500)
+        return super().destroy(request, *args, **kwargs)

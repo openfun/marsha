@@ -39,6 +39,60 @@ describe('<Recordings />', () => {
     jest.resetAllMocks();
   });
 
+  it('renders delete button when VOD not created', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
+    const classroom = classroomMockFactory();
+    const classroomRecording = classroomRecordingMockFactory({
+      started_at: DateTime.fromJSDate(
+        new Date(2022, 1, 29, 11, 0, 0),
+      ).toISO() as string,
+      classroom: classroom.id,
+    });
+
+    render(
+      <Recording
+        recording={classroomRecording}
+        classroomTitle={classroom.title}
+      />,
+    );
+
+    const deleteRecordingButton = screen.getByRole('button', {
+      name: 'Click on this button to delete the classroom recording.',
+    });
+    expect(deleteRecordingButton).toBeInTheDocument();
+  });
+
+  it('does not render the delete button when the record is already converted in VOD', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
+    const classroom = classroomMockFactory();
+    const classroomRecording = classroomRecordingMockFactory({
+      classroom: classroom.id,
+      vod: classroomRecordingVodMockFactory({
+        upload_state: READY,
+      }),
+    });
+
+    render(
+      <Recording
+        recording={classroomRecording}
+        classroomTitle={classroom.title}
+      />,
+    );
+
+    const deleteRecordingButton = screen.queryByRole('button', {
+      name: 'Click on this button to delete the classroom recording.',
+    });
+    expect(deleteRecordingButton).not.toBeInTheDocument();
+  });
+
   it('calls createVOD when convert to VOD button is clicked', () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {

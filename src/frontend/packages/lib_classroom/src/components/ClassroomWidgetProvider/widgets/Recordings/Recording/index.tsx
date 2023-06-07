@@ -12,6 +12,8 @@ import { defineMessages, IntlShape, useIntl } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
+import { DeleteClassroomRecordingButton } from './DeleteClassroomRecordingButton';
+
 const StyledAnchor = styled(Anchor)`
   font-family: Roboto-Medium;
 `;
@@ -113,6 +115,10 @@ const VodNotReady = ({ recording, classroomTitle }: RecordingProps) => {
       pad={recording.vod ? 'none' : 'small'}
       justify="between"
     >
+      {!recording.vod && (
+        <DeleteClassroomRecordingButton recording={recording} />
+      )}
+
       <StyledAnchor
         title={intl.formatMessage(messages.downloadRecordingLabel)}
         href={recording.video_file_url}
@@ -144,7 +150,6 @@ const VodNotReady = ({ recording, classroomTitle }: RecordingProps) => {
           label={intl.formatMessage(messages.convertVODLabel)}
           onClick={() => convertVOD(recording)}
           size="xsmall"
-          pad="xsmall"
         />
       )}
     </Box>

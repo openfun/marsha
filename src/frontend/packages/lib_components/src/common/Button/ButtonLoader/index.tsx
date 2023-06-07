@@ -1,6 +1,6 @@
-import { Box, Button, Stack } from 'grommet';
+import { Box, Button, ButtonExtendedProps, Stack } from 'grommet';
 
-import { Spinner } from '@lib-components/common/Loader';
+import { Spinner, SpinnerLookProps } from '@lib-components/common/Loader';
 
 export enum ButtonLoaderStyle {
   DEFAULT = 'DEFAULT',
@@ -8,10 +8,10 @@ export enum ButtonLoaderStyle {
 }
 
 interface ButtonLoaderProps {
-  label: string;
   isDisabled?: boolean;
   isSubmitting?: boolean;
   onClickSubmit?: () => void;
+  spinnerProps?: SpinnerLookProps;
   style?: ButtonLoaderStyle;
 }
 
@@ -23,19 +23,19 @@ interface ButtonLoaderProps {
  * @returns ButtonLoader component
  */
 export const ButtonLoader = ({
-  label,
   isDisabled,
   isSubmitting,
   onClickSubmit,
   style,
-}: ButtonLoaderProps) => {
+  spinnerProps,
+  ...buttonProps
+}: ButtonLoaderProps & ButtonExtendedProps) => {
   return (
     <Stack style={{ flex: '3' }} guidingChild="first" interactiveChild="first">
       <Button
         type={onClickSubmit ? 'button' : 'submit'}
         disabled={isDisabled || isSubmitting}
         primary
-        label={label}
         onClick={onClickSubmit}
         fill="horizontal"
         color={
@@ -43,11 +43,12 @@ export const ButtonLoader = ({
             ? ButtonLoaderStyle.DESTRUCTIVE
             : undefined
         }
+        {...buttonProps}
       />
       {isSubmitting && (
         <Box fill>
           <Box margin="auto">
-            <Spinner />
+            <Spinner {...spinnerProps} />
           </Box>
         </Box>
       )}

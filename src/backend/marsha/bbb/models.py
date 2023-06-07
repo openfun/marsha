@@ -291,7 +291,7 @@ class ClassroomRecording(BaseModel):
         help_text=_("vod made from the recording"),
         blank=True,
         null=True,
-        on_delete=models.SET_NULL,
+        on_delete=models.CASCADE,
     )
 
     class Meta:

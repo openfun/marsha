@@ -269,3 +269,13 @@ def process_recordings(  # pylint: disable=too-many-arguments
 
         logger.info("Recording %s found.", recording.get("recordID"))
         process_recording(classroom, recording)
+
+
+def delete_recording(
+    classroom_recordings: list[ClassroomRecording],
+):
+    """Delete a given classroom recording from BBB API."""
+    parameters = {
+        "recordID": ",".join([x.record_id for x in classroom_recordings]),
+    }
+    return request_api("deleteRecordings", parameters)
