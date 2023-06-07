@@ -11,6 +11,7 @@ from waffle import switch_is_active
 from .. import defaults, serializers
 from ..defaults import SENTRY
 from ..models import SiteConfig, Video
+from ..signals import signal_object_uploaded
 from ..simple_jwt.tokens import ResourceAccessToken
 from ..utils.api_utils import get_uploadable_models_s3_mapping, validate_signature
 
@@ -139,13 +140,20 @@ def update_state(request):
     except model.DoesNotExist:
         return Response({"success": False}, status=404)
 
+    old_upload_state = object_instance.upload_state
+    new_upload_state = serializer.validated_data["state"]
     object_instance.update_upload_state(
-        upload_state=serializer.validated_data["state"],
+        upload_state=new_upload_state,
         uploaded_on=key_elements.get("uploaded_on")
-        if serializer.validated_data["state"] == defaults.READY
+        if new_upload_state == defaults.READY
         else None,
         **extra_parameters,
     )
+    # send a signal when upload is finished
+    if old_upload_state != new_upload_state and new_upload_state == defaults.READY:
+        signal_object_uploaded.send(
+            sender="update_state", model=model, instance=object_instance
+        )
 
     return Response({"success": True})
 
