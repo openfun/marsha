@@ -31,7 +31,7 @@ const Preloader = styled(Box)`
   background-color: rgba(255, 255, 255, 0.4);
 `;
 
-interface SpinnerLookProps {
+export interface SpinnerLookProps {
   color?: string;
   size?: 'small' | 'medium' | 'large';
 }

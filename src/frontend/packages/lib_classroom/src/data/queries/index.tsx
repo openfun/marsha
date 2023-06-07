@@ -21,6 +21,7 @@ import {
   FetchResponseError,
   deleteOne,
   bulkDelete,
+  ClassroomRecording,
 } from 'lib-components';
 import {
   useMutation,
@@ -186,6 +187,49 @@ export const useDeleteClassroom = (options?: UseDeleteClassroomOptions) => {
       },
       onError: (error, variables, context) => {
         queryClient.invalidateQueries('classrooms');
+        if (options?.onError) {
+          options.onError(error, variables, context);
+        }
+      },
+    },
+  );
+};
+
+type UseDeleteClassroomRecordingData = {
+  classroomId: string;
+  classroomRecordingId: string;
+};
+type UseDeleteClassroomRecordingError =
+  FetchResponseError<UseDeleteClassroomRecordingData>;
+type UseDeleteClassroomRecordingOptions = UseMutationOptions<
+  Maybe<ClassroomRecording>,
+  UseDeleteClassroomRecordingError,
+  UseDeleteClassroomRecordingData
+>;
+export const useDeleteClassroomRecording = (
+  options?: UseDeleteClassroomRecordingOptions,
+) => {
+  const queryClient = useQueryClient();
+  return useMutation<
+    Maybe<ClassroomRecording>,
+    UseDeleteClassroomRecordingError,
+    UseDeleteClassroomRecordingData
+  >(
+    ({ classroomId, classroomRecordingId }) =>
+      deleteOne({
+        name: `classrooms/${classroomId}/recordings`,
+        id: classroomRecordingId,
+      }),
+    {
+      ...options,
+      onSuccess: (data, variables, context) => {
+        queryClient.invalidateQueries(`classrooms`);
+        if (options?.onSuccess) {
+          options.onSuccess(data, variables, context);
+        }
+      },
+      onError: (error, variables, context) => {
+        queryClient.invalidateQueries(`classrooms`);
         if (options?.onError) {
           options.onError(error, variables, context);
         }
