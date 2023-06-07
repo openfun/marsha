@@ -9,6 +9,7 @@ import responses
 
 from marsha.bbb.factories import ClassroomFactory, ClassroomRecordingFactory
 from marsha.bbb.models import ClassroomRecording
+from marsha.core.factories import VideoFactory
 
 
 @override_settings(BBB_API_ENDPOINT="https://10.7.7.1/bigbluebutton/api")
@@ -237,6 +238,89 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
         self.assertEqual(classroom.recordings.count(), 0)
         classroom_recording.refresh_from_db()
         self.assertIsNotNone(classroom_recording.deleted)
+
+    @responses.activate
+    @mock.patch.object(Logger, "info")
+    def test_update_recordings_converted_to_vod(self, logger_mock):
+        """
+        When an existing recording has been converted and not found anymore,
+        it should not be deleted.
+        """
+        video = VideoFactory()
+        classroom = ClassroomFactory(meeting_id="7e1c8b28-cd7a-4abe-93b2-3121366cb049")
+        classroom_recording = ClassroomRecordingFactory(
+            classroom=classroom,
+            record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
+            video_file_url="https://example.com/video.mp4",
+            vod=video,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7e1c8b28-cd7a-4abe-93b2-3121366cb049",
+                        "recordID": "d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
+                        "checksum": "85477147f74390fc7985edf85851aa29eea57e5e",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings> </recordings>
+                <messageKey>noRecordings</messageKey>
+                <message>There are not recordings for the meetings</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        responses.add(
+            responses.GET,
+            "https://10.7.7.1/bigbluebutton/api/getRecordings",
+            match=[
+                responses.matchers.query_param_matcher(
+                    {
+                        "meetingID": "7e1c8b28-cd7a-4abe-93b2-3121366cb049",
+                        "checksum": "b661619f04336794f4518ab0d387d9c72cf11187",
+                    }
+                )
+            ],
+            body="""
+            <response>
+                <returncode>SUCCESS</returncode>
+                <recordings> </recordings>
+                <messageKey>noRecordings</messageKey>
+                <message>There are not recordings for the meetings</message>
+            </response>
+            """,
+            status=200,
+        )
+
+        call_command("refresh_bbb_recordings")
+
+        logger_mock.assert_has_calls(
+            [
+                mock.call("Classroom %s found.", classroom.id),
+                mock.call("No recording found."),
+                mock.call(
+                    "Recording %s not anymore available.",
+                    "d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
+                ),
+                mock.call(
+                    "Recording %s converted to VOD.",
+                    "d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
+                ),
+            ]
+        )
+
+        self.assertEqual(ClassroomRecording.objects.count(), 1)
+        self.assertEqual(classroom.recordings.count(), 1)
+        classroom_recording.refresh_from_db()
+        self.assertIsNone(classroom_recording.deleted)
 
     @responses.activate
     @mock.patch.object(Logger, "info")

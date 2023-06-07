@@ -19,6 +19,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - ClassroomRecording Delete API
   - delete BBB recordings
   - delete ClassroomsRecording
+- Delete BBB recording when VOD from a ClassroomRecording is created
 
 ### Changed
 

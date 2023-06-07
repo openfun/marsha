@@ -252,8 +252,14 @@ def process_recordings(  # pylint: disable=too-many-arguments
         logger.info("No recording found.")
         if record_id:
             logger.info("Recording %s not anymore available.", record_id)
-            logger.info("Deleting recording %s.", record_id)
-            classroom.recordings.filter(record_id=record_id).delete()
+            recording = classroom.recordings.filter(
+                record_id=record_id, vod__isnull=True
+            )
+            if recording.count():
+                logger.info("Deleting recording %s.", record_id)
+                recording.delete()
+            else:
+                logger.info("Recording %s converted to VOD.", record_id)
         return
     for recording in recordings_data.get("recordings"):
         if record_ids_to_skip and recording.get("recordID") in record_ids_to_skip:
