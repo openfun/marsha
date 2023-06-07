@@ -20,7 +20,7 @@ from marsha.core.factories import (
     UserFactory,
 )
 from marsha.core.lti import LTI
-from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 from marsha.core.tests.views.test_lti_base import BaseLTIViewForPortabilityTestCase
@@ -270,8 +270,6 @@ class ClassroomLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
 
         resource_data = context.get("resource")
-        invite_token = resource_data.pop("invite_token")
-        instructor_token = resource_data.pop("instructor_token")
         self.assertEqual(
             {
                 "id": str(classroom.id),
@@ -298,27 +296,10 @@ class ClassroomLTIViewTestCase(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
-                # "invite_token" is tested separately
-                # "instructor_token" is tested separately
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
             },
             resource_data,
-        )
-        decoded_invite_token = ResourceAccessToken(invite_token)
-        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
-        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
-        self.assertEqual(
-            decoded_invite_token.payload["permissions"],
-            {"can_update": False, "can_access_dashboard": False},
-        )
-
-        decoded_instructor_token = ResourceAccessToken(instructor_token)
-        self.assertEqual(
-            decoded_instructor_token.payload["resource_id"], str(classroom.id)
-        )
-        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
-        self.assertEqual(
-            decoded_instructor_token.payload["permissions"],
-            {"can_update": True, "can_access_dashboard": True},
         )
 
         self.assertEqual(context.get("modelName"), "classrooms")
@@ -627,8 +608,6 @@ class MeetingLTIViewTestCase(TestCase):
         self.assertEqual(context.get("state"), "success")
 
         resource_data = context.get("resource")
-        invite_token = resource_data.pop("invite_token")
-        instructor_token = resource_data.pop("instructor_token")
         self.assertEqual(
             {
                 "id": str(classroom.id),
@@ -655,27 +634,10 @@ class MeetingLTIViewTestCase(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
-                # "invite_token" is tested separately
-                # "instructor_token" is tested separately
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
             },
             resource_data,
-        )
-        decoded_invite_token = ResourceAccessToken(invite_token)
-        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
-        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
-        self.assertEqual(
-            decoded_invite_token.payload["permissions"],
-            {"can_update": False, "can_access_dashboard": False},
-        )
-
-        decoded_instructor_token = ResourceAccessToken(instructor_token)
-        self.assertEqual(
-            decoded_instructor_token.payload["resource_id"], str(classroom.id)
-        )
-        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
-        self.assertEqual(
-            decoded_instructor_token.payload["permissions"],
-            {"can_update": True, "can_access_dashboard": True},
         )
 
         self.assertEqual(context.get("modelName"), "classrooms")

@@ -18,9 +18,7 @@ from marsha.bbb.utils.bbb_utils import (
     get_meeting_infos,
     get_url as get_document_url,
 )
-from marsha.bbb.utils.tokens import create_classroom_stable_invite_jwt
 from marsha.core.defaults import VOD_CONVERT
-from marsha.core.models import INSTRUCTOR
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     PlaylistLiteSerializer,
@@ -80,7 +78,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
             "vod_conversion_enabled",
             # specific generated fields
             "infos",
-            "invite_token",
+            "public_token",
             "instructor_token",
             # specific for widget fields
             "enable_waiting_room",
@@ -104,7 +102,7 @@ class ClassroomSerializer(serializers.ModelSerializer):
 
     playlist = PlaylistLiteSerializer(read_only=True)
     infos = serializers.SerializerMethodField()
-    invite_token = serializers.SerializerMethodField()
+    public_token = serializers.SerializerMethodField()
     instructor_token = serializers.SerializerMethodField()
     recordings = serializers.SerializerMethodField()
     vod_conversion_enabled = serializers.SerializerMethodField()
@@ -116,22 +114,16 @@ class ClassroomSerializer(serializers.ModelSerializer):
         except ApiMeetingException:
             return None
 
-    def get_invite_token(self, obj):
+    def get_public_token(self, obj):
         """Get the invite token for the classroom."""
         if self.context.get("is_admin", False):
-            return str(create_classroom_stable_invite_jwt(obj))
+            return obj.public_token
         return None
 
     def get_instructor_token(self, obj):
         """Get the instructor token for the classroom."""
         if self.context.get("is_admin", False):
-            return str(
-                create_classroom_stable_invite_jwt(
-                    obj,
-                    role=INSTRUCTOR,
-                    permissions={"can_update": True, "can_access_dashboard": True},
-                )
-            )
+            return obj.instructor_token
         return None
 
     def get_recordings(self, obj):
