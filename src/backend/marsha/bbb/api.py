@@ -175,7 +175,7 @@ class ClassroomViewSet(
         generate a `classroom_stable_invite_jwt`.
         """
         serializer_context = super().get_serializer_context()
-        if self.action in ["retrieve", "update", "partial_update"]:
+        if self.action in ["retrieve", "update", "partial_update", "create"]:
             serializer_context["is_admin"] = (
                 # For standalone site
                 (

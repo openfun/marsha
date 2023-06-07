@@ -16,13 +16,12 @@ from marsha.core.factories import (
     PlaylistAccessFactory,
     PlaylistFactory,
 )
-from marsha.core.models import ADMINISTRATOR, INSTRUCTOR, NONE
+from marsha.core.models import ADMINISTRATOR
 from marsha.core.simple_jwt.factories import (
     InstructorOrAdminLtiTokenFactory,
     StudentLtiTokenFactory,
     UserAccessTokenFactory,
 )
-from marsha.core.simple_jwt.tokens import ResourceAccessToken
 from marsha.core.tests.testing_utils import reload_urlconf
 
 
@@ -152,8 +151,6 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
-        invite_token = content.pop("invite_token")
-        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -183,30 +180,10 @@ class ClassroomUpdateAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
-                # invite_token is tested below
-                # instructor_token is tested below
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
             },
             content,
-        )
-
-        # don't verify here, because of time travel (tested elsewhere)
-        decoded_invite_token = ResourceAccessToken(invite_token, verify=False)
-        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
-        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
-        self.assertEqual(
-            decoded_invite_token.payload["permissions"],
-            {"can_update": False, "can_access_dashboard": False},
-        )
-
-        # don't verify here, because of time travel (tested elsewhere)
-        decoded_instructor_token = ResourceAccessToken(instructor_token, verify=False)
-        self.assertEqual(
-            decoded_instructor_token.payload["resource_id"], str(classroom.id)
-        )
-        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
-        self.assertEqual(
-            decoded_instructor_token.payload["permissions"],
-            {"can_update": True, "can_access_dashboard": True},
         )
 
         classroom.refresh_from_db()
@@ -296,8 +273,6 @@ class ClassroomUpdateAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
 
         content = json.loads(response.content)
-        invite_token = content.pop("invite_token")
-        instructor_token = content.pop("instructor_token")
         self.assertDictEqual(
             {
                 "id": str(classroom.id),
@@ -324,29 +299,10 @@ class ClassroomUpdateAPITest(TestCase):
                 "recording_purpose": classroom.recording_purpose,
                 "enable_shared_notes": True,
                 "vod_conversion_enabled": True,
-                # invite_token is tested below
-                # instructor_token is tested below
+                "public_token": classroom.public_token,
+                "instructor_token": classroom.instructor_token,
             },
             content,
-        )
-
-        # don't verify here, because of time travel (tested elsewhere)
-        decoded_invite_token = ResourceAccessToken(invite_token, verify=False)
-        self.assertEqual(decoded_invite_token.payload["resource_id"], str(classroom.id))
-        self.assertEqual(decoded_invite_token.payload["roles"], [NONE])
-        self.assertEqual(
-            decoded_invite_token.payload["permissions"],
-            {"can_update": False, "can_access_dashboard": False},
-        )
-
-        decoded_instructor_token = ResourceAccessToken(instructor_token, verify=False)
-        self.assertEqual(
-            decoded_instructor_token.payload["resource_id"], str(classroom.id)
-        )
-        self.assertEqual(decoded_instructor_token.payload["roles"], [INSTRUCTOR])
-        self.assertEqual(
-            decoded_instructor_token.payload["permissions"],
-            {"can_update": True, "can_access_dashboard": True},
         )
 
         classroom.refresh_from_db()

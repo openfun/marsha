@@ -28,6 +28,8 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Restrict video list endpoint to organisation admin
   and playlist admin or instructor
+- Refacto classroom invite link. the invite token is saved in 
+  the classroom model and no access token is generated in the serializer
 
 ### Fixed
 

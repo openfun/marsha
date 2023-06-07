@@ -6,6 +6,7 @@ checks and validation that go further than what Django is doing.
 """
 
 import logging
+from secrets import token_urlsafe
 import uuid
 
 from django.db import models
@@ -122,6 +123,21 @@ class Classroom(BaseModel):
         help_text=_("A text to explain what is the record purpose"),
         null=True,
         blank=True,
+    )
+
+    # Invitation token
+    public_token = models.CharField(
+        max_length=255,
+        verbose_name=_("public token"),
+        help_text=_("public token used in invitation link"),
+        default=token_urlsafe,
+    )
+
+    instructor_token = models.CharField(
+        max_length=255,
+        verbose_name=_("instructor token"),
+        help_text=_("instructor token used in invitation link"),
+        default=token_urlsafe,
     )
 
     class Meta:
