@@ -1,10 +1,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-call */
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
-import { Box, Button, List, Paragraph } from 'grommet';
+import { Box, Button, Paragraph } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { AddCircle } from 'grommet-icons';
 import { colors } from 'lib-common';
-import { JoinMode } from 'lib-components';
+import { JoinMode, List } from 'lib-components';
 import React, { ReactNode, useMemo } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 

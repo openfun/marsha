@@ -3,22 +3,22 @@ import {
   Button,
   Form,
   FormField,
-  List,
   Spinner,
   Text,
   TextInput,
 } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
 import React, { useState } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
 import { toast } from 'react-hot-toast';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import {
-  ErrorMessage,
+  CopyClipboard,
   Document,
+  ErrorMessage,
+  List,
   Playlist,
   Video,
-  CopyClipboard,
 } from 'lib-components';
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
 
