@@ -1,6 +1,7 @@
 """Declare API endpoints with Django RestFramework viewsets."""
 from django.conf import settings
 from django.db.models import Q
+from django.http import Http404
 from django.shortcuts import get_object_or_404
 from django.urls import reverse
 from django.utils import timezone
@@ -11,6 +12,7 @@ from rest_framework import filters, mixins, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
+from rest_framework.throttling import AnonRateThrottle
 
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
@@ -35,6 +37,7 @@ from .defaults import LTI_ROUTE
 from .forms import ClassroomForm
 from .metadata import ClassroomDocumentMetadata
 from .models import Classroom, ClassroomDocument, ClassroomRecording
+from .utils.tokens import create_classroom_stable_invite_jwt
 
 
 class ObjectClassroomRelatedMixin:
@@ -65,6 +68,18 @@ class ObjectClassroomRelatedMixin:
             return self.request.resource.id
 
         return classroom_id
+
+
+class InviteTokenThrottle(AnonRateThrottle):
+    """Throttling class dedicated to classroom invite token endpoint"""
+
+    scope = "classroom_invite_token"
+
+    def get_ident(self, request):
+        """The identity is based on the classroom_id and from the AnonRateThrottle ident method"""
+        classroom_id = request.parser_context["kwargs"]["pk"]
+
+        return f"{classroom_id}_{super().get_ident(request)}"
 
 
 class ClassroomFilter(django_filters.FilterSet):
@@ -481,6 +496,50 @@ class ClassroomViewSet(
         except ApiMeetingException:
             return Response(status=400)
         return Response({"message": "success"}, status=200)
+
+    @action(
+        methods=["get"],
+        detail=True,
+        url_path="token",
+        permission_classes=[AllowAny],
+        throttle_classes=[InviteTokenThrottle],
+    )
+    def validate_invite_token(self, request, *args, **kwargs):
+        """Check if the token set in query string is valid or not and returns a resource
+        token allowing to use it with the current classroom."""
+        invite_token = request.query_params.get("invite_token")
+        if invite_token is None:
+            return Response(
+                status=400,
+                data={"message": "missing required invite_token in query string"},
+            )
+
+        classroom = self.get_object()
+
+        if classroom.public_token == invite_token:
+            return Response(
+                data={
+                    "access_token": str(create_classroom_stable_invite_jwt(classroom))
+                }
+            )
+
+        if classroom.instructor_token == invite_token:
+            return Response(
+                data={
+                    "access_token": str(
+                        create_classroom_stable_invite_jwt(
+                            classroom,
+                            role=INSTRUCTOR,
+                            permissions={
+                                "can_update": True,
+                                "can_access_dashboard": True,
+                            },
+                        )
+                    )
+                }
+            )
+
+        raise Http404
 
 
 class ClassroomDocumentViewSet(
