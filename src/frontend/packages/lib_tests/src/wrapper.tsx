@@ -1,10 +1,9 @@
-import { WrapperComponent } from '@testing-library/react-hooks';
-import { Fragment } from 'react';
+import { Fragment, PropsWithChildren } from 'react';
 import { QueryClient, QueryClientProvider } from 'react-query';
 
 import { appendUtilsElement, RenderOptions } from './render';
 
-export const WrapperReactQuery: WrapperComponent<Element> = ({ children }) => {
+export const WrapperReactQuery = ({ children }: PropsWithChildren) => {
   const queryClient = new QueryClient({
     defaultOptions: {
       queries: {
@@ -19,7 +18,7 @@ export const WrapperReactQuery: WrapperComponent<Element> = ({ children }) => {
 };
 
 export const wrapperUtils =
-  (options?: Partial<RenderOptions>): WrapperComponent<Element> =>
-  ({ children }: Element) => {
+  (options?: Partial<RenderOptions>) =>
+  ({ children }: PropsWithChildren) => {
     return appendUtilsElement(<Fragment>{children}</Fragment>, options);
   };

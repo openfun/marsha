@@ -15,7 +15,7 @@ import {
 } from 'lib-components';
 import { debounce } from 'lodash';
 import React from 'react';
-import * as runtime from 'react/jsx-runtime.js';
+import * as runtime from 'react/jsx-runtime';
 import ReactDOMServer from 'react-dom/server';
 import rehypeHighlight from 'rehype-highlight'; // Support code highlighting.
 import rehypeKatex from 'rehype-katex'; // Render math with KaTeX.

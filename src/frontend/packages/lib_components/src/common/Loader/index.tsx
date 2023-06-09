@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import React, { useState } from 'react';
+import React, { PropsWithChildren, useState } from 'react';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -80,7 +80,7 @@ interface SpinnerProps extends SpinnerLookProps {
  * @param size Set of available sizes for the spinner. Defaults to "medium".
  * @param color Color of the rotating spinner. Defaults to "brand".
  */
-export const Spinner: React.FC<SpinnerProps> = (props) => {
+export const Spinner = (props: PropsWithChildren<SpinnerProps>) => {
   const { children } = props;
   const ariaHidden = props['aria-hidden'] || false;
   const role = props.role || 'status';
@@ -109,7 +109,7 @@ export const Spinner: React.FC<SpinnerProps> = (props) => {
  * @param role The role of the aria region. Informs aria-live. Defaults to "status".
  * @param size Set of available sizes for the spinner. Defaults to "medium".
  */
-export const Loader: React.FC<SpinnerProps> = (props) => {
+export const Loader = (props: PropsWithChildren<SpinnerProps>) => {
   const ariaHidden = props['aria-hidden'] || false;
 
   return (

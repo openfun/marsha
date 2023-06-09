@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, liveState } from 'lib-components';
+import { liveState, useJwt, videoMockFactory } from 'lib-components';
 
 import { startLive } from '.';
 
@@ -23,7 +23,7 @@ describe('sideEffects/startLive', () => {
       }),
       { method: 'POST' },
     );
-    const updatedVideo = await startLive(video);
+    const updatedVideo = await startLive(video.id);
 
     expect(updatedVideo).toEqual({
       ...video,
@@ -41,7 +41,7 @@ describe('sideEffects/startLive', () => {
       Promise.reject(new Error('Failed to perform the request')),
     );
 
-    await expect(startLive(video)).rejects.toThrow(
+    await expect(startLive(video.id)).rejects.toThrow(
       'Failed to perform the request',
     );
   });
@@ -49,7 +49,7 @@ describe('sideEffects/startLive', () => {
   it('throws when it fails to trigger the start-live (API error)', async () => {
     fetchMock.mock(`/api/videos/${video.id}/start-live/`, 400);
 
-    await expect(startLive(video)).rejects.toThrow(
+    await expect(startLive(video.id)).rejects.toThrow(
       `Failed to start a live streaming for video ${video.id}.`,
     );
   });

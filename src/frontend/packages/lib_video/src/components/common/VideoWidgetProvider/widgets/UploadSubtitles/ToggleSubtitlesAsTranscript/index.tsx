@@ -1,9 +1,9 @@
 import {
-  useTimedTextTrack,
-  timedTextMode,
+  ToggleInput,
   Video,
   report,
-  ToggleInput,
+  timedTextMode,
+  useTimedTextTrack,
 } from 'lib-components';
 import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
@@ -44,14 +44,10 @@ export const ToggleSubtitlesAsTranscript = () => {
     state.getTimedTextTracks(),
   );
   const video = useCurrentVideo();
-  const [toggleUseTranscript, setToggleUseTranscript] = useState(
-    video.should_use_subtitle_as_transcript,
-  );
   const [disabledToggle, setDisabledToggle] = useState(false);
 
-  const videoMutation = useUpdateVideo(video.id, {
+  const { mutate } = useUpdateVideo(video.id, {
     onSuccess: (videoUpdated: Video) => {
-      setToggleUseTranscript(videoUpdated.should_use_subtitle_as_transcript);
       toast.success(
         intl.formatMessage(
           videoUpdated.should_use_subtitle_as_transcript
@@ -78,11 +74,11 @@ export const ToggleSubtitlesAsTranscript = () => {
   });
 
   const onToggleChange = useCallback(() => {
-    videoMutation.mutate({
+    mutate({
       should_use_subtitle_as_transcript:
         !video.should_use_subtitle_as_transcript,
     });
-  }, [video.should_use_subtitle_as_transcript, videoMutation]);
+  }, [video.should_use_subtitle_as_transcript, mutate]);
 
   const transcripts = useMemo(
     () =>
@@ -100,57 +96,31 @@ export const ToggleSubtitlesAsTranscript = () => {
     [timedTextTracks],
   );
 
-  // Sync toggle with value in the back
+  /**
+   * - Disable and uncheck toggle if there is already an uploaded file for transcript
+   * - Enable toggle if there is at least one subtitle file that can be used as transcript and no existing transcript file
+   */
   useEffect(() => {
-    setToggleUseTranscript(video.should_use_subtitle_as_transcript);
-  }, [video.should_use_subtitle_as_transcript]);
-
-  // Disable and uncheck toggle if there is no subtitle to use as a transcript
-  useEffect(() => {
-    if (subtitles.length === 0) {
-      if (!disabledToggle) {
-        setDisabledToggle(true);
-        if (video.should_use_subtitle_as_transcript) {
-          onToggleChange();
-        }
+    if ((!subtitles.length || transcripts.length) && !disabledToggle) {
+      setDisabledToggle(true);
+      if (video.should_use_subtitle_as_transcript) {
+        onToggleChange();
       }
-    }
-  }, [
-    subtitles,
-    video.should_use_subtitle_as_transcript,
-    disabledToggle,
-    onToggleChange,
-  ]);
-
-  // Disable and uncheck toggle if there is already an uploaded file for transcript
-  useEffect(() => {
-    if (transcripts.length > 0) {
-      if (!disabledToggle) {
-        setDisabledToggle(true);
-        if (video.should_use_subtitle_as_transcript) {
-          onToggleChange();
-        }
-      }
-    }
-  }, [
-    transcripts,
-    video.should_use_subtitle_as_transcript,
-    disabledToggle,
-    onToggleChange,
-  ]);
-
-  // Enable toggle if there is at least one subtitle file that can be used as transcript
-  // and no existing transcript file
-  useEffect(() => {
-    if (timedTextTracks.length > 0 && transcripts.length === 0) {
+    } else if (subtitles.length && !transcripts.length && disabledToggle) {
       setDisabledToggle(false);
     }
-  }, [transcripts, timedTextTracks, disabledToggle]);
+  }, [
+    subtitles.length,
+    transcripts.length,
+    video.should_use_subtitle_as_transcript,
+    disabledToggle,
+    onToggleChange,
+  ]);
 
   return (
     <ToggleInput
       disabled={disabledToggle}
-      checked={toggleUseTranscript}
+      checked={video.should_use_subtitle_as_transcript}
       onChange={onToggleChange}
       label={intl.formatMessage(messages.useTranscriptToggleLabel)}
       truncateLabel={false}

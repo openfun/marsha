@@ -11,7 +11,7 @@ interface WithLinkprops {
  * @returns a wrapper which takes the same props as the Wrapped component, plus `to` as a link destination.
  */
 export function withLink<P extends object>(
-  WrappedComponent: React.ComponentType<P & React.DOMAttributes<unknown>>,
+  WrappedComponent: React.ComponentType<P & WithLinkprops>,
 ) {
   const LinkedComponent = (props: P & WithLinkprops) => {
     const InnerWrapper = withRouter((routerProps) => (

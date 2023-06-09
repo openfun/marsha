@@ -1,10 +1,10 @@
 import { Box, BoxProps } from 'grommet';
-import React from 'react';
+import React, { PropsWithChildren } from 'react';
 
-export const AdvertisingBox: React.FunctionComponent<BoxProps> = ({
+export const AdvertisingBox = ({
   children,
   ...boxProps
-}) => {
+}: PropsWithChildren<BoxProps>) => {
   return (
     <Box
       background="white"

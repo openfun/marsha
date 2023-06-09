@@ -2,7 +2,7 @@ import {
   Select as SelectGrommet,
   SelectExtendedProps as SelectPropsGrommet,
 } from 'grommet';
-import React, { PropsWithChildren, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 /**
  * @param maxDropHeight - in pixel, the place needed to the drop to be displayed at the bottom of the select
@@ -15,7 +15,7 @@ export const Select = ({
   children,
   maxDropHeight = 400,
   ...props
-}: PropsWithChildren<SelectProps>) => {
+}: SelectProps) => {
   const refSelect = useRef<HTMLInputElement>(null);
   const [selectDropWidth, setSelectDropWidth] = useState(0);
   const [selectDropPosition, setSelectDropPosition] = useState<{

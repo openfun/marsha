@@ -1,5 +1,5 @@
 import { Box, Button, ButtonProps, Heading, Paragraph, Spinner } from 'grommet';
-import { PlaySVG, liveState, Video, useVideo } from 'lib-components';
+import { PlaySVG, Video, liveState, useVideo } from 'lib-components';
 import React, { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
@@ -73,7 +73,7 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
     let cancel = false;
     const apiCall = async () => {
       try {
-        const updatedVideo = await startLive(video);
+        const updatedVideo = await startLive(video.id);
 
         if (cancel) {
           return;
@@ -88,7 +88,7 @@ export const StartLiveButton = ({ video, ...props }: StartLiveButtonProps) => {
     return () => {
       cancel = true;
     };
-  }, [status, updateVideo, video]);
+  }, [status, updateVideo, video.id]);
 
   const title = intl.formatMessage(messages.modaleTitle);
   const modaleContent = (

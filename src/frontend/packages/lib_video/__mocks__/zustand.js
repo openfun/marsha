@@ -9,7 +9,9 @@ const stores = new Set();
 
 // when creating a store, we get its initial state, create a reset function and add it in the set
 export const create = (createState) => {
-  if (!createState) return create;
+  if (!createState) {
+    return create;
+  }
   const store = actualCreate(createState);
   const initialState = store.getState();
   storeResetFns.add(() => {

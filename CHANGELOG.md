@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- Upgrade frontend to React 18 (#2280)
 - Upgrade to django 4.2
 - `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
   `DJANGO_STORAGES_STATICFILES_BACKEND`
