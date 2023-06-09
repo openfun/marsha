@@ -95,7 +95,7 @@ const DashboardClassroomInstructor = ({
         />
         <DashboardClassroomInfos
           infos={classroom.infos}
-          inviteToken={classroom.invite_token}
+          inviteToken={classroom.public_token}
           instructorToken={classroom.instructor_token}
           classroomId={classroom.id}
         />
@@ -115,7 +115,7 @@ const DashboardClassroomInstructor = ({
       <Box margin={{ top: 'large' }}>
         <DashboardClassroomInfos
           infos={classroom.infos}
-          inviteToken={classroom.invite_token}
+          inviteToken={classroom.public_token}
           instructorToken={classroom.instructor_token}
           classroomId={classroom.id}
         />

@@ -115,7 +115,7 @@ describe('<DashboardClassroomInstructor />', () => {
     const classroom = classroomMockFactory({
       id: '1',
       started: true,
-      invite_token: null,
+      public_token: null,
     });
 
     const { rerender } = render(
@@ -131,7 +131,7 @@ describe('<DashboardClassroomInstructor />', () => {
 
     rerender(
       <DashboardClassroomInstructor
-        classroom={{ ...classroom, invite_token: '1234465' }}
+        classroom={{ ...classroom, public_token: '1234465' }}
         joinedAs={false}
         joinClassroomAction={jest.fn()}
         classroomEnded={jest.fn()}

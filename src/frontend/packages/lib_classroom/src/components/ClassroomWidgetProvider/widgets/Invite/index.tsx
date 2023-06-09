@@ -33,7 +33,7 @@ export const Invite = () => {
       title={intl.formatMessage(messages.title)}
     >
       <DashboardCopyClipboard
-        inviteToken={classroom.invite_token}
+        inviteToken={classroom.public_token}
         instructorToken={classroom.instructor_token}
         classroomId={classroom.id}
       />
