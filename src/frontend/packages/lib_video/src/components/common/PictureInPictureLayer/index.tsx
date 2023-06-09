@@ -104,7 +104,7 @@ export const PictureInPictureLayer = ({
         isPicture={reversed}
         pictureLayer={
           <PictureActionLayer
-            actions={[pipSwitch].concat(pictureActions ?? [])}
+            actions={[pipSwitch, ...(pictureActions ?? [])]}
             pictureWidth={pictureWidth}
             startDragging={startDragging}
           />
@@ -122,7 +122,7 @@ export const PictureInPictureLayer = ({
           isPicture={!reversed}
           pictureLayer={
             <PictureActionLayer
-              actions={[pipSwitch].concat(pictureActions ?? [])}
+              actions={[pipSwitch, ...(pictureActions ?? [])]}
               pictureWidth={pictureWidth}
               startDragging={startDragging}
             />

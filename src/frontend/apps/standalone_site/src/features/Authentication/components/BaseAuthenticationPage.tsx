@@ -24,7 +24,7 @@ const backgroundImage = (topPosition: string, size: string) => `
 
 const getWindowIsViewWidth = () => window.innerHeight > window.innerWidth / 2;
 
-const ResponsiveBox: React.FC = ({ children }) => {
+const ResponsiveBox = ({ children }: PropsWithChildren) => {
   const intl = useIntl();
   const [isViewWidth, setIsViewWidth] = useState(getWindowIsViewWidth());
   const { breakpoint, isSmallerBreakpoint } = useResponsive();

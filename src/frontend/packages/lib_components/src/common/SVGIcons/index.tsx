@@ -1,6 +1,6 @@
 import { ThemeContext } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import React, { useContext } from 'react';
+import React, { PropsWithChildren, useContext } from 'react';
 import styled, { CSSProperties } from 'styled-components';
 
 interface ComponentWithTheme {
@@ -45,7 +45,7 @@ interface SVGIconProps extends SvgProps {
 
 // Use https://svg2jsx.com/ to convert svg icon from mockup to component :
 
-export const SVGIcon: React.FC<SVGIconProps> = ({
+export const SVGIcon = ({
   focusColor,
   children,
   containerStyle,
@@ -53,7 +53,7 @@ export const SVGIcon: React.FC<SVGIconProps> = ({
   iconColor,
   viewBox,
   width,
-}) => {
+}: PropsWithChildren<SVGIconProps>) => {
   const theme = useContext(ThemeContext);
 
   return (

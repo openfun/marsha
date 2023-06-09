@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, useState, PropsWithChildren } from 'react';
 
 export interface Crumb {
   key: string;
@@ -18,7 +18,9 @@ export const BreadCrumbsContext = createContext<
 /**
  * Wraps the app and allows our breadcrumbs components to work together
  */
-export const BreadCrumbsProvider: React.FC = ({ children }) => {
+export const BreadCrumbsProvider = ({
+  children,
+}: PropsWithChildren<unknown>) => {
   const [crumbs, setCrumbs] = useState<Crumb[]>([]);
 
   return (

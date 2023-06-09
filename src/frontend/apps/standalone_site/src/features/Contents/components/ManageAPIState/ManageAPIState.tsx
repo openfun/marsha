@@ -1,6 +1,6 @@
 import { Text, Box } from 'grommet';
 import { Alert } from 'grommet-icons';
-import { Fragment, PropsWithChildren, ReactElement, ReactNode } from 'react';
+import { Fragment, PropsWithChildren, ReactElement } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { ReactComponent as ContentsIcon } from 'assets/svg/iko_webinairesvg.svg';
@@ -19,7 +19,7 @@ const messages = defineMessages({
   },
 });
 
-const ContainerInfo = ({ children }: PropsWithChildren<ReactNode>) => {
+const ContainerInfo = ({ children }: PropsWithChildren) => {
   return (
     <Box
       direction="column"
