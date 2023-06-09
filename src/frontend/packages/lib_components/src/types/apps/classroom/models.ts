@@ -19,7 +19,7 @@ export interface Classroom extends Resource {
   infos?: ClassroomInfos;
   starting_at: Nullable<string>;
   estimated_duration: Nullable<string>;
-  invite_token: Nullable<string>;
+  public_token: Nullable<string>;
   instructor_token: Nullable<string>;
   recordings: ClassroomRecording[];
   enable_waiting_room: boolean;

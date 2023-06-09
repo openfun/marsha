@@ -39,7 +39,7 @@ describe('<Invite />', () => {
     const classroom = classroomMockFactory({
       id: '1',
       started: false,
-      invite_token: '1',
+      public_token: '1',
       instructor_token: '2',
     });
 
