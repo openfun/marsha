@@ -43,20 +43,12 @@ def create_classroom_stable_invite_jwt(classroom, role=NONE, permissions=None):
     # Set a fixed validity beginning: the classroom creation date
     resource_jwt.set_iat(at_time=classroom.created_on)
 
-    # Determine the validity end:
-    # - if the classroom has a starting date, the JWT is valid
-    #   until the starting date plus two days
-    # - if the classroom has no starting date, the JWT is valid
-    #   for a month **starting now** (not on classroom creation)
-    if classroom.starting_at:
-        validity_end = classroom.starting_at + timedelta(days=2)
-    else:
-        duration = settings.BBB_INVITE_JWT_DEFAULT_DAYS_DURATION
-        if role == INSTRUCTOR:
-            duration = settings.BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION
-        validity_end = timezone.now().replace(
-            hour=0, minute=0, second=0, microsecond=0
-        ) + timedelta(days=duration)
+    duration = settings.BBB_INVITE_JWT_DEFAULT_DAYS_DURATION
+    if role == INSTRUCTOR:
+        duration = settings.BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION
+    validity_end = timezone.now().replace(
+        hour=0, minute=0, second=0, microsecond=0
+    ) + timedelta(days=duration)
 
     resource_jwt.set_exp(
         from_time=classroom.created_on,

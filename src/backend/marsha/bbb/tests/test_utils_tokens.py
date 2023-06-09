@@ -17,6 +17,7 @@ class CreateStableInviteJwtTestCase(TestCase):
 
     maxDiff = None
 
+    @override_settings(BBB_INVITE_JWT_DEFAULT_DAYS_DURATION=30)
     def test_jwt_content_starting_at_and_duration(self):
         """Assert the payload contains the expected data."""
         now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
@@ -32,7 +33,7 @@ class CreateStableInviteJwtTestCase(TestCase):
         self.assertDictEqual(
             jwt.payload,
             {
-                "exp": 1598104800,  # Saturday 22 August 2020 14:00:00 UTC
+                "exp": 1599436800,  # Saturday 22 August 2020 14:00:00 UTC
                 "iat": 1596844800,  # Saturday 8 August 2020 00:00:00 UTC
                 "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-08",
                 "locale": "en_US",
@@ -45,6 +46,7 @@ class CreateStableInviteJwtTestCase(TestCase):
             },
         )
 
+    @override_settings(BBB_INVITE_JWT_DEFAULT_DAYS_DURATION=30)
     def test_jwt_content_starting_at_in_past(self):
         """Assert the payload contains the expected data."""
         now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
@@ -60,7 +62,7 @@ class CreateStableInviteJwtTestCase(TestCase):
         self.assertDictEqual(
             jwt.payload,
             {
-                "exp": 1596722400,  # Thursday 6 August 2020 14:00:00 UTC
+                "exp": 1599436800,  # Thursday 6 August 2020 14:00:00 UTC
                 "iat": 1596538800,  # Tuesday 4 August 2020 11:00:00 UTC
                 "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-04",
                 "locale": "en_US",
@@ -73,6 +75,7 @@ class CreateStableInviteJwtTestCase(TestCase):
             },
         )
 
+    @override_settings(BBB_INVITE_JWT_DEFAULT_DAYS_DURATION=30)
     def test_jwt_content_starting_at_and_no_duration(self):
         """Assert the payload contains the expected data."""
         now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
@@ -87,7 +90,7 @@ class CreateStableInviteJwtTestCase(TestCase):
         self.assertDictEqual(
             jwt.payload,
             {
-                "exp": 1598104800,  # Saturday 22 August 2020 14:00:00 UTC
+                "exp": 1599436800,  # Saturday 22 August 2020 14:00:00 UTC
                 "iat": 1596844800,  # Saturday 8 August 2020 00:00:00 UTC
                 "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-08",
                 "locale": "en_US",
@@ -252,6 +255,7 @@ class CreateStableInviteJwtTestCase(TestCase):
             response.data.get("url"),
         )
 
+    @override_settings(BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION=60)
     def test_jwt_content_instructor(self):
         """Assert the payload contains the expected role."""
         now_fixed = datetime(2020, 8, 8, tzinfo=baseTimezone.utc)
@@ -267,7 +271,7 @@ class CreateStableInviteJwtTestCase(TestCase):
         self.assertDictEqual(
             jwt.payload,
             {
-                "exp": 1598104800,  # Saturday 22 August 2020 14:00:00 UTC
+                "exp": 1602028800,  # Saturday 22 August 2020 14:00:00 UTC
                 "iat": 1596844800,  # Saturday 8 August 2020 00:00:00 UTC
                 "jti": "classroom-invite-ad0395fd-3023-45da-8801-93d1ce64acd5-2020-08-08",
                 "locale": "en_US",
