@@ -22,6 +22,10 @@
         "../../../packages/lib_video/src/types/libs/altamoon-robust-websocket",
         "../../packages/lib_video/src/types/libs/altamoon-robust-websocket"
       ],
+      "react-icalendar-link": [
+        "../../../packages/lib_components/src/types/libs/react-icalendar-link",
+        "../../packages/lib_components/src/types/libs/react-icalendar-link"
+      ],
       "@lib-classroom/*": [
         "../../../packages/lib_classroom/src/*",
         "../../packages/lib_classroom/src/*"

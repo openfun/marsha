@@ -4,13 +4,16 @@
     "baseUrl": "./src",
     "paths": {
       "@lib-classroom/*": ["./*"],
+      "@lib-common/*": ["../../lib_common/src/*"],
       "@lib-components/*": ["../../lib_components/src/*"],
+      "@lib-tests/*": ["../../lib_tests/src/*"],
       "converse": ["../../lib_components/src/types/libs/converse"],
       "JitsiMeetExternalAPI": [
         "../../lib_components/src/types/libs/JitsiMeetExternalAPI"
       ],
-      "@lib-tests/*": ["../../lib_tests/src/*"],
-      "@lib-common/*": ["../../lib_common/src/*"]
+      "react-icalendar-link": [
+        "../../lib_components/src/types/libs/react-icalendar-link"
+      ]
     }
   },
   "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"],
