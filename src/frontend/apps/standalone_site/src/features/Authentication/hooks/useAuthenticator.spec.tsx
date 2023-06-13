@@ -1,5 +1,6 @@
 import { renderHook } from '@testing-library/react-hooks';
 import fetchMock from 'fetch-mock';
+import { classroomMockFactory } from 'lib-classroom';
 import { useCurrentUser, useJwt } from 'lib-components';
 import { Deferred, wrapperUtils } from 'lib-tests';
 
@@ -144,10 +145,16 @@ describe('<useAuthenticator />', () => {
   it('checks classroom invite link', async () => {
     featureContentLoader([]);
 
-    fetchMock.post('/api/auth/challenge/', {
-      access: 'some-access2',
-      refresh: 'some-refresh2',
+    const accessTokenResponse = {
+      access_token: 'valid_jwt',
+    };
+    const classroom = classroomMockFactory({
+      public_token: 'foo',
     });
+    fetchMock.get(
+      `/api/classrooms/${classroom.id}/token/?invite_token=${classroom.public_token}`,
+      accessTokenResponse,
+    );
 
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
@@ -155,7 +162,7 @@ describe('<useAuthenticator />', () => {
       wrapper: wrapperUtils({
         routerOptions: {
           history: [
-            '/my-contents/classroom/my-classroom-id-4321/invite/my-invite-id-1234',
+            `/my-contents/classroom/${classroom.id}/invite/${classroom.public_token}`,
           ],
         },
       }),
@@ -163,6 +170,32 @@ describe('<useAuthenticator />', () => {
 
     await waitFor(() => expect(result.current.isLoading).toBeFalsy());
     expect(result.current.isAuthenticated).toBeFalsy();
-    expect(useJwt.getState().jwt).toEqual('my-invite-id-1234');
+    await waitFor(() => expect(useJwt.getState().jwt).toEqual('valid_jwt'));
+  });
+
+  it('checks legacy invite link', async () => {
+    const classroom = classroomMockFactory();
+    const legacyInvite =
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVzb3VyY2VfYWNjZXNzIiwiZXhwIjoxNjg5MjA2NDAwLCJpYXQiOjE2ODY1ODYwMzgsImp0aSI6ImNsYXNzcm9vbS1pbnZpdGUtMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLTIwMjMtMDYtMTIiLCJzZXNzaW9uX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLWludml0ZSIsInJlc291cmNlX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlIiwicm9sZXMiOlsibm9uZSJdLCJsb2NhbGUiOiJlbl9VUyIsInBlcm1pc3Npb25zIjp7ImNhbl9hY2Nlc3NfZGFzaGJvYXJkIjpmYWxzZSwiY2FuX3VwZGF0ZSI6ZmFsc2V9LCJtYWludGVuYW5jZSI6ZmFsc2V9.68xSZYUAzrLD49pLkoOQy-ud7uaJVHgZ69zgkoW7umA';
+    fetchMock.get('/api/users/whoami/', whoAmIResponse200);
+
+    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+      wrapper: wrapperUtils({
+        routerOptions: {
+          history: [
+            `/my-contents/classroom/${classroom.id}/invite/${legacyInvite}`,
+          ],
+        },
+      }),
+    });
+
+    await waitFor(() => expect(result.current.isLoading).toBeFalsy());
+    expect(result.current.isAuthenticated).toBeFalsy();
+    await waitFor(() => expect(useJwt.getState().jwt).toEqual(legacyInvite));
+    expect(
+      fetchMock.called(
+        `/api/classrooms/${classroom.id}/token/?invite_token=${legacyInvite}`,
+      ),
+    ).toBe(false);
   });
 });
