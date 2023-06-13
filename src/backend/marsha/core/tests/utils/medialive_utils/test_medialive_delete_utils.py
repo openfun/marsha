@@ -1353,3 +1353,4 @@ class MediaLiveUtilsTestCase(TestCase):
             )
             medialive_utils.update_id3_tags(video)
             mediapackage_client_stubber.assert_no_pending_responses()
+ 
