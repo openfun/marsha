@@ -10,6 +10,7 @@ from datetime import timedelta
 import json
 import os
 
+from django.utils.module_loading import import_string
 from django.utils.translation import gettext_lazy as _
 
 from configurations import Configuration, values
@@ -422,6 +423,7 @@ class Base(Configuration):
     SENTRY_DSN = values.Value(None)
     SENTRY_TRACES_SAMPLE_RATE = values.FloatValue(1.0)
     SENTRY_PROFILES_SAMPLE_RATE = values.FloatValue(1.0)
+    SENTRY_IGNORE_HEALTH_CHECKS = values.BooleanValue(True)
 
     # Resource max file size
     DOCUMENT_SOURCE_MAX_SIZE = values.PositiveIntegerValue(2**30)  # 1GB
@@ -803,6 +805,9 @@ class Base(Configuration):
                 integrations=[DjangoIntegration()],
                 traces_sample_rate=cls.SENTRY_TRACES_SAMPLE_RATE,
                 profiles_sample_rate=cls.SENTRY_PROFILES_SAMPLE_RATE,
+                before_send_transaction=import_string(
+                    "marsha.core.sentry.filter_transactions"
+                ),
             )
             with sentry_sdk.configure_scope() as scope:
                 scope.set_extra("application", "backend")
