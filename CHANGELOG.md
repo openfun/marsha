@@ -22,6 +22,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Delete BBB recording when VOD from a ClassroomRecording is created
 - Add an attribute to consumer site to deactivate classroom recording
   conversion to VOD
+- Filter dockerflow healthcheck in sentry before_send_transaction
 
 ### Changed
 
