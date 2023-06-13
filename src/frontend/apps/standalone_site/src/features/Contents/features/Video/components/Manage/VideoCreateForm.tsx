@@ -1,24 +1,22 @@
-import { Text, TextInput, Box, TextArea } from 'grommet';
+import { Box, Text, TextArea, TextInput } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { Nullable } from 'lib-common';
 import {
   Form,
   FormField,
-  modelName,
-  UploadManagerStatus,
-  useUploadManager,
-  Video,
-  useResponsive,
   ModalButton,
+  UploadManagerStatus,
+  Video,
+  modelName,
+  useResponsive,
+  useUploadManager,
 } from 'lib-components';
-import { LicenseSelect, useCreateVideo, UploadVideoForm } from 'lib-video';
+import { LicenseSelect, UploadVideoForm, useCreateVideo } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';
-
-import routes from '../../routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -63,9 +61,8 @@ type VideoManage = {
 
 const VideoCreateForm = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { isDesktop } = useResponsive();
-  const videoPath = routes.VIDEO.path;
   const { addUpload, uploadManagerState } = useUploadManager();
   const [video, setVideo] = useState<VideoManage>({
     playlist: '',
@@ -88,7 +85,7 @@ const VideoCreateForm = () => {
         addUpload(modelName.VIDEOS, data.id, video.videoFile);
         setIsUploading(true);
       } else {
-        history.push(`${videoPath}/${data.id}`);
+        navigate(`../${data.id}`);
       }
     },
   });
@@ -111,9 +108,9 @@ const VideoCreateForm = () => {
       uploadManagerState[newVideo.id].status === UploadManagerStatus.SUCCESS
     ) {
       setIsUploading(false);
-      history.push(`${videoPath}/${newVideo.id}`);
+      navigate(`../${newVideo.id}`);
     }
-  }, [history, newVideo?.id, uploadManagerState, videoPath]);
+  }, [navigate, newVideo?.id, uploadManagerState]);
 
   return (
     <Fragment>
@@ -204,7 +201,7 @@ const VideoCreateForm = () => {
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
           onClickCancel={() => {
-            history.push(videoPath);
+            navigate(-1);
           }}
           isSubmitting={isCreating}
           isDisabled={!video.videoFile || isUploading}

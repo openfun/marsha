@@ -91,7 +91,7 @@ describe('<CreatePlaylistForm />', () => {
         routes: [
           {
             path: routes.PLAYLIST.path,
-            render: () => <div>playlist page</div>,
+            element: <div>playlist page</div>,
           },
         ],
       },

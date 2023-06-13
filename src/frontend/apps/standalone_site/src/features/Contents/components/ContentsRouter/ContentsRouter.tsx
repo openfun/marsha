@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { Text404 } from 'components/Text';
 
@@ -12,20 +12,24 @@ const ContentsRouter = () => {
   }));
   const routes = useContentRoutes();
 
-  const paths = Object.values(routes.CONTENTS.subRoutes).map(
-    (subRoute) => subRoute.path,
-  );
-
   return (
-    <Switch>
-      <Route path={routes.CONTENTS.path} exact>
-        <Contents />
-      </Route>
-      <Route path={paths}>{featureRouter}</Route>
-      <Route>
-        <Text404 />
-      </Route>
-    </Switch>
+    <Routes>
+      <Route path="" element={<Contents />} />
+      {Object.values(routes.CONTENTS.subRoutes).map(({ pathKey }, index) => {
+        if (pathKey) {
+          return (
+            <Route
+              path={`${pathKey}/*`}
+              element={featureRouter[index]}
+              key={`${pathKey}-${index}`}
+            />
+          );
+        }
+
+        return null;
+      })}
+      <Route path="*" element={<Text404 />} />
+    </Routes>
   );
 };
 

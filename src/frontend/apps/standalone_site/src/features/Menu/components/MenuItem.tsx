@@ -1,7 +1,7 @@
 import { Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { PropsWithChildren, Fragment } from 'react';
+import { Fragment, PropsWithChildren } from 'react';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -29,12 +29,7 @@ interface MenuItemProps {
 const MenuItem = ({ route, children }: PropsWithChildren<MenuItemProps>) => {
   return (
     <Fragment>
-      <NavLinkStyled
-        exact={!route.isNavStrict}
-        strict={route.isNavStrict}
-        to={route.path}
-        role="menuitem"
-      >
+      <NavLinkStyled to={route.path} role="menuitem" end={!route.isNavStrict}>
         {route.menuIcon}
         <Text size="0.938rem" weight="bold">
           {route.label}

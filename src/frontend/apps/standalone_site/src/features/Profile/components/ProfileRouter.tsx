@@ -1,4 +1,4 @@
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { Text404 } from 'components/Text';
 import { routes } from 'routes';
@@ -8,18 +8,14 @@ import { SettingsProfilePage } from './SettingsProfilePage';
 
 export const ProfileRouter = () => {
   return (
-    <Switch>
-      <Route path={routes.PROFILE.path} exact>
-        <ProfilePage />
-      </Route>
+    <Routes>
+      <Route path="" element={<ProfilePage />} />
+      <Route
+        path={routes.PROFILE.subRoutes.PROFILE_SETTINGS.pathKey}
+        element={<SettingsProfilePage />}
+      />
 
-      <Route path={routes.PROFILE.subRoutes.PROFILE_SETTINGS.path}>
-        <SettingsProfilePage />
-      </Route>
-
-      <Route>
-        <Text404 />
-      </Route>
-    </Switch>
+      <Route path="*" element={<Text404 />} />
+    </Routes>
   );
 };

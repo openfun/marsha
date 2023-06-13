@@ -1,9 +1,9 @@
-import { Text, Box, CheckBox } from 'grommet';
+import { Box, CheckBox, Text } from 'grommet';
 import {
   ContentCard,
+  Video as IVideo,
   StyledLink,
   TextTruncated,
-  Video as IVideo,
 } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 
@@ -14,7 +14,7 @@ import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 import routes from '../../routes';
 
 const Video = ({ video }: { video: IVideo }) => {
-  const videoPath = routes.VIDEO.path;
+  const videoPath = `${routes.VIDEO.path}/${video.id}`;
   const thumbnail =
     video.thumbnail?.urls?.[240] || video.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
@@ -29,7 +29,7 @@ const Video = ({ video }: { video: IVideo }) => {
   }, [isSelectionEnabled, setIsVideoSelected]);
 
   return (
-    <StyledLink to={isSelectionEnabled ? '#' : `${videoPath}/${video.id}`}>
+    <StyledLink to={isSelectionEnabled ? '#' : `${videoPath}`}>
       <ContentCard
         style={
           isVideoSelected

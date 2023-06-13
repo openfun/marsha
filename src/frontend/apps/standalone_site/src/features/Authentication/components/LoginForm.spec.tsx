@@ -8,13 +8,10 @@ import { getLocalStorage } from 'utils/browser';
 
 import { LoginForm } from './LoginForm';
 
-const mockHistory = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    ...jest.requireActual('react-router-dom').useHistory(),
-    replace: mockHistory,
-  }),
+  useNavigate: () => mockNavigate,
 }));
 
 const consoleError = jest
@@ -32,7 +29,7 @@ describe('<LoginFrom />', () => {
     fetchMock.restore();
   });
 
-  it('checks render inputs and password reveals', () => {
+  it('checks render inputs and password reveals', async () => {
     render(<LoginForm />);
 
     expect(
@@ -44,7 +41,7 @@ describe('<LoginFrom />', () => {
     const buttonHide = screen.getByRole('button', { name: /Hide/i });
     expect(buttonHide).toBeInTheDocument();
 
-    userEvent.click(buttonHide);
+    await userEvent.click(buttonHide);
 
     expect(screen.getByRole('button', { name: /View/i })).toBeInTheDocument();
     expect(
@@ -64,18 +61,18 @@ describe('<LoginFrom />', () => {
     });
     render(<LoginForm />);
 
-    userEvent.click(screen.getByRole('button', { name: /OK/i }));
+    await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     expect(
       screen.getAllByText(/This field is required to login./i),
     ).toHaveLength(2);
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
-    userEvent.click(screen.getByRole('button', { name: /OK/i }));
+    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     expect(
       await screen.findByText(
@@ -105,18 +102,19 @@ describe('<LoginFrom />', () => {
     });
     render(<LoginForm />, {
       routerOptions: {
-        history: ['/login'],
+        componentPath: '/my-path',
       },
     });
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
-    userEvent.click(screen.getByRole('button', { name: /OK/i }));
+    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
-    await waitFor(() => expect(mockHistory).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/login'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/my-path'));
   });
 
   it('checks the login redirection', async () => {
@@ -130,21 +128,21 @@ describe('<LoginFrom />', () => {
       },
     });
 
-    await waitFor(() => expect(mockHistory).toHaveBeenCalledWith('/login'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/login'));
 
     expect(getLocalStorage()?.getItem('redirect_uri')).toEqual(
       '/not-login-page',
     );
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: /username/i }),
       'my_user',
     );
-    userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
-    userEvent.click(screen.getByRole('button', { name: /OK/i }));
+    await userEvent.type(screen.getByLabelText(/password/i), 'my_pass');
+    await userEvent.click(screen.getByRole('button', { name: /OK/i }));
 
     await waitFor(() =>
-      expect(mockHistory).toHaveBeenCalledWith('/not-login-page'),
+      expect(mockNavigate).toHaveBeenCalledWith('/not-login-page'),
     );
   });
 });

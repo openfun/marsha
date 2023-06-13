@@ -1,13 +1,13 @@
 import {
   Box,
   Button,
-  Select,
   FormField,
   FormFieldExtendedProps,
+  Select,
   SelectExtendedProps,
 } from 'grommet';
 import { Playlist, PlusSVG } from 'lib-components';
-import { useState, useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link } from 'react-router-dom';
 

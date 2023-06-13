@@ -1,8 +1,7 @@
 import { Box, Heading } from 'grommet';
-import { report, Spinner } from 'lib-components';
+import { Spinner, report } from 'lib-components';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useParams } from 'react-router-dom';
 
 import { WhiteCard } from 'components/Cards';
 import { Contents } from 'features/Contents/';
@@ -42,10 +41,12 @@ const messages = defineMessages({
   },
 });
 
-export const UpdatePlaylistPage = () => {
-  const intl = useIntl();
-  const { id: playlistId } = useParams<{ id: string }>();
+interface UpdatePlaylistPageProps {
+  playlistId: string;
+}
 
+export const UpdatePlaylistPage = ({ playlistId }: UpdatePlaylistPageProps) => {
+  const intl = useIntl();
   const { data: playlist, isLoading } = usePlaylist(playlistId);
   const { mutate: updatePlaylist, isLoading: isSubmitting } = useUpdatePlaylist(
     playlistId,

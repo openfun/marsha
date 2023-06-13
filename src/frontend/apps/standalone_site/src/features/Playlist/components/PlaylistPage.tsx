@@ -1,8 +1,8 @@
 import { Box, Button, Heading, Text } from 'grommet';
-import { Spinner, Modal } from 'lib-components';
+import { Modal, Spinner } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Route, Switch, useHistory } from 'react-router-dom';
+import { Route, Routes, useNavigate } from 'react-router-dom';
 
 import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
@@ -55,8 +55,8 @@ const messages = defineMessages({
 
 export const PlaylistPage = () => {
   const intl = useIntl();
-  const history = useHistory();
-  const playlistCreatePath = routes.PLAYLIST.subRoutes.CREATE.path;
+  const navigate = useNavigate();
+  const playlistCreatePath = routes.PLAYLIST.subRoutes.CREATE.pathKey || '';
 
   const sorts = [
     {
@@ -108,18 +108,21 @@ export const PlaylistPage = () => {
 
   return (
     <Fragment>
-      <Switch>
-        <Route path={playlistCreatePath}>
-          <Modal
-            isOpen
-            onClose={() => {
-              history.push(routes.PLAYLIST.path);
-            }}
-          >
-            <CreatePlaylistForm />
-          </Modal>
-        </Route>
-      </Switch>
+      <Routes>
+        <Route
+          path={playlistCreatePath}
+          element={
+            <Modal
+              isOpen
+              onClose={() => {
+                navigate(-1);
+              }}
+            >
+              <CreatePlaylistForm />
+            </Modal>
+          }
+        />
+      </Routes>
 
       <Box pad="medium">
         <WhiteCard direction="column">
@@ -140,7 +143,7 @@ export const PlaylistPage = () => {
                   primary
                   a11yTitle={intl.formatMessage(messages.create)}
                   onClick={() => {
-                    history.push(playlistCreatePath);
+                    navigate(playlistCreatePath);
                   }}
                   label={intl.formatMessage(messages.create)}
                 />
@@ -184,7 +187,7 @@ export const PlaylistPage = () => {
                     <Button
                       primary
                       onClick={() => {
-                        history.push(playlistCreatePath);
+                        navigate(playlistCreatePath);
                       }}
                       label={intl.formatMessage(messages.create)}
                     />
@@ -235,7 +238,7 @@ export const PlaylistPage = () => {
                         </Box>
                       }
                       onClick={() => {
-                        history.push(`/my-playlists/${item.id}/update`);
+                        navigate(`${routes.PLAYLIST.path}/${item.id}/update`);
                       }}
                     />
                   )}

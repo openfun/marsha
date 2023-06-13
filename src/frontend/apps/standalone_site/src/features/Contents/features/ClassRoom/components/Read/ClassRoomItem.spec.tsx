@@ -20,12 +20,17 @@ const classroom = {
     ...playlistMockFactory(),
     title: 'Nouvelle Playlist title',
   },
+  id: '1234',
 };
 
 describe('<ClassRoom />', () => {
   it('renders ClassRoom', () => {
     render(<ClassRoom classroom={classroomMockFactory(classroom)} />);
 
+    expect(screen.getByRole('link')).toHaveAttribute(
+      'href',
+      '/my-contents/classroom/1234',
+    );
     expect(screen.getByText(/Welcome!/i)).toBeInTheDocument();
     expect(
       screen.getByText(/Nouvelle Classroom description/i),

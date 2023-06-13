@@ -174,6 +174,7 @@ describe('<useAuthenticator />', () => {
   });
 
   it('checks legacy invite link', async () => {
+    featureContentLoader([]);
     const classroom = classroomMockFactory();
     const legacyInvite =
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVzb3VyY2VfYWNjZXNzIiwiZXhwIjoxNjg5MjA2NDAwLCJpYXQiOjE2ODY1ODYwMzgsImp0aSI6ImNsYXNzcm9vbS1pbnZpdGUtMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLTIwMjMtMDYtMTIiLCJzZXNzaW9uX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLWludml0ZSIsInJlc291cmNlX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlIiwicm9sZXMiOlsibm9uZSJdLCJsb2NhbGUiOiJlbl9VUyIsInBlcm1pc3Npb25zIjp7ImNhbl9hY2Nlc3NfZGFzaGJvYXJkIjpmYWxzZSwiY2FuX3VwZGF0ZSI6ZmFsc2V9LCJtYWludGVuYW5jZSI6ZmFsc2V9.68xSZYUAzrLD49pLkoOQy-ud7uaJVHgZ69zgkoW7umA';

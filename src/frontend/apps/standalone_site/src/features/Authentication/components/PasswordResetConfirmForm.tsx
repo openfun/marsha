@@ -1,9 +1,9 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
 import { Alert, FormView, Hide } from 'grommet-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useIntl, defineMessages } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { defineMessages, useIntl } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
 import {
   usePasswordResetConfirm,
@@ -63,14 +63,14 @@ export const PasswordResetConfirmForm = ({
   const [revealPassword1, setRevealPassword1] = useState(false);
   const [revealPassword2, setRevealPassword2] = useState(false);
   const [message, setMessage] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
   const { mutate: passwordReset } = usePasswordResetConfirm({
     onError: (error: UsePasswordResetConfirmError) => {
       setMessage(error.detail || intl.formatMessage(messages.error));
     },
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.successText));
-      history.push('/');
+      navigate('/');
     },
   });
 

@@ -1,5 +1,8 @@
 import { Box } from 'grommet';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+
+import { Text404 } from 'components/Text';
 
 import routes from '../routes';
 
@@ -13,27 +16,30 @@ const VideoRouter = () => {
   const playlistId = searchParams.get('playlist') || '';
 
   const videoRoute = routes.VIDEO;
-  const videoCreatePath = videoRoute.subRoutes.CREATE.path;
-  const videoUpdatePath = videoRoute.subRoutes.UPDATE.path;
+  const videoCreatePath = videoRoute.subRoutes.CREATE.pathKey || '';
+  const videoUpdatePath = videoRoute.subRoutes.UPDATE.pathKey;
 
   return (
-    <Route path={videoRoute.path}>
-      <Box pad="medium">
-        <Switch>
-          <Route path={videoCreatePath} exact>
-            <VideoManage />
-            <Videos playlistId={playlistId} />
-          </Route>
-          <Route path={videoUpdatePath} exact>
-            <VideoUpdate />
-          </Route>
-          <Route>
-            <VideoManage />
-            <Videos playlistId={playlistId} />
-          </Route>
-        </Switch>
-      </Box>
-    </Route>
+    <Box pad="medium">
+      <Routes>
+        <Route path={videoUpdatePath} element={<VideoUpdate />} />
+        {[`${videoCreatePath}/*`, ''].map((path, index) => {
+          return (
+            <Route
+              path={`${path}`}
+              element={
+                <Fragment>
+                  <VideoManage />
+                  <Videos playlistId={playlistId} />
+                </Fragment>
+              }
+              key={`${path}-${index}`}
+            />
+          );
+        })}
+        <Route path="*" element={<Text404 />} />
+      </Routes>
+    </Box>
   );
 };
 

@@ -5,10 +5,22 @@ import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 import React from 'react';
 import { act } from 'react-dom/test-utils';
+import { setLogger } from 'react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import ClassroomManage from './ClassroomManage';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 jest.mock('./ClassRoomCreateForm', () => ({
   __esModule: true,
@@ -39,12 +51,12 @@ describe('<ClassroomManage />', () => {
     expect(screen.getByRole('button', { name: 'Select' })).toBeInTheDocument();
   });
 
-  it('shows classroom creation Modal', () => {
+  it('shows classroom creation Modal', async () => {
     render(<ClassroomManage />);
     const createButton = screen.getByRole('button', {
       name: /Create Classroom/i,
     });
-    userEvent.click(createButton);
+    await userEvent.click(createButton);
 
     expect(
       screen.getByRole('heading', { name: /Create Classroom/i }),
@@ -52,10 +64,10 @@ describe('<ClassroomManage />', () => {
     expect(screen.getByText('My ClassroomCreate Form')).toBeInTheDocument();
   });
 
-  it('switches into selection mode on select button click', () => {
+  it('switches into selection mode on select button click', async () => {
     render(<ClassroomManage />);
     const selectButton = screen.getByRole('button', { name: 'Select' });
-    userEvent.click(selectButton);
+    await userEvent.click(selectButton);
     expect(
       screen.queryByRole('button', { name: 'Select' }),
     ).not.toBeInTheDocument();
@@ -102,7 +114,7 @@ describe('<ClassroomManage />', () => {
     ).toBeInTheDocument();
   });
 
-  it('opens the delete confirmation modal', () => {
+  it('opens the delete confirmation modal', async () => {
     render(<ClassroomManage />);
     act(() =>
       useSelectFeatures.setState({
@@ -113,7 +125,7 @@ describe('<ClassroomManage />', () => {
     const deleteButon = screen.getByRole('button', {
       name: 'Delete 3 classrooms',
     });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     expect(screen.getByText('Confirm delete 3 classrooms')).toBeInTheDocument();
     expect(
@@ -139,12 +151,12 @@ describe('<ClassroomManage />', () => {
     const deleteButon = screen.getByRole('button', {
       name: 'Delete 2 classrooms',
     });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete 2 classrooms',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('2 classrooms successfully deleted'),
@@ -176,12 +188,12 @@ describe('<ClassroomManage />', () => {
     const deleteButon = screen.getByRole('button', {
       name: 'Delete 2 classrooms',
     });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete 2 classrooms',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('Failed to delete 2 classrooms'),

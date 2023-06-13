@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactElement, ReactNode } from 'react';
 import { MessageDescriptor } from 'react-intl';
 import { create } from 'zustand';
 
@@ -11,7 +11,7 @@ export type FeatureSample = {
 };
 
 export interface UseContentFeatures {
-  featureRouter: ReactNode[];
+  featureRouter: ReactElement[];
   featureRoutes: Record<string, Route>;
   featureSamples: (playlistId?: string) => FeatureSample[];
   featureShuffles: ReactNode[];

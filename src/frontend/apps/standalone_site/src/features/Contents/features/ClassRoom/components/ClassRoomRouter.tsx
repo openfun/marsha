@@ -1,5 +1,8 @@
 import { Box } from 'grommet';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+
+import { Text404 } from 'components/Text';
 
 import routes from '../routes';
 
@@ -13,28 +16,39 @@ const ClassRoomRouter = () => {
   const playlistId = searchParams.get('playlist') || '';
 
   const classroomRoute = routes.CLASSROOM;
-  const classroomCreatePath = classroomRoute.subRoutes.CREATE.path;
-  const classroomUpdatePath = classroomRoute.subRoutes.UPDATE.path;
-  const classroomInvitePath = classroomRoute.subRoutes.INVITE.path;
+  const classroomCreatePath = classroomRoute.subRoutes.CREATE.pathKey || '';
+  const classroomUpdatePath = classroomRoute.subRoutes.UPDATE.pathKey || '';
+  const classroomInvitePath = classroomRoute.subRoutes.INVITE.pathKey || '';
 
   return (
-    <Route path={classroomRoute.path}>
-      <Box pad="medium">
-        <Switch>
-          <Route path={classroomCreatePath} exact>
-            <ClassroomManage />
-            <ClassRooms playlistId={playlistId} />
-          </Route>
-          <Route path={[classroomInvitePath, classroomUpdatePath]} exact>
-            <ClassRoomUpdate />
-          </Route>
-          <Route>
-            <ClassroomManage />
-            <ClassRooms playlistId={playlistId} />
-          </Route>
-        </Switch>
-      </Box>
-    </Route>
+    <Box pad="medium">
+      <Routes>
+        {[`${classroomCreatePath}/*`, ''].map((path, index) => {
+          return (
+            <Route
+              path={`${path}`}
+              element={
+                <Fragment>
+                  <ClassroomManage />
+                  <ClassRooms playlistId={playlistId} />
+                </Fragment>
+              }
+              key={`${path}-${index}`}
+            />
+          );
+        })}
+        {[classroomInvitePath, classroomUpdatePath].map((path, index) => {
+          return (
+            <Route
+              path={path}
+              element={<ClassRoomUpdate />}
+              key={`${path}-${index}`}
+            />
+          );
+        })}
+        <Route path="*" element={<Text404 />} />
+      </Routes>
+    </Box>
   );
 };
 

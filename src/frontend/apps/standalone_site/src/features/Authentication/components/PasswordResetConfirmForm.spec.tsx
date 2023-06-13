@@ -5,12 +5,10 @@ import { render } from 'lib-tests';
 
 import { PasswordResetConfirmForm } from './PasswordResetConfirmForm';
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+  useNavigate: () => mockNavigate,
 }));
 
 const consoleError = jest
@@ -24,7 +22,7 @@ describe('<PasswordResetConfirmForm />', () => {
     fetchMock.restore();
   });
 
-  it('checks render inputs and password reveals', () => {
+  it('checks render inputs and password reveals', async () => {
     render(<PasswordResetConfirmForm uid="some-uid" token="some-token" />);
 
     const [newPassword, newPasswordConfirm] =
@@ -41,7 +39,7 @@ describe('<PasswordResetConfirmForm />', () => {
     expect(hidePassword).toBeInTheDocument();
     expect(hidePasswordConfirm).toBeInTheDocument();
 
-    userEvent.click(hidePassword);
+    await userEvent.click(hidePassword);
 
     expect(screen.getByRole('button', { name: /View/i })).toBeInTheDocument(); // One password displayed
     expect(screen.getByRole('button', { name: /Hide/i })).toBeInTheDocument(); // The other password hidden
@@ -49,7 +47,7 @@ describe('<PasswordResetConfirmForm />', () => {
       screen.getByRole('textbox', { name: /password/i }),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Hide/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Hide/i }));
 
     expect(screen.getAllByRole('button', { name: /View/i }).length).toEqual(2); // Both passwords displayed
     expect(
@@ -63,17 +61,21 @@ describe('<PasswordResetConfirmForm />', () => {
     });
     render(<PasswordResetConfirmForm uid="some-uid" token="some-token" />);
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
     expect(screen.getAllByText(/This field is required./i)).toHaveLength(2);
 
     const [newPassword, newPasswordConfirm] =
       screen.getAllByLabelText(/Password/i);
 
-    userEvent.type(newPassword, 'some-password');
-    userEvent.type(newPasswordConfirm, 'some-password');
+    await userEvent.type(newPassword, 'some-password');
+    await userEvent.type(newPasswordConfirm, 'some-password');
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
     expect(await screen.findByText('An error occurred')).toBeInTheDocument();
 
@@ -108,12 +110,14 @@ describe('<PasswordResetConfirmForm />', () => {
     const [newPassword, newPasswordConfirm] =
       screen.getAllByLabelText(/Password/i);
 
-    userEvent.type(newPassword, 'some-password');
-    userEvent.type(newPasswordConfirm, 'some-password');
+    await userEvent.type(newPassword, 'some-password');
+    await userEvent.type(newPasswordConfirm, 'some-password');
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
-    await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/'));
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/'));
 
     expect(
       screen.getByText('Password has been successfully reset.'),

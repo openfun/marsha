@@ -13,16 +13,16 @@ import {
   Form,
   FormField,
   FormHelpText,
+  Modal,
+  ModalButton,
   Organization,
   Spinner,
   report,
-  Modal,
-  ModalButton,
 } from 'lib-components';
 import { ReactNode, useLayoutEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useOrganizations } from 'api/useOrganizations';
@@ -152,13 +152,13 @@ export const PlaylistForm = ({
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [currentOrganizationPage, setCurrentOrganizationPage] = useState(0);
   const [isInitOrganization, setIsInitOrganization] = useState(false);
-  const history = useHistory();
+  const navigate = useNavigate();
   const deletePlaylist = useDeletePlaylist({
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.deleteSuccessMessage), {
         position: 'bottom-center',
       });
-      history.push(routes.PLAYLIST.path);
+      navigate(routes.PLAYLIST.path);
     },
     onError: (err: unknown) => {
       report(err);

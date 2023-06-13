@@ -36,6 +36,7 @@ describe('<VideoRouter/>', () => {
   it('renders route /my-contents/videos?playlist=test-playlist-id', () => {
     render(<VideoRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/videos/*',
         history: ['/my-contents/videos?playlist=test-playlist-id'],
       },
     });
@@ -47,15 +48,24 @@ describe('<VideoRouter/>', () => {
 
   it('renders video no match', () => {
     render(<VideoRouter />, {
-      routerOptions: { history: ['/some/bad/route'] },
+      routerOptions: {
+        componentPath: '/my-contents/videos/*',
+        history: ['/my-contents/videos/some/bad/route'],
+      },
     });
     expect(screen.queryByText(/My VideoManage/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My VideosRead/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Sorry, this page does not exist./i),
+    ).toBeInTheDocument();
   });
 
   it('renders create video', () => {
     render(<VideoRouter />, {
-      routerOptions: { history: ['/my-contents/videos/create'] },
+      routerOptions: {
+        componentPath: '/my-contents/videos/*',
+        history: ['/my-contents/videos/create'],
+      },
     });
 
     expect(screen.getByText(/My VideoManage/i)).toBeInTheDocument();
@@ -65,6 +75,7 @@ describe('<VideoRouter/>', () => {
   it('renders update video', () => {
     render(<VideoRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/videos/*',
         history: ['/my-contents/videos/123456/'],
       },
     });

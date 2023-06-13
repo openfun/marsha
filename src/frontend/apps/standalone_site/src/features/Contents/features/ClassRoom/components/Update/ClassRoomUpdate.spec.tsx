@@ -36,9 +36,7 @@ jest.mock('react-router-dom', () => ({
   useRouteMatch: () => ({ url: '/my-contents/classroom/123456' }),
 }));
 
-const mockUseParams = useParams as jest.MockedFunction<
-  typeof useParams<{ classroomId: string }>
->;
+const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
 
 jest.mock('lib-classroom', () => ({
   ...jest.requireActual('lib-classroom'),

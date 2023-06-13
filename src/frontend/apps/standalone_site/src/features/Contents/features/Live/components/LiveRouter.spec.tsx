@@ -36,6 +36,7 @@ describe('<LiveRouter/>', () => {
   it('renders route /my-contents/webinars?playlist=test-playlist-id', () => {
     render(<LiveRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/webinars/*',
         history: ['/my-contents/webinars?playlist=test-playlist-id'],
       },
     });
@@ -48,7 +49,10 @@ describe('<LiveRouter/>', () => {
 
   it('renders create live', () => {
     render(<LiveRouter />, {
-      routerOptions: { history: ['/my-contents/webinars/create'] },
+      routerOptions: {
+        componentPath: '/my-contents/webinars/*',
+        history: ['/my-contents/webinars/create'],
+      },
     });
     expect(screen.getByText('My WebinarCreate')).toBeInTheDocument();
     expect(screen.getByText(/My Lives Read/i)).toBeInTheDocument();
@@ -56,16 +60,23 @@ describe('<LiveRouter/>', () => {
 
   it('renders live no match', () => {
     render(<LiveRouter />, {
-      routerOptions: { history: ['/some/bad/route'] },
+      routerOptions: {
+        componentPath: '/my-contents/videos/*',
+        history: ['/my-contents/videos/some/bad/route'],
+      },
     });
 
     expect(screen.queryByText(/My WebinarCreate/i)).not.toBeInTheDocument();
     expect(screen.queryByText('My Lives Read')).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Sorry, this page does not exist./i),
+    ).toBeInTheDocument();
   });
 
   it('renders update live', () => {
     render(<LiveRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/webinars/*',
         history: ['/my-contents/webinars/123456/'],
       },
     });

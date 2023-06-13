@@ -1,10 +1,8 @@
 import { screen } from '@testing-library/react';
 import { normalizeColor } from 'grommet/utils';
-import { createMemoryHistory } from 'history';
 import { theme } from 'lib-common';
 import { render } from 'lib-tests';
-import React from 'react';
-import { BrowserRouter, Router } from 'react-router-dom';
+import { Fragment } from 'react';
 
 import { routes } from 'routes';
 
@@ -12,9 +10,7 @@ import MenuItem from './MenuItem';
 
 describe('<MenuItem />', () => {
   test('renders MenuItem', () => {
-    render(<MenuItem route={routes.HOMEPAGE}>My Content</MenuItem>, {
-      testingLibraryOptions: { wrapper: BrowserRouter },
-    });
+    render(<MenuItem route={routes.HOMEPAGE}>My Content</MenuItem>);
     expect(
       screen.getByRole('img', { name: /svg-menu-homepage/i }),
     ).toBeInTheDocument();
@@ -25,13 +21,17 @@ describe('<MenuItem />', () => {
   });
 
   test('active link', () => {
-    const history = createMemoryHistory();
-    history.push(routes.HOMEPAGE.path);
-    const { rerender } = render(
-      <Router history={history}>
+    const { unmount } = render(
+      <Fragment>
         <MenuItem route={routes.HOMEPAGE} />
         <MenuItem route={routes.FAVORITE} />
-      </Router>,
+      </Fragment>,
+      {
+        routerOptions: {
+          componentPath: routes.HOMEPAGE.path,
+          history: [routes.HOMEPAGE.path],
+        },
+      },
     );
 
     expect(screen.getByRole('menuitem', { name: /Dashboard/i })).toHaveStyle({
@@ -43,12 +43,19 @@ describe('<MenuItem />', () => {
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
 
-    history.push(routes.FAVORITE.path);
-    rerender(
-      <Router history={history}>
+    unmount();
+
+    render(
+      <Fragment>
         <MenuItem route={routes.HOMEPAGE} />
         <MenuItem route={routes.FAVORITE} />
-      </Router>,
+      </Fragment>,
+      {
+        routerOptions: {
+          componentPath: routes.FAVORITE.path,
+          history: [routes.FAVORITE.path],
+        },
+      },
     );
 
     expect(

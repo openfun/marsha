@@ -23,12 +23,15 @@ useContentFeatures.setState(
     featureRoutes: {
       CLASSROOM: {
         path: '/my-contents/classroom',
+        pathKey: 'classroom',
       },
       VIDEO: {
         path: '/my-contents/videos',
+        pathKey: 'videos',
       },
       LIVE: {
         path: '/my-contents/webinars',
+        pathKey: 'webinars',
       },
     },
   },
@@ -42,7 +45,10 @@ describe('<ContentsRouter/>', () => {
 
   test('render route /my-contents', () => {
     render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents'] },
+      routerOptions: {
+        componentPath: '/my-contents/*',
+        history: ['/my-contents'],
+      },
     });
 
     expect(screen.getByText('My Contents')).toBeInTheDocument();
@@ -53,18 +59,22 @@ describe('<ContentsRouter/>', () => {
 
   test('render from useContentFeatures', async () => {
     render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents/classroom'] },
+      routerOptions: {
+        componentPath: '/my-contents/*',
+        history: ['/my-contents/classroom'],
+      },
     });
 
     expect(screen.queryByText('My Contents')).not.toBeInTheDocument();
     expect(await screen.findByText('My ClassRoomRouter')).toBeInTheDocument();
-    expect(screen.getByText('My VideoRouter')).toBeInTheDocument();
-    expect(screen.getByText('My LiveRouter')).toBeInTheDocument();
   });
 
   test('render bad route', () => {
     render(<ContentsRouter />, {
-      routerOptions: { history: ['/my-contents/bad-road'] },
+      routerOptions: {
+        componentPath: '/my-contents/*',
+        history: ['/my-contents/bad-road'],
+      },
     });
 
     expect(

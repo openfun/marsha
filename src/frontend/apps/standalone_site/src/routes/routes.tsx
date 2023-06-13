@@ -45,7 +45,9 @@ enum ERouteNames {
   ORGANIZATION = 'ORGANIZATION',
   LOGIN = 'LOGIN',
   PASSWORD_RESET = 'PASSWORD_RESET',
-  PASSWORD_RESET_CONFIRM = 'PASSWORD_RESET_CONFIRM',
+}
+enum EPasswordResetSubRoutesNames {
+  CONFIRM = 'CONFIRM',
 }
 enum EMyProfileSubRoutesNames {
   PROFILE_SETTINGS = 'PROFILE_SETTINGS',
@@ -59,7 +61,8 @@ type BasicRoute = Omit<Route, 'subRoutes'>;
 
 export interface Route<TSubRoute extends string = string> {
   label?: React.ReactNode;
-  path: string;
+  path: string; // when we need a full path
+  pathKey?: string; // when we need a relative path
   alias?: string[];
   menuIcon?: React.ReactNode;
   isNavStrict?: boolean; // if true, all the subroutes will be active in the menu
@@ -72,6 +75,7 @@ type SubRoute = Route & { hideSubRoute?: boolean };
 export type MainRoutes = {
   [key in ERouteNames]: BasicRoute;
 } & {
+  [ERouteNames.PASSWORD_RESET]: RouteRequired<EPasswordResetSubRoutesNames>;
   [ERouteNames.PROFILE]: RouteRequired<EMyProfileSubRoutesNames>;
   [ERouteNames.PLAYLIST]: RouteRequired<EPlaylistSubRouteNames>;
 };
@@ -104,12 +108,15 @@ export const routes: MainRoutes = {
   },
   PASSWORD_RESET: {
     path: `/auth/password-reset`,
-  },
-  PASSWORD_RESET_CONFIRM: {
-    path: `/auth/password-reset/confirm/:uid/:token?`,
+    subRoutes: {
+      CONFIRM: {
+        path: '/auth/password-reset/confirm/:uid/:token',
+        pathKey: 'confirm/:uid/:token',
+      },
+    },
   },
   PORTABILITY_REQUESTS: {
-    path: `/portability-requests/:state?`,
+    path: '/portability-requests',
   },
   PROFILE: {
     isNavStrict: true,
@@ -125,6 +132,7 @@ export const routes: MainRoutes = {
     subRoutes: {
       PROFILE_SETTINGS: {
         path: '/my-profile/settings',
+        pathKey: 'settings',
       },
     },
   },
@@ -141,8 +149,16 @@ export const routes: MainRoutes = {
       />
     ),
     subRoutes: {
-      CREATE: { path: '/my-playlists/create', hideSubRoute: true },
-      UPDATE: { path: '/my-playlists/:id/update', hideSubRoute: true },
+      CREATE: {
+        path: '/my-playlists/create',
+        pathKey: 'create',
+        hideSubRoute: true,
+      },
+      UPDATE: {
+        path: '/my-playlists/:id/update',
+        pathKey: ':id/update',
+        hideSubRoute: true,
+      },
     },
   },
   ORGANIZATION: {
