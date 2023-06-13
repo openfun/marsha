@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 import { useCreateLtiUserAssociation } from '../api/useLtiUserAssociations';
 
@@ -25,7 +25,7 @@ const messages = defineMessages({
 
 export const useLtiUserAssociationJwtQueryParam = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
   const location = useLocation();
   const { mutate: createLtiUserAssociation } = useCreateLtiUserAssociation();
 
@@ -42,9 +42,12 @@ export const useLtiUserAssociationJwtQueryParam = () => {
               intl.formatMessage(messages.ltiUserAssociationSuccess),
             );
             queryParams.delete('association_jwt');
-            history.replace({
-              search: queryParams.toString(),
-            });
+            navigate(
+              {
+                search: queryParams.toString(),
+              },
+              { replace: true },
+            );
           },
           onError: () => {
             toast.error(intl.formatMessage(messages.ltiUserAssociationFailure));
@@ -52,7 +55,7 @@ export const useLtiUserAssociationJwtQueryParam = () => {
         },
       );
     }
-  }, [createLtiUserAssociation, history, intl, location.search]);
+  }, [createLtiUserAssociation, intl, location.search, navigate]);
 
   return null;
 };

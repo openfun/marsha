@@ -1,9 +1,9 @@
-import { Text, Box, CheckBox } from 'grommet';
+import { Box, CheckBox, Text } from 'grommet';
 import { FormSchedule, InProgress } from 'grommet-icons';
 import {
   ClassroomLite,
-  StyledLink,
   ContentCard,
+  StyledLink,
   TextTruncated,
 } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
@@ -18,7 +18,7 @@ import routes from '../../routes';
 
 const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   const intl = useIntl();
-  const classroomPath = routes.CLASSROOM.path;
+  const classroomPath = `${routes.CLASSROOM.path}/${classroom.id}`;
 
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isClassroomSelected, setIsClassroomSelected] = useState<boolean>(
@@ -32,9 +32,7 @@ const ClassRoom = ({ classroom }: { classroom: ClassroomLite }) => {
   }, [isSelectionEnabled, setIsClassroomSelected]);
 
   return (
-    <StyledLink
-      to={isSelectionEnabled ? '#' : `${classroomPath}/${classroom.id}`}
-    >
+    <StyledLink to={isSelectionEnabled ? '#' : `${classroomPath}`}>
       <ContentCard
         style={
           isClassroomSelected

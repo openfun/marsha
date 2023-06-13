@@ -1,6 +1,6 @@
 import { Box } from 'grommet';
 import { Fragment } from 'react';
-import { Route, Switch } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
 import { Footer } from 'features/Footer';
 import { routes } from 'routes';
@@ -13,17 +13,17 @@ const AuthRouter = () => {
   return (
     <Fragment>
       <BaseAuthenticationPage>
-        <Switch>
-          <Route path={routes.PASSWORD_RESET.path} exact>
-            <PasswordReset />
+        <Routes>
+          <Route path={`${routes.PASSWORD_RESET.path}/*`}>
+            <Route path="" element={<PasswordReset />} />
+            <Route
+              path={routes.PASSWORD_RESET.subRoutes.CONFIRM.pathKey}
+              element={<PasswordResetConfirm />}
+            />
+            <Route path="*" element={<Login />} />
           </Route>
-          <Route path={routes.PASSWORD_RESET_CONFIRM.path} exact>
-            <PasswordResetConfirm />
-          </Route>
-          <Route>
-            <Login />
-          </Route>
-        </Switch>
+          <Route path="*" element={<Login />} />
+        </Routes>
       </BaseAuthenticationPage>
       <Box style={{ position: 'absolute', bottom: '0' }} width="100%">
         <Footer />

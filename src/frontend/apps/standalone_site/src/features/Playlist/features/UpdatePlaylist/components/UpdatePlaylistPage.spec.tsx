@@ -8,13 +8,6 @@ import { featureContentLoader } from 'features/Contents';
 
 import { UpdatePlaylistPage } from './UpdatePlaylistPage';
 
-jest.mock('react-router-dom', () => ({
-  ...jest.requireActual('react-router-dom'),
-  useParams: () => ({
-    id: 'some-id',
-  }),
-}));
-
 const deferredPlaylist = new Deferred<Playlist>();
 const playlist = {
   id: 'some-id',
@@ -74,7 +67,7 @@ describe('<UpdatePlaylistPage />', () => {
   });
 
   it('renders main infos and playlist access', async () => {
-    render(<UpdatePlaylistPage />);
+    render(<UpdatePlaylistPage playlistId="some-id" />);
 
     expect(await screen.findByRole('status')).toBeInTheDocument();
 
@@ -136,7 +129,7 @@ describe('<UpdatePlaylistPage />', () => {
   it('checks the contents render by playlist', async () => {
     featureContentLoader([]);
 
-    render(<UpdatePlaylistPage />);
+    render(<UpdatePlaylistPage playlistId="some-id" />);
 
     deferredPlaylist.resolve(playlist);
 

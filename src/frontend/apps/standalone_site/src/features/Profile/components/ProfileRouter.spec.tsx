@@ -19,6 +19,7 @@ describe('<ProfileRouter/>', () => {
   test('render route /my-profile', () => {
     render(<ProfileRouter />, {
       routerOptions: {
+        componentPath: '/my-profile/*',
         history: ['/my-profile'],
       },
     });
@@ -27,7 +28,10 @@ describe('<ProfileRouter/>', () => {
 
   test('render route /my-profile/settings', () => {
     render(<ProfileRouter />, {
-      routerOptions: { history: ['/my-profile/settings'] },
+      routerOptions: {
+        componentPath: '/my-profile/*',
+        history: ['/my-profile/settings'],
+      },
     });
 
     expect(screen.getByText(/My SettingsProfilePage/i)).toBeInTheDocument();

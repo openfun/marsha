@@ -40,7 +40,7 @@ describe('<AuthRouter/>', () => {
   test('render PasswordResetConfirm', () => {
     render(<AuthRouter />, {
       routerOptions: {
-        history: ['/auth/password-reset/confirm/test-uid/test-token?'],
+        history: ['/auth/password-reset/confirm/test-uid/test-token'],
       },
     });
     expect(screen.getByText('My PasswordResetConfirm')).toBeInTheDocument();

@@ -2,11 +2,11 @@ import {
   AppConfig,
   AppConfigProvider,
   CurrentResourceContextProvider,
+  ResourceContext,
   UploadHandlers,
   UploadManager,
-  ResourceContext,
 } from 'lib-components';
-import { useVideo, DashboardVideoWrapper, useSetVideoState } from 'lib-video';
+import { DashboardVideoWrapper, useSetVideoState, useVideo } from 'lib-video';
 import { defineMessages, useIntl } from 'react-intl';
 import { useParams } from 'react-router-dom';
 
@@ -37,7 +37,7 @@ const messages = defineMessages({
 
 const VideoUpdate = () => {
   const intl = useIntl();
-  const { videoId } = useParams<{ videoId?: string }>();
+  const { videoId } = useParams();
 
   if (!videoId) {
     return (

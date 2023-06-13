@@ -1,6 +1,6 @@
 import { report } from 'lib-components';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { routes } from 'routes';
 
@@ -23,10 +23,10 @@ const messages = defineMessages({
 
 export const CreatePlaylistForm = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { mutate, isLoading: isCreating } = useCreatePlaylist({
     onSuccess: () => {
-      history.push(routes.PLAYLIST.path);
+      navigate(routes.PLAYLIST.path);
     },
   });
 
@@ -50,7 +50,7 @@ export const CreatePlaylistForm = () => {
         });
       }}
       onCancel={() => {
-        history.push(routes.PLAYLIST.path);
+        navigate(-1);
       }}
       submitTitle={intl.formatMessage(messages.createPlaylistButtonTitle)}
       isSubmitting={isCreating}

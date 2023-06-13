@@ -1,8 +1,7 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import { render } from 'lib-tests';
 import { Fragment } from 'react';
-import { BrowserRouter } from 'react-router-dom';
 
 import { featureContentLoader } from 'features/Contents';
 import { getFullThemeExtend } from 'styles/theme.extend';
@@ -22,7 +21,7 @@ describe('<Menu />', () => {
   test('renders Menu', () => {
     featureContentLoader([]);
 
-    render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
+    render(<Menu />);
     expect(
       screen.getByRole('menuitem', { name: /My playlists/i }),
     ).toBeInTheDocument();
@@ -40,7 +39,6 @@ describe('<Menu />', () => {
         <Burger />
         <Menu />
       </Fragment>,
-      { testingLibraryOptions: { wrapper: BrowserRouter } },
     );
 
     const menu = screen.getByRole('menu');
@@ -55,7 +53,6 @@ describe('<Menu />', () => {
         <Menu />
       </ResponsiveContext.Provider>,
       {
-        testingLibraryOptions: { wrapper: BrowserRouter },
         grommetOptions: {
           theme: getFullThemeExtend(),
         },

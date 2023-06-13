@@ -1,14 +1,12 @@
-import { Text, TextArea, TextInput, Box } from 'grommet';
+import { Box, Text, TextArea, TextInput } from 'grommet';
 import { Alert } from 'grommet-icons';
 import { useCreateClassroom } from 'lib-classroom';
 import { Form, FormField, ModalButton } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useSelectPlaylist } from 'features/Playlist';
-
-import routes from '../../routes';
 
 const messages = defineMessages({
   titleLabel: {
@@ -62,8 +60,7 @@ enum ETypeError {
 
 const ClassroomCreateForm = () => {
   const intl = useIntl();
-  const history = useHistory();
-  const classroomPath = routes.CLASSROOM.path;
+  const navigate = useNavigate();
   const { errorPlaylist, selectPlaylist, playlistResponse } = useSelectPlaylist(
     { withPlaylistCreation: true },
   );
@@ -73,7 +70,7 @@ const ClassroomCreateForm = () => {
     isLoading: isCreating,
   } = useCreateClassroom({
     onSuccess: (data) => {
-      history.push(`${classroomPath}/${data.id}`);
+      navigate(`../${data.id}`);
     },
   });
   const [classroom, setClassroom] = useState<ClassroomCreate>({
@@ -150,7 +147,7 @@ const ClassroomCreateForm = () => {
 
         <ModalButton
           label={intl.formatMessage(messages.submitLabel)}
-          onClickCancel={() => history.push(classroomPath)}
+          onClickCancel={() => navigate(-1)}
           isSubmitting={isCreating}
           isDisabled={!classroom.title || !classroom.playlist}
         />

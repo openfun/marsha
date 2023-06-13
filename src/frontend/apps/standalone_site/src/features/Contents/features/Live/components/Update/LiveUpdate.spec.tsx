@@ -12,9 +12,7 @@ jest.mock('react-router-dom', () => ({
   useRouteMatch: () => ({ url: '/my-contents/webinars/123456' }),
 }));
 
-const mockUseParams = useParams as jest.MockedFunction<
-  typeof useParams<{ liveId: string }>
->;
+const mockUseParams = useParams as jest.MockedFunction<typeof useParams>;
 
 jest.mock('lib-video', () => ({
   ...jest.requireActual('lib-video'),

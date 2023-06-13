@@ -1,16 +1,14 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
 
 import { PasswordResetForm } from './PasswordResetForm';
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+  useNavigate: () => mockNavigate,
 }));
 
 const consoleError = jest
@@ -24,12 +22,14 @@ describe('<PasswordResetForm />', () => {
     fetchMock.restore();
   });
 
-  it('checks render inputs', () => {
+  it('checks render inputs', async () => {
     render(<PasswordResetForm />);
 
     expect(screen.getByRole('textbox', { name: /email/i })).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
     expect(screen.getByText('This field is required.')).toBeInTheDocument();
   });
@@ -40,12 +40,14 @@ describe('<PasswordResetForm />', () => {
     });
     render(<PasswordResetForm />);
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: /email/i }),
       'john@example.com',
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
     expect(await screen.findByText('An error occurred')).toBeInTheDocument();
 
@@ -73,14 +75,16 @@ describe('<PasswordResetForm />', () => {
     });
     render(<PasswordResetForm />);
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: /email/i }),
       'john@example.com',
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Reset my password/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Reset my password/i }),
+    );
 
-    await waitFor(() => expect(mockHistoryPush).toHaveBeenCalledWith('/'));
+    expect(mockNavigate).toHaveBeenCalledWith('/');
 
     expect(
       screen.getByText('Password reset e-mail has been sent.'),

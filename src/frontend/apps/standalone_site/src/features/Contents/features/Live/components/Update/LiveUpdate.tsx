@@ -7,10 +7,10 @@ import {
   UploadManager,
 } from 'lib-components';
 import {
-  converseCleanup,
-  useVideo,
   DashboardVideoWrapper,
+  converseCleanup,
   useSetVideoState,
+  useVideo,
 } from 'lib-video';
 import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
@@ -43,7 +43,7 @@ const messages = defineMessages({
 
 const LiveUpdate = () => {
   const intl = useIntl();
-  const { liveId } = useParams<{ liveId?: string }>();
+  const { liveId } = useParams();
 
   if (!liveId) {
     return (

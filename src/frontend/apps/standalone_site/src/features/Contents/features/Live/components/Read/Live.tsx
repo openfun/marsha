@@ -1,5 +1,5 @@
-import { Text, Box, CheckBox } from 'grommet';
-import { StyledLink, Video, ContentCard } from 'lib-components';
+import { Box, CheckBox, Text } from 'grommet';
+import { ContentCard, StyledLink, Video } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import styled from 'styled-components';
 
@@ -17,7 +17,7 @@ const TextTruncated = styled(Text)`
 `;
 
 const Live = ({ live }: { live: Video }) => {
-  const livePath = routes.LIVE.path;
+  const livePath = `${routes.LIVE.path}/${live.id}`;
   const thumbnail = live.thumbnail?.urls?.[240] || live.urls?.thumbnails?.[240];
   const { isSelectionEnabled, selectedItems, selectItem } = useSelectFeatures();
   const [isLiveSelected, setIsLiveSelected] = useState<boolean>(
@@ -31,7 +31,7 @@ const Live = ({ live }: { live: Video }) => {
   }, [isSelectionEnabled, setIsLiveSelected]);
 
   return (
-    <StyledLink to={isSelectionEnabled ? '#' : `${livePath}/${live.id}`}>
+    <StyledLink to={isSelectionEnabled ? '#' : `${livePath}`}>
       <ContentCard
         style={
           isLiveSelected

@@ -25,7 +25,8 @@ describe('<PlaylistRouter />', () => {
   it('renders update playlist page', () => {
     render(<PlaylistRouter />, {
       routerOptions: {
-        componentPath: '/my-playlists/id/update',
+        componentPath: '/my-playlists/*',
+        history: ['/my-playlists/123456/update/'],
       },
     });
 

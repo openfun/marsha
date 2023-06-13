@@ -1,16 +1,20 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { createMemoryHistory } from 'history';
 import {
-  modelName,
   UploadManagerStatus,
+  modelName,
   useUploadManager,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import { Router } from 'react-router-dom';
+import { Deferred, render } from 'lib-tests';
 
 import VideoCreateForm from './VideoCreateForm';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const playlistsResponse = {
   count: 2,
@@ -200,7 +204,6 @@ describe('<VideoCreateForm />', () => {
   });
 
   test('fields are posted correctly', async () => {
-    const history = createMemoryHistory();
     fetchMock.post('/api/videos/', {
       ok: true,
       id: '1234',
@@ -222,11 +225,7 @@ describe('<VideoCreateForm />', () => {
       resetUpload: jest.fn(),
     });
 
-    render(
-      <Router history={history}>
-        <VideoCreateForm />
-      </Router>,
-    );
+    render(<VideoCreateForm />);
 
     deferredPlaylists.resolve(playlistsResponse);
     deferredVideos.resolve(videosResponse);
@@ -273,7 +272,7 @@ describe('<VideoCreateForm />', () => {
 
     await waitFor(() => expect(submit).not.toBeDisabled());
 
-    userEvent.click(submit);
+    await userEvent.click(submit);
 
     await waitFor(() => {
       expect(
@@ -295,9 +294,7 @@ describe('<VideoCreateForm />', () => {
       });
     });
 
-    await waitFor(() => {
-      expect(history.location.pathname).toBe('/my-contents/videos/1234');
-    });
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('../1234'));
   });
 
   test('post failed', async () => {

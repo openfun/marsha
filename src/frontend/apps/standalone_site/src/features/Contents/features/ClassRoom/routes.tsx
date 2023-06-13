@@ -22,6 +22,7 @@ const routes: Record<'CLASSROOM', RouteRequired<ECLASSROOMSubRouteNames>> = {
   CLASSROOM: {
     label: <FormattedMessage {...messages.menuContentsClassroomLabel} />,
     path: `/my-contents/classroom`,
+    pathKey: 'classroom',
     menuIcon: (
       <LoadSVG
         Icon={ClassroomsIcon}
@@ -32,12 +33,15 @@ const routes: Record<'CLASSROOM', RouteRequired<ECLASSROOMSubRouteNames>> = {
     subRoutes: {
       CREATE: {
         path: `/my-contents/classroom/create`,
+        pathKey: 'create',
       },
       UPDATE: {
         path: `/my-contents/classroom/:classroomId`,
+        pathKey: ':classroomId',
       },
       INVITE: {
         path: `/my-contents/classroom/:classroomId/invite/:inviteId`,
+        pathKey: ':classroomId/invite/:inviteId',
       },
     },
     isNavStrict: true,

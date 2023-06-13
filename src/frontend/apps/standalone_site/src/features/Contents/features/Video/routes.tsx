@@ -21,6 +21,7 @@ const routes: Record<'VIDEO', RouteRequired<EVIDEOSubRouteNames>> = {
   VIDEO: {
     label: <FormattedMessage {...messages.menuContentsVideosLabel} />,
     path: `/my-contents/videos`,
+    pathKey: 'videos',
     menuIcon: (
       <LoadSVG
         Icon={VideoIcon}
@@ -31,9 +32,11 @@ const routes: Record<'VIDEO', RouteRequired<EVIDEOSubRouteNames>> = {
     subRoutes: {
       CREATE: {
         path: `/my-contents/videos/create`,
+        pathKey: 'create',
       },
       UPDATE: {
         path: `/my-contents/videos/:videoId`,
+        pathKey: ':videoId',
       },
     },
     isNavStrict: true,

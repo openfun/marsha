@@ -1,11 +1,15 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { createMemoryHistory } from 'history';
-import { render, Deferred } from 'lib-tests';
-import { Router } from 'react-router-dom';
+import { Deferred, render } from 'lib-tests';
 
 import ClassRoomCreateForm from './ClassRoomCreateForm';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const playlistsResponse = {
   count: 2,
@@ -95,17 +99,12 @@ describe('<ClassRoomCreateForm />', () => {
   });
 
   test('fields are posted correctly', async () => {
-    const history = createMemoryHistory();
     fetchMock.post('/api/classrooms/', {
       ok: true,
       id: 1243,
     });
 
-    render(
-      <Router history={history}>
-        <ClassRoomCreateForm />
-      </Router>,
-    );
+    render(<ClassRoomCreateForm />);
 
     deferred.resolve(playlistsResponse);
 
@@ -153,7 +152,7 @@ describe('<ClassRoomCreateForm />', () => {
       }),
     });
 
-    expect(history.location.pathname).toBe('/my-contents/classroom/1243');
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('../1243'));
   });
 
   test('post failed', async () => {
@@ -171,7 +170,7 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
     );
 
@@ -181,13 +180,15 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
 
     // Select the mocked playlist
-    userEvent.click(screen.getByRole('option', { selected: false }));
+    await userEvent.click(screen.getByRole('option', { selected: false }));
 
     expect(
       screen.queryByText(/Sorry, an error has occurred. Please try again./i),
     ).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Add classroom/i }),
+    );
 
     expect(
       await screen.findByText(
@@ -218,7 +219,7 @@ describe('<ClassRoomCreateForm />', () => {
       target: { value: 'my title' },
     });
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByLabelText(/Choose the playlist./i, { selector: 'button' }),
     );
 
@@ -228,7 +229,7 @@ describe('<ClassRoomCreateForm />', () => {
     ).toBeInTheDocument();
 
     // Select the mocked playlist
-    userEvent.click(screen.getByRole('option', { selected: false }));
+    await userEvent.click(screen.getByRole('option', { selected: false }));
 
     expect(
       screen.queryByText(
@@ -236,7 +237,9 @@ describe('<ClassRoomCreateForm />', () => {
       ),
     ).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: /Add classroom/i }));
+    await userEvent.click(
+      screen.getByRole('button', { name: /Add classroom/i }),
+    );
 
     expect(
       await screen.findByText(

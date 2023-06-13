@@ -36,6 +36,7 @@ describe('<ClassRoomRouter/>', () => {
   it('renders route /my-contents/classroom?playlist=test-playlist-id', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/classroom/*',
         history: ['/my-contents/classroom?playlist=test-playlist-id'],
       },
     });
@@ -47,15 +48,24 @@ describe('<ClassRoomRouter/>', () => {
 
   it('renders classroom no match', () => {
     render(<ClassRoomRouter />, {
-      routerOptions: { history: ['/some/bad/route'] },
+      routerOptions: {
+        componentPath: '/my-contents/classroom/*',
+        history: ['/my-contents/classroom/some/bad/route'],
+      },
     });
     expect(screen.queryByText(/My ClassroomManage/i)).not.toBeInTheDocument();
     expect(screen.queryByText(/My ClassroomsRead/i)).not.toBeInTheDocument();
+    expect(
+      screen.getByText(/Sorry, this page does not exist./i),
+    ).toBeInTheDocument();
   });
 
   it('renders create classroom', () => {
     render(<ClassRoomRouter />, {
-      routerOptions: { history: ['/my-contents/classroom/create'] },
+      routerOptions: {
+        componentPath: '/my-contents/classroom/*',
+        history: ['/my-contents/classroom/create'],
+      },
     });
     expect(screen.getByText(/My ClassroomManage/i)).toBeInTheDocument();
     expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
@@ -63,7 +73,10 @@ describe('<ClassRoomRouter/>', () => {
 
   it('renders update classroom', () => {
     render(<ClassRoomRouter />, {
-      routerOptions: { history: ['/my-contents/classroom/123456'] },
+      routerOptions: {
+        componentPath: '/my-contents/classroom/*',
+        history: ['/my-contents/classroom/123456'],
+      },
     });
     expect(screen.getByText('My ClassRoomUpdate')).toBeInTheDocument();
     expect(screen.queryByText('Invited')).not.toBeInTheDocument();
@@ -72,6 +85,7 @@ describe('<ClassRoomRouter/>', () => {
   it('renders invite classroom', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/classroom/*',
         history: ['/my-contents/classroom/123456/invite/123456'],
       },
     });
@@ -81,9 +95,12 @@ describe('<ClassRoomRouter/>', () => {
   it('renders invite classroom without inviteId', () => {
     render(<ClassRoomRouter />, {
       routerOptions: {
+        componentPath: '/my-contents/classroom/*',
         history: ['/my-contents/classroom/123456/invite/'],
       },
     });
-    expect(screen.getByText(/My ClassroomsRead/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Sorry, this page does not exist./i),
+    ).toBeInTheDocument();
   });
 });

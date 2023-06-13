@@ -71,7 +71,7 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
 `;
 
 const ClassRoomUpdate = () => {
-  const { classroomId } = useParams<{ classroomId?: string }>();
+  const { classroomId } = useParams();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
   const internalDecodedJwt = useJwt((state) => state.internalDecodedJwt);

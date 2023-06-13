@@ -1,5 +1,8 @@
 import { Box } from 'grommet';
-import { Route, Switch, useLocation } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Route, Routes, useLocation } from 'react-router-dom';
+
+import { Text404 } from 'components/Text';
 
 import routes from '../routes';
 
@@ -13,27 +16,30 @@ const LiveRouter = () => {
   const playlistId = searchParams.get('playlist') || '';
 
   const liveRoute = routes.LIVE;
-  const liveCreatePath = liveRoute.subRoutes.CREATE.path;
-  const liveUpdatePath = liveRoute.subRoutes.UPDATE.path;
+  const liveCreatePath = liveRoute.subRoutes.CREATE.pathKey || '';
+  const liveUpdatePath = liveRoute.subRoutes.UPDATE.pathKey;
 
   return (
-    <Route path={liveRoute.path}>
-      <Box pad="medium">
-        <Switch>
-          <Route path={liveCreatePath} exact>
-            <LiveManage />
-            <Lives playlistId={playlistId} />
-          </Route>
-          <Route path={liveUpdatePath} exact>
-            <LiveUpdate />
-          </Route>
-          <Route>
-            <LiveManage />
-            <Lives playlistId={playlistId} />
-          </Route>
-        </Switch>
-      </Box>
-    </Route>
+    <Box pad="medium">
+      <Routes>
+        <Route path={liveUpdatePath} element={<LiveUpdate />} />
+        {[`${liveCreatePath}/*`, ''].map((path, index) => {
+          return (
+            <Route
+              path={`${path}`}
+              element={
+                <Fragment>
+                  <LiveManage />
+                  <Lives playlistId={playlistId} />
+                </Fragment>
+              }
+              key={`${path}-${index}`}
+            />
+          );
+        })}
+        <Route path="*" element={<Text404 />} />
+      </Routes>
+    </Box>
   );
 };
 

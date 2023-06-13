@@ -25,6 +25,7 @@ jest.mock('features/HomePage', () => ({
 jest.mock('features/Contents/', () => ({
   ...jest.requireActual('features/Contents/'),
   ContentsRouter: () => <div>My ContentsRouter Page</div>,
+  ClassRoomUpdate: () => <div>My ClassRoomUpdate Page</div>,
 }));
 
 jest.mock('features/Playlist', () => ({
@@ -120,17 +121,22 @@ describe('<AppRoutes />', () => {
     });
 
     test('render invite route', async () => {
+      fetchMock.get('/api/classrooms/456789/token/?invite_token=123456', {
+        access_token: 'fake-jwt',
+      });
+
       render(<AppRoutes />, {
         routerOptions: {
-          history: ['/my-contents/classroom/123456/invite/123456'],
+          history: ['/my-contents/classroom/456789/invite/123456'],
         },
       });
       expect(await screen.findByText('My HeaderLight')).toBeInTheDocument();
       expect(
         screen.queryByRole('menuitem', { name: /Dashboard/i }),
       ).not.toBeInTheDocument();
-      expect(screen.getByText('My ContentsRouter Page')).toBeInTheDocument();
+      expect(screen.getByText('My ClassRoomUpdate Page')).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
+      expect(useJwt.getState().jwt).toEqual('fake-jwt');
     });
 
     test('render generale conditions', async () => {
@@ -150,7 +156,11 @@ describe('<AppRoutes />', () => {
 
   describe('when the user is authenticated', () => {
     test('renders AppRoutes', async () => {
-      render(<AppRoutes />);
+      render(<AppRoutes />, {
+        routerOptions: {
+          history: ['/'],
+        },
+      });
       expect(
         await screen.findByRole('menuitem', { name: /Dashboard/i }),
       ).toBeInTheDocument();
@@ -160,19 +170,25 @@ describe('<AppRoutes />', () => {
     });
 
     test('menu interaction with the router', async () => {
-      render(<AppRoutes />);
+      render(<AppRoutes />, {
+        routerOptions: {
+          history: ['/'],
+        },
+      });
 
       expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole('menuitem', { name: /My playlists/i }));
+      await userEvent.click(
+        screen.getByRole('menuitem', { name: /My playlists/i }),
+      );
 
-      expect(await screen.findByText(/My Playlist Page/i)).toBeInTheDocument();
+      expect(screen.getByText(/My Playlist Page/i)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole('menuitem', { name: /My Contents/i }));
+      await userEvent.click(
+        screen.getByRole('menuitem', { name: /My Contents/i }),
+      );
 
-      await waitFor(() => {
-        expect(screen.getByText(/My ContentsRouter Page/i)).toBeInTheDocument();
-      });
+      expect(screen.getByText(/My ContentsRouter Page/i)).toBeInTheDocument();
 
       expect(window.scrollTo).toHaveBeenCalled();
     });

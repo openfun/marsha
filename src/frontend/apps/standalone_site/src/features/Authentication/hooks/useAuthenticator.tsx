@@ -6,7 +6,7 @@ import {
   useJwt,
 } from 'lib-components';
 import { useEffect, useState } from 'react';
-import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
+import { useLocation, useMatch, useNavigate } from 'react-router-dom';
 
 import { useRoutes } from 'routes/useRoutes';
 
@@ -18,13 +18,13 @@ const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
 export const useAuthenticator = () => {
   const routes = useRoutes();
-  const match = useRouteMatch(
+  const match = useMatch(
     routes.CONTENTS.subRoutes?.CLASSROOM?.subRoutes?.INVITE.path || '',
   ) as { params?: { classroomId?: string; inviteId?: string } } | null;
   const inviteId = match?.params?.inviteId;
   const classroomId = match?.params?.classroomId;
 
-  const history = useHistory();
+  const navigate = useNavigate();
   const { search } = useLocation();
   const code = new URLSearchParams(search).get(
     QUERY_PARAMS_CHALLENGE_TOKEN_NAME,
@@ -135,7 +135,7 @@ export const useAuthenticator = () => {
     resetJwt,
     setCurrentUser,
     setDecodedJwt,
-    history,
+    navigate,
     inviteId,
   ]);
 

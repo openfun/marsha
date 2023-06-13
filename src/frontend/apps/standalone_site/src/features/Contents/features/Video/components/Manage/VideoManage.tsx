@@ -1,16 +1,16 @@
 import { Box, Button, Heading, Text } from 'grommet';
 import {
-  UploadManager,
+  ButtonLoaderStyle,
   Modal,
   ModalButton,
-  ButtonLoaderStyle,
+  UploadManager,
   report,
 } from 'lib-components';
 import { useDeleteVideos } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { Link, Route, Switch, useHistory } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
@@ -79,10 +79,10 @@ const ButtonStyled = styled(Button)`
 
 const VideoManage = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const videoRoute = routes.VIDEO;
-  const videoPath = videoRoute.path;
   const videoCreatePath = videoRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
@@ -166,28 +166,26 @@ const VideoManage = () => {
           </Box>
         )}
       </ContentsHeader>
-      <Switch>
-        <Route path={videoCreatePath} exact>
-          <Modal
-            isOpen
-            onClose={() => {
-              history.push(videoPath);
-            }}
+      {location.pathname.includes(videoCreatePath) && (
+        <Modal
+          isOpen
+          onClose={() => {
+            navigate(-1);
+          }}
+        >
+          <Heading
+            level={2}
+            margin={{ top: 'xxsmall' }}
+            textAlign="center"
+            weight="bold"
           >
-            <Heading
-              level={2}
-              margin={{ top: 'xxsmall' }}
-              textAlign="center"
-              weight="bold"
-            >
-              {intl.formatMessage(messages.CreateVideoLabel)}
-            </Heading>
-            <UploadManager>
-              <VideoCreateForm />
-            </UploadManager>
-          </Modal>
-        </Route>
-      </Switch>
+            {intl.formatMessage(messages.CreateVideoLabel)}
+          </Heading>
+          <UploadManager>
+            <VideoCreateForm />
+          </UploadManager>
+        </Modal>
+      )}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => {

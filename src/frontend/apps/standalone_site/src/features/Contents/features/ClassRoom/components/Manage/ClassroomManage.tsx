@@ -4,7 +4,7 @@ import { ButtonLoaderStyle, Modal, ModalButton, report } from 'lib-components';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { Link, Route, Switch, useHistory } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
@@ -73,10 +73,10 @@ const ButtonStyled = styled(Button)`
 
 const ClassroomManage = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const classroomRoute = routes.CLASSROOM;
-  const classroomPath = classroomRoute.path;
   const classroomCreatePath = classroomRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
@@ -157,26 +157,24 @@ const ClassroomManage = () => {
           </Box>
         )}
       </ContentsHeader>
-      <Switch>
-        <Route path={classroomCreatePath} exact>
-          <Modal
-            isOpen
-            onClose={() => {
-              history.push(classroomPath);
-            }}
+      {location.pathname.includes(classroomCreatePath) && (
+        <Modal
+          isOpen
+          onClose={() => {
+            navigate(-1);
+          }}
+        >
+          <Heading
+            level={2}
+            margin={{ top: 'xxsmall' }}
+            textAlign="center"
+            weight="bold"
           >
-            <Heading
-              level={2}
-              margin={{ top: 'xxsmall' }}
-              textAlign="center"
-              weight="bold"
-            >
-              {intl.formatMessage(messages.CreateClassroomLabel)}
-            </Heading>
-            <ClassroomCreateForm />
-          </Modal>
-        </Route>
-      </Switch>
+            {intl.formatMessage(messages.CreateClassroomLabel)}
+          </Heading>
+          <ClassroomCreateForm />
+        </Modal>
+      )}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => {

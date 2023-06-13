@@ -1,9 +1,9 @@
 import { Box } from 'grommet';
 import { useResponsive } from 'lib-components';
-import React, { PropsWithChildren, useEffect, useRef } from 'react';
+import { PropsWithChildren, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
-import { useIntl, defineMessages } from 'react-intl';
-import { useHistory, useLocation, useParams } from 'react-router-dom';
+import { defineMessages, useIntl } from 'react-intl';
+import { useNavigate, useParams } from 'react-router-dom';
 
 import { PasswordResetConfirmForm } from './PasswordResetConfirmForm';
 import { PasswordResetForm } from './PasswordResetForm';
@@ -50,36 +50,27 @@ export const PasswordReset = () => {
   );
 };
 
-interface PasswordResetConfirmRouteParams {
-  uid: string;
-  token: string;
-}
-
 export const PasswordResetConfirm = () => {
   const intl = useIntl();
-  const { uid, token } = useParams<PasswordResetConfirmRouteParams>();
-  const tokenRef = useRef(token); // store the token to use after URL cleaning
-  const location = useLocation();
-  const history = useHistory();
+  const { uid, token } = useParams();
+  const navigate = useNavigate();
 
   useEffect(() => {
-    if (!tokenRef.current) {
+    if (!token || !uid) {
       toast.error(intl.formatMessage(messages.wrongUrlError));
-      history.replace({
+      navigate({
         pathname: '/',
       });
     }
-    if (token) {
-      // remove token from URL, just in case
-      history.replace({
-        pathname: location.pathname.replace(`/${token}`, ''),
-      });
-    }
-  }, [history, intl, location.pathname, token]);
+  }, [intl, navigate, token, uid]);
 
-  return (
-    <PasswordResetContainer>
-      <PasswordResetConfirmForm uid={uid} token={tokenRef.current} />
-    </PasswordResetContainer>
-  );
+  if (uid && token) {
+    return (
+      <PasswordResetContainer>
+        <PasswordResetConfirmForm uid={uid} token={token} />
+      </PasswordResetContainer>
+    );
+  }
+
+  return null;
 };

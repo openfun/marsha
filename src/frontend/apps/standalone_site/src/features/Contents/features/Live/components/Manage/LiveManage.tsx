@@ -4,7 +4,7 @@ import { useDeleteVideos } from 'lib-video';
 import { Fragment, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { Link, Route, Switch, useHistory } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ContentsHeader } from 'features/Contents';
@@ -73,10 +73,10 @@ const ButtonStyled = styled(Button)`
 
 const LiveManage = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const liveRoute = routes.LIVE;
-  const livePath = liveRoute.path;
   const liveCreatePath = liveRoute.subRoutes.CREATE.path;
   const {
     isSelectionEnabled,
@@ -158,26 +158,24 @@ const LiveManage = () => {
           </Box>
         )}
       </ContentsHeader>
-      <Switch>
-        <Route path={liveCreatePath} exact>
-          <Modal
-            isOpen
-            onClose={() => {
-              history.push(livePath);
-            }}
+      {location.pathname.includes(liveCreatePath) && (
+        <Modal
+          isOpen
+          onClose={() => {
+            navigate(-1);
+          }}
+        >
+          <Heading
+            level={2}
+            margin={{ top: 'xxsmall' }}
+            textAlign="center"
+            weight="bold"
           >
-            <Heading
-              level={2}
-              margin={{ top: 'xxsmall' }}
-              textAlign="center"
-              weight="bold"
-            >
-              {intl.formatMessage(messages.CreateWebinarLabel)}
-            </Heading>
-            <LiveCreateForm />
-          </Modal>
-        </Route>
-      </Switch>
+            {intl.formatMessage(messages.CreateWebinarLabel)}
+          </Heading>
+          <LiveCreateForm />
+        </Modal>
+      )}
       <Modal
         isOpen={isDeleteModalOpen}
         onClose={() => {

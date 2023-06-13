@@ -1,11 +1,15 @@
-import { screen, fireEvent, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { createMemoryHistory } from 'history';
-import { render, Deferred } from 'lib-tests';
-import { Router } from 'react-router-dom';
+import { Deferred, render } from 'lib-tests';
 
 import LiveCreateForm from './LiveCreateForm';
+
+const mockNavigate = jest.fn();
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 const playlistsResponse = {
   count: 2,
@@ -125,7 +129,6 @@ describe('<LiveCreateForm />', () => {
   });
 
   test('fields are posted correctly', async () => {
-    const history = createMemoryHistory();
     fetchMock.post('/api/videos/', {
       ok: true,
       id: '1234',
@@ -143,11 +146,7 @@ describe('<LiveCreateForm />', () => {
       },
     );
 
-    render(
-      <Router history={history}>
-        <LiveCreateForm />
-      </Router>,
-    );
+    render(<LiveCreateForm />);
 
     deferredPlaylists.resolve(playlistsResponse);
 
@@ -183,7 +182,7 @@ describe('<LiveCreateForm />', () => {
 
     await waitFor(() => expect(submit).not.toBeDisabled());
 
-    userEvent.click(submit);
+    await userEvent.click(submit);
 
     await waitFor(() => {
       expect(
@@ -202,9 +201,7 @@ describe('<LiveCreateForm />', () => {
       });
     });
 
-    await waitFor(() => {
-      expect(history.location.pathname).toBe('/my-contents/webinars/1234');
-    });
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('../1234'));
   });
 
   test('post failed', async () => {

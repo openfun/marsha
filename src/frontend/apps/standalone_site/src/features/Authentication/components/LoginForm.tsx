@@ -1,9 +1,9 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
-import { Hide, FormView, Alert } from 'grommet-icons';
+import { Alert, FormView, Hide } from 'grommet-icons';
 import { ButtonLoader } from 'lib-components';
-import React, { useEffect, useState } from 'react';
-import { useIntl, defineMessages } from 'react-intl';
-import { Link, useHistory, useLocation } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { defineMessages, useIntl } from 'react-intl';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 
 import { routes } from 'routes/routes';
 import { getLocalStorage } from 'utils/browser';
@@ -47,7 +47,7 @@ const TARGET_URL_STORAGE_KEY = 'redirect_uri';
 
 export const LoginForm = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname, search } = useLocation();
   const [value, setValue] = useState({ username: '', password: '' });
   const [reveal, setReveal] = useState(false);
@@ -61,7 +61,7 @@ export const LoginForm = () => {
       getLocalStorage()?.removeItem(TARGET_URL_STORAGE_KEY);
       // redirect to the originally targeted URL (ie before the authentication loop)
       // or the root page if no target was set
-      history.replace(targetUri || pathname);
+      navigate(targetUri || pathname);
     },
   });
 
@@ -72,9 +72,9 @@ export const LoginForm = () => {
   useEffect(() => {
     if (pathname !== routes.LOGIN.path) {
       getLocalStorage()?.setItem(TARGET_URL_STORAGE_KEY, pathname + search);
-      history.replace(routes.LOGIN.path);
+      navigate(routes.LOGIN.path);
     }
-  }, [history, pathname, search]);
+  }, [navigate, pathname, search]);
 
   return (
     <Form

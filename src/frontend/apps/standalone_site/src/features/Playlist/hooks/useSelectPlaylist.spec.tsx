@@ -1,8 +1,8 @@
-import { screen, renderHook, waitFor } from '@testing-library/react';
+import { renderHook, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Form } from 'lib-components';
-import { render, Deferred, wrapperUtils } from 'lib-tests';
+import { Deferred, render, wrapperUtils } from 'lib-tests';
 
 import { routes } from 'routes';
 
@@ -196,7 +196,7 @@ describe('<useSelectPlaylist />', () => {
           routes: [
             {
               path: routes.PLAYLIST.subRoutes.CREATE.path,
-              render: () => <div>create playlist page</div>,
+              element: <div>create playlist page</div>,
             },
           ],
         },

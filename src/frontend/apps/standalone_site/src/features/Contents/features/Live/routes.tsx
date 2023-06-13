@@ -21,6 +21,7 @@ const routes: Record<'LIVE', RouteRequired<ELIVESubRouteNames>> = {
   LIVE: {
     label: <FormattedMessage {...messages.menuContentsLivesLabel} />,
     path: `/my-contents/webinars`,
+    pathKey: 'webinars',
     menuIcon: (
       <LoadSVG
         Icon={LiveIcon}
@@ -31,9 +32,11 @@ const routes: Record<'LIVE', RouteRequired<ELIVESubRouteNames>> = {
     subRoutes: {
       CREATE: {
         path: `/my-contents/webinars/create`,
+        pathKey: 'create',
       },
       UPDATE: {
         path: `/my-contents/webinars/:liveId`,
+        pathKey: ':liveId',
       },
     },
     isNavStrict: true,

@@ -1,9 +1,9 @@
 import { Box, Button, Form, FormField, Text, TextInput } from 'grommet';
 import { Alert } from 'grommet-icons';
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { toast } from 'react-hot-toast';
-import { useIntl, defineMessages } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { defineMessages, useIntl } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
 import { routes } from 'routes';
 
@@ -50,21 +50,21 @@ export const PasswordResetForm = () => {
   const intl = useIntl();
   const [value, setValue] = useState({ email: '' });
   const [message, setMessage] = useState('');
-  const history = useHistory();
+  const navigate = useNavigate();
   const { mutate: passwordReset } = usePasswordReset({
     onError: (error: UsePasswordResetError) => {
       setMessage(error.detail || intl.formatMessage(messages.error));
     },
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.successText));
-      history.push('/');
+      navigate('/');
     },
   });
 
   // Build the reset URL, which will be sent to user by email
   const confirm_url = `${
     window.location.origin
-  }${routes.PASSWORD_RESET_CONFIRM.path.replace(':uid/:token?', '')}`;
+  }${routes.PASSWORD_RESET.subRoutes.CONFIRM.path.replace(':uid/:token', '')}`;
 
   return (
     <Form

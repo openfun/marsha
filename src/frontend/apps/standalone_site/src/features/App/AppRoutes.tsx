@@ -2,7 +2,7 @@ import { lazyImport } from 'lib-common';
 import { Loader } from 'lib-components';
 import { Suspense, useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { Route, Switch, useHistory, useLocation } from 'react-router-dom';
+import { Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 
 import { MainLayout } from 'components/Layout';
 import { ContentSpinner } from 'components/Spinner';
@@ -16,7 +16,9 @@ import { PagesApi, usePagesApi } from 'features/PagesApi';
 import { useRoutes } from 'routes/useRoutes';
 
 const { AuthRouter } = lazyImport(() => import('features/Authentication'));
-const { ContentsRouter } = lazyImport(() => import('features/Contents/'));
+const { ContentsRouter, ClassRoomUpdate } = lazyImport(
+  () => import('features/Contents/'),
+);
 const { PlaylistRouter } = lazyImport(() => import('features/Playlist'));
 const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
@@ -75,52 +77,67 @@ const AnonymousRoutes = () => {
   }
 
   return (
-    <Switch>
+    <Routes>
       <Route
         path={routes.CONTENTS.subRoutes?.CLASSROOM?.subRoutes?.INVITE.path}
-        exact
-      >
-        <MainLayout
-          Header={HeaderLight}
-          direction="column"
-          footer={<Footer />}
-          contentBoxProps={{ pad: { horizontal: 'medium', vertical: 'small' } }}
-        >
+        element={
+          <MainLayout
+            Header={HeaderLight}
+            direction="column"
+            footer={<Footer />}
+            contentBoxProps={{
+              pad: { horizontal: 'medium', vertical: 'small' },
+            }}
+          >
+            <Suspense
+              fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+            >
+              <ClassRoomUpdate />
+            </Suspense>
+          </MainLayout>
+        }
+      />
+
+      {routesPagesApi.map((route) => (
+        <Route
+          key={route}
+          path={route}
+          element={
+            <MainLayout
+              Header={HeaderLightLink}
+              direction="column"
+              footer={<Footer />}
+              contentBoxProps={{
+                pad: { horizontal: 'medium', vertical: 'small' },
+              }}
+            >
+              <Suspense
+                fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
+              >
+                <PagesApi />
+              </Suspense>
+            </MainLayout>
+          }
+        />
+      ))}
+
+      <Route
+        path="*"
+        element={
           <Suspense
             fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
           >
-            <ContentsRouter />
+            <AuthRouter />
           </Suspense>
-        </MainLayout>
-      </Route>
-
-      <Route path={routesPagesApi} exact>
-        <MainLayout
-          Header={HeaderLightLink}
-          direction="column"
-          footer={<Footer />}
-          contentBoxProps={{ pad: { horizontal: 'medium', vertical: 'small' } }}
-        >
-          <Suspense
-            fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}
-          >
-            <PagesApi />
-          </Suspense>
-        </MainLayout>
-      </Route>
-
-      <Route>
-        <Suspense fallback={<ContentSpinner boxProps={{ height: '100vh' }} />}>
-          <AuthRouter />
-        </Suspense>
-      </Route>
-    </Switch>
+        }
+      />
+    </Routes>
   );
 };
 
 const AuthenticatedRoutes = () => {
   const routes = useRoutes();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { pathname } = useLocation();
   const { routesPagesApi, isPagesLoading } = usePagesApi();
 
@@ -129,60 +146,70 @@ const AuthenticatedRoutes = () => {
    */
   useEffect(() => {
     if (pathname === routes.LOGIN.path) {
-      history.replace(routes.HOMEPAGE.path);
+      navigate(routes.HOMEPAGE.path);
     }
-  }, [history, pathname, routes]);
+  }, [navigate, pathname, routes]);
 
   if (isPagesLoading) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;
   }
 
   return (
-    <Switch>
-      <Route>
-        <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
-          <Switch>
-            <Route path={routes.HOMEPAGE.path} exact>
-              <HomePage />
-            </Route>
+    <MainLayout Header={Header} menu={<Menu />} footer={<Footer />}>
+      <Routes>
+        <Route path={routes.HOMEPAGE.path} element={<HomePage />} />
 
-            <Route path={routes.PLAYLIST.path}>
-              <Suspense fallback={<ContentSpinner />}>
-                <PlaylistRouter />
-              </Suspense>
-            </Route>
+        <Route
+          path={`${routes.PLAYLIST.path}/*`}
+          element={
+            <Suspense fallback={<ContentSpinner />}>
+              <PlaylistRouter />
+            </Suspense>
+          }
+        />
 
-            <Route path={routes.CONTENTS.path}>
-              <Suspense fallback={<ContentSpinner />}>
-                <ContentsRouter />
-              </Suspense>
-            </Route>
+        <Route
+          path={`${routes.CONTENTS.path}/*`}
+          element={
+            <Suspense fallback={<ContentSpinner />}>
+              <ContentsRouter />
+            </Suspense>
+          }
+        />
 
-            <Route path={routes.PORTABILITY_REQUESTS.path} exact>
-              <Suspense fallback={<ContentSpinner />}>
-                <PortabilityRequestsRouteComponent />
-              </Suspense>
-            </Route>
+        <Route
+          path={`${routes.PORTABILITY_REQUESTS.path}/*`}
+          element={
+            <Suspense fallback={<ContentSpinner />}>
+              <PortabilityRequestsRouteComponent />
+            </Suspense>
+          }
+        />
 
-            <Route path={routes.PROFILE.path}>
-              <Suspense fallback={<ContentSpinner />}>
-                <ProfileRouter />
-              </Suspense>
-            </Route>
+        <Route
+          path={`${routes.PROFILE.path}/*`}
+          element={
+            <Suspense fallback={<ContentSpinner />}>
+              <ProfileRouter />
+            </Suspense>
+          }
+        />
 
-            <Route path={routesPagesApi}>
+        {routesPagesApi.map((route) => (
+          <Route
+            key={route}
+            path={route}
+            element={
               <Suspense fallback={<ContentSpinner />}>
                 <PagesApi />
               </Suspense>
-            </Route>
+            }
+          />
+        ))}
 
-            <Route>
-              <Text404 />
-            </Route>
-          </Switch>
-        </MainLayout>
-      </Route>
-    </Switch>
+        <Route path="*" element={<Text404 />} />
+      </Routes>
+    </MainLayout>
   );
 };
 
