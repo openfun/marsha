@@ -499,3 +499,4 @@ def delete_mediapackage_channel(channel_id):
         deleted_endpoints.append(origin_endpoint.get("Id"))
     mediapackage_client.delete_channel(Id=channel_id)
     return deleted_endpoints
+ 
