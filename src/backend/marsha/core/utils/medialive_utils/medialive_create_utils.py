@@ -1,37 +1,18 @@
 """Utils to create MediaLive configuration."""
-import datetime
 import json
 import os
 
 from django.conf import settings
 
-import boto3
-from botocore.exceptions import WaiterError
 import requests
-from sentry_sdk import capture_exception
 
 from marsha.core.defaults import PROCESSING
-from marsha.core.serializers import VideoId3TagsSerializer
+
+from .medialive_client_utils import medialive_client, mediapackage_client, ssm_client
 
 
 class ManifestMissingException(Exception):
     """Exception used when a mediapackage manifest is missing."""
-
-
-aws_credentials = {
-    "aws_access_key_id": settings.AWS_ACCESS_KEY_ID,
-    "aws_secret_access_key": settings.AWS_SECRET_ACCESS_KEY,
-    "region_name": settings.AWS_S3_REGION_NAME,
-}
-
-# Configure medialive client
-medialive_client = boto3.client("medialive", **aws_credentials)
-
-# Configure mediapackage client
-mediapackage_client = boto3.client("mediapackage", **aws_credentials)
-
-# Configure SSM client
-ssm_client = boto3.client("ssm", **aws_credentials)
 
 
 def create_mediapackage_channel(key):
@@ -301,48 +282,6 @@ def wait_medialive_channel_is_created(channel_id):
     )
 
 
-def start_live_channel(channel_id):
-    """Start an existing medialive channel."""
-    medialive_client.start_channel(ChannelId=channel_id)
-
-
-def stop_live_channel(channel_id):
-    """Stop an existing medialive channel."""
-    medialive_client.stop_channel(ChannelId=channel_id)
-
-
-def update_id3_tags(video):
-    """Update id3 tags to an existing medialive channel."""
-    if (
-        video.live_info is None
-        or video.live_info.get("medialive") is None
-        or video.get_medialive_channel() is None
-        or not video.is_live
-    ):
-        return
-
-    channel_id = video.get_medialive_channel().get("id")
-    serialized_id3_video = VideoId3TagsSerializer(video)
-    medialive_client.batch_update_schedule(
-        ChannelId=channel_id,
-        Creates={
-            "ScheduleActions": [
-                {
-                    "ActionName": datetime.datetime.now().isoformat(),
-                    "ScheduleActionStartSettings": {
-                        "ImmediateModeScheduleActionStartSettings": {}
-                    },
-                    "ScheduleActionSettings": {
-                        "HlsId3SegmentTaggingSettings": {
-                            "Tag": json.dumps({"video": serialized_id3_video.data})
-                        }
-                    },
-                }
-            ]
-        },
-    )
-
-
 def create_mediapackage_harvest_job(video):
     """Create a mediapackage harvest job."""
     request = requests.get(
@@ -382,121 +321,3 @@ def create_mediapackage_harvest_job(video):
         processing_slices.append(recording_slice)
     video.recording_slices = processing_slices
     video.save()
-
-
-def delete_aws_element_stack(video):
-    """Delete all AWS elemental.
-
-    Instances used:
-        - medialive input and channel
-    """
-    # Medialive
-    # First delete the channel
-    medialive_client.delete_channel(ChannelId=video.get_medialive_channel().get("id"))
-
-    # Once channel deleted we have to wait until input is detached
-    input_waiter = medialive_client.get_waiter("input_detached")
-    medialive_input_id = video.get_medialive_input().get("id")
-    try:
-        input_waiter.wait(
-            InputId=medialive_input_id,
-            WaiterConfig={
-                "Delay": settings.AWS_MEDIALIVE_INPUT_WAITER_DELAY,
-                "MaxAttempts": settings.AWS_MEDIALIVE_INPUT_WAITER_MAX_ATTEMPTS,
-            },
-        )
-        medialive_client.delete_input(InputId=medialive_input_id)
-    except WaiterError as exception:
-        capture_exception(exception)
-
-
-def _get_items(  # nosec
-    get_items, items_key, params=None, next_token=None, next_token_key="NextToken"
-):
-    """
-    Recursive generic function call which concatenates results.
-
-    Returns a list of items from the same items_key in response.
-    If response contains a next token, get_items is called again, and items are concatenated.
-
-    Parameters
-    ----------
-    get_items : function
-        function that returns items which may return a next token
-    items_key : string
-        key containing items
-    params : dict
-        params passed to get_items function
-    next_token : string
-        token returned by first get_items call
-    next_token_key : string
-        key from get_items response that may contain a next_token
-
-    Returns
-    -------
-    list
-        list of items returned by recursive get_items calls
-    """
-    if not params:
-        params = {}
-
-    if next_token:
-        params[next_token_key] = next_token
-
-    response = get_items(**params)
-    items = response.get(items_key)
-    next_token = response.get(next_token_key)
-
-    if next_token:
-        items.extend(
-            _get_items(get_items, items_key, params, next_token, next_token_key)
-        )
-    return items
-
-
-def list_mediapackage_channels():
-    """List all mediapackage channels."""
-    return _get_items(mediapackage_client.list_channels, items_key="Channels")
-
-
-def list_mediapackage_channel_harvest_jobs(channel_id):
-    """List all harvest jobs for a mediapackage channel."""
-    return _get_items(
-        mediapackage_client.list_harvest_jobs,
-        items_key="HarvestJobs",
-        params={"IncludeChannelId": channel_id},
-    )
-
-
-def list_mediapackage_channel_origin_endpoints(channel_id):
-    """List all origin endpoints for a mediapackage channel."""
-    return _get_items(
-        mediapackage_client.list_origin_endpoints,
-        items_key="OriginEndpoints",
-        params={"ChannelId": channel_id},
-    )
-
-
-def list_medialive_channels():
-    """List all medialive channels."""
-    return _get_items(medialive_client.list_channels, items_key="Channels")
-
-
-def list_indexed_medialive_channels():
-    """List and index all medialive channels by their name."""
-    return {
-        medialive_channel.get("Name"): medialive_channel
-        for medialive_channel in list_medialive_channels()
-    }
-
-
-def delete_mediapackage_channel(channel_id):
-    """Delete a mediapackage channel and related enpoints."""
-    origin_endpoints = list_mediapackage_channel_origin_endpoints(channel_id=channel_id)
-    deleted_endpoints = []
-    for origin_endpoint in origin_endpoints:
-        mediapackage_client.delete_origin_endpoint(Id=origin_endpoint.get("Id"))
-        deleted_endpoints.append(origin_endpoint.get("Id"))
-    mediapackage_client.delete_channel(Id=channel_id)
-    return deleted_endpoints
- 

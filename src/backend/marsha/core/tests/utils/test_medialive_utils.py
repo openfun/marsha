@@ -259,7 +259,7 @@ class MediaLiveUtilsTestCase(TestCase):
         with Stubber(
             medialive_utils.medialive_client
         ) as medialive_stubber, mock.patch.object(
-            medialive_utils,
+            medialive_utils.medialive_create_utils,
             "get_or_create_input_security_group",
             return_value="security_group_1",
         ):
@@ -658,11 +658,11 @@ class MediaLiveUtilsTestCase(TestCase):
         key = "video-key"
 
         with mock.patch.object(
-            medialive_utils, "create_mediapackage_channel"
+            medialive_utils.medialive_create_utils, "create_mediapackage_channel"
         ) as mock_mediapackage_channel, mock.patch.object(
-            medialive_utils, "create_medialive_input"
+            medialive_utils.medialive_create_utils, "create_medialive_input"
         ) as mock_medialive_input, mock.patch.object(
-            medialive_utils, "create_medialive_channel"
+            medialive_utils.medialive_create_utils, "create_medialive_channel"
         ) as mock_medialive_channel:
             mock_mediapackage_channel.return_value = [
                 {
@@ -1122,7 +1122,7 @@ class MediaLiveUtilsTestCase(TestCase):
         with Stubber(
             medialive_utils.medialive_client
         ) as medialive_stubber, mock.patch.object(
-            medialive_utils, "capture_exception"
+            medialive_utils.medialive_delete_utils, "capture_exception"
         ) as mock_capture_exception:
             medialive_stubber.add_response(
                 "delete_channel",
