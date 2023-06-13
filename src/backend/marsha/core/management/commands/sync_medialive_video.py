@@ -5,7 +5,11 @@ from django.utils import timezone
 
 from marsha.core.defaults import IDLE, RUNNING, STOPPED
 from marsha.core.models import Video
-from marsha.core.utils.medialive_utils import list_medialive_channels, update_id3_tags
+from marsha.core.utils.medialive_utils import (
+    delete_medialive_stack,
+    list_medialive_channels,
+    update_id3_tags,
+)
 from marsha.core.utils.time_utils import to_timestamp
 
 
@@ -85,17 +89,24 @@ class Command(BaseCommand):
             # the channel name contains the environment, the primary key and the created_at
             # stamp. Here we want to use the primary key
             _environment, live_pk, _stamp = medialive_channel["Name"].split("_")
-            live = Video.objects.get(pk=live_pk)
-            self.stdout.write(f"Checking video {live.id}")
-            channel_state = medialive_channel.get("State").casefold()
+            try:
+                live = Video.objects.get(pk=live_pk)
+                self.stdout.write(f"Checking video {live.id}")
+                channel_state = medialive_channel.get("State").casefold()
 
-            # If the live state in not sync with media channel state,
-            # we manually update to avoid soft lock
-            live_state = live.live_state.casefold()
-            if not self.is_channel_sync_with_video(live_state, channel_state):
+                # If the live state in not sync with media channel state,
+                # we manually update to avoid soft lock
+                live_state = live.live_state.casefold()
+                if not self.is_channel_sync_with_video(live_state, channel_state):
+                    self.stdout.write(
+                        f"""Video {live.id} not sync: (video) """
+                        f"""{live_state} != {channel_state} (medialive)"""
+                    )
+                    self.update_video_state(live, channel_state)
+            except Video.DoesNotExist:
+                # live exists in AWS but not our DB
                 self.stdout.write(
-                    f"""
-                    Video {live.id} not sync: (video) {live_state} != {channel_state} (medialive)
-                    """
+                    f"""Channel {medialive_channel["Name"]} is """
+                    f"""attached to a video {live_pk} that does not exist"""
                 )
-                self.update_video_state(live, channel_state)
+                delete_medialive_stack(medialive_channel, self.stdout)

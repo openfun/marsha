@@ -412,3 +412,41 @@ class TestSyncMedialiveVideoCommandTest(TestCase):
             self.assertEqual(live4.live_state, STOPPING)
 
         out.close()
+
+    def test_sync_medialive_when_a_video_does_not_exists(self):
+        """Medialive channels are sync with video and should not be updated."""
+
+        # Run command
+        out = StringIO()
+        with mock.patch(
+            "django.utils.timezone.now",
+            return_value=datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc),
+        ), mock.patch.object(
+            sync_medialive_video, "list_medialive_channels"
+        ) as list_medialive_channels_mock, mock.patch(
+            "marsha.core.management.commands.sync_medialive_video.delete_medialive_stack"
+        ) as delete_medialive_stack_mock:
+            live_to_delete = {
+                "Name": "dev-bar_99d60314-20f2-4847-84a4-d2f47bf7fe38_1629982356",
+                "Tags": {"environment": "test"},
+                "Id": "562345",
+                "State": "RUNNING",
+                "InputAttachments": [
+                    {
+                        "InputId": "876294",
+                    }
+                ],
+            }
+            list_medialive_channels_mock.return_value = [live_to_delete]
+
+            call_command("sync_medialive_video", stdout=out)
+
+            delete_medialive_stack_mock.assert_any_call(live_to_delete, mock.ANY)
+            self.assertIn(
+                "Channel dev-bar_99d60314-20f2-4847-84a4-d2f47bf7fe38_1629982356 is "
+                "attached to a video 99d60314-20f2-4847-84a4-d2f47bf7fe38 "
+                "that does not exist\n",
+                out.getvalue(),
+            )
+
+        out.close()

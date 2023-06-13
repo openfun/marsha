@@ -6,10 +6,8 @@ from django.core.management.base import BaseCommand
 from django.utils import timezone
 
 from marsha.core.utils.medialive_utils import (
-    delete_mediapackage_channel,
+    delete_medialive_stack,
     list_medialive_channels,
-    medialive_client,
-    mediapackage_client,
 )
 from marsha.core.utils.time_utils import to_datetime
 
@@ -42,33 +40,4 @@ class Command(BaseCommand):
                     created_at + timedelta(seconds=settings.NB_SECONDS_LIVING_DEV_STACK)
                     <= now
                 ):
-                    self.stdout.write(
-                        f"Cleaning stack with name {medialive_channel['Name']}"
-                    )
-
-                    if medialive_channel["State"] == "RUNNING":
-                        self.stdout.write(
-                            "Medialive channel is running, we must stop it first."
-                        )
-                        channel_waiter = medialive_client.get_waiter("channel_stopped")
-                        medialive_client.stop_channel(ChannelId=medialive_channel["Id"])
-                        channel_waiter.wait(ChannelId=medialive_channel["Id"])
-
-                    medialive_client.delete_channel(ChannelId=medialive_channel["Id"])
-                    input_waiter = medialive_client.get_waiter("input_detached")
-                    for medialive_input in medialive_channel["InputAttachments"]:
-                        input_waiter.wait(InputId=medialive_input["InputId"])
-                        medialive_client.delete_input(
-                            InputId=medialive_input["InputId"]
-                        )
-
-                    try:
-                        # the mediapackage channel can already be deleted when the dev stack
-                        # have ngrok up and running.
-                        delete_mediapackage_channel(medialive_channel["Name"])
-                    except mediapackage_client.exceptions.NotFoundException:
-                        pass
-
-                    self.stdout.write(
-                        f"Stack with name {medialive_channel['Name']} deleted"
-                    )
+                    delete_medialive_stack(medialive_channel, self.stdout)

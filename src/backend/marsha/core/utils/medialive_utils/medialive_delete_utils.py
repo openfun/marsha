@@ -43,3 +43,29 @@ def delete_mediapackage_channel(channel_id):
         deleted_endpoints.append(origin_endpoint.get("Id"))
     mediapackage_client.delete_channel(Id=channel_id)
     return deleted_endpoints
+
+
+def delete_medialive_stack(medialive_channel, stdout):
+    """Delete a medialive stack and related mediapackage."""
+    stdout.write(f"Cleaning stack with name {medialive_channel['Name']}")
+
+    if medialive_channel["State"].casefold() == "running":
+        stdout.write("Medialive channel is running, we must stop it first.")
+        channel_waiter = medialive_client.get_waiter("channel_stopped")
+        medialive_client.stop_channel(ChannelId=medialive_channel["Id"])
+        channel_waiter.wait(ChannelId=medialive_channel["Id"])
+
+    medialive_client.delete_channel(ChannelId=medialive_channel["Id"])
+    input_waiter = medialive_client.get_waiter("input_detached")
+    for medialive_input in medialive_channel["InputAttachments"]:
+        input_waiter.wait(InputId=medialive_input["InputId"])
+        medialive_client.delete_input(InputId=medialive_input["InputId"])
+
+    try:
+        # the mediapackage channel can already be deleted when the dev stack
+        # have ngrok up and running.
+        delete_mediapackage_channel(medialive_channel["Name"])
+    except mediapackage_client.exceptions.NotFoundException:
+        pass
+
+    stdout.write(f"Stack with name {medialive_channel['Name']} deleted")

@@ -37,6 +37,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Blacklist the refresh token on the frontend side (#2265)
 - Legale pages not accessible from url (#2266)
 - Remove old svg from the back to the front application (#1485)
+- Sync medialive command deletes medialive stack when video not found 
 
 ### Changed
 
