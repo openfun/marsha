@@ -1,4 +1,10 @@
-import { AnonymousUser, useCurrentUser, useJwt } from 'lib-components';
+import {
+  AnonymousUser,
+  decodeJwt,
+  report,
+  useCurrentUser,
+  useJwt,
+} from 'lib-components';
 import { useEffect, useState } from 'react';
 import { useHistory, useLocation, useRouteMatch } from 'react-router-dom';
 
@@ -6,6 +12,7 @@ import { useRoutes } from 'routes/useRoutes';
 
 import { getCurrentUser } from '../api/getUserData';
 import { validateChallenge } from '../api/validateChallenge';
+import { validateClassroomInviteToken } from '../api/validateClassroomInviteToken';
 
 const QUERY_PARAMS_CHALLENGE_TOKEN_NAME = 'token';
 
@@ -13,8 +20,9 @@ export const useAuthenticator = () => {
   const routes = useRoutes();
   const match = useRouteMatch(
     routes.CONTENTS.subRoutes?.CLASSROOM?.subRoutes?.INVITE.path || '',
-  ) as { params?: { inviteId?: string } } | null;
+  ) as { params?: { classroomId?: string; inviteId?: string } } | null;
   const inviteId = match?.params?.inviteId;
+  const classroomId = match?.params?.classroomId;
 
   const history = useHistory();
   const { search } = useLocation();
@@ -33,11 +41,36 @@ export const useAuthenticator = () => {
   const [isLoading, setIsLoading] = useState(!isAuthenticated);
 
   useEffect(() => {
-    if (inviteId) {
+    if (!inviteId) {
+      return;
+    }
+    const fetchInvite = async (classroomId: string, inviteId: string) => {
+      try {
+        const response = await validateClassroomInviteToken(
+          classroomId,
+          inviteId,
+        );
+        setJwt(response.access_token);
+        setIsLoading(false);
+      } catch (error) {
+        report(error);
+      }
+    };
+
+    try {
+      // First try if it's a legacy inviteId. A legacy inviteId is a valid access token
+      // If decoding it is possible then it means we have a legacy inviteId and we can stop here.
+      // This try catch is subject to be removed in few months when all legacy inviteId will be
+      // expired.
+      decodeJwt(inviteId);
       setJwt(inviteId);
       setIsLoading(false);
+    } catch (error) {
+      // Otherwise, it's probably a new inviteId store in the classroom model.
+      // We have to test it by fetching the classroom invite endpoint.
+      classroomId && fetchInvite(classroomId, inviteId);
     }
-  }, [inviteId, setJwt, setIsAuthenticated, setIsLoading]);
+  }, [inviteId, classroomId, setJwt, setIsLoading]);
 
   /**
    * This useEffect is used when we want to log an anonymous user
