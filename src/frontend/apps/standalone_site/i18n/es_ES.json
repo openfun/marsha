@@ -1,4 +1,24 @@
 {
+  "Contents.Classroom.routes.menuContentsClassroomsLabel": {
+    "description": "Label for the Classroom link in the content navigation menu",
+    "message": "Classrooms"
+  },
+  "Contents.Live.routes.menuContentsLivesLabel": {
+    "description": "Label for the webinars link in the content navigation menu",
+    "message": "Webinars"
+  },
+  "Contents.Video.routes.menuContentsVideosLabel": {
+    "description": "Label for the video link in the content navigation menu",
+    "message": "Videos"
+  },
+  "Contents.useContentRoutes.menuMyContentsLabel": {
+    "description": "Label for the MyContents link in the main navigation menu",
+    "message": "My Contents"
+  },
+  "cfeatures.Contents.features.Video.Manage.confirmDeleteVideoTitle": {
+    "description": "Title of the widget used for delete video confirmation.",
+    "message": "Confirm delete {item_count, plural, one {# video} other {# videos}}"
+  },
   "components.ManageAPIState.Error": {
     "description": "Text when there is an error.",
     "message": "Sorry, an error has occurred."
@@ -239,13 +259,45 @@
     "description": "Label for welcome text in classroom creation form.",
     "message": "Welcome text"
   },
-  "features.Contents.features.ClassRooms.Create.ClassroomTitle": {
+  "features.Contents.features.ClassRooms.Manage.CancelSelectionLabel": {
+    "description": "Button label to cancel classroom selection.",
+    "message": "Cancel"
+  },
+  "features.Contents.features.ClassRooms.Manage.ClassroomTitle": {
     "description": "Classrooms title",
     "message": "Classrooms"
   },
-  "features.Contents.features.ClassRooms.Create.CreateClassroomLabel": {
-    "description": "Text heading create classroom.",
+  "features.Contents.features.ClassRooms.Manage.CreateClassroomLabel": {
+    "description": "Button label to select classrooms",
     "message": "Create Classroom"
+  },
+  "features.Contents.features.ClassRooms.Manage.DeleteButtonSingularLabel": {
+    "description": "Button label to delete single classroom.",
+    "message": "Delete {item_count, plural, =0 {0 classroom} one {# classroom} other {# classrooms}}"
+  },
+  "features.Contents.features.ClassRooms.Manage.SelectButtonLabel": {
+    "description": "Text heading select classrooms.",
+    "message": "Select"
+  },
+  "features.Contents.features.ClassRooms.Manage.classroomsDeleteError": {
+    "description": "Text of the classroom delete error toast.",
+    "message": "Failed to delete {item_count, plural, one {# classroom} other {# classrooms}}"
+  },
+  "features.Contents.features.ClassRooms.Manage.classroomsDeleteModalTitle": {
+    "description": "Title of the classroom delete modal.",
+    "message": "Delete {item_count, plural, one {# classroom} other {# classrooms}}"
+  },
+  "features.Contents.features.ClassRooms.Manage.classroomsDeleteSuccess": {
+    "description": "Text of the classroom delete confirmation toast.",
+    "message": "{item_count, plural, one {# classroom} other {# classrooms}} successfully deleted"
+  },
+  "features.Contents.features.ClassRooms.Manage.confirmDeleteClassroomsText": {
+    "description": "Text of the widget used for classroom delete confirmation.",
+    "message": "Are you sure you want to delete {item_count, plural, one {# classroom} other {# classrooms}} ? This action is irreversible."
+  },
+  "features.Contents.features.ClassRooms.Manage.confirmDeleteClassroomsTitle": {
+    "description": "Title of the widget used for classroom delete confirmation.",
+    "message": "Confirm delete {item_count, plural, one {# classroom} other {# classrooms}}"
   },
   "features.Contents.features.ClassRooms.NoClassroom": {
     "description": "Text when there is no classroom to display.",
@@ -291,14 +343,6 @@
     "description": "Text when there is no video to display.",
     "message": "There is no video to display."
   },
-  "features.Contents.features.Video.Create.CreateVideoLabel": {
-    "description": "Text heading create video.",
-    "message": "Create Video"
-  },
-  "features.Contents.features.Video.Create.VideoTitle": {
-    "description": "Videos title",
-    "message": "Videos"
-  },
   "features.Contents.features.Video.Dashboard.404": {
     "description": "Text when the video id is not found in the backend.",
     "message": "We don't find the video you are looking for."
@@ -306,6 +350,42 @@
   "features.Contents.features.Video.Dashboard.NoVideo": {
     "description": "Text when there is no video to display.",
     "message": "There is no video to display."
+  },
+  "features.Contents.features.Video.Manage.CancelSelectionLabel": {
+    "description": "Button label to cancel video selection.",
+    "message": "Cancel"
+  },
+  "features.Contents.features.Video.Manage.CreateVideoLabel": {
+    "description": "Text heading create video.",
+    "message": "Create Video"
+  },
+  "features.Contents.features.Video.Manage.DeleteButtonSingularLabel": {
+    "description": "Button label to delete single video.",
+    "message": "Delete {item_count, plural, =0 {0 video} one {# video} other {# videos}}"
+  },
+  "features.Contents.features.Video.Manage.SelectButtonLabel": {
+    "description": "Button label to select videos.",
+    "message": "Select"
+  },
+  "features.Contents.features.Video.Manage.VideoTitle": {
+    "description": "Videos title",
+    "message": "Videos"
+  },
+  "features.Contents.features.Video.Manage.confirmDeleteVideoText": {
+    "description": "Text of the widget used for delete video confirmation.",
+    "message": "Are you sure you want to delete {item_count, plural, one {# video} other {# videos}} ? This action is irreversible."
+  },
+  "features.Contents.features.Video.Manage.videoDeleteError": {
+    "description": "Text of the delete video error toast.",
+    "message": "Failed to delete {item_count, plural, =0 {0 video} one {# video} other {# videos}}"
+  },
+  "features.Contents.features.Video.Manage.videoDeleteModalTitle": {
+    "description": "Title of the delete video modal.",
+    "message": "Delete {item_count, plural, one {# video} other {# videos}}"
+  },
+  "features.Contents.features.Video.Manage.videoDeleteSuccess": {
+    "description": "Text of the delete video confirmation toast.",
+    "message": "{item_count, plural, =0 {0 video} one {# video} other {# videos}} successfully deleted"
   },
   "features.Contents.features.Video.VideoCreateForm.Error": {
     "description": "Text when there is an error.",
@@ -335,13 +415,45 @@
     "description": "My contents page, my videos title",
     "message": "My Videos"
   },
-  "features.Contents.features.Webinar.Create.CreateWebinarLabel": {
+  "features.Contents.features.Webinar.Manage.CancelSelectionLabel": {
+    "description": "Button label to cancel webinar selection.",
+    "message": "Cancel"
+  },
+  "features.Contents.features.Webinar.Manage.CreateWebinarLabel": {
     "description": "Text heading create webinar.",
     "message": "Create Webinar"
   },
-  "features.Contents.features.Webinar.Create.WebinarTitle": {
+  "features.Contents.features.Webinar.Manage.DeleteButtonSingularLabel": {
+    "description": "Button label to delete webinar.",
+    "message": "Delete {item_count, plural, =0 {0 webinar} one {# webinar} other {# webinars}}"
+  },
+  "features.Contents.features.Webinar.Manage.SelectButtonLabel": {
+    "description": "Button label to select webinars.",
+    "message": "Select"
+  },
+  "features.Contents.features.Webinar.Manage.WebinarTitle": {
     "description": "Webinars title",
     "message": "Webinars"
+  },
+  "features.Contents.features.Webinar.Manage.confirmDeleteWebinarsText": {
+    "description": "Text of the widget used for webinar delete confirmation.",
+    "message": "Are you sure you want to delete {item_count, plural, one {# webinar} other {# webinars}} ? This action is irreversible."
+  },
+  "features.Contents.features.Webinar.Manage.confirmDeleteWebinarsTitle": {
+    "description": "Title of the widget used for webinar delete confirmation.",
+    "message": "Confirm delete {item_count, plural, =0 {0 webinar} one {# webinar} other {# webinars}}"
+  },
+  "features.Contents.features.Webinar.Manage.webinarDeleteModalTitle": {
+    "description": "Title of the webinar delete modal.",
+    "message": "Delete {item_count, plural, one {# webinar} other {# webinars}}"
+  },
+  "features.Contents.features.Webinar.Manage.webinarsDeleteError": {
+    "description": "Text of the webinar delete error toast.",
+    "message": "Failed to delete {item_count, plural, one {# webinar} other {# webinars}}"
+  },
+  "features.Contents.features.Webinar.Manage.webinarsDeleteSuccess": {
+    "description": "Text of the webinar delete confirmation toast.",
+    "message": "{item_count, plural, one {# webinar} other {# webinars}} successfully deleted"
   },
   "features.Header.iconTitle": {
     "description": "Menu user icon title.",
@@ -675,26 +787,6 @@
     "description": "Meta title website",
     "message": "Marsha"
   },
-  "routes.routes.menuContentsClassroomsCreateLabel": {
-    "description": "Label for the Create Classrooms link",
-    "message": "Create Classroom"
-  },
-  "routes.routes.menuContentsClassroomsLabel": {
-    "description": "Label for the Classroom link in the content navigation menu",
-    "message": "Classrooms"
-  },
-  "routes.routes.menuContentsLessonsLabel": {
-    "description": "Label for the Lessons link in the content navigation menu",
-    "message": "Lessons"
-  },
-  "routes.routes.menuContentsLivesLabel": {
-    "description": "Label for the webinars link in the content navigation menu",
-    "message": "Webinars"
-  },
-  "routes.routes.menuContentsVideosLabel": {
-    "description": "Label for the video link in the content navigation menu",
-    "message": "Videos"
-  },
   "routes.routes.menuFavoritesLabel": {
     "description": "Label for the favorites link in the main navigation menu",
     "message": "Favorites"
@@ -702,10 +794,6 @@
   "routes.routes.menuHomePageLabel": {
     "description": "Label for the homepage link in the main navigation menu",
     "message": "Dashboard"
-  },
-  "routes.routes.menuMyContentsLabel": {
-    "description": "Label for the MyContents link in the main navigation menu",
-    "message": "My Contents"
   },
   "routes.routes.menuMyOrganizationsLabel": {
     "description": "Label for the My Organizations link in the main navigation menu",
@@ -718,5 +806,8 @@
   "routes.routes.menuPlaylistLabel": {
     "description": "Label for the My playlists link in the main navigation menu",
     "message": "My Playlists"
+  },
+  "test": {
+    "message": "My test"
   }
 }
