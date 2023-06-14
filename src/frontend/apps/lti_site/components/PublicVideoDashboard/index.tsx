@@ -1,7 +1,8 @@
 import {
+  builderFullScreenErrorRoute,
   checkToken,
   decodeJwt,
-  FULL_SCREEN_ERROR_ROUTE,
+  ErrorComponents,
   uploadState,
   useJwt,
   useVideo,
@@ -14,8 +15,8 @@ import {
   LiveStudentDashboard,
   VODStudentDashboard,
 } from 'lib-video';
-import React, { useMemo } from 'react';
-import { Redirect } from 'react-router-dom';
+import { useMemo } from 'react';
+import { Navigate } from 'react-router-dom';
 
 interface PublicVideoDashboardProps {
   video: Video;
@@ -51,7 +52,11 @@ const PublicVideoDashboard = ({
   }
 
   if (video.upload_state === uploadState.DELETED) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+    return (
+      <Navigate
+        to={builderFullScreenErrorRoute(ErrorComponents.videoDeleted)}
+      />
+    );
   }
 
   return (

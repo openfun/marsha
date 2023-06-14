@@ -14,7 +14,7 @@ import {
   playlistMockFactory,
   videoMockFactory,
 } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { SelectContentTabProps } from './SelectContentTabs';
 import { buildContentItems } from './utils';

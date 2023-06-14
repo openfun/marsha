@@ -1,21 +1,22 @@
-import React, { Suspense } from 'react';
-import { MemoryRouter, Route } from 'react-router-dom';
-import {
-  ErrorComponentsProps,
-  FullScreenError,
-  FULL_SCREEN_ERROR_ROUTE,
-  Loader,
-  useAppConfig,
-} from 'lib-components';
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import { lazyImport } from 'lib-common';
+import {
+  ErrorComponents,
+  FULL_SCREEN_ERROR_ROUTE,
+  FullScreenError,
+  Loader,
+  WithParams,
+  useAppConfig,
+} from 'lib-components';
+import React, { Fragment, Suspense } from 'react';
+import { MemoryRouter, Route, Routes as RoutesDom } from 'react-router-dom';
 
 import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
+import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
 const { DashboardClassroom } = lazyImport(() => import('lib-classroom'));
 
@@ -31,37 +32,34 @@ const Routes = () => {
   return (
     <Wrappers>
       <Suspense fallback={<Loader />}>
-        <MemoryRouter>
+        <RoutesDom>
           <Route
-            exact
-            path={DASHBOARD_CLASSROOM_ROUTE()}
-            render={() => (
+            path={DASHBOARD_CLASSROOM_ROUTE}
+            element={
               <DashboardClassroom
                 classroomId={classroomAppData.classroom?.id || ''}
               />
-            )}
+            }
           />
 
           <Route
-            exact
-            path={FULL_SCREEN_ERROR_ROUTE()}
-            render={({ match }) => (
-              <FullScreenError
-                code={match.params.code as ErrorComponentsProps['code']}
-              />
-            )}
+            path={FULL_SCREEN_ERROR_ROUTE.default}
+            element={
+              <WithParams>
+                {({ code }) => (
+                  <FullScreenError code={code as ErrorComponents} />
+                )}
+              </WithParams>
+            }
           />
 
           <Route
-            exact
-            path={RESOURCE_PORTABILITY_REQUEST_ROUTE()}
-            render={() => (
-              <PortabilityRequest portability={appData.portability!} />
-            )}
+            path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
+            element={<PortabilityRequest portability={appData.portability!} />}
           />
 
-          <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
-        </MemoryRouter>
+          <Route path={REDIRECT_ON_LOAD_ROUTE} element={<RedirectOnLoad />} />
+        </RoutesDom>
       </Suspense>
     </Wrappers>
   );

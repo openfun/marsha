@@ -1,18 +1,18 @@
 import {
-  useCurrentResourceContext,
-  FULL_SCREEN_ERROR_ROUTE,
+  ErrorComponents,
+  Video,
+  builderDashboardRoute,
+  builderFullScreenErrorRoute,
   modelName,
   uploadState,
-  Video,
+  useCurrentResourceContext,
 } from 'lib-components';
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import {
-  PLAYER_ROUTE,
   VideoWizzardSubPage,
-  VIDEO_WIZARD_ROUTE,
+  builderPlayerRoute,
+  builderVideoWizzardRoute,
 } from 'components/routes';
 
 interface RedirectVideoProps {
@@ -24,7 +24,11 @@ export const RedirectVideo = ({ video }: RedirectVideoProps) => {
 
   if (video.upload_state === uploadState.DELETED) {
     // A deleted video cannot be used
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('videoDeleted')} />;
+    return (
+      <Navigate
+        to={builderFullScreenErrorRoute(ErrorComponents.videoDeleted)}
+      />
+    );
   }
 
   if (
@@ -34,15 +38,14 @@ export const RedirectVideo = ({ video }: RedirectVideoProps) => {
     context.permissions.can_update
   ) {
     //  teacher can access live dashboard
-    return <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />;
+    return <Navigate to={builderDashboardRoute(modelName.VIDEOS)} />;
   }
 
   if (context.permissions.can_update) {
     //  teacher access video wizzard
     return (
-      <Redirect
-        push
-        to={VIDEO_WIZARD_ROUTE(
+      <Navigate
+        to={builderVideoWizzardRoute(
           video.upload_state === uploadState.INITIALIZED
             ? VideoWizzardSubPage.createVideo
             : undefined,
@@ -52,15 +55,17 @@ export const RedirectVideo = ({ video }: RedirectVideoProps) => {
   }
 
   if (video.is_ready_to_show) {
-    return <Redirect push to={PLAYER_ROUTE(modelName.VIDEOS)} />;
+    return <Navigate to={builderPlayerRoute(modelName.VIDEOS)} />;
   }
 
   if (video.starting_at) {
     // user can register to the scheduled event
-    return <Redirect push to={PLAYER_ROUTE(modelName.VIDEOS)} />;
+    return <Navigate to={builderPlayerRoute(modelName.VIDEOS)} />;
   }
 
   // For safety default to the 404 view: this is for users without update permission
   // when the video is not live and not ready to show,
-  return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+  return (
+    <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+  );
 };

@@ -2,15 +2,15 @@ import { Button, Heading, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
+  Modal,
+  ModalButton,
   report,
   useCurrentResourceContext,
-  ModalButton,
-  Modal,
 } from 'lib-components';
 import { useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useDeleteClassroom } from '@lib-classroom/data/queries';
@@ -72,7 +72,7 @@ const StyledAnchorButton = styled(Button)`
 export const DeleteClassroom = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const classroom = useCurrentClassroom();
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const deleteClassroom = useDeleteClassroom({
@@ -80,7 +80,7 @@ export const DeleteClassroom = () => {
       toast.success(intl.formatMessage(messages.classroomDeleteSuccess), {
         position: 'bottom-center',
       });
-      history.goBack();
+      navigate(-1);
     },
     onError: (err: unknown) => {
       report(err);

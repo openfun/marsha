@@ -1,6 +1,6 @@
 import { Maybe } from 'lib-common';
-import React from 'react';
-import { MemoryRouter, Route, RouteProps, Switch } from 'react-router-dom';
+import { Fragment } from 'react';
+import { MemoryRouter, Route, RouteProps, Routes } from 'react-router-dom';
 
 const defaultWrapper = (routing: JSX.Element) => routing;
 
@@ -13,13 +13,12 @@ export const wrapInRouter = (
   wrapper: (routing: JSX.Element) => JSX.Element = defaultWrapper,
 ) => {
   const switchElement = (
-    <React.Fragment>
+    <Fragment>
       {header}
-      <Switch>
+      <Routes>
         {routes &&
           routes.map((routeProps) => (
             <Route
-              exact
               key={
                 Array.isArray(routeProps.path)
                   ? String(routeProps.path[0])
@@ -28,9 +27,9 @@ export const wrapInRouter = (
               {...routeProps}
             />
           ))}
-        <Route path={componentPath}>{Component}</Route>
-      </Switch>
-    </React.Fragment>
+        <Route path={componentPath} element={Component} />
+      </Routes>
+    </Fragment>
   );
   return (
     <MemoryRouter initialEntries={history || [componentPath]} initialIndex={0}>

@@ -12,12 +12,10 @@ import { MarkdownWizard } from '.';
 import { useJwt } from 'lib-components';
 import userEvent from '@testing-library/user-event';
 
-const mockHistoryPush = jest.fn();
+const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
-  useHistory: () => ({
-    push: mockHistoryPush,
-  }),
+  useNavigate: () => mockNavigate,
 }));
 
 jest.mock('lib-components', () => ({
@@ -70,14 +68,14 @@ describe('MarkdownWizard', () => {
     });
     expect(saveButton).toBeDisabled();
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: 'Enter title of your course here' }),
       'My title',
     );
     expect(saveButton).toBeEnabled();
-    userEvent.click(saveButton);
+    await userEvent.click(saveButton);
     await waitFor(() =>
-      expect(mockHistoryPush).toHaveBeenCalledWith(MARKDOWN_EDITOR_ROUTE()),
+      expect(mockNavigate).toHaveBeenCalledWith(MARKDOWN_EDITOR_ROUTE()),
     );
   });
 
@@ -108,12 +106,19 @@ describe('MarkdownWizard', () => {
       name: 'Create your course',
     });
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: 'Enter title of your course here' }),
       'Mon titre',
     );
-    userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
-    userEvent.click(saveButton);
+    await userEvent.click(
+      screen.getByRole('button', { name: /Select language/i }),
+    );
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
+    await userEvent.click(saveButton);
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith(MARKDOWN_EDITOR_ROUTE()),
+    );
   });
 });

@@ -2,7 +2,7 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt, uploadState } from 'lib-components';
 import React from 'react';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';
 

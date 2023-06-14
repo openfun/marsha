@@ -1,9 +1,8 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { render } from 'lib-tests';
-import React from 'react';
 
-import { FULL_SCREEN_ERROR_ROUTE } from '@lib-components/common/ErrorComponents/route';
+import { builderFullScreenErrorRoute } from '@lib-components/common/ErrorComponents/route';
 import { UploadManager } from '@lib-components/common/UploadManager';
 import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
 import { uploadFile } from '@lib-components/data/sideEffects/uploadFile';
@@ -11,6 +10,8 @@ import { getStoreResource } from '@lib-components/data/stores/generics';
 import { modelName } from '@lib-components/types/models';
 import { timedTextMode, uploadState } from '@lib-components/types/tracks';
 import { videoMockFactory } from '@lib-components/utils/tests/factories';
+
+import { ErrorComponents } from '../ErrorComponents';
 
 import { UploadForm } from '.';
 
@@ -137,8 +138,8 @@ describe('UploadForm', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(),
-            render: () => <span>dashboard</span>,
+            path: DASHBOARD_ROUTE.default,
+            element: <span>dashboard</span>,
           },
         ],
         wrapper: (routing: JSX.Element) => (
@@ -176,8 +177,8 @@ describe('UploadForm', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE('policy'),
-            render: () => <span>error policy</span>,
+            path: builderFullScreenErrorRoute(ErrorComponents.policy),
+            element: <span>error policy</span>,
           },
         ],
         wrapper: (routing: JSX.Element) => (
@@ -219,8 +220,8 @@ describe('UploadForm', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE('upload'),
-            render: () => <span>error upload</span>,
+            path: builderFullScreenErrorRoute(ErrorComponents.upload),
+            element: <span>error upload</span>,
           },
         ],
         wrapper: (routing: JSX.Element) => (

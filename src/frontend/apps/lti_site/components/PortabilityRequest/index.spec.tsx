@@ -3,7 +3,7 @@ import React from 'react';
 
 import { PortabilityConfigMockFactory, useJwt } from 'lib-components';
 
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 import { PortabilityRequest } from '.';
 import { act, cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';

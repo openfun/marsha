@@ -12,7 +12,7 @@ import {
 import { useAttendance } from 'lib-video';
 import React from 'react';
 
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { AppInitializer } from '.';
 
@@ -40,7 +40,9 @@ jest.mock('lib-components', () => ({
 
 describe('<AppInitializer />', () => {
   it('initializes stores before render content', async () => {
-    useSentry.setState({ setSentry: ()=> useSentry.setState({ isSentryReady: true }) });
+    useSentry.setState({
+      setSentry: () => useSentry.setState({ isSentryReady: true }),
+    });
 
     expect(useSentry.getState().isSentryReady).toEqual(false);
     expect(useVideo.getState().videos).toEqual({});

@@ -1,13 +1,13 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
 
 import {
+  FULL_SCREEN_ERROR_ROUTE,
   OrganizationAccessRole,
+  WithParams,
+  appState,
+  useAppConfig,
   useCurrentResourceContext,
   useJwt,
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
-  appState,
 } from 'lib-components';
 import {
   markdownDocumentMockFactory,
@@ -15,14 +15,14 @@ import {
 } from 'lib-markdown';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
-import { RedirectOnLoad } from '.';
 import {
   MARKDOWN_EDITOR_ROUTE,
   MARKDOWN_NOT_FOUND_ROUTE,
   MARKDOWN_VIEWER_ROUTE,
 } from 'lib-markdown';
+import { RedirectOnLoad } from '.';
 import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
 
 jest.mock('lib-components', () => ({
@@ -58,9 +58,11 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
@@ -80,7 +82,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_NOT_FOUND_ROUTE(),
-            render: () => <span>Feature disabled</span>,
+            element: <span>Feature disabled</span>,
           },
         ],
       },
@@ -108,7 +110,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_EDITOR_ROUTE(),
-            render: () => <span>Markdown editor</span>,
+            element: <span>Markdown editor</span>,
           },
         ],
       },
@@ -140,7 +142,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_WIZARD_ROUTE(),
-            render: () => <span>Markdown wizard</span>,
+            element: <span>Markdown wizard</span>,
           },
         ],
       },
@@ -177,7 +179,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_WIZARD_ROUTE(),
-            render: () => <span>Markdown wizard</span>,
+            element: <span>Markdown wizard</span>,
           },
         ],
       },
@@ -219,7 +221,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_EDITOR_ROUTE(),
-            render: () => <span>Markdown editor</span>,
+            element: <span>Markdown editor</span>,
           },
         ],
       },
@@ -246,7 +248,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_VIEWER_ROUTE(),
-            render: () => <span>Markdown viewer</span>,
+            element: <span>Markdown viewer</span>,
           },
         ],
       },
@@ -268,7 +270,7 @@ describe('<RedirectOnLoad />', () => {
         routes: [
           {
             path: MARKDOWN_NOT_FOUND_ROUTE(),
-            render: () => <span>Markdown not found</span>,
+            element: <span>Markdown not found</span>,
           },
         ],
       },
@@ -290,8 +292,8 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
-            render: () => <span>Portability request</span>,
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE,
+            element: <span>Portability request</span>,
           },
         ],
       },

@@ -1,16 +1,18 @@
-import React from 'react';
-
+import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import {
   FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
+  FullScreenError,
   appState,
+  useAppConfig,
+  WithParams,
 } from 'lib-components';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
+
+import { Fragment } from 'react';
 
 import { RedirectOnLoad } from '.';
-import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
@@ -35,16 +37,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('Error Component: lti');
+    expect(getByText('Error Component: lti')).toBeInTheDocument();
   });
 
   it('shows not found error when feature is disabled', () => {
@@ -56,9 +60,11 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
@@ -77,8 +83,8 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_CLASSROOM_ROUTE(),
-            render: () => <span>Dashboard</span>,
+            path: DASHBOARD_CLASSROOM_ROUTE,
+            element: <span>Dashboard</span>,
           },
         ],
       },
@@ -97,8 +103,8 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
-            render: () => <span>Portability request</span>,
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE,
+            element: <span>Portability request</span>,
           },
         ],
       },

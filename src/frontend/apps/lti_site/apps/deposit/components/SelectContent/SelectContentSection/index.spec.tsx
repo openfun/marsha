@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { SelectContentSection } from '.';
 

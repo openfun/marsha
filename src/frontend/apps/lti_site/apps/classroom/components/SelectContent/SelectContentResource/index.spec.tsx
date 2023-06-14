@@ -5,7 +5,7 @@ import React from 'react';
 
 import { classroomMockFactory } from 'lib-classroom';
 import { playlistMockFactory } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import SelectContentResource from '.';
 

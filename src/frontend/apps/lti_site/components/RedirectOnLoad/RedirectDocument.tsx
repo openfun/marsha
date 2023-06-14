@@ -1,14 +1,14 @@
 import {
-  useCurrentResourceContext,
-  FULL_SCREEN_ERROR_ROUTE,
-  modelName,
   Document,
+  ErrorComponents,
+  builderDashboardRoute,
+  builderFullScreenErrorRoute,
+  modelName,
+  useCurrentResourceContext,
 } from 'lib-components';
-import React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { builderPlayerRoute } from 'components/routes';
 
 interface RedirectDocumentProps {
   document: Document;
@@ -18,14 +18,16 @@ export const RedirectDocument = ({ document }: RedirectDocumentProps) => {
   const [context] = useCurrentResourceContext();
 
   if (document.is_ready_to_show) {
-    return <Redirect push to={PLAYER_ROUTE(modelName.DOCUMENTS)} />;
+    return <Navigate to={builderPlayerRoute(modelName.DOCUMENTS)} />;
   }
 
   if (context.permissions.can_update) {
-    return <Redirect push to={DASHBOARD_ROUTE(modelName.DOCUMENTS)} />;
+    return <Navigate to={builderDashboardRoute(modelName.DOCUMENTS)} />;
   }
 
   // For safety default to the 404 view: this is for users without update permission
   // when the document is not ready to show.
-  return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+  return (
+    <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+  );
 };

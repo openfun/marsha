@@ -1,15 +1,15 @@
 import { screen } from '@testing-library/react';
 import {
-  useCurrentResourceContext,
   FULL_SCREEN_ERROR_ROUTE,
-  modelName,
+  WithParams,
+  builderDashboardRoute,
   documentMockFactory,
+  modelName,
+  useCurrentResourceContext,
 } from 'lib-components';
-import React from 'react';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { PLAYER_ROUTE } from 'components/routes';
-import render from 'utils/tests/render';
+import { builderPlayerRoute } from 'components/routes';
+import { render } from 'lib-tests';
 
 import { RedirectDocument } from './RedirectDocument';
 
@@ -37,18 +37,20 @@ describe('RedirectDocument', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.DOCUMENTS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>document player</span>,
+            path: builderPlayerRoute(modelName.DOCUMENTS),
+            element: <span>document player</span>,
           },
         ],
       },
@@ -69,18 +71,20 @@ describe('RedirectDocument', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.DOCUMENTS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>document player</span>,
+            path: builderPlayerRoute(modelName.DOCUMENTS),
+            element: <span>document player</span>,
           },
         ],
       },
@@ -101,18 +105,20 @@ describe('RedirectDocument', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.DOCUMENTS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.DOCUMENTS),
-            render: () => <span>document player</span>,
+            path: builderPlayerRoute(modelName.DOCUMENTS),
+            element: <span>document player</span>,
           },
         ],
       },

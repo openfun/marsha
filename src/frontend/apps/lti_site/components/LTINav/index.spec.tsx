@@ -1,23 +1,23 @@
-import { fireEvent, screen } from '@testing-library/react';
-import { createMemoryHistory } from 'history';
+import { screen } from '@testing-library/react';
 import {
-  useCurrentResourceContext,
-  useMaintenance,
-  useAppConfig,
+  builderDashboardRoute,
+  documentMockFactory,
   modelName,
   uploadState,
-  documentMockFactory,
+  useAppConfig,
+  useCurrentResourceContext,
+  useMaintenance,
   videoMockFactory,
 } from 'lib-components';
-import React from 'react';
-import { Router } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { builderPlaylistRoute } from 'components/PlaylistPortability/route';
+import { builderPlayerRoute } from 'components/routes';
+import { render } from 'lib-tests';
 import { wrapInIntlProvider } from 'utils/tests/intl';
-import render from 'utils/tests/render';
 
+import userEvent from '@testing-library/user-event';
+import { Fragment } from 'react';
 import { LTINav } from '.';
 
 jest.mock('lib-components', () => ({
@@ -34,6 +34,12 @@ const mockedUseCurrentResourceContext =
     typeof useCurrentResourceContext
   >;
 
+export const LocationDisplay = () => {
+  const location = useLocation();
+
+  return <div data-testid="location-display">{location.pathname}</div>;
+};
+
 describe('<LTINav />', () => {
   beforeEach(() => {
     useMaintenance.setState(() => ({
@@ -46,8 +52,7 @@ describe('<LTINav />', () => {
   });
 
   describe('Video', () => {
-    it('navigates between routes when video is ready', () => {
-      const history = createMemoryHistory();
+    it('navigates between routes when video is ready', async () => {
       const video = videoMockFactory({
         upload_state: uploadState.READY,
       });
@@ -63,19 +68,26 @@ describe('<LTINav />', () => {
       ] as any);
 
       render(
-        <Router history={history}>
+        <Fragment>
           <LTINav object={video} />
-        </Router>,
+          <LocationDisplay />
+        </Fragment>,
       );
 
-      fireEvent.click(screen.getByRole('link', { name: /dashboard/i }));
-      expect(history.location.pathname).toBe(DASHBOARD_ROUTE(modelName.VIDEOS));
+      await userEvent.click(screen.getByRole('link', { name: /dashboard/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderDashboardRoute(modelName.VIDEOS),
+      );
 
-      fireEvent.click(screen.getByRole('link', { name: /preview/i }));
-      expect(history.location.pathname).toBe(PLAYER_ROUTE(modelName.VIDEOS));
+      await userEvent.click(screen.getByRole('link', { name: /preview/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderPlayerRoute(modelName.VIDEOS),
+      );
 
-      fireEvent.click(screen.getByRole('link', { name: /playlist/i }));
-      expect(history.location.pathname).toBe(PLAYLIST_ROUTE(modelName.VIDEOS));
+      await userEvent.click(screen.getByRole('link', { name: /playlist/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderPlaylistRoute(modelName.VIDEOS),
+      );
     });
 
     it('hides dashboard link when user is not permitted to update video', () => {
@@ -149,8 +161,7 @@ describe('<LTINav />', () => {
   });
 
   describe('Document', () => {
-    it('navigates between routes when document is ready.', () => {
-      const history = createMemoryHistory();
+    it('navigates between routes when document is ready.', async () => {
       const document = documentMockFactory({
         upload_state: uploadState.READY,
       });
@@ -167,23 +178,26 @@ describe('<LTINav />', () => {
 
       render(
         wrapInIntlProvider(
-          <Router history={history}>
+          <Fragment>
             <LTINav object={document} />
-          </Router>,
+            <LocationDisplay />
+          </Fragment>,
         ),
       );
 
-      fireEvent.click(screen.getByRole('link', { name: /dashboard/i }));
-      expect(history.location.pathname).toBe(
-        DASHBOARD_ROUTE(modelName.DOCUMENTS),
+      await userEvent.click(screen.getByRole('link', { name: /dashboard/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderDashboardRoute(modelName.DOCUMENTS),
       );
 
-      fireEvent.click(screen.getByRole('link', { name: /preview/i }));
-      expect(history.location.pathname).toBe(PLAYER_ROUTE(modelName.DOCUMENTS));
+      await userEvent.click(screen.getByRole('link', { name: /preview/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderPlayerRoute(modelName.DOCUMENTS),
+      );
 
-      fireEvent.click(screen.getByRole('link', { name: /playlist/i }));
-      expect(history.location.pathname).toBe(
-        PLAYLIST_ROUTE(modelName.DOCUMENTS),
+      await userEvent.click(screen.getByRole('link', { name: /playlist/i }));
+      expect(screen.getByTestId('location-display')).toHaveTextContent(
+        builderPlaylistRoute(modelName.DOCUMENTS),
       );
     });
 

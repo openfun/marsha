@@ -1,16 +1,14 @@
 import { Box } from 'grommet';
-import { withLink } from 'lib-components';
-import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { builderUploadFormRoute, withLink } from 'lib-components';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { PLAYER_ROUTE } from 'components/routes';
 import {
-  UPLOAD_FORM_ROUTE,
-  useUploadManager,
+  DashboardButton,
   Document,
   modelName,
   uploadState,
-  DashboardButton,
+  useUploadManager,
 } from 'lib-components';
 
 const DashboardButtonWithLink = withLink(DashboardButton);
@@ -67,13 +65,13 @@ export const DashboardDocumentPaneButtons = ({
           />
         }
         primary={!displayWatchBtn}
-        to={UPLOAD_FORM_ROUTE(modelName.DOCUMENTS, document.id)}
+        to={builderUploadFormRoute(modelName.DOCUMENTS, document.id)}
       />
       {displayWatchBtn && (
         <DashboardButtonWithLink
           label={<FormattedMessage {...messages.btnPlay} />}
           primary={displayWatchBtn}
-          to={PLAYER_ROUTE(modelName.DOCUMENTS)}
+          to={`/${PLAYER_ROUTE.base}/${PLAYER_ROUTE.documents}`}
         />
       )}
     </Box>

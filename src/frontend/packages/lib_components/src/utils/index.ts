@@ -9,6 +9,7 @@ export * from './localstorage';
 export * from './serviceWorker';
 export * from './system';
 export * from './tests/factories';
+export * from './router';
 export * from './truncateFilename';
 export * from './useFetchButton';
 export * from './useResizeBox';

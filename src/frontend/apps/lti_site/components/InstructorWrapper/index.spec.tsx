@@ -1,7 +1,7 @@
 import { useCurrentResourceContext, videoMockFactory } from 'lib-components';
 import React from 'react';
 
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { InstructorWrapper } from '.';
 

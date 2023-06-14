@@ -105,7 +105,7 @@ export const appendUtilsElement = (
             {wrapInRouter(
               <div data-testid="test-component-container">{element}</div>,
               options?.routerOptions?.routes,
-              options?.routerOptions?.componentPath || '/',
+              options?.routerOptions?.componentPath || '/*',
               options?.routerOptions?.history,
               options?.routerOptions?.header,
               options?.routerOptions?.wrapper,

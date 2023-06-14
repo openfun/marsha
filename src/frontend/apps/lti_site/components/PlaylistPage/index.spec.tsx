@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import { Loader, useAppConfig, modelName } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import PlaylistPage from '.';
 

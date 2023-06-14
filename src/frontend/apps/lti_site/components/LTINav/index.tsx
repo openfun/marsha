@@ -1,23 +1,22 @@
 import { Box, Nav } from 'grommet';
 import {
-  useCurrentResourceContext,
-  useMaintenance,
-  useVideo,
-  useDocument,
-  useAppConfig,
   Document,
+  Video,
+  builderDashboardRoute,
   modelName,
   uploadState,
-  Video,
+  useAppConfig,
+  useCurrentResourceContext,
+  useDocument,
+  useMaintenance,
+  useVideo,
 } from 'lib-components';
-import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import { NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { PLAYLIST_ROUTE } from 'components/PlaylistPortability/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { builderPlaylistRoute } from 'components/PlaylistPortability/route';
+import { builderPlayerRoute } from 'components/routes';
 
 const messages = defineMessages({
   linkDashboard: {
@@ -83,19 +82,19 @@ export const LTINav = ({ object: baseObject }: LTINavProps) => {
     <Box align="center" alignContent="center" pad="small">
       <Nav direction="row">
         {canAccessDashboard && (
-          <NavItem to={DASHBOARD_ROUTE(appData.modelName)}>
+          <NavItem to={builderDashboardRoute(appData.modelName)}>
             <FormattedMessage {...messages.linkDashboard} />
           </NavItem>
         )}
 
         {canAccessPreview && (
-          <NavItem to={PLAYER_ROUTE(appData.modelName)}>
+          <NavItem to={builderPlayerRoute(appData.modelName)}>
             <FormattedMessage {...messages.linkPreview} />
           </NavItem>
         )}
 
         {canAccessDashboard && (
-          <NavItem to={PLAYLIST_ROUTE(appData.modelName)}>
+          <NavItem to={builderPlaylistRoute(appData.modelName)}>
             <FormattedMessage {...messages.linkPlaylist} />
           </NavItem>
         )}
