@@ -239,6 +239,10 @@
     "description": "Label for asking username to join the classroom.",
     "message": "Veuillez saisir votre nom pour rejoindre la classe virtuelle"
   },
+  "component.DashboardClassroomAskUsername.studentConsent": {
+    "description": "Checkbox label for student consent to be recorded in classroom dashboard view.",
+    "message": "Acceptez-vous d'être enregistré ?"
+  },
   "component.DashboardClassroomForm.createClassroomFail": {
     "description": "Message when classroom creation failed.",
     "message": "Classe virtuelle non créée !"
@@ -283,6 +287,14 @@
     "description": "Label for link used to join a classroom.",
     "message": "Cliquez ici pour accéder à la classe virtuelle."
   },
+  "component.DashboardClassroomStudent.a11AddCalendar": {
+    "description": "Title on icon to click to add the event to my calendar",
+    "message": "Cliquez pour ajouter l'événement à votre calendrier"
+  },
+  "component.DashboardClassroomStudent.addCalendar": {
+    "description": "Title of the link to add this event to my calendar",
+    "message": "Ajouter à mon calendrier"
+  },
   "component.DashboardClassroomStudent.classroomEnded": {
     "description": "Message when classroom has ended.",
     "message": "La classe virtuelle est terminée."
@@ -295,6 +307,10 @@
     "description": "Message when classroom is started.",
     "message": "La classe virtuelle a démarré."
   },
+  "component.DashboardClassroomStudent.defaultDescription": {
+    "description": "Description to advertise a classroom in a ics file which has no description set yet.",
+    "message": "Venez nous rejoindre !"
+  },
   "component.DashboardClassroomStudent.joinClassroomLabel": {
     "description": "Label for joining classroom in instructor dashboard.",
     "message": "Rejoindre la classe virtuelle"
@@ -302,6 +318,10 @@
   "component.DashboardClassroomStudent.joinedAs": {
     "description": "Message when user has joined the classroom.",
     "message": "Vous avez rejoint la classe virtuelle en tant que {joinedAs}."
+  },
+  "component.DashboardClassroomStudentdefaultTitle": {
+    "description": "Title to advertise a classroom in a ics file which has no title set yet.",
+    "message": "Ne manquez pas la classe virtuelle !"
   },
   "component.DashboardCopyClipboard.ltiLinkCopiedSuccess": {
     "description": "Toast message when link copied to clipboard.",
@@ -454,6 +474,10 @@
   "component.MessageMetadatas.senderTitle": {
     "description": "A title describing the div where the sender's name is displayed",
     "message": "Nom de l'expéditeur du message"
+  },
+  "component.Recording.conversionDisabled": {
+    "description": "Message when VOD conversion is disabled.",
+    "message": "La conversion VOD est désactivée"
   },
   "component.Recording.convertVODLabel": {
     "description": "Label for convert to VOD button.",
@@ -727,6 +751,10 @@
     "description": "The label associated to the toggle button reponsible of live recording activation / deactivation.",
     "message": "Activer l'enregistrement"
   },
+  "component.ToolsAndApplications.recordingPurpose": {
+    "description": "Label for the recording purpose textarea.",
+    "message": "Objet de l'enregistrement"
+  },
   "component.ToolsAndApplications.title": {
     "description": "A title for the widget.",
     "message": "Outils et Applications"
@@ -970,6 +998,30 @@
   "components.DeleteClassroom.title": {
     "description": "Title of the widget used for deleting the classroom.",
     "message": "ZONE DE DANGER"
+  },
+  "components.DeleteClassroomRecording.classroomDeleteError": {
+    "description": "ext of the delete error toast..",
+    "message": "Échec de la suppression de l'enregistrement de la classe virtuelle"
+  },
+  "components.DeleteClassroomRecording.classroomDeleteSuccess": {
+    "description": "Text of the delete confirmation toast.",
+    "message": "Enregistrement de la classe virtuelle supprimée avec succès"
+  },
+  "components.DeleteClassroomRecording.confirmDeleteText": {
+    "description": "Text of the widget used for confirmation.",
+    "message": "Voulez-vous vraiment supprimer l'enregistrement de cette classe virtuelle ? Cette action est irréversible."
+  },
+  "components.DeleteClassroomRecording.confirmDeleteTitle": {
+    "description": "The label of the confirm button to delete a classroom recording.",
+    "message": "Confirmer la suppression de l'enregistrement de la classe virtuelle"
+  },
+  "components.DeleteClassroomRecording.deleteModalTitle": {
+    "description": "Title of the delete modal.",
+    "message": "Supprimer l'enregistrement de la classe virtuelle"
+  },
+  "components.DeleteRecordingButton.buttonLabel": {
+    "description": "The label of the button to delete a classroom recording.",
+    "message": "Cliquez sur ce bouton pour supprimer l'enregistrement de la classe virtuelle."
   },
   "components.DeleteSharedLiveMediaButton.buttonLabel": {
     "description": "The label of the button to delete a media.",
