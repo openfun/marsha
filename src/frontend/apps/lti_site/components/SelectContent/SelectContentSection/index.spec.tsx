@@ -6,7 +6,7 @@ import {
   liveMockFactory,
   videoMockFactory,
 } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { SelectContentSection } from '.';
 

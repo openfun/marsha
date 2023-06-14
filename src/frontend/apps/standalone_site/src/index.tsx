@@ -1,11 +1,10 @@
 import 'init';
-import 'public-path';
 import { serviceWorkerRegistration } from 'lib-components';
-import React from 'react';
+import 'public-path';
 import { createRoot } from 'react-dom/client';
 
-import './index.css';
 import { App } from './features/App';
+import './index.css';
 
 const container = document.getElementById('root');
 if (!container) {
@@ -13,10 +12,6 @@ if (!container) {
 }
 
 const root = createRoot(container);
-root.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
-);
+root.render(<App />);
 
 serviceWorkerRegistration.unregister();

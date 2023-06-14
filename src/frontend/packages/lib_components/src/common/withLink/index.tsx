@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { withRouter } from 'react-router';
+import { useNavigate } from 'react-router-dom';
 
 interface WithLinkprops {
   to: string;
@@ -14,13 +14,9 @@ export function withLink<P extends object>(
   WrappedComponent: React.ComponentType<P & WithLinkprops>,
 ) {
   const LinkedComponent = (props: P & WithLinkprops) => {
-    const InnerWrapper = withRouter((routerProps) => (
-      <WrappedComponent
-        {...props}
-        onClick={() => routerProps.history.push(props.to)}
-      />
-    ));
-    return <InnerWrapper />;
+    const navigate = useNavigate();
+
+    return <WrappedComponent {...props} onClick={() => navigate(props.to)} />;
   };
   return LinkedComponent;
 }

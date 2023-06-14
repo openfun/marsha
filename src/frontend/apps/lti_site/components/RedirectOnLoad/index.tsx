@@ -1,17 +1,17 @@
-import * as React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
-import {
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
-  appState,
-  modelName,
-} from 'lib-components';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
+import {
+  ErrorComponents,
+  appState,
+  builderFullScreenErrorRoute,
+  modelName,
+  useAppConfig,
+} from 'lib-components';
 
-import { RedirectVideo } from './RedirectVideo';
 import { RedirectDocument } from './RedirectDocument';
+import { RedirectVideo } from './RedirectVideo';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router
@@ -22,19 +22,21 @@ export const RedirectOnLoad = () => {
 
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
+    return <Navigate to={builderFullScreenErrorRoute(ErrorComponents.lti)} />;
   }
 
   if (appData.state === appState.PORTABILITY) {
-    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
+    return <Navigate to={RESOURCE_PORTABILITY_REQUEST_ROUTE} />;
   }
 
   if (appData.lti_select_form_data) {
-    return <Redirect push to={SELECT_CONTENT_ROUTE()} />;
+    return <Navigate to={SELECT_CONTENT_ROUTE} />;
   }
 
   if (!resource) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return (
+      <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+    );
   }
 
   switch (appData.modelName) {
@@ -43,6 +45,4 @@ export const RedirectOnLoad = () => {
     case modelName.VIDEOS:
       return <RedirectVideo video={appData.video!} />;
   }
-
-  return null;
 };

@@ -1,7 +1,11 @@
 import { Box, Spinner } from 'grommet';
-import { ErrorMessage, liveState, ShouldNotHappen } from 'lib-components';
-import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import {
+  ErrorComponents,
+  ErrorMessage,
+  ShouldNotHappen,
+  liveState,
+} from 'lib-components';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { useLiveAttendances } from '@lib-video/api/useLiveAttendances';
 import { POLL_FOR_ATTENDANCES } from '@lib-video/conf/sideEffects';
@@ -51,7 +55,7 @@ const Internal = ({ live_state, video_id }: InternalProps) => {
     case 'error':
       return (
         <Box width="full">
-          <ErrorMessage code="generic" />
+          <ErrorMessage code={ErrorComponents.generic} />
         </Box>
       );
     case 'success':

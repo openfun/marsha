@@ -1,19 +1,18 @@
-import { cleanup } from '@testing-library/react';
+import { cleanup, screen } from '@testing-library/react';
 import {
-  useCurrentResourceContext,
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
   appState,
+  DASHBOARD_ROUTE,
+  FULL_SCREEN_ERROR_ROUTE,
   modelName,
   uploadState,
+  useAppConfig,
+  useCurrentResourceContext,
+  WithParams,
 } from 'lib-components';
-import React from 'react';
+import { render } from 'lib-tests';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import { PLAYER_ROUTE } from 'components/routes';
+import { builderPlayerRoute } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
-
-import render from 'utils/tests/render';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from '../PortabilityRequest/route';
 
@@ -49,20 +48,22 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: undefined } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('Error Component: lti');
+    expect(screen.getByText('Error Component: lti')).toBeInTheDocument();
   });
 
   it('redirects users to the error view when there is no resource', () => {
@@ -80,16 +81,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('Error Component: notFound');
+    expect(getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to the player when the video can be shown', () => {
@@ -109,14 +112,14 @@ describe('<RedirectOnLoad />', () => {
         routerOptions: {
           routes: [
             {
-              path: PLAYER_ROUTE(modelName.VIDEOS),
-              render: () => <span>video player</span>,
+              path: builderPlayerRoute(modelName.VIDEOS),
+              element: <span>video player</span>,
             },
           ],
         },
       });
 
-      getByText('video player');
+      expect(getByText('video player')).toBeInTheDocument();
       cleanup();
     }
   });
@@ -137,14 +140,14 @@ describe('<RedirectOnLoad />', () => {
         routerOptions: {
           routes: [
             {
-              path: PLAYER_ROUTE(modelName.DOCUMENTS),
-              render: () => <span>document player</span>,
+              path: builderPlayerRoute(modelName.DOCUMENTS),
+              element: <span>document player</span>,
             },
           ],
         },
       });
 
-      getByText('document player');
+      expect(getByText('document player')).toBeInTheDocument();
       cleanup();
     }
   });
@@ -167,16 +170,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(),
-            render: ({ match }) => (
-              <span>{`dashboard ${match.params.objectType}`}</span>
+            path: DASHBOARD_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ objectType }) => <span>{`dashboard ${objectType}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('dashboard videos');
+    expect(getByText('dashboard videos')).toBeInTheDocument();
   });
 
   it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
@@ -197,16 +202,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(),
-            render: ({ match }) => (
-              <span>{`dashboard ${match.params.objectType}`}</span>
+            path: DASHBOARD_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ objectType }) => <span>{`dashboard ${objectType}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('dashboard documents');
+    expect(getByText('dashboard documents')).toBeInTheDocument();
   });
 
   it('redirects users to /error when video is not ready to be shown and it has no permissions to update it', () => {
@@ -227,16 +234,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('Error Component: notFound');
+    expect(getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to /error when document is not ready to be shown and it has no permissions to update it', () => {
@@ -257,16 +266,18 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
       },
     });
 
-    getByText('Error Component: notFound');
+    expect(getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to /select when LTI select data are passed', () => {
@@ -281,14 +292,14 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: SELECT_CONTENT_ROUTE(),
-            render: () => <span>Select LTI content</span>,
+            path: SELECT_CONTENT_ROUTE,
+            element: <span>Select LTI content</span>,
           },
         ],
       },
     });
 
-    getByText('Select LTI content');
+    expect(getByText('Select LTI content')).toBeInTheDocument();
   });
 
   it('redirects to portability if app state requires it', async () => {
@@ -300,13 +311,13 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
-            render: () => <span>Portability request</span>,
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE,
+            element: <span>Portability request</span>,
           },
         ],
       },
     });
 
-    getByText('Portability request');
+    expect(getByText('Portability request')).toBeInTheDocument();
   });
 });

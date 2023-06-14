@@ -2,16 +2,16 @@ import { Button, Heading, Text } from 'grommet';
 import {
   ButtonLoaderStyle,
   FoldableItem,
-  report,
-  useCurrentResourceContext,
   Modal,
   ModalButton,
   ModalControlMethods,
+  report,
+  useCurrentResourceContext,
 } from 'lib-components';
 import { useRef } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { useDeleteVideo } from '@lib-video/api/useDeleteVideo';
@@ -99,7 +99,7 @@ const StyledAnchorButton = styled(Button)`
 export const DeleteVideo = () => {
   const intl = useIntl();
   const [context] = useCurrentResourceContext();
-  const history = useHistory();
+  const navigate = useNavigate();
   const modalActions = useRef<ModalControlMethods>(null);
   const video = useCurrentVideo();
   const deleteVideo = useDeleteVideo({
@@ -112,7 +112,7 @@ export const DeleteVideo = () => {
           position: 'bottom-center',
         },
       );
-      history.goBack();
+      navigate(-1);
     },
     onError: (err: unknown) => {
       report(err);

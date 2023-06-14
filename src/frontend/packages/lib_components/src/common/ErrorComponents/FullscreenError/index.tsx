@@ -1,27 +1,27 @@
 import { Box, Heading, Paragraph } from 'grommet';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
 import { H2 } from '@lib-components/common/Headings';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
 
-export * from './BoundaryScreenError';
-export * from './route';
+export enum ErrorComponents {
+  generic = 'generic',
+  lti = 'lti',
+  notFound = 'notFound',
+  policy = 'policy',
+  upload = 'upload',
+  liveIncompatible = 'liveIncompatible',
+  liveInit = 'liveInit',
+  liveToVod = 'liveToVod',
+  liveStopped = 'liveStopped',
+  videoDeleted = 'videoDeleted',
+  fileTooLarge = 'fileTooLarge',
+}
 
 export interface ErrorComponentsProps {
-  code:
-    | 'generic'
-    | 'lti'
-    | 'notFound'
-    | 'policy'
-    | 'upload'
-    | 'liveIncompatible'
-    | 'liveInit'
-    | 'liveToVod'
-    | 'liveStopped'
-    | 'videoDeleted'
-    | 'fileTooLarge';
+  code: ErrorComponents;
 }
 
 const FullScreenErrorStyled = styled(LayoutMainArea)`

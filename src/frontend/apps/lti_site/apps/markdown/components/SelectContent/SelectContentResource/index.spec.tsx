@@ -5,7 +5,7 @@ import React from 'react';
 
 import { markdownDocumentMockFactory } from 'lib-markdown';
 import { playlistMockFactory } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import SelectContentResource from '.';
 

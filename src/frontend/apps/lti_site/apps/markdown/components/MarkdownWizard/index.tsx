@@ -1,16 +1,16 @@
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
-import { useHistory } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-import { useResponsive, WhiteCard, WizardLayout } from 'lib-components';
 import { Box, Button, Text, TextInput } from 'grommet';
+import { Breakpoints } from 'lib-common';
+import { useResponsive, WhiteCard, WizardLayout } from 'lib-components';
 import {
   LanguageSelector,
   MARKDOWN_EDITOR_ROUTE,
   useSaveTranslations,
 } from 'lib-markdown';
 import { toast } from 'react-hot-toast';
-import { Breakpoints } from 'lib-common';
 
 const messages = defineMessages({
   markdownCreationTitle: {
@@ -55,7 +55,7 @@ type MarkdownWizardProps = {
 export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
   const intl = useIntl();
   const { isSmallerBreakpoint, breakpoint } = useResponsive();
-  const history = useHistory();
+  const navigate = useNavigate();
 
   const [language, setLanguage] = React.useState(intl.locale);
   const [localTitle, setLocalTitle] = React.useState('');
@@ -64,7 +64,7 @@ export const MarkdownWizard = ({ markdownDocumentId }: MarkdownWizardProps) => {
     markdownDocumentId,
     {
       onSuccess: () => {
-        history.push(MARKDOWN_EDITOR_ROUTE());
+        navigate(MARKDOWN_EDITOR_ROUTE());
       },
       onError: () => {
         toast.error(intl.formatMessage(messages.saveFailure));

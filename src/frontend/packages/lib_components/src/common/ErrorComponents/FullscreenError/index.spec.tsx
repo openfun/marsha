@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
 import { render } from 'lib-tests';
-import React from 'react';
 
-import { FullScreenError } from '.';
+import { ErrorComponents, FullScreenError } from '.';
 
 describe('<FullScreenError />', () => {
   it('displays the content for 404 not found errors', () => {
-    render(<FullScreenError code="notFound" />);
+    render(<FullScreenError code={ErrorComponents.notFound} />);
 
     expect(
       screen.getByText('The video you are looking for could not be found'),
@@ -19,7 +18,7 @@ describe('<FullScreenError />', () => {
   });
 
   it('displays the content for lti related errors', () => {
-    render(<FullScreenError code="lti" />);
+    render(<FullScreenError code={ErrorComponents.lti} />);
     expect(
       screen.getByText('There was an error loading this video'),
     ).toBeInTheDocument();

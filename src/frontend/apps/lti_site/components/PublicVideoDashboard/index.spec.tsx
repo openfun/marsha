@@ -1,13 +1,13 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  FULL_SCREEN_ERROR_ROUTE,
-  uploadState,
-  videoMockFactory,
+  ErrorComponents,
+  builderFullScreenErrorRoute,
   liveMockFactory,
+  uploadState,
+  useJwt,
+  videoMockFactory,
 } from 'lib-components';
-import React from 'react';
 
 import { render } from 'lib-tests';
 
@@ -74,8 +74,8 @@ describe('<PublicVideoDashboard />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE('videoDeleted'),
-            render: () => <span>error page</span>,
+            path: builderFullScreenErrorRoute(ErrorComponents.videoDeleted),
+            element: <span>error page</span>,
           },
         ],
       },

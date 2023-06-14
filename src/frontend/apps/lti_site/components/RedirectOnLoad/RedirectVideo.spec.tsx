@@ -1,21 +1,22 @@
 import { screen } from '@testing-library/react';
 import {
-  useCurrentResourceContext,
   FULL_SCREEN_ERROR_ROUTE,
-  modelName,
   LiveModeType,
+  WithParams,
+  builderDashboardRoute,
+  modelName,
   uploadState,
+  useCurrentResourceContext,
   videoMockFactory,
 } from 'lib-components';
-import React from 'react';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import {
-  PLAYER_ROUTE,
-  VideoWizzardSubPage,
   VIDEO_WIZARD_ROUTE,
+  VideoWizzardSubPage,
+  builderPlayerRoute,
+  builderVideoWizzardRoute,
 } from 'components/routes';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { RedirectVideo } from './RedirectVideo';
 
@@ -49,20 +50,22 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          { path: VIDEO_WIZARD_ROUTE.base, element: <span>wizard</span> },
         ],
       },
     });
@@ -88,20 +91,25 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
         ],
       },
     });
@@ -119,23 +127,28 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
           {
-            path: VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo),
-            render: () => <span> VOD creation</span>,
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
+          {
+            path: builderVideoWizzardRoute(VideoWizzardSubPage.createVideo),
+            element: <span> VOD creation</span>,
           },
         ],
       },
@@ -155,23 +168,28 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
           {
-            path: VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo),
-            render: () => <span>VOD creation</span>,
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
+          {
+            path: builderVideoWizzardRoute(VideoWizzardSubPage.createVideo),
+            element: <span>VOD creation</span>,
           },
         ],
       },
@@ -196,20 +214,25 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
         ],
       },
     });
@@ -234,20 +257,25 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
         ],
       },
     });
@@ -274,20 +302,25 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
         ],
       },
     });
@@ -314,20 +347,25 @@ describe('RedirectVideo', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <span>dashboard</span>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <span>dashboard</span>,
           },
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
           {
-            path: PLAYER_ROUTE(modelName.VIDEOS),
-            render: () => <span>video player</span>,
+            path: builderPlayerRoute(modelName.VIDEOS),
+            element: <span>video player</span>,
           },
-          { path: VIDEO_WIZARD_ROUTE(), render: () => <span>wizard</span> },
+          {
+            path: builderVideoWizzardRoute(),
+            element: <span>wizard</span>,
+          },
         ],
       },
     });

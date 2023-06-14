@@ -1,14 +1,15 @@
-import React, { Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Navigate } from 'react-router-dom';
 
-import {
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
-  modelName,
-} from 'lib-components';
 import { LTINav } from 'components/LTINav';
 import { PlaylistPortability } from 'components/PlaylistPortability';
 import { DashboardContainer } from 'components/Styled/DashboardContainer';
+import {
+  ErrorComponents,
+  builderFullScreenErrorRoute,
+  modelName,
+  useAppConfig,
+} from 'lib-components';
 
 const PlaylistPage = () => {
   const appData = useAppConfig();
@@ -29,7 +30,9 @@ const PlaylistPage = () => {
       </Fragment>
     );
   } else {
-    content = <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    content = (
+      <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+    );
   }
 
   return <DashboardContainer>{content}</DashboardContainer>;

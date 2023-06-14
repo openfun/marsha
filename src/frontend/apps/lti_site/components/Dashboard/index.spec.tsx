@@ -11,7 +11,7 @@ import {
 } from 'lib-components';
 import React, { Suspense } from 'react';
 
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import Dashboard from '.';
 

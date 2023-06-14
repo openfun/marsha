@@ -1,7 +1,7 @@
 import { Box } from 'grommet';
 import { BreadCrumbsContext, Crumb as CrumbType } from 'lib-common';
-import React, { useContext, useMemo, useEffect } from 'react';
-import { Link, useRouteMatch } from 'react-router-dom';
+import React, { useContext, useEffect, useMemo } from 'react';
+import { Link, useLocation } from 'react-router-dom';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -55,18 +55,18 @@ interface CrumbProps {
  */
 export const Crumb: React.FC<CrumbProps> = ({ title }) => {
   const key = useMemo(() => uuidv4(), []);
-  const { url } = useRouteMatch();
+  const { pathname } = useLocation();
   const [_, setCrumbs] = useContext(BreadCrumbsContext);
 
   useEffect(() => {
-    setCrumbs((crumbs) => [...crumbs, { key, title, url }]);
+    setCrumbs((crumbs) => [...crumbs, { key, title, url: `${pathname}/../` }]);
 
     return () => {
       setCrumbs((crumbs) =>
         crumbs.filter((currentCrumb) => currentCrumb.key !== key),
       );
     };
-  }, [key, setCrumbs, title, url]);
+  }, [key, setCrumbs, title, pathname]);
 
   return null;
 };

@@ -1,13 +1,12 @@
-import React from 'react';
-
 import {
   FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
+  WithParams,
   appState,
+  useAppConfig,
 } from 'lib-components';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import { RedirectOnLoad } from '.';
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
@@ -35,9 +34,11 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
@@ -56,9 +57,11 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: FULL_SCREEN_ERROR_ROUTE(),
-            render: ({ match }) => (
-              <span>{`Error Component: ${match.params.code}`}</span>
+            path: FULL_SCREEN_ERROR_ROUTE.default,
+            element: (
+              <WithParams>
+                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+              </WithParams>
             ),
           },
         ],
@@ -77,8 +80,8 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: DASHBOARD_ROUTE(),
-            render: () => <span>Dashboard</span>,
+            path: DASHBOARD_ROUTE,
+            element: <span>Dashboard</span>,
           },
         ],
       },
@@ -97,8 +100,8 @@ describe('<RedirectOnLoad />', () => {
       routerOptions: {
         routes: [
           {
-            path: RESOURCE_PORTABILITY_REQUEST_ROUTE(),
-            render: () => <span>Portability request</span>,
+            path: RESOURCE_PORTABILITY_REQUEST_ROUTE,
+            element: <span>Portability request</span>,
           },
         ],
       },

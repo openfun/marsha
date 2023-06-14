@@ -1,12 +1,13 @@
-import React, { lazy, Suspense } from 'react';
-import { MemoryRouter, Route } from 'react-router-dom';
 import {
-  ErrorComponentsProps,
-  FullScreenError,
+  ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
+  FullScreenError,
   Loader,
+  WithParams,
   useAppConfig,
 } from 'lib-components';
+import { Fragment, Suspense, lazy } from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
 
 import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -17,35 +18,39 @@ import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
 const Dashboard = lazy(() => import('./Dashboard'));
 
-const Routes = () => {
+const RoutesDeposit = () => {
   const appData = useAppConfig();
 
   return (
     <Suspense fallback={<Loader />}>
       <MemoryRouter>
-        <Route exact path={DASHBOARD_ROUTE()} render={() => <Dashboard />} />
-        <Route
-          exact
-          path={FULL_SCREEN_ERROR_ROUTE()}
-          render={({ match }) => (
-            <FullScreenError
-              code={match.params.code as ErrorComponentsProps['code']}
-            />
-          )}
-        />
+        <Routes>
+          <Route path={DASHBOARD_ROUTE} element={<Dashboard />} />
+          <Route
+            path={FULL_SCREEN_ERROR_ROUTE.default}
+            element={
+              <WithParams>
+                {({ code }) =>
+                  code ? (
+                    <FullScreenError code={code as ErrorComponents} />
+                  ) : (
+                    <Fragment></Fragment>
+                  )
+                }
+              </WithParams>
+            }
+          />
 
-        <Route
-          exact
-          path={RESOURCE_PORTABILITY_REQUEST_ROUTE()}
-          render={() => (
-            <PortabilityRequest portability={appData.portability!} />
-          )}
-        />
+          <Route
+            path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
+            element={<PortabilityRequest portability={appData.portability!} />}
+          />
 
-        <Route path={REDIRECT_ON_LOAD_ROUTE()} component={RedirectOnLoad} />
+          <Route path={REDIRECT_ON_LOAD_ROUTE} element={<RedirectOnLoad />} />
+        </Routes>
       </MemoryRouter>
     </Suspense>
   );
 };
 
-export default Routes;
+export default RoutesDeposit;

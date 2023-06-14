@@ -15,6 +15,7 @@ import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import {
   CopyClipboard,
   Document,
+  ErrorComponents,
   ErrorMessage,
   List,
   Playlist,
@@ -204,7 +205,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
       break;
 
     case 'error':
-      content = <ErrorMessage code="generic" />;
+      content = <ErrorMessage code={ErrorComponents.generic} />;
       break;
 
     case 'success':

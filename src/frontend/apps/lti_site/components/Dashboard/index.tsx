@@ -1,11 +1,12 @@
-import React, { Fragment } from 'react';
-import { Redirect } from 'react-router-dom';
 import {
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
+  ErrorComponents,
+  builderFullScreenErrorRoute,
   modelName,
+  useAppConfig,
 } from 'lib-components';
 import { DashboardVideoWrapper } from 'lib-video';
+import { Fragment } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import DashboardDocument from 'components/DashboardDocument';
 import { LTINav } from 'components/LTINav';
@@ -29,7 +30,9 @@ const Dashboard = () => {
   } else if (appData.modelName === modelName.VIDEOS && appData.video) {
     content = <DashboardVideoWrapper video={appData.video} />;
   } else {
-    content = <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    content = (
+      <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+    );
   }
 
   return <DashboardContainer>{content}</DashboardContainer>;

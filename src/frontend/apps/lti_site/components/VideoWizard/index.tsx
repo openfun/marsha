@@ -1,21 +1,25 @@
-import { Button, Box, Text } from 'grommet';
-import React from 'react';
+import { Box, Button, Text } from 'grommet';
 import { defineMessages, useIntl } from 'react-intl';
-import { Redirect, Route, Switch, useHistory } from 'react-router-dom';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
 import {
-  FULL_SCREEN_ERROR_ROUTE,
-  modelName,
-  useAppConfig,
-  withLink,
+  VIDEO_WIZARD_ROUTE,
+  VideoWizzardSubPage,
+  builderVideoWizzardRoute,
+} from 'components/routes';
+import {
+  ErrorComponents,
   WhiteCard,
   WizardLayout,
+  builderDashboardRoute,
+  builderFullScreenErrorRoute,
+  modelName,
+  useAppConfig,
   useResponsive,
+  withLink,
 } from 'lib-components';
 import { ConfigureLiveButton, CreateVOD } from 'lib-video';
-import { VideoWizzardSubPage, VIDEO_WIZARD_ROUTE } from 'components/routes';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
 import { Breakpoints } from 'lib-common';
 
 const messages = defineMessages({
@@ -41,77 +45,86 @@ const CreateVODButton = withLink(Button);
 
 const VideoWizard = () => {
   const intl = useIntl();
-  const history = useHistory();
+  const navigate = useNavigate();
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
-  const appData = useAppConfig();
+  const { video } = useAppConfig();
 
-  if (!appData.video) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+  if (!video) {
+    return (
+      <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+    );
   }
-  const video = appData.video;
 
   return (
     <WizardLayout>
-      <Switch>
+      <Routes>
         <Route
-          path={VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo)}
-          render={() => (
+          path={VIDEO_WIZARD_ROUTE.createVideo}
+          element={
             <CreateVOD
               video={video}
               onUploadSuccess={() => {
                 // If title & license update fails, we still redirect the user to the dashboard
                 // because it will know update has failed (react toast) but he will be able
                 // to update it using the dashboard
-                history.push(DASHBOARD_ROUTE(modelName.VIDEOS));
+                navigate(builderDashboardRoute(modelName.VIDEOS));
               }}
               onPreviousButtonClick={() => {
                 if (history.length > 1) {
-                  history.goBack();
+                  navigate(-1);
                 } else {
-                  history.replace(VIDEO_WIZARD_ROUTE());
+                  navigate(builderVideoWizzardRoute());
                 }
               }}
             />
-          )}
+          }
         />
+        <Route
+          path={''}
+          element={
+            <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
+              <Box
+                direction="column"
+                gap="medium"
+                margin={{
+                  horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
+                    ? 'medium'
+                    : 'xlarge',
+                }}
+              >
+                <Text color="blue-active" size="1rem" textAlign="center">
+                  {intl.formatMessage(messages.descriptionText)}
+                </Text>
 
-        <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
-          <Box
-            direction="column"
-            gap="medium"
-            margin={{
-              horizontal: isSmallerBreakpoint(breakpoint, Breakpoints.large)
-                ? 'medium'
-                : 'xlarge',
-            }}
-          >
-            <Text color="blue-active" size="1rem" textAlign="center">
-              {intl.formatMessage(messages.descriptionText)}
-            </Text>
+                <CreateVODButton
+                  a11yTitle={intl.formatMessage(
+                    messages.createVideoButtonLabel,
+                  )}
+                  color="blue-active"
+                  fill="horizontal"
+                  label={intl.formatMessage(messages.createVideoButtonLabel)}
+                  primary
+                  style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
+                  title={intl.formatMessage(messages.createVideoButtonLabel)}
+                  to={builderVideoWizzardRoute(VideoWizzardSubPage.createVideo)}
+                />
 
-            <CreateVODButton
-              a11yTitle={intl.formatMessage(messages.createVideoButtonLabel)}
-              color="blue-active"
-              fill="horizontal"
-              label={intl.formatMessage(messages.createVideoButtonLabel)}
-              primary
-              style={{ minHeight: '50px', fontFamily: 'Roboto-Medium' }}
-              title={intl.formatMessage(messages.createVideoButtonLabel)}
-              to={VIDEO_WIZARD_ROUTE(VideoWizzardSubPage.createVideo)}
-            />
-
-            <ConfigureLiveButton
-              video={video}
-              RenderOnSuccess={
-                <Redirect push to={DASHBOARD_ROUTE(modelName.VIDEOS)} />
-              }
-              RenderOnError={
-                <Redirect push to={FULL_SCREEN_ERROR_ROUTE('liveInit')} />
-              }
-            />
-          </Box>
-        </WhiteCard>
-      </Switch>
+                <ConfigureLiveButton
+                  video={video}
+                  RenderOnSuccess={
+                    <Navigate to={builderDashboardRoute(modelName.VIDEOS)} />
+                  }
+                  RenderOnError={
+                    <Navigate
+                      to={builderFullScreenErrorRoute(ErrorComponents.liveInit)}
+                    />
+                  }
+                />
+              </Box>
+            </WhiteCard>
+          }
+        />
+      </Routes>
     </WizardLayout>
   );
 };

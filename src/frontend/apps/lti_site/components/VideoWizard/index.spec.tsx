@@ -2,16 +2,19 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  videoMockFactory,
-  modelName,
   LiveModeType,
+  builderDashboardRoute,
   liveState,
+  modelName,
+  videoMockFactory,
 } from 'lib-components';
+import { render } from 'lib-tests';
 import React from 'react';
 
-import { DASHBOARD_ROUTE } from 'components/Dashboard/route';
-import render from 'utils/tests/render';
-
+import {
+  VIDEO_WIZARD_ROUTE,
+  builderVideoWizzardRoute,
+} from 'components/routes';
 import VideoWizard from '.';
 
 const mockedVideo = videoMockFactory({ live_state: null });
@@ -48,9 +51,14 @@ describe('<VideoWizard />', () => {
   });
 
   it('renders VideoWizard and clicks on CreateVODButton', async () => {
-    render(<VideoWizard />);
+    render(<VideoWizard />, {
+      routerOptions: {
+        componentPath: `/${VIDEO_WIZARD_ROUTE.all}`,
+        history: [builderVideoWizzardRoute()],
+      },
+    });
 
-    screen.getByText(
+    await screen.findByText(
       'You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed.',
     );
     screen.getByText('What are you willing to do ?');
@@ -81,16 +89,18 @@ describe('<VideoWizard />', () => {
 
     render(<VideoWizard />, {
       routerOptions: {
+        componentPath: `/${VIDEO_WIZARD_ROUTE.all}`,
+        history: [builderVideoWizzardRoute()],
         routes: [
           {
-            path: DASHBOARD_ROUTE(modelName.VIDEOS),
-            render: () => <p>live dashboard</p>,
+            path: builderDashboardRoute(modelName.VIDEOS),
+            element: <p>live dashboard</p>,
           },
         ],
       },
     });
 
-    screen.getByText(
+    await screen.findByText(
       'You can choose between creating a video and uploading one, or creating a live, that you will be able to schedule if needed.',
     );
     screen.getByText('What are you willing to do ?');
@@ -99,7 +109,7 @@ describe('<VideoWizard />', () => {
       name: 'Start a live',
     });
 
-    userEvent.click(configureLiveButton);
+    await userEvent.click(configureLiveButton);
 
     await screen.findByText('live dashboard');
   });

@@ -5,7 +5,7 @@ import React from 'react';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
 import { playlistMockFactory } from 'lib-components';
-import render from 'utils/tests/render';
+import { render } from 'lib-tests';
 
 import SelectContentResource from '.';
 

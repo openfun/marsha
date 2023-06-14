@@ -1,7 +1,7 @@
 import { Maybe } from 'lib-common';
-import React, { useEffect, useState } from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
-import { Link, Redirect } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { FormattedMessage, defineMessages } from 'react-intl';
+import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { FULL_SCREEN_ERROR_ROUTE } from '@lib-components/common/ErrorComponents/route';
@@ -13,7 +13,7 @@ import {
   UploadManagerStatus,
   useUploadManager,
 } from '@lib-components/common/UploadManager';
-import { DASHBOARD_ROUTE } from '@lib-components/data/routes';
+import { builderDashboardRoute } from '@lib-components/data/routes';
 import { getStoreResource } from '@lib-components/data/stores/generics';
 import { useAppConfig } from '@lib-components/data/stores/useAppConfig';
 import { modelName, uploadableModelName } from '@lib-components/types/models';
@@ -157,16 +157,28 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
   switch (objectStatus) {
     case UploadManagerStatus.SUCCESS:
     case UploadManagerStatus.UPLOADING:
-      return <Redirect push to={DASHBOARD_ROUTE(appData.modelName)} />;
+      return <Navigate to={builderDashboardRoute(appData.modelName)} />;
 
     case UploadManagerStatus.ERR_POLICY:
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('policy')} />;
+      return (
+        <Navigate
+          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.policy}`}
+        />
+      );
 
     case UploadManagerStatus.ERR_SIZE:
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('fileTooLarge')} />;
+      return (
+        <Navigate
+          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.fileTooLarge}`}
+        />
+      );
 
     case UploadManagerStatus.ERR_UPLOAD:
-      return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('upload')} />;
+      return (
+        <Navigate
+          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.upload}`}
+        />
+      );
 
     case UploadManagerStatus.INIT:
     default:
@@ -186,7 +198,7 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
             </UploadFieldContainer>
           </UploadFormContainer>
           <UploadFormBack>
-            <Link to={DASHBOARD_ROUTE(appData.modelName)}>
+            <Link to={builderDashboardRoute(appData.modelName)}>
               <FormattedMessage {...messages.linkToDashboard} />
             </Link>
           </UploadFormBack>

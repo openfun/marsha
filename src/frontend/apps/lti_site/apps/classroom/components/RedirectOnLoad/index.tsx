@@ -1,11 +1,11 @@
-import * as React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import {
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
+  ErrorComponents,
   appState,
+  builderFullScreenErrorRoute,
   flags,
+  useAppConfig,
 } from 'lib-components';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -21,16 +21,18 @@ export const RedirectOnLoad = () => {
 
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
+    return <Navigate to={builderFullScreenErrorRoute(ErrorComponents.lti)} />;
   }
 
   if (!isFeatureEnabled(flags.CLASSROOM)) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('notFound')} />;
+    return (
+      <Navigate to={builderFullScreenErrorRoute(ErrorComponents.notFound)} />
+    );
   }
 
   if (appData.state === appState.PORTABILITY) {
-    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
+    return <Navigate to={RESOURCE_PORTABILITY_REQUEST_ROUTE} />;
   }
 
-  return <Redirect push to={DASHBOARD_CLASSROOM_ROUTE()} />;
+  return <Navigate to={DASHBOARD_CLASSROOM_ROUTE} />;
 };

@@ -1,7 +1,7 @@
 import { fireEvent, screen } from '@testing-library/react';
 import { render } from 'lib-tests';
-import React, { Fragment } from 'react';
-import { Link, Route, Switch } from 'react-router-dom';
+import { Fragment } from 'react';
+import { Link, Route, Routes } from 'react-router-dom';
 
 import { BreadCrumbs, Crumb } from '.';
 
@@ -27,24 +27,39 @@ describe('<BreadCrumbs />', () => {
           routes: [
             {
               path: '/route-b/*',
-              render: () => (
+              element: (
                 <Fragment>
                   <Crumb title="Parent route B crumb" />
-                  <Switch>
-                    <Route path="/route-b/route-c">
-                      <Crumb title="Child route C crumb" />
-                      <h1>Child route C title</h1>
-                    </Route>
+                  <Routes>
+                    <Route
+                      path="route-c"
+                      element={
+                        <Fragment>
+                          <Crumb title="Child route C crumb" />
+                          <h1>Child route C title</h1>
+                        </Fragment>
+                      }
+                    />
 
-                    <Route path="/route-b/route-d">
-                      <Crumb title="Child route D crumb" />
-                      <h1>Child route D title</h1>
-                    </Route>
+                    <Route
+                      path="route-d"
+                      element={
+                        <Fragment>
+                          <Crumb title="Child route D crumb" />
+                          <h1>Child route D title</h1>
+                        </Fragment>
+                      }
+                    />
 
-                    <Route path="/route-b">
-                      <h1>Parent route B title</h1>
-                    </Route>
-                  </Switch>
+                    <Route
+                      path="/route-b"
+                      element={
+                        <Fragment>
+                          <h1>Parent route B title</h1>
+                        </Fragment>
+                      }
+                    />
+                  </Routes>
                 </Fragment>
               ),
             },

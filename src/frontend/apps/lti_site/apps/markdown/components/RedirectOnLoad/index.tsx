@@ -1,14 +1,14 @@
-import * as React from 'react';
-import { Redirect } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 import {
+  ErrorComponents,
+  MarkdownDocument,
+  appState,
+  builderFullScreenErrorRoute,
+  flags,
+  useAppConfig,
   useCurrentResourceContext,
   useJwt,
-  FULL_SCREEN_ERROR_ROUTE,
-  useAppConfig,
-  appState,
-  flags,
-  MarkdownDocument,
 } from 'lib-components';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
@@ -34,20 +34,20 @@ export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
 
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
-    return <Redirect push to={FULL_SCREEN_ERROR_ROUTE('lti')} />;
+    return <Navigate to={builderFullScreenErrorRoute(ErrorComponents.lti)} />;
   }
 
   if (!isFeatureEnabled(flags.MARKDOWN)) {
-    return <Redirect push to={MARKDOWN_NOT_FOUND_ROUTE()} />;
+    return <Navigate to={MARKDOWN_NOT_FOUND_ROUTE()} />;
   }
 
   if (appData.state === appState.PORTABILITY) {
-    return <Redirect push to={RESOURCE_PORTABILITY_REQUEST_ROUTE()} />;
+    return <Navigate to={RESOURCE_PORTABILITY_REQUEST_ROUTE} />;
   }
 
   // Deal with missing JWT (the resource may be not available yet)
   if (!useJwt.getState().getJwt()) {
-    return <Redirect push to={MARKDOWN_NOT_FOUND_ROUTE()} />;
+    return <Navigate to={MARKDOWN_NOT_FOUND_ROUTE()} />;
   }
 
   const [context] = useCurrentResourceContext();
@@ -62,10 +62,10 @@ export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
       false;
 
     if (isNewDocument) {
-      return <Redirect push to={MARKDOWN_WIZARD_ROUTE()} />;
+      return <Navigate to={MARKDOWN_WIZARD_ROUTE()} />;
     }
-    return <Redirect push to={MARKDOWN_EDITOR_ROUTE()} />;
+    return <Navigate to={MARKDOWN_EDITOR_ROUTE()} />;
   } else {
-    return <Redirect push to={MARKDOWN_VIEWER_ROUTE()} />;
+    return <Navigate to={MARKDOWN_VIEWER_ROUTE()} />;
   }
 };
