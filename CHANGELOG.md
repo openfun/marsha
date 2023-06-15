@@ -20,6 +20,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Restrict video list endpoint to organisation admin
   and playlist admin or instructor
+- Change scope of the Resource token into a new Playlist token
 
 ### Fixed
 
