@@ -1,6 +1,6 @@
-import { act, screen } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import { liveState } from 'lib-components';
-import { render } from 'lib-tests';
+import { advanceJestTimersByTime, render } from 'lib-tests';
 import { DateTime } from 'luxon';
 import React from 'react';
 
@@ -81,10 +81,7 @@ describe('<StudentLiveScheduleInfo />', () => {
 
     expect(mockSetTimeIsOver).not.toHaveBeenCalled();
 
-    act(() => {
-      // advance time until live should start
-      jest.advanceTimersByTime(30000000);
-    });
+    advanceJestTimersByTime(1000, 6000);
 
     await screen.findByRole('heading', {
       name: 'Live is starting',

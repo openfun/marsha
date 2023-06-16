@@ -1,7 +1,7 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory, liveState } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { render, Deferred, advanceJestTimersByTime } from 'lib-tests';
 import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -54,27 +54,22 @@ describe('<DashboardLivePairing />', () => {
     screen.getByText('Pairing secret: 123456');
 
     // secret is stll displayed after 59 seconds
-    act(() => {
-      // advance time by 59 second
-      jest.advanceTimersByTime(1000 * 59);
-    });
+    // advance time by 59 second
+    advanceJestTimersByTime(1000, 59);
     await screen.findByText('Pairing secret: 123456');
 
     // secret expiration is displayed after 1 minute
-    act(() => {
-      // advance time by 3 second
-      jest.advanceTimersByTime(1000 * 3);
-    });
+    // advance time by 1 second 3 times
+    advanceJestTimersByTime(1000, 3);
+
     await screen.findByText('Pairing secret expired');
     const pairingSecretDisplay = screen.queryByText('Pairing secret: 123456');
     expect(pairingSecretDisplay).not.toBeInTheDocument();
     const pairingSecretLabel = screen.queryByText('Pair an external device');
     expect(pairingSecretLabel).not.toBeInTheDocument();
 
-    act(() => {
-      // advance time by 4 second
-      jest.advanceTimersByTime(1000 * 4);
-    });
+    // advance time by 1 second 4 times
+    advanceJestTimersByTime(1000, 4);
     await screen.findByText('Pair an external device');
     const pairingSecretExpiration = screen.queryByText(
       'Pairing secret expired',
