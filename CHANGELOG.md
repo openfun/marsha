@@ -8,6 +8,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- Create a default playlist for new shibboleth user
+
 ## [4.2.1] - 2023-06-20
 
 ### Fixed

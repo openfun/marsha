@@ -26,4 +26,7 @@ assert len(  # nosec
 
 MARSHA_DEFAULT_AUTH_PIPELINE = tuple(
     _steps_mapping.get(step, step) for step in DEFAULT_EDU_FED_AUTH_PIPELINE
-) + ("marsha.account.social_pipeline.organization.create_organization_from_saml",)
+) + (
+    "marsha.account.social_pipeline.organization.create_organization_from_saml",
+    "marsha.account.social_pipeline.playlist.create_playlist_from_saml",
+)
