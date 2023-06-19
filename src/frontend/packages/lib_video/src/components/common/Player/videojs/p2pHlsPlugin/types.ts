@@ -13,7 +13,7 @@ export interface ExtendedVideoJs {
   Html5Hlsjs: {
     addHook: (
       action: string,
-      func: (videojsPlayer: unknown, hlsjs: VideoJsPlayer) => void,
+      func: (videojsPlayer: VideoJsPlayer, hlsjs: VideoJsPlayer) => void,
     ) => void;
   };
 }

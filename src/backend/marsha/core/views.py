@@ -126,6 +126,11 @@ class MarshaViewMixin:
             },
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN,
+            "p2p": {
+                "live_enabled": settings.P2P_LIVE_ENABLED,
+                "live_stun_server_urls": settings.P2P_LIVE_STUN_SERVER_URLS,
+                "live_web_torrent_tracker_urls": settings.P2P_LIVE_WEB_TORRENT_TRACKER_URLS,
+            },
             "static": {
                 "img": {
                     "liveBackground": static("img/liveBackground.jpg"),

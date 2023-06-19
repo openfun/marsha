@@ -1,4 +1,5 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
+import { useP2PLiveConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
 import videojs, { VideoJsPlayer } from 'video.js';
 
@@ -23,7 +24,19 @@ const Plugin = videojs.getPlugin('plugin');
  */
 export class P2pHlsPlugin extends Plugin {
   constructor(player: videojs.Player, options: unknown) {
-    const engine = new Engine();
+    const { stunServersUrls, webTorrentServerTrackerUrls } =
+      useP2PLiveConfig.getState();
+
+    videojsHlsjsSourceHandler.register(videojs);
+
+    const engine = new Engine({
+      loader: {
+        trackerAnnounce: webTorrentServerTrackerUrls,
+        rtcConfig: {
+          iceServers: stunServersUrls.map((url) => ({ urls: `stun:${url}` })),
+        },
+      },
+    });
 
     engine.on('peer_connect', (peer: { id: string; remoteAddress: string }) =>
       console.log('peer_connect', peer.id, peer.remoteAddress),
@@ -37,29 +50,44 @@ export class P2pHlsPlugin extends Plugin {
       ),
     );
 
-    videojsHlsjsSourceHandler.register(videojs);
-
+    /* 
+    This hook is called before the videojs player is initialized.
+    It is used to initialize the HLS.js events to update the engine.
+    In our case, Hlsjs instance and videojsPlayer are the same object.
+    And the engine is given through the player options.
+    */
     (videojs as unknown as ExtendedVideoJs).Html5Hlsjs.addHook(
       'beforeinitialize',
-      (_videojsPlayer, hlsjs) => {
+      (videojsPlayer, hlsjs) => {
         if (typeof hlsjs.config?.loader?.getEngine === 'function') {
-          this.initHlsJsEvents(hlsjs, hlsjs.config.loader.getEngine());
+          this.initHlsJsEvents(videojsPlayer, hlsjs.config.loader.getEngine());
         }
       },
     );
 
-    super(player, options);
-
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    player.options_.html5 = {
-      ...player.options_.html5,
-      hlsjsConfig: {
-        liveSyncDurationCount: 7, // To have at least 7 segments in queue
-        loader: engine.createLoaderClass() as unknown,
-      },
+    /* 
+      The `liveSyncDurationCount` option is used to set the number of segments
+      that will be downloaded before the current one. This is used to avoid
+      the player to be stuck when the current segment is not available.
+      The default value is 3, but we set it to 7 to be sure that the player
+      will not be stuck.
+      This options will be passed to the `videojs-hlsjs-plugin` library.
+      Example taken from: https://github.com/Novage/p2p-media-loader/blob/master/p2p-media-loader-hlsjs/demo/videojs-hlsjs-plugin.html
+    */
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+    player.options_.html5.hlsjsConfig = {
+      liveSyncDurationCount: 7, // To have at least 7 segments in queue
+      loader: engine.createLoaderClass() as unknown,
     };
+    super(player, options);
   }
 
+  /**
+   * Initialize the HLS.js events to update the engine.
+   * @param {VideoJsPlayer} player - The videojs player
+   * @param {Engine} engine - The P2P engine
+   * @private
+   */
   private initHlsJsEvents(player: VideoJsPlayer, engine: Engine) {
     player.on('hlsFragChanged', (_event, data: HlsData) => {
       const frag = data.frag;

@@ -25,6 +25,11 @@ const config: ConfigResponse = {
   release: 'some release',
   sentry_dsn: 'some dsn',
   inactive_resources: [],
+  p2p: {
+    live_enabled: false,
+    live_stun_server_urls: [],
+    live_web_torrent_tracker_urls: [],
+  },
 };
 
 describe('AppConfig', () => {

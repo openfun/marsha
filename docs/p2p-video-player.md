@@ -32,17 +32,20 @@ Also important for our integration:
 >
 > WebTorrent tracker is used for WebRTC signaling and to create swarms of peers that download the same media stream
 
+> **_NOTE:_** It is possible we can face an [issue](https://github.com/Novage/p2p-media-loader/issues/164
+) of stream lagging when too much viewers
+
 <table><tr>
   <td><img src="images/p2p-media-loader-network.png" alt="Moodle LTI select admin view 3"/></td>
 </tr></table>
 
+
 By default, the library uses public server. In the "recent" version of Chrome ([milestone 110](https://groups.google.com/g/discuss-webrtc/c/L0qDWipd7VE?pli=1)), it perform an extra validation of TURN and STUN Urls making STUN URLs not supporting query section. Thus, the [public STUN server list](https://gist.github.com/mondain/b0ec1cf5f60ae726202e)  is not Chrome compliant and the library won't work, Firefox still works. 
 
-This, plus the fact that public servers support a limited number of peers and can reject connections or even go down on a heavy loads, means that we have to provide our WebTorrent tracker and STUN server.
+Moreover public servers support a limited number of peers and can reject connections or even go down on a heavy loads.
 
+Therefore, we have to provide our WebTorrent tracker and STUN server. In our settings, we have a setting for each server urls: `P2P_LIVE_STUN_SERVER_URLS` and `P2P_LIVE_WEB_TORRENT_TRACKER_URLS` that will be given to our configuration and used by our frontend. Speaking of settings, we also have `P2P_LIVE_ENABLED` if we want to enable / disable the feature in case of a problem.
 
-> **_NOTE:_** It is possible we can face an [issue](https://github.com/Novage/p2p-media-loader/issues/164
-) of stream lagging when too much viewers
 
 ## Integration
 
