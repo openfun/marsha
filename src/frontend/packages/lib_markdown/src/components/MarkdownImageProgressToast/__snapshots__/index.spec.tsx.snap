@@ -32,7 +32,7 @@ exports[`<MarkdownImageProgressToast /> displays progression 1`] = `
               class="StyledStack__StyledStackLayer-sc-ajspsk-1 ftswmZ"
             >
               <svg
-                class="StyledMeter-sc-nsxarx-0 eRjjRq"
+                class="StyledMeter-sc-nsxarx-0 eicmGF"
                 height="24"
                 preserveAspectRatio="none"
                 viewBox="0 0 384 24"
