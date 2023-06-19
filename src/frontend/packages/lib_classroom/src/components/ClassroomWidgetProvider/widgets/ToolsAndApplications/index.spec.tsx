@@ -67,7 +67,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Enable chat',
     });
     expect(toggleEnableChat).toBeChecked();
-    userEvent.click(toggleEnableChat);
+    await userEvent.click(toggleEnableChat);
 
     expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -96,7 +96,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Enable shared notes',
     });
     expect(toggleEnableSharedNotes).toBeChecked();
-    userEvent.click(toggleEnableSharedNotes);
+    await userEvent.click(toggleEnableSharedNotes);
 
     expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -125,7 +125,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Enable waiting room',
     });
     expect(toggleEnableWaitingRoom).not.toBeChecked();
-    userEvent.click(toggleEnableWaitingRoom);
+    await userEvent.click(toggleEnableWaitingRoom);
 
     expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -169,7 +169,7 @@ describe('<ToolsAndApplications />', () => {
       enable_recordings: false,
     });
 
-    userEvent.click(toggleEnableRecordings);
+    await userEvent.click(toggleEnableRecordings);
 
     expect(await screen.findByText('Classroom updated.')).toBeInTheDocument();
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -220,7 +220,7 @@ describe('<ToolsAndApplications />', () => {
     expect(textAreaRecordPurpose).toBeInTheDocument();
 
     userEvent.clear(textAreaRecordPurpose);
-    userEvent.type(textAreaRecordPurpose, recording_purpose_updated);
+    await userEvent.type(textAreaRecordPurpose, recording_purpose_updated);
 
     mockedUseCurrentClassroom.mockReturnValue({
       ...classroom,
@@ -254,7 +254,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Enable recordings',
     });
     expect(toggleEnableRecordings).toBeChecked();
-    userEvent.click(toggleEnableRecordings);
+    await userEvent.click(toggleEnableRecordings);
 
     expect(
       await screen.findByText('Classroom not updated!'),

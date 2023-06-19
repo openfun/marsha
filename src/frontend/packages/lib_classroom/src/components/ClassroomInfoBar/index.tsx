@@ -1,8 +1,8 @@
 import { Box, BoxProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { Classroom, EditionSVG, report, TextInput } from 'lib-components';
-import React, { useCallback, useEffect, useState } from 'react';
+import { Classroom, EditionSVG, TextInput, report } from 'lib-components';
+import { useCallback, useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';

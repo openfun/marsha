@@ -2,9 +2,8 @@ import { fireEvent, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { InfoWidgetModalProvider } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
-import React from 'react';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
@@ -105,7 +104,11 @@ describe('<Scheduling />', () => {
     );
 
     const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
-    userEvent.type(inputEstimatedDuration, estimatedDuration.toFormat('h:mm'));
+
+    // issue with useFakeTimers: https://github.com/testing-library/user-event/issues/833
+    const user = userEvent.setup({ delay: null });
+
+    await user.type(inputEstimatedDuration, estimatedDuration.toFormat('h:mm'));
     fireEvent.blur(inputEstimatedDuration);
 
     // simulate classroom update

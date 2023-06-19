@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock';
 import { uploadState, useCurrentResourceContext, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
-import React from 'react';
 
 import {
   classroomMockFactory,
@@ -39,7 +38,7 @@ describe('<Recordings />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders delete button when VOD not created', () => {
+  it('renders delete button when VOD not created', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: false,
@@ -60,10 +59,11 @@ describe('<Recordings />', () => {
       />,
     );
 
-    const deleteRecordingButton = screen.getByRole('button', {
-      name: 'Click on this button to delete the classroom recording.',
-    });
-    expect(deleteRecordingButton).toBeInTheDocument();
+    expect(
+      await screen.findByRole('button', {
+        name: 'Click on this button to delete the classroom recording.',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('does not render the delete button when the record is already converted in VOD', () => {
@@ -93,7 +93,7 @@ describe('<Recordings />', () => {
     expect(deleteRecordingButton).not.toBeInTheDocument();
   });
 
-  it('calls createVOD when convert to VOD button is clicked', () => {
+  it('calls createVOD when convert to VOD button is clicked', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: false,
@@ -131,9 +131,9 @@ describe('<Recordings />', () => {
       name: 'Convert Tuesday, March 1, 2022 - 11:00 AM to VOD',
     });
     expect(createVodButton).toBeInTheDocument();
-    userEvent.click(createVodButton);
+    await userEvent.click(createVodButton);
 
-    expect(fetchMock.calls()).toHaveLength(2);
+    expect(fetchMock.calls()).toHaveLength(3);
     expect(fetchMock.calls()[1][0]).toBe(
       `/api/classrooms/${classroom.id}/recordings/${classroomRecording.id}/create-vod/`,
     );
@@ -178,7 +178,7 @@ describe('<Recordings />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('displays vod conversion status in lti context', () => {
+  it('displays vod conversion status in lti context', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: false,
@@ -204,14 +204,14 @@ describe('<Recordings />', () => {
     );
 
     expect(
-      screen.getByText(classroomRecording.vod!.title as string),
+      await screen.findByText(classroomRecording.vod!.title as string),
     ).toBeInTheDocument();
     expect(
       screen.getByText(classroomRecording.vod!.upload_state as string),
     ).toBeInTheDocument();
   });
 
-  it('displays vod lti and dashboard links in website context and when converted and vod is available', () => {
+  it('displays vod lti and dashboard links in website context and when converted and vod is available', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: true,
@@ -235,7 +235,9 @@ describe('<Recordings />', () => {
       />,
     );
 
-    expect(screen.getByText('LTI link for this VOD:')).toBeInTheDocument();
+    expect(
+      await screen.findByText('LTI link for this VOD:'),
+    ).toBeInTheDocument();
     expect(
       screen.getByText(
         `https://localhost/lti/videos/${classroomRecording.vod!.id}`,
@@ -254,7 +256,7 @@ describe('<Recordings />', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays vod conversion status in website context', () => {
+  it('displays vod conversion status in website context', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: true,
@@ -280,14 +282,14 @@ describe('<Recordings />', () => {
     );
 
     expect(
-      screen.getByText(classroomRecording.vod!.title as string),
+      await screen.findByText(classroomRecording.vod!.title as string),
     ).toBeInTheDocument();
     expect(
       screen.getByText(classroomRecording.vod!.upload_state as string),
     ).toBeInTheDocument();
   });
 
-  it('displays disabled button when conversion to VOD is disabled', () => {
+  it('displays disabled button when conversion to VOD is disabled', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: false,
@@ -310,7 +312,7 @@ describe('<Recordings />', () => {
     );
 
     expect(
-      screen.getByRole('button', {
+      await screen.findByRole('button', {
         name: 'VOD conversion is disabled',
       }),
     ).toBeDisabled();

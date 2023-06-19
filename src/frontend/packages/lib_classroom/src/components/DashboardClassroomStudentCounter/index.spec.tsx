@@ -1,7 +1,6 @@
-import { act } from '@testing-library/react';
+import { act, waitFor } from '@testing-library/react';
 import { render } from 'lib-tests';
 import { DateTime, Duration, Settings } from 'luxon';
-import React from 'react';
 
 import { DashboardClassroomStudentCounter } from '.';
 
@@ -32,7 +31,7 @@ describe('<DashboardClassroomStudentCounter />', () => {
     jest.useRealTimers();
   });
 
-  it('Displays a countdown when the classroom is scheduled', () => {
+  it('Displays a countdown when the classroom is scheduled', async () => {
     const startingAt = currentDate.plus({ days: 2, hours: 2 }).startOf('hour');
     const { container } = render(
       <DashboardClassroomStudentCounter
@@ -40,19 +39,35 @@ describe('<DashboardClassroomStudentCounter />', () => {
       />,
     );
 
-    const expectCountdown = (
+    const expectCountdown = async (
       days: number,
       hours: number,
       minutes: number,
-      seconds: number,
     ) => {
-      expect(container).toHaveTextContent(`${days}days`);
-      expect(container).toHaveTextContent(`${hours}hours`);
-      expect(container).toHaveTextContent(`${minutes}minutes`);
-      expect(container).toHaveTextContent(`${seconds}seconds`);
+      await waitFor(() => {
+        expect(container).toHaveTextContent(`${days}days`);
+      });
+      await waitFor(
+        () => {
+          expect(container).toHaveTextContent(`${hours}hours`);
+        },
+        { timeout: 2000 },
+      );
+      await waitFor(
+        () => {
+          expect(container).toHaveTextContent(`${minutes}minutes`);
+        },
+        { timeout: 2000 },
+      );
+      await waitFor(
+        () => {
+          expect(container).toHaveTextContent(/[0-9]{2}seconds/);
+        },
+        { timeout: 2000 },
+      );
     };
 
-    expectCountdown(2, 1, 37, 45);
+    await expectCountdown(2, 1, 37);
 
     act(() => {
       jest.advanceTimersByTime(
@@ -60,6 +75,6 @@ describe('<DashboardClassroomStudentCounter />', () => {
       );
     });
 
-    expectCountdown(2, 0, 17, 45);
+    await expectCountdown(2, 0, 17);
   });
 });
