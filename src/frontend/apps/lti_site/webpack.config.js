@@ -1,5 +1,5 @@
 const TerserPlugin = require('terser-webpack-plugin');
-
+const webpack = require('webpack');
 const { alias } = require('marsha-config');
 
 const config = {
@@ -77,6 +77,12 @@ const config = {
     ignored: '**/node_modules',
     aggregateTimeout: 1000,
   },
+  plugins: [
+    new webpack.ProvidePlugin({
+      Buffer: ['buffer', 'Buffer'],
+      process: 'process/browser.js',
+    }),
+  ],
 };
 
 module.exports = (_, argv) => {

@@ -3,6 +3,7 @@ import 'video.js/dist/video-js.css';
 import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
+import './videojs/p2pHlsPlugin';
 import { Maybe, Nullable } from 'lib-common';
 import {
   useCurrentSession,
@@ -152,6 +153,7 @@ export const createVideojsPlayer = (
   });
 
   if (isMSESupported()) {
+    player.p2pHlsPlugin();
     player.httpSourceSelector();
     const qualityLevels = player.qualityLevels();
     qualityLevels.on('change', () => interacted(qualityLevels));

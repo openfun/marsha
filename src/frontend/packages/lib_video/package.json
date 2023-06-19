@@ -84,11 +84,14 @@
     "zustand": "*"
   },
   "dependencies": {
+    "@streamroot/videojs-hlsjs-plugin": "^1.0.16",
     "altamoon-robust-websocket": "1.0.3",
     "m3u8-parser": "6.2.0",
     "lib-common": "*",
     "lib-components": "*",
     "linkifyjs": "4.1.1",
+    "p2p-media-loader-hlsjs": "^0.6.2",
+    "process": "^0.11.10",
     "react-icalendar-link": "3.0.2",
     "video.js": "7.21.1",
     "videojs-contrib-quality-levels": "2.2.1",
