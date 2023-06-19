@@ -3,7 +3,7 @@ import { toast } from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 import { useLocation, useNavigate } from 'react-router-dom';
 
-import { useCreateLtiUserAssociation } from '../api/useLtiUserAssociations';
+import { useCreateLtiUserAssociation } from 'api/useLtiUserAssociations';
 
 const messages = defineMessages({
   // Toast

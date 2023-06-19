@@ -3,7 +3,7 @@ import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
 
-import { useCreateLtiUserAssociation } from './useLtiUserAssociations';
+import { useCreateLtiUserAssociation } from '.';
 
 describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
   beforeEach(() => {
