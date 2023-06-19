@@ -6,7 +6,7 @@ let storage: {
 
 describe('isLocalStorageEnabled()', () => {
   beforeAll(() => {
-    global.window = Object.create(window);
+    global.window ??= Object.create(window);
   });
 
   beforeEach(() => {

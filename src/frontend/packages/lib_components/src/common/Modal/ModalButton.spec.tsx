@@ -27,7 +27,7 @@ describe('<ModalButton />', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
-  it('interacts correctly', () => {
+  it('interacts correctly', async () => {
     const onClickSubmit = jest.fn();
     const onClickCancel = jest.fn();
     render(
@@ -40,16 +40,16 @@ describe('<ModalButton />', () => {
 
     const buttonCancel = screen.getByRole('button', { name: 'Cancel' });
     expect(buttonCancel).toBeInTheDocument();
-    userEvent.click(buttonCancel);
+    await userEvent.click(buttonCancel);
     expect(onClickCancel).toHaveBeenCalled();
 
     const buttonSubmit = screen.getByRole('button', { name: 'My button' });
     expect(buttonSubmit).toBeInTheDocument();
-    userEvent.click(buttonSubmit);
+    await userEvent.click(buttonSubmit);
     expect(onClickSubmit).toHaveBeenCalled();
   });
 
-  it('cancels with custom label', () => {
+  it('cancels with custom label', async () => {
     const onClickCancel = jest.fn();
     render(
       <ModalButton
@@ -61,7 +61,7 @@ describe('<ModalButton />', () => {
 
     const buttonCancel = screen.getByRole('button', { name: 'My cancel' });
     expect(buttonCancel).toBeInTheDocument();
-    userEvent.click(buttonCancel);
+    await userEvent.click(buttonCancel);
     expect(onClickCancel).toHaveBeenCalled();
   });
 });

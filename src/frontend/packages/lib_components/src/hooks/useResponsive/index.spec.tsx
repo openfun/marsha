@@ -1,9 +1,7 @@
-import { screen } from '@testing-library/react';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { screen, renderHook } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
 import { theme } from 'lib-common';
-import { appendUtilsElement, render } from 'lib-tests';
-import React, { Fragment } from 'react';
+import { render, wrapperUtils } from 'lib-tests';
 
 import { useResponsive } from '.';
 
@@ -91,17 +89,13 @@ describe('useResponsive', () => {
   });
 
   test('breakpoint hook value mobile', () => {
-    const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
-      return appendUtilsElement(<Fragment>{children}</Fragment>, {
+    const { result } = renderHook(() => useResponsive(), {
+      wrapper: wrapperUtils({
         grommetOptions: {
           theme,
           responsiveSize: 'xsmall',
         },
-      });
-    };
-
-    const { result } = renderHook(() => useResponsive(), {
-      wrapper: Wrapper,
+      }),
     });
 
     expect(result.current.breakpoint).toBe('xsmall');
@@ -110,17 +104,13 @@ describe('useResponsive', () => {
   });
 
   test('breakpoint hook value desktop', () => {
-    const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
-      return appendUtilsElement(<Fragment>{children}</Fragment>, {
+    const { result } = renderHook(() => useResponsive(), {
+      wrapper: wrapperUtils({
         grommetOptions: {
           theme,
           responsiveSize: 'medium',
         },
-      });
-    };
-
-    const { result } = renderHook(() => useResponsive(), {
-      wrapper: Wrapper,
+      }),
     });
 
     expect(result.current.breakpoint).toBe('medium');

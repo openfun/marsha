@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { InfoWidgetModalProvider } from '@lib-components/hooks/stores/useInfoWidgetModal';
 
@@ -42,7 +42,7 @@ describe('<FoldableItem />', () => {
     expect(screen.queryByText(genericInfoText)).toEqual(null);
   });
 
-  it('renders FoldableItem closed without info text and clicks on the title.', () => {
+  it('renders FoldableItem closed without info text and clicks on the title.', async () => {
     render(
       <InfoWidgetModalProvider value={null}>
         <FoldableItem initialOpenValue={false} title={genericTitle}>
@@ -57,11 +57,11 @@ describe('<FoldableItem />', () => {
     expect(infoButton).not.toBeInTheDocument();
     expect(screen.queryByText(genericInfoText)).toEqual(null);
 
-    userEvent.click(openButton);
+    await userEvent.click(openButton);
     screen.getByText('Generic component');
   });
 
-  it('renders FoldableItem closed with info text and clicks on info button', () => {
+  it('renders FoldableItem closed with info text and clicks on info button', async () => {
     render(
       <InfoWidgetModalProvider value={null}>
         <FoldableItem
@@ -79,7 +79,7 @@ describe('<FoldableItem />', () => {
     const infoButton = screen.getAllByRole('button')[0];
     expect(screen.queryByText(genericInfoText)).toEqual(null);
 
-    userEvent.click(infoButton);
+    await userEvent.click(infoButton);
     expect(mockSetInfoWidgetModal).toHaveBeenCalled();
     expect(mockSetInfoWidgetModal).toHaveBeenCalledWith({
       title: genericTitle,

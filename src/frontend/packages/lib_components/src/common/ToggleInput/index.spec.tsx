@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Box } from 'grommet';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { ToggleInput } from './index';
 
@@ -11,7 +10,7 @@ const onChangeToggleMock = jest.fn();
 describe('<ToggleInput />', () => {
   beforeEach(() => jest.resetAllMocks());
 
-  it('renders the toggle input unchecked and performs a click on it', () => {
+  it('renders the toggle input unchecked and performs a click on it', async () => {
     render(
       <ToggleInput
         checked={false}
@@ -26,11 +25,12 @@ describe('<ToggleInput />', () => {
     });
     expect(toggleInput).not.toBeChecked();
 
-    userEvent.click(toggleInput);
+    await userEvent.click(toggleInput);
 
     expect(onChangeToggleMock).toHaveBeenCalledTimes(1);
   });
-  it('renders the toggle input checked and performs a click on it', () => {
+
+  it('renders the toggle input checked and performs a click on it', async () => {
     render(
       <ToggleInput
         checked={true}
@@ -45,10 +45,11 @@ describe('<ToggleInput />', () => {
     });
     expect(toggleInput).toBeChecked();
 
-    userEvent.click(toggleInput);
+    await userEvent.click(toggleInput);
 
     expect(onChangeToggleMock).toHaveBeenCalledTimes(1);
   });
+
   it('renders the toggle input disabled and performs a click on it', () => {
     render(
       <ToggleInput
@@ -69,6 +70,7 @@ describe('<ToggleInput />', () => {
 
     expect(onChangeToggleMock).toHaveBeenCalledTimes(0);
   });
+
   it('renders a truncated label', () => {
     render(
       <Box width="10px">
@@ -85,6 +87,7 @@ describe('<ToggleInput />', () => {
     const text = screen.getByText('An example title');
     expect(text).toHaveStyleRule('text-overflow', 'ellipsis');
   });
+
   it('renders a non truncated label', () => {
     render(
       <Box width="10px">

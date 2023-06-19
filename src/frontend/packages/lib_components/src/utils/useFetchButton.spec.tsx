@@ -1,7 +1,7 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React, { Fragment, useEffect } from 'react';
+import { Fragment, useEffect } from 'react';
 
 import { useFetchButton } from './useFetchButton';
 
@@ -68,7 +68,7 @@ describe('useFetchButton', () => {
 
     const idleText = screen.getByText('button is idling');
 
-    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+    await userEvent.click(screen.getByRole('button', { name: 'my label' }));
 
     expect(idleText).not.toBeInTheDocument();
 
@@ -83,7 +83,7 @@ describe('useFetchButton', () => {
 
     const idleText = screen.getByText('button is idling');
 
-    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+    await userEvent.click(screen.getByRole('button', { name: 'my label' }));
 
     expect(idleText).not.toBeInTheDocument();
 
@@ -100,7 +100,7 @@ describe('useFetchButton', () => {
 
     const idleText = screen.getByText('button is idling');
 
-    userEvent.click(screen.getByRole('button', { name: 'my label' }));
+    await userEvent.click(screen.getByRole('button', { name: 'my label' }));
 
     expect(idleText).not.toBeInTheDocument();
 

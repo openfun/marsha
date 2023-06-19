@@ -52,16 +52,12 @@ describe('<Modale />', () => {
 
     userEvent.click(screen.getByRole('button', { name: 'Open' }));
 
-    expect(
-      await screen.findByRole('button', { name: 'Close' }),
-    ).toBeInTheDocument();
-
-    userEvent.click(screen.getByRole('button', { name: 'Close' }));
+    (await screen.findByRole('button', { name: 'Close' })).click();
 
     await waitForElementToBeRemoved(screen.queryByText('Some awesome content'));
     expect(onClose).not.toHaveBeenCalled();
 
-    userEvent.click(screen.getByRole('button', { name: 'Open' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Open' }));
 
     userEvent.click(await screen.findByLabelText('Close the modal'));
 

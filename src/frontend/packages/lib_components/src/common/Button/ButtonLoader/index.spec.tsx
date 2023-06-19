@@ -26,13 +26,13 @@ describe('<ButtonLoader />', () => {
     expect(screen.getByRole('status')).toBeInTheDocument();
   });
 
-  it('interacts correctly', () => {
+  it('interacts correctly', async () => {
     const onClickSubmit = jest.fn();
     render(<ButtonLoader label="My button" onClickSubmit={onClickSubmit} />);
 
     const buttonSubmit = screen.getByRole('button', { name: 'My button' });
     expect(buttonSubmit).toBeInTheDocument();
-    userEvent.click(buttonSubmit);
+    await userEvent.click(buttonSubmit);
     expect(onClickSubmit).toHaveBeenCalled();
   });
 });
