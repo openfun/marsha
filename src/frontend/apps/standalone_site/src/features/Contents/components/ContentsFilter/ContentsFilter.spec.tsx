@@ -43,26 +43,26 @@ describe('<ContentsFilter />', () => {
       screen.queryByRole('button', { name: 'Create a new playlist' }),
     ).not.toBeInTheDocument();
 
-    screen
-      .getByRole('button', {
+    await userEvent.click(
+      screen.getByRole('button', {
         name: /Filter/i,
-      })
-      .click();
+      }),
+    );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
     expect(filter.playlist).toBe('an-other-playlist-id');
   });
 
-  test('the badge render and default filter', () => {
+  test('the badge render and default filter', async () => {
     const deferredPlaylists = new Deferred();
     fetchMock.get(
       '/api/playlists/?limit=20&offset=0&ordering=-created_on&can_edit=true',
@@ -88,11 +88,11 @@ describe('<ContentsFilter />', () => {
 
     expect(screen.getByText('2')).toBeInTheDocument();
 
-    screen
-      .getByRole('button', {
+    await userEvent.click(
+      screen.getByRole('button', {
         name: /Filter/i,
-      })
-      .click();
+      }),
+    );
 
     expect(
       screen.getByLabelText('Choose the playlist., my playlist'),

@@ -74,9 +74,7 @@ describe('<CreatePlaylistForm />', () => {
     fetchMock.get('/api/organizations/?limit=20&offset=0', organizationResult, {
       overwriteRoutes: true,
     });
-    userEvent.click(screen.getByRole('button', { name: 'Retry' }));
-
-    await waitForElementToBeRemoved(retryButton);
+    await userEvent.click(screen.getByRole('button', { name: 'Retry' }));
 
     expect(screen.getByText('Create a playlist')).toBeInTheDocument();
     expect(
@@ -101,11 +99,13 @@ describe('<CreatePlaylistForm />', () => {
 
     expect(await screen.findByText('Create a playlist')).toBeInTheDocument();
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', { name: 'Open Drop; Selected: id' }),
     );
 
-    userEvent.click(await screen.findByRole('option', { name: 'other-org' }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: 'other-org' }),
+    );
 
     expect(
       await screen.findByRole('button', {
@@ -115,14 +115,16 @@ describe('<CreatePlaylistForm />', () => {
     expect(screen.getByDisplayValue('other-org')).toBeInTheDocument();
     expect(screen.queryByDisplayValue('org')).not.toBeInTheDocument();
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', { name: 'Name required' }),
       'some name',
     );
 
     expect(screen.queryByText('playlist page')).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Create playlist' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Create playlist' }),
+    );
 
     expect(await screen.findByText('playlist page')).toBeInTheDocument();
   });

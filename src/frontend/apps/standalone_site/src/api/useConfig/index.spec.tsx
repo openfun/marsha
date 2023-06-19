@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { WrapperReactQuery } from 'lib-tests';
 import { setLogger } from 'react-query';
@@ -28,11 +28,13 @@ describe('useConfig', () => {
       inactive_resources: ['test'],
     });
 
-    const { result, waitFor } = renderHook(() => useConfig(), {
+    const { result } = renderHook(() => useConfig(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/config/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -52,11 +54,13 @@ describe('useConfig', () => {
   it('manages failure', async () => {
     fetchMock.getOnce('/api/config/', 401);
 
-    const { result, waitFor } = renderHook(() => useConfig(), {
+    const { result } = renderHook(() => useConfig(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/config/');
     expect(fetchMock.lastCall()![1]).toEqual({

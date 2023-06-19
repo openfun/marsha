@@ -378,17 +378,17 @@ describe('<PlaylistForm />', () => {
       screen.queryByRole('button', { name: 'Delete playlist' }),
     ).not.toBeInTheDocument();
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: 'Open Drop; Selected: first id',
       }),
     );
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'second organization' }),
     );
 
-    userEvent.clear(screen.getByLabelText('Name*required'));
-    userEvent.type(
+    await userEvent.clear(screen.getByLabelText('Name*required'));
+    await userEvent.type(
       screen.getByLabelText('Name*required'),
       'an other awsome name',
     );
@@ -402,7 +402,7 @@ describe('<PlaylistForm />', () => {
       await screen.findByDisplayValue('an other awsome name'),
     ).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Cancel' }));
 
     await waitFor(() => expect(mockedOnCancel).toHaveBeenCalled());
 

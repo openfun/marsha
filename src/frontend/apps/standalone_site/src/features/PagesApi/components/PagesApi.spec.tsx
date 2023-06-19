@@ -22,9 +22,7 @@ describe('<PagesApi />', () => {
 
     render(<PagesApi />);
 
-    expect(
-      screen.getByRole(/alert/i, { name: /spinner/i }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('alert', { name: /spinner/i })).toBeInTheDocument();
 
     deferred.resolve({
       status: 200,

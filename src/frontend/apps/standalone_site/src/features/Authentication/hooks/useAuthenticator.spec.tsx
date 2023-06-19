@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { classroomMockFactory } from 'lib-classroom';
 import { useCurrentUser, useJwt } from 'lib-components';
@@ -45,7 +45,7 @@ describe('<useAuthenticator />', () => {
     const useDataDeferred = new Deferred();
     fetchMock.get('/api/users/whoami/', useDataDeferred.promise);
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils(),
     });
 
@@ -72,7 +72,7 @@ describe('<useAuthenticator />', () => {
     });
     fetchMock.get('/api/users/whoami/', 401);
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils(),
     });
 
@@ -96,7 +96,7 @@ describe('<useAuthenticator />', () => {
 
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
         routerOptions: {
           history: ['/my-page/?token=123456'],
@@ -113,7 +113,7 @@ describe('<useAuthenticator />', () => {
   it('checks unsuccessfully the authentication with the token parameter', async () => {
     fetchMock.post('/api/auth/challenge/', 500);
 
-    const { waitFor } = renderHook(() => useAuthenticator(), {
+    renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
         routerOptions: {
           history: ['/my-page/?token=123456'],
@@ -135,7 +135,7 @@ describe('<useAuthenticator />', () => {
       } as any,
     });
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils(),
     });
 
@@ -158,7 +158,7 @@ describe('<useAuthenticator />', () => {
 
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
         routerOptions: {
           history: [
@@ -179,7 +179,7 @@ describe('<useAuthenticator />', () => {
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ0b2tlbl90eXBlIjoicmVzb3VyY2VfYWNjZXNzIiwiZXhwIjoxNjg5MjA2NDAwLCJpYXQiOjE2ODY1ODYwMzgsImp0aSI6ImNsYXNzcm9vbS1pbnZpdGUtMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLTIwMjMtMDYtMTIiLCJzZXNzaW9uX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlLWludml0ZSIsInJlc291cmNlX2lkIjoiMGJjZWIxZDItM2IxOS00NGI3LWE2NDctNGMxNTU2ZjU5MmZlIiwicm9sZXMiOlsibm9uZSJdLCJsb2NhbGUiOiJlbl9VUyIsInBlcm1pc3Npb25zIjp7ImNhbl9hY2Nlc3NfZGFzaGJvYXJkIjpmYWxzZSwiY2FuX3VwZGF0ZSI6ZmFsc2V9LCJtYWludGVuYW5jZSI6ZmFsc2V9.68xSZYUAzrLD49pLkoOQy-ud7uaJVHgZ69zgkoW7umA';
     fetchMock.get('/api/users/whoami/', whoAmIResponse200);
 
-    const { result, waitFor } = renderHook(() => useAuthenticator(), {
+    const { result } = renderHook(() => useAuthenticator(), {
       wrapper: wrapperUtils({
         routerOptions: {
           history: [

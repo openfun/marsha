@@ -1,23 +1,9 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { usePasswordReset } from './index';
-
-const Wrapper: WrapperComponent<Element> = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
 
 describe('features/Authentication/api/usePasswordReset', () => {
   beforeAll(() => {
@@ -40,14 +26,16 @@ describe('features/Authentication/api/usePasswordReset', () => {
         details: 'Email sent',
       });
 
-      const { result, waitFor } = renderHook(() => usePasswordReset(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePasswordReset(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         email: 'some_username',
         confirm_url: 'https://marsha.education/auth/password/reset/confirm/',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/account/api/password/reset/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -69,8 +57,8 @@ describe('features/Authentication/api/usePasswordReset', () => {
     it('manages failure', async () => {
       fetchMock.postOnce('/account/api/password/reset/', 401);
 
-      const { result, waitFor } = renderHook(() => usePasswordReset(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePasswordReset(), {
+        wrapper: WrapperReactQuery,
       });
 
       result.current.mutate({
@@ -78,7 +66,9 @@ describe('features/Authentication/api/usePasswordReset', () => {
         confirm_url: 'https://marsha.education/auth/password/reset/confirm/',
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual('/account/api/password/reset/');
       expect(fetchMock.lastCall()![1]).toEqual({

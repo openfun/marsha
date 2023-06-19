@@ -1,4 +1,4 @@
-import { screen } from '@testing-library/react';
+import { screen, act } from '@testing-library/react';
 import { render } from 'lib-tests';
 import React from 'react';
 import ReactTestUtils from 'react-dom/test-utils';
@@ -15,7 +15,7 @@ jest.mock('features/Contents', () => ({
 }));
 
 describe('<HomePage />', () => {
-  test('renders HomePage', () => {
+  test('renders HomePage', async () => {
     render(<HomePage />);
     expect(screen.getByText(/My ContentsShuffle/i)).toBeInTheDocument();
     expect(
@@ -23,9 +23,11 @@ describe('<HomePage />', () => {
     ).toBeInTheDocument();
 
     const imageRef = screen.getByAltText('Homepage Banner');
-    ReactTestUtils.Simulate.load(imageRef);
+    act(() => {
+      ReactTestUtils.Simulate.load(imageRef);
+    });
 
-    expect(screen.getByText(/Learn freely/i)).toBeInTheDocument();
+    expect(await screen.findByText(/Learn freely/i)).toBeInTheDocument();
     expect(
       screen.getByText(
         /Online courses to discover, learn, progress and succeed/i,

@@ -19,14 +19,14 @@ describe('<Header />', () => {
       }),
     });
     render(<Header />);
-    expect(screen.getByRole(/menubar/i)).toBeInTheDocument();
+    expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(screen.getByText(/John Doe/i)).toBeInTheDocument();
   });
 
   test('scroll and update background', () => {
     render(<Header />);
 
-    const menuBar = screen.getByRole(/menubar/i);
+    const menuBar = screen.getByRole('menubar');
     expect(menuBar).toBeInTheDocument();
     expect(menuBar).toHaveStyle('background: transparent');
     fireEvent.scroll(window, { target: { scrollY: 100 } });

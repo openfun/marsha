@@ -78,7 +78,7 @@ describe('<App />', () => {
 
     expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /My playlists/i }),
+      screen.getByRole('menuitem', { name: /My playlists/i }),
     ).toBeInTheDocument();
     expect(consoleWarn).toHaveBeenCalled();
     expect(
@@ -111,7 +111,7 @@ describe('<App />', () => {
 
     expect(await screen.findByText(/John Doe/i)).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Mon Tableau de bord/i }),
+      await screen.findByRole('menuitem', { name: /Mon Tableau de bord/i }),
     ).toBeInTheDocument();
     expect(
       await screen.findByText(/some welcome classroom/i),

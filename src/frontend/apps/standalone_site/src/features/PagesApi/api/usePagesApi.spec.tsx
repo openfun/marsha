@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { WrapperReactQuery } from 'lib-tests';
 import { setLogger } from 'react-query';
@@ -31,11 +31,13 @@ describe('usePagesApi', () => {
       ],
     });
 
-    const { result, waitFor } = renderHook(() => usePagesApi(), {
+    const { result } = renderHook(() => usePagesApi(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -59,11 +61,13 @@ describe('usePagesApi', () => {
   it('manages failure', async () => {
     fetchMock.getOnce('/api/pages/', 401);
 
-    const { result, waitFor } = renderHook(() => usePagesApi(), {
+    const { result } = renderHook(() => usePagesApi(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/pages/');
     expect(fetchMock.lastCall()![1]).toEqual({

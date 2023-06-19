@@ -84,7 +84,9 @@ describe('<UpdatePlaylistPage />', () => {
       await screen.findByRole('heading', { name: 'Main informations' }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole('button', { name: 'Open Drop; Selected: id orga' }),
+      await screen.findByRole('button', {
+        name: 'Open Drop; Selected: id orga',
+      }),
     ).not.toBeDisabled();
     expect(screen.getByDisplayValue('playlist title')).not.toBeDisabled();
 
@@ -103,7 +105,7 @@ describe('<UpdatePlaylistPage />', () => {
       overwriteRoutes: true,
     });
 
-    userEvent.click(screen.getByRole('button', { name: 'Save' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Save' }));
 
     await waitFor(() =>
       expect(
