@@ -1,3 +1,5 @@
+import '@testing-library/jest-dom';
+
 global.use_jwt_persistence = true;
 const { useJwt } = require('lib-components');
 
