@@ -1,5 +1,5 @@
-import { useTimedTextTrack, timedTextMode, Select } from 'lib-components';
-import React, { useEffect, useMemo, useState } from 'react';
+import { Select, timedTextMode, useTimedTextTrack } from 'lib-components';
+import { useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { LanguageChoice } from '@lib-video/types/SelectOptions';

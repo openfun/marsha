@@ -1,17 +1,16 @@
-import { screen, fireEvent } from '@testing-library/react';
+import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  timedTextMockFactory,
-  UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
+  UploadingObject,
   modelName,
+  timedTextMockFactory,
   uploadState,
+  useJwt,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
@@ -182,7 +181,7 @@ describe('<TimedTextTrackItem />', () => {
     const retryButton = screen.getByRole('button', {
       name: 'Click on this button to retry uploading your failed upload.',
     });
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledWith(
       mockedTimedTextTrack.id,
     );

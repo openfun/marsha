@@ -3,10 +3,10 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   AnonymousUser,
-  useCurrentUser,
+  JitsiMeetExternalAPI,
   JoinMode,
   LiveJitsi,
-  JitsiMeetExternalAPI,
+  useCurrentUser,
 } from 'lib-components';
 
 import { useLiveSession } from '@lib-video/hooks/useLiveSession';

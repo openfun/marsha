@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { theme } from 'lib-common';
 import { render, renderImageSnapshot } from 'lib-tests';
-import React from 'react';
 
 import { JoinChatButton } from './index';
 
@@ -20,19 +19,19 @@ describe('<JoinChatButton />', () => {
     expect(screen.getByText('Join the chat')).toBeInTheDocument();
   });
 
-  it('renders the button and clicks on it.', () => {
+  it('renders the button and clicks on it.', async () => {
     render(<JoinChatButton disabled={false} handleClick={mockHandleClick} />, {
       grommetOptions: { theme },
     });
     const button = screen.getByRole('button');
-    userEvent.click(button);
+    await userEvent.click(button);
     expect(mockHandleClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the button and clicks on it when it is disabled', () => {
+  it('renders the button and clicks on it when it is disabled', async () => {
     render(<JoinChatButton disabled={true} handleClick={mockHandleClick} />);
     const button = screen.getByRole('button');
-    userEvent.click(button);
+    await userEvent.click(button);
     expect(mockHandleClick).toHaveBeenCalledTimes(0);
   });
 });

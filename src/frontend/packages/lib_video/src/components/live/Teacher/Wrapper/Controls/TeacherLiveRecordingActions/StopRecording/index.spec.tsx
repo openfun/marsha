@@ -1,9 +1,8 @@
-import { act, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory, useVideo } from 'lib-components';
+import { useVideo, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -26,13 +25,11 @@ describe('<StopRecording />', () => {
         },
       },
     });
-    jest.useFakeTimers();
   });
 
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
-    jest.useRealTimers();
   });
 
   it('updates the video on success', async () => {
@@ -44,7 +41,7 @@ describe('<StopRecording />', () => {
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, video);
     fetchMock.mock('/api/videos/', {
       live: {
-        segment_duration_seconds: 1,
+        segment_duration_seconds: 0.1,
       },
     });
 
@@ -55,15 +52,19 @@ describe('<StopRecording />', () => {
     expect(button).toBeDisabled();
 
     await waitFor(() => {
-      expect(fetchMock.called('/api/videos/')).toBe(true);
+      expect(
+        fetchMock.called('/api/videos/', {
+          method: 'OPTIONS',
+        }),
+      ).toBe(true);
     });
 
-    act(() => {
-      jest.advanceTimersByTime(2000);
+    await waitFor(() => {
+      expect(button).toBeEnabled();
     });
 
     await waitFor(() => expect(button).toBeEnabled());
-    userEvent.click(button);
+    await userEvent.click(button);
 
     await waitFor(() => expect(mockAddResource).toHaveBeenCalled());
     expect(mockAddResource).toHaveBeenCalledWith(video);
@@ -74,7 +75,7 @@ describe('<StopRecording />', () => {
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, 400);
     fetchMock.mock('/api/videos/', {
       live: {
-        segment_duration_seconds: 1,
+        segment_duration_seconds: 0.1,
       },
     });
 
@@ -88,31 +89,23 @@ describe('<StopRecording />', () => {
       expect(fetchMock.called('/api/videos/')).toBe(true);
     });
 
-    act(() => {
-      jest.advanceTimersByTime(2000);
-    });
-
     await waitFor(() => expect(button).toBeEnabled());
 
-    userEvent.click(button);
+    await userEvent.click(button);
 
     await screen.findByText('An error occured. Please try again later.');
   });
 
-  it('renders current recorded time', () => {
+  it('renders current recorded time', async () => {
     const video = videoMockFactory({ recording_time: 3722 });
-    fetchMock.mock('/api/videos/', {
-      live: {
-        segment_duration_seconds: 1,
-      },
-    });
+    fetchMock.mock('/api/videos/', 200);
 
     render(wrapInVideo(<StopRecording />, video), {
       queryOptions: { client: queryClient },
     });
 
     expect(
-      screen.getByRole('button', { name: 'REC 0 1 : 0 2 : 0 2' }),
+      await screen.findByRole('button', { name: 'REC 0 1 : 0 2 : 0 2' }),
     ).toBeInTheDocument();
   });
 });

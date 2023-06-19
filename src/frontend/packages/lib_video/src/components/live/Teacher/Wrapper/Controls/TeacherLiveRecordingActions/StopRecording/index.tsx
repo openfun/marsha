@@ -49,10 +49,13 @@ export const StopRecording = () => {
   const { data } = useVideoMetadata(intl.locale);
 
   useEffect(() => {
-    if (data && data.live.segment_duration_seconds > 0) {
+    if (
+      data?.live.segment_duration_seconds &&
+      data.live.segment_duration_seconds > 0
+    ) {
       const timeoutId = window.setTimeout(() => {
         setRecordingActionEnabled(true);
-      }, data.live.segment_duration_seconds * 1000);
+      }, data?.live.segment_duration_seconds * 1000);
 
       return () => {
         window.clearTimeout(timeoutId);
@@ -60,7 +63,8 @@ export const StopRecording = () => {
     }
 
     return;
-  }, [data]);
+  }, [data?.live.segment_duration_seconds]);
+
   const { isLoading, mutate } = useStopLiveRecording(video.id, () => {
     toast.error(intl.formatMessage(messages.error));
   });

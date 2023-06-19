@@ -5,16 +5,16 @@ import {
   InfoWidgetModalProvider,
   UploadManagerContext,
   UploadManagerStatus,
-  useUploadManager,
-  useJwt,
-  thumbnailMockFactory,
-  useThumbnail,
   modelName,
+  thumbnailMockFactory,
   uploadState,
+  useJwt,
+  useThumbnail,
+  useUploadManager,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { createThumbnail } from '@lib-video/api/createThumbnail';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -131,13 +131,13 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload an image',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
 
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'thumbnail.png', {
       type: 'image/*',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await waitFor(() =>
       expect(useThumbnail.getState().thumbnails).toEqual({
@@ -292,13 +292,13 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
       name: 'Delete thumbnail',
     });
 
-    userEvent.click(removeButton);
+    await userEvent.click(removeButton);
 
     const confirmButton = screen.getByRole('button', {
       name: 'Delete thumbnail image',
     });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(3));
     expect(
@@ -405,13 +405,13 @@ describe('<DashboardLiveWidgetThumbnail />', () => {
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload an image',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
 
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'thumbnail.png', {
       type: 'image/*',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     expect(screen.queryByText('subs.srt')).not.toBeInTheDocument();
     expect(

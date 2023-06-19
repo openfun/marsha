@@ -1,15 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
+  report,
   useJwt,
   videoMockFactory,
-  report,
-  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime, Duration } from 'luxon';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -21,6 +20,10 @@ jest.mock('lib-components', () => ({
 }));
 
 const currentDate = DateTime.fromISO('2022-01-01T12:00');
+
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
 
 describe('<SchedulingAndDescription />', () => {
   beforeEach(() => {
@@ -304,7 +307,7 @@ describe('<SchedulingAndDescription />', () => {
     expect(screen.getByText('Description...')).toBeInTheDocument();
     expect(textArea).toHaveValue('');
 
-    userEvent.type(textArea, 'A new description');
+    await userEvent.type(textArea, 'A new description');
     expect(textArea).toHaveValue('A new description');
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
@@ -349,7 +352,7 @@ describe('<SchedulingAndDescription />', () => {
     });
     expect(textArea).toHaveValue('An existing description');
 
-    userEvent.clear(textArea);
+    await userEvent.clear(textArea);
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
       timeout: 1500,
     });
@@ -390,7 +393,7 @@ describe('<SchedulingAndDescription />', () => {
     });
     expect(textArea).toHaveValue('An existing description');
 
-    userEvent.type(textArea, ' and more');
+    await userEvent.type(textArea, ' and more');
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1), {
       timeout: 1500,
     });

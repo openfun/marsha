@@ -3,13 +3,12 @@ import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
+  report,
+  sharedLiveMediaMockFactory,
   useJwt,
   videoMockFactory,
-  sharedLiveMediaMockFactory,
-  report,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -57,7 +56,7 @@ describe('<StartSharingButton />', () => {
 
     const startSharingButton = screen.getByRole('button', { name: 'Share' });
 
-    userEvent.click(startSharingButton);
+    await userEvent.click(startSharingButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -98,7 +97,7 @@ describe('<StartSharingButton />', () => {
 
     const startSharingButton = screen.getByRole('button', { name: 'Share' });
 
-    userEvent.click(startSharingButton);
+    await userEvent.click(startSharingButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(

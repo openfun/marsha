@@ -10,7 +10,6 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { VideoWidgetProvider } from '@lib-video/components/common';
 
@@ -139,7 +138,7 @@ describe('<Dashboard />', () => {
     );
   });
 
-  it('renders the DashboardVOD collapsed', () => {
+  it('renders the DashboardVOD collapsed', async () => {
     mockDashboardCollapsed = true;
     const { container } = render(
       <Dashboard video={mockedVideo} socketUrl="some_url" />,
@@ -153,7 +152,7 @@ describe('<Dashboard />', () => {
     expect(videoElement.getElementsByTagName('source')).toHaveLength(5);
 
     // show dashboard
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', { name: `${mockedVideo.title!} dashboard` }),
     );
 

@@ -1,8 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useStopLiveRecording } from '.';
 
@@ -18,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useStopLiveRecording', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -47,14 +33,16 @@ describe('useStopLiveRecording', () => {
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, video);
 
     const onError = jest.fn();
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useStopLiveRecording(video.id, onError),
       {
-        wrapper: Wrapper,
+        wrapper: WrapperReactQuery,
       },
     );
     result.current.mutate();
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${video.id}/stop-recording/`,
@@ -77,14 +65,16 @@ describe('useStopLiveRecording', () => {
     fetchMock.patch(`/api/videos/${video.id}/stop-recording/`, 400);
 
     const onError = jest.fn();
-    const { result, waitFor } = renderHook(
+    const { result } = renderHook(
       () => useStopLiveRecording(video.id, onError),
       {
-        wrapper: Wrapper,
+        wrapper: WrapperReactQuery,
       },
     );
     result.current.mutate();
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${video.id}/stop-recording/`,

@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { LicenseSelect } from '.';
 
@@ -147,25 +146,24 @@ describe('<LicenseSelect />', () => {
         value: 'CC_BY',
       }),
     );
-    const selectButton = screen.getByRole('button', {
-      name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-    });
 
-    userEvent.click(selectButton);
-
-    screen.getByRole('button', {
-      name: 'Select the license under which you want to publish your video; Selected: CC_BY',
-    });
     expect(
-      screen.getByRole('textbox', {
-        name: 'Select the license under which you want to publish your video, CC_BY',
+      await screen.findByRole('textbox', {
+        name: /Select the license under which you want to publish your video, CC_BY/i,
       }),
     ).toHaveValue('Creative Common By Attribution');
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'Select the license under which you want to publish your video; Selected: CC_BY',
+      }),
+    );
+
     const allRightsReservedButtonOption = screen.getByRole('option', {
       name: 'All rights reserved',
     });
 
-    userEvent.click(allRightsReservedButtonOption);
+    await userEvent.click(allRightsReservedButtonOption);
 
     screen.getByRole('button', {
       name: 'Select the license under which you want to publish your video; Selected: NO_CC',

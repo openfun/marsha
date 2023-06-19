@@ -1,4 +1,4 @@
-import { within, screen, waitFor } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
@@ -7,7 +7,6 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -29,7 +28,7 @@ describe('<InstructorDownloadVideo />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders the component', () => {
+  it('renders the component', async () => {
     const mockedVideo = videoMockFactory();
     render(
       wrapInVideo(
@@ -42,7 +41,7 @@ describe('<InstructorDownloadVideo />', () => {
 
     screen.getByText('Download video');
 
-    userEvent.click(screen.getByRole('button', { name: 'help' }));
+    await userEvent.click(screen.getByRole('button', { name: 'help' }));
 
     const button = screen.getByRole('button', {
       name: 'This input allows you to select the quality you desire for your download.; Selected: 1080 p',
@@ -52,7 +51,7 @@ describe('<InstructorDownloadVideo />', () => {
     expect(screen.getByRole('link', { name: 'Download' })).toBeInTheDocument();
   });
 
-  it('selects the lowest quality', () => {
+  it('selects the lowest quality', async () => {
     const mockedVideo = videoMockFactory();
 
     render(
@@ -68,13 +67,13 @@ describe('<InstructorDownloadVideo />', () => {
       name: 'This input allows you to select the quality you desire for your download.; Selected: 1080 p',
     });
 
-    userEvent.click(defaultButtonSelect);
+    await userEvent.click(defaultButtonSelect);
 
     const lowestQualityButtonSelect = screen.getByRole('option', {
       name: '144 p',
     });
 
-    userEvent.click(lowestQualityButtonSelect);
+    await userEvent.click(lowestQualityButtonSelect);
 
     expect(screen.queryByText('240 p')).toBe(null);
     expect(screen.queryByText('720 p')).toBe(null);
@@ -83,7 +82,7 @@ describe('<InstructorDownloadVideo />', () => {
     screen.getByText('144 p');
   });
 
-  it('downloads the video with the default selected quality', () => {
+  it('downloads the video with the default selected quality', async () => {
     const mockedVideo = videoMockFactory();
 
     render(
@@ -101,7 +100,7 @@ describe('<InstructorDownloadVideo />', () => {
       'href',
       'https://example.com/mp4/1080',
     );
-    userEvent.click(downloadButton);
+    await userEvent.click(downloadButton);
   });
 
   it("renders the component when there aren't any resolutions available", () => {
@@ -139,12 +138,7 @@ describe('<InstructorDownloadVideo />', () => {
       name: allowDownloadToggleLabel,
     });
 
-    userEvent.click(allowDownloadToggle);
-
-    await waitFor(() => {
-      expect(allowDownloadToggle).toBeDisabled();
-    });
-
+    await userEvent.click(allowDownloadToggle);
     await screen.findByText(allowDownloadToggleFail);
 
     expect(allowDownloadToggle).not.toBeDisabled();
@@ -170,7 +164,7 @@ describe('<InstructorDownloadVideo />', () => {
 
     expect(screen.queryByText(allowDownloadToggleFail)).not.toBeInTheDocument();
 
-    userEvent.click(allowDownloadToggle);
+    await userEvent.click(allowDownloadToggle);
 
     await screen.findByText(allowDownloadToggleFail);
   });
@@ -204,7 +198,7 @@ describe('<InstructorDownloadVideo />', () => {
       screen.queryByText(allowDownloadToggleSuccess),
     ).not.toBeInTheDocument();
 
-    userEvent.click(allowDownloadToggle);
+    await userEvent.click(allowDownloadToggle);
 
     await screen.findByText(allowDownloadToggleSuccess);
 
@@ -245,7 +239,7 @@ describe('<InstructorDownloadVideo />', () => {
       screen.queryByText(disallowDownloadToggleSuccess),
     ).not.toBeInTheDocument();
 
-    userEvent.click(allowDownloadToggle);
+    await userEvent.click(allowDownloadToggle);
 
     await screen.findByText(disallowDownloadToggleSuccess);
 

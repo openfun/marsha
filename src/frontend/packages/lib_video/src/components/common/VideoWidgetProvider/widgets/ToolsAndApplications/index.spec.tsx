@@ -2,14 +2,13 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
+  liveState,
+  report,
   useJwt,
   videoMockFactory,
-  report,
-  liveState,
-  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -81,7 +80,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Activate chat',
     });
 
-    userEvent.click(chatToggleButton);
+    await userEvent.click(chatToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -125,7 +124,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Activate chat',
     });
 
-    userEvent.click(chatToggleButton);
+    await userEvent.click(chatToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -167,7 +166,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Activate chat',
     });
 
-    userEvent.click(chatToggleButton);
+    await userEvent.click(chatToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -254,7 +253,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Activate live recording',
     });
 
-    userEvent.click(recordingToggleButton);
+    await userEvent.click(recordingToggleButton);
     await waitFor(() => {
       expect(fetchMock.calls()).toHaveLength(1);
     });
@@ -297,7 +296,7 @@ describe('<ToolsAndApplications />', () => {
       name: 'Activate live recording',
     });
 
-    userEvent.click(recordingToggleButton);
+    await userEvent.click(recordingToggleButton);
     await waitFor(() => {
       expect(fetchMock.calls()).toHaveLength(1);
     });

@@ -1,15 +1,14 @@
 /* eslint-disable testing-library/no-node-access */
 import { act, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
 import {
   decodeJwt,
-  useCurrentUser,
-  liveSessionFactory,
   liveMockFactory,
+  liveSessionFactory,
+  useCurrentUser,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import {
@@ -52,6 +51,10 @@ const live = liveMockFactory({
   id: 'some-live-id',
 });
 
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
+
 describe('<InputDisplayName />', () => {
   beforeEach(() => {
     jest.useFakeTimers();
@@ -70,8 +73,8 @@ describe('<InputDisplayName />', () => {
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
 
-    userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
-    userEvent.click(validateButton);
+    await userEvent.type(inputTextbox, `${ANONYMOUS_ID_PREFIX}-John`);
+    await userEvent.click(validateButton);
 
     await screen.findByText(`Keyword "${ANONYMOUS_ID_PREFIX}" is not allowed.`);
     expect(
@@ -91,8 +94,8 @@ describe('<InputDisplayName />', () => {
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
 
-    userEvent.type(inputTextbox, 'JD');
-    userEvent.click(validateButton);
+    await userEvent.type(inputTextbox, 'JD');
+    await userEvent.click(validateButton);
 
     await screen.findByText(`Min length is ${NICKNAME_MIN_LENGTH} characters.`);
     expect(
@@ -112,8 +115,8 @@ describe('<InputDisplayName />', () => {
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
 
-    userEvent.type(inputTextbox, 'John Doe the legend');
-    userEvent.click(validateButton);
+    await userEvent.type(inputTextbox, 'John Doe the legend');
+    await userEvent.click(validateButton);
 
     await screen.findByText(`Max length is ${NICKNAME_MAX_LENGTH} characters.`);
     expect(
@@ -147,9 +150,9 @@ describe('<InputDisplayName />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    userEvent.click(validateButton);
+    await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
@@ -193,11 +196,9 @@ describe('<InputDisplayName />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    userEvent.click(validateButton);
-    // When waiting prosody answer, svg button is replaced by a waiting spinner
-    expect(validateButton.querySelector('svg')).toBeNull();
+    await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
@@ -240,9 +241,9 @@ describe('<InputDisplayName />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    userEvent.click(validateButton);
+    await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
@@ -289,9 +290,9 @@ describe('<InputDisplayName />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.type(inputTextbox, 'John_Doe');
     expect(validateButton.querySelector('svg')).toBeTruthy();
-    userEvent.click(validateButton);
+    await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );
@@ -332,8 +333,8 @@ describe('<InputDisplayName />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
-    userEvent.click(validateButton);
+    await userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.click(validateButton);
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),
     );

@@ -1,4 +1,4 @@
-import { WrapperComponent, renderHook } from '@testing-library/react-hooks';
+import { waitFor, renderHook } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt, videoMockFactory } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
@@ -10,12 +10,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useDeleteVideos', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-    Wrapper = WrapperReactQuery;
   });
 
   afterEach(() => {
@@ -31,11 +28,13 @@ describe('useDeleteVideos', () => {
       status: 204,
       body: { ids: [video1.id, video2.id] },
     });
-    const { result, waitFor } = renderHook(() => useDeleteVideos(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteVideos(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({ ids: [video1.id, video2.id] });
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -56,12 +55,14 @@ describe('useDeleteVideos', () => {
       status: 400,
     });
 
-    const { result, waitFor } = renderHook(() => useDeleteVideos(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteVideos(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({ ids: [video.id] });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
     expect(fetchMock.lastCall()![1]).toEqual({

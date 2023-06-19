@@ -2,12 +2,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from 'grommet';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { PictureInPictureElement } from '.';
 
 describe('<PictureInPictureElement />', () => {
-  it('renders component when not in picture mode', () => {
+  it('renders component when not in picture mode', async () => {
     const onButtonClick = jest.fn();
     const Compo = () => (
       <Button label="my button label" onClick={onButtonClick} />
@@ -19,11 +18,13 @@ describe('<PictureInPictureElement />', () => {
       </PictureInPictureElement>,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'my button label' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'my button label' }),
+    );
     expect(onButtonClick).toHaveBeenCalled();
   });
 
-  it('renders component when in picture mode', () => {
+  it('renders component when in picture mode', async () => {
     const onButtonClick = jest.fn();
     const Compo = () => (
       <Button label="my button label" onClick={onButtonClick} />
@@ -35,9 +36,9 @@ describe('<PictureInPictureElement />', () => {
       </PictureInPictureElement>,
     );
 
-    expect(() =>
+    await expect(
       userEvent.click(screen.getByRole('button', { name: 'my button label' })),
-    ).toThrow();
+    ).rejects.toThrow(/pointer-events: none/);
     expect(onButtonClick).not.toHaveBeenCalled();
 
     screen.getByTestId('corner-resizer');

@@ -1,5 +1,5 @@
 import { screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
@@ -7,7 +7,6 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -17,6 +16,10 @@ jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
   report: jest.fn(),
 }));
+
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
 
 describe('<DescriptionWidget />', () => {
   beforeEach(() => {
@@ -90,7 +93,7 @@ describe('<DescriptionWidget />', () => {
     ).toBeInTheDocument();
     expect(textArea).toHaveValue('');
 
-    userEvent.type(textArea, 'A new description');
+    await userEvent.type(textArea, 'A new description');
     expect(textArea).toHaveValue('A new description');
 
     jest.runOnlyPendingTimers();
@@ -135,7 +138,7 @@ describe('<DescriptionWidget />', () => {
     });
     expect(textArea).toHaveValue('An existing description');
 
-    userEvent.clear(textArea);
+    await userEvent.clear(textArea);
 
     jest.runOnlyPendingTimers();
 
@@ -180,7 +183,7 @@ describe('<DescriptionWidget />', () => {
     ).toBeInTheDocument();
     expect(textArea).toHaveValue('An existing description');
 
-    userEvent.type(textArea, ' and more');
+    await userEvent.type(textArea, ' and more');
 
     jest.runOnlyPendingTimers();
 

@@ -1,23 +1,24 @@
 import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useCurrentResourceContext,
-  useJwt,
   JoinMode,
   LiveJitsi,
   LiveModeType,
-  liveState,
-  uploadState,
-  Video,
   PersistentStore,
-  participantMockFactory,
+  Video,
   liveMockFactory,
+  liveState,
+  participantMockFactory,
+  uploadState,
+  useCurrentResourceContext,
+  useJwt,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { Suspense, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { QueryClient } from 'react-query';
 
+import DashboardLiveJitsi from '@lib-video/components/live/common/DashboardLiveJitsi';
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
 import { JitsiApiProvider } from '@lib-video/hooks/useJitsiApi';
 import { LiveModaleConfigurationProvider } from '@lib-video/hooks/useLiveModale';
@@ -52,20 +53,27 @@ jest.mock(
 );
 
 let mockCanShowStartButton = false;
-const MockDashboardLiveJitsi = (props: {
+const MockDashboardLiveJitsi = ({
+  liveJitsi,
+  setCanShowStartButton,
+}: {
   liveJitsi: LiveJitsi;
   setCanShowStartButton: (canShowStartButton: boolean) => void;
 }) => {
   useEffect(() => {
-    props.setCanShowStartButton(mockCanShowStartButton);
-  }, [props]);
+    setCanShowStartButton(mockCanShowStartButton);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [setCanShowStartButton, mockCanShowStartButton]);
 
-  return <span title={props.liveJitsi.id}>jitsi</span>;
+  return <span title={liveJitsi.id}>jitsi</span>;
 };
-jest.mock(
-  'components/live/common/DashboardLiveJitsi',
-  () => MockDashboardLiveJitsi,
-);
+jest.mock('@lib-video/components/live/common/DashboardLiveJitsi', () => ({
+  __esModule: true,
+  default: jest.fn(),
+}));
+const mockedDashboardLiveJitsi = DashboardLiveJitsi as jest.MockedFunction<
+  typeof DashboardLiveJitsi
+>;
 
 jest.mock('utils/window', () => ({
   converse: {
@@ -85,6 +93,10 @@ const mockedUseCurrentResourceContext =
 let queryClient: QueryClient;
 
 jest.setTimeout(10000);
+
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
 
 describe('components/DashboardLive', () => {
   beforeEach(() => {
@@ -108,12 +120,15 @@ describe('components/DashboardLive', () => {
       },
     });
     jest.useFakeTimers();
+
+    mockedDashboardLiveJitsi.mockImplementation(MockDashboardLiveJitsi as any);
   });
 
   afterEach(() => {
     fetchMock.restore();
     jest.resetAllMocks();
     mockCanShowStartButton = false;
+    jest.useRealTimers();
   });
 
   const video = liveMockFactory({
@@ -231,7 +246,11 @@ describe('components/DashboardLive', () => {
       { queryOptions: { client: queryClient } },
     );
 
-    await screen.findByText('Only a jitsi moderator can administrate the live');
+    expect(
+      await screen.findByText(
+        'Only a jitsi moderator can administrate the live',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('shows the stop button when the status is RUNNING', async () => {
@@ -280,7 +299,7 @@ describe('components/DashboardLive', () => {
     });
     expect(stopButton).not.toBeDisabled();
 
-    userEvent.click(stopButton);
+    await userEvent.click(stopButton);
 
     //  modal is open
     await screen.findByRole('button', { name: /Cancel/i });
@@ -359,7 +378,7 @@ describe('components/DashboardLive', () => {
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',
     });
-    userEvent.click(joindChatButton);
+    await userEvent.click(joindChatButton);
 
     expect(await screen.findByText('Display name')).toBeInTheDocument();
   });
@@ -631,7 +650,7 @@ describe('components/DashboardLive', () => {
     const btnManageRequest = screen.getByRole('button', {
       name: 'Manage requests',
     });
-    userEvent.click(btnManageRequest);
+    await userEvent.click(btnManageRequest);
 
     expect(
       screen.queryByRole('button', {

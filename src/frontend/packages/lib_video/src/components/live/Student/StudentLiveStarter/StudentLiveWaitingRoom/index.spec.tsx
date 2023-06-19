@@ -2,13 +2,12 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
 import {
+  liveMockFactory,
+  liveSessionFactory,
   useCurrentUser,
   useMaintenance,
-  liveSessionFactory,
-  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import { converse } from '@lib-video/utils/window';
@@ -125,10 +124,10 @@ describe('<StudentLiveWaitingRoom />', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.clear(inputTextbox);
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.clear(inputTextbox);
+    await userEvent.type(inputTextbox, 'John_Doe');
 
-    userEvent.click(validateButton);
+    await userEvent.click(validateButton);
 
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),

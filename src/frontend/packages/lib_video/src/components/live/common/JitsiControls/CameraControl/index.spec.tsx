@@ -1,7 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 
 import { CameraControl } from '.';
 
@@ -121,7 +120,7 @@ describe('<CameraControl />', () => {
 
     expect(mockExecuteCommand).not.toHaveBeenCalled();
 
-    userEvent.click(screen.getByRole('button'));
+    await userEvent.click(screen.getByRole('button'));
 
     expect(mockExecuteCommand).toHaveBeenCalled();
     expect(mockExecuteCommand).toHaveBeenCalledWith('toggleVideo');

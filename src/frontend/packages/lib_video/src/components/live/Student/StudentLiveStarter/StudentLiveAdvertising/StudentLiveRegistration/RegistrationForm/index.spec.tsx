@@ -1,9 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import MatchMediaMock from 'jest-matchmedia-mock';
-import { decodeJwt, liveSessionFactory, liveMockFactory } from 'lib-components';
+import { decodeJwt, liveMockFactory, liveSessionFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { createLiveSession } from '@lib-video/api/createLiveSession';
 import { updateLiveSession } from '@lib-video/api/updateLiveSession';
@@ -68,7 +67,7 @@ describe('<RegistrationForm />', () => {
     matchMedia.clear();
   });
 
-  it('renders the form without values', () => {
+  it('renders the form without values', async () => {
     render(
       wrapInVideo(
         <RegistrationForm
@@ -86,7 +85,7 @@ describe('<RegistrationForm />', () => {
     ).not.toBeInTheDocument();
 
     const email = 'test_email@openfun.fr';
-    userEvent.type(textbox, email);
+    await userEvent.type(textbox, email);
 
     expect(textbox).toBeInTheDocument();
     expect(textbox).toHaveValue(email);
@@ -132,7 +131,9 @@ describe('<RegistrationForm />', () => {
         user_fullname: 'user full name',
       },
     });
-    mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
+    mockCreateLiveSession.mockRejectedValue(
+      jest.fn(() => Promise.reject('some error')),
+    );
 
     render(
       wrapInVideo(
@@ -154,7 +155,7 @@ describe('<RegistrationForm />', () => {
       ),
     ).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await screen.findByText(
       'Impossible to register your email some.email@openfun.fr for this event. Make sure your email is valid otherwise, please try again later or contact us.',
@@ -168,7 +169,7 @@ describe('<RegistrationForm />', () => {
     });
     mockCreateLiveSession.mockResolvedValue(liveSession);
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await waitFor(() =>
       expect(setRegistrationCompleted).toHaveBeenCalledTimes(1),
@@ -204,7 +205,7 @@ describe('<RegistrationForm />', () => {
     expect(mockCreateLiveSession).toHaveBeenCalledTimes(0);
     expect(setRegistrationCompleted).toHaveBeenCalledTimes(0);
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await waitFor(() => expect(mockCreateLiveSession).toHaveBeenCalledTimes(1));
     expect(setRegistrationCompleted).toHaveBeenCalledTimes(1);
@@ -228,13 +229,15 @@ describe('<RegistrationForm />', () => {
       screen.queryByText('You have to submit a valid email to register.'),
     ).not.toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await screen.findByText('You have to submit a valid email to register.');
   });
 
   it('renders an error when validation fail server side', async () => {
-    mockCreateLiveSession.mockResolvedValue(Promise.reject('some error'));
+    mockCreateLiveSession.mockRejectedValue(
+      jest.fn(() => Promise.reject('some error')),
+    );
 
     render(
       wrapInVideo(
@@ -277,9 +280,9 @@ describe('<RegistrationForm />', () => {
     const updatedEmail = 'updatedEmail@fun-test.fr';
     const textbox = screen.getByRole('textbox', { name: 'Email address' });
 
-    userEvent.type(textbox, updatedEmail);
+    await userEvent.type(textbox, updatedEmail);
 
-    userEvent.click(screen.getByRole('button', { name: 'Register' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Register' }));
 
     await waitFor(() => {
       expect(mockUpdateLiveSession).toHaveBeenCalledWith(

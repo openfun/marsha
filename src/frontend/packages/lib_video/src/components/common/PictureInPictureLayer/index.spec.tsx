@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Box, Button, Paragraph } from 'grommet';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { PictureInPictureProvider } from '@lib-video/hooks/usePictureInPicture';
 
@@ -29,7 +28,7 @@ describe('<PictureInPictureLayer />', () => {
     expect(screen.getByText('main content')).toBeInTheDocument();
   });
 
-  it('renders main element and picture', () => {
+  it('renders main element and picture', async () => {
     const mockMainButtonClick = jest.fn();
     const MainContent = (
       <Box>
@@ -55,15 +54,15 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     screen.getByText('main content');
-    userEvent.click(screen.getByRole('button', { name: 'main button' }));
+    await userEvent.click(screen.getByRole('button', { name: 'main button' }));
 
     screen.getByText('my picture');
-    expect(() =>
+    await expect(() =>
       userEvent.click(screen.getByRole('button', { name: 'picture button' })),
-    ).toThrow();
+    ).rejects.toThrow(/pointer-events: none/);
   });
 
-  it('renders main element and picture reversed', () => {
+  it('renders main element and picture reversed', async () => {
     const mockMainButtonClick = jest.fn();
     const MainContent = (
       <Box>
@@ -90,12 +89,19 @@ describe('<PictureInPictureLayer />', () => {
     );
 
     screen.getByText('main content');
-    expect(() =>
+    await expect(() =>
       userEvent.click(screen.getByRole('button', { name: 'main button' })),
-    ).toThrow();
+    ).rejects.toThrow(/pointer-events: none/);
 
     screen.getByText('my picture');
-    userEvent.click(screen.getByRole('button', { name: 'picture button' }));
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'picture button',
+      }),
+      {
+        pointerEventsCheck: 0,
+      },
+    );
   });
 
   it('renders the picture with switch action when no actions are provided', async () => {
@@ -119,7 +125,7 @@ describe('<PictureInPictureLayer />', () => {
       </PictureInPictureProvider>,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await userEvent.click(screen.getByRole('button', { name: 'More options' }));
     expect(
       await screen.findByRole('button', { name: 'Show document' }),
     ).toBeInTheDocument();
@@ -148,7 +154,7 @@ describe('<PictureInPictureLayer />', () => {
       </PictureInPictureProvider>,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await userEvent.click(screen.getByRole('button', { name: 'More options' }));
     await screen.findByRole('button', { name: 'Show document' });
     expect(
       screen.getByRole('button', { name: 'some action' }),

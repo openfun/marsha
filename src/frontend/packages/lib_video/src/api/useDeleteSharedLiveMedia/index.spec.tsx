@@ -1,8 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { sharedLiveMediaMockFactory, useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useDeleteSharedLiveMedia } from '.';
 
@@ -18,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useDeleteSharedLiveMedia', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -49,14 +35,16 @@ describe('useDeleteSharedLiveMedia', () => {
       204,
     );
 
-    const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteSharedLiveMedia(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({
       videoId: sharedLiveMedia.video,
       sharedLiveMediaId: sharedLiveMedia.id,
     });
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,
@@ -79,14 +67,16 @@ describe('useDeleteSharedLiveMedia', () => {
       400,
     );
 
-    const { result, waitFor } = renderHook(() => useDeleteSharedLiveMedia(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteSharedLiveMedia(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({
       videoId: sharedLiveMedia.video,
       sharedLiveMediaId: sharedLiveMedia.id,
     });
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${sharedLiveMedia.video}/sharedlivemedias/${sharedLiveMedia.id}/`,

@@ -3,13 +3,12 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   decodeJwt,
+  liveMockFactory,
+  liveSessionFactory,
   useCurrentUser,
   useJwt,
-  liveSessionFactory,
-  liveMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import { v4 as uuidv4 } from 'uuid';
 
 import { createLiveSession } from '@lib-video/api/createLiveSession';
@@ -102,7 +101,7 @@ describe('<StudentLiveRegistration />', () => {
       name: 'I want to subscribe to this webinar',
     });
     const emailField = screen.getByRole('textbox', { name: 'Email address' });
-    userEvent.type(emailField, 'test@fun-mooc.fr');
+    await userEvent.type(emailField, 'test@fun-mooc.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -125,7 +124,7 @@ describe('<StudentLiveRegistration />', () => {
       name: 'I want to subscribe to this webinar',
     });
     const emailField = screen.getByRole('textbox', { name: 'Email address' });
-    userEvent.type(emailField, 'not_an_email');
+    await userEvent.type(emailField, 'not_an_email');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -153,7 +152,7 @@ describe('<StudentLiveRegistration />', () => {
       name: 'I want to subscribe to this webinar',
     });
     const emailField = screen.getByRole('textbox', { name: 'Email address' });
-    userEvent.type(emailField, 'test@openfun.fr');
+    await userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -180,7 +179,7 @@ describe('<StudentLiveRegistration />', () => {
       name: 'I want to subscribe to this webinar',
     });
     const emailField = screen.getByRole('textbox', { name: 'Email address' });
-    userEvent.type(emailField, 'test@openfun.fr');
+    await userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);
@@ -207,7 +206,7 @@ describe('<StudentLiveRegistration />', () => {
       name: 'I want to subscribe to this webinar',
     });
     const emailField = screen.getByRole('textbox', { name: 'Email address' });
-    userEvent.type(emailField, 'test@openfun.fr');
+    await userEvent.type(emailField, 'test@openfun.fr');
     screen.getByText('By registering, you accept to receive an email.');
 
     expect(container.childNodes.length).toEqual(1);

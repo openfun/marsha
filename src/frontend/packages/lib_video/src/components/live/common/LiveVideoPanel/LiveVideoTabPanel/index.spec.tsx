@@ -3,12 +3,11 @@
 import { cleanup, screen } from '@testing-library/react';
 import { Tabs } from 'grommet';
 import {
-  useJwt,
   participantMockFactory,
+  useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { render, imageSnapshot, wrapInIntlProvider } from 'lib-tests';
-import React from 'react';
+import { imageSnapshot, render, wrapInIntlProvider } from 'lib-tests';
 import renderer from 'react-test-renderer';
 
 import {

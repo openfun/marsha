@@ -1,24 +1,24 @@
-import { within, screen } from '@testing-library/react';
+import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
+  JoinMode,
+  Video,
+  liveState,
   sharedLiveMediaMockFactory,
   thumbnailMockFactory,
-  videoMockFactory,
-  useSharedLiveMedia,
-  useThumbnail,
-  JoinMode,
   timedTextMode,
   uploadState,
-  useTimedTextTrack,
-  liveState,
   useCurrentResourceContext,
+  useJwt,
+  useSharedLiveMedia,
+  useThumbnail,
+  useTimedTextTrack,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -73,131 +73,172 @@ describe('<VideoWidgetProvider />', () => {
 
   afterEach(() => fetchMock.restore());
 
-  it('renders widgets for live teacher', async () => {
-    mockedUseCurrentResourceContext.mockReturnValue([
-      {
-        permissions: {
-          can_access_dashboard: true,
-          can_update: true,
+  describe('renders widgets for live teacher', () => {
+    let mockVideo: Video;
+    beforeEach(() => {
+      mockedUseCurrentResourceContext.mockReturnValue([
+        {
+          permissions: {
+            can_access_dashboard: true,
+            can_update: true,
+          },
         },
-      },
-    ] as any);
-    const mockedThumbnail = thumbnailMockFactory({
-      video: videoId,
-      is_ready_to_show: true,
-    });
-    const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
-      title: 'Title of the file',
-      video: videoId,
-    });
-    const mockVideo = videoMockFactory({
-      id: videoId,
-      title: 'An example title',
-      allow_recording: false,
-      is_public: true,
-      join_mode: JoinMode.APPROVAL,
-      starting_at: currentDate.toString(),
-      estimated_duration: '00:30',
-      description: 'An example description',
-      thumbnail: mockedThumbnail,
-      shared_live_medias: [mockedSharedLiveMedia],
-      live_state: liveState.RUNNING,
+      ] as any);
+      const mockedThumbnail = thumbnailMockFactory({
+        video: videoId,
+        is_ready_to_show: true,
+      });
+      const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
+        title: 'Title of the file',
+        video: videoId,
+      });
+      mockVideo = videoMockFactory({
+        id: videoId,
+        title: 'An example title',
+        allow_recording: false,
+        is_public: true,
+        join_mode: JoinMode.APPROVAL,
+        starting_at: currentDate.toString(),
+        estimated_duration: '00:30',
+        description: 'An example description',
+        thumbnail: mockedThumbnail,
+        shared_live_medias: [mockedSharedLiveMedia],
+        live_state: liveState.RUNNING,
+      });
+
+      useThumbnail.getState().addResource(mockedThumbnail);
+      useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
     });
 
-    useThumbnail.getState().addResource(mockedThumbnail);
-    useSharedLiveMedia.getState().addResource(mockedSharedLiveMedia);
-
-    render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
-
-    // ToolsAndApplications
-    screen.getByText('Tools and applications');
-    const hasChatToggleButton = screen.getByRole('checkbox', {
-      name: 'Activate chat',
-    });
-    expect(hasChatToggleButton).toBeChecked();
-    screen.getByText('Activate chat');
-    const liveRecordingToggleButton = screen.getByRole('checkbox', {
-      name: 'Activate live recording',
-    });
-    expect(liveRecordingToggleButton).not.toBeChecked();
-    screen.getByText('Activate live recording');
-
-    // VisibilityAndInteraction
-    screen.getByText('Visibility and interaction parameters');
-    const visibilityToggleButton = screen.getByRole('checkbox', {
-      name: 'Make the video publicly available',
-    });
-    expect(visibilityToggleButton).toBeChecked();
-    screen.getByText('Make the video publicly available');
-    screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
-    screen.getByRole('button', {
-      name: 'Public link:',
+    afterEach(() => {
+      jest.clearAllMocks();
+      fetchMock.restore();
     });
 
-    // DashboardLiveTabConfigurationchedulingAndDescription
-    screen.getByText('Description');
-    const inputStartingAtDate = screen.getByLabelText(/starting date/i);
-    expect(inputStartingAtDate).toHaveValue('2022/01/13');
-    const inputStartingAtTime = screen.getByLabelText(/starting time/i);
-    expect(inputStartingAtTime).toHaveValue('12:00');
-    const inputEstimatedDuration = screen.getByLabelText(/estimated duration/i);
-    expect(inputEstimatedDuration).toHaveValue('0:30');
-    screen.getByText("Webinar's end");
-    screen.getByText('2022/01/13, 12:30');
-    const textArea = screen.getByRole('textbox', {
-      name: 'Description...',
-    });
-    expect(textArea).toHaveValue('An example description');
-    expect(screen.getByText('Description...')).toBeInTheDocument();
+    it('tests ToolsAndApplications', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
 
-    // LivePairing
-    const openButton = screen.getByRole('button', {
-      name: 'External broadcast sources',
-    });
-    userEvent.click(openButton);
-    screen.getByRole('button', {
-      name: /pair an external device/i,
+      await screen.findByText('Tools and applications');
+      const hasChatToggleButton = screen.getByRole('checkbox', {
+        name: 'Activate chat',
+      });
+      expect(hasChatToggleButton).toBeChecked();
+      screen.getByText('Activate chat');
+      const liveRecordingToggleButton = screen.getByRole('checkbox', {
+        name: 'Activate live recording',
+      });
+      expect(liveRecordingToggleButton).not.toBeChecked();
+      screen.getByText('Activate live recording');
     });
 
-    // DashboardLiveTabConfigurationharedLiveMedia
-    screen.getByText('Supports sharing');
-    screen.getByRole('button', {
-      name: 'Upload a presentation support',
-    });
-    screen.getByRole('button', {
-      name: 'Click on this button to stop allowing students to download this media.',
-    });
-    screen.getByRole('button', { name: 'Share' });
-    screen.getByRole('link', { name: 'Title of the file' });
-    screen.getByRole('button', {
-      name: 'Click on this button to delete the media.',
+    it('tests VisibilityAndInteraction', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      await screen.findByText('Visibility and interaction parameters');
+      const visibilityToggleButton = screen.getByRole('checkbox', {
+        name: 'Make the video publicly available',
+      });
+      expect(visibilityToggleButton).toBeChecked();
+      screen.getByText('Make the video publicly available');
+      screen.getByText('https://localhost/videos/'.concat(mockVideo.id));
+      screen.getByRole('button', {
+        name: 'Public link:',
+      });
     });
 
-    // VODCreation
-    screen.getByText(/There is nothing to harvest/);
+    it('tests DashboardLiveTabConfigurationchedulingAndDescription', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
 
-    // JoinMode
-    screen.getByText('Join the discussion');
-    const button = screen.getByRole('button', {
-      name: /select join the discussion mode/i,
+      await screen.findByText('Description');
+      const inputStartingAtDate = screen.getByLabelText(/starting date/i);
+      expect(inputStartingAtDate).toHaveValue('2022/01/13');
+      const inputStartingAtTime = screen.getByLabelText(/starting time/i);
+      expect(inputStartingAtTime).toHaveValue('12:00');
+      const inputEstimatedDuration =
+        screen.getByLabelText(/estimated duration/i);
+      expect(inputEstimatedDuration).toHaveValue('0:30');
+      screen.getByText("Webinar's end");
+      screen.getByText('2022/01/13, 12:30');
+      const textArea = screen.getByRole('textbox', {
+        name: 'Description...',
+      });
+      expect(textArea).toHaveValue('An example description');
+      expect(screen.getByText('Description...')).toBeInTheDocument();
     });
-    const select = within(button).getByRole('textbox');
-    expect(select).toHaveValue('Accept joining the discussion after approval');
 
-    // DashboardLiveWidgetThumbnail
-    await screen.findByText('Thumbnail');
-    const img = screen.getByRole('img', { name: 'Live video thumbnail' });
-    expect(img.getAttribute('src')).toEqual(
-      'https://example.com/default_thumbnail/144',
-    );
-    expect(img.getAttribute('srcset')).toEqual(
-      'https://example.com/default_thumbnail/144 256w, https://example.com/default_thumbnail/240 426w, https://example.com/default_thumbnail/480 854w, https://example.com/default_thumbnail/720 1280w, https://example.com/default_thumbnail/1080 1920w',
-    );
-    screen.getByRole('button', { name: 'Delete thumbnail' });
-    screen.getByRole('button', { name: 'Upload an image' });
+    it('tests LivePairing', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      // LivePairing
+      const openButton = await screen.findByRole('button', {
+        name: 'External broadcast sources',
+      });
+      await userEvent.click(openButton);
+      expect(
+        screen.getByRole('button', {
+          name: /pair an external device/i,
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it('tests DashboardLiveTabConfigurationharedLiveMedia', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      await screen.findByText('Supports sharing');
+      screen.getByRole('button', {
+        name: 'Upload a presentation support',
+      });
+      screen.getByRole('button', {
+        name: 'Click on this button to stop allowing students to download this media.',
+      });
+      screen.getByRole('button', { name: 'Share' });
+      screen.getByRole('link', { name: 'Title of the file' });
+      expect(
+        screen.getByRole('button', {
+          name: 'Click on this button to delete the media.',
+        }),
+      ).toBeInTheDocument();
+    });
+
+    it('tests VODCreation', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      expect(
+        await screen.findByText(/There is nothing to harvest/),
+      ).toBeInTheDocument();
+    });
+
+    it('tests JoinMode', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      await screen.findByText('Join the discussion');
+      const button = screen.getByRole('button', {
+        name: /select join the discussion mode/i,
+      });
+      const select = within(button).getByRole('textbox');
+      expect(select).toHaveValue(
+        'Accept joining the discussion after approval',
+      );
+    });
+
+    it('tests DashboardLiveWidgetThumbnail', async () => {
+      render(wrapInVideo(<VideoWidgetProvider isLive isTeacher />, mockVideo));
+
+      // DashboardLiveWidgetThumbnail
+      await screen.findByText('Thumbnail');
+      const img = screen.getByRole('img', { name: 'Live video thumbnail' });
+      expect(img.getAttribute('src')).toEqual(
+        'https://example.com/default_thumbnail/144',
+      );
+      expect(img.getAttribute('srcset')).toEqual(
+        'https://example.com/default_thumbnail/144 256w, https://example.com/default_thumbnail/240 426w, https://example.com/default_thumbnail/480 854w, https://example.com/default_thumbnail/720 1280w, https://example.com/default_thumbnail/1080 1920w',
+      );
+      screen.getByRole('button', { name: 'Delete thumbnail' });
+      screen.getByRole('button', { name: 'Upload an image' });
+    });
   });
 
-  it('renders widget for vod teacher', () => {
+  it('renders widget for vod teacher', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -240,7 +281,7 @@ describe('<VideoWidgetProvider />', () => {
     );
 
     //  Upload video
-    expect(screen.getByText('Video')).toBeInTheDocument();
+    expect(await screen.findByText('Video')).toBeInTheDocument();
 
     //  Download video
     expect(screen.getByText('Download video')).toBeInTheDocument();
@@ -263,7 +304,7 @@ describe('<VideoWidgetProvider />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders widget for vod student', () => {
+  it('renders widget for vod student', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         permissions: {
@@ -321,7 +362,7 @@ describe('<VideoWidgetProvider />', () => {
     );
 
     //  Download video
-    expect(screen.getByText('Download video')).toBeInTheDocument();
+    expect(await screen.findByText('Download video')).toBeInTheDocument();
 
     //  Transcripts
     expect(screen.getByText('Transcripts')).toBeInTheDocument();

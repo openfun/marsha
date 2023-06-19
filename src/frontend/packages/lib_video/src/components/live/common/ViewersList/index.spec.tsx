@@ -1,12 +1,11 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
+  JoinMode,
   participantMockFactory,
   videoMockFactory,
-  JoinMode,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 import { generateAnonymousNickname } from '@lib-video/utils/chat/chat';
@@ -132,7 +131,7 @@ describe('<ViewersList /> when user is an instructor', () => {
     screen.getByText(mockedParticipantOnStage2Full.name);
   });
 
-  it('displays a demanding participant and accepts it', () => {
+  it('displays a demanding participant and accepts it', async () => {
     const video = videoMockFactory({
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
@@ -150,12 +149,12 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     const acceptButton = screen.getByRole('button', { name: 'Accept' });
 
-    userEvent.click(acceptButton);
+    await userEvent.click(acceptButton);
 
     expect(converse.acceptParticipantToJoin).toHaveBeenCalledTimes(1);
   });
 
-  it('displays a demanding participant and rejects it', () => {
+  it('displays a demanding participant and rejects it', async () => {
     const video = videoMockFactory({
       participants_asking_to_join: [mockedParticipantOnDemands1],
     });
@@ -173,12 +172,12 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     const rejectButton = screen.getAllByRole('button')[0];
 
-    userEvent.click(rejectButton);
+    await userEvent.click(rejectButton);
 
     expect(converse.rejectParticipantToJoin).toHaveBeenCalledTimes(1);
   });
 
-  it('displays an on-stage participant and kicks it', () => {
+  it('displays an on-stage participant and kicks it', async () => {
     const video = videoMockFactory({
       participants_in_discussion: [mockedParticipantOnStage1],
     });
@@ -197,7 +196,7 @@ describe('<ViewersList /> when user is an instructor', () => {
 
     const terminateButton = screen.getByRole('button', { name: 'Terminate' });
 
-    userEvent.click(terminateButton);
+    await userEvent.click(terminateButton);
 
     expect(converse.kickParticipant).toHaveBeenCalledTimes(1);
   });

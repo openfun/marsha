@@ -5,21 +5,20 @@ import {
   screen,
   waitFor,
 } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import userEventInit from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  decodeJwt,
-  useCurrentResourceContext,
   LiveModeType,
-  liveState,
   PersistentStore,
-  sharedLiveMediaMockFactory,
-  videoMockFactory,
+  decodeJwt,
   liveMockFactory,
+  liveState,
+  sharedLiveMediaMockFactory,
+  useCurrentResourceContext,
   useVideo,
+  videoMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';
 import { createPlayer } from '@lib-video/components/common/Player/createPlayer';
@@ -97,6 +96,10 @@ const mockedUseCurrentResourceContext =
 const mockedDecodeJwt = decodeJwt as jest.MockedFunction<typeof decodeJwt>;
 
 const videoId = '123456';
+
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
 
 describe('<StudentLiveWrapper /> as a viewer', () => {
   beforeEach(() => {
@@ -388,7 +391,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     screen.getByRole('heading', { name: 'live title' });
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
-    userEvent.click(viewersTabButton);
+    await userEvent.click(viewersTabButton);
     screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
@@ -498,7 +501,7 @@ describe('<StudentLiveWrapper /> as a viewer', () => {
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',
     });
-    userEvent.click(joindChatButton);
+    await userEvent.click(joindChatButton);
 
     expect(await screen.findByText('Display name')).toBeInTheDocument();
   });
@@ -813,7 +816,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     screen.getByRole('heading', { name: 'live title' });
 
     const viewersTabButton = screen.getByRole('tab', { name: 'viewers' });
-    userEvent.click(viewersTabButton);
+    await userEvent.click(viewersTabButton);
     screen.getByText('On stage (0)');
     screen.getByText(
       'Oops, nobody is on stage. Wait for your teacher to ask joining the stage.',
@@ -966,7 +969,7 @@ describe('<StudentLiveWrapper /> as a streamer', () => {
     const joindChatButton = await screen.findByRole('button', {
       name: 'Join the chat',
     });
-    userEvent.click(joindChatButton);
+    await userEvent.click(joindChatButton);
 
     await screen.findByText('Display name');
   });

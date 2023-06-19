@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Button } from 'grommet';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { PictureActionLayer } from '.';
 
@@ -20,7 +19,7 @@ describe('<PictureActionLayer />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders only more options action', () => {
+  it('renders only more options action', async () => {
     render(
       <PictureActionLayer
         actions={[<Button key="button" label="do some stuff" />]}
@@ -31,6 +30,6 @@ describe('<PictureActionLayer />', () => {
     expect(
       screen.getByRole('button', { name: 'More options' }),
     ).toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'More options' }));
+    await userEvent.click(screen.getByRole('button', { name: 'More options' }));
   });
 });

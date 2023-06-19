@@ -1,9 +1,8 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, useVideo } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { useJwt, useVideo, videoMockFactory } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -27,7 +26,9 @@ describe('HarvestVOD', () => {
 
     fetchMock.postOnce(`/api/videos/${video.id}/harvest-live/`, 400);
 
-    userEvent.click(screen.getByRole('button', { name: 'Generate file' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Generate file' }),
+    );
 
     expect(
       await screen.findByText('An error occurred, please try again later.'),
@@ -56,7 +57,9 @@ describe('HarvestVOD', () => {
       { overwriteRoutes: false },
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Generate file' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Generate file' }),
+    );
 
     await waitFor(() =>
       expect(

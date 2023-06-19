@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import { useJwt } from 'lib-components';
 import { imageSnapshot, render } from 'lib-tests';
-import React from 'react';
 
 import { useLivePanelState } from '@lib-video/hooks/useLivePanelState';
 
@@ -148,7 +147,7 @@ describe('<VideoLayout />', () => {
     expect(sideElenent).toBeVisible();
   });
 
-  it('shows the panel when the open button is clicked', () => {
+  it('shows the panel when the open button is clicked', async () => {
     useLivePanelState.setState({ isPanelVisible: false });
     render(
       <VideoLayout
@@ -164,7 +163,7 @@ describe('<VideoLayout />', () => {
 
     expect(screen.queryByText('panel component')).not.toBeInTheDocument();
     const openButton = screen.getByRole('button');
-    userEvent.click(openButton);
+    await userEvent.click(openButton);
     expect(useLivePanelState.getState().isPanelVisible).toEqual(true);
   });
 });

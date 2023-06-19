@@ -2,20 +2,20 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  timedTextMockFactory,
-  UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
-  useUploadManager,
-  useTimedTextTrack,
+  UploadingObject,
   modelName,
+  timedTextMockFactory,
   timedTextMode,
   uploadState,
+  useJwt,
+  useTimedTextTrack,
+  useUploadManager,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { createTimedTextTrack } from '@lib-video/api/createTimedTextTrack';
 import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
@@ -159,12 +159,12 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload file',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'subtitle.vtt', {
-      type: '*',
+      type: 'application',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/4321/timedtexttracks/`,
@@ -216,12 +216,12 @@ describe('<LocalizedTimedTextTrackUpload />', () => {
     const uploadButton = await screen.findByRole('button', {
       name: 'Upload file',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'subtitle.vtt', {
-      type: '*',
+      type: 'application',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     expect(fetchMock.calls()).toHaveLength(1);
     expect(screen.queryByText('subs.srt')).not.toBeInTheDocument();

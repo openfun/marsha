@@ -1,16 +1,16 @@
-import { act, cleanup, waitFor, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
+import { act, cleanup, screen, waitFor } from '@testing-library/react';
+import userEventInit from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
 import {
-  useCurrentResourceContext,
-  useJwt,
   JoinMode,
   Live,
-  liveState,
-  liveSessionFactory,
   liveMockFactory,
+  liveSessionFactory,
+  liveState,
+  useCurrentResourceContext,
+  useJwt,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 
 import { pollForLive } from '@lib-video/api/pollForLive';
@@ -82,6 +82,10 @@ const mockedUseCurrentResourceContext =
     typeof useCurrentResourceContext
   >;
 
+const userEvent = userEventInit.setup({
+  advanceTimers: jest.advanceTimersByTime,
+});
+
 describe('StudentLiveStarter', () => {
   beforeEach(() => {
     useJwt.setState({ jwt: 'some token' });
@@ -93,9 +97,12 @@ describe('StudentLiveStarter', () => {
         session_id: 'session-id',
       },
     ] as any);
+
+    jest.useFakeTimers();
   });
   afterEach(() => {
     jest.clearAllMocks();
+    jest.useRealTimers();
   });
 
   it('polls for live manifest if the live is not already started', async () => {
@@ -179,7 +186,6 @@ describe('StudentLiveStarter', () => {
   });
 
   it('displays end of live for passed scheduled live', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const values: (
@@ -208,8 +214,6 @@ describe('StudentLiveStarter', () => {
 
       cleanup();
     }
-
-    jest.useRealTimers();
   });
 
   it('displays advertising for non started non scheduled live', async () => {
@@ -232,7 +236,6 @@ describe('StudentLiveStarter', () => {
   });
 
   it('displays advertising for non-running scheduled future live', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const values: (
@@ -261,12 +264,9 @@ describe('StudentLiveStarter', () => {
 
       cleanup();
     }
-
-    jest.useRealTimers();
   });
 
   it('displays advertising for starting scheduled future live', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const live = liveMockFactory({
@@ -277,8 +277,6 @@ describe('StudentLiveStarter', () => {
     render(wrapInVideo(<StudentLiveStarter playerType="someplayer" />, live));
 
     expect(await screen.findByText(/Live is starting/)).toBeInTheDocument();
-
-    jest.useRealTimers();
   });
 
   it('displays the player once manifest is pulled for non scheduled live', async () => {
@@ -304,7 +302,6 @@ describe('StudentLiveStarter', () => {
   });
 
   it('displays the player once manifest is pulled for scheduled future live', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const live = liveMockFactory({
@@ -327,12 +324,9 @@ describe('StudentLiveStarter', () => {
       },
       {},
     );
-
-    jest.useRealTimers();
   });
 
   it('displays the player once manifest is pulled for scheduled past live', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const live = liveMockFactory({
@@ -358,12 +352,9 @@ describe('StudentLiveStarter', () => {
       },
       {},
     );
-
-    jest.useRealTimers();
   });
 
   it('check title and descrition when scheduled past live and live state stopped', async () => {
-    jest.useFakeTimers();
     jest.setSystemTime(new Date(2022, 1, 20, 14, 0, 0));
 
     const live = liveMockFactory({
@@ -377,8 +368,6 @@ describe('StudentLiveStarter', () => {
     screen.getByText(/You can wait here, the VOD will be available soon./);
 
     expect(mockedPollForLive).not.toHaveBeenCalled();
-
-    jest.useRealTimers();
   });
 
   it('displays advertising for non started non scheduled live and join mode is forced', async () => {
@@ -432,9 +421,9 @@ describe('StudentLiveStarter', () => {
 
     const inputTextbox = screen.getByRole('textbox');
     const validateButton = screen.getByRole('button');
-    userEvent.type(inputTextbox, 'John_Doe');
+    await userEvent.type(inputTextbox, 'John_Doe');
 
-    userEvent.click(validateButton);
+    await userEvent.click(validateButton);
 
     await waitFor(() =>
       expect(mockSetLiveSessionDisplayName).toHaveBeenCalled(),

@@ -1,12 +1,11 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook } from '@testing-library/react';
 import {
   thumbnailMockFactory,
   UploadManagerStatus,
   modelName,
   uploadState,
 } from 'lib-components';
-import { appendUtilsElement } from 'lib-tests';
-import React, { Fragment } from 'react';
+import { wrapperUtils } from 'lib-tests';
 
 import { useDetermineMessage } from './utils';
 
@@ -21,10 +20,6 @@ const genericUploadManagerState = {
   },
 };
 
-const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
-  return appendUtilsElement(<Fragment>{children}</Fragment>);
-};
-
 describe('DashboardLiveWidgetThumbnail/utils', () => {
   it('determineMessage when thumbnail upload has an error', () => {
     const thumbnailInError = {
@@ -35,7 +30,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
     const { result } = renderHook(
       () => useDetermineMessage(thumbnailInError, genericUploadManagerState),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -59,7 +54,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
     const { result: resultGeneric } = renderHook(
       () => useDetermineMessage(uploadingThumbnail, genericUploadManagerState),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -74,7 +69,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
           initializatingUploadManagerState,
         ),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -102,7 +97,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
     const { result: resultGeneric } = renderHook(
       () => useDetermineMessage(processedThumbnail, {}),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -112,7 +107,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
       () =>
         useDetermineMessage(uploadingThumbnail, successfulUploadManagerState),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -123,7 +118,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
     const { result } = renderHook(
       () => useDetermineMessage(genericThumbnail, {}),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
@@ -144,7 +139,7 @@ describe('DashboardLiveWidgetThumbnail/utils', () => {
           },
         ),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 

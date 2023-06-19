@@ -2,12 +2,11 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useTimedTextTrack,
-  timedTextMode,
   timedTextMockFactory,
+  timedTextMode,
+  useTimedTextTrack,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { LanguageSelect } from '.';
 
@@ -27,7 +26,7 @@ const languageChoices = [
 ];
 
 describe('<LanguageSelect />', () => {
-  jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
+  //jest.spyOn(console, 'error').mockImplementation(() => jest.fn());
 
   afterEach(() => {
     fetchMock.restore();
@@ -115,20 +114,18 @@ describe('<LanguageSelect />', () => {
       }),
     );
 
-    const selectButton = screen.getByRole('button', {
-      name: 'Select the language for which you want to upload a timed text file; Selected: fr',
-    });
-
-    userEvent.click(selectButton);
-
-    screen.getByRole('button', {
-      name: 'Select the language for which you want to upload a timed text file; Selected: fr',
-    });
     expect(
       screen.getByRole('textbox', {
         name: 'Select the language for which you want to upload a timed text file, fr',
       }),
     ).toHaveValue('French');
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'Select the language for which you want to upload a timed text file; Selected: fr',
+      }),
+    );
+
     screen.getByRole('option', { name: 'English' });
     screen.getByRole('option', { name: 'French' });
     screen.getByRole('option', { name: 'Spanish' });
@@ -192,23 +189,21 @@ describe('<LanguageSelect />', () => {
       }),
     );
 
-    const selectButton = screen.getByRole('button', {
-      name: 'Select the language for which you want to upload a timed text file; Selected: fr',
-    });
-
-    userEvent.click(selectButton);
-
-    screen.getByRole('button', {
-      name: 'Select the language for which you want to upload a timed text file; Selected: fr',
-    });
     expect(
-      screen.getByRole('textbox', {
+      await screen.findByRole('textbox', {
         name: 'Select the language for which you want to upload a timed text file, fr',
       }),
     ).toHaveValue('French');
+
+    await userEvent.click(
+      screen.getByRole('button', {
+        name: 'Select the language for which you want to upload a timed text file; Selected: fr',
+      }),
+    );
+
     const englishButtonOption = screen.getByRole('option', { name: 'English' });
 
-    userEvent.click(englishButtonOption);
+    await userEvent.click(englishButtonOption);
 
     screen.getByRole('button', {
       name: 'Select the language for which you want to upload a timed text file; Selected: en',

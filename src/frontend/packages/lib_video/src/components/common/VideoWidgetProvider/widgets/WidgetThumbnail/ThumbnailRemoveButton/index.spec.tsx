@@ -2,13 +2,12 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  thumbnailMockFactory,
-  useThumbnail,
   report,
+  thumbnailMockFactory,
+  useJwt,
+  useThumbnail,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { ThumbnailRemoveButton } from '.';
 
@@ -58,14 +57,14 @@ describe('<ThumbnailRemoveButton />', () => {
       name: 'Delete thumbnail',
     });
 
-    userEvent.click(removeButton);
+    await userEvent.click(removeButton);
 
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', {
       name: 'Delete thumbnail image',
     });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(screen.queryByRole('button', { name: 'Confirm' })).toBeNull(),
@@ -104,14 +103,14 @@ describe('<ThumbnailRemoveButton />', () => {
       name: 'Delete thumbnail',
     });
 
-    userEvent.click(removeButton);
+    await userEvent.click(removeButton);
 
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', {
       name: 'Delete thumbnail image',
     });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(

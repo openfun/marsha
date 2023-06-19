@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { timedTextMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { DeleteTimedTextTrackUploadModalProvider } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
@@ -20,7 +20,7 @@ jest.mock('hooks/useDeleteTimedTextTrackUploadModal', () => ({
 }));
 
 describe('<DeleteTimedTextTrackUploadButton />', () => {
-  it('clicks on the button', () => {
+  it('clicks on the button', async () => {
     const mockedTimedTextTrack = timedTextMockFactory();
 
     render(
@@ -34,7 +34,7 @@ describe('<DeleteTimedTextTrackUploadButton />', () => {
     const deleteTimedTextTrackUploadButton = screen.getByRole('button', {
       name: 'Click on this button to delete the timed text track.',
     });
-    userEvent.click(deleteTimedTextTrackUploadButton);
+    await userEvent.click(deleteTimedTextTrackUploadButton);
 
     expect(mockSetDeleteTimedTextTrackUploadModal).toHaveBeenCalledTimes(1);
     expect(mockSetDeleteTimedTextTrackUploadModal).toHaveBeenCalledWith(

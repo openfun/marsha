@@ -5,7 +5,7 @@ import {
   timedTextMode,
   useTimedTextTrack,
 } from 'lib-components';
-import React, { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 import { defineMessages, useIntl } from 'react-intl';
 

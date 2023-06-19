@@ -2,9 +2,8 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { useJwt, videoMockFactory, useVideo } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { useJwt, useVideo, videoMockFactory } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -50,7 +49,9 @@ describe('PublishVOD', () => {
 
     fetchMock.postOnce(`/api/videos/${video.id}/live-to-vod/`, 400);
 
-    userEvent.click(screen.getByRole('button', { name: 'Convert into VOD' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Convert into VOD' }),
+    );
 
     expect(
       await screen.findByText('An error occurred, please try again later.'),
@@ -79,7 +80,9 @@ describe('PublishVOD', () => {
       { overwriteRoutes: false },
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Convert into VOD' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Convert into VOD' }),
+    );
 
     await waitFor(() =>
       expect(

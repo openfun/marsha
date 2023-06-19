@@ -3,9 +3,9 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
+  report,
   useJwt,
   videoMockFactory,
-  report,
 } from 'lib-components';
 import { render } from 'lib-tests';
 
@@ -113,7 +113,7 @@ describe('<VisibilityAndInteraction />', () => {
       }),
     ).toBeInTheDocument();
 
-    userEvent.click(visibilityToggleButton);
+    await userEvent.click(visibilityToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -150,7 +150,7 @@ describe('<VisibilityAndInteraction />', () => {
     ).toBeInTheDocument();
     expect(document.execCommand).toHaveBeenCalledTimes(0);
 
-    userEvent.click(copyButtonReRendered);
+    await userEvent.click(copyButtonReRendered);
 
     await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
@@ -182,7 +182,7 @@ describe('<VisibilityAndInteraction />', () => {
 
     expect(document.execCommand).toHaveBeenCalledTimes(0);
 
-    userEvent.click(copyButtonReRendered);
+    await userEvent.click(copyButtonReRendered);
 
     await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
@@ -214,7 +214,7 @@ describe('<VisibilityAndInteraction />', () => {
 
     expect(document.execCommand).toHaveBeenCalledTimes(0);
 
-    userEvent.click(copyButtonReRendered);
+    await userEvent.click(copyButtonReRendered);
 
     await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
@@ -249,7 +249,7 @@ describe('<VisibilityAndInteraction />', () => {
 
     expect(document.execCommand).toHaveBeenCalledTimes(0);
 
-    userEvent.click(copyButtonReRendered);
+    await userEvent.click(copyButtonReRendered);
 
     await waitFor(() => expect(document.execCommand).toHaveBeenCalledTimes(1));
     expect(document.execCommand).toHaveBeenCalledWith('copy');
@@ -287,7 +287,7 @@ describe('<VisibilityAndInteraction />', () => {
     });
     expect(copyButton).not.toBeDisabled();
 
-    userEvent.click(visibilityToggleButton);
+    await userEvent.click(visibilityToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -348,7 +348,7 @@ describe('<VisibilityAndInteraction />', () => {
     });
     expect(visibilityToggleButton).not.toBeChecked();
 
-    userEvent.click(visibilityToggleButton);
+    await userEvent.click(visibilityToggleButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);

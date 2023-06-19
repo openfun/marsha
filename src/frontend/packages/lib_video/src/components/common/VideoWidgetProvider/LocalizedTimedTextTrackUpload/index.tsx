@@ -2,13 +2,13 @@ import { Box, Button } from 'grommet';
 import { Nullable } from 'lib-common';
 import {
   ItemList,
-  useUploadManager,
-  useTimedTextTrack,
+  formatSizeErrorScale,
   modelName,
+  report,
   timedTextMode,
   uploadState,
-  formatSizeErrorScale,
-  report,
+  useTimedTextTrack,
+  useUploadManager,
 } from 'lib-components';
 import React, {
   useCallback,
@@ -158,10 +158,15 @@ export const LocalizedTimedTextTrackUpload = ({
     uploadManagerState,
   ]);
 
+  const onChangeLanguageSelect = useCallback(
+    (option: LanguageChoice) => setSelectedLanguage(option),
+    [],
+  );
+
   return (
     <Box direction="column" gap="small" margin={{ top: 'small' }}>
       <LanguageSelect
-        onChange={(option) => setSelectedLanguage(option)}
+        onChange={onChangeLanguageSelect}
         timedTextModeWidget={timedTextModeWidget}
         choices={choices}
       />

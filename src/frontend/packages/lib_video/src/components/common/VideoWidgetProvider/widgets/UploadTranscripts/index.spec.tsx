@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
   useJwt,
   videoMockFactory,
-  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -29,7 +28,7 @@ describe('<UploadTranscripts />', () => {
     fetchMock.restore();
   });
 
-  it('renders the UploadTranscripts', () => {
+  it('renders the UploadTranscripts', async () => {
     const mockedVideo = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${mockedVideo.id}/timedtexttracks/`,
@@ -48,7 +47,7 @@ describe('<UploadTranscripts />', () => {
       ),
     );
 
-    expect(screen.getByText('Transcripts')).toBeInTheDocument();
+    expect(await screen.findByText('Transcripts')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'help' })).toBeInTheDocument();
   });
 });

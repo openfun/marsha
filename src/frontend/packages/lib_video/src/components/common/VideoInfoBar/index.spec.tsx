@@ -1,14 +1,18 @@
-import { getDefaultNormalizer, screen, waitFor } from '@testing-library/react';
+import {
+  getDefaultNormalizer,
+  screen,
+  waitFor,
+  act,
+} from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   participantMockFactory,
-  videoMockFactory,
   report,
   useJwt,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { useParticipantsStore } from '@lib-video/hooks/useParticipantsStore';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -173,10 +177,14 @@ describe('<VideoInfoBar />', () => {
     const titleInput = screen.getByRole('textbox', {
       name: 'Enter title of your live here',
     });
-    titleInput.focus();
-    userEvent.clear(titleInput);
-    userEvent.type(titleInput, 'new title');
-    titleInput.blur();
+    act(() => {
+      titleInput.focus();
+    });
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'new title');
+    act(() => {
+      titleInput.blur();
+    });
     expect(titleInput).toHaveValue('new title');
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -194,7 +202,7 @@ describe('<VideoInfoBar />', () => {
     screen.getByText('Video updated.');
   });
 
-  it('should stop user from entering an empty title', () => {
+  it('should stop user from entering an empty title', async () => {
     const mockedVideo = videoMockFactory({
       allow_recording: false,
       title: 'title',
@@ -207,16 +215,20 @@ describe('<VideoInfoBar />', () => {
       ),
     );
 
-    const titleInput = screen.getByRole('textbox', {
+    const titleInput = await screen.findByRole('textbox', {
       name: 'Enter title of your live here',
     });
-    titleInput.focus();
-    userEvent.clear(titleInput);
-    titleInput.blur();
+    act(() => {
+      titleInput.focus();
+    });
+    await userEvent.clear(titleInput);
+    act(() => {
+      titleInput.blur();
+    });
 
-    expect(titleInput).toHaveValue('title');
+    await waitFor(() => expect(titleInput).toHaveValue('title'));
     expect(fetchMock.calls()).toHaveLength(0);
-    screen.getByText("Title can't be blank !");
+    expect(screen.getByText("Title can't be blank !")).toBeInTheDocument();
   });
 
   it('modifies the input text, but the backend returns an error', async () => {
@@ -238,8 +250,11 @@ describe('<VideoInfoBar />', () => {
     });
     expect(textInput).toHaveValue('An existing title');
 
-    userEvent.type(textInput, ' and more');
-    textInput.blur();
+    await userEvent.type(textInput, ' and more');
+    act(() => {
+      textInput.blur();
+    });
+
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
     expect(fetchMock.lastCall()![1]).toEqual({

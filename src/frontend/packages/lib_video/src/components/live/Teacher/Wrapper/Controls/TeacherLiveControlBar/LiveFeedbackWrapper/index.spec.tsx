@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { LiveFeedbackProvider } from '@lib-video/hooks/useLiveFeedback';
 
@@ -15,12 +14,14 @@ describe('<LiveFeedbackWrapper />', () => {
       </LiveFeedbackProvider>,
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Show live feedback' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Show live feedback' }),
+    );
 
     const hideButton = await screen.findByRole('button', {
       name: 'Hide live feedback',
     });
-    userEvent.click(hideButton);
+    await userEvent.click(hideButton);
 
     expect(
       await screen.findByRole('button', { name: 'Show live feedback' }),

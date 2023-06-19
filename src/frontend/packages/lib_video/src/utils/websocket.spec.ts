@@ -11,7 +11,7 @@ jest.mock('lib-components', () => ({
 
 describe('generateVideoWebsocketUrl()', () => {
   it('generates base video url with http', () => {
-    global.window = Object.create(window);
+    global.window ??= Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
         href: 'http://localhost:1234/',
@@ -27,7 +27,7 @@ describe('generateVideoWebsocketUrl()', () => {
   });
 
   it('generates base video url with https', () => {
-    global.window = Object.create(window);
+    global.window ??= Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
         href: 'https://localhost:1234/',
@@ -43,7 +43,7 @@ describe('generateVideoWebsocketUrl()', () => {
   });
 
   it('calls the decorator with the expected url', () => {
-    global.window = Object.create(window);
+    global.window ??= Object.create(window);
     Object.defineProperty(window, 'location', {
       value: {
         href: 'http://localhost:1234/',

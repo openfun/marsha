@@ -5,7 +5,6 @@ import userEvent from '@testing-library/user-event';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { UploadVideoDropzone } from '.';
 
@@ -36,7 +35,7 @@ describe('<UploadVideoDropzone />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await waitFor(() => expect(mockedSetVideoFile).toHaveBeenCalledTimes(1));
     expect(mockedSetVideoFile).toHaveBeenCalledWith(file);

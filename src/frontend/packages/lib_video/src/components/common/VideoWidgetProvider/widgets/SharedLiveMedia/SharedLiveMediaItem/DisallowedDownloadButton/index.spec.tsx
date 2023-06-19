@@ -2,9 +2,8 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import fetchMock from 'fetch-mock';
-import { useJwt, sharedLiveMediaMockFactory, report } from 'lib-components';
+import { report, sharedLiveMediaMockFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { DisallowedDownloadButton } from '.';
 
@@ -51,7 +50,7 @@ describe('<DisallowedDownloadButton />', () => {
       name: 'Click on this button to allow students to download the media.',
     });
 
-    userEvent.click(disallowedDownloadButton);
+    await userEvent.click(disallowedDownloadButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -94,7 +93,7 @@ describe('<DisallowedDownloadButton />', () => {
       name: 'Click on this button to allow students to download the media.',
     });
 
-    userEvent.click(disallowedDownloadButton);
+    await userEvent.click(disallowedDownloadButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
