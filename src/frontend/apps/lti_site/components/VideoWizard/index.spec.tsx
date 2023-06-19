@@ -59,11 +59,13 @@ describe('<VideoWizard />', () => {
     });
     screen.getByRole('button', { name: 'Start a live' });
 
-    userEvent.click(createVODButton);
+    await userEvent.click(createVODButton);
 
-    await screen.findByText(
-      'Use this wizard to create a new video, that you will be able to share with your students.',
-    );
+    expect(
+      await screen.findByText(
+        'Use this wizard to create a new video, that you will be able to share with your students.',
+      ),
+    ).toBeInTheDocument();
   });
 
   it('renders VideoWizard and clicks on ConfigureLiveButton', async () => {

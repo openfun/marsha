@@ -67,7 +67,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Classrooms' });
     screen.getByText('Add a classroom');
 
-    userEvent.click(screen.getByLabelText('Select classroom title'));
+    await userEvent.click(screen.getByLabelText('Select classroom title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({

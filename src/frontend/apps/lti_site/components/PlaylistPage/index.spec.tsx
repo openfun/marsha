@@ -46,8 +46,8 @@ describe('<PlaylistPage />', () => {
       </Suspense>,
     );
 
+    expect(screen.getByText('Loading playlist...')).toBeInTheDocument();
     await screen.findByText('Dashboard');
-    screen.getByText('Loading playlist...');
   });
 
   it('renders with document', async () => {
@@ -68,7 +68,7 @@ describe('<PlaylistPage />', () => {
       </Suspense>,
     );
 
+    expect(screen.getByText('Loading playlist...')).toBeInTheDocument();
     await screen.findByText('Dashboard');
-    screen.getByText('Loading playlist...');
   });
 });

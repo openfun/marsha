@@ -1,8 +1,7 @@
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { WrapperReactQuery } from 'lib-tests';
 
 import {
   depositedFileMockFactory,
@@ -23,23 +22,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('queries', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -55,13 +40,15 @@ describe('queries', () => {
         fileDepositories,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useFileDepositories({ organization: '1' }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/filedepositories/?limit=999&organization=1',
@@ -79,12 +66,14 @@ describe('queries', () => {
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/filedepositories/?limit=999&organization=1', 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useFileDepositories({ organization: '1' }),
-        { wrapper: Wrapper },
+        { wrapper: WrapperReactQuery },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/filedepositories/?limit=999&organization=1',
@@ -108,13 +97,16 @@ describe('queries', () => {
         fileDepository,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useFileDepository(fileDepository.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/`,
@@ -133,14 +125,16 @@ describe('queries', () => {
       const fileDepository = fileDepositoryMockFactory();
       fetchMock.mock(`/api/filedepositories/${fileDepository.id}/`, 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useFileDepository(fileDepository.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/`,
@@ -161,14 +155,17 @@ describe('queries', () => {
       const fileDepository = fileDepositoryMockFactory();
       fetchMock.post('/api/filedepositories/', fileDepository);
 
-      const { result, waitFor } = renderHook(() => useCreateFileDepository(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useCreateFileDepository(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         playlist: fileDepository.playlist.id,
         title: fileDepository.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/filedepositories/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -190,15 +187,17 @@ describe('queries', () => {
       const fileDepository = fileDepositoryMockFactory();
       fetchMock.post('/api/filedepositories/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateFileDepository(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useCreateFileDepository(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         playlist: fileDepository.playlist.id,
         title: fileDepository.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/filedepositories/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -225,16 +224,19 @@ describe('queries', () => {
         fileDepository,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateFileDepository(fileDepository.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/`,
@@ -257,16 +259,18 @@ describe('queries', () => {
       const fileDepository = fileDepositoryMockFactory();
       fetchMock.patch(`/api/filedepositories/${fileDepository.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateFileDepository(fileDepository.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/`,
@@ -297,13 +301,16 @@ describe('queries', () => {
         depositedFiles.slice(0, 3),
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useDepositedFiles(fileDepository.id, { limit: 3 }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
@@ -328,13 +335,16 @@ describe('queries', () => {
         depositedFiles.slice(3, 4),
       );
 
-      const { result, waitFor } = renderHook(
+      const { result} = renderHook(
         () => useDepositedFiles(fileDepository.id, { limit: 3, offset: 3 }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3&offset=3`,
@@ -359,14 +369,16 @@ describe('queries', () => {
         404,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useDepositedFiles(fileDepository.id, { limit: 3 }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/filedepositories/${fileDepository.id}/depositedfiles/?limit=3`,
@@ -390,16 +402,18 @@ describe('queries', () => {
         depositedFile,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateDepositedFile(depositedFile.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         read: true,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/depositedfiles/${depositedFile.id}/`,
@@ -422,16 +436,18 @@ describe('queries', () => {
       const depositedFile = depositedFileMockFactory();
       fetchMock.patch(`/api/depositedfiles/${depositedFile.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateDepositedFile(depositedFile.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         read: true,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/depositedfiles/${depositedFile.id}/`,

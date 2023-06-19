@@ -66,7 +66,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
 
-    userEvent.click(screen.getByLabelText('Select deposit title'));
+    await userEvent.click(screen.getByLabelText('Select deposit title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({

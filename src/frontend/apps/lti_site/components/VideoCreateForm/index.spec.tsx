@@ -63,18 +63,18 @@ describe('<VideoCreateForm />', () => {
         expect(step3).toHaveAttribute('aria-current', 'false');
       }
       // The form does not send when the title field is not set
-      userEvent.click(btn);
+      await userEvent.click(btn);
       screen.getByText('The title is required to create a new video.');
       // The form does not send when the playlist is not passed and the playlist field is not set
-      userEvent.type(titleField, 'new video title');
-      userEvent.click(btn);
+      await userEvent.type(titleField, 'new video title');
+      await userEvent.click(btn);
       screen.getByText('The playlist ID is required to create a new video.');
       expect(
         screen.queryByText('The title is required to create a new video.'),
       ).toBeNull();
 
-      userEvent.type(playlistField, playlist.id);
-      userEvent.click(btn);
+      await userEvent.type(playlistField, playlist.id);
+      await userEvent.click(btn);
       expect(
         screen.queryByText('The title is required to create a new video.'),
       ).toBeNull();
@@ -181,12 +181,12 @@ describe('<VideoCreateForm />', () => {
     screen.getByRole('list', { name: 'Video creation progress' });
 
     // The form does not send when the title field is not set
-    userEvent.click(btn);
+    await userEvent.click(btn);
     screen.getByText('The title is required to create a new video.');
 
     // As the playlist ID is available to the component, it does not ask it from the user
-    userEvent.type(titleField, 'new video title');
-    userEvent.click(btn);
+    await userEvent.type(titleField, 'new video title');
+    await userEvent.click(btn);
     expect(
       screen.queryByText('The title is required to create a new video.'),
     ).toBeNull();
@@ -224,9 +224,9 @@ describe('<VideoCreateForm />', () => {
     const btn = screen.getByRole('button', { name: 'Create the video' });
     screen.getByRole('list', { name: 'Video creation progress' });
 
-    userEvent.type(titleField, 'new video title');
-    userEvent.type(playlistField, playlist.id);
-    userEvent.click(btn);
+    await userEvent.type(titleField, 'new video title');
+    await userEvent.type(playlistField, playlist.id);
+    await userEvent.click(btn);
 
     await waitFor(() => {
       expect(
@@ -270,9 +270,9 @@ describe('<VideoCreateForm />', () => {
     const btn = screen.getByRole('button', { name: 'Create the video' });
     screen.getByRole('list', { name: 'Video creation progress' });
 
-    userEvent.type(titleField, 'new video title');
-    userEvent.type(playlistField, playlist.id);
-    userEvent.click(btn);
+    await userEvent.type(titleField, 'new video title');
+    await userEvent.type(playlistField, playlist.id);
+    await userEvent.click(btn);
 
     await waitFor(() => {
       expect(
