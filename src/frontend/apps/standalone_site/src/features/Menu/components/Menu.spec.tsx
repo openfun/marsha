@@ -24,13 +24,13 @@ describe('<Menu />', () => {
 
     render(<Menu />, { testingLibraryOptions: { wrapper: BrowserRouter } });
     expect(
-      screen.getByRole(/menuitem/i, { name: /My playlists/i }),
+      screen.getByRole('menuitem', { name: /My playlists/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /My Contents/i }),
+      screen.getByRole('menuitem', { name: /My Contents/i }),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Classrooms/i }),
+      screen.getByRole('menuitem', { name: /Classrooms/i }),
     ).toBeInTheDocument();
   });
 
@@ -45,7 +45,7 @@ describe('<Menu />', () => {
 
     const menu = screen.getByRole('menu');
     expect(menu).not.toHaveStyle('margin-left: -18.75rem;');
-    fireEvent.click(screen.getByRole(/button/i));
+    fireEvent.click(screen.getByRole('button'));
     expect(menu).toHaveStyle('margin-left: -18.75rem;');
   });
 

@@ -1,12 +1,10 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useCreateLtiUserAssociation } from './useLtiUserAssociations';
-
-let Wrapper: WrapperComponent<Element>;
 
 describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
   beforeAll(() => {
@@ -20,22 +18,6 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
 
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = function Wrapper({ children }) {
-      return (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-    };
   });
 
   afterEach(() => {
@@ -48,16 +30,15 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
     it('creates the LTI user association', async () => {
       fetchMock.postOnce('/api/lti-user-associations/', 'null');
 
-      const { result, waitFor } = renderHook(
-        () => useCreateLtiUserAssociation(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateLtiUserAssociation(), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         association_jwt: 'some_association_jwt',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/lti-user-associations/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -77,18 +58,17 @@ describe('features/PortabilityRequests/api/useLtiUserAssociations', () => {
     it('fails to create the LTI user association', async () => {
       fetchMock.postOnce('/api/lti-user-associations/', 500);
 
-      const { result, waitFor } = renderHook(
-        () => useCreateLtiUserAssociation(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateLtiUserAssociation(), {
+        wrapper: WrapperReactQuery,
+      });
 
       result.current.mutate({
         association_jwt: 'some_association_jwt',
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual('/api/lti-user-associations/');
       expect(fetchMock.lastCall()![1]).toEqual({

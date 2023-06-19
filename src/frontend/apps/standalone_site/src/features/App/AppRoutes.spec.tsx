@@ -127,7 +127,7 @@ describe('<AppRoutes />', () => {
       });
       expect(await screen.findByText('My HeaderLight')).toBeInTheDocument();
       expect(
-        screen.queryByRole(/menuitem/i, { name: /Dashboard/i }),
+        screen.queryByRole('menuitem', { name: /Dashboard/i }),
       ).not.toBeInTheDocument();
       expect(screen.getByText('My ContentsRouter Page')).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
@@ -142,7 +142,7 @@ describe('<AppRoutes />', () => {
       expect(await screen.findByText('My HeaderLightLink')).toBeInTheDocument();
       expect(await screen.findByText('My PagesApi')).toBeInTheDocument();
       expect(
-        screen.queryByRole(/menuitem/i, { name: /Dashboard/i }),
+        screen.queryByRole('menuitem', { name: /Dashboard/i }),
       ).not.toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
     });
@@ -152,7 +152,7 @@ describe('<AppRoutes />', () => {
     test('renders AppRoutes', async () => {
       render(<AppRoutes />);
       expect(
-        await screen.findByRole(/menuitem/i, { name: /Dashboard/i }),
+        await screen.findByRole('menuitem', { name: /Dashboard/i }),
       ).toBeInTheDocument();
       expect(screen.getByText(/My Header/i)).toBeInTheDocument();
       expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
@@ -164,11 +164,11 @@ describe('<AppRoutes />', () => {
 
       expect(await screen.findByText(/My HomePage/i)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole(/menuitem/i, { name: /My playlists/i }));
+      userEvent.click(screen.getByRole('menuitem', { name: /My playlists/i }));
 
       expect(await screen.findByText(/My Playlist Page/i)).toBeInTheDocument();
 
-      userEvent.click(screen.getByRole(/menuitem/i, { name: /My Contents/i }));
+      userEvent.click(screen.getByRole('menuitem', { name: /My Contents/i }));
 
       await waitFor(() => {
         expect(screen.getByText(/My ContentsRouter Page/i)).toBeInTheDocument();
@@ -185,7 +185,7 @@ describe('<AppRoutes />', () => {
       });
       expect(await screen.findByText('My PagesApi')).toBeInTheDocument();
       expect(
-        screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
+        screen.getByRole('menuitem', { name: /Dashboard/i }),
       ).toBeInTheDocument();
       expect(screen.getByText('My Footer')).toBeInTheDocument();
     });

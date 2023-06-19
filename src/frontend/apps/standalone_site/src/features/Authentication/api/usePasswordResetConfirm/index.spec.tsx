@@ -1,23 +1,9 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { usePasswordResetConfirm } from './index';
-
-const Wrapper: WrapperComponent<Element> = ({ children }) => {
-  const queryClient = new QueryClient({
-    defaultOptions: {
-      queries: {
-        retry: false,
-      },
-    },
-  });
-
-  return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-  );
-};
 
 describe('features/Authentication/api/usePasswordResetConfirm', () => {
   beforeAll(() => {
@@ -40,8 +26,8 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
         details: 'Done',
       });
 
-      const { result, waitFor } = renderHook(() => usePasswordResetConfirm(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePasswordResetConfirm(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         uid: 'some_uid',
@@ -49,7 +35,9 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
         new_password1: 'some_password',
         new_password2: 'some_password',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/account/api/password/reset/confirm/`,
@@ -75,8 +63,8 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
     it('manages failure', async () => {
       fetchMock.postOnce('/account/api/password/reset/confirm/', 401);
 
-      const { result, waitFor } = renderHook(() => usePasswordResetConfirm(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePasswordResetConfirm(), {
+        wrapper: WrapperReactQuery,
       });
 
       result.current.mutate({
@@ -86,7 +74,9 @@ describe('features/Authentication/api/usePasswordResetConfirm', () => {
         new_password2: 'some_password',
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/account/api/password/reset/confirm/',

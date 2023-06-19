@@ -50,26 +50,35 @@ describe('AddUserAccessForm', () => {
       ),
     ).toBeInTheDocument();
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', {
         name: 'Search by username or email address...',
       }),
       'test',
     );
-    await waitFor(async () =>
-      expect(
-        await screen.findByRole('button', {
-          name: 'Add user User 1 in playlist',
-        }),
-      ).toBeInTheDocument(),
-    );
 
-    userEvent.click(
+    expect(
+      await screen.findByRole(
+        'button',
+        {
+          name: 'Add user User 1 in playlist',
+        },
+        {
+          timeout: 3000,
+        },
+      ),
+    ).toBeInTheDocument();
+
+    await userEvent.click(
       screen.getByRole('button', { name: 'Add user User 1 in playlist' }),
     );
-    userEvent.click(screen.getByRole('button', { name: /Select role/i }));
-    userEvent.click(await screen.findByRole('option', { name: /Instructor/i }));
-    userEvent.click(screen.getByRole('button', { name: 'Add this member' }));
+    await userEvent.click(screen.getByRole('button', { name: /Select role/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /Instructor/i }),
+    );
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Add this member' }),
+    );
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual('/api/playlist-accesses/'),
@@ -124,7 +133,7 @@ describe('AddUserAccessForm', () => {
       ),
     ).toBeInTheDocument();
 
-    userEvent.type(
+    await userEvent.type(
       screen.getByRole('textbox', {
         name: 'Search by username or email address...',
       }),
@@ -140,12 +149,14 @@ describe('AddUserAccessForm', () => {
       { timeout: 10000 },
     );
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', { name: 'Add user User 1 in playlist' }),
     );
-    userEvent.click(screen.getByRole('button', { name: /Select role/i }));
-    userEvent.click(await screen.findByRole('option', { name: /Instructor/i }));
-    userEvent.click(screen.getByRole('button', { name: 'Back' }));
+    await userEvent.click(screen.getByRole('button', { name: /Select role/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /Instructor/i }),
+    );
+    await userEvent.click(screen.getByRole('button', { name: 'Back' }));
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(

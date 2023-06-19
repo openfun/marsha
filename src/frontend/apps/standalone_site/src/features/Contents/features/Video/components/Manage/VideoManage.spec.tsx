@@ -1,13 +1,24 @@
-import { screen } from '@testing-library/react';
+import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import { act } from 'react-dom/test-utils';
+import { setLogger } from 'react-query';
 
 import { useSelectFeatures } from 'features/Contents/store/selectionStore';
 
 import VideoManage from './VideoManage';
+
+setLogger({
+  log: console.log,
+  warn: console.warn,
+  error: jest.fn(),
+});
+
+jest.mock('lib-components', () => ({
+  ...jest.requireActual('lib-components'),
+  report: jest.fn(),
+}));
 
 jest.mock('./VideoCreateForm', () => ({
   __esModule: true,
@@ -38,10 +49,10 @@ describe('<VideoManage />', () => {
     expect(screen.getByRole('button', { name: 'Select' })).toBeInTheDocument();
   });
 
-  it('shows video creation Modal', () => {
+  it('shows video creation Modal', async () => {
     render(<VideoManage />);
     const createButton = screen.getByRole('button', { name: /Create Video/i });
-    userEvent.click(createButton);
+    await userEvent.click(createButton);
 
     expect(
       screen.getByRole('heading', { name: /Create Video/i }),
@@ -49,10 +60,10 @@ describe('<VideoManage />', () => {
     expect(screen.getByText('My VideoManage Form')).toBeInTheDocument();
   });
 
-  it('switches into selection mode on select button click', () => {
+  it('switches into selection mode on select button click', async () => {
     render(<VideoManage />);
     const selectButton = screen.getByRole('button', { name: 'Select' });
-    userEvent.click(selectButton);
+    await userEvent.click(selectButton);
     expect(
       screen.queryByRole('button', { name: 'Select' }),
     ).not.toBeInTheDocument();
@@ -99,7 +110,7 @@ describe('<VideoManage />', () => {
     ).toBeInTheDocument();
   });
 
-  it('opens the delete confirmation modal', () => {
+  it('opens the delete confirmation modal', async () => {
     render(<VideoManage />);
     act(() =>
       useSelectFeatures.setState({
@@ -108,7 +119,7 @@ describe('<VideoManage />', () => {
       }),
     );
     const deleteButon = screen.getByRole('button', { name: 'Delete 3 videos' });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     expect(screen.getByText('Confirm delete 3 videos')).toBeInTheDocument();
     expect(
@@ -132,12 +143,12 @@ describe('<VideoManage />', () => {
       }),
     );
     const deleteButon = screen.getByRole('button', { name: 'Delete 2 videos' });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete 2 videos',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('2 videos successfully deleted'),
@@ -167,12 +178,12 @@ describe('<VideoManage />', () => {
       }),
     );
     const deleteButon = screen.getByRole('button', { name: 'Delete 2 videos' });
-    userEvent.click(deleteButon);
+    await userEvent.click(deleteButon);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete 2 videos',
     });
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     expect(
       await screen.findByText('Failed to delete 2 videos'),

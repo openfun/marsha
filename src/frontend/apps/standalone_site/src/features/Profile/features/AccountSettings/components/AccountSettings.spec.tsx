@@ -38,9 +38,9 @@ describe('<AccountSettings />', () => {
     expect(submitButton).toBeInTheDocument();
 
     //  update fields values
-    userEvent.type(currentPassword, 'previousPassword');
-    userEvent.type(newPassword, 'newPassword');
-    userEvent.type(confirmationPassword, 'newPassword');
+    await userEvent.type(currentPassword, 'previousPassword');
+    await userEvent.type(newPassword, 'newPassword');
+    await userEvent.type(confirmationPassword, 'newPassword');
 
     expect(
       await screen.findByDisplayValue('previousPassword'),
@@ -50,7 +50,7 @@ describe('<AccountSettings />', () => {
     //  submit the form
     fetchMock.mock('/account/api/password/change/', 200, { method: 'POST' });
 
-    userEvent.click(submitButton);
+    await userEvent.click(submitButton);
 
     //  check final state
     await screen.findByText('Your password has been updated with success.');
@@ -76,7 +76,7 @@ describe('<AccountSettings />', () => {
       { method: 'POST' },
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Submit' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Submit' }));
 
     expect(await screen.findByText('old password error 1')).toBeInTheDocument();
     expect(

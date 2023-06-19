@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { WrapperReactQuery } from 'lib-tests';
 import { setLogger } from 'react-query';
@@ -36,13 +36,13 @@ describe('hook/usePagesApi', () => {
       ],
     });
 
-    const { result, waitForNextUpdate } = renderHook(() => usePagesApi(), {
+    const { result } = renderHook(() => usePagesApi(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitForNextUpdate();
-
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/`);
+    await waitFor(() => {
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/`);
+    });
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',
@@ -50,18 +50,20 @@ describe('hook/usePagesApi', () => {
       method: 'GET',
     });
 
-    expect(result.current.pagesApi).toEqual([
-      {
-        slug: 'test',
-        name: 'Test',
-        content: 'My test page',
-      },
-      {
-        slug: 'cgi',
-        name: 'General Conditions',
-        content: 'Bla bla bla',
-      },
-    ]);
+    await waitFor(() => {
+      expect(result.current.pagesApi).toEqual([
+        {
+          slug: 'test',
+          name: 'Test',
+          content: 'My test page',
+        },
+        {
+          slug: 'cgi',
+          name: 'General Conditions',
+          content: 'Bla bla bla',
+        },
+      ]);
+    });
 
     expect(result.current.routesPagesApi).toEqual(['/test', '/cgi']);
   });
@@ -69,13 +71,13 @@ describe('hook/usePagesApi', () => {
   it('checks hooks values with a failed API call', async () => {
     fetchMock.getOnce('/api/pages/', 401);
 
-    const { result, waitForNextUpdate } = renderHook(() => usePagesApi(), {
+    const { result } = renderHook(() => usePagesApi(), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitForNextUpdate();
-
-    expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/`);
+    await waitFor(() => {
+      expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/`);
+    });
     expect(fetchMock.lastCall()![1]).toEqual({
       headers: {
         'Content-Type': 'application/json',

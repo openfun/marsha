@@ -16,11 +16,11 @@ describe('<MenuItem />', () => {
       testingLibraryOptions: { wrapper: BrowserRouter },
     });
     expect(
-      screen.getByRole(/img/i, { name: /svg-menu-homepage/i }),
+      screen.getByRole('img', { name: /svg-menu-homepage/i }),
     ).toBeInTheDocument();
     expect(screen.getByText(/My Content/i)).toBeInTheDocument();
     expect(
-      screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
+      screen.getByRole('menuitem', { name: /Dashboard/i }),
     ).toBeInTheDocument();
   });
 
@@ -34,11 +34,11 @@ describe('<MenuItem />', () => {
       </Router>,
     );
 
-    expect(screen.getByRole(/menuitem/i, { name: /Dashboard/i })).toHaveStyle({
+    expect(screen.getByRole('menuitem', { name: /Dashboard/i })).toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
     expect(
-      screen.getByRole(/menuitem/i, { name: /Favorites/i }),
+      screen.getByRole('menuitem', { name: /Favorites/i }),
     ).not.toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
@@ -52,11 +52,11 @@ describe('<MenuItem />', () => {
     );
 
     expect(
-      screen.getByRole(/menuitem/i, { name: /Dashboard/i }),
+      screen.getByRole('menuitem', { name: /Dashboard/i }),
     ).not.toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
-    expect(screen.getByRole(/menuitem/i, { name: /Favorites/i })).toHaveStyle({
+    expect(screen.getByRole('menuitem', { name: /Favorites/i })).toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
   });

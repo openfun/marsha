@@ -1,12 +1,10 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useBasicLogin } from './index';
-
-let Wrapper: WrapperComponent<Element>;
 
 describe('features/Authentication/api/basicLogin', () => {
   beforeAll(() => {
@@ -16,24 +14,6 @@ describe('features/Authentication/api/basicLogin', () => {
       // disable the "invalid json response body" error when testing failure
       error: jest.fn(),
     });
-  });
-
-  beforeEach(() => {
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = function Wrapper({ children }) {
-      return (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-    };
   });
 
   afterEach(() => {
@@ -48,14 +28,16 @@ describe('features/Authentication/api/basicLogin', () => {
         refresh: 'some refresh token',
       });
 
-      const { result, waitFor } = renderHook(() => useBasicLogin(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useBasicLogin(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         username: 'some_username',
         password: 'some_password',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/account/api/token/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -81,8 +63,8 @@ describe('features/Authentication/api/basicLogin', () => {
     it('fails does not authenticate user when request fails', async () => {
       fetchMock.postOnce('/account/api/token/', 401);
 
-      const { result, waitFor } = renderHook(() => useBasicLogin(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useBasicLogin(), {
+        wrapper: WrapperReactQuery,
       });
 
       result.current.mutate({
@@ -90,7 +72,9 @@ describe('features/Authentication/api/basicLogin', () => {
         password: 'some_password',
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual('/account/api/token/');
       expect(fetchMock.lastCall()![1]).toEqual({

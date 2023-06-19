@@ -5,12 +5,12 @@ import { render } from 'lib-tests';
 import { AddUserAccessButton } from './AddUserAccessButton';
 
 describe('AddUserAccessButton', () => {
-  it('opens AddUserAccessForm', () => {
+  it('opens AddUserAccessForm', async () => {
     render(<AddUserAccessButton playlistId="1" />);
     expect(
       screen.queryByRole('heading', { name: 'Add member' }),
     ).not.toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'Add people' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Add people' }));
     expect(
       screen.getByRole('heading', { name: 'Add member' }),
     ).toBeInTheDocument();

@@ -217,19 +217,19 @@ describe('<Lives/>', () => {
 
     render(<Lives />);
 
-    screen
-      .getByRole('button', {
+    await userEvent.click(
+      screen.getByRole('button', {
         name: /Filter/i,
-      })
-      .click();
+      }),
+    );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 

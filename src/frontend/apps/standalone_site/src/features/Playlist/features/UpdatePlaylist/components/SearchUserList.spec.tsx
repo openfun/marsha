@@ -53,7 +53,7 @@ describe('SearchUserList', () => {
         }),
       ).toBeInTheDocument(),
     );
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: 'Add user User 2 in playlist',
       }),
@@ -158,7 +158,7 @@ describe('SearchUserList', () => {
     expect(
       screen.getByText('An error occurred, please try again later.'),
     ).toBeInTheDocument();
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: 'Retry',
       }),

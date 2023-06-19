@@ -106,13 +106,13 @@ describe('<RenaterAuthenticator />', () => {
   it('checks search selectbox', async () => {
     render(<RenaterAuthenticator />);
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/i }));
 
     expect(
       await screen.findByRole('option', { name: /Fake IdP 1/i }),
     ).toBeInTheDocument();
 
-    userEvent.type(screen.getByRole('searchbox'), 'Local');
+    await userEvent.type(screen.getByRole('searchbox'), 'Local');
 
     expect(
       await screen.findByRole('option', { name: /Local accepting IdP/i }),

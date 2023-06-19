@@ -23,7 +23,7 @@ describe('<LoadSVG />', () => {
       />,
     );
 
-    const mySvg = screen.getByRole(/img/i, { name: /svg-menu-favorites/i });
+    const mySvg = screen.getByRole('img', { name: /svg-menu-favorites/i });
 
     expect(mySvg).toBeInTheDocument();
     expect(mySvg).toHaveAttribute('width', '30');
@@ -43,7 +43,7 @@ describe('<LoadSVG />', () => {
       />,
     );
 
-    const mySvg = screen.getByRole(/img/i, { name: /svg-menu-favorites/i });
+    const mySvg = screen.getByRole('img', { name: /svg-menu-favorites/i });
     expect(mySvg).toHaveAttribute('width', '40');
     expect(mySvg).toHaveAttribute('height', '40');
   });

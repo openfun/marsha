@@ -1,16 +1,14 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { portabilityRequestMockFactory, useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import {
   acceptPortabilityRequest,
   rejectPortabilityRequest,
   usePortabilityRequests,
 } from './usePortabilityRequests';
-
-let Wrapper: WrapperComponent<Element>;
 
 describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
   beforeAll(() => {
@@ -24,22 +22,6 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
 
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = function Wrapper({ children }) {
-      return (
-        <QueryClientProvider client={queryClient}>
-          {children}
-        </QueryClientProvider>
-      );
-    };
   });
 
   afterEach(() => {
@@ -56,14 +38,16 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         'null',
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => acceptPortabilityRequest(portabilityRequest.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({});
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/portability-requests/${portabilityRequest.id}/accept/`,
@@ -87,16 +71,18 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         500,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => acceptPortabilityRequest(portabilityRequest.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
       result.current.mutate({});
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/portability-requests/${portabilityRequest.id}/accept/`,
@@ -122,14 +108,16 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         'null',
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => rejectPortabilityRequest(portabilityRequest.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({});
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/portability-requests/${portabilityRequest.id}/reject/`,
@@ -153,16 +141,18 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         500,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => rejectPortabilityRequest(portabilityRequest.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
       result.current.mutate({});
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/portability-requests/${portabilityRequest.id}/reject/`,
@@ -192,7 +182,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         portabilityRequestList,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           usePortabilityRequests({
             offset: '20',
@@ -200,10 +190,12 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
             ordering: '-created_on',
           }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/portability-requests/?limit=10&offset=20&ordering=-created_on',
@@ -224,7 +216,7 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
         500,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () =>
           usePortabilityRequests({
             offset: '20',
@@ -232,11 +224,13 @@ describe('features/PortabilityRequests/api/usePortabilityRequests', () => {
             ordering: '-created_on',
           }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/portability-requests/?limit=10&offset=20&ordering=-created_on',

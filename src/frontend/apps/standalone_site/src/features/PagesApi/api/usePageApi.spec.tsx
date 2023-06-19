@@ -1,4 +1,4 @@
-import { renderHook } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { WrapperReactQuery } from 'lib-tests';
 import { setLogger } from 'react-query';
@@ -27,11 +27,13 @@ describe('usePageApi', () => {
       content: 'My test page',
     });
 
-    const { result, waitFor } = renderHook(() => usePageApi('test'), {
+    const { result } = renderHook(() => usePageApi('test'), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/pages/test/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -50,11 +52,13 @@ describe('usePageApi', () => {
   it('manages failure', async () => {
     fetchMock.getOnce('/api/pages/test/', 401);
 
-    const { result, waitFor } = renderHook(() => usePageApi('test'), {
+    const { result } = renderHook(() => usePageApi('test'), {
       wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual('/api/pages/test/');
     expect(fetchMock.lastCall()![1]).toEqual({

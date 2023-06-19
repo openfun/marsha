@@ -11,7 +11,7 @@ jest.mock('assets/svg/logo_marsha.svg', () => ({
 describe('<HeaderLight />', () => {
   test('renders HeaderLight', () => {
     render(<HeaderLight />);
-    expect(screen.getByRole(/menubar/i)).toBeInTheDocument();
+    expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(screen.getByText(/My LogoIcon/i)).toBeInTheDocument();
     expect(
       screen.queryByRole('link', {
@@ -22,7 +22,7 @@ describe('<HeaderLight />', () => {
 
   test('renders HeaderLightLink', () => {
     render(<HeaderLightLink />);
-    expect(screen.getByRole(/menubar/i)).toBeInTheDocument();
+    expect(screen.getByRole('menubar')).toBeInTheDocument();
     expect(
       screen.getByRole('link', {
         name: /My LogoIcon/i,

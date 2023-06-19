@@ -1,10 +1,8 @@
-import { screen } from '@testing-library/react';
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { screen, renderHook, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Form } from 'lib-components';
-import { render, Deferred, appendUtilsElement } from 'lib-tests';
-import { Fragment } from 'react';
+import { render, Deferred, wrapperUtils } from 'lib-tests';
 
 import { routes } from 'routes';
 
@@ -24,10 +22,6 @@ const consoleError = jest
   .spyOn(console, 'error')
   .mockImplementation(() => jest.fn());
 
-const Wrapper: WrapperComponent<Element> = ({ children }: Element) => {
-  return appendUtilsElement(<Fragment>{children}</Fragment>);
-};
-
 describe('<useSelectPlaylist />', () => {
   afterEach(() => {
     fetchMock.restore();
@@ -41,17 +35,16 @@ describe('<useSelectPlaylist />', () => {
     );
 
     const useSelectPlaylistSuccess = new Deferred();
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSelectPlaylist(),
-      {
-        wrapper: Wrapper,
-      },
-    );
+    const { result, unmount } = renderHook(() => useSelectPlaylist(), {
+      wrapper: wrapperUtils(),
+    });
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.playlistResponse).toBeDefined();
+    });
 
     useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
-    expect(result.current.errorPlaylist).toBeNull();
+
     expect(await useSelectPlaylistSuccess.promise).toEqual({
       count: 1,
       next: null,
@@ -61,6 +54,10 @@ describe('<useSelectPlaylist />', () => {
         { id: 'an-other-playlist', title: 'an other title' },
       ],
     });
+
+    expect(result.current.errorPlaylist).toBeNull();
+
+    unmount();
 
     render(
       <Form onSubmitError={() => ({})} onSubmit={() => {}}>
@@ -72,13 +69,13 @@ describe('<useSelectPlaylist />', () => {
       screen.queryByRole('button', { name: 'Create a new playlist' }),
     ).not.toBeInTheDocument();
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('button', {
         name: 'Choose the playlist.',
       }),
     );
 
-    userEvent.click(
+    await userEvent.click(
       await screen.findByRole('option', { name: 'an other title' }),
     );
 
@@ -96,20 +93,22 @@ describe('<useSelectPlaylist />', () => {
     );
 
     const useSelectPlaylistSuccess = new Deferred();
-    const { result, waitForNextUpdate } = renderHook(
+    const { result, unmount } = renderHook(
       () =>
         useSelectPlaylist({
           withPlaylistCreation: true,
         }),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.playlistResponse).toBeDefined();
+    });
 
     useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
-    expect(result.current.errorPlaylist).toBeNull();
+
     expect(await useSelectPlaylistSuccess.promise).toEqual({
       count: 1,
       next: null,
@@ -119,6 +118,10 @@ describe('<useSelectPlaylist />', () => {
         { id: 'an-other-playlist', title: 'an other title' },
       ],
     });
+
+    expect(result.current.errorPlaylist).toBeNull();
+
+    unmount();
 
     render(
       <Form onSubmitError={() => ({})} onSubmit={() => {}}>
@@ -154,20 +157,22 @@ describe('<useSelectPlaylist />', () => {
     );
 
     const useSelectPlaylistSuccess = new Deferred();
-    const { result, waitForNextUpdate } = renderHook(
+    const { result, unmount } = renderHook(
       () =>
         useSelectPlaylist({
           withPlaylistCreation: true,
         }),
       {
-        wrapper: Wrapper,
+        wrapper: wrapperUtils(),
       },
     );
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.playlistResponse).toBeDefined();
+    });
 
     useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
-    expect(result.current.errorPlaylist).toBeNull();
+
     expect(await useSelectPlaylistSuccess.promise).toEqual({
       count: 1,
       next: null,
@@ -177,6 +182,10 @@ describe('<useSelectPlaylist />', () => {
         { id: 'an-other-playlist', title: 'an other title' },
       ],
     });
+
+    expect(result.current.errorPlaylist).toBeNull();
+
+    unmount();
 
     render(
       <Form onSubmitError={() => ({})} onSubmit={() => {}}>
@@ -199,7 +208,7 @@ describe('<useSelectPlaylist />', () => {
     });
     expect(createPlaylistButton).toBeInTheDocument();
 
-    userEvent.click(createPlaylistButton);
+    await userEvent.click(createPlaylistButton);
 
     expect(await screen.findByText('create playlist page')).toBeInTheDocument();
   });
@@ -215,24 +224,22 @@ describe('<useSelectPlaylist />', () => {
     );
 
     const useSelectPlaylistSuccess = new Deferred();
-    const { result, waitForNextUpdate } = renderHook(
-      () => useSelectPlaylist(),
-      {
-        wrapper: Wrapper,
-      },
-    );
-
-    await waitForNextUpdate();
+    const { result } = renderHook(() => useSelectPlaylist(), {
+      wrapper: wrapperUtils(),
+    });
 
     useSelectPlaylistSuccess.resolve(result.current.playlistResponse);
-    expect(result.current.errorPlaylist?.error).toEqual({
-      code: 'exception',
-      message: 'Failed to get list of playlists.',
-      detail: 'Sorry...',
-      status: 401,
-      response: expect.objectContaining({
+
+    await waitFor(() => {
+      expect(result.current.errorPlaylist?.error).toEqual({
+        code: 'exception',
+        message: 'Failed to get list of playlists.',
+        detail: 'Sorry...',
         status: 401,
-      }),
+        response: expect.objectContaining({
+          status: 401,
+        }),
+      });
     });
   });
 });
