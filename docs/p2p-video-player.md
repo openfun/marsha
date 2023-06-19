@@ -36,6 +36,14 @@ Also important for our integration:
   <td><img src="images/p2p-media-loader-network.png" alt="Moodle LTI select admin view 3"/></td>
 </tr></table>
 
+By default, the library uses public server. In the "recent" version of Chrome ([milestone 110](https://groups.google.com/g/discuss-webrtc/c/L0qDWipd7VE?pli=1)), it perform an extra validation of TURN and STUN Urls making STUN URLs not supporting query section. Thus, the [public STUN server list](https://gist.github.com/mondain/b0ec1cf5f60ae726202e)  is not Chrome compliant and the library won't work, Firefox still works. 
+
+This, plus the fact that public servers support a limited number of peers and can reject connections or even go down on a heavy loads, means that we have to provide our WebTorrent tracker and STUN server.
+
+
+> **_NOTE:_** It is possible we can face an [issue](https://github.com/Novage/p2p-media-loader/issues/164
+) of stream lagging when too much viewers
+
 ## Integration
 
 The `P2P Media Loader` library provides a Hls.js integration (see [p2p-media-loader-hlsjs](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-hlsjs))  that can be used on different js player, including [Videojs](https://videojs.com/) (the library that we use).
@@ -106,4 +114,4 @@ player.options_.html5 = {
 
 And that's it !
 
-Some possible useful information on [library FAQ](https://github.com/Novage/p2p-media-loader/blob/master/FAQ.md)
+Some possible useful information on the [library FAQ](https://github.com/Novage/p2p-media-loader/blob/master/FAQ.md)
