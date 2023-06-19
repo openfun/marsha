@@ -7,7 +7,6 @@ import {
   useJwt,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { classroomMockFactory } from '@lib-classroom/utils';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
@@ -88,7 +87,7 @@ describe('<DeleteClassroom />', () => {
     ).toBeInTheDocument();
   });
 
-  it('successfully opens the confirmation modal', () => {
+  it('successfully opens the confirmation modal', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: true,
@@ -111,7 +110,7 @@ describe('<DeleteClassroom />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete classroom',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
     expect(
       screen.getByText(
         'Are you sure you want to delete this classroom ? This action is irreversible.',
@@ -143,7 +142,7 @@ describe('<DeleteClassroom />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete classroom',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom',
@@ -180,7 +179,7 @@ describe('<DeleteClassroom />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Delete classroom',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom',

@@ -4,7 +4,6 @@ import fetchMock from 'fetch-mock';
 import { useCurrentResourceContext, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
-import React from 'react';
 
 import {
   classroomMockFactory,
@@ -35,7 +34,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     jest.resetAllMocks();
   });
 
-  it('successfully opens the confirmation modal', () => {
+  it('successfully opens the confirmation modal', async () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: true,
@@ -55,7 +54,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     render(<DeleteClassroomRecordingButton recording={classroomRecording} />);
 
     const deleteButton = screen.getByRole('button');
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
     expect(
       screen.getByText(
         'Are you sure you want to delete this classroom recording ? This action is irreversible.',
@@ -87,7 +86,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     render(<DeleteClassroomRecordingButton recording={classroomRecording} />);
 
     const deleteButton = screen.getByRole('button');
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom recording',
@@ -124,7 +123,7 @@ describe('<DeleteClassroomRecordingButton />', () => {
     render(<DeleteClassroomRecordingButton recording={classroomRecording} />);
 
     const deleteButton = screen.getByRole('button');
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', {
       name: 'Confirm delete classroom recording',

@@ -1,14 +1,13 @@
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import DashboardCopyClipboard from '.';
 
 // Even if its depreciated, it's what is used under-the-hood in the clipboard.js librairy
 document.execCommand = jest.fn();
 
-global.window = Object.create(window);
+global.window ??= Object.create(window);
 const url = 'http://dummy.com';
 Object.defineProperty(window, 'location', {
   value: {
@@ -69,7 +68,7 @@ describe('<DashboardCopyClipboard />', () => {
     ).toBeInTheDocument();
 
     expect(document.execCommand).toHaveBeenCalledTimes(0);
-    userEvent.click(copyInviteButton);
+    await userEvent.click(copyInviteButton);
     expect(document.execCommand).toHaveBeenCalledTimes(1);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     expect(screen.getByText('Url copied to clipboard !')).toBeInTheDocument();
@@ -78,12 +77,12 @@ describe('<DashboardCopyClipboard />', () => {
       { timeout: 5000 },
     );
 
-    userEvent.click(copyInstructorButton);
+    await userEvent.click(copyInstructorButton);
     expect(document.execCommand).toHaveBeenCalledTimes(2);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     expect(screen.getByText('Url copied to clipboard !')).toBeInTheDocument();
 
-    userEvent.click(copyLtiLinkButton);
+    await userEvent.click(copyLtiLinkButton);
     expect(document.execCommand).toHaveBeenCalledTimes(3);
     expect(document.execCommand).toHaveBeenLastCalledWith('copy');
   }, 10000);

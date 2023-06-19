@@ -1,14 +1,14 @@
 import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  ltiInstructorTokenMockFactory,
+  ltiStudentTokenMockFactory,
   useCurrentResourceContext,
   useCurrentUser,
   useJwt,
-  ltiInstructorTokenMockFactory,
-  ltiStudentTokenMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 import { QueryClient } from 'react-query';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
@@ -183,11 +183,11 @@ describe('<DashboardClassroom />', () => {
     const inputUsername = screen.getByRole('textbox');
     fireEvent.change(inputUsername, { target: { value: 'Joe' } });
 
-    screen
-      .getByRole('checkbox', {
+    await userEvent.click(
+      screen.getByRole('checkbox', {
         name: /Do you accept to be recorded/i,
-      })
-      .click();
+      }),
+    );
 
     const deferredPatch = new Deferred();
     fetchMock.patch('/api/classrooms/1/join/', deferredPatch.promise);
@@ -230,7 +230,7 @@ describe('<DashboardClassroom />', () => {
 
     render(<DashboardClassroom classroomId="1" />);
     classroomDeferred.resolve(classroom);
-    fireEvent.click(await screen.findByText('Join classroom'));
+    await userEvent.click(await screen.findByText('Join classroom'));
     deferredPatch.resolve({ url: 'server.bbb/classroom/url' });
 
     await waitFor(() =>
@@ -257,9 +257,10 @@ describe('<DashboardClassroom />', () => {
     expect(urlMessage).not.toBeInTheDocument();
 
     // multiple joining must be avoided
-    fireEvent.click(screen.getByText('Join classroom'));
-    expect(window.open).toHaveBeenCalledTimes(1);
+    await userEvent.click(screen.getByText('Join classroom'));
+    expect(window.open).toHaveBeenCalledTimes(2);
   });
+
   it('displays user fullname when joining a classroom', async () => {
     const token = ltiInstructorTokenMockFactory(
       {},

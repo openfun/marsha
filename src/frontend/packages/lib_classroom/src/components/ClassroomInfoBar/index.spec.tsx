@@ -1,10 +1,9 @@
-import { screen, waitFor } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { report } from 'lib-components';
 import { render } from 'lib-tests';
 import { Settings } from 'luxon';
-import React from 'react';
 
 import { classroomMockFactory } from '@lib-classroom/utils/tests/factories';
 import { wrapInClassroom } from '@lib-classroom/utils/wrapInClassroom';
@@ -20,15 +19,9 @@ Settings.defaultLocale = 'en';
 Settings.defaultZone = 'Europe/Paris';
 
 describe('<ClassroomInfoBar />', () => {
-  beforeEach(() => {
-    jest.useFakeTimers();
-  });
   afterEach(() => {
     jest.resetAllMocks();
     fetchMock.restore();
-  });
-  afterAll(() => {
-    jest.useRealTimers();
   });
 
   it('renders the component', () => {
@@ -57,10 +50,18 @@ describe('<ClassroomInfoBar />', () => {
     const titleInput = screen.getByRole('textbox', {
       name: 'Enter title of your classroom here',
     });
-    titleInput.focus();
-    userEvent.clear(titleInput);
-    userEvent.type(titleInput, 'new title');
-    titleInput.blur();
+
+    act(() => {
+      titleInput.focus();
+    });
+
+    await userEvent.clear(titleInput);
+    await userEvent.type(titleInput, 'new title');
+
+    act(() => {
+      titleInput.blur();
+    });
+
     expect(titleInput).toHaveValue('new title');
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -79,7 +80,7 @@ describe('<ClassroomInfoBar />', () => {
     screen.getByText('Classroom updated.');
   });
 
-  it('should stop user from entering an empty title', () => {
+  it('should stop user from entering an empty title', async () => {
     const classroom = classroomMockFactory({
       id: '1',
       started: false,
@@ -91,9 +92,16 @@ describe('<ClassroomInfoBar />', () => {
     const titleInput = screen.getByRole('textbox', {
       name: 'Enter title of your classroom here',
     });
-    titleInput.focus();
-    userEvent.clear(titleInput);
-    titleInput.blur();
+
+    act(() => {
+      titleInput.focus();
+    });
+
+    await userEvent.clear(titleInput);
+
+    act(() => {
+      titleInput.blur();
+    });
 
     expect(titleInput).toHaveValue('title');
     expect(fetchMock.calls()).toHaveLength(0);
@@ -116,8 +124,12 @@ describe('<ClassroomInfoBar />', () => {
     });
     expect(textInput).toHaveValue('An existing title');
 
-    userEvent.type(textInput, ' and more');
-    textInput.blur();
+    await userEvent.type(textInput, ' and more');
+
+    act(() => {
+      textInput.blur();
+    });
+
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/classrooms/${classroom.id}/`,
