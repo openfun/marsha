@@ -13,11 +13,9 @@ jest.mock('lib-components', () => ({
 describe('pollForMarkdownImage', () => {
   beforeEach(() => {
     jest.clearAllMocks();
-    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
     jest.useRealTimers();
     fetchMock.restore();
   });
@@ -36,6 +34,7 @@ describe('pollForMarkdownImage', () => {
 
     const promise = pollForMarkdownImage(
       'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+      1,
     );
 
     await waitFor(() => {
@@ -61,8 +60,6 @@ describe('pollForMarkdownImage', () => {
         overwriteRoutes: true,
       },
     );
-
-    jest.runOnlyPendingTimers();
 
     await waitFor(() => {
       expect(

@@ -6,7 +6,7 @@ import React from 'react';
 import { ScreenDisposition, ScreenDispositionSelector } from '.';
 
 describe('<ScreenDispositionSelector />', () => {
-  it('send disposition changes', () => {
+  it('send disposition changes', async () => {
     const setScreenDisposition = jest.fn();
 
     // editor -> rendering
@@ -17,7 +17,7 @@ describe('<ScreenDispositionSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
+    await userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
 
     expect(setScreenDisposition).toHaveBeenCalledTimes(1);
     expect(setScreenDisposition).toHaveBeenCalledWith(
@@ -32,7 +32,7 @@ describe('<ScreenDispositionSelector />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('tab', { name: 'Markdown' }));
+    await userEvent.click(screen.getByRole('tab', { name: 'Markdown' }));
 
     expect(setScreenDisposition).toHaveBeenCalledTimes(2);
     expect(setScreenDisposition).toHaveBeenLastCalledWith(

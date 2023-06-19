@@ -18,7 +18,9 @@ describe('<LanguageSelector />', () => {
     );
 
     userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     expect(onLanguageChange).toHaveBeenCalledTimes(1);
     expect(onLanguageChange).toHaveBeenCalledWith('fr');
@@ -32,7 +34,9 @@ describe('<LanguageSelector />', () => {
     );
 
     userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /English/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /English/i }),
+    );
 
     expect(onLanguageChange).toHaveBeenCalledTimes(2);
     expect(onLanguageChange).toHaveBeenLastCalledWith('en');
@@ -68,7 +72,9 @@ describe('<LanguageSelector />', () => {
     );
 
     userEvent.click(screen.getByRole('button', { name: /Select language/i }));
-    userEvent.click(await screen.findByRole('option', { name: /French/i }));
+    await userEvent.click(
+      await screen.findByRole('option', { name: /French/i }),
+    );
 
     expect(onLanguageChange).toHaveBeenCalledTimes(1);
     expect(onLanguageChange).toHaveBeenCalledWith('fr');

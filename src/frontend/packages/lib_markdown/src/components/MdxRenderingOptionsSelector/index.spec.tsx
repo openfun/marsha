@@ -6,7 +6,7 @@ import React from 'react';
 import { MdxRenderingOptionsSelector } from '.';
 
 describe('<MdxRenderingOptionsSelector />', () => {
-  it('send options change', () => {
+  it('send options change', async () => {
     const setRenderingOptions = jest.fn();
 
     const { rerender } = render(
@@ -17,7 +17,7 @@ describe('<MdxRenderingOptionsSelector />', () => {
     );
 
     const dropButton = screen.getByRole('button', { name: 'Settings' });
-    userEvent.click(dropButton); // open the menu
+    await userEvent.click(dropButton); // open the menu
 
     // Toggle MDX
     const toggleMdxButton = screen.getByRole('checkbox', {
@@ -29,7 +29,7 @@ describe('<MdxRenderingOptionsSelector />', () => {
 
     screen.getByText('Mathjax disabled');
 
-    userEvent.click(toggleMdxButton);
+    await userEvent.click(toggleMdxButton);
 
     expect(setRenderingOptions).toHaveBeenCalledTimes(1);
     expect(setRenderingOptions).toHaveBeenCalledWith({ useMdx: true });
@@ -44,7 +44,7 @@ describe('<MdxRenderingOptionsSelector />', () => {
     screen.getByText('MDX enabled');
 
     // Toggle Mathjax
-    userEvent.click(toggleMathjaxButton);
+    await userEvent.click(toggleMathjaxButton);
 
     expect(setRenderingOptions).toHaveBeenCalledTimes(2);
     expect(setRenderingOptions).toHaveBeenCalledWith({
@@ -62,7 +62,7 @@ describe('<MdxRenderingOptionsSelector />', () => {
     screen.getByText('MDX enabled');
     screen.getByText('Mathjax enabled');
 
-    userEvent.click(toggleMdxButton);
+    await userEvent.click(toggleMdxButton);
 
     expect(setRenderingOptions).toHaveBeenCalledTimes(3);
     expect(setRenderingOptions).toHaveBeenCalledWith({
@@ -79,7 +79,7 @@ describe('<MdxRenderingOptionsSelector />', () => {
 
     screen.getByText('Mathjax enabled');
 
-    userEvent.click(toggleMathjaxButton);
+    await userEvent.click(toggleMathjaxButton);
 
     expect(setRenderingOptions).toHaveBeenCalledTimes(4);
     expect(setRenderingOptions).toHaveBeenCalledWith({

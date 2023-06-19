@@ -96,6 +96,11 @@ describe('<MarkdownEditor />', () => {
     const saveButton = screen.getByRole('button', { name: 'Save' });
     const publishButton = screen.getByRole('button', { name: 'Publish' });
 
+    await userEvent.type(
+      screen.getByRole('textbox', { name: 'Title' }),
+      ' is changed 1',
+    );
+
     expect(saveButton).not.toBeDisabled();
     expect(publishButton).toBeDisabled();
 
@@ -278,7 +283,7 @@ describe('<MarkdownEditor />', () => {
     expect(screen.getByTestId('renderer_container')).not.toBeVisible();
 
     // Display rendering only
-    screen.getByRole('tab', { name: 'Preview' }).click();
+    await userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
     expect(screen.getByTestId('editor_container')).not.toBeVisible();
     expect(screen.getByTestId('renderer_container')).toBeVisible();
   });
@@ -333,11 +338,15 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Enable MDX rendering
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
-    userEvent.click(screen.getByRole('checkbox', { name: 'MDX disabled' }));
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'MDX disabled' }),
+    );
 
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Settings', hidden: true }),
+    ); // close the settings dropdown
 
     await waitFor(() =>
       expect(
@@ -400,7 +409,7 @@ describe('<MarkdownEditor />', () => {
 
     rerender(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
     expect(screen.getByRole('checkbox', { name: 'MDX enabled' })).toBeChecked();
   });
@@ -430,11 +439,15 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Enable Mathjax rendering
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
-    userEvent.click(screen.getByRole('checkbox', { name: 'Mathjax disabled' }));
+    await userEvent.click(
+      screen.getByRole('checkbox', { name: 'Mathjax disabled' }),
+    );
 
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // close the settings dropdown
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Settings', hidden: true }),
+    ); // close the settings dropdown
 
     screen.getByRole('tab', { name: 'Preview' }).click();
     await waitFor(() =>
@@ -493,7 +506,7 @@ describe('<MarkdownEditor />', () => {
 
     rerender(<MarkdownEditor markdownDocumentId={markdownDocument.id} />);
 
-    userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
+    await userEvent.click(screen.getByRole('button', { name: 'Settings' })); // open the settings dropdown
 
     expect(
       screen.getByRole('checkbox', { name: 'Mathjax enabled' }),
@@ -522,13 +535,17 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Wait for rendered content
-    await waitFor(() =>
-      expect(screen.getByRole('tab', { name: 'Preview' })).toBeVisible(),
+    expect(await screen.findByRole('tab', { name: 'Preview' })).toBeVisible();
+    await userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
+    await screen.findByRole(
+      'heading',
+      { level: 1, name: 'Heading' },
+      {
+        timeout: 9000,
+      },
     );
-    screen.getByRole('tab', { name: 'Preview' }).click();
-    await screen.findByRole('heading', { level: 1, name: 'Heading' });
 
-    screen.getByRole('tab', { name: 'Markdown' }).click();
+    await userEvent.click(screen.getByRole('tab', { name: 'Markdown' }));
     const dropzoneInput = container.querySelector('input[type="file"]')!;
 
     // Drop an image
@@ -593,16 +610,16 @@ describe('<MarkdownEditor />', () => {
     );
 
     // Image is processed
-    await waitFor(() => {
-      expect(screen.getByRole('status')).toHaveTextContent('Uploaded cats.gif');
-    });
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Uploaded cats.gif',
+    );
     await waitFor(() =>
       expect(
         container.querySelector('div[class="cm-line"]')!,
       ).toHaveTextContent(`![cats.gif](/uploaded/image/${markdownImageId})`),
     );
 
-    screen.getByRole('tab', { name: 'Preview' }).click();
+    await userEvent.click(screen.getByRole('tab', { name: 'Preview' }));
     await waitFor(() =>
       expect(
         within(screen.getByTestId('renderer_container')).getByRole('img'),
