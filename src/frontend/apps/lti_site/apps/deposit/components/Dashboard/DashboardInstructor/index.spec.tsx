@@ -269,8 +269,8 @@ describe('<DashboardInstructor />', () => {
     const heading = screen.getByRole('heading', {
       name: 'My file depository title',
     });
-    userEvent.type(heading, ` updated`);
-    userEvent.tab();
+    await userEvent.type(heading, ` updated`);
+    await userEvent.tab();
 
     expect(heading).not.toHaveFocus();
     expect(heading).toHaveTextContent('My file depository title updated');
@@ -319,8 +319,8 @@ describe('<DashboardInstructor />', () => {
     });
 
     const description = screen.getByText('My file depository description');
-    userEvent.type(description, ` updated`);
-    userEvent.tab();
+    await userEvent.type(description, ` updated`);
+    await userEvent.tab();
 
     expect(description).not.toHaveFocus();
     expect(description).toHaveTextContent(
@@ -375,9 +375,9 @@ describe('<DashboardInstructor />', () => {
     const heading = screen.getByRole('heading', {
       name: 'Click here to add a title',
     });
-    userEvent.click(heading);
+    await userEvent.click(heading);
     expect(heading).toHaveTextContent('');
-    userEvent.tab();
+    await userEvent.tab();
 
     expect(heading).not.toHaveFocus();
     expect(heading).toHaveTextContent('Click here to add a title');
@@ -428,9 +428,9 @@ describe('<DashboardInstructor />', () => {
     );
 
     const description = screen.getByText('Click here to add a description');
-    userEvent.click(description);
+    await userEvent.click(description);
     expect(description).toHaveTextContent('');
-    userEvent.tab();
+    await userEvent.tab();
 
     expect(description).not.toHaveFocus();
     expect(description).toHaveTextContent('Click here to add a description');

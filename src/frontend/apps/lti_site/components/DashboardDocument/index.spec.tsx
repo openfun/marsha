@@ -1,16 +1,15 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  documentMockFactory,
+  Playlist,
   UploadManagerContext,
   UploadManagerStatus,
+  documentMockFactory,
   modelName,
-  Playlist,
   uploadState,
+  useJwt,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 
 import DashboardDocument from '.';
 
@@ -76,8 +75,6 @@ describe('<DashboardDocument />', () => {
     deferred = new Deferred();
     fetchMock.mock('/api/documents/44/', deferred.promise);
 
-    // Second backend call
-    jest.advanceTimersByTime(1000 * 30 + 200);
     act(() =>
       deferred.resolve(
         JSON.stringify({
@@ -88,14 +85,31 @@ describe('<DashboardDocument />', () => {
       ),
     );
 
-    await waitFor(() =>
-      expect(fetchMock.lastCall()![0]).toEqual('/api/documents/44/'),
+    /**
+     * https://github.com/testing-library/react-hooks-testing-library/issues/631
+     * jest.advanceTimersToNextTimer advances as well the `waitFor` timeout.
+     * So we have to make a timeout bigger that the one in poolForTrack
+     */
+    await waitFor(
+      () => {
+        expect(fetchMock.lastCall()).toBeDefined();
+
+        if (fetchMock.lastCall() === undefined) {
+          jest.advanceTimersToNextTimer();
+        }
+      },
+      {
+        timeout: 1000 * 30 * 3,
+        interval: 1000 * 30,
+      },
     );
     expect(fetchMock.lastCall()![1]!.headers).toEqual({
       Authorization: 'Bearer cool_token_m8',
     });
 
-    screen.getByText((content) => content.startsWith('Ready'));
+    expect(
+      screen.getByText((content) => content.startsWith('Ready')),
+    ).toBeInTheDocument();
   });
 
   it('shows the upload button in pending state', () => {

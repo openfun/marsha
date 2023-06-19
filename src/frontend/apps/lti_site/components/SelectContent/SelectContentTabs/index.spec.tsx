@@ -214,7 +214,7 @@ describe('SelectContentTabs', () => {
     const videoTab = screen.getByRole('tab', {
       name: 'Videos',
     });
-    userEvent.click(videoTab);
+    await userEvent.click(videoTab);
     expect(
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
@@ -232,7 +232,7 @@ describe('SelectContentTabs', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
+    await userEvent.click(documentTab);
     screen.getByText('Document 1');
 
     const otherCustomAppTab = await screen.findByRole('tab', {
@@ -251,7 +251,7 @@ describe('SelectContentTabs', () => {
     await waitForElementToBeRemoved(() =>
       screen.queryByText('Other select app content'),
     );
-    userEvent.click(screen.getByText('Select app content'));
+    await userEvent.click(screen.getByText('Select app content'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({

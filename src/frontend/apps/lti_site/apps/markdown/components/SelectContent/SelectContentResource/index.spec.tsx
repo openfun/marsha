@@ -72,7 +72,7 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Markdown' });
     screen.getByText('Add a markdown document');
 
-    userEvent.click(screen.getByLabelText('Select translated title'));
+    await userEvent.click(screen.getByLabelText('Select translated title'));
 
     expect(mockSetContentItemsValue).toHaveBeenCalledWith(
       JSON.stringify({

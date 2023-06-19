@@ -4,7 +4,6 @@ import {
   useJwt,
   documentMockFactory,
   timedTextMockFactory,
-  videoMockFactory,
   addResource,
   requestStatus,
   modelName,
@@ -23,12 +22,9 @@ describe('sideEffects/pollForTrack', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
     jest.clearAllMocks();
-    jest.useFakeTimers();
   });
 
   afterEach(() => {
-    jest.runOnlyPendingTimers();
-    jest.useRealTimers();
     fetchMock.restore();
   });
 
@@ -47,6 +43,7 @@ describe('sideEffects/pollForTrack', () => {
     const promise = pollForTrack(
       modelName.TIMEDTEXTTRACKS,
       'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
+      0.2,
     );
 
     await waitFor(() => {
@@ -72,8 +69,6 @@ describe('sideEffects/pollForTrack', () => {
         overwriteRoutes: true,
       },
     );
-
-    jest.runOnlyPendingTimers();
 
     await waitFor(() => {
       expect(
@@ -105,6 +100,7 @@ describe('sideEffects/pollForTrack', () => {
     const promise = pollForTrack(
       modelName.DOCUMENTS,
       '5704165a-89ee-4378-a2ee-85b8f643ad07',
+      0.2,
     );
 
     await waitFor(() => {
@@ -132,8 +128,6 @@ describe('sideEffects/pollForTrack', () => {
       },
     );
 
-    jest.runOnlyPendingTimers();
-
     await waitFor(() => {
       expect(
         fetchMock.calls(
@@ -151,18 +145,17 @@ describe('sideEffects/pollForTrack', () => {
   it('resolves with a failure and reports it when it fails to poll the track', async () => {
     fetchMock.mock(
       '/api/videos/15cf570a-5dc6-421a-9856-59e1b008a6fb/',
-      JSON.stringify(
-        videoMockFactory({
-          id: 'c43f0c8f-4d3b-4219-86c3-86367b2b88cc',
-          is_ready_to_show: false,
-        }),
-      ),
-      { method: 'GET' },
+      Promise.reject(new Error('Failed to get the track')),
+      {
+        method: 'GET',
+        overwriteRoutes: true,
+      },
     );
 
     const promise = pollForTrack(
       modelName.VIDEOS,
       '15cf570a-5dc6-421a-9856-59e1b008a6fb',
+      0.2,
     );
 
     await waitFor(() => {
@@ -172,17 +165,6 @@ describe('sideEffects/pollForTrack', () => {
         }),
       ).toHaveLength(1);
     });
-
-    fetchMock.mock(
-      '/api/videos/15cf570a-5dc6-421a-9856-59e1b008a6fb/',
-      Promise.reject(new Error('Failed to get the track')),
-      {
-        method: 'GET',
-        overwriteRoutes: true,
-      },
-    );
-
-    jest.runOnlyPendingTimers();
 
     expect(await promise).toEqual(requestStatus.FAILURE);
     expect(report).toHaveBeenCalledWith(Error('Failed to get the track'));

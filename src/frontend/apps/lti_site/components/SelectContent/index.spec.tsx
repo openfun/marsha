@@ -196,7 +196,7 @@ describe('<SelectContent />', () => {
     const videoTab = screen.getByRole('tab', {
       name: 'Videos',
     });
-    userEvent.click(videoTab);
+    await userEvent.click(videoTab);
 
     expect(
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
@@ -211,7 +211,7 @@ describe('<SelectContent />', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
+    await userEvent.click(documentTab);
     screen.getByText('Document 1');
   });
 
@@ -243,7 +243,7 @@ describe('<SelectContent />', () => {
         lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     expect(
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
@@ -284,7 +284,7 @@ describe('<SelectContent />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     expect(
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
@@ -325,7 +325,7 @@ describe('<SelectContent />', () => {
       />,
     );
 
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     expect(
       within(screen.getByLabelText('Select Video 1')).getByRole('img', {
         name: 'thumbnail',
@@ -359,8 +359,8 @@ describe('<SelectContent />', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
-    userEvent.click(screen.getByLabelText('Select Document 1'));
+    await userEvent.click(documentTab);
+    await userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -407,8 +407,8 @@ describe('<SelectContent />', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
-    userEvent.click(screen.getByLabelText('Select Document 1'));
+    await userEvent.click(documentTab);
+    await userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -455,8 +455,8 @@ describe('<SelectContent />', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
-    userEvent.click(screen.getByLabelText('Select Document 1'));
+    await userEvent.click(documentTab);
+    await userEvent.click(screen.getByLabelText('Select Document 1'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -501,8 +501,8 @@ describe('<SelectContent />', () => {
     const documentTab = screen.getByRole('tab', {
       name: 'Documents',
     });
-    userEvent.click(documentTab);
-    userEvent.click(screen.getByLabelText('Select'));
+    await userEvent.click(documentTab);
+    await userEvent.click(screen.getByLabelText('Select'));
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
@@ -600,7 +600,7 @@ describe('<SelectContent />', () => {
         lti_select_form_data={mockAppData.lti_select_form_data!}
       />,
     );
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });
@@ -660,7 +660,7 @@ describe('<SelectContent />', () => {
         }}
       />,
     );
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });
@@ -724,7 +724,7 @@ describe('<SelectContent />', () => {
         }}
       />,
     );
-    userEvent.click(screen.getByRole('tab', { name: /videos/i }));
+    await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
     act(() => {
       userEvent.click(screen.getByText('Add a video'));
     });

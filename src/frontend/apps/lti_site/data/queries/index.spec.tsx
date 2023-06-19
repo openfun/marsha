@@ -1,4 +1,4 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   useJwt,
@@ -7,10 +7,9 @@ import {
   playlistMockFactory,
   portabilityRequestMockFactory,
   thumbnailMockFactory,
-  timedTextMockFactory,
 } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import {
   useCreateDocument,
@@ -35,23 +34,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('queries', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -64,11 +49,13 @@ describe('queries', () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, organization);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useOrganization(organization.id),
-        { wrapper: Wrapper },
+        { wrapper: WrapperReactQuery },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -88,12 +75,14 @@ describe('queries', () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useOrganization(organization.id),
-        { wrapper: Wrapper },
+        { wrapper: WrapperReactQuery },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/organizations/${organization.id}/`,
@@ -114,10 +103,12 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.mock(`/api/playlists/${playlist.id}/`, playlist);
 
-      const { result, waitFor } = renderHook(() => usePlaylist(playlist.id), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePlaylist(playlist.id), {
+        wrapper: WrapperReactQuery,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -136,11 +127,13 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.mock(`/api/playlists/${playlist.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => usePlaylist(playlist.id), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => usePlaylist(playlist.id), {
+        wrapper: WrapperReactQuery,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -161,16 +154,18 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, playlist);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdatePlaylist(playlist.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -193,16 +188,18 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdatePlaylist(playlist.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         title: 'updated title',
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/playlists/${playlist.id}/`,
@@ -227,13 +224,15 @@ describe('queries', () => {
       const playlists = Array(4).fill(playlistMockFactory());
       fetchMock.mock('/api/playlists/?limit=999&organization=1', playlists);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => usePlaylists({ organization: '1' }),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/playlists/?limit=999&organization=1',
@@ -251,12 +250,14 @@ describe('queries', () => {
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/playlists/?limit=999&organization=1', 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => usePlaylists({ organization: '1' }),
-        { wrapper: Wrapper },
+        { wrapper: WrapperReactQuery },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         '/api/playlists/?limit=999&organization=1',
@@ -277,10 +278,12 @@ describe('queries', () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, thumbnail);
 
-      const { result, waitFor } = renderHook(() => useThumbnail(thumbnail.id), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
+        wrapper: WrapperReactQuery,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.calls().length).toEqual(1);
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -300,11 +303,13 @@ describe('queries', () => {
       const thumbnail = thumbnailMockFactory();
       fetchMock.mock(`/api/thumbnails/${thumbnail.id}/`, 404);
 
-      const { result, waitFor } = renderHook(() => useThumbnail(thumbnail.id), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useThumbnail(thumbnail.id), {
+        wrapper: WrapperReactQuery,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/thumbnails/${thumbnail.id}/`,
@@ -325,14 +330,16 @@ describe('queries', () => {
       const document = documentMockFactory();
       fetchMock.post('/api/documents/', document);
 
-      const { result, waitFor } = renderHook(() => useCreateDocument(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useCreateDocument(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         playlist: document.playlist.id,
         title: document.title!,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -354,15 +361,17 @@ describe('queries', () => {
       const document = documentMockFactory();
       fetchMock.post('/api/documents/', 400);
 
-      const { result, waitFor } = renderHook(() => useCreateDocument(), {
-        wrapper: Wrapper,
+      const { result } = renderHook(() => useCreateDocument(), {
+        wrapper: WrapperReactQuery,
       });
       result.current.mutate({
         playlist: document.playlist.id,
         title: document.title!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/documents/`);
 
@@ -387,10 +396,10 @@ describe('queries', () => {
       const portabilityRequest = portabilityRequestMockFactory();
       fetchMock.post('/api/portability-requests/', portabilityRequest);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCreatePortabilityRequest(),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
@@ -399,7 +408,9 @@ describe('queries', () => {
         from_lti_consumer_site: portabilityRequest.from_lti_consumer_site!.id,
         from_lti_user_id: portabilityRequest.from_lti_user_id!,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/portability-requests/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -423,10 +434,10 @@ describe('queries', () => {
       const portabilityRequest = portabilityRequestMockFactory();
       fetchMock.post('/api/portability-requests/', 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useCreatePortabilityRequest(),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
@@ -436,7 +447,9 @@ describe('queries', () => {
         from_lti_user_id: portabilityRequest.from_lti_user_id!,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/portability-requests/`);
       expect(fetchMock.lastCall()![1]).toEqual({

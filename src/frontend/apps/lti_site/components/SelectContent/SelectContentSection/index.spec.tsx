@@ -1,6 +1,5 @@
 import { screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import React from 'react';
 
 import {
   documentMockFactory,
@@ -18,7 +17,7 @@ describe('SelectContentSection', () => {
   beforeEach(() => {
     jest.resetAllMocks();
   });
-  it('displays videos, select one and create a new one', () => {
+  it('displays videos, select one and create a new one', async () => {
     render(
       <SelectContentSection
         addMessage="new video"
@@ -50,14 +49,14 @@ describe('SelectContentSection', () => {
     );
 
     const newVideo = screen.getByText('new video');
-    userEvent.click(newVideo);
+    await userEvent.click(newVideo);
     expect(mockAddAndSelectContent).toHaveBeenCalledTimes(1);
 
-    userEvent.click(video1);
+    await userEvent.click(video1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);
   });
 
-  it('displays webinars, select one and create a new one', () => {
+  it('displays webinars, select one and create a new one', async () => {
     render(
       <SelectContentSection
         addMessage="new webinar"
@@ -89,14 +88,14 @@ describe('SelectContentSection', () => {
     );
 
     const newWebinar = screen.getByText('new webinar');
-    userEvent.click(newWebinar);
+    await userEvent.click(newWebinar);
     expect(mockAddAndSelectContent).toHaveBeenCalledTimes(1);
 
-    userEvent.click(webinar1);
+    await userEvent.click(webinar1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);
   });
 
-  it('displays documents, select one and create a new one', () => {
+  it('displays documents, select one and create a new one', async () => {
     render(
       <SelectContentSection
         addMessage="new document"
@@ -119,11 +118,11 @@ describe('SelectContentSection', () => {
 
     userEvent.hover(screen.getByLabelText('Select Document 1'));
 
-    userEvent.click(document1);
+    await userEvent.click(document1);
     expect(mockSetContentItemsValue).toHaveBeenCalledTimes(1);
 
     const newDocument = screen.getByText('new document');
-    userEvent.click(newDocument);
+    await userEvent.click(newDocument);
     expect(mockAddAndSelectContent).toHaveBeenCalledTimes(1);
   });
 });
