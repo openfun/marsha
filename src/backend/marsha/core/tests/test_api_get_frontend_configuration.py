@@ -11,6 +11,9 @@ from marsha.core.factories import SiteConfigFactory
     SENTRY_DSN="https://sentry.dsn",
     ENVIRONMENT="development",
     RELEASE="1.2.3",
+    P2P_LIVE_ENABLED=True,
+    P2P_LIVE_STUN_SERVER_URLS=["stun:stun.l.google.com:19302"],
+    P2P_LIVE_WEB_TORRENT_TRACKER_URLS=["wss://tracker.webtorrent.io"],
 )
 class TestGetFrontendConfiguration(TestCase):
     """Test the get_frontend_configuration API."""
@@ -34,6 +37,11 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
+                "p2p": {
+                    "live_enabled": True,
+                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
+                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                },
             },
         )
 
@@ -54,6 +62,11 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": None,
                 "inactive_resources": [],
+                "p2p": {
+                    "live_enabled": True,
+                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
+                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                },
             },
         )
 
@@ -73,6 +86,11 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
+                "p2p": {
+                    "live_enabled": True,
+                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
+                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                },
             },
         )
 
@@ -93,5 +111,10 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": ["video"],
+                "p2p": {
+                    "live_enabled": True,
+                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
+                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                },
             },
         )

@@ -116,9 +116,11 @@ describe('<AppContentLoader />', () => {
             },
           },
           uploadPollInterval: 10,
-          p2p_live_enabled: false,
-          p2p_live_stun_server_urls: [],
-          p2p_live_web_torrent_tracker_urls: [],
+          p2p: {
+            live_enabled: false,
+            live_stun_server_urls: [],
+            live_web_torrent_tracker_urls: [],
+          }
         }}
       >
         <AppContentLoader />

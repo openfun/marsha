@@ -32,6 +32,11 @@ jest.mock('lib-components', () => ({
     video: mockedVideo,
     document: { id: 'my-document-id' },
     attendanceDelay: 6,
+    p2p: {
+      live_enabled: true,
+      live_stun_server_urls: ['stun.l.google.com:19302'],
+      live_web_torrent_tracker_urls: ['wss://tracker.webtorrent.io'],
+    },
   }),
   decodeJwt: () => ({
     maintenance: true,
