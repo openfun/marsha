@@ -12,6 +12,12 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Create a default playlist for new shibboleth user
 
+### Changed
+
+- Upgrade to django 4.2
+- `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
+  `DJANGO_STORAGES_STATICFILES_BACKEND`
+
 ## [4.2.1] - 2023-06-20
 
 ### Fixed

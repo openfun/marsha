@@ -832,9 +832,14 @@ class Build(Base):
     AWS_MEDIAPACKAGE_HARVEST_JOB_ARN = values.Value("")
     BBB_API_SECRET = values.Value("")
     SECRET_KEY = values.Value("DummyKey")
-    STATICFILES_STORAGE = values.Value(
-        "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
-    )
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": values.Value(
+                "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
+                environ_name="STORAGES_STATICFILES_BACKEND",
+            )
+        }
+    }
 
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
         r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"
@@ -949,9 +954,14 @@ class Production(Base):
 
     ALLOWED_HOSTS = values.ListValue(None)
 
-    STATICFILES_STORAGE = values.Value(
-        "marsha.core.static.MarshaCompressedManifestStaticFilesStorage"
-    )
+    STORAGES = {
+        "staticfiles": {
+            "BACKEND": values.Value(
+                "marsha.core.static.MarshaCompressedManifestStaticFilesStorage",
+                environ_name="STORAGES_STATICFILES_BACKEND",
+            )
+        }
+    }
     STATIC_POSTPROCESS_IGNORE_REGEX = values.Value(
         r"^js\/build\/.*[0-9]*\..*\.js(\.map)?$"
     )
