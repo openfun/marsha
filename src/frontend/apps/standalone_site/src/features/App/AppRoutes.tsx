@@ -24,6 +24,7 @@ const { PortabilityRequestsRouteComponent } = lazyImport(
   () => import('features/PortabilityRequests'),
 );
 const { ProfileRouter } = lazyImport(() => import('features/Profile'));
+const { ClaimResource } = lazyImport(() => import('features/ClaimResource'));
 
 const messages = defineMessages({
   metaTitle: {
@@ -206,6 +207,15 @@ const AuthenticatedRoutes = () => {
             }
           />
         ))}
+
+        <Route
+          path={`${routes.CLAIM_RESOURCE.path}/*`}
+          element={
+            <Suspense fallback={<ContentSpinner />}>
+              <ClaimResource />
+            </Suspense>
+          }
+        />
 
         <Route path="*" element={<Text404 />} />
       </Routes>

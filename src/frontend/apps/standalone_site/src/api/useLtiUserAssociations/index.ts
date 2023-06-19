@@ -3,17 +3,15 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
-import { createOne } from 'lib-components';
+import { FetchResponseError, createOne } from 'lib-components';
 
 type UseCreateLtiUserAssociationData = {
-  association_jwt: string;
+  association_jwt?: string;
+  lti_consumer_site_id?: string;
+  lti_user_id?: string;
 };
 type UseCreateLtiUserAssociationError =
-  | { code: 'exception' }
-  | {
-      code: 'invalid';
-      errors: { [key in keyof UseCreateLtiUserAssociationData]?: string[] }[];
-    };
+  FetchResponseError<UseCreateLtiUserAssociationData>;
 type UseCreateLtiUserAssociationOptions = UseMutationOptions<
   null, // TData, the mutation result : nothing
   UseCreateLtiUserAssociationError,

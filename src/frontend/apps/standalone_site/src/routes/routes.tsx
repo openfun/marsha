@@ -38,6 +38,7 @@ enum ERouteNames {
   ORGANIZATION = 'ORGANIZATION',
   LOGIN = 'LOGIN',
   PASSWORD_RESET = 'PASSWORD_RESET',
+  CLAIM_RESOURCE = 'CLAIM_RESOURCE',
 }
 enum EPasswordResetSubRoutesNames {
   CONFIRM = 'CONFIRM',
@@ -96,6 +97,9 @@ export const routes: MainRoutes = {
         pathKey: 'confirm/:uid/:token',
       },
     },
+  },
+  CLAIM_RESOURCE: {
+    path: `/claim-resource`,
   },
   PORTABILITY_REQUESTS: {
     path: '/portability-requests',
