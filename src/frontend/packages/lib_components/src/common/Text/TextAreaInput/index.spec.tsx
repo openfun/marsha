@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { TextAreaInput } from '.';
 
@@ -19,7 +18,7 @@ describe('<TextAreaInput />', () => {
     inputTextValue = '';
   });
 
-  it('renders the text area with empty string and placeholder and then types some text', () => {
+  it('renders the text area with empty string and placeholder and then types some text', async () => {
     render(
       <TextAreaInput
         placeholder="An example placeholder"
@@ -32,7 +31,7 @@ describe('<TextAreaInput />', () => {
     expect(screen.getByText('An example placeholder')).toBeInTheDocument();
 
     const textInput = screen.getByRole('textbox', { name: 'An example title' });
-    userEvent.type(textInput, 'An example typed text');
+    await userEvent.type(textInput, 'An example typed text');
 
     expect(nbrOfCall).toEqual('An example typed text'.length);
     expect(inputTextValue).toEqual('An example typed text');

@@ -3,7 +3,6 @@ import userEvent from '@testing-library/user-event';
 import { ResponsiveContext } from 'grommet';
 import { isFirefox, isIframe } from 'lib-common';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { InfoModal } from '.';
 
@@ -20,14 +19,24 @@ const genericTitle = 'A generic title';
 const genericContent =
   'A generic content, which has for purpose to represent an example of an average string used in this modal. It has too be not too short, but also not too long. The idea is to be the average string the modal will displayed.';
 
+const keyCodes = {
+  Escape: 27,
+} as any;
+function patchKeyEvent(e: { code: string | number }) {
+  Object.defineProperty(e, 'keyCode', {
+    get: () => keyCodes[e.code] ?? 0,
+  });
+}
+
 describe('<InfoModal />', () => {
   beforeEach(() => {
     jest.resetAllMocks();
+    document.addEventListener('keydown', patchKeyEvent, { capture: true });
     mockIsIframe.mockReturnValue(false);
     mockIsFirefox.mockReturnValue(false);
   });
 
-  it('renders the modal and closes it with esc key', () => {
+  it('renders the modal and closes it with esc key', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <InfoModal
@@ -41,12 +50,12 @@ describe('<InfoModal />', () => {
     screen.getByText(genericContent);
     screen.getByRole('button');
 
-    userEvent.keyboard('{esc}');
+    await userEvent.keyboard('{Escape}');
 
     expect(mockModalOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('renders the modal and closes it with close button', () => {
+  it('renders the modal and closes it with close button', async () => {
     render(
       <ResponsiveContext.Provider value="large">
         <InfoModal
@@ -60,7 +69,7 @@ describe('<InfoModal />', () => {
     screen.getByText(genericContent);
     const closeButton = screen.getByRole('button');
 
-    userEvent.click(closeButton);
+    await userEvent.click(closeButton);
 
     expect(mockModalOnClose).toHaveBeenCalledTimes(1);
   });

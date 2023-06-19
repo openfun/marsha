@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { ToggleButton } from '.';
 
@@ -9,7 +8,7 @@ const onChangeButtonMock = jest.fn();
 
 describe('<ToogleButton />', () => {
   beforeEach(() => jest.resetAllMocks());
-  it('renders the toggle button unchecked and performs a click on it', () => {
+  it('renders the toggle button unchecked and performs a click on it', async () => {
     render(
       <ToggleButton
         checked={false}
@@ -23,11 +22,12 @@ describe('<ToogleButton />', () => {
     });
     expect(toggleButton).not.toBeChecked();
 
-    userEvent.click(toggleButton);
+    await userEvent.click(toggleButton);
 
     expect(onChangeButtonMock).toHaveBeenCalledTimes(1);
   });
-  it('renders the toggle button checked and performs a click on it', () => {
+
+  it('renders the toggle button checked and performs a click on it', async () => {
     render(
       <ToggleButton
         checked={true}
@@ -41,11 +41,12 @@ describe('<ToogleButton />', () => {
     });
     expect(toggleButton).toBeChecked();
 
-    userEvent.click(toggleButton);
+    await userEvent.click(toggleButton);
 
     expect(onChangeButtonMock).toHaveBeenCalledTimes(1);
   });
-  it('renders the toggle button disabled and performs a click on it', () => {
+
+  it('renders the toggle button disabled and performs a click on it', async () => {
     render(
       <ToggleButton
         checked={true}
@@ -58,7 +59,8 @@ describe('<ToogleButton />', () => {
     const toggleButton = screen.getByRole('checkbox', {
       name: 'An example title',
     });
-    userEvent.click(toggleButton);
+
+    await userEvent.click(toggleButton);
 
     expect(onChangeButtonMock).toHaveBeenCalledTimes(0);
   });

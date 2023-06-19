@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { CopyClipboard } from '.';
 
@@ -18,7 +17,7 @@ describe('<CopyClipboard />', () => {
     jest.resetAllMocks();
   });
 
-  it('checks the renders and interaction with success', () => {
+  it('checks the renders and interaction with success', async () => {
     render(
       <CopyClipboard
         copyId="my-id"
@@ -43,7 +42,7 @@ describe('<CopyClipboard />', () => {
     expect(screen.getByText('my_link.html')).toBeInTheDocument();
 
     expect(document.execCommand).toHaveBeenCalledTimes(0);
-    userEvent.click(copyButton);
+    await userEvent.click(copyButton);
     expect(document.execCommand).toHaveBeenCalledTimes(1);
     expect(document.execCommand).toHaveBeenCalledWith('copy');
     expect(mockResult).toBe('success');
