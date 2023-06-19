@@ -1,10 +1,9 @@
 /* eslint-disable testing-library/render-result-naming-convention */
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { markdownDocumentMockFactory } from 'index';
 import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
 
 import {
   markdownRenderLatex,
@@ -19,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('queries', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -51,13 +36,15 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useMarkdownDocument(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -76,14 +63,16 @@ describe('queries', () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.mock(`/api/markdown-documents/${markdownDocument.id}/`, 404);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useMarkdownDocument(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -104,17 +93,16 @@ describe('queries', () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.post('/api/markdown-documents/', markdownDocument);
 
-      const { result, waitFor } = renderHook(
-        () => useCreateMarkdownDocument(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateMarkdownDocument(), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
         title: markdownDocument.translations[0].title,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -136,18 +124,17 @@ describe('queries', () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.post('/api/markdown-documents/', 400);
 
-      const { result, waitFor } = renderHook(
-        () => useCreateMarkdownDocument(),
-        {
-          wrapper: Wrapper,
-        },
-      );
+      const { result } = renderHook(() => useCreateMarkdownDocument(), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         playlist: markdownDocument.playlist.id,
         title: markdownDocument.translations[0].title,
       });
 
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(`/api/markdown-documents/`);
       expect(fetchMock.lastCall()![1]).toEqual({
@@ -174,16 +161,18 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateMarkdownDocument(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         is_draft: false,
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -206,16 +195,18 @@ describe('queries', () => {
       const markdownDocument = markdownDocumentMockFactory();
       fetchMock.patch(`/api/markdown-documents/${markdownDocument.id}/`, 400);
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useUpdateMarkdownDocument(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
         is_draft: false,
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/`,
@@ -243,10 +234,10 @@ describe('queries', () => {
         markdownDocument,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useSaveTranslations(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
@@ -255,7 +246,9 @@ describe('queries', () => {
         content: 'Contenu',
         rendered_content: '<p>Contenu</p>',
       });
-      await waitFor(() => result.current.isSuccess);
+      await waitFor(() => {
+        expect(result.current.isSuccess).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/save-translations/`,
@@ -284,10 +277,10 @@ describe('queries', () => {
         400,
       );
 
-      const { result, waitFor } = renderHook(
+      const { result } = renderHook(
         () => useSaveTranslations(markdownDocument.id),
         {
-          wrapper: Wrapper,
+          wrapper: WrapperReactQuery,
         },
       );
       result.current.mutate({
@@ -296,7 +289,9 @@ describe('queries', () => {
         content: 'Contenu',
         rendered_content: '<p>Contenu</p>',
       });
-      await waitFor(() => result.current.isError);
+      await waitFor(() => {
+        expect(result.current.isError).toBeTruthy();
+      });
 
       expect(fetchMock.lastCall()![0]).toEqual(
         `/api/markdown-documents/${markdownDocument.id}/save-translations/`,

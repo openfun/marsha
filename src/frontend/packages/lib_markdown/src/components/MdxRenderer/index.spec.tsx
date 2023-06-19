@@ -1,5 +1,4 @@
 /* eslint-disable @typescript-eslint/ban-ts-comment */
-/* eslint-disable jest/expect-expect */
 /* eslint-disable testing-library/no-container */
 /* eslint-disable testing-library/no-node-access */
 import * as fs from 'fs';
@@ -121,7 +120,12 @@ describe('<MdxRenderer />', () => {
     );
 
     // Wait for rendered content
-    await screen.findByRole('heading', { level: 1, name: 'This is a {title}' });
+    expect(
+      await screen.findByRole('heading', {
+        level: 1,
+        name: 'This is a {title}',
+      }),
+    ).toBeInTheDocument();
   });
 
   it('renders markdown with math to KaTeX', async () => {
@@ -259,7 +263,9 @@ describe('<MdxRenderer />', () => {
 
     // Can't match full snapshot here, because content may vary from a tiny pixel.
     // We look for the rendered SVG having title "A Gantt Diagram"
-    screen.getByRole('img', { name: /A Gantt Diagram/i });
+    expect(
+      screen.getByRole('img', { name: /A Gantt Diagram/i }),
+    ).toBeInTheDocument();
   });
 
   it('renders markdown with LaTeX content', async () => {
