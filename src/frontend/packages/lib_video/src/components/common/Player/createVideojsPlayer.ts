@@ -51,6 +51,9 @@ export const createVideojsPlayer = (
   const { jwt } = useJwt.getState();
   const videoState = useVideo.getState();
   let lastReceivedVideo: Id3VideoType;
+  // This property should be deleted once the feature has been
+  // deployed, tested and approved in a production environment
+  const isP2pEnabled = !!new URLSearchParams(window.location.search).get('p2p');
 
   if (!video.urls) {
     throw new Error('urls are not defined.');
@@ -153,7 +156,9 @@ export const createVideojsPlayer = (
   });
 
   if (isMSESupported()) {
-    player.p2pHlsPlugin();
+    if (isP2pEnabled) {
+      player.p2pHlsPlugin();
+    }
     player.httpSourceSelector();
     const qualityLevels = player.qualityLevels();
     qualityLevels.on('change', () => interacted(qualityLevels));
