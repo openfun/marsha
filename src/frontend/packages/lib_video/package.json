@@ -84,7 +84,7 @@
     "zustand": "*"
   },
   "dependencies": {
-    "@streamroot/videojs-hlsjs-plugin": "^1.0.16",
+    "@streamroot/videojs-hlsjs-plugin": "1.0.16",
     "altamoon-robust-websocket": "1.0.3",
     "m3u8-parser": "6.2.0",
     "lib-common": "*",
