@@ -1,8 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { timedTextMockFactory, useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useDeleteTimedTextTrack } from '.';
 
@@ -18,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useDeleteTimedTextTracks', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -49,14 +35,16 @@ describe('useDeleteTimedTextTracks', () => {
       204,
     );
 
-    const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteTimedTextTrack(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({
       videoId: timedTextTracks.video,
       timedTextTrackId: timedTextTracks.id,
     });
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,
@@ -79,14 +67,16 @@ describe('useDeleteTimedTextTracks', () => {
       400,
     );
 
-    const { result, waitFor } = renderHook(() => useDeleteTimedTextTrack(), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useDeleteTimedTextTrack(), {
+      wrapper: WrapperReactQuery,
     });
     result.current.mutate({
       videoId: timedTextTracks.video,
       timedTextTrackId: timedTextTracks.id,
     });
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${timedTextTracks.video}/timedtexttracks/${timedTextTracks.id}/`,

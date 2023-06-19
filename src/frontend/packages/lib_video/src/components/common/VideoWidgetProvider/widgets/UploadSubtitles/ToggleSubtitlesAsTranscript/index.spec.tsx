@@ -2,14 +2,13 @@ import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
   timedTextMockFactory,
-  videoMockFactory,
-  useTimedTextTrack,
   timedTextMode,
+  useJwt,
+  useTimedTextTrack,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -45,11 +44,11 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
     fetchMock.reset();
   });
 
-  it('check component render depend the timedTextTrack state', () => {
+  it('check component render depend the timedTextTrack state', async () => {
     render(wrapInVideo(<ToggleSubtitlesAsTranscript />, mockedVideo));
 
     expect(
-      screen.queryByRole('checkbox', {
+      await screen.findByRole('checkbox', {
         name: toggleLabel,
       }),
     ).toBeDisabled();
@@ -113,13 +112,13 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       useTimedTextTrack.getState().addResource(mockedTimedTextTrackSubtitle);
     });
 
-    const toggle = screen.getByRole('checkbox', {
+    const toggle = await screen.findByRole('checkbox', {
       name: toggleLabel,
     });
 
     expect(screen.queryByText(toggleFailLabel)).not.toBeInTheDocument();
 
-    userEvent.click(toggle);
+    await userEvent.click(toggle);
 
     expect(await screen.findByText(toggleFailLabel)).toBeInTheDocument();
   });
@@ -138,13 +137,13 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
       useTimedTextTrack.getState().addResource(mockedTimedTextTrackSubtitle);
     });
 
-    const toggle = screen.getByRole('checkbox', {
+    const toggle = await screen.findByRole('checkbox', {
       name: toggleLabel,
     });
 
     expect(screen.queryByText(toggleSuccessLabel)).not.toBeInTheDocument();
 
-    userEvent.click(toggle);
+    await userEvent.click(toggle);
 
     expect(await screen.findByText(toggleSuccessLabel)).toBeInTheDocument();
 
@@ -178,7 +177,7 @@ describe('<ToggleSubtitlesAsTranscript />', () => {
 
     expect(screen.queryByText(toggleSuccessLabel)).not.toBeInTheDocument();
 
-    userEvent.click(toggle);
+    await userEvent.click(toggle);
 
     expect(await screen.findByText(toggleSuccessLabel)).toBeInTheDocument();
 

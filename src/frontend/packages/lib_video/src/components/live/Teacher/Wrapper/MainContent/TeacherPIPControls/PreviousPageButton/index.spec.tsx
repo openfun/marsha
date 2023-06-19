@@ -2,7 +2,6 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { navigateSharingDoc } from '@lib-video/api/navigateSharingDoc';
 import { SharedMediaCurrentPageProvider } from '@lib-video/hooks/useSharedMediaCurrentPage';
@@ -22,7 +21,7 @@ describe('<PreviousPageButton />', () => {
     jest.clearAllMocks();
   });
 
-  it('renders the button', () => {
+  it('renders the button', async () => {
     const video = videoMockFactory();
 
     render(
@@ -36,7 +35,9 @@ describe('<PreviousPageButton />', () => {
       ),
     );
 
-    userEvent.click(screen.getByRole('button', { name: 'Previous page' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Previous page' }),
+    );
     expect(mockedNavigateSharingDoc).toHaveBeenCalledWith(video, 1);
   });
 

@@ -6,7 +6,6 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -28,7 +27,7 @@ describe('<UploadClosedCaptions />', () => {
     fetchMock.restore();
   });
 
-  it('renders the UploadClosedCaptions', () => {
+  it('renders the UploadClosedCaptions', async () => {
     const mockedVideo = videoMockFactory();
     fetchMock.mock(
       `/api/videos/${mockedVideo.id}/timedtexttracks/`,
@@ -47,7 +46,7 @@ describe('<UploadClosedCaptions />', () => {
       ),
     );
 
-    expect(screen.getByText('Closed captions')).toBeInTheDocument();
+    expect(await screen.findByText('Closed captions')).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'help' })).toBeInTheDocument();
   });
 });

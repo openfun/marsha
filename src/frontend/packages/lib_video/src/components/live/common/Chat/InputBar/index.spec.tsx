@@ -4,7 +4,6 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { theme } from 'lib-common';
 import { imageSnapshot, render, renderImageSnapshot } from 'lib-tests';
-import React from 'react';
 
 import { InputBar } from '.';
 
@@ -20,7 +19,7 @@ describe('<InputBar /> functionnal', () => {
     jest.clearAllMocks();
   });
 
-  it("doesn't process the input value if the send button is clicked when input is empty", () => {
+  it("doesn't process the input value if the send button is clicked when input is empty", async () => {
     render(
       <InputBar
         handleUserInput={mockHandleUserInputSuccess}
@@ -32,13 +31,13 @@ describe('<InputBar /> functionnal', () => {
     const chatInputText = screen.getByRole('textbox');
     const chatSendButton = screen.getByRole('button');
 
-    userEvent.click(chatSendButton);
+    await userEvent.click(chatSendButton);
 
     expect(mockHandleUserInputSuccess).not.toHaveBeenCalled();
     expect(chatInputText).toHaveValue('');
   });
 
-  it("doesn't process the input value if enter key is pressed when input is empty", () => {
+  it("doesn't process the input value if enter key is pressed when input is empty", async () => {
     render(
       <InputBar
         handleUserInput={mockHandleUserInputSuccess}
@@ -48,7 +47,7 @@ describe('<InputBar /> functionnal', () => {
     );
     const chatInputText = screen.getByRole('textbox');
 
-    userEvent.keyboard('{enter}');
+    await userEvent.keyboard('{enter}');
 
     expect(mockHandleUserInputSuccess).not.toHaveBeenCalled();
     expect(chatInputText).toHaveValue('');
@@ -64,8 +63,8 @@ describe('<InputBar /> functionnal', () => {
     );
     const chatInputText = screen.getByRole('textbox');
     const chatSendButton = screen.getByRole('button');
-    userEvent.type(chatInputText, 'A simple message');
-    userEvent.click(chatSendButton);
+    await userEvent.type(chatInputText, 'A simple message');
+    await userEvent.click(chatSendButton);
 
     await waitFor(() =>
       expect(mockHandleUserInputSuccess).toHaveBeenCalledWith(
@@ -84,9 +83,9 @@ describe('<InputBar /> functionnal', () => {
       />,
     );
     const chatInputText = screen.getByRole('textbox');
-    userEvent.type(chatInputText, 'A simple message');
+    await userEvent.type(chatInputText, 'A simple message');
 
-    userEvent.keyboard('{enter}');
+    await userEvent.keyboard('{enter}');
 
     await waitFor(() =>
       expect(mockHandleUserInputSuccess).toHaveBeenCalledWith(
@@ -105,9 +104,9 @@ describe('<InputBar /> functionnal', () => {
       />,
     );
     const chatInputText = screen.getByRole('textbox');
-    userEvent.type(chatInputText, 'A simple message');
+    await userEvent.type(chatInputText, 'A simple message');
 
-    userEvent.keyboard('{enter}');
+    await userEvent.keyboard('{enter}');
 
     await waitFor(() =>
       expect(mockHandleUserInputFailure).toHaveBeenCalledWith(
@@ -117,7 +116,7 @@ describe('<InputBar /> functionnal', () => {
     expect(chatInputText).toHaveValue('A simple message');
   });
 
-  it('displays input bar when it is waiting and checks that input bar and spinner button are disabled.', () => {
+  it('displays input bar when it is waiting and checks that input bar and spinner button are disabled.', async () => {
     const { container } = render(
       <InputBar
         handleUserInput={mockHandleUserInputFailure}
@@ -129,17 +128,17 @@ describe('<InputBar /> functionnal', () => {
     expect(container.querySelector('svg')).toBeNull();
     const chatInputText = screen.getByRole('textbox');
     expect(chatInputText).toBeDisabled();
-    userEvent.type(chatInputText, 'A simple message');
+    await userEvent.type(chatInputText, 'A simple message');
     expect(chatInputText).toHaveValue('');
     const chatInputButton = screen.getByRole('button');
     expect(chatInputButton).toBeDisabled();
 
-    userEvent.keyboard('{enter}');
+    await userEvent.keyboard('{enter}');
 
     expect(mockHandleUserInputFailure).not.toHaveBeenCalledWith();
   });
 
-  it('displays input bar when it is disabled and checks that input bar and validation button are disabled.', () => {
+  it('displays input bar when it is disabled and checks that input bar and validation button are disabled.', async () => {
     const { container } = render(
       <InputBar
         handleUserInput={mockHandleUserInputFailure}
@@ -151,12 +150,12 @@ describe('<InputBar /> functionnal', () => {
     expect(container.querySelector('svg')).toBeTruthy();
     const chatInputText = screen.getByRole('textbox');
     expect(chatInputText).toBeDisabled();
-    userEvent.type(chatInputText, 'A simple message');
+    await userEvent.type(chatInputText, 'A simple message');
     expect(chatInputText).toHaveValue('');
     const chatInputButton = screen.getByRole('button');
     expect(chatInputButton).toBeDisabled();
 
-    userEvent.keyboard('{enter}');
+    await userEvent.keyboard('{enter}');
 
     expect(mockHandleUserInputFailure).not.toHaveBeenCalledWith();
   });
@@ -197,7 +196,7 @@ describe('<InputBar /> UI', () => {
     const chatInputText = screen.getByRole('textbox');
     expect(chatInputText).toBeInTheDocument();
 
-    userEvent.type(chatInputText, 'A text input example');
+    await userEvent.type(chatInputText, 'A text input example');
     await imageSnapshot();
   });
 
@@ -230,7 +229,7 @@ describe('<InputBar /> UI', () => {
 
     const chatInputText = screen.getByRole('textbox');
     expect(chatInputText).toBeInTheDocument();
-    userEvent.type(chatInputText, 'A text input example');
+    await userEvent.type(chatInputText, 'A text input example');
     await imageSnapshot();
   });
 

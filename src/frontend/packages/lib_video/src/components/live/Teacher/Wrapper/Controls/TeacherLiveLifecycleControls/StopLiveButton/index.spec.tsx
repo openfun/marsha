@@ -1,14 +1,13 @@
 import { screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  useJwt,
-  videoMockFactory,
-  liveState,
   Video,
+  liveState,
+  useJwt,
   useVideo,
+  videoMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 
 import { stopLive } from '@lib-video/api/stopLive';
 import { wrapInLiveModaleProvider } from '@lib-video/utils/liveModale';
@@ -41,8 +40,10 @@ describe('<StopLiveButton />', () => {
     render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
     expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'End live' }));
-    userEvent.click(screen.getByRole('button', { name: 'Stop the live' }));
+    await userEvent.click(screen.getByRole('button', { name: 'End live' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Stop the live' }),
+    );
 
     screen.getByTestId('loader-id');
 
@@ -62,21 +63,23 @@ describe('<StopLiveButton />', () => {
 
     render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
-    userEvent.click(screen.getByRole('button', { name: 'End live' }));
-    userEvent.click(screen.getByRole('button', { name: 'Stop the live' }));
+    await userEvent.click(screen.getByRole('button', { name: 'End live' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Stop the live' }),
+    );
 
     expect(
       await screen.findByText('An error occured, please try again.'),
     ).toBeInTheDocument();
   });
 
-  it('updates the state to open a confirmation modal', () => {
+  it('updates the state to open a confirmation modal', async () => {
     const video = videoMockFactory();
 
     render(wrapInLiveModaleProvider(<StopLiveButton video={video} />));
 
     expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'End live' }));
+    await userEvent.click(screen.getByRole('button', { name: 'End live' }));
 
     const liveModale = screen.getByTestId('test-modale');
     expect(liveModale).toHaveTextContent('You are about to stop the live.');

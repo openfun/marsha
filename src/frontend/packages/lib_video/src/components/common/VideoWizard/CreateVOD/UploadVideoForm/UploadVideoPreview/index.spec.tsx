@@ -3,7 +3,6 @@
 import { fireEvent, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { UploadVideoPreview } from '.';
 
@@ -14,7 +13,7 @@ describe('<UploadVideoPreview />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders UploadVideoPreview and clicks on the remove button', () => {
+  it('renders UploadVideoPreview and clicks on the remove button', async () => {
     const { container } = render(
       <UploadVideoPreview
         onClickRemoveButton={mockedOnClickRemoveButton}
@@ -29,12 +28,12 @@ describe('<UploadVideoPreview />', () => {
       name: 'Click on this button to remove the selected video.',
     });
 
-    userEvent.click(removeButton);
+    await userEvent.click(removeButton);
 
     expect(mockedOnClickRemoveButton).toHaveBeenCalledTimes(1);
   });
 
-  it('renders UploadVideoPreview, plays the video and then hovers it', () => {
+  it('renders UploadVideoPreview, plays the video and then hovers it', async () => {
     const { container } = render(
       <UploadVideoPreview
         onClickRemoveButton={mockedOnClickRemoveButton}
@@ -53,13 +52,13 @@ describe('<UploadVideoPreview />', () => {
       }),
     ).not.toBeInTheDocument();
 
-    userEvent.hover(video);
+    await userEvent.hover(video);
 
     screen.getByRole('button', {
       name: 'Click on this button to remove the selected video.',
     });
 
-    userEvent.unhover(video);
+    await userEvent.unhover(video);
 
     expect(
       screen.queryByRole('button', {

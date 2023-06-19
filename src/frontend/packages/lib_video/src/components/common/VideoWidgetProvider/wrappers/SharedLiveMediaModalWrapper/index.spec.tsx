@@ -2,13 +2,12 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  sharedLiveMediaMockFactory,
-  useSharedLiveMedia,
   report,
+  sharedLiveMediaMockFactory,
+  useJwt,
+  useSharedLiveMedia,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { useDeleteSharedLiveMediaModal } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 
@@ -49,7 +48,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the modal when there is a shared live media to delete, and clicks on cancel', () => {
+  it('renders the modal when there is a shared live media to delete, and clicks on cancel', async () => {
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory();
     const mockSetDeleteSharedLiveMediaModal = jest.fn();
     mockUseDeleteSharedLiveMediaModal.mockReturnValue([
@@ -66,7 +65,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
     screen.getByRole('button', { name: 'Confirm' });
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
-    userEvent.click(cancelButton);
+    await userEvent.click(cancelButton);
 
     expect(mockSetDeleteSharedLiveMediaModal).toHaveBeenCalledTimes(1);
     expect(mockSetDeleteSharedLiveMediaModal).toHaveBeenCalledWith(null);
@@ -95,7 +94,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -137,7 +136,7 @@ describe('<SharedLiveMediaModalWrapper />', () => {
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(

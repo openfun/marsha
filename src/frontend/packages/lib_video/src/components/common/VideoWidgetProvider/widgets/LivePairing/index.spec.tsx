@@ -2,12 +2,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
   InfoWidgetModalProvider,
+  liveState,
   useJwt,
   videoMockFactory,
-  liveState,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -17,7 +16,7 @@ describe('LivePairing', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
   });
-  it('displays the appairing button', () => {
+  it('displays the appairing button', async () => {
     const video = videoMockFactory({
       live_state: liveState.IDLE,
     });
@@ -41,7 +40,7 @@ describe('LivePairing', () => {
     const openButton = screen.getByRole('button', {
       name: 'External broadcast sources',
     });
-    userEvent.click(openButton);
+    await userEvent.click(openButton);
 
     screen.getByRole('button', {
       name: /pair an external device/i,

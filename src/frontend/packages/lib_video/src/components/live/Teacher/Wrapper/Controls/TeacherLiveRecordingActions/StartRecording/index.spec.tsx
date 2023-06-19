@@ -1,9 +1,8 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { videoMockFactory, useVideo } from 'lib-components';
+import { useVideo, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -45,7 +44,7 @@ describe('<StartRecording />', () => {
       queryOptions: { client: queryClient },
     });
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
     );
 
@@ -61,7 +60,7 @@ describe('<StartRecording />', () => {
       queryOptions: { client: queryClient },
     });
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', { name: 'REC 0 0 : 0 0 : 0 0' }),
     );
 

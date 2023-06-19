@@ -1,15 +1,14 @@
-import { within, screen, waitFor } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
+  InfoWidgetModalProvider,
+  JoinMode,
+  report,
   useJwt,
   videoMockFactory,
-  report,
-  JoinMode,
-  InfoWidgetModalProvider,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -79,8 +78,8 @@ describe('<LiveJoinMode />', () => {
     const select = within(button).getByRole('textbox');
     expect(select).toHaveValue('Accept joining the discussion after approval');
 
-    userEvent.click(button);
-    userEvent.click(screen.getByText(/not allowed/i));
+    await userEvent.click(button);
+    await userEvent.click(screen.getByText(/not allowed/i));
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -134,8 +133,8 @@ describe('<LiveJoinMode />', () => {
     const select = within(button).getByRole('textbox');
     expect(select).toHaveValue('Not allowed');
 
-    userEvent.click(button);
-    userEvent.click(
+    await userEvent.click(button);
+    await userEvent.click(
       screen.getByText(/Accept joining the discussion after approval/i),
     );
 
@@ -193,8 +192,10 @@ describe('<LiveJoinMode />', () => {
     const select = within(button).getByRole('textbox');
     expect(select).toHaveValue('Accept joining the discussion after approval');
 
-    userEvent.click(button);
-    userEvent.click(screen.getByText(/everybody will join the discussion/i));
+    await userEvent.click(button);
+    await userEvent.click(
+      screen.getByText(/everybody will join the discussion/i),
+    );
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);
@@ -247,8 +248,8 @@ describe('<LiveJoinMode />', () => {
     const select = within(button).getByRole('textbox');
     expect(select).toHaveValue('Accept joining the discussion after approval');
 
-    userEvent.click(button);
-    userEvent.click(screen.getByText(/not allowed/i));
+    await userEvent.click(button);
+    await userEvent.click(screen.getByText(/not allowed/i));
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/${mockedVideo.id}/`);

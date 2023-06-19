@@ -2,17 +2,16 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import faker from 'faker';
 import {
-  useJwt,
-  videoMockFactory,
-  sharedLiveMediaMockFactory,
-  UploadingObject,
   UploadManagerContext,
   UploadManagerStatus,
+  UploadingObject,
   modelName,
+  sharedLiveMediaMockFactory,
   uploadState,
+  useJwt,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -313,7 +312,7 @@ describe('<SharedLiveMediaItem />', () => {
     ).toBeInTheDocument();
   });
 
-  it('renders a SharedLiveMediaItem which has an error', () => {
+  it('renders a SharedLiveMediaItem which has an error', async () => {
     const videoId = faker.datatype.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: null,
@@ -358,14 +357,14 @@ describe('<SharedLiveMediaItem />', () => {
     const retryButton = screen.getByRole('button', {
       name: 'Click on this button to retry uploading your failed upload.',
     });
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledTimes(1);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledWith(
       mockedSharedLiveMedia.id,
     );
   });
 
-  it('renders a SharedLiveMediaItem which has failed', () => {
+  it('renders a SharedLiveMediaItem which has failed', async () => {
     const videoId = faker.datatype.uuid();
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory({
       title: null,
@@ -410,7 +409,7 @@ describe('<SharedLiveMediaItem />', () => {
     const retryButton = screen.getByRole('button', {
       name: 'Click on this button to retry uploading your failed upload.',
     });
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledTimes(1);
     expect(mockedOnRetryFailedUpload).toHaveBeenCalledWith(
       mockedSharedLiveMedia.id,

@@ -1,7 +1,7 @@
 import { act, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { Participant, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import {
   LivePanelItem,
@@ -86,22 +86,29 @@ describe('<TabPanelWebinar />', () => {
       { timeout: 1000 },
     );
 
-    screen.getByRole('button', { name: 'Show viewers' }).click();
+    await userEvent.click(screen.getByRole('button', { name: 'Show viewers' }));
     expect(useLivePanelState.getState().isPanelVisible).toBeTruthy();
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.VIEWERS_LIST,
     );
     const slidingBox = screen.getByRole('tab');
-    expect(slidingBox).toHaveStyle('transform: translateX(200%)');
+    await waitFor(() => {
+      expect(slidingBox).toHaveStyle('transform: translateX(200%)');
+    });
 
-    screen.getByRole('button', { name: 'Show chat' }).click();
+    await userEvent.click(screen.getByRole('button', { name: 'Show chat' }));
     expect(useLivePanelState.getState().currentItem).toEqual(
       LivePanelItem.CHAT,
     );
-    expect(slidingBox).toHaveStyle('transform: translateX(100%)');
+    await waitFor(() => {
+      expect(slidingBox).toHaveStyle('transform: translateX(100%)');
+    });
 
-    screen.getByRole('button', { name: 'Show webinar' }).click();
+    await userEvent.click(screen.getByRole('button', { name: 'Show webinar' }));
     expect(useLivePanelState.getState().isPanelVisible).toBeFalsy();
-    expect(slidingBox).not.toHaveStyle('transform: translateX(100%)');
+
+    await waitFor(() => {
+      expect(slidingBox).not.toHaveStyle('transform: translateX(100%)');
+    });
   });
 });

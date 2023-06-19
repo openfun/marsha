@@ -4,19 +4,19 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  videoMockFactory,
-  useVideo,
+  AppConfig,
   UploadManagerContext,
   UploadManagerStatus,
-  useUploadManager,
-  useAppConfig,
   modelName,
   uploadState,
-  AppConfig,
+  useAppConfig,
+  useJwt,
+  useUploadManager,
+  useVideo,
+  videoMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { Deferred, render } from 'lib-tests';
+import { PropsWithChildren } from 'react';
 
 import { CreateVOD } from '.';
 
@@ -263,7 +263,7 @@ describe('<CreateVOD />', () => {
     );
 
     const goBackButton = screen.getByRole('button', { name: 'Go back' });
-    userEvent.click(goBackButton);
+    await userEvent.click(goBackButton);
 
     expect(onUploadSuccess).not.toHaveBeenCalled();
     await waitFor(() => expect(onPreviousButtonClick).toHaveBeenCalled());
@@ -327,11 +327,11 @@ describe('<CreateVOD />', () => {
     const title = screen.getByRole('textbox', {
       name: 'Enter title of your video here',
     });
-    userEvent.type(title, 'video title');
+    await userEvent.type(title, 'video title');
     const inputVideoFile = screen.getByTestId('input-video-test-id');
     const videoFile = new File(['(⌐□_□)'], 'video.mp4', { type: 'video/mp4' });
 
-    userEvent.upload(inputVideoFile, videoFile);
+    await userEvent.upload(inputVideoFile, videoFile);
 
     await waitFor(() =>
       expect(container.getElementsByTagName('video')[0]).toHaveAttribute(
@@ -349,7 +349,7 @@ describe('<CreateVOD />', () => {
       name: 'Create a video',
     });
 
-    userEvent.click(createVideoButton);
+    await userEvent.click(createVideoButton);
 
     const rerenderedTitle = screen.getByRole('textbox', {
       name: 'Enter title of your video here',
@@ -524,11 +524,11 @@ describe('<CreateVOD />', () => {
     const title = screen.getByRole('textbox', {
       name: 'Enter title of your video here',
     });
-    userEvent.type(title, 'video title');
+    await userEvent.type(title, 'video title');
     const inputVideoFile = screen.getByTestId('input-video-test-id');
     const videoFile = new File(['(⌐□_□)'], 'video.mp4', { type: 'video/mp4' });
 
-    userEvent.upload(inputVideoFile, videoFile);
+    await userEvent.upload(inputVideoFile, videoFile);
 
     await waitFor(() =>
       expect(container.getElementsByTagName('video')[0]).toHaveAttribute(
@@ -546,7 +546,7 @@ describe('<CreateVOD />', () => {
       name: 'Create a video',
     });
 
-    userEvent.click(createVideoButton);
+    await userEvent.click(createVideoButton);
 
     deferred.reject();
 
@@ -557,7 +557,7 @@ describe('<CreateVOD />', () => {
       overwriteRoutes: true,
     });
 
-    userEvent.click(createVideoButton);
+    await userEvent.click(createVideoButton);
 
     deferred.resolve(mockedVideo);
 

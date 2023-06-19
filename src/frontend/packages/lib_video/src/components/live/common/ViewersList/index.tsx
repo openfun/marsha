@@ -10,8 +10,8 @@ import { defineMessages, useIntl } from 'react-intl';
 
 import { useCurrentVideo } from '@lib-video/hooks/useCurrentVideo';
 import {
-  useParticipantsStore,
   ParticipantType,
+  useParticipantsStore,
 } from '@lib-video/hooks/useParticipantsStore';
 import { isAnonymous } from '@lib-video/utils/chat/chat';
 import { converse } from '@lib-video/utils/window';

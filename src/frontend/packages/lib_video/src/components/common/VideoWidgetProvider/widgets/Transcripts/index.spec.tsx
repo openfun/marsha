@@ -3,14 +3,13 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
-  useTimedTextTrack,
-  useJwt,
   timedTextMode,
   uploadState,
+  useJwt,
+  useTimedTextTrack,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import { VTTCue } from 'vtt.js';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -111,7 +110,7 @@ describe('<Transcripts />', () => {
       name: 'Open Drop; Selected: Choose a language',
     });
 
-    userEvent.click(languageSelect);
+    await userEvent.click(languageSelect);
 
     expect(
       await screen.findByRole('option', {
@@ -142,13 +141,13 @@ describe('<Transcripts />', () => {
       name: 'Open Drop; Selected: Choose a language',
     });
 
-    userEvent.click(languageSelect);
+    await userEvent.click(languageSelect);
 
     const frenchSelect = await screen.findByRole('option', {
       name: 'fr',
     });
 
-    userEvent.click(frenchSelect);
+    await userEvent.click(frenchSelect);
 
     const downloadButton = await screen.findByText('Download');
     expect(downloadButton).toHaveAttribute(
@@ -187,13 +186,13 @@ describe('<Transcripts />', () => {
       name: 'Open Drop; Selected: Choose a language',
     });
 
-    userEvent.click(languageSelect);
+    await userEvent.click(languageSelect);
 
     const frenchSelect = await screen.findByRole('option', {
       name: 'fr',
     });
 
-    userEvent.click(frenchSelect);
+    await userEvent.click(frenchSelect);
 
     expect(
       await screen.findByText((content) =>

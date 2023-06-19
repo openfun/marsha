@@ -27,7 +27,7 @@ describe('createPlayer', () => {
       },
     });
 
-    pollForLive(video.urls!);
+    pollForLive(video.urls!, 500);
 
     await waitFor(() => {
       expect(
@@ -40,8 +40,6 @@ describe('createPlayer', () => {
     fetchMock.mock('https://marsha.education/live.m3u8', 200, {
       overwriteRoutes: true,
     });
-
-    jest.advanceTimersToNextTimer();
 
     await waitFor(() => {
       expect(

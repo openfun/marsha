@@ -7,7 +7,6 @@ import {
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -109,7 +108,7 @@ describe('<LicenseManager />', () => {
     const selectButton = await screen.findByRole('button', {
       name: 'Select the license under which you want to publish your video; Selected: NO_CC',
     });
-    userEvent.click(selectButton);
+    await userEvent.click(selectButton);
     const CreativeCommonButtonOption = screen.getByRole('option', {
       name: 'Creative Common By Attribution',
     });
@@ -143,7 +142,7 @@ describe('<LicenseManager />', () => {
     const selectButton = await screen.findByRole('button', {
       name: 'Select the license under which you want to publish your video; Selected: All rights reserved',
     });
-    userEvent.click(selectButton);
+    await userEvent.click(selectButton);
     await screen.findByText('No license available');
   });
 
@@ -165,11 +164,11 @@ describe('<LicenseManager />', () => {
     const selectButton = await screen.findByRole('button', {
       name: 'Select the license under which you want to publish your video; Selected: NO_CC',
     });
-    userEvent.click(selectButton);
+    await userEvent.click(selectButton);
     const CreativeCommonButtonOption = screen.getByRole('option', {
       name: 'Creative Common By Attribution',
     });
-    userEvent.click(CreativeCommonButtonOption);
+    await userEvent.click(CreativeCommonButtonOption);
     await screen.findByText('Video update has failed!');
   });
 });

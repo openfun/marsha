@@ -1,7 +1,7 @@
 import { Box, Layer } from 'grommet';
 import { Nullable } from 'lib-common';
 import { useAppConfig, useVideo } from 'lib-components';
-import React, { ReactNode, useEffect, useRef, useState } from 'react';
+import React, { ReactNode, useEffect, useMemo, useRef, useState } from 'react';
 import { useIntl } from 'react-intl';
 
 import { pushAttendance } from '@lib-video/api/pushAttendance';
@@ -111,57 +111,71 @@ export const StudentLiveWrapper: React.FC<StudentLiveWrapperProps> = ({
     }
   }, [live.xmpp, currentItem, showPanelTrigger, setPanelVisibility]);
 
-  const jitsiLive = convertLiveToJitsiLive(live);
-  if (isParticipantOnstage && !jitsiLive) {
-    throw new InvalidJitsiLiveException(
-      'Student is on stage but live is not a jitsi live.',
-    );
-  }
-
-  let secondElement: ReactNode;
-  if (
-    !isWatchingVideo &&
-    live.active_shared_live_media &&
-    live.active_shared_live_media_page
-  ) {
-    if (!live.active_shared_live_media.urls) {
-      throw new MissingSharedLiveSessionUrls(
-        'Missing shared live session urls during a sharing.',
+  const jitsiLive = useMemo(() => {
+    const jitsiLive = convertLiveToJitsiLive(live);
+    if (isParticipantOnstage && !jitsiLive) {
+      throw new InvalidJitsiLiveException(
+        'Student is on stage but live is not a jitsi live.',
       );
     }
 
-    secondElement = (
-      <SharedMediaExplorer
-        initialPage={live.active_shared_live_media_page}
-        pages={live.active_shared_live_media.urls.pages}
-      >
-        <UpdateCurrentSharedLiveMediaPage />
-      </SharedMediaExplorer>
-    );
-  }
+    return jitsiLive;
+  }, [isParticipantOnstage, live]);
 
-  if (
-    isWatchingVideo &&
-    id3Video?.active_shared_live_media?.id &&
-    id3Video.active_shared_live_media_page
-  ) {
-    const pages = live.shared_live_medias.find(
-      (media) => media.id === id3Video.active_shared_live_media?.id,
-    )?.urls?.pages;
-    const pageNumber = id3Video.active_shared_live_media_page;
+  const secondElement = useMemo(() => {
+    let secondElement: ReactNode;
+    if (
+      !isWatchingVideo &&
+      live.active_shared_live_media &&
+      live.active_shared_live_media_page
+    ) {
+      if (!live.active_shared_live_media.urls) {
+        throw new MissingSharedLiveSessionUrls(
+          'Missing shared live session urls during a sharing.',
+        );
+      }
 
-    if (!pages) {
-      throw new MissingSharedLiveSessionUrls(
-        'Missing shared live session urls during a sharing.',
+      secondElement = (
+        <SharedMediaExplorer
+          initialPage={live.active_shared_live_media_page}
+          pages={live.active_shared_live_media.urls.pages}
+        >
+          <UpdateCurrentSharedLiveMediaPage />
+        </SharedMediaExplorer>
       );
     }
 
-    secondElement = (
-      <SharedMediaExplorer initialPage={pageNumber} pages={pages}>
-        <UpdateCurrentSharedLiveMediaPage />
-      </SharedMediaExplorer>
-    );
-  }
+    if (
+      isWatchingVideo &&
+      id3Video?.active_shared_live_media?.id &&
+      id3Video.active_shared_live_media_page
+    ) {
+      const pages = live.shared_live_medias.find(
+        (media) => media.id === id3Video.active_shared_live_media?.id,
+      )?.urls?.pages;
+      const pageNumber = id3Video.active_shared_live_media_page;
+
+      if (!pages) {
+        throw new MissingSharedLiveSessionUrls(
+          'Missing shared live session urls during a sharing.',
+        );
+      }
+
+      secondElement = (
+        <SharedMediaExplorer initialPage={pageNumber} pages={pages}>
+          <UpdateCurrentSharedLiveMediaPage />
+        </SharedMediaExplorer>
+      );
+    }
+
+    return secondElement;
+  }, [
+    isWatchingVideo,
+    live.active_shared_live_media,
+    live.active_shared_live_media_page,
+    live.shared_live_medias,
+    id3Video,
+  ]);
 
   return (
     <VideoLayout

@@ -2,12 +2,11 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { participantMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import toast from 'react-hot-toast';
 
 import {
-  useLivePanelState,
   LivePanelItem,
+  useLivePanelState,
 } from '@lib-video/hooks/useLivePanelState';
 
 import { OnStageRequestToast } from '.';
@@ -15,7 +14,7 @@ import { OnStageRequestToast } from '.';
 jest.spyOn(toast, 'remove');
 
 describe('<OnStageRequestToast />', () => {
-  it('displays the notification and clicks and the action button', () => {
+  it('displays the notification and clicks and the action button', async () => {
     const participants = [participantMockFactory(), participantMockFactory()];
     const mockSetPanelVisibility = jest.fn();
     useLivePanelState.setState({
@@ -33,7 +32,7 @@ describe('<OnStageRequestToast />', () => {
       name: 'Manage requests',
     });
 
-    userEvent.click(manageRequestButton);
+    await userEvent.click(manageRequestButton);
 
     expect(mockSetPanelVisibility).toHaveBeenCalledWith(
       true,

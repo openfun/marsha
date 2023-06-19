@@ -1,8 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useVideoMetadata } from '.';
 
@@ -18,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useVideoMetadata', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -61,10 +47,12 @@ describe('useVideoMetadata', () => {
     };
     fetchMock.mock(`/api/videos/`, videoMetadata);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('fr'), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useVideoMetadata('fr'), {
+      wrapper: WrapperReactQuery,
     });
-    await waitFor(() => result.current.isSuccess);
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -82,11 +70,13 @@ describe('useVideoMetadata', () => {
   it('fails to get the video metadata', async () => {
     fetchMock.mock(`/api/videos/`, 404);
 
-    const { result, waitFor } = renderHook(() => useVideoMetadata('en'), {
-      wrapper: Wrapper,
+    const { result } = renderHook(() => useVideoMetadata('en'), {
+      wrapper: WrapperReactQuery,
     });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/videos/`);
     expect(fetchMock.lastCall()![1]).toEqual({

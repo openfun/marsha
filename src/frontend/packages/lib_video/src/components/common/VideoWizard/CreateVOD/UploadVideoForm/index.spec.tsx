@@ -4,14 +4,14 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  videoMockFactory,
   UploadManagerStatus,
-  useUploadManager,
   modelName,
   uploadState,
+  useUploadManager,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -89,7 +89,7 @@ describe('<UploadVideoForm />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await waitFor(() =>
       expect(mockedSetVideoFile).toHaveBeenNthCalledWith(1, file),
@@ -103,7 +103,7 @@ describe('<UploadVideoForm />', () => {
       name: 'Click on this button to remove the selected video.',
     });
 
-    userEvent.click(removeButton);
+    await userEvent.click(removeButton);
 
     await waitFor(() =>
       expect(mockedSetVideoFile).toHaveBeenNthCalledWith(2, null),
@@ -146,7 +146,7 @@ describe('<UploadVideoForm />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     expect(await screen.findByText('75 %')).toBeInTheDocument();
   });
@@ -185,7 +185,7 @@ describe('<UploadVideoForm />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await screen.findByText(
       'An error occured when uploading your video. Please retry.',
@@ -193,7 +193,7 @@ describe('<UploadVideoForm />', () => {
 
     const retryButton = screen.getByRole('button');
 
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
 
     expect(mockedSetVideoFile).toHaveBeenNthCalledWith(2, null);
     expect(mockedResetUpload).toHaveBeenNthCalledWith(1, mockedVideo.id);
@@ -242,7 +242,7 @@ describe('<UploadVideoForm />', () => {
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
     const hiddenInput = screen.getByTestId('input-video-test-id');
 
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     await screen.findByText(
       'Error : File too large. Max size authorized is 1 GB.',
@@ -250,7 +250,7 @@ describe('<UploadVideoForm />', () => {
 
     const retryButton = screen.getByRole('button');
 
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
 
     expect(mockedSetVideoFile).toHaveBeenNthCalledWith(2, null);
     expect(mockedResetUpload).toHaveBeenNthCalledWith(1, mockedVideo.id);

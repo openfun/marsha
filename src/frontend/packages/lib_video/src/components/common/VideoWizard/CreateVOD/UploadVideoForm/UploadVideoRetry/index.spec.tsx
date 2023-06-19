@@ -1,7 +1,6 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { UploadVideoRetry } from '.';
 
@@ -12,19 +11,19 @@ describe('<UploadVideoRetry />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders UploadVideoRetry and clicks on it', () => {
+  it('renders UploadVideoRetry and clicks on it', async () => {
     render(<UploadVideoRetry onClickRetry={mockedOnClick} />);
     screen.getByText(
       'An error occured when uploading your video. Please retry.',
     );
     const retryButton = screen.getByRole('button');
 
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
 
     expect(mockedOnClick).toHaveBeenCalledTimes(1);
   });
 
-  it('renders UploadVideoRetry with sizeError and clicks on it', () => {
+  it('renders UploadVideoRetry with sizeError and clicks on it', async () => {
     render(
       <UploadVideoRetry
         onClickRetry={mockedOnClick}
@@ -34,7 +33,7 @@ describe('<UploadVideoRetry />', () => {
     screen.getByText('Error : File too large. Max size authorized is 1 GB.');
     const retryButton = screen.getByRole('button');
 
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
 
     expect(mockedOnClick).toHaveBeenCalledTimes(1);
   });

@@ -2,7 +2,7 @@ import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { sharedLiveMediaMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 
@@ -16,7 +16,7 @@ jest.mock('hooks/useDeleteSharedLiveMediaModal', () => ({
 }));
 
 describe('<DeleteButton />', () => {
-  it('clicks on the button', () => {
+  it('clicks on the button', async () => {
     const mockedSharedLiveMedia = sharedLiveMediaMockFactory();
 
     render(
@@ -28,7 +28,7 @@ describe('<DeleteButton />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     expect(mockSetDeleteSharedLiveMediaModal).toHaveBeenCalledTimes(1);
     expect(mockSetDeleteSharedLiveMediaModal).toHaveBeenCalledWith(

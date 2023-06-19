@@ -1,9 +1,8 @@
 import { act, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Nullable } from 'lib-common';
-import { useJwt, liveSessionFactory } from 'lib-components';
+import { liveSessionFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { useChatItemState } from '@lib-video/hooks/useChatItemsStore';
 import { useLiveSession } from '@lib-video/hooks/useLiveSession';
@@ -49,7 +48,7 @@ describe('<ChatLayout />', () => {
     });
   });
 
-  it("doesn't receive history messages, no display_name and the join button is disabled.", () => {
+  it("doesn't receive history messages, no display_name and the join button is disabled.", async () => {
     render(<ChatLayout isModerated={false} />);
 
     // If no set, hasReceivedMessageHistory default value is false
@@ -61,7 +60,7 @@ describe('<ChatLayout />', () => {
     });
     expect(joinChatButton).toBeDisabled();
 
-    userEvent.click(joinChatButton);
+    await userEvent.click(joinChatButton);
 
     expect(screen.queryByText('Display name')).not.toBeInTheDocument();
   });
@@ -95,12 +94,12 @@ describe('<ChatLayout />', () => {
     expect(screen.queryByText('Display name')).not.toBeInTheDocument();
   });
 
-  it('configures to ask for display name on ask button click', () => {
+  it('configures to ask for display name on ask button click', async () => {
     useChatItemState.getState().setHasReceivedMessageHistory(true);
 
     render(<ChatLayout isModerated={false} />);
 
-    userEvent.click(
+    await userEvent.click(
       screen.getByRole('button', {
         name: 'Join the chat',
       }),

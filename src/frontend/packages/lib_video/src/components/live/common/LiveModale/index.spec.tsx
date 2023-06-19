@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { LiveModale } from '.';
 
 describe('LiveModale', () => {
-  it('renders content', () => {
+  it('renders content', async () => {
     const firstAction = jest.fn();
     const secondAction = jest.fn();
 
@@ -22,7 +21,9 @@ describe('LiveModale', () => {
 
     screen.getByText('my content');
     screen.getByRole('button', { name: 'first button' });
-    userEvent.click(screen.getByRole('button', { name: 'second button' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'second button' }),
+    );
 
     expect(firstAction).not.toHaveBeenCalled();
     expect(secondAction).toHaveBeenCalledTimes(1);

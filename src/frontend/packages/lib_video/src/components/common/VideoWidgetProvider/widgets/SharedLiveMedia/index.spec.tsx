@@ -4,18 +4,18 @@ import faker from 'faker';
 import fetchMock from 'fetch-mock';
 import {
   InfoWidgetModalProvider,
-  useJwt,
-  sharedLiveMediaMockFactory,
-  videoMockFactory,
   UploadManagerContext,
-  useUploadManager,
-  useSharedLiveMedia,
   modelName,
-  uploadState,
   report,
+  sharedLiveMediaMockFactory,
+  uploadState,
+  useJwt,
+  useSharedLiveMedia,
+  useUploadManager,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { DeleteSharedLiveMediaModalProvider } from '@lib-video/hooks/useDeleteSharedLiveMediaModal';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
@@ -130,13 +130,13 @@ describe('<SharedLiveMedia />', () => {
     const uploadButton = screen.getByRole('button', {
       name: 'Upload a presentation support',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
 
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'sharedLiveMedia.pdf', {
       type: 'application/pdf',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(1);
     expect(fetchMock.lastCall()![0]).toEqual(
       `/api/videos/${videoId}/sharedlivemedias/`,
@@ -212,10 +212,10 @@ describe('<SharedLiveMedia />', () => {
     const deleteButton = screen.getByRole('button', {
       name: 'Click on this button to delete the media.',
     });
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
     const confirmDeleteButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -290,11 +290,11 @@ describe('<SharedLiveMedia />', () => {
       name: 'Click on this button to delete the media.',
     });
 
-    userEvent.click(deleteButton);
+    await userEvent.click(deleteButton);
 
     const confirmDeleteButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmDeleteButton);
+    await userEvent.click(confirmDeleteButton);
 
     await waitFor(() => expect(fetchMock.calls()).toHaveLength(1));
     expect(fetchMock.lastCall()![0]).toEqual(
@@ -373,12 +373,12 @@ describe('<SharedLiveMedia />', () => {
       name: 'Click on this button to retry uploading your failed upload.',
     });
 
-    userEvent.click(retryButton);
+    await userEvent.click(retryButton);
     const hiddenInput = screen.getByTestId('input-file-test-id');
     const file = new File(['(⌐□_□)'], 'SharedLiveMedia.pdf', {
       type: 'application/pdf',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
     expect(fetchMock.calls()).toHaveLength(0);
 
     await waitFor(() => expect(mockAddUpload).toHaveBeenCalledTimes(1));

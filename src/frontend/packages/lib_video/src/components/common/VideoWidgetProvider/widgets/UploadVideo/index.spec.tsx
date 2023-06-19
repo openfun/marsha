@@ -1,17 +1,17 @@
 import { screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  useJwt,
-  videoMockFactory,
+  InfoWidgetModalProvider,
   UploadManagerContext,
   UploadManagerStatus,
-  useUploadManager,
   modelName,
   uploadState,
-  InfoWidgetModalProvider,
+  useJwt,
+  useUploadManager,
+  videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
+import { PropsWithChildren } from 'react';
 
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
@@ -54,7 +54,7 @@ describe('<UploadVideo />', () => {
     jest.resetAllMocks();
   });
 
-  it('renders the component with a video', () => {
+  it('renders the component with a video', async () => {
     const mockedVideo = videoMockFactory();
     render(
       wrapInVideo(
@@ -67,7 +67,7 @@ describe('<UploadVideo />', () => {
 
     screen.getByText('Video');
 
-    userEvent.click(screen.getByRole('button', { name: 'help' }));
+    await userEvent.click(screen.getByRole('button', { name: 'help' }));
 
     expect(screen.getByText('Video available')).toBeInTheDocument();
     expect(
@@ -75,7 +75,7 @@ describe('<UploadVideo />', () => {
     ).toBeInTheDocument();
   });
 
-  it('uploads a new video', () => {
+  it('uploads a new video', async () => {
     const mockedVideo = videoMockFactory();
 
     const mockAddUpload = jest.fn();
@@ -103,13 +103,13 @@ describe('<UploadVideo />', () => {
     const uploadButton = screen.getByRole('button', {
       name: 'Replace the video',
     });
-    userEvent.click(uploadButton);
+    await userEvent.click(uploadButton);
 
     const hiddenInput = screen.getByTestId('input-video-test-id');
     const file = new File(['(⌐□_□)'], 'video.mp4', {
       type: 'video/*',
     });
-    userEvent.upload(hiddenInput, file);
+    await userEvent.upload(hiddenInput, file);
 
     expect(mockAddUpload).toHaveBeenCalledTimes(1);
     expect(mockAddUpload).toHaveBeenLastCalledWith(

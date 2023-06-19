@@ -5,14 +5,13 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import {
-  useJwt,
-  videoMockFactory,
-  liveState,
   Video,
+  liveState,
+  useJwt,
   useVideo,
+  videoMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
-import React from 'react';
+import { Deferred, render } from 'lib-tests';
 
 import { startLive } from '@lib-video/api/startLive';
 import { wrapInLiveModaleProvider } from '@lib-video/utils/liveModale';
@@ -41,7 +40,9 @@ describe('<StartLiveButton />', () => {
     render(wrapInLiveModaleProvider(<StartLiveButton video={video} />));
 
     expect(screen.queryByTestId('loader-id')).not.toBeInTheDocument();
-    userEvent.click(screen.getByRole('button', { name: 'Start streaming' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Start streaming' }),
+    );
 
     screen.getByTestId('loader-id');
 
@@ -63,21 +64,25 @@ describe('<StartLiveButton />', () => {
 
     render(wrapInLiveModaleProvider(<StartLiveButton video={video} />));
 
-    userEvent.click(screen.getByRole('button', { name: 'Start streaming' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Start streaming' }),
+    );
 
     expect(
       await screen.findByText('An error occured, please try again.'),
     ).toBeInTheDocument();
   });
 
-  it('displays an alert message when starting an harvested live', () => {
+  it('displays an alert message when starting an harvested live', async () => {
     const video = videoMockFactory({ live_state: liveState.HARVESTED });
     const startDeferred = new Deferred<Video>();
     mockedStartLive.mockReturnValue(startDeferred.promise);
 
     render(wrapInLiveModaleProvider(<StartLiveButton video={video} />));
 
-    userEvent.click(screen.getByRole('button', { name: 'Start streaming' }));
+    await userEvent.click(
+      screen.getByRole('button', { name: 'Start streaming' }),
+    );
 
     const liveModale = screen.getByTestId('test-modale');
     expect(liveModale).toHaveTextContent(

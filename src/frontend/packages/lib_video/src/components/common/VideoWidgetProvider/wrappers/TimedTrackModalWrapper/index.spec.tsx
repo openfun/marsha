@@ -2,13 +2,12 @@ import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
-  timedTextMockFactory,
-  useTimedTextTrack,
   report,
+  timedTextMockFactory,
+  useJwt,
+  useTimedTextTrack,
 } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
 import { useDeleteTimedTextTrackUploadModal } from '@lib-video/hooks/useDeleteTimedTextTrackUploadModal';
 
@@ -50,7 +49,7 @@ describe('<TimedTrackModalWrapper />', () => {
     ).not.toBeInTheDocument();
   });
 
-  it('renders the modal when there is a timed text track to delete, and clicks on cancel', () => {
+  it('renders the modal when there is a timed text track to delete, and clicks on cancel', async () => {
     const mockedTimedTextTrack = timedTextMockFactory();
     const mockSetDeleteTimedTextTrackUploadModal = jest.fn();
     mockUseDeleteTimedTextTrackUploadModal.mockReturnValue([
@@ -65,7 +64,7 @@ describe('<TimedTrackModalWrapper />', () => {
     screen.getByRole('button', { name: 'Confirm' });
     const cancelButton = screen.getByRole('button', { name: 'Cancel' });
 
-    userEvent.click(cancelButton);
+    await userEvent.click(cancelButton);
 
     expect(mockSetDeleteTimedTextTrackUploadModal).toHaveBeenCalledTimes(1);
     expect(mockSetDeleteTimedTextTrackUploadModal).toHaveBeenCalledWith(null);
@@ -92,7 +91,7 @@ describe('<TimedTrackModalWrapper />', () => {
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -132,7 +131,7 @@ describe('<TimedTrackModalWrapper />', () => {
     screen.getByRole('button', { name: 'Cancel' });
     const confirmButton = screen.getByRole('button', { name: 'Confirm' });
 
-    userEvent.click(confirmButton);
+    await userEvent.click(confirmButton);
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(

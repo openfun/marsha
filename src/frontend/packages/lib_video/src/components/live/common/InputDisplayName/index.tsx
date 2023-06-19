@@ -4,21 +4,21 @@ import { Box, Text, Tip } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
   AnonymousUser,
+  LiveSession,
+  QuestionMarkSVG,
   checkToken,
   decodeJwt,
-  QuestionMarkSVG,
   useCurrentUser,
   useJwt,
-  LiveSession,
 } from 'lib-components';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
 import { setLiveSessionDisplayName } from '@lib-video/api/setLiveSessionDisplayName';
 import {
   ANONYMOUS_ID_PREFIX,
-  NICKNAME_MIN_LENGTH,
   NICKNAME_MAX_LENGTH,
+  NICKNAME_MIN_LENGTH,
 } from '@lib-video/conf/chat';
 import { useCurrentLive } from '@lib-video/hooks/useCurrentVideo';
 import { useLiveSession } from '@lib-video/hooks/useLiveSession';

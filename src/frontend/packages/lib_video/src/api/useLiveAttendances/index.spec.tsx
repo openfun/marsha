@@ -1,8 +1,8 @@
-import { renderHook, WrapperComponent } from '@testing-library/react-hooks';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { liveAttendanceFactory, useJwt } from 'lib-components';
-import React from 'react';
-import { QueryClient, QueryClientProvider, setLogger } from 'react-query';
+import { WrapperReactQuery } from 'lib-tests';
+import { setLogger } from 'react-query';
 
 import { useLiveAttendances } from '.';
 
@@ -18,23 +18,9 @@ jest.mock('lib-components', () => ({
   report: jest.fn(),
 }));
 
-let Wrapper: WrapperComponent<Element>;
-
 describe('useLiveAttendances', () => {
   beforeEach(() => {
     useJwt.getState().setJwt('some token');
-
-    const queryClient = new QueryClient({
-      defaultOptions: {
-        queries: {
-          retry: false,
-        },
-      },
-    });
-
-    Wrapper = ({ children }: Element) => (
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    );
   });
 
   afterEach(() => {
@@ -55,13 +41,12 @@ describe('useLiveAttendances', () => {
       liveAttendances,
     );
 
-    const { result, waitFor } = renderHook(
-      () => useLiveAttendances('some-video-id'),
-      {
-        wrapper: Wrapper,
-      },
-    );
-    await waitFor(() => result.current.isSuccess);
+    const { result } = renderHook(() => useLiveAttendances('some-video-id'), {
+      wrapper: WrapperReactQuery,
+    });
+    await waitFor(() => {
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
@@ -82,14 +67,13 @@ describe('useLiveAttendances', () => {
       404,
     );
 
-    const { result, waitFor } = renderHook(
-      () => useLiveAttendances('some-video-id'),
-      {
-        wrapper: Wrapper,
-      },
-    );
+    const { result } = renderHook(() => useLiveAttendances('some-video-id'), {
+      wrapper: WrapperReactQuery,
+    });
 
-    await waitFor(() => result.current.isError);
+    await waitFor(() => {
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(
       '/api/videos/some-video-id/livesessions/list_attendances/?limit=999',
