@@ -4,6 +4,7 @@ import json
 from django.db.transaction import atomic
 from django.test import TestCase
 
+from marsha.core.factories import ConsumerSiteFactory, LtiUserAssociationFactory
 from marsha.core.models import LtiUserAssociation
 from marsha.core.simple_jwt.factories import LTIUserTokenFactory, UserAccessTokenFactory
 
@@ -133,3 +134,85 @@ class LtiUserAssociationCreateAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 401)  # Unauthorized
         self.assertEqual(LtiUserAssociation.objects.count(), 0)
+
+    def test_create_api_lti_user_association_without_association_jwt(
+        self,
+    ):
+        """
+        Any user from the marsha standalone site should be able to create
+        an LTI user association by passing lti_consumer_site_id and lti_user_id.
+        """
+        jwt_token = UserAccessTokenFactory()
+        consumer_site = ConsumerSiteFactory()
+
+        response = self.client.post(
+            "/api/lti-user-associations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "lti_consumer_site_id": str(consumer_site.id),
+                    "lti_user_id": "1234",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 201)  # Created
+        self.assertEqual(LtiUserAssociation.objects.count(), 1)
+        lti_user_association = LtiUserAssociation.objects.first()
+        self.assertEqual(lti_user_association.consumer_site, consumer_site)
+        self.assertEqual(lti_user_association.lti_user_id, "1234")
+        self.assertEqual(
+            str(lti_user_association.user_id), jwt_token.payload["user_id"]
+        )
+
+    def test_create_api_lti_user_association_without_association_jwt_unknown_consumer_site(
+        self,
+    ):
+        """
+        If the consumer site is unknown, it must raise a bad request.
+        """
+        jwt_token = UserAccessTokenFactory()
+
+        response = self.client.post(
+            "/api/lti-user-associations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "lti_consumer_site_id": "unknown",
+                    "lti_user_id": "1234",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 400)  # Bad request
+        self.assertEqual(LtiUserAssociation.objects.count(), 0)
+
+    def test_create_api_lti_user_association_without_association_jwt_already_existing(
+        self,
+    ):
+        """
+        If the association already exists, it must raise a conflict.
+        """
+        jwt_token = UserAccessTokenFactory()
+        consumer_site = ConsumerSiteFactory()
+        LtiUserAssociationFactory(
+            consumer_site=consumer_site,
+            lti_user_id="1234",
+            user_id=jwt_token.get("user_id"),
+        )
+
+        response = self.client.post(
+            "/api/lti-user-associations/",
+            HTTP_AUTHORIZATION=f"Bearer {jwt_token}",
+            content_type="application/json",
+            data=json.dumps(
+                {
+                    "lti_consumer_site_id": str(consumer_site.id),
+                    "lti_user_id": "1234",
+                }
+            ),
+        )
+
+        self.assertEqual(response.status_code, 409)

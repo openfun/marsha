@@ -464,6 +464,7 @@ class LtiUserAssociationAdmin(admin.ModelAdmin):
         "user",
         "created_on",
     )
+    readonly_fields = ("created_on",)
     verbose_name = _("LTI user association")
 
 
