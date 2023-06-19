@@ -7,6 +7,10 @@ not skip minor/major releases while upgrading (fix releases can be skipped).
 The format is inspired from [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### 4.2.x to 4.3.0
+
+`DJANGO_STATICFILES_STORAGE` environment variable is not used anymore. You have to replace it by `DJANGO_STORAGES_STATICFILES_BACKEND`.
+
 ## 3.27.x to 4.0.x
 
 ### Before deploying
