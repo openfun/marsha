@@ -1,9 +1,13 @@
 """Tests for the video xAPI statement sent from the website."""
+import io
 import json
+import logging
 from unittest import mock
 import uuid
 
 from django.test import TestCase, override_settings
+
+from logging_ldp.formatters import LDPGELFFormatter
 
 from marsha.core.factories import VideoFactory
 from marsha.core.simple_jwt.factories import UserAccessTokenFactory
@@ -11,6 +15,19 @@ from marsha.core.simple_jwt.factories import UserAccessTokenFactory
 
 class XAPIVideoFromWebsiteTest(TestCase):
     """Video XAPI test suite sent from a website."""
+
+    maxDiff = None
+
+    def setUp(self):
+        self.logger = logging.getLogger("xapi.example.com")
+        self.logger.setLevel(logging.INFO)
+        self.log_stream = io.StringIO()
+
+        handler = logging.StreamHandler(self.log_stream)
+        handler.setFormatter(LDPGELFFormatter(token="foo", null_character=False))
+        self.logger.addHandler(handler)
+
+        super().setUp()
 
     def test_xapi_statement_api_with_anonymous_user(self):
         """Anonymous users should not be allowed to send xAPI statement."""
@@ -23,7 +40,9 @@ class XAPIVideoFromWebsiteTest(TestCase):
 
     def test_xapi_statement_with_no_lrs_configured(self):
         """If no LRS configured a 200 status code should be returned."""
-        video = VideoFactory()
+        video = VideoFactory(
+            id="7b18195e-e183-4bbf-b8ef-5145ef64ae19", title="Video 000"
+        )
         jwt_token = UserAccessTokenFactory()
 
         data = {
@@ -44,6 +63,36 @@ class XAPIVideoFromWebsiteTest(TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+        log = json.loads(self.log_stream.getvalue())
+        self.assertIn("short_message", log)
+        message = json.loads(log["short_message"])
+        self.assertEqual(
+            message.get("verb"),
+            {
+                "id": "http://adlnet.gov/expapi/verbs/initialized",
+                "display": {"en-US": "initialized"},
+            },
+        )
+        self.assertEqual(
+            message.get("context"),
+            {
+                "extensions": {"https://w3id.org/xapi/video/extensions/volume": 1},
+                "contextActivities": {
+                    "category": [{"id": "https://w3id.org/xapi/video"}]
+                },
+            },
+        )
+        self.assertEqual(
+            message.get("object"),
+            {
+                "definition": {
+                    "type": "https://w3id.org/xapi/video/activity-type/video",
+                    "name": {"en-US": "Video 000"},
+                },
+                "id": "uuid://7b18195e-e183-4bbf-b8ef-5145ef64ae19",
+                "objectType": "Activity",
+            },
+        )
 
     def test_xapi_statement_api_with_invalid_payload(self):
         """Payload should follow a given pattern."""
