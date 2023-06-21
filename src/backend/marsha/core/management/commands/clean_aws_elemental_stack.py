@@ -8,8 +8,7 @@ from django.utils import timezone
 from marsha.core.defaults import DELETED, ENDED
 from marsha.core.models import Video
 from marsha.core.utils.medialive_utils import (
-    delete_aws_element_stack,
-    delete_mediapackage_channel,
+    delete_medialive_stack,
     list_medialive_channels,
 )
 from marsha.core.utils.time_utils import to_datetime
@@ -51,27 +50,44 @@ class Command(BaseCommand):
             # the channel name contains the environment, the primary key and the created_at
             # stamp. Here we want to use the primary key
             _environment, live_pk, _stamp = medialive_channel["Name"].split("_")
-            live = Video.objects.get(pk=live_pk)
-            self.stdout.write(f"Checking video {live.id}")
+            try:
+                live = Video.objects.get(pk=live_pk)
+                self.stdout.write(f"Checking video {live.id}")
 
-            if live.starting_at:
-                # Live was scheduled, we can use this schedule date.
-                if live.starting_at < expired_date:
-                    self._delete_live(live)
-            elif started_at := live.live_info.get("started_at"):
-                # Live has started_at info, we can use it.
-                started_at = to_datetime(started_at)
-                if started_at < expired_date:
-                    self._delete_live(live)
+                if live.get_medialive_channel().get("id") != medialive_channel["Id"]:
+                    # Live is attached to another channel, delete this channel.
+                    self.stdout.write(
+                        f"The video {live.id} is not attached to the "
+                        f"channel {medialive_channel['Name']}"
+                    )
+                    delete_medialive_stack(medialive_channel, self.stdout)
+                    continue
 
-    def _delete_live(self, live):
+                if live.starting_at:
+                    # Live was scheduled, we can use this schedule date.
+                    if live.starting_at < expired_date:
+                        self._delete_live(live, medialive_channel)
+                elif started_at := live.live_info.get("started_at"):
+                    # Live has started_at info, we can use it.
+                    started_at = to_datetime(started_at)
+                    if started_at < expired_date:
+                        self._delete_live(live, medialive_channel)
+            except Video.DoesNotExist:
+                # Channel exists in AWS but no live in our DB. Delete it.
+                self.stdout.write(
+                    f"""Channel {medialive_channel["Name"]} is """
+                    f"""attached to a video {live_pk} that does not exist"""
+                )
+                delete_medialive_stack(medialive_channel, self.stdout)
+
+    def _delete_live(self, live, medialive_channel):
         """
         Set the live_state to ENDED, the upload_state to DELETED and delete
         all AWS resources
         """
         self.stdout.write(f"deleting AWS resources for video {live.id}")
-        delete_aws_element_stack(live)
-        delete_mediapackage_channel(live.get_mediapackage_channel().get("id"))
+
+        delete_medialive_stack(medialive_channel, self.stdout)
 
         self.stdout.write(f"Set video state to deleted for video {live.id}")
         live.live_state = ENDED
