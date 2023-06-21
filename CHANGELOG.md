@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Create a default playlist for new shibboleth user
+- Webtorrent tracker for P2P video feature
 
 ## [4.2.1] - 2023-06-20
 
