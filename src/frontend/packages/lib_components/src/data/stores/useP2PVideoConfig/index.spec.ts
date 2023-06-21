@@ -1,7 +1,7 @@
 import { useP2PLiveConfig } from '.';
 
-describe('useSentry', () => {
-  it('checks isSentryReady', () => {
+describe('useP2PLiveConfig', () => {
+  it('checks state', () => {
     expect(useP2PLiveConfig.getState().isP2PEnabled).toBeFalsy();
     expect(useP2PLiveConfig.getState().stunServersUrls.length).toBeFalsy();
     expect(

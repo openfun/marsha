@@ -1,15 +1,15 @@
 # P2P on VideoJS Player
 
-We created a plugin permitting us to deliver a HLS live stream over P2P to reduce our CDN cost. It uses the open-source [p2p-media-loader](https://github.com/Novage/p2p-media-loader) library, which is also used by [PeerTube](https://github.com/Chocobozzz/PeerTube) (an open-source Youtube alternative delivering videos through P2P).
+We created a plugin allowing us to deliver a HLS live stream over P2P to reduce the CDN usage. It uses the open-source [p2p-media-loader](https://github.com/Novage/p2p-media-loader) library, which is also used by [PeerTube](https://github.com/Chocobozzz/PeerTube) (an open-source Youtube alternative delivering videos through P2P).
 
 
 ## How it works
 
 <table><tr>
-  <td><img src="images/p2p-assisted-media-delivery.png" alt="Moodle LTI select admin view 3"/></td>
+  <td><img src="images/p2p-assisted-media-delivery.png" alt="P2P assisted media delivery"/></td>
 </tr></table>
 
-The library creates Peer-to-Peer network (also called P2P CDN or P2PTV) for traffic sharing between users (peers) that are watching the same media stream live or VOD over HLS or MPEG-DASH protocols.
+The library creates Peer-to-Peer network (also called P2P CDN or P2PTV) for traffic sharing between users (peers) that are watching the same media stream live or VOD over HLS.
 
 From the official site of the library [p2p-media-loader](http://novage.com.ua/p2p-media-loader/technical-overview.html):
 
@@ -36,7 +36,7 @@ Also important for our integration:
 ) of stream lagging when too much viewers
 
 <table><tr>
-  <td><img src="images/p2p-media-loader-network.png" alt="Moodle LTI select admin view 3"/></td>
+  <td><img src="images/p2p-media-loader-network.png" alt="P2P Media Loader network"/></td>
 </tr></table>
 
 
@@ -51,13 +51,13 @@ Therefore, we have to provide our WebTorrent tracker and STUN server. In our set
 
 The `P2P Media Loader` library provides a Hls.js integration (see [p2p-media-loader-hlsjs](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-hlsjs))  that can be used on different js player, including [Videojs](https://videojs.com/) (the library that we use).
 
-The library gives us a class [`Engine`](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-hlsjs#engine) that us [p2p-media-loader-core](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-core). `p2p-media-loader-hlsjs` offers different function to integrate this `Engine` to several players.
+The library gives us a class [`Engine`](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-hlsjs#engine) that uses [p2p-media-loader-core](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-core). `p2p-media-loader-hlsjs` offers different function to integrate this `Engine` to several players.
 
 We use the function [initVideoJsHlsJsPlugin](https://github.com/Novage/p2p-media-loader/tree/master/p2p-media-loader-hlsjs#initvideojshlsjsplugin) which is using the [videojs-hlsjs-plugin](https://github.com/streamroot/videojs-hlsjs-plugin). The other possibility uses [videojs-contrib-hls](https://github.com/videojs/videojs-contrib-hls) plugin.
 
 ### Implementation
 
-We created `Videojs` plugin (see [doc](https://videojs.com/guides/plugins/#write-a-javascript-classconstructor)) following the "PeerTube way" of adding functionality to their player. In this plugin, we will do the integration of the `Engine` and his configuration in the constructor.
+We created `Videojs` plugin (see [doc](https://videojs.com/guides/plugins/#write-a-javascript-classconstructor)) following the "PeerTube way" of adding functionality to their player. In this plugin, we will do the integration of the `Engine` and its configuration in the constructor.
 
 ```JS
 export class P2pHlsPlugin extends Plugin {

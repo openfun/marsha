@@ -74,13 +74,13 @@ export const AppInitializer = (
   useEffect(() => {
     setP2PLiveConfig(
       appConfig.p2p.live_enabled, 
-      appConfig.p2p.live_web_torrent_tracker_urls, 
-      appConfig.p2p.live_stun_server_urls
+      appConfig.p2p.live_stun_server_urls, 
+      appConfig.p2p.live_web_torrent_tracker_urls
     );
   }, [
-    appConfig.p2p.live_enabled, 
-    appConfig.p2p.live_web_torrent_tracker_urls,
+    appConfig.p2p.live_enabled,
     appConfig.p2p.live_stun_server_urls,
+    appConfig.p2p.live_web_torrent_tracker_urls,
     setP2PLiveConfig,
   ]);
 

@@ -13405,7 +13405,7 @@ p2p-media-loader-core@^0.6.2:
     sha.js "^2.4.11"
     simple-peer "^9.5.0"
 
-p2p-media-loader-hlsjs@^0.6.2:
+p2p-media-loader-hlsjs@0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/p2p-media-loader-hlsjs/-/p2p-media-loader-hlsjs-0.6.2.tgz#b66f977a5d28986c8f6e62d2ffa297aec3c05186"
   integrity sha512-5LgqWPDsgyST9rxoHGDpExZU1rIDZIT0qft2wAnlg8Cb8aVeaBxUsmF4Sj692Qb5/GBDsi8vLE03LW8gpvlh1g==
@@ -14294,7 +14294,7 @@ process-nextick-args@~2.0.0:
   resolved "https://registry.yarnpkg.com/process-nextick-args/-/process-nextick-args-2.0.1.tgz#7820d9b16120cc55ca9ae7792680ae7dba6d7fe2"
   integrity sha512-3ouUOpQhtgrbOa17J7+uxOTpITYWaGP7/AhoR3+A+/1e9skrzelGi/dXzEYyvbxubEF6Wn2ypscTKiKJFFn1ag==
 
-process@^0.11.10:
+process@0.11.10, process@^0.11.10:
   version "0.11.10"
   resolved "https://registry.yarnpkg.com/process/-/process-0.11.10.tgz#7332300e840161bda3e69a1d1d91a7d4bc16f182"
   integrity sha512-cdGef/drWFoydD1JsMzuFf8100nZl+GT+yacc2bEced5f9Rjk4z+WtFUTBu9PhOi9j/jfmBPu0mMEY4wIdAF8A==

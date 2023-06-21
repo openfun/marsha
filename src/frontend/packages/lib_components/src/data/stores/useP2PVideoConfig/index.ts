@@ -20,8 +20,7 @@ export const useP2PLiveConfig = create<P2PLiveConfigStore>((set) => ({
     stunServersUrls,
     webTorrentServerTrackerUrls,
   ) => {
-    set((state) => ({
-      ...state,
+    set(() => ({
       isP2PEnabled,
       stunServersUrls,
       webTorrentServerTrackerUrls,

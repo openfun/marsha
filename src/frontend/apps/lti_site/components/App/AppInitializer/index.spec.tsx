@@ -8,6 +8,7 @@ import {
   useThumbnail,
   useSharedLiveMedia,
   useDocument,
+  useP2PLiveConfig,
 } from 'lib-components';
 import { useAttendance } from 'lib-video';
 import React from 'react';
@@ -34,8 +35,8 @@ jest.mock('lib-components', () => ({
     attendanceDelay: 6,
     p2p: {
       live_enabled: true,
-      live_stun_server_urls: ['stun.l.google.com:19302'],
-      live_web_torrent_tracker_urls: ['wss://tracker.webtorrent.io'],
+      live_stun_server_urls: ['stun.example.com'],
+      live_web_torrent_tracker_urls: ['tracker.example.com'],
     },
   }),
   decodeJwt: () => ({
@@ -47,6 +48,9 @@ describe('<AppInitializer />', () => {
   it('initializes stores before render content', async () => {
     useSentry.setState({ setSentry: ()=> useSentry.setState({ isSentryReady: true }) });
 
+    expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(false);
+    expect(useP2PLiveConfig.getState().stunServersUrls).toEqual([]);
+    expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
     expect(useSentry.getState().isSentryReady).toEqual(false);
     expect(useVideo.getState().videos).toEqual({});
     expect(useTimedTextTrack.getState().timedtexttracks).toEqual({});
@@ -66,6 +70,11 @@ describe('<AppInitializer />', () => {
 
     await screen.findByText('some cool content');
 
+    expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(true);
+    expect(useP2PLiveConfig.getState().stunServersUrls).toEqual(['stun.example.com']);
+    expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([
+      'tracker.example.com',
+    ])
     expect(useSentry.getState().isSentryReady).toEqual(true);
     expect(useVideo.getState().videos).toEqual({
       ['my-video-id']: mockedVideo,
