@@ -104,7 +104,7 @@ class Command(BaseCommand):
                     )
                     self.update_video_state(live, channel_state)
             except Video.DoesNotExist:
-                # live exists in AWS but not our DB
+                # live exists in AWS but not in our DB
                 self.stdout.write(
                     f"""Channel {medialive_channel["Name"]} is """
                     f"""attached to a video {live_pk} that does not exist"""

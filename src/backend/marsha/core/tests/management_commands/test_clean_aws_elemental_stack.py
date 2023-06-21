@@ -20,7 +20,6 @@ class CleanAwsElementalStackCommandTest(TestCase):
 
     def test_clean_aws_elemental_stack(self):
         """Test clean_aws_elemental_stack command."""
-        expiration_date = datetime(2022, 11, 1, 15, 00, tzinfo=timezone.utc)
         # first live not started yet, should not be updated.
         live1 = VideoFactory(
             live_state=IDLE,
@@ -165,14 +164,14 @@ class CleanAwsElementalStackCommandTest(TestCase):
                 "medialive": {
                     "channel": {
                         "arn": "arn:aws:medialive:eu-west-1:xxx:channel:4444444",
-                        "id": "4444444",
+                        "id": "5555555",
                     },
                     "input": {
                         "endpoints": [
                             f"rtmp://x.x.x.x:1935/{live5_id}_1667490961-primary",
                             f"rtmp://x.x.x.x:1935/{live5_id}_1667490961-secondary",
                         ],
-                        "id": "4444444",
+                        "id": "5555555",
                     },
                 },
                 "mediapackage": {
@@ -201,59 +200,56 @@ class CleanAwsElementalStackCommandTest(TestCase):
         with mock.patch.object(
             clean_aws_elemental_stack,
             "generate_expired_date",
-            return_value=expiration_date,
+            return_value=datetime(2022, 11, 1, 15, 00, tzinfo=timezone.utc),
         ), mock.patch.object(
             clean_aws_elemental_stack, "list_medialive_channels"
         ) as list_medialive_channels_mock, mock.patch.object(
-            clean_aws_elemental_stack, "delete_aws_element_stack"
-        ) as delete_aws_element_stack_mock, mock.patch.object(
-            clean_aws_elemental_stack, "delete_mediapackage_channel"
-        ) as delete_mediapackage_channel_mock:
+            clean_aws_elemental_stack, "delete_medialive_stack"
+        ) as delete_medialive_stack_mock:
+            # live 4
+            live4_do_delete = {
+                "Id": "4444444",
+                "Name": f"test_{live4_id}_1667490961",
+                "Tags": {"environment": "test"},
+                "State": "IDLE",
+            }
+            # live 5
+            live5_to_delete = {
+                "Id": "5555555",
+                "Name": f"test_{live5_id}_1667490961",
+                "Tags": {"environment": "test"},
+                "State": "IDLE",
+            }
             list_medialive_channels_mock.return_value = [
                 # medialive channels not in the same AWS_BASE_NAME environment
                 {
+                    "Id": "111111",
                     "Name": f"foo_{uuid.uuid4()}_1667490961",
                     "Tags": {"environment": "foo"},
                     "State": "IDLE",
                 },
                 # live 2
                 {
+                    "Id": "2222222",
                     "Name": f"test_{live2_id}_1667490961",
                     "Tags": {"environment": "test"},
                     "State": "RUNNING",
                 },
                 # live 3
                 {
+                    "Id": "3333333",
                     "Name": f"test_{live3_id}_1667490961",
                     "Tags": {"environment": "test"},
                     "State": "IDLE",
                 },
-                # live 4
-                {
-                    "Name": f"test_{live4_id}_1667490961",
-                    "Tags": {"environment": "test"},
-                    "State": "IDLE",
-                },
-                # live 5
-                {
-                    "Name": f"test_{live5_id}_1667490961",
-                    "Tags": {"environment": "test"},
-                    "State": "IDLE",
-                },
+                live4_do_delete,
+                live5_to_delete,
             ]
 
             call_command("clean_aws_elemental_stack", stdout=out)
-            delete_aws_element_stack_mock.assert_any_call(live4)
-            delete_aws_element_stack_mock.assert_any_call(live5)
-            self.assertEqual(delete_aws_element_stack_mock.call_count, 2)
-
-            delete_mediapackage_channel_mock.assert_any_call(
-                live4.get_mediapackage_channel().get("id")
-            )
-            delete_mediapackage_channel_mock.assert_any_call(
-                live5.get_mediapackage_channel().get("id")
-            )
-            self.assertEqual(delete_mediapackage_channel_mock.call_count, 2)
+            delete_medialive_stack_mock.assert_any_call(live4_do_delete, mock.ANY)
+            delete_medialive_stack_mock.assert_any_call(live5_to_delete, mock.ANY)
+            self.assertEqual(delete_medialive_stack_mock.call_count, 2)
 
             self.assertNotIn(f"Checking video {live1.id}", out.getvalue())
             self.assertNotIn(f"Checking video {live2.id}", out.getvalue())
@@ -303,3 +299,124 @@ class CleanAwsElementalStackCommandTest(TestCase):
             )
 
         out.close()
+
+    def test_clean_aws_elemental_stack_with_live_referenced_by_two_medialive_channels(
+        self,
+    ):
+        """
+        When list_medialive_channels contains medialive channels pointing to the
+        same live, the command should delete channels not referenced by the live.
+        """
+
+        # Create live
+        live_id = uuid.uuid4()
+        live = VideoFactory(
+            id=live_id,
+            live_state=STOPPED,
+            live_type=JITSI,
+            live_info={
+                "medialive": {
+                    "channel": {"id": "Channel2_Id"},
+                    "endpoints": {
+                        "hls": {
+                            "id": f"test_{live_id}_1667490961_hls",
+                            "url": (
+                                "https://xxx.medialive.eu-west-1.amazonaws.com/out/v1/xxx/"
+                                f"test_{live_id}_1667490961_hls.m3u8"
+                            ),
+                        }
+                    },
+                },
+                "mediapackage": {
+                    "channel": {"id": f"test_{live_id}_1667490961"},
+                    "endpoints": {
+                        "hls": {
+                            "id": f"test_{live_id}_1667490961_hls",
+                            "url": (
+                                "https://xxx.mediapackage.eu-west-1.amazonaws.com/out/v1/xxx/"
+                                f"test_{live_id}_1667490961_hls.m3u8"
+                            ),
+                        }
+                    },
+                },
+                "started_at": time_utils.to_timestamp(
+                    datetime(2022, 10, 14, 13, 25, tzinfo=timezone.utc)
+                ),
+                "stopped_at": time_utils.to_timestamp(
+                    datetime(2022, 10, 14, 15, 25, tzinfo=timezone.utc)
+                ),
+            },
+        )
+
+        # Run command
+        out = StringIO()
+        with mock.patch.object(
+            clean_aws_elemental_stack, "list_medialive_channels"
+        ) as list_medialive_channels_mock, mock.patch.object(
+            clean_aws_elemental_stack, "delete_medialive_stack"
+        ) as delete_medialive_stack_mock:
+            live_to_delete = {
+                "Name": f"test_{live_id}_1667490961",
+                "Tags": {"environment": "test"},
+                "State": "IDLE",
+                "Id": "99d60314-20f2-4847-84a4-d2f47bf7fe38",
+                "InputAttachments": [
+                    {
+                        "InputId": "99d60314-20f2-4847-84a4-d2f47bf7fe38",
+                    }
+                ],
+            }
+            list_medialive_channels_mock.return_value = [
+                live_to_delete,
+            ]
+
+            call_command("clean_aws_elemental_stack", stdout=out)
+            delete_medialive_stack_mock.assert_any_call(live_to_delete, mock.ANY)
+            self.assertEqual(delete_medialive_stack_mock.call_count, 1)
+
+            self.assertIn(f"Checking video {live.id}", out.getvalue())
+            self.assertIn(
+                f"The video {live.id} is not attached to the channel {live_to_delete['Name']}",
+                out.getvalue(),
+            )
+
+        out.close()
+
+    def test_clean_aws_elemental_stack_with_medialive_channel_with_no_live_attached_to_channel(
+        self,
+    ):
+        """
+        When list_medialive_channels has a channel with no live corresponding to it,
+        the command should delete this channel by calling delete_medialive_stack.
+        """
+
+        # Run command
+        out = StringIO()
+        with mock.patch.object(
+            clean_aws_elemental_stack, "list_medialive_channels"
+        ) as list_medialive_channels_mock, mock.patch.object(
+            clean_aws_elemental_stack, "delete_medialive_stack"
+        ) as delete_medialive_stack_mock:
+            live_to_delete = {
+                "Name": "test_99d60314-20f2-4847-84a4-d2f47bf7fe38_1667490961",
+                "Tags": {"environment": "test"},
+                "State": "IDLE",
+                "Id": "99d60314-20f2-4847-84a4-d2f47bf7fe38",
+                "InputAttachments": [
+                    {
+                        "InputId": "99d60314-20f2-4847-84a4-d2f47bf7fe38",
+                    }
+                ],
+            }
+            list_medialive_channels_mock.return_value = [
+                live_to_delete,
+            ]
+
+            call_command("clean_aws_elemental_stack", stdout=out)
+            delete_medialive_stack_mock.assert_any_call(live_to_delete, mock.ANY)
+            self.assertEqual(delete_medialive_stack_mock.call_count, 1)
+            self.assertIn(
+                "Channel test_99d60314-20f2-4847-84a4-d2f47bf7fe38_1667490961 is attached "
+                "to a video 99d60314-20f2-4847-84a4-d2f47bf7fe38 that does not exist\n",
+                out.getvalue(),
+            )

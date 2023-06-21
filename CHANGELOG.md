@@ -23,6 +23,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Fixed
 
 - Upgrade logging-ldp to be compatible with logging-gelf
+- clean_aws_elemental_stack command removes unreferenced medialive stacks
 
 ## [4.2.0] - 2023-06-15
 
