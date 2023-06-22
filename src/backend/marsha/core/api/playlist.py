@@ -3,12 +3,13 @@ from django.db.models import Q
 from django.db.models.deletion import ProtectedError
 
 import django_filters
-from rest_framework import filters, viewsets
+from rest_framework import filters, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .. import permissions, serializers
-from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist
+from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist, PlaylistAccess
 from .base import APIViewMixin, ObjectPkMixin
 
 
@@ -72,6 +73,8 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
                     & permissions.IsTokenResourceRouteObjectRelatedPlaylist
                 )
             ]
+        elif self.action in ["claim"]:
+            permission_classes = [permissions.IsOrganizationInstructor]
         elif self.action in ["create"]:
             permission_classes = [permissions.IsParamsOrganizationInstructorOrAdmin]
         elif self.action in ["partial_update", "update"]:
@@ -134,3 +137,26 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             return super().destroy(request, *args, **kwargs)
         except ProtectedError:
             return Response("Resources are still attached to playlist", status=400)
+
+    @action(detail=True, methods=["post"])
+    # pylint: disable=unused-argument
+    def claim(self, request, *args, **kwargs):
+        """Claim a playlist by creating a PlaylistAccess."""
+        playlist = self.get_object()
+        playlist_access_exists = PlaylistAccess.objects.filter(
+            playlist=playlist,
+        ).exists()
+        PlaylistAccess.objects.get_or_create(
+            playlist=playlist,
+            user_id=request.user.id,
+            defaults={
+                "role": INSTRUCTOR if playlist_access_exists else ADMINISTRATOR,
+            },
+        )
+
+        # should we set playlist organization to user organization?
+        # should we set playlist consumer_site to user consumer_site through user_association ?
+        # should we set playlist created_by to user ?
+
+        serializer = self.get_serializer(playlist)
+        return Response(serializer.data)

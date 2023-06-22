@@ -6,7 +6,7 @@ from django.core.exceptions import ImproperlyConfigured
 from rest_framework import permissions
 
 from .. import models
-from ..models.account import ADMINISTRATOR
+from ..models.account import ADMINISTRATOR, INSTRUCTOR
 from .base import (
     HasAdminOrInstructorRoleMixIn,
     HasAdminRoleMixIn,
@@ -127,6 +127,31 @@ class IsParamsPlaylistAdminThroughOrganization(permissions.BasePermission):
         return models.OrganizationAccess.objects.filter(
             role=ADMINISTRATOR,
             organization__playlists__id=playlist_id,
+            user__id=request.user.id,
+        ).exists()
+
+
+class IsOrganizationInstructor(permissions.BasePermission):
+    """
+    Allow a request to proceed. Permission class.
+
+    Permission to allow a request to proceed only if the user is organization instructor.
+    """
+
+    def has_permission(self, request, view):
+        """
+        Allow the request.
+
+        Allow the request only if the playlist from the params of body of the request exists
+        and the current logged-in user is one of the instructors of its parent organization.
+        """
+        try:
+            uuid.UUID(request.user.id)
+        except (ValueError, TypeError):
+            return False
+
+        return models.OrganizationAccess.objects.filter(
+            role=INSTRUCTOR,
             user__id=request.user.id,
         ).exists()
 
