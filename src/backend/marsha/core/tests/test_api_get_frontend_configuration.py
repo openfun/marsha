@@ -11,9 +11,9 @@ from marsha.core.factories import SiteConfigFactory
     SENTRY_DSN="https://sentry.dsn",
     ENVIRONMENT="development",
     RELEASE="1.2.3",
-    P2P_LIVE_ENABLED=True,
-    P2P_LIVE_STUN_SERVER_URLS=["stun:stun.l.google.com:19302"],
-    P2P_LIVE_WEB_TORRENT_TRACKER_URLS=["wss://tracker.webtorrent.io"],
+    P2P_ENABLED=True,
+    P2P_STUN_SERVER_URLS=["stun:stun.l.google.com:19302"],
+    P2P_WEB_TORRENT_TRACKER_URLS=["wss://tracker.webtorrent.io"],
 )
 class TestGetFrontendConfiguration(TestCase):
     """Test the get_frontend_configuration API."""

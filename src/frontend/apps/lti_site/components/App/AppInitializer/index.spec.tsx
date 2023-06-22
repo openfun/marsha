@@ -34,9 +34,9 @@ jest.mock('lib-components', () => ({
     document: { id: 'my-document-id' },
     attendanceDelay: 6,
     p2p: {
-      live_enabled: true,
-      live_stun_server_urls: ['stun.example.com'],
-      live_web_torrent_tracker_urls: ['tracker.example.com'],
+      isEnabled: true,
+      stunServerUrls: ['stun.example.com'],
+      webTorrentTrackerUrls: ['tracker.example.com'],
     },
   }),
   decodeJwt: () => ({
