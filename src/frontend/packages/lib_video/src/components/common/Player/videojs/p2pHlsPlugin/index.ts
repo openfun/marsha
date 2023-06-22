@@ -1,5 +1,5 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
-import { useP2PLiveConfig } from 'lib-components';
+import { useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
 import videojs, { VideoJsPlayer } from 'video.js';
 
@@ -25,7 +25,7 @@ const Plugin = videojs.getPlugin('plugin');
 export class P2pHlsPlugin extends Plugin {
   constructor(player: videojs.Player, options: unknown) {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
-      useP2PLiveConfig.getState();
+      useP2PConfig.getState();
 
     videojsHlsjsSourceHandler.register(videojs);
 

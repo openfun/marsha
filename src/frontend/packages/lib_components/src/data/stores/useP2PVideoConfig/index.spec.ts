@@ -1,21 +1,19 @@
-import { useP2PLiveConfig } from '.';
+import { useP2PConfig } from '.';
 
-describe('useP2PLiveConfig', () => {
+describe('useP2PConfig', () => {
   it('checks state', () => {
-    expect(useP2PLiveConfig.getState().isP2PEnabled).toBeFalsy();
-    expect(useP2PLiveConfig.getState().stunServersUrls.length).toBeFalsy();
+    expect(useP2PConfig.getState().isP2PEnabled).toBeFalsy();
+    expect(useP2PConfig.getState().stunServersUrls.length).toBeFalsy();
     expect(
-      useP2PLiveConfig.getState().webTorrentServerTrackerUrls.length,
+      useP2PConfig.getState().webTorrentServerTrackerUrls.length,
     ).toBeFalsy();
 
-    useP2PLiveConfig
-      .getState()
-      .setP2PLiveConfig(true, ['stun'], ['webtracker']);
+    useP2PConfig.getState().setP2PConfig(true, ['stun'], ['webtracker']);
 
-    expect(useP2PLiveConfig.getState().isP2PEnabled).toBeTruthy();
-    expect(useP2PLiveConfig.getState().stunServersUrls.length).toBeTruthy();
+    expect(useP2PConfig.getState().isP2PEnabled).toBeTruthy();
+    expect(useP2PConfig.getState().stunServersUrls.length).toBeTruthy();
     expect(
-      useP2PLiveConfig.getState().webTorrentServerTrackerUrls.length,
+      useP2PConfig.getState().webTorrentServerTrackerUrls.length,
     ).toBeTruthy();
   });
 });

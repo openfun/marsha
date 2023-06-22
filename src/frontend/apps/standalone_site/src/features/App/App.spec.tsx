@@ -48,9 +48,9 @@ const frontendConfiguration: ConfigResponse = {
   sentry_dsn: null,
   inactive_resources: [],
   p2p: {
-    live_enabled: false,
-    live_stun_server_urls: [],
-    live_web_torrent_tracker_urls: [],
+    isEnabled: false,
+    stunServerUrls: [],
+    webTorrentTrackerUrls: [],
   },
 };
 

@@ -18,7 +18,7 @@ import {
   VideoXAPIStatementInterface,
   XAPIStatement,
   useVideo,
-  useP2PLiveConfig,
+  useP2PConfig,
 } from 'lib-components';
 import videojs, {
   VideoJsPlayer,
@@ -52,10 +52,10 @@ export const createVideojsPlayer = (
   const { jwt } = useJwt.getState();
   const videoState = useVideo.getState();
   let lastReceivedVideo: Id3VideoType;
-  const { isP2PEnabled: isLiveP2PEnabled } = useP2PLiveConfig.getState();
+  const { isP2PEnabled } = useP2PConfig.getState();
   // This property should be deleted once the feature has been
   // deployed, tested and approved in a production environment
-  const isLiveP2pQueryEnabled = new URLSearchParams(window.location.search).has(
+  const isP2pQueryEnabled = new URLSearchParams(window.location.search).has(
     'p2p',
   );
 
@@ -160,7 +160,7 @@ export const createVideojsPlayer = (
   });
 
   if (isMSESupported()) {
-    if (isLiveP2pQueryEnabled && isLiveP2PEnabled) {
+    if (isP2pQueryEnabled && isP2PEnabled) {
       player.p2pHlsPlugin();
     }
     player.httpSourceSelector();

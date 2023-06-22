@@ -8,7 +8,7 @@ import {
   useThumbnail,
   useSharedLiveMedia,
   useDocument,
-  useP2PLiveConfig,
+  useP2PConfig,
 } from 'lib-components';
 import { useAttendance } from 'lib-video';
 import React from 'react';
@@ -48,9 +48,9 @@ describe('<AppInitializer />', () => {
   it('initializes stores before render content', async () => {
     useSentry.setState({ setSentry: ()=> useSentry.setState({ isSentryReady: true }) });
 
-    expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(false);
-    expect(useP2PLiveConfig.getState().stunServersUrls).toEqual([]);
-    expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
+    expect(useP2PConfig.getState().isP2PEnabled).toEqual(false);
+    expect(useP2PConfig.getState().stunServersUrls).toEqual([]);
+    expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
     expect(useSentry.getState().isSentryReady).toEqual(false);
     expect(useVideo.getState().videos).toEqual({});
     expect(useTimedTextTrack.getState().timedtexttracks).toEqual({});
@@ -70,9 +70,9 @@ describe('<AppInitializer />', () => {
 
     await screen.findByText('some cool content');
 
-    expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(true);
-    expect(useP2PLiveConfig.getState().stunServersUrls).toEqual(['stun.example.com']);
-    expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([
+    expect(useP2PConfig.getState().isP2PEnabled).toEqual(true);
+    expect(useP2PConfig.getState().stunServersUrls).toEqual(['stun.example.com']);
+    expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([
       'tracker.example.com',
     ])
     expect(useSentry.getState().isSentryReady).toEqual(true);

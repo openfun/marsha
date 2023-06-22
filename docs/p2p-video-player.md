@@ -44,7 +44,7 @@ By default, the library uses public server. In the "recent" version of Chrome ([
 
 Moreover public servers support a limited number of peers and can reject connections or even go down on a heavy loads.
 
-Therefore, we have to provide our WebTorrent tracker and STUN server. In our settings, we have a setting for each server urls: `P2P_LIVE_STUN_SERVER_URLS` and `P2P_LIVE_WEB_TORRENT_TRACKER_URLS` that will be given to our configuration and used by our frontend. Speaking of settings, we also have `P2P_LIVE_ENABLED` if we want to enable / disable the feature in case of a problem.
+Therefore, we have to provide our WebTorrent tracker and STUN server. In our settings, we have a setting for each server urls: `P2P_STUN_SERVER_URLS` and `P2P_WEB_TORRENT_TRACKER_URLS` that will be given to our configuration and used by our frontend. Speaking of settings, we also have `P2P_ENABLED` if we want to enable / disable the feature in case of a problem.
 
 
 ## Integration

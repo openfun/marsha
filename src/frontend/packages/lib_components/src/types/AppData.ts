@@ -101,9 +101,9 @@ export interface AppConfig {
   dashboardCollapsed?: boolean;
   // P2P Live configuration
   p2p: {
-    live_enabled: boolean;
-    live_web_torrent_tracker_urls: string[];
-    live_stun_server_urls: string[];
+    isEnabled: boolean;
+    webTorrentTrackerUrls: string[];
+    stunServerUrls: string[];
   };
 }
 

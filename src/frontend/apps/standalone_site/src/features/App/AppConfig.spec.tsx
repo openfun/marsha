@@ -1,6 +1,6 @@
 import { waitFor, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useP2PLiveConfig, useSentry } from 'lib-components';
+import { useP2PConfig, useSentry } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -26,9 +26,9 @@ const config: ConfigResponse = {
   sentry_dsn: 'some dsn',
   inactive_resources: [],
   p2p: {
-    live_enabled: false,
-    live_stun_server_urls: [],
-    live_web_torrent_tracker_urls: [],
+    isEnabled: false,
+    stunServerUrls: [],
+    webTorrentTrackerUrls: [],
   },
 };
 
@@ -37,7 +37,7 @@ describe('AppConfig', () => {
     useSentry.setState({
       isSentryReady: false,
     });
-    useP2PLiveConfig.setState({
+    useP2PConfig.setState({
       isP2PEnabled: false,
       stunServersUrls: [],
       webTorrentServerTrackerUrls: [],
@@ -77,31 +77,31 @@ describe('AppConfig', () => {
     deferredConfig.resolve({
       ...config,
       p2p: {
-        live_enabled: true,
-        live_stun_server_urls: ['https://stun.example.com'],
-        live_web_torrent_tracker_urls: ['https://tracker.example.com'],
+        isEnabled: true,
+        stunServerUrls: ['https://stun.example.com'],
+        webTorrentTrackerUrls: ['https://tracker.example.com'],
       },
     });
 
-    expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(false);
-    expect(useP2PLiveConfig.getState().stunServersUrls).toEqual([]);
-    expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
+    expect(useP2PConfig.getState().isP2PEnabled).toEqual(false);
+    expect(useP2PConfig.getState().stunServersUrls).toEqual([]);
+    expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
 
     render(<AppConfig />);
 
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
-      expect(useP2PLiveConfig.getState().isP2PEnabled).toEqual(true);
+      expect(useP2PConfig.getState().isP2PEnabled).toEqual(true);
     });
 
     await waitFor(() => {
-      expect(useP2PLiveConfig.getState().stunServersUrls).toEqual([
+      expect(useP2PConfig.getState().stunServersUrls).toEqual([
         'https://stun.example.com',
       ]);
     });
 
     await waitFor(() => {
-      expect(useP2PLiveConfig.getState().webTorrentServerTrackerUrls).toEqual([
+      expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([
         'https://tracker.example.com',
       ]);
     });

@@ -1,21 +1,21 @@
 import { create } from 'zustand';
 
-interface P2PLiveConfigStore {
+interface P2PConfigStore {
   isP2PEnabled: boolean;
   stunServersUrls: string[];
   webTorrentServerTrackerUrls: string[];
-  setP2PLiveConfig: (
+  setP2PConfig: (
     isP2PEnabled: boolean,
     stunServersUrls: string[],
     webTorrentServerTrackerUrls: string[],
   ) => void;
 }
 
-export const useP2PLiveConfig = create<P2PLiveConfigStore>((set) => ({
+export const useP2PConfig = create<P2PConfigStore>((set) => ({
   isP2PEnabled: false,
   stunServersUrls: [],
   webTorrentServerTrackerUrls: [],
-  setP2PLiveConfig: (
+  setP2PConfig: (
     isP2PEnabled,
     stunServersUrls,
     webTorrentServerTrackerUrls,

@@ -421,7 +421,10 @@ https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels
 - Required: No
 - Default: 4
 
-#### DJANGO_P2P_LIVE_ENABLED
+
+### P2P settings
+
+#### DJANGO_P2P_ENABLED
 
 A boolean indicating whether the P2P live feature is enabled or not.
 
@@ -429,7 +432,7 @@ A boolean indicating whether the P2P live feature is enabled or not.
 - Required: No
 - Default: False
 
-#### DJANGO_P2P_LIVE_STUN_SERVER_URLS
+#### DJANGO_P2P_STUN_SERVER_URLS
 
 A comma-separated list of STUN server URLs to use for P2P live.
 
@@ -437,7 +440,7 @@ A comma-separated list of STUN server URLs to use for P2P live.
 - Required: No
 - Default: []
 
-#### DJANGO_P2P_LIVE_WEB_TORRENT_TRACKER_URLS
+#### DJANGO_P2P_WEB_TORRENT_TRACKER_URLS
 
 A comma-separated list of web torrent tracker URLs to use for P2P live.
 

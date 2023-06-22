@@ -8,9 +8,9 @@ import { useQuery, UseQueryOptions } from 'react-query';
 
 export interface ConfigResponse {
   p2p: {
-    live_enabled: boolean;
-    live_web_torrent_tracker_urls: string[];
-    live_stun_server_urls: string[];
+    isEnabled: boolean;
+    webTorrentTrackerUrls: string[];
+    stunServerUrls: string[];
   };
   sentry_dsn: string | null;
   environment: string;
