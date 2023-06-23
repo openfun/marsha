@@ -24,6 +24,7 @@
   },
   "dependencies": {
     "@craco/craco": "7.1.0",
+    "@openfun/cunningham-react": "*",
     "grommet": "*",
     "grommet-icons": "4.11.0",
     "http-proxy-middleware": "2.0.6",

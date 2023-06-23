@@ -1,4 +1,5 @@
 import 'init';
+import 'lib-common/cunningham-style';
 import { serviceWorkerRegistration } from 'lib-components';
 import 'public-path';
 import { createRoot } from 'react-dom/client';
