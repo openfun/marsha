@@ -1,5 +1,6 @@
 import 'iframe-resizer/js/iframeResizer.contentWindow';
 
+import 'lib-common/cunningham-style';
 import { serviceWorkerRegistration } from 'lib-components';
 import { createRoot } from 'react-dom/client';
 

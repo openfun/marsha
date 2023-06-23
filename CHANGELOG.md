@@ -11,6 +11,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Added
 
 - Create a default playlist for new shibboleth user
+- Add Cunningham design system (#2297)
 - Lifecycle rule on source bucket to expire uploaded
   object after 21 days.
 - Add P2p feature on videojs player

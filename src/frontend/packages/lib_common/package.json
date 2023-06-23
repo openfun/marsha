@@ -4,13 +4,21 @@
   "license": "MIT",
   "main": "./src/index.ts",
   "types": "./src/index.ts",
+  "exports": {
+    ".": {
+      "default": "./src/index.ts"
+    },
+    "./cunningham-style": "./src/cunningham-style.css"
+  },
   "scripts": {
     "lint": "tsc --noEmit && eslint src/**/*.{ts,tsx}",
     "lint:fix": "yarn run lint --fix",
     "test": "cross-env TZ=UTC jest --passWithNoTests",
-    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore"
+    "prettier": "prettier --list-different '**/*.+(ts|tsx|json|js|jsx)' --ignore-path ../../../.prettierignore",
+    "build-theme": "cunningham -g css -o src"
   },
   "peerDependencies": {
+    "@openfun/cunningham-react": "*",
     "grommet": "*",
     "styled-components": "*",
     "react": "*",

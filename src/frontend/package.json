@@ -41,6 +41,7 @@
     "@codemirror/language-data": "6.3.1",
     "@codemirror/state": "6.2.1",
     "@codemirror/view": "6.15.3",
+    "@openfun/cunningham-react": "0.10.0",
     "@testing-library/jest-dom": "5.17.0",
     "@testing-library/react": "14.0.0",
     "@testing-library/user-event": "14.4.3",

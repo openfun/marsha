@@ -84,6 +84,7 @@
     "@converse/headless": "8.0.1",
     "@formatjs/intl-pluralrules": "5.2.4",
     "@formatjs/intl-relativetimeformat": "11.2.4",
+    "@openfun/cunningham-react": "*",
     "@sentry/browser": "7.60.1",
     "buffer": "6.0.3",
     "core-js": "3.32.0",
