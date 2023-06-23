@@ -38,9 +38,9 @@ class TestGetFrontendConfiguration(TestCase):
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
                 "p2p": {
-                    "live_enabled": True,
-                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
-                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
             },
         )
@@ -63,9 +63,9 @@ class TestGetFrontendConfiguration(TestCase):
                 "sentry_dsn": None,
                 "inactive_resources": [],
                 "p2p": {
-                    "live_enabled": True,
-                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
-                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
             },
         )
@@ -87,9 +87,9 @@ class TestGetFrontendConfiguration(TestCase):
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
                 "p2p": {
-                    "live_enabled": True,
-                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
-                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
             },
         )
@@ -112,9 +112,9 @@ class TestGetFrontendConfiguration(TestCase):
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": ["video"],
                 "p2p": {
-                    "live_enabled": True,
-                    "live_stun_server_urls": ["stun:stun.l.google.com:19302"],
-                    "live_web_torrent_tracker_urls": ["wss://tracker.webtorrent.io"],
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
             },
         )
