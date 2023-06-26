@@ -1,13 +1,13 @@
 import { Box } from 'grommet';
 import { Maybe, Nullable } from 'lib-common';
 import {
-  useThumbnail,
   TimedText,
-  timedTextMode,
   Video,
+  timedTextMode,
+  useThumbnail,
   videoSize,
 } from 'lib-components';
-import React, { useRef, useMemo, useEffect } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import { useIntl } from 'react-intl';
 import { useQueryClient } from 'react-query';
 
@@ -115,10 +115,10 @@ export const VideoPlayer = ({
   }, [setPlayerCurrentTime]);
 
   useEffect(() => {
-    if (video?.urls?.manifests && playerRef.current) {
+    if (video?.urls?.manifests?.hls && playerRef.current) {
       playerRef.current.setSource(video.urls.manifests.hls);
     }
-  }, [video?.urls?.manifests]);
+  }, [video?.urls?.manifests?.hls]);
 
   const oldTimedTextTracks = useRef(timedTextTracks);
   useEffect(() => {
