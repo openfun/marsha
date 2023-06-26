@@ -18,6 +18,10 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
   `DJANGO_STORAGES_STATICFILES_BACKEND`
 
+### Fixed
+
+- Video player reset when attributes update (#2300)
+
 ## [4.2.1] - 2023-06-20
 
 ### Fixed
@@ -34,7 +38,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Add a downloadable ICS file to scheduled student classrooms
 - frontend bulk delete for videos, webinars and classrooms
 - Can choose inactive resource by site (#2276)
-- Setting for instructor classroom invitation link expiration 
+- Setting for instructor classroom invitation link expiration
 - ClassroomRecording Delete API
   - delete BBB recordings
   - delete ClassroomsRecording
@@ -47,7 +51,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 
 - Restrict video list endpoint to organisation admin
   and playlist admin or instructor
-- Refacto classroom invite link. the invite token is saved in 
+- Refacto classroom invite link. the invite token is saved in
   the classroom model and no access token is generated in the serializer
 
 ### Fixed
@@ -56,7 +60,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Blacklist the refresh token on the frontend side (#2265)
 - Legale pages not accessible from url (#2266)
 - Remove old svg from the back to the front application (#1485)
-- Sync medialive command deletes medialive stack when video not found 
+- Sync medialive command deletes medialive stack when video not found
 
 ### Changed
 

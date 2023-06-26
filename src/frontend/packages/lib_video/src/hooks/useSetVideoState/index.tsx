@@ -1,14 +1,15 @@
 import { Nullable } from 'lib-common';
 import {
-  useVideo,
-  useTimedTextTrack,
-  useThumbnail,
-  useSharedLiveMedia,
   Video,
+  useSharedLiveMedia,
+  useThumbnail,
+  useTimedTextTrack,
+  useVideo,
 } from 'lib-components';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 
 export const useSetVideoState = (video?: Nullable<Video>) => {
+  const videoId = useRef<string>();
   const addVideo = useVideo((state) => state.addResource);
 
   const { addMultipleTimedTextTrack, resetTimedTextTrack } = useTimedTextTrack(
@@ -30,33 +31,49 @@ export const useSetVideoState = (video?: Nullable<Video>) => {
     }));
 
   useEffect(() => {
-    if (!video) {
+    if (!video?.id || videoId.current === video.id) {
       return;
     }
 
-    resetThumbnail();
-    resetSharedLiveMedia();
-    resetTimedTextTrack();
-
+    videoId.current = video.id;
     addVideo(video);
+  }, [addVideo, video?.id, video]);
 
-    if (video.thumbnail) {
+  useEffect(() => {
+    if (video?.thumbnail) {
       addThumbnail(video.thumbnail);
     }
-    if (video.timed_text_tracks && video.timed_text_tracks.length > 0) {
-      addMultipleTimedTextTrack(video.timed_text_tracks);
-    }
-    if (video.shared_live_medias && video.shared_live_medias.length > 0) {
+
+    return () => {
+      resetThumbnail();
+    };
+  }, [addThumbnail, resetThumbnail, video?.thumbnail]);
+
+  useEffect(() => {
+    if (video?.shared_live_medias && video.shared_live_medias.length > 0) {
       addMultipleSharedLiveMedia(video.shared_live_medias);
     }
+
+    return () => {
+      resetSharedLiveMedia();
+    };
+  }, [
+    addMultipleSharedLiveMedia,
+    resetSharedLiveMedia,
+    video?.shared_live_medias,
+  ]);
+
+  useEffect(() => {
+    if (video?.timed_text_tracks && video.timed_text_tracks.length > 0) {
+      addMultipleTimedTextTrack(video.timed_text_tracks);
+    }
+
+    return () => {
+      resetTimedTextTrack();
+    };
   }, [
     addMultipleTimedTextTrack,
-    addMultipleSharedLiveMedia,
-    addThumbnail,
-    addVideo,
-    resetSharedLiveMedia,
-    resetThumbnail,
     resetTimedTextTrack,
-    video,
+    video?.timed_text_tracks,
   ]);
 };
