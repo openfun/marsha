@@ -33,6 +33,7 @@ import {
   useIntl,
 } from 'react-intl';
 
+import { ClaimLink } from 'components/ClaimLink';
 import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';
 
@@ -105,7 +106,12 @@ const AppContent = () => {
     });
   }, [decodedJwt]);
 
-  return <Content />;
+  return (
+    <React.Fragment>
+      <ClaimLink decodedJwt={decodedJwt} />
+      <Content />
+    </React.Fragment>
+  );
 };
 
 const AppContentLoader = () => {

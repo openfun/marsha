@@ -75,6 +75,7 @@ export interface AppConfig {
   sentry_dsn: Nullable<string>;
   environment: string;
   frontend: string;
+  frontend_home_url?: string;
   release: string;
   static: {
     svg: {
