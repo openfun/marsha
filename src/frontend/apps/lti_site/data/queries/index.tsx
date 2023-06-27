@@ -85,6 +85,23 @@ export const useUpdatePlaylist = (
   });
 };
 
+type usePlaylistIsClaimedResponse = { is_claimed: boolean };
+export const usePlaylistIsClaimed = (
+  playlistId: string,
+  queryConfig?: UseQueryOptions<
+    usePlaylistIsClaimedResponse,
+    'playlists',
+    usePlaylistIsClaimedResponse
+  >,
+) => {
+  const key = ['playlists', playlistId, 'is-claimed'];
+  return useQuery<usePlaylistIsClaimedResponse, 'playlists'>(
+    key,
+    fetchOne,
+    queryConfig,
+  );
+};
+
 type PlaylistsResponse = APIList<Playlist>;
 type UsePlaylistsParams = { organization: Maybe<string> };
 export const usePlaylists = (

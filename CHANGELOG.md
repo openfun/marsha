@@ -28,6 +28,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Manage shibboleth config per site config
 - Add a shared media widget directly in the video player
 - Add a transcript plugin to the video player
+- Add a link to LTI resources to retrieve them in the standalone website
 
 ### Changed
 
