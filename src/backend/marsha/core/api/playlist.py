@@ -9,7 +9,14 @@ from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 
 from .. import permissions, serializers
-from ..models import ADMINISTRATOR, INSTRUCTOR, Playlist, PlaylistAccess
+from ..lti.user_association import clean_lti_user_id
+from ..models import (
+    ADMINISTRATOR,
+    INSTRUCTOR,
+    LtiUserAssociation,
+    Playlist,
+    PlaylistAccess,
+)
 from .base import APIViewMixin, ObjectPkMixin
 
 
@@ -75,6 +82,10 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
             ]
         elif self.action in ["claim"]:
             permission_classes = [permissions.IsOrganizationInstructor]
+        elif self.action in ["is_claimed"]:
+            permission_classes = [
+                permissions.IsTokenInstructor | permissions.IsTokenAdmin
+            ]
         elif self.action in ["create"]:
             permission_classes = [permissions.IsParamsOrganizationInstructorOrAdmin]
         elif self.action in ["partial_update", "update"]:
@@ -159,4 +170,32 @@ class PlaylistViewSet(APIViewMixin, ObjectPkMixin, viewsets.ModelViewSet):
         # should we set playlist created_by to user ?
 
         serializer = self.get_serializer(playlist)
-        return Response(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    @action(detail=True, methods=["get"], url_path="is-claimed")
+    # pylint: disable=unused-argument
+    def is_claimed(self, request, *args, **kwargs):
+        """Check if a playlist is claimed by an LTI user.
+        Only callable in LTI context."""
+        playlist = self.get_object()
+
+        try:
+            consumer_site = self.request.user.token.get("consumer_site")
+            lti_user_id = self.request.user.token.get("user").get("id")
+            user_id = LtiUserAssociation.objects.values_list("user_id", flat=True).get(
+                lti_user_id=clean_lti_user_id(lti_user_id),
+                consumer_site=consumer_site,
+            )
+
+            is_claimed = PlaylistAccess.objects.filter(
+                playlist=playlist,
+                user_id=str(user_id),
+            ).exists()
+        except (
+            AttributeError,
+            LtiUserAssociation.DoesNotExist,
+            PlaylistAccess.DoesNotExist,
+        ):
+            is_claimed = False
+
+        return Response({"is_claimed": is_claimed})
