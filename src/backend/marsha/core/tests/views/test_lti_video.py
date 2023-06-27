@@ -58,6 +58,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
     @override_settings(RELEASE="1.2.3")
     @override_settings(VIDEO_PLAYER="videojs")
     @override_settings(ATTENDANCE_PUSH_DELAY=10)
+    @override_settings(FRONTEND_HOME_URL="https://marsha.education")
     @override_switch(SENTRY, active=True)
     def test_views_lti_video_post_instructor(self, mock_get_consumer_site, mock_verify):
         """Validate the format of the response returned by the view for an instructor request."""
@@ -91,6 +92,7 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
         context = json.loads(unescape(match.group(1)))
         jwt_token = ResourceAccessToken(context.get("jwt"))
         ResourceRefreshToken(context.get("refresh_token"))  # Must not raise
+        self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
         self.assertEqual(jwt_token.payload["resource_id"], str(video.id))
         self.assertEqual(jwt_token.payload["context_id"], data["context_id"])
         self.assertEqual(
@@ -2028,6 +2030,35 @@ class VideoLTIViewTestCase(TestCase):  # pylint: disable=too-many-public-methods
             str(video.id),
         )
 
+    @mock.patch.object(LTI, "verify")
+    @mock.patch.object(LTI, "get_consumer_site")
+    @override_settings(FRONTEND_HOME_URL="https://marsha.education/")
+    def test_views_lti_video_normalize_frontend_home_url(
+        self, mock_get_consumer_site, mock_verify
+    ):
+        """Make sure the LTI Video view normalizes the FRONTEND_HOME_URL."""
+        passport = ConsumerSiteLTIPassportFactory()
+        video = VideoFactory(playlist__consumer_site=passport.consumer_site)
+
+        data = {
+            "resource_link_id": video.lti_id,
+            "context_id": video.playlist.lti_id,
+            "roles": "instructor",
+            "oauth_consumer_key": passport.oauth_consumer_key,
+        }
+        mock_get_consumer_site.return_value = passport.consumer_site
+
+        response = self.client.post(f"/lti/videos/{video.pk}", data)
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "<html>")
+        content = response.content.decode("utf-8")
+        match = re.search(
+            '<div id="marsha-frontend-data" data-context="(.*)">', content
+        )
+
+        context = json.loads(unescape(match.group(1)))
+        self.assertEqual(context.get("frontend_home_url"), "https://marsha.education")
+
 
 class VideoLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
     """Test the video LTI view for portability."""
@@ -2115,3 +2146,16 @@ class VideoLTIViewForPortabilityTestCase(BaseLTIViewForPortabilityTestCase):
 
         self.assertLTIViewReturnsNoResourceForStudent(video)
         self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(video)
+
+    @override_settings(FRONTEND_HOME_URL="https://marsha.education/")
+    def test_views_lti_video_portability_normalize_frontend_home_url(self):
+        """Make sure the LTI Video view normalizes the FRONTEND_HOME_URL."""
+        playlist_with_owner = PlaylistFactory(
+            created_by=UserFactory(),
+        )
+        video = UploadedVideoFactory(playlist=playlist_with_owner)
+
+        self.assertLTIViewReturnsNoResourceForStudent(video)
+        self.assertLTIViewReturnsPortabilityContextForAdminOrInstructor(
+            video, frontend_home_url="https://marsha.education"
+        )
