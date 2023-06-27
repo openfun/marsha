@@ -104,7 +104,9 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
             self.lti_user_id,
         )
 
-    def assertLTIViewReturnsPortabilityContextForAdminOrInstructor(self, resource):
+    def assertLTIViewReturnsPortabilityContextForAdminOrInstructor(
+        self, resource, frontend_home_url="http://localhost:3000"
+    ):
         """Assert the LTI view returns the portability context for an admin or an instructor."""
         lti_role = random.choice((INSTRUCTOR, ADMINISTRATOR))
 
@@ -119,10 +121,13 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
         self.assertEqual(
             context["portability"]["for_playlist_id"], str(resource.playlist.id)
         )
+        self.assertEqual(context["frontend_home_url"], frontend_home_url)
 
         # Test user association token
         parsed_redirect_to_url = urlparse(context["portability"]["redirect_to"])
-        self.assertEqual(parsed_redirect_to_url.netloc, "localhost:3000")
+        self.assertEqual(
+            parsed_redirect_to_url.netloc, urlparse(frontend_home_url).netloc
+        )
         self.assertEqual(parsed_redirect_to_url.path, "/portability-requests/pending/")
 
         association_token_str = parse_qs(parsed_redirect_to_url.query)[
@@ -169,7 +174,9 @@ class BaseLTIViewForPortabilityTestCase(TestCase):
 
         # Test user association token is not present
         parsed_redirect_to_url = urlparse(context["portability"]["redirect_to"])
-        self.assertEqual(parsed_redirect_to_url.netloc, "localhost:3000")
+        self.assertEqual(
+            parsed_redirect_to_url.netloc, urlparse(frontend_home_url).netloc
+        )
         self.assertEqual(parsed_redirect_to_url.path, "/portability-requests/pending/")
 
         self.assertFalse("association_jwt" in parse_qs(parsed_redirect_to_url.query))

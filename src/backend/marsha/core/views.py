@@ -453,6 +453,10 @@ class BaseLTIView(BaseModelResourceView, ABC):
         permissions = {"can_access_dashboard": False, "can_update": False}
         session_id = str(uuid.uuid4())
 
+        frontend_home_url = settings.FRONTEND_HOME_URL
+        if frontend_home_url.endswith("/"):
+            frontend_home_url = frontend_home_url[:-1]
+
         if app_data is None:
             is_instructor_or_admin = self.lti.is_instructor or self.lti.is_admin
 
@@ -508,6 +512,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
                 jwt_token = refresh_token.access_token
                 app_data["jwt"] = str(jwt_token)
                 app_data["refresh_token"] = str(refresh_token)
+                app_data["frontend_home_url"] = frontend_home_url
                 return app_data
 
             permissions = {
@@ -538,6 +543,7 @@ class BaseLTIView(BaseModelResourceView, ABC):
             jwt_token = refresh_token.access_token
             app_data["jwt"] = str(jwt_token)
             app_data["refresh_token"] = str(refresh_token)
+            app_data["frontend_home_url"] = frontend_home_url
 
         return app_data
 
