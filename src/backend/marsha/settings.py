@@ -228,7 +228,7 @@ class Base(Configuration):
             ),
             "classroom_invite_token": values.Value(
                 "500/minute",
-                environ_name="RESTE_FRAMEWORK_CLASSROOM_INVITE_TOKEN_THROTTLE_RATE",
+                environ_name="REST_FRAMEWORK_CLASSROOM_INVITE_TOKEN_THROTTLE_RATE",
             ),
         },
         "DEFAULT_SCHEMA_CLASS": "marsha.core.api.schema.MarshaAutoSchema",
