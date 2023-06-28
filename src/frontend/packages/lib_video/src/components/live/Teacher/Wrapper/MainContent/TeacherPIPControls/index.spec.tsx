@@ -1,17 +1,25 @@
 import { screen } from '@testing-library/react';
-import { useJwt, videoMockFactory, uploadState } from 'lib-components';
+import { uploadState, useJwt, videoMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 
+import {
+  SharedMediaCurrentPageProvider,
+  useSharedMediaCurrentPage,
+} from '@lib-video/hooks/useSharedMediaCurrentPage';
 import { wrapInVideo } from '@lib-video/utils/wrapInVideo';
 
 import { TeacherPIPControls } from '.';
 
-const mockCurrentPage = 1;
-const mockSetSharedCurrentPage = jest.fn();
-jest.mock('hooks/useSharedMediaCurrentPage', () => ({
-  useSharedMediaCurrentPage: () => [mockCurrentPage, mockSetSharedCurrentPage],
-}));
+const ComponentsTest = () => {
+  const [shareMedia] = useSharedMediaCurrentPage();
+
+  return (
+    <div>
+      <div>My page:{shareMedia.page}</div>
+      <div>My image:{shareMedia.imageUrl}</div>
+    </div>
+  );
+};
 
 describe('<TeacherPIPControls />', () => {
   beforeEach(() => {
@@ -26,16 +34,37 @@ describe('<TeacherPIPControls />', () => {
 
   it('renders both buttons', () => {
     const video = videoMockFactory();
+    video.active_shared_live_media_page = 5;
 
-    render(wrapInVideo(<TeacherPIPControls maxPage={4} />, video));
+    render(
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{
+            page: 1,
+            imageUrl: 'https://example.com/sharedLiveMedia/1',
+          }}
+        >
+          <TeacherPIPControls maxPage={4} />
+          <ComponentsTest />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
+    );
 
-    screen.getByRole('button', { name: 'Next page' });
-    screen.getByRole('button', { name: 'Previous page' });
-
-    expect(mockSetSharedCurrentPage).not.toHaveBeenCalled();
+    expect(
+      screen.getByRole('button', { name: 'Next page' }),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByRole('button', { name: 'Previous page' }),
+    ).toBeInTheDocument();
+    expect(screen.getByText('My page:1')).toBeInTheDocument();
+    expect(
+      screen.getByText('My image:https://example.com/sharedLiveMedia/1'),
+    ).toBeInTheDocument();
+    expect(screen.queryByText('My page:5')).not.toBeInTheDocument();
   });
 
-  it('updates the current page on video change', () => {
+  it('updates the current page on video change', async () => {
     let video = videoMockFactory();
     video = {
       ...video,
@@ -54,11 +83,22 @@ describe('<TeacherPIPControls />', () => {
       },
     };
 
-    render(wrapInVideo(<TeacherPIPControls maxPage={4} />, video));
+    render(
+      wrapInVideo(
+        <SharedMediaCurrentPageProvider
+          value={{
+            page: 1,
+            imageUrl: 'https://example.com/sharedLiveMedia/1',
+          }}
+        >
+          <TeacherPIPControls maxPage={4} />
+          <ComponentsTest />
+        </SharedMediaCurrentPageProvider>,
+        video,
+      ),
+    );
 
-    expect(mockSetSharedCurrentPage).toHaveBeenCalledWith({
-      page: 3,
-      imageUrl: 'my_thirdt_page.svg',
-    });
+    expect(await screen.findByText('My page:3')).toBeInTheDocument();
+    expect(screen.getByText('My image:my_thirdt_page.svg')).toBeInTheDocument();
   });
 });

@@ -7,10 +7,11 @@ import {
   isDecodedJwtLTI,
   isDecodedJwtWeb,
   ResourceContext,
+  useCurrentResourceContext,
   useJwt,
   useResponsive,
 } from 'lib-components';
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 
@@ -72,53 +73,68 @@ const DashboardClassroomStyled = styled(Box)<DashboardClassroomStyledProps>`
 
 const ClassRoomUpdate = () => {
   const { classroomId } = useParams();
-  const { isSmallerBreakpoint, breakpoint } = useResponsive();
 
   const internalDecodedJwt = useJwt((state) => state.internalDecodedJwt);
-  const permissions = useMemo(() => {
-    const permissions = {
+  const resourceContext: ResourceContext = useMemo(() => {
+    let permissions = {
       can_access_dashboard: false,
       can_update: false,
     };
 
-    if (!internalDecodedJwt) {
-      return permissions;
-    }
-
     if (isDecodedJwtLTI(internalDecodedJwt)) {
-      return internalDecodedJwt.permissions;
+      permissions = internalDecodedJwt.permissions;
     } else if (isDecodedJwtWeb(internalDecodedJwt)) {
-      return {
+      permissions = {
         can_access_dashboard: true,
         can_update: true,
       };
     }
 
-    return permissions;
-  }, [internalDecodedJwt]);
-
-  if (!classroomId) {
-    return null;
-  }
-
-  const resourceContext: ResourceContext = {
-    resource_id: classroomId,
-    roles: [],
-    permissions: permissions,
-    isFromWebsite: true,
-  };
+    return {
+      resource_id: classroomId || '',
+      roles: [],
+      permissions,
+      isFromWebsite: true,
+    };
+  }, [classroomId, internalDecodedJwt]);
 
   return (
     <AppConfigProvider value={appConfig}>
       <CurrentResourceContextProvider value={resourceContext}>
-        <DashboardClassroomStyled
-          isSmallerBreakpoint={isSmallerBreakpoint}
-          breakpoint={breakpoint}
-        >
-          <DashboardClassroom classroomId={classroomId} />
-        </DashboardClassroomStyled>
+        {classroomId && (
+          <ClassRoomDashboard
+            classroomId={classroomId}
+            resourceContext={resourceContext}
+          />
+        )}
       </CurrentResourceContextProvider>
     </AppConfigProvider>
+  );
+};
+
+interface ClassRoomUpdateProps {
+  classroomId: string;
+  resourceContext: ResourceContext;
+}
+
+const ClassRoomDashboard = ({
+  classroomId,
+  resourceContext,
+}: ClassRoomUpdateProps) => {
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
+  const [, setCurrentRessourceContext] = useCurrentResourceContext();
+
+  useEffect(() => {
+    setCurrentRessourceContext(resourceContext);
+  }, [resourceContext, setCurrentRessourceContext]);
+
+  return (
+    <DashboardClassroomStyled
+      isSmallerBreakpoint={isSmallerBreakpoint}
+      breakpoint={breakpoint}
+    >
+      <DashboardClassroom classroomId={classroomId} />
+    </DashboardClassroomStyled>
   );
 };
 
