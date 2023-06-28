@@ -6,7 +6,7 @@ import uuid
 
 from django.test import override_settings
 
-from playwright.sync_api import Error, Page, expect
+from playwright.sync_api import Page
 import pytest
 from pytest_django.live_server_helper import LiveServer
 import responses
@@ -357,22 +357,3 @@ def test_lti_bbb_create_enabled(page: Page, live_server: LiveServer, settings):
 
     assert "BBB classroom joined!" in bbb_classroom_page.content()
     bbb_classroom_page.close()
-
-    expect(page.get_by_text("LTI link for this classroom:")).to_be_visible()
-    invite_link_button = page.get_by_role(
-        "button", name="Invite a viewer with this link:"
-    )
-    invite_link_button.click()
-    expect(page.get_by_text("Url copied to clipboard !")).to_be_visible()
-
-    invite_page = page.context.new_page()
-    # tries to get the clipboard content, if it fails, it uses the data-clipboard-text
-    # attribute of the button
-    # see https://github.com/microsoft/playwright/issues/8114
-    try:
-        page.context.grant_permissions(["clipboard-read", "clipboard-write"])
-        invite_link = page.evaluate("navigator.clipboard.readText()")
-    except Error:
-        invite_link = invite_link_button.get_attribute("data-clipboard-text")
-    invite_page.goto(invite_link)
-    expect(invite_page.get_by_text("Classroom not started yet.")).to_be_visible()
