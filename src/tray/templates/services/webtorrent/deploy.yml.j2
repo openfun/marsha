@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  labels:
+    app: marsha
+    service: webtorrent
+    version: "{{ marsha_webtorrent_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: "marsha-webtorrent-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: marsha
+      service: webtorrent
+      version: "{{ marsha_webtorrent_image_tag }}"
+      deployment: "marsha-webtorrent-{{ deployment_stamp }}"
+      deployment_stamp: "{{ deployment_stamp }}"
+  template:
+    metadata:
+      labels:
+        app: marsha
+        service: webtorrent
+        version: "{{ marsha_webtorrent_image_tag }}"
+        deployment: "marsha-webtorrent-{{ deployment_stamp }}"
+        deployment_stamp: "{{ deployment_stamp }}"
+    spec:
+{% set image_pull_secret_name = marsha_webtorrent_image_pull_secret_name | default(none) or default_image_pull_secret_name %}
+{% if image_pull_secret_name is not none %}
+      imagePullSecrets:
+        - name: "{{ image_pull_secret_name }}"
+{% endif %}
+      containers:
+        - image: "{{ marsha_webtorrent_image_name }}:{{ marsha_webtorrent_image_tag }}"
+          name: nginx
+          env:
+            - name: APP_PORT
+              value: "{{ marsha_webtorrent_port }}"
+          envFrom:
+            - secretRef:
+                name: "{{ marsha_webtorrent_secret_name }}"
+      securityContext:
+        runAsUser: {{ container_uid }}
+        runAsGroup: {{ container_gid }}

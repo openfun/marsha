@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: Deployment
+metadata:
+  labels:
+    app: marsha
+    service: webtorrent-nginx
+    version: "{{ marsha_webtorrent_nginx_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+spec:
+  replicas: {{ marsha_webtorrent_nginx_replicas }}
+  selector:
+    matchLabels:
+      app: marsha
+      service: webtorrent-nginx
+      version: "{{ marsha_webtorrent_nginx_image_tag }}"
+      deployment: "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+      deployment_stamp: "{{ deployment_stamp }}"
+  template:
+    metadata:
+      labels:
+        app: marsha
+        service: webtorrent-nginx
+        version: "{{ marsha_webtorrent_nginx_image_tag }}"
+        deployment: "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+        deployment_stamp: "{{ deployment_stamp }}"
+    spec:
+      # Prefer running pods on different nodes for redundancy
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - weight: 100
+            podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: deployment
+                  operator: In
+                  values:
+                  - "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+              topologyKey: kubernetes.io/hostname
+{% set image_pull_secret_name = marsha_webtorrent_nginx_image_pull_secret_name | default(none) or default_image_pull_secret_name %}
+{% if image_pull_secret_name is not none %}
+      imagePullSecrets:
+        - name: "{{ image_pull_secret_name }}"
+{% endif %}
+      containers:
+        - image: "{{ marsha_webtorrent_nginx_image_name }}:{{ marsha_webtorrent_nginx_image_tag }}"
+          name: nginx
+          ports:
+            - containerPort: 80
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /etc/nginx/conf.d
+              name: marsha-v-webtorrent-nginx
+              readOnly: true
+          livenessProbe:
+            httpGet:
+              path: "{{ marsha_webtorrent_nginx_healthcheck_endpoint }}"
+              port: {{ marsha_webtorrent_nginx_healthcheck_port }}
+            initialDelaySeconds: 60
+            periodSeconds: 30
+          readinessProbe:
+            httpGet:
+              path: "{{ marsha_webtorrent_nginx_healthcheck_endpoint }}"
+              port: {{ marsha_webtorrent_nginx_healthcheck_port }}
+            initialDelaySeconds: 10
+            periodSeconds: 5
+          resources: {{ marsha_webtorrent_nginx_resources }}
+      securityContext:
+        runAsUser: {{ container_uid }}
+        runAsGroup: {{ container_gid }}
+      volumes:
+        - name: marsha-v-webtorrent-nginx
+          configMap:
+            name: marsha-webtorrent-nginx-{{ deployment_stamp }}
