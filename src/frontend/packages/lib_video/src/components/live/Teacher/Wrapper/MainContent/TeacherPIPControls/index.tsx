@@ -32,8 +32,7 @@ export const TeacherPIPControls = ({ maxPage }: TeacherPIPControlsProps) => {
   useEffect(() => {
     if (
       video.active_shared_live_media_page &&
-      video.active_shared_live_media &&
-      video.active_shared_live_media.urls
+      video.active_shared_live_media?.urls
     ) {
       setSharedMediaCurrentPage({
         page: video.active_shared_live_media_page,
@@ -43,7 +42,11 @@ export const TeacherPIPControls = ({ maxPage }: TeacherPIPControlsProps) => {
           ],
       });
     }
-  }, [setSharedMediaCurrentPage, video]);
+  }, [
+    setSharedMediaCurrentPage,
+    video.active_shared_live_media_page,
+    video.active_shared_live_media?.urls,
+  ]);
 
   return (
     <Box

@@ -1,12 +1,7 @@
 import { screen } from '@testing-library/react';
 import { ResponsiveContext } from 'grommet';
-import {
-  ltiPublicTokenMockFactory,
-  ResourceContext,
-  useJwt,
-} from 'lib-components';
+import { ltiPublicTokenMockFactory, useJwt } from 'lib-components';
 import { render } from 'lib-tests';
-import React from 'react';
 import { useParams } from 'react-router-dom';
 
 import { getFullThemeExtend } from 'styles/theme.extend';
@@ -15,19 +10,10 @@ import ClassRoomUpdate from './ClassRoomUpdate';
 
 const fullTheme = getFullThemeExtend();
 
-let resourceContextSpy: ResourceContext;
+const mockSetCurrentRessourceContext = jest.fn();
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),
-  CurrentResourceContextProvider: ({
-    value,
-    children,
-  }: {
-    value: ResourceContext;
-    children: React.ReactNode;
-  }) => {
-    resourceContextSpy = value;
-    return <div>{children}</div>;
-  },
+  useCurrentResourceContext: () => [, mockSetCurrentRessourceContext],
 }));
 
 jest.mock('react-router-dom', () => ({
@@ -98,8 +84,15 @@ describe('<ClassRoomUpdate />', () => {
     render(<ClassRoomUpdate />);
 
     expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
-    expect(resourceContextSpy.permissions.can_access_dashboard).toBeFalsy();
-    expect(resourceContextSpy.permissions.can_update).toBeFalsy();
+    expect(mockSetCurrentRessourceContext).toHaveBeenCalledWith({
+      isFromWebsite: true,
+      permissions: {
+        can_access_dashboard: false,
+        can_update: false,
+      },
+      resource_id: '123456',
+      roles: [],
+    });
   });
 
   test('ressource if moderator invited', () => {
@@ -114,7 +107,14 @@ describe('<ClassRoomUpdate />', () => {
     render(<ClassRoomUpdate />);
 
     expect(screen.getByText(/My DashboardClassroom/i)).toBeInTheDocument();
-    expect(resourceContextSpy.permissions.can_access_dashboard).toBeTruthy();
-    expect(resourceContextSpy.permissions.can_update).toBeTruthy();
+    expect(mockSetCurrentRessourceContext).toHaveBeenCalledWith({
+      isFromWebsite: true,
+      permissions: {
+        can_access_dashboard: true,
+        can_update: true,
+      },
+      resource_id: '123456',
+      roles: [],
+    });
   });
 });
