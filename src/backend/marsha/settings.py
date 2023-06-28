@@ -863,6 +863,8 @@ class Development(Base):
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
 
+    # P2P
+    P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue(["ws://localhost:8080"])
     # Development tools
     INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
 
