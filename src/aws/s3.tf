@@ -24,6 +24,24 @@ resource "aws_s3_bucket_acl" "marsha_source_acl" {
   acl    = "private"
 }
 
+resource "aws_s3_bucket_lifecycle_configuration" "marsha_source_lifecycle_configuration" {
+  bucket = aws_s3_bucket.marsha_source.id
+
+  rule {
+    id = "marsha-source-expiration-rule"
+    # Apply to all objects in the bucket
+    filter {}
+
+    # A created object will expire after 3 weeks
+    expiration {
+      days = 21
+    } 
+
+    # This rule is enabled
+    status = "Enabled"
+  }
+}
+
 # Create destination S3 Bucket for converted videos and images
 resource "aws_s3_bucket" "marsha_destination" {
   bucket = "${terraform.workspace}-marsha-destination${var.s3_bucket_unique_suffix}"
