@@ -2,7 +2,6 @@ import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
 import { ReactComponent as HomeIcon } from 'assets/svg/iko_homesvg.svg';
-import { ReactComponent as StarIcon } from 'assets/svg/iko_starsvg.svg';
 import { ReactComponent as VueListIcon } from 'assets/svg/iko_vuelistesvg.svg';
 import { LoadSVG } from 'components/Assets';
 
@@ -11,11 +10,6 @@ const messages = defineMessages({
     defaultMessage: 'Dashboard',
     description: 'Label for the homepage link in the main navigation menu',
     id: 'routes.routes.menuHomePageLabel',
-  },
-  menuFavoritesLabel: {
-    defaultMessage: 'Favorites',
-    description: 'Label for the favorites link in the main navigation menu',
-    id: 'routes.routes.menuFavoritesLabel',
   },
   menuMyProfileLabel: {
     defaultMessage: 'My Profile',
@@ -37,7 +31,6 @@ const messages = defineMessages({
 
 enum ERouteNames {
   HOMEPAGE = 'HOMEPAGE',
-  FAVORITE = 'FAVORITE',
   PORTABILITY_REQUESTS = 'PORTABILITY_REQUESTS',
   PROFILE = 'PROFILE',
 
@@ -89,17 +82,6 @@ export const routes: MainRoutes = {
         Icon={HomeIcon}
         aria-label="svg-menu-homepage"
         title={messages.menuHomePageLabel}
-      />
-    ),
-  },
-  FAVORITE: {
-    label: <FormattedMessage {...messages.menuFavoritesLabel} />,
-    path: `/favorites`,
-    menuIcon: (
-      <LoadSVG
-        Icon={StarIcon}
-        aria-label="svg-menu-favorites"
-        title={messages.menuFavoritesLabel}
       />
     ),
   },
