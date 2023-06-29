@@ -73,6 +73,8 @@ resource "aws_s3_bucket_acl" "marsha_destination_acl" {
 resource "aws_s3_bucket" "marsha_static" {
   bucket = "${terraform.workspace}-marsha-static${var.s3_bucket_unique_suffix}"
 
+  force_destroy = true
+
   tags = {
     Name        = "marsha-static"
     Environment = terraform.workspace
