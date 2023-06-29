@@ -24,7 +24,7 @@ describe('<MenuItem />', () => {
     const { unmount } = render(
       <Fragment>
         <MenuItem route={routes.HOMEPAGE} />
-        <MenuItem route={routes.FAVORITE} />
+        <MenuItem route={routes.PROFILE} />
       </Fragment>,
       {
         routerOptions: {
@@ -38,7 +38,7 @@ describe('<MenuItem />', () => {
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
     expect(
-      screen.getByRole('menuitem', { name: /Favorites/i }),
+      screen.getByRole('menuitem', { name: /My Profile/i }),
     ).not.toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
@@ -48,12 +48,12 @@ describe('<MenuItem />', () => {
     render(
       <Fragment>
         <MenuItem route={routes.HOMEPAGE} />
-        <MenuItem route={routes.FAVORITE} />
+        <MenuItem route={routes.PROFILE} />
       </Fragment>,
       {
         routerOptions: {
-          componentPath: routes.FAVORITE.path,
-          history: [routes.FAVORITE.path],
+          componentPath: routes.PROFILE.path,
+          history: [routes.PROFILE.path],
         },
       },
     );
@@ -63,7 +63,7 @@ describe('<MenuItem />', () => {
     ).not.toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
-    expect(screen.getByRole('menuitem', { name: /Favorites/i })).toHaveStyle({
+    expect(screen.getByRole('menuitem', { name: /My Profile/i })).toHaveStyle({
       backgroundColor: normalizeColor('bg-menu-hover', theme),
     });
   });
