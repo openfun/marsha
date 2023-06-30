@@ -1,4 +1,4 @@
-FROM busybox as mediainfo
+FROM alpine as mediainfo
 
 ARG MEDIAINFO_VERSION=20.09
 
