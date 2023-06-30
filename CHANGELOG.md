@@ -17,6 +17,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Upgrade to django 4.2
 - `DJANGO_STATICFILES_STORAGE` environment variable is replaced by
   `DJANGO_STORAGES_STATICFILES_BACKEND`
+- Use alpine for installing mediainfo in lambda docker images
 
 ### Fixed
 
