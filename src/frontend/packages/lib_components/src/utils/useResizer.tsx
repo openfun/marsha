@@ -74,8 +74,7 @@ export const useResizer = (
 
                 const newPanelWidthPx =
                   containerElement.offsetWidth -
-                  containerElement.offsetLeft -
-                  moveEvent.clientX;
+                  (moveEvent.clientX - containerElement.offsetLeft);
                 const newValue = computeWidth(newPanelWidthPx);
                 if (newValue) {
                   setPanelWidthPx(newValue);
