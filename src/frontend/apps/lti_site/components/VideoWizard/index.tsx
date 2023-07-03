@@ -80,7 +80,7 @@ const VideoWizard = () => {
           }
         />
         <Route
-          path={''}
+          path={'*'}
           element={
             <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
               <Box

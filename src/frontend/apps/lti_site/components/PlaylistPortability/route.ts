@@ -8,6 +8,7 @@ import { modelName } from 'lib-components';
 export const PLAYLIST_ROUTE = {
   base: 'playlist',
   all: `playlist/*`,
+  default: '/playlist/:objectType',
   objectType: ':objectType',
   videos: modelName.VIDEOS,
   documents: modelName.DOCUMENTS,
