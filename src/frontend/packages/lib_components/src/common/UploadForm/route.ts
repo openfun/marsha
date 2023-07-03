@@ -10,9 +10,7 @@ import { modelName } from '@lib-components/types/models';
 export const UPLOAD_FORM_ROUTE = {
   base: 'form',
   all: `form/*`,
-  objectType: ':objectType',
-  objectId: ':objectId',
-  ...modelName,
+  default: 'form/:objectType/:objectId',
 };
 
 export const builderUploadFormRoute = (

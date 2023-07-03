@@ -4,7 +4,10 @@ import { FormattedMessage, defineMessages } from 'react-intl';
 import { Link, Navigate } from 'react-router-dom';
 import styled from 'styled-components';
 
-import { FULL_SCREEN_ERROR_ROUTE } from '@lib-components/common/ErrorComponents/route';
+import {
+  FULL_SCREEN_ERROR_ROUTE,
+  builderFullScreenErrorRoute,
+} from '@lib-components/common/ErrorComponents/route';
 import { IframeHeading } from '@lib-components/common/Headings';
 import { LayoutMainArea } from '@lib-components/common/LayoutMainArea';
 import { Loader } from '@lib-components/common/Loader';
@@ -162,21 +165,23 @@ export const UploadForm = ({ objectId, objectType }: UploadFormProps) => {
     case UploadManagerStatus.ERR_POLICY:
       return (
         <Navigate
-          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.policy}`}
+          to={builderFullScreenErrorRoute(FULL_SCREEN_ERROR_ROUTE.codes.policy)}
         />
       );
 
     case UploadManagerStatus.ERR_SIZE:
       return (
         <Navigate
-          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.fileTooLarge}`}
+          to={builderFullScreenErrorRoute(
+            FULL_SCREEN_ERROR_ROUTE.codes.fileTooLarge,
+          )}
         />
       );
 
     case UploadManagerStatus.ERR_UPLOAD:
       return (
         <Navigate
-          to={`${FULL_SCREEN_ERROR_ROUTE.base}/${FULL_SCREEN_ERROR_ROUTE.codes.upload}`}
+          to={builderFullScreenErrorRoute(FULL_SCREEN_ERROR_ROUTE.codes.upload)}
         />
       );
 
