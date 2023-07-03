@@ -150,7 +150,7 @@ export const VideoLayout = ({
                         position: 'absolute',
                         top: '18px',
                         transform: 'rotate(180deg)',
-                        zIndex: 2,
+                        zIndex: 30,
                       }}
                     />
                   )}
