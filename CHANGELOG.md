@@ -14,6 +14,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Lifecycle rule on source bucket to expire uploaded
   object after 21 days.
 - Add P2p feature on videojs player
+- Webtorrent tracker for P2P video feature
 
 ### Changed
 

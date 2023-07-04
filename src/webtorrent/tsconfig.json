@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "nodenext",
+    "esModuleInterop": true,
+    "target": "es2021",
+    "moduleResolution": "nodenext",
+    "sourceMap": true,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "strictNullChecks": true,
+  },
+  "exclude": [
+    "test/**"
+  ],
+  "lib": ["es2021"]
+}

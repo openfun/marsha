@@ -70,7 +70,8 @@ bootstrap: \
 	i18n-compile-back \
 	install-mails \
 	build-mails \
-	prosody-admin
+	prosody-admin \
+	install-webtorrent
 .PHONY: bootstrap
 
 # -- Docker/compose
@@ -110,6 +111,7 @@ run: ## start the development server using Docker
 	@echo "Wait for postgresql to be up..."
 	@$(COMPOSE_RUN) dockerize -wait tcp://db:5432 -timeout 60s
 	@$(COMPOSE) up -d prosody-nginx
+	@$(COMPOSE) up -d webtorrent
 .PHONY: run
 
 shell:
@@ -301,6 +303,12 @@ clean-front: ## Clean front application
 	@$(MAKE) clean-front-modules
 	@$(MAKE) clean-front-libs
 .PHONY: clean-front
+
+## -- Webtorent
+
+install-webtorrent: ## Build node webtorrent dependencies
+	@$(COMPOSE_RUN) webtorrent yarn install
+.PHONY: install-webtorrent
 
 ## -- AWS
 
