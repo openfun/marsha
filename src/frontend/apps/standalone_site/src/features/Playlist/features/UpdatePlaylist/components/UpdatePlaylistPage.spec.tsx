@@ -14,6 +14,7 @@ const playlist = {
   retention_duration: 365,
   consumer_site: null,
   created_by: null,
+  created_on: '2021-03-18T14:00:00Z',
   duplicated_from: null,
   is_portable_to_playlist: false,
   is_portable_to_consumer_site: false,

@@ -71,6 +71,7 @@ export const playlistMockFactory = (
   return {
     consumer_site: consumerSiteMockFactory(),
     created_by: null,
+    created_on: faker.date.recent().toString(),
     duplicated_from: null,
     retention_duration: null,
     id: faker.datatype.uuid(),
