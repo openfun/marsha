@@ -22,6 +22,7 @@ class PlaylistSerializer(serializers.ModelSerializer):
         fields = [
             "consumer_site",
             "created_by",
+            "created_on",
             "duplicated_from",
             "id",
             "is_portable_to_playlist",

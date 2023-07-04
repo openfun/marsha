@@ -112,6 +112,9 @@ class PlaylistCreateAPITest(TestCase):
                     "name": consumer_site.name,
                 },
                 "created_by": str(user.id),
+                "created_on": created_playlist.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "duplicated_from": None,
                 "id": str(created_playlist.id),
                 "is_portable_to_playlist": False,
@@ -171,6 +174,9 @@ class PlaylistCreateAPITest(TestCase):
                     "name": consumer_site.name,
                 },
                 "created_by": str(user.id),
+                "created_on": created_playlist.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "duplicated_from": None,
                 "id": str(created_playlist.id),
                 "is_portable_to_playlist": False,
