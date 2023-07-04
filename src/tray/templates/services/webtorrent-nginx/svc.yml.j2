@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: marsha
+    service: webtorrent-nginx
+    version: "{{ marsha_webtorrent_nginx_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+  namespace: "{{ namespace_name }}"
+spec:
+  ports:
+    - name: {{ marsha_webtorrent_nginx_port }}-tcp
+      port: {{ marsha_webtorrent_nginx_port }}
+      protocol: TCP
+      targetPort: {{ marsha_nginx_port }}
+    - name: "{{ marsha_webtorrent_nginx_healthcheck_port }}-tcp"
+      port: {{ marsha_webtorrent_nginx_healthcheck_port }}
+      protocol: TCP
+      targetPort: {{ marsha_webtorrent_nginx_healthcheck_port }}
+  selector:
+    app: marsha
+    deployment: "marsha-webtorrent-nginx-{{ deployment_stamp }}"
+  type: ClusterIP

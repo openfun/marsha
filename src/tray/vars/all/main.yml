@@ -42,6 +42,23 @@ marsha_cloudfront_private_key_path: "/private/.ssh/aws/ssh-privatekey"
 marsha_should_sign_requests: true
 marsha_activate_http_basic_auth: false
 
+# -- marsha webtorrent
+
+marsha_webtorrent_image_name: "fundocker/marsha-webtorrent"
+marsha_webtorrent_image_tag: "development"
+marsha_webtorrent_port: 3000
+marsha_webtorrent_secret_name: "marsha-webtorrent-{{ marsha_vault_checksum | default('undefined_marsha_vault_checksum') }}"
+marsha_webtorrent_nginx_port: 8080
+marsha_webtorrent_nginx_image_name: "nginxinc/nginx-unprivileged"
+marsha_webtorrent_nginx_image_tag: "1.20"
+marsha_webtorrent_nginx_replicas: 1
+marsha_webtorrent_nginx_healthcheck_port: 5000
+marsha_webtorrent_nginx_healthcheck_endpoint: "/__healthcheck__"
+marsha_webtorrent_nginx_status_endpoint: "/__status__"
+marsha_webtorrent_ingress_class_name: "{{ default_ingress_class_name }}"
+marsha_webtorrent_host: "webtorrent.marsha.{{ namespace_name }}.{{ domain_name }}"
+
+
 # -- Cronjob pipeline
 
 # List of cronjob to add in marsha
@@ -78,6 +95,11 @@ marsha_app_job_db_migrate_resources:
     memory: 500Mi
 
 marsha_nginx_resources:
+  requests:
+    cpu: 10m
+    memory: 5Mi
+
+marsha_webtorrent_nginx_resources:
   requests:
     cpu: 10m
     memory: 5Mi
