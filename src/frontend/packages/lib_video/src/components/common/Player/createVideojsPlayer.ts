@@ -3,6 +3,7 @@ import 'video.js/dist/video-js.css';
 import 'videojs-contrib-quality-levels';
 import 'videojs-http-source-selector';
 import './videojs/qualitySelectorPlugin';
+import './videojs/p2pHlsPlugin';
 import { Maybe, Nullable } from 'lib-common';
 import {
   useCurrentSession,
@@ -17,6 +18,7 @@ import {
   VideoXAPIStatementInterface,
   XAPIStatement,
   useVideo,
+  useP2PConfig,
 } from 'lib-components';
 import videojs, {
   VideoJsPlayer,
@@ -50,6 +52,12 @@ export const createVideojsPlayer = (
   const { jwt } = useJwt.getState();
   const videoState = useVideo.getState();
   let lastReceivedVideo: Id3VideoType;
+  const { isP2PEnabled } = useP2PConfig.getState();
+  // This property should be deleted once the feature has been
+  // deployed, tested and approved in a production environment
+  const isP2pQueryEnabled = new URLSearchParams(window.location.search).has(
+    'p2p',
+  );
 
   if (!video.urls) {
     throw new Error('urls are not defined.');
@@ -152,6 +160,9 @@ export const createVideojsPlayer = (
   });
 
   if (isMSESupported()) {
+    if (isP2pQueryEnabled && isP2PEnabled) {
+      player.p2pHlsPlugin();
+    }
     player.httpSourceSelector();
     const qualityLevels = player.qualityLevels();
     qualityLevels.on('change', () => interacted(qualityLevels));

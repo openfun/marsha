@@ -7,6 +7,7 @@ import {
   useAppConfig,
   flags,
   DecodedJwtLTI,
+  useP2PConfig,
 } from 'lib-components';
 import { useAttendance, useSetVideoState } from 'lib-video';
 import React, {
@@ -34,6 +35,8 @@ export const AppInitializer = (
   const appConfig = useAppConfig();
   const jwt = useJwt((state) => state.getJwt());
   const setSentry = useSentry((state) => state.setSentry);
+  const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
+
   useSetVideoState(appConfig.video);
   const addDocument = useDocument((state) => state.addResource);
   const setAttendanceDelay = useAttendance((state) => state.setDelay);
@@ -66,6 +69,19 @@ export const AppInitializer = (
     appConfig.release,
     setSentry,
     isFeatureEnabled,
+  ]);
+
+  useEffect(() => {
+    setP2PConfig(
+      appConfig.p2p.isEnabled, 
+      appConfig.p2p.stunServerUrls, 
+      appConfig.p2p.webTorrentTrackerUrls
+    );
+  }, [
+    appConfig.p2p.isEnabled,
+    appConfig.p2p.stunServerUrls,
+    appConfig.p2p.webTorrentTrackerUrls,
+    setP2PConfig,
   ]);
 
   useEffect(() => {

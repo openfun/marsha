@@ -13,6 +13,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - Create a default playlist for new shibboleth user
 - Lifecycle rule on source bucket to expire uploaded
   object after 21 days.
+- Add P2p feature on videojs player
 
 ### Changed
 

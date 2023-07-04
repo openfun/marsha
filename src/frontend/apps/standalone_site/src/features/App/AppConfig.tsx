@@ -1,4 +1,4 @@
-import { useSentry } from 'lib-components';
+import { useP2PConfig, useSentry } from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
@@ -15,6 +15,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const [localCode, setLocalCode] = useState<string>();
   const [isDomReady, setIsDomReady] = useState(false);
   const setSentry = useSentry((state) => state.setSentry);
+  const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
   const { data: config } = useConfig({
     keepPreviousData: true,
     staleTime: Infinity,
@@ -65,8 +66,14 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
       );
     }
 
+    setP2PConfig(
+      config.p2p.isEnabled,
+      config.p2p.stunServerUrls,
+      config.p2p.webTorrentTrackerUrls,
+    );
+
     featureContentLoader(config.inactive_resources);
-  }, [setSentry, config]);
+  }, [setSentry, setP2PConfig, config]);
 
   if (!isConfigReady) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;

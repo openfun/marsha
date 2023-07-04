@@ -7,6 +7,11 @@ import {
 import { useQuery, UseQueryOptions } from 'react-query';
 
 export interface ConfigResponse {
+  p2p: {
+    isEnabled: boolean;
+    webTorrentTrackerUrls: string[];
+    stunServerUrls: string[];
+  };
   sentry_dsn: string | null;
   environment: string;
   release: string;

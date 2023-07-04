@@ -1,4 +1,5 @@
 import 'video.js';
+import { Engine } from 'p2p-media-loader-hlsjs';
 
 declare module 'video.js' {
   interface VideoJsPlayerOptions {
@@ -20,6 +21,10 @@ declare module 'video.js' {
     cache_: {
       initTime: number;
     };
+    // p2p-media-loader-hlsjs
+    config: { loader: { getEngine: () => Engine } };
+    media: { currentTime: number };
+    p2pHlsPlugin: () => void;
     // videojs-http-source-selector
     httpSourceSelector: () => void;
     qualitySelector: () => {
