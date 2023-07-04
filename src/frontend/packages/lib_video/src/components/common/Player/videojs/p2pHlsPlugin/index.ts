@@ -1,5 +1,5 @@
 import videojsHlsjsSourceHandler from '@streamroot/videojs-hlsjs-plugin';
-import { useP2PConfig } from 'lib-components';
+import { useJwt, useP2PConfig } from 'lib-components';
 import { Byterange, Engine } from 'p2p-media-loader-hlsjs';
 import videojs, { VideoJsPlayer } from 'video.js';
 
@@ -27,11 +27,19 @@ export class P2pHlsPlugin extends Plugin {
     const { stunServersUrls, webTorrentServerTrackerUrls } =
       useP2PConfig.getState();
 
+    const { jwt } = useJwt.getState();
+
     videojsHlsjsSourceHandler.register(videojs);
 
     const engine = new Engine({
       loader: {
-        trackerAnnounce: webTorrentServerTrackerUrls,
+        trackerAnnounce: webTorrentServerTrackerUrls.map((url) => {
+          const parsedUrl = new URL(url);
+          if (jwt) {
+            parsedUrl.searchParams.append('token', jwt);
+          }
+          return parsedUrl.toString();
+        }),
         rtcConfig: {
           iceServers: stunServersUrls.map((url) => ({ urls: `stun:${url}` })),
         },
