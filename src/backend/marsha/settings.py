@@ -4,7 +4,7 @@ Uses django-configurations to manage environments inheritance and the loading of
 config from the environment
 
 """
-# pylint: disable=abstract-class-instantiated
+# pylint: disable=abstract-class-instantiated,too-many-lines
 
 from datetime import timedelta
 import json
@@ -867,6 +867,9 @@ class Development(Base):
     CLOUDFRONT_SIGNED_URLS_ACTIVE = values.BooleanValue(False)
     CACHES = {"default": {"BACKEND": "django.core.cache.backends.dummy.DummyCache"}}
     STAT_BACKEND = values.Value("marsha.core.stats.dummy_backend")
+
+    # P2P
+    P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue(["ws://localhost:8080"])
 
     # Development tools
     INSTALLED_APPS = Base.INSTALLED_APPS + ["marsha.development.apps.DevelopmentConfig"]
