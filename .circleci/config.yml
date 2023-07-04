@@ -1333,6 +1333,123 @@ jobs:
             arnold -d -c marsha -e ci -a marsha deploy
             kubectl -n ci-marsha get pods -l app=marsha | grep Running
 
+  # ---- webtorrent jobs ----
+  webtorrent:
+    docker:
+      - image: cimg/node:18.16
+        auth:
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
+    working_directory: ~/marsha/src/webtorrent
+    steps:
+      - checkout:
+          path: ~/marsha
+      - run:
+          name: Install node dependencies
+          command: yarn install --frozen-lockfile
+      - run:
+          name: Check yarn.lock is up to date
+          command: yarn check --integrity
+      - run:
+          name: Lint webtorrent project
+          command: yarn lint
+      - run:
+          name: Test webtorrent project
+          command: yarn test
+
+  webtorrent-docker:
+    docker:
+      - image: cimg/base:2022.04
+        auth:
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
+    working_directory: ~/marsha
+    steps:
+      # Checkout repository sources
+      - checkout
+      # Activate docker-in-docker
+      - setup_remote_docker:
+          version: 20.10.11
+          docker_layer_caching: true
+      - *docker_login
+      - run:
+          name: Build production image
+          command: |
+            export DOCKER_BUILDKIT=1
+            docker build .\
+              -f docker/images/webtorrent/Dockerfile \
+              -t marsha/webtorrent:${CIRCLE_SHA1}
+      - run:
+          name: Check built image availability
+          command: docker images "marsha/webtorrent:${CIRCLE_SHA1}*"
+
+  hub-webtorrent:
+    docker:
+      - image: cimg/base:2022.04
+        auth:
+          username: $DOCKER_HUB_USER
+          password: $DOCKER_HUB_PASS
+    working_directory: ~/marsha
+    steps:
+      # Checkout repository sources
+      - checkout
+      # Activate docker-in-docker
+      - setup_remote_docker:
+          version: 20.10.11
+          docker_layer_caching: true
+      - *docker_login
+      - run:
+          name: Build production image
+          command: |
+            export DOCKER_BUILDKIT=1
+            docker build .\
+              -f docker/images/webtorrent/Dockerfile \
+              -t marsha/webtorrent:${CIRCLE_SHA1} \
+      - run:
+          name: Check built image availability
+          command: docker images "marsha/webtorrent:${CIRCLE_SHA1}*"
+
+      # Tag docker images with the same pattern used in Git (Semantic Versioning)
+      #
+      # Git tag: v1.0.1
+      # Docker tag: 1.0.1(-dev)
+      - run:
+          name: Tag images
+          command: |
+            docker images fundocker/marsha-webtorrent
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
+            docker tag marsha/webtorrent:${CIRCLE_SHA1} fundocker/marsha-webtorrent:${DOCKER_TAG}
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              docker tag marsha/webtorrent:${CIRCLE_SHA1} fundocker/marsha-webtorrent:latest
+            fi
+            docker images | grep -E "^fundocker/marsha-webtorrent\s*(${DOCKER_TAG}.*|latest|master)"
+
+      # Publish images to DockerHub
+      #
+      # Nota bene: logged user (see "Login to DockerHub" step) must have write
+      # permission for the project's repository; this also implies that the
+      # DockerHub repository already exists.
+      - run:
+          name: Publish images
+          command: |
+            DOCKER_TAG=$([[ -z "$CIRCLE_TAG" ]] && echo $CIRCLE_BRANCH || echo ${CIRCLE_TAG} | sed 's/^v//')
+            RELEASE_TYPE=$([[ -z "$CIRCLE_TAG" ]] && echo "branch" || echo "tag ")
+            # Display either:
+            # - DOCKER_TAG: master (Git branch)
+            # or
+            # - DOCKER_TAG: 1.1.2 (Git tag v1.1.2)
+            echo "DOCKER_TAG: ${DOCKER_TAG} (Git ${RELEASE_TYPE}${CIRCLE_TAG})"
+            docker push fundocker/marsha-webtorrent:${DOCKER_TAG}
+            if [[ -n "$CIRCLE_TAG" ]]; then
+              docker push fundocker/marsha-webtorrent:latest
+            fi
+
 workflows:
   version: 2
 
@@ -1392,6 +1509,12 @@ workflows:
             tags:
               only: /.*/
       - test-website:
+          requires:
+            - install-front-dependencies
+          filters:
+            tags:
+              only: /.*/
+      - webtorrent:
           requires:
             - install-front-dependencies
           filters:
@@ -1478,6 +1601,10 @@ workflows:
           filters:
             tags:
               only: /.*/
+      - webtorrent-docker:
+          filters:
+            tags:
+              only: /.*/
       - build-back:
           filters:
             tags:
@@ -1559,6 +1686,15 @@ workflows:
       - hub-ffmpeg-transmux:
           requires:
             - build-ffmpeg-transmux-docker
+          filters:
+            branches:
+              only: master
+            tags:
+              only: /^v.*/
+
+      - hub-webtorrent:
+          requires:
+            - webtorrent-docker
           filters:
             branches:
               only: master
