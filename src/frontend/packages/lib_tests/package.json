@@ -64,7 +64,7 @@
     "react-query": "3.39.3",
     "react-router-dom": "*",
     "source-map-loader": "4.0.1",
-    "styled-components": "6.0.2",
+    "styled-components": "5.3.11",
     "typescript": "*",
     "xhr-mock": "2.5.1"
   },
