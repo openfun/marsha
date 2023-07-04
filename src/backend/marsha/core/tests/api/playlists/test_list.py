@@ -86,6 +86,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_2.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_2.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_2.id),
                     "is_portable_to_consumer_site": False,
@@ -109,6 +112,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_1.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_1.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
                     "is_portable_to_consumer_site": False,
@@ -184,6 +190,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_1.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_1.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
                     "is_portable_to_consumer_site": False,
@@ -268,6 +277,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_5.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_5.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_5.id),
                     "is_portable_to_consumer_site": False,
@@ -288,6 +300,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_4.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_4.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_4.id),
                     "is_portable_to_consumer_site": False,
@@ -308,6 +323,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_3.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_3.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_3.id),
                     "is_portable_to_consumer_site": False,
@@ -331,6 +349,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_1.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_1.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
                     "is_portable_to_consumer_site": False,
@@ -448,6 +469,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_1.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_1.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_1.id),
                     "is_portable_to_consumer_site": False,
@@ -471,6 +495,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_3.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_3.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_3.id),
                     "is_portable_to_consumer_site": False,
@@ -494,6 +521,9 @@ class PlaylistListAPITest(TestCase):
                         "name": playlist_4.consumer_site.name,
                     },
                     "created_by": None,
+                    "created_on": playlist_4.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "duplicated_from": None,
                     "id": str(playlist_4.id),
                     "is_portable_to_consumer_site": False,
