@@ -421,6 +421,33 @@ https://docs.aws.amazon.com/medialive/latest/apireference/channels.html#channels
 - Required: No
 - Default: 4
 
+
+### P2P settings
+
+#### DJANGO_P2P_ENABLED
+
+A boolean indicating whether the P2P live feature is enabled or not.
+
+- Type: boolean
+- Required: No
+- Default: False
+
+#### DJANGO_P2P_STUN_SERVER_URLS
+
+A comma-separated list of STUN server URLs to use for P2P live.
+
+- Type: comma-separated list of strings <br> ⚠️ *ITEMS MUST NOT INCLUDE ANY COMMAS* as commas are used to separated items.
+- Required: No
+- Default: []
+
+#### DJANGO_P2P_WEB_TORRENT_TRACKER_URLS
+
+A comma-separated list of web torrent tracker URLs to use for P2P live.
+
+- Type: comma-separated list of strings <br> ⚠️ *ITEMS MUST NOT INCLUDE ANY COMMAS* as commas are used to separated items.
+- Required: No
+- Default: []
+
 ### Grafana settings
 
 Graphana is a web-based analytics tool for monitoring and visualizing metrics.

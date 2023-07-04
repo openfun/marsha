@@ -99,6 +99,12 @@ export interface AppConfig {
   uploadPollInterval: number;
   portability?: PortabilityConfig;
   dashboardCollapsed?: boolean;
+  // P2P Live configuration
+  p2p: {
+    isEnabled: boolean;
+    webTorrentTrackerUrls: string[];
+    stunServerUrls: string[];
+  };
 }
 
 export interface AuthenticatedUser {

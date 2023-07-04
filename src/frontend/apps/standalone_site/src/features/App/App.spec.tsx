@@ -47,6 +47,11 @@ const frontendConfiguration: ConfigResponse = {
   release: 'some release',
   sentry_dsn: null,
   inactive_resources: [],
+  p2p: {
+    isEnabled: false,
+    stunServerUrls: [],
+    webTorrentTrackerUrls: [],
+  },
 };
 
 describe('<App />', () => {

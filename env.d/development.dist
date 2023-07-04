@@ -71,3 +71,8 @@ CROWDIN_BASE_PATH=/app/src
 
 # REMINDERS
 REMINDERS_SECRET="Marsha"
+
+# P2P
+DJANGO_P2P_ENABLED=True
+DJANGO_P2P_STUN_SERVER_URLS=stun1.l.google.com:19302,stun2.l.google.com:19302,stun3.l.google.com:19302,stun4.l.google.com:19302
+DJANGO_P2P_WEB_TORRENT_TRACKER_URLS=wss://tracker.openwebtorrent.com,wss://tracker.btorrent.xyz,wss://tracker.fastcast.nz

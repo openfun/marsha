@@ -242,6 +242,11 @@ def get_frontend_configuration(request):
             "environment": settings.ENVIRONMENT,
             "release": settings.RELEASE,
             "sentry_dsn": settings.SENTRY_DSN if switch_is_active(SENTRY) else None,
+            "p2p": {
+                "isEnabled": settings.P2P_ENABLED,
+                "webTorrentTrackerUrls": settings.P2P_WEB_TORRENT_TRACKER_URLS,
+                "stunServerUrls": settings.P2P_STUN_SERVER_URLS,
+            },
             "inactive_resources": inactive_resources,
         }
     )

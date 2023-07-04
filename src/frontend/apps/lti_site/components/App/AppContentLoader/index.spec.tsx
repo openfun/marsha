@@ -61,6 +61,11 @@ describe('<AppContentLoader />', () => {
             },
           },
           uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          }
         }}
       >
         <AppContentLoader />
@@ -111,6 +116,11 @@ describe('<AppContentLoader />', () => {
             },
           },
           uploadPollInterval: 10,
+          p2p: {
+            isEnabled: false,
+            stunServerUrls: [],
+            webTorrentTrackerUrls: [],
+          }
         }}
       >
         <AppContentLoader />

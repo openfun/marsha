@@ -4,6 +4,7 @@ const {
   alias,
   appModuleNameMapper,
 } = require('marsha-config');
+const webpack = require('webpack');
 
 /**
  * Craco (Create React App Configuration Override) helps us to configure the webpack of our CRA without ejecting.
@@ -28,6 +29,14 @@ module.exports = {
       }
       return webpackConfig;
     },
+    plugins: {
+      add: [
+        new webpack.ProvidePlugin({
+          Buffer: ['buffer', 'Buffer'],
+          process: 'process/browser.js',
+        }),
+      ]
+    }
   },
   jest: {
     configure: {

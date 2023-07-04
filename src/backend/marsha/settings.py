@@ -474,6 +474,11 @@ class Base(Configuration):
     LIVE_FRAMERATE_DENOMINATOR = values.PositiveIntegerValue(1000)
     LIVE_GOP_SIZE = values.FloatValue(4)
 
+    # P2P SETTINGS
+    P2P_ENABLED = values.BooleanValue(False)
+    P2P_STUN_SERVER_URLS = values.ListValue([])
+    P2P_WEB_TORRENT_TRACKER_URLS = values.ListValue([])
+
     # JITSI SETTINGS
     JITSI_EXTERNAL_API_URL = values.Value("https://meet.jit.si/external_api.js")
     JITSI_DOMAIN = values.Value("meet.jit.si")

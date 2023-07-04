@@ -1,6 +1,6 @@
 import { waitFor, screen, act } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useSentry } from 'lib-components';
+import { useP2PConfig, useSentry } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -25,12 +25,22 @@ const config: ConfigResponse = {
   release: 'some release',
   sentry_dsn: 'some dsn',
   inactive_resources: [],
+  p2p: {
+    isEnabled: false,
+    stunServerUrls: [],
+    webTorrentTrackerUrls: [],
+  },
 };
 
 describe('AppConfig', () => {
   beforeEach(() => {
     useSentry.setState({
       isSentryReady: false,
+    });
+    useP2PConfig.setState({
+      isP2PEnabled: false,
+      stunServersUrls: [],
+      webTorrentServerTrackerUrls: [],
     });
     useContentFeatures.setState({
       featureRouter: [],
@@ -60,6 +70,40 @@ describe('AppConfig', () => {
     expect(fetchMock.called('/api/config/')).toBe(true);
     await waitFor(() => {
       expect(useSentry.getState().isSentryReady).toEqual(true);
+    });
+  });
+
+  it('should init p2p live config', async () => {
+    deferredConfig.resolve({
+      ...config,
+      p2p: {
+        isEnabled: true,
+        stunServerUrls: ['https://stun.example.com'],
+        webTorrentTrackerUrls: ['https://tracker.example.com'],
+      },
+    });
+
+    expect(useP2PConfig.getState().isP2PEnabled).toEqual(false);
+    expect(useP2PConfig.getState().stunServersUrls).toEqual([]);
+    expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([]);
+
+    render(<AppConfig />);
+
+    expect(fetchMock.called('/api/config/')).toBe(true);
+    await waitFor(() => {
+      expect(useP2PConfig.getState().isP2PEnabled).toEqual(true);
+    });
+
+    await waitFor(() => {
+      expect(useP2PConfig.getState().stunServersUrls).toEqual([
+        'https://stun.example.com',
+      ]);
+    });
+
+    await waitFor(() => {
+      expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([
+        'https://tracker.example.com',
+      ]);
     });
   });
 
