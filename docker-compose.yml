@@ -46,6 +46,18 @@ services:
     stdin_open: true
     tty: true
 
+  webtorrent:
+    image: node:18
+    environment:
+      - APP_PORT=3000
+      - JWT_SIGNING_KEY=ThisIsAnExampleKeyForDevPurposeOnly
+    ports:
+      - "8080:3000"
+    working_dir: /app
+    command: ["yarn", "run", "dev"]
+    volumes:
+      - ./src/webtorrent:/app
+
   redis:
     image: redis:5
 
