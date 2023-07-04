@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: marsha
+    service: webtorrent
+    version: "{{ marsha_webtorrent_image_tag }}"
+    deployment_stamp: "{{ deployment_stamp }}"
+  name: marsha-webtorrent-{{ deployment_stamp }}  # name of the service should be host name in nginx
+  namespace: "{{ namespace_name }}"
+spec:
+  ports:
+  - name: {{ marsha_webtorrent_port }}-tcp
+    port: {{ marsha_webtorrent_port }}
+    protocol: TCP
+    targetPort: {{ marsha_webtorrent_port }}
+  selector:
+    app: marsha
+    deployment: "marsha-webtorrent-{{ deployment_stamp }}"
+  type: ClusterIP
