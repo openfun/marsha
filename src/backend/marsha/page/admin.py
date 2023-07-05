@@ -11,7 +11,7 @@ class PageAdmin(admin.ModelAdmin):
     """Admin class for the Page model."""
 
     verbose_name = _("Page")
-    list_display = ("name", "slug", "is_published")
+    list_display = ("name", "site", "slug", "is_published")
     prepopulated_fields = {"slug": ["name"]}
     fields = (
         "id",
@@ -26,6 +26,7 @@ class PageAdmin(admin.ModelAdmin):
     ]
     search_fields = (
         "id",
+        "site",
         "name",
         "slug",
     )

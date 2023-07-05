@@ -27,6 +27,11 @@ class PageRetrieveAPITest(TestCase):
     def _api_url(self, page):
         return f"/api/pages/{page.slug}/"
 
+    def test_api_not_published_page_retrieve_anonymous(self):
+        """Should not be able to fetch a not published page."""
+        response = self.client.get(self._api_url(self.page2))
+        self.assertEqual(response.status_code, 404)
+
     @override_settings(FRONTEND_HOME_URL="testserver")
     def test_api_page_retrieve_anonymous_for_default_frontend_host(self):
         """Should be able to fetch published page for default frontend."""
@@ -65,7 +70,25 @@ class PageRetrieveAPITest(TestCase):
         )
         self.assertEqual(response.status_code, 404)
 
-    def test_api_not_published_page_retrieve_anonymous(self):
-        """Should not be able to fetch a not published page."""
-        response = self.client.get(self._api_url(self.page2))
-        self.assertEqual(response.status_code, 404)
+    @override_settings(FRONTEND_HOME_URL="testserver")
+    def test_api_page_retrieve_own_site_page(self):
+        """Should be able to fetch own site page."""
+        common_page_slug = "common-slug"
+        PageFactory(name="Page1", slug=common_page_slug, content="Content")
+        PageFactory(
+            name="Page1",
+            slug=common_page_slug,
+            content="Other content",
+            site=SiteFactory(),
+        )
+
+        response = self.client.get(f"/api/pages/{common_page_slug}/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            response.json(),
+            {
+                "name": "Page1",
+                "slug": common_page_slug,
+                "content": "Content",
+            },
+        )
