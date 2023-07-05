@@ -1,4 +1,6 @@
 """Declare API endpoints with Django RestFramework viewsets."""
+from django.conf import settings
+
 import django_filters
 from rest_framework import filters, mixins, permissions, viewsets
 
@@ -30,3 +32,11 @@ class PageViewSet(
         if self.action == "list":
             return serializers.PageLiteSerializer
         return super().get_serializer_class()
+
+    def get_queryset(self):
+        """Filter pages based on the current domain."""
+        domain = self.request.get_host()
+        if domain in settings.FRONTEND_HOME_URL:
+            # pages without site should be accessible from default frontend
+            return self.queryset.filter(site__isnull=True)
+        return self.queryset.filter(site__domain=domain)
