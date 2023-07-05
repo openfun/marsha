@@ -23,7 +23,6 @@ class Page(BaseModel):
         max_length=100,
         verbose_name=_("slug"),
         help_text=_("Page slug (/page/{slug})"),
-        unique=True,
     )
     name = models.CharField(
         max_length=255,
@@ -59,3 +58,8 @@ class Page(BaseModel):
         ordering = ["created_on"]
         verbose_name = _("page")
         verbose_name_plural = _("page")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["site", "slug"], name="unique_site_slug_page"
+            )
+        ]
