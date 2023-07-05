@@ -15,6 +15,7 @@ class PageAdmin(admin.ModelAdmin):
     prepopulated_fields = {"slug": ["name"]}
     fields = (
         "id",
+        "site",
         "name",
         "slug",
         "content",

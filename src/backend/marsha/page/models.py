@@ -4,6 +4,7 @@ Models for the ``page`` app of the Marsha project.
 
 import logging
 
+from django.contrib.sites.models import Site
 from django.db import models
 from django.utils.translation import gettext_lazy as _
 
@@ -41,6 +42,14 @@ class Page(BaseModel):
         verbose_name=_("is published"),
         help_text=_("Is the page ready to be shown publicly"),
         default=False,
+    )
+    site = models.ForeignKey(
+        to=Site,
+        related_name="pages",
+        verbose_name=_("site"),
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
     )
 
     class Meta:
