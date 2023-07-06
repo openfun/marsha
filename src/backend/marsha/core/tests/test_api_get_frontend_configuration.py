@@ -42,6 +42,7 @@ class TestGetFrontendConfiguration(TestCase):
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
+                "is_default_site": False,
             },
         )
 
@@ -67,6 +68,7 @@ class TestGetFrontendConfiguration(TestCase):
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
+                "is_default_site": False,
             },
         )
 
@@ -91,6 +93,7 @@ class TestGetFrontendConfiguration(TestCase):
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
+                "is_default_site": False,
             },
         )
 
@@ -100,7 +103,13 @@ class TestGetFrontendConfiguration(TestCase):
         """
         Check the response when the domain param is set and the site does not exist.
         """
-        SiteConfigFactory(inactive_resources=["video"], site__domain="marsha.education")
+        SiteConfigFactory(
+            site__domain="marsha.education",
+            inactive_resources=["video"],
+            login_html="markdown text",
+            logo_url="path to logo",
+            footer_copyright="footer copyright",
+        )
         response = self.client.get("/api/config/", HTTP_HOST="marsha.education")
 
         self.assertEqual(response.status_code, 200)
@@ -116,5 +125,33 @@ class TestGetFrontendConfiguration(TestCase):
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
                     "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
                 },
+                "is_default_site": False,
+                "logo_url": "path to logo",
+                "login_html": "markdown text",
+                "footer_copyright": "footer copyright",
+            },
+        )
+
+    @override_settings(FRONTEND_HOME_URL="testserver")
+    def test_api_get_frontend_configuration_default_site(self):
+        """
+        Check the response when called from the default site.
+        """
+        response = self.client.get("/api/config/", HTTP_HOST="testserver")
+
+        self.assertEqual(response.status_code, 200)
+        self.assertDictEqual(
+            response.json(),
+            {
+                "environment": "development",
+                "release": "1.2.3",
+                "sentry_dsn": None,
+                "inactive_resources": [],
+                "p2p": {
+                    "isEnabled": True,
+                    "stunServerUrls": ["stun:stun.l.google.com:19302"],
+                    "webTorrentTrackerUrls": ["wss://tracker.webtorrent.io"],
+                },
+                "is_default_site": True,
             },
         )

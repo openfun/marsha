@@ -34,6 +34,29 @@ class SiteConfig(BaseModel):
         blank=True,
     )
 
+    login_html = models.TextField(
+        verbose_name=_("login page text"),
+        help_text=_("HTML to display on the login page"),
+        null=True,
+        blank=True,
+    )
+
+    logo_url = models.CharField(
+        max_length=255,
+        verbose_name=_("logo"),
+        help_text=_("URl of the logo to display on the site"),
+        null=True,
+        blank=True,
+    )
+
+    footer_copyright = models.CharField(
+        max_length=255,
+        verbose_name=_("footer text"),
+        help_text=_("Text to display in the footer"),
+        null=True,
+        blank=True,
+    )
+
     def __str__(self):
         return f"Config associated to: {self.site.name}"
 
