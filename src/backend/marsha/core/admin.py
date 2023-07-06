@@ -517,7 +517,7 @@ class SiteConfigInline(admin.TabularInline):
 class SiteAdmin(admin.ModelAdmin):
     """Admin class for the CustomSite model."""
 
-    list_display = ("id", "name", "domain")
+    list_display = ("name", "domain")
     search_fields = ("name", "domain")
     inlines = [
         SiteConfigInline,
