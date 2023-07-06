@@ -229,27 +229,33 @@ def get_frontend_configuration(request):
 
     domain = request.get_host()
     inactive_resources = []
-    if domain:
+
+    is_default_site = domain in settings.FRONTEND_HOME_URL
+
+    config = {
+        "environment": settings.ENVIRONMENT,
+        "release": settings.RELEASE,
+        "sentry_dsn": settings.SENTRY_DSN if switch_is_active(SENTRY) else None,
+        "p2p": {
+            "isEnabled": settings.P2P_ENABLED,
+            "webTorrentTrackerUrls": settings.P2P_WEB_TORRENT_TRACKER_URLS,
+            "stunServerUrls": settings.P2P_STUN_SERVER_URLS,
+        },
+        "inactive_resources": inactive_resources,
+        "is_default_site": is_default_site,
+    }
+
+    if not is_default_site:
         try:
-            inactive_resources = SiteConfig.objects.get(
-                site__domain=domain
-            ).inactive_resources
+            site_config = SiteConfig.objects.get(site__domain=domain)
+            config["inactive_resources"] = site_config.inactive_resources
+            config["logo_url"] = site_config.logo_url
+            config["login_html"] = site_config.login_html
+            config["footer_copyright"] = site_config.footer_copyright
         except SiteConfig.DoesNotExist:
             pass
 
-    return JsonResponse(
-        {
-            "environment": settings.ENVIRONMENT,
-            "release": settings.RELEASE,
-            "sentry_dsn": settings.SENTRY_DSN if switch_is_active(SENTRY) else None,
-            "p2p": {
-                "isEnabled": settings.P2P_ENABLED,
-                "webTorrentTrackerUrls": settings.P2P_WEB_TORRENT_TRACKER_URLS,
-                "stunServerUrls": settings.P2P_STUN_SERVER_URLS,
-            },
-            "inactive_resources": inactive_resources,
-        }
-    )
+    return JsonResponse(config)
 
 
 class APIViewMixin:
