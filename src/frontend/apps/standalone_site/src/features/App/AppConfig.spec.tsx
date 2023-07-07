@@ -1,6 +1,6 @@
 import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useP2PConfig, useSentry } from 'lib-components';
+import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -30,6 +30,7 @@ const config: ConfigResponse = {
     stunServerUrls: [],
     webTorrentTrackerUrls: [],
   },
+  is_default_site: true,
 };
 
 describe('AppConfig', () => {
@@ -173,6 +174,34 @@ describe('AppConfig', () => {
     expect(useContentFeatures.getState().featureRoutes).toEqual({});
     expect(useContentFeatures.getState().featureSamples()).toEqual([]);
     expect(useContentFeatures.getState().featureShuffles).toEqual([]);
+  });
+
+  it('should set siteConfig', async () => {
+    deferredConfig.resolve({
+      ...config,
+      is_default_site: false,
+      logo_url: 'some logo',
+      login_html: 'some login',
+      footer_copyright: 'some footer',
+    });
+
+    render(<AppConfig />);
+    expect(fetchMock.called('/api/config/')).toBe(true);
+
+    await waitFor(() => {
+      expect(useSiteConfig.getState().getSiteConfig()).toEqual({
+        is_default_site: false,
+        logo_url: 'some logo',
+        login_html: 'some login',
+        footer_copyright: 'some footer',
+      });
+    });
+    expect(useSiteConfig.getState().siteConfig).toEqual({
+      is_default_site: false,
+      logo_url: 'some logo',
+      login_html: 'some login',
+      footer_copyright: 'some footer',
+    });
   });
 
   it('should translate to another language', async () => {
