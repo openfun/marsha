@@ -386,6 +386,7 @@ export const portabilityRequestMockFactory = (
 ): PortabilityRequest => {
   return {
     id: faker.datatype.uuid(),
+    created_on: faker.date.recent().toString(),
     for_playlist: playlistLiteMockFactory(),
     from_playlist: playlistLiteMockFactory(),
     from_lti_consumer_site: consumerSiteMockFactory(),

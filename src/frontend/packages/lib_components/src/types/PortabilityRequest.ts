@@ -11,6 +11,7 @@ export enum PortabilityRequestState {
 }
 
 export interface PortabilityRequest {
+  created_on: string;
   id: string;
   for_playlist: PlaylistLite;
   from_lti_consumer_site: Nullable<ConsumerSite>;
