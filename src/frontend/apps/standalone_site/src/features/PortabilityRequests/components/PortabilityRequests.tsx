@@ -1,17 +1,22 @@
+import {
+  CunninghamProvider,
+  DataGrid,
+  SortModel,
+  usePagination,
+} from '@openfun/cunningham-react';
 import { Box, Button, Heading, Text } from 'grommet';
-import { Spinner } from 'lib-components';
-import { useState } from 'react';
-import { defineMessages, useIntl } from 'react-intl';
+import { CenterLoader, PortabilityRequest } from 'lib-components';
+import { useEffect, useMemo, useState } from 'react';
+import { IntlShape, defineMessages, useIntl } from 'react-intl';
 
-import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { SortableTable, commonSortMessages } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 
 import { usePortabilityRequests } from '../api/usePortabilityRequests';
 import { useLtiUserAssociationJwtQueryParam } from '../hooks/useLtiUserAssociationJwtQueryParam';
 
-import { ItemTableRow } from './ItemTableRow';
+import { AcceptRejectButtons } from './AcceptRejectButtons';
+import { PortabilityRequestStateTag } from './PortabilityRequestStateTag';
 
 const messages = defineMessages({
   title: {
@@ -41,7 +46,93 @@ const messages = defineMessages({
     description: 'Retry button title',
     id: 'features.PortabilityRequests.retry',
   },
+  requestFromLtiUser: {
+    defaultMessage: 'Made by LTI user',
+    description:
+      'Value displayed in the table when the request is from an LTI user',
+    id: 'features.PortabilityRequests.requestFromLtiUser',
+  },
+  rowPortabilityRequestText: {
+    defaultMessage: '{from_playlist} wants access to {for_playlist}',
+    description:
+      'Row text displayed in the table to display the playlists involved in the request',
+    id: 'features.PortabilityRequests.rowPlaylistText',
+  },
+  columnNameCreatedOn: {
+    defaultMessage: 'Created On',
+    description:
+      'The column name "Created On" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameCreatedOn',
+  },
+  columnNamePortabilityRequest: {
+    defaultMessage: 'Portability Request',
+    description:
+      'The column name "Portability Request" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNamePortabilityRequest',
+  },
+  columnNameConsumerSite: {
+    defaultMessage: 'Consumer Site',
+    description:
+      'The column name "Consumer Site" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameConsumerSite',
+  },
+  columnNameFromUserEmail: {
+    defaultMessage: 'From user email',
+    description:
+      'The column name "From user email" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameFromUserEmail',
+  },
+  columnNameUpdatedUserEmail: {
+    defaultMessage: 'Updated user email',
+    description:
+      'The column name "Updated user email" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameUpdatedUserEmail',
+  },
+  columnNameStatus: {
+    defaultMessage: 'Status',
+    description:
+      'The column name "Status" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameStatus',
+  },
+  columnNameActions: {
+    defaultMessage: 'Actions',
+    description:
+      'The column name "Actions" on the portability request datagrid.',
+    id: 'features.PortabilityRequests.columnNameActions',
+  },
 });
+
+/**
+ * Clean the data to be displayed in the table
+ */
+const cleanupPortabilityRequest = (
+  portabilityRequests: PortabilityRequest[] | undefined,
+  intl: IntlShape,
+) =>
+  portabilityRequests
+    ? portabilityRequests.map((portabilityRequest) => ({
+        id: portabilityRequest.id,
+        created_on: `${new Date(
+          portabilityRequest.created_on,
+        ).toLocaleDateString(navigator.language)} ${new Date(
+          portabilityRequest.created_on,
+        ).toLocaleTimeString(navigator.language)}`,
+        portabilityRequest: intl.formatMessage(
+          messages.rowPortabilityRequestText,
+          {
+            from_playlist: portabilityRequest.from_playlist.title,
+            for_playlist: portabilityRequest.for_playlist.title,
+          },
+        ),
+        consumerSite: portabilityRequest.from_lti_consumer_site?.name,
+        fromUserEmail:
+          portabilityRequest?.from_user?.email ||
+          intl.formatMessage(messages.requestFromLtiUser),
+        updatedUserEmail: portabilityRequest?.updated_by_user?.email,
+        state: portabilityRequest.state,
+        can_accept_or_reject: portabilityRequest.can_accept_or_reject,
+      }))
+    : [];
 
 interface PortabilityRequestsProps {
   state?: string;
@@ -54,30 +145,50 @@ export const PortabilityRequests = ({
 }: PortabilityRequestsProps) => {
   const intl = useIntl();
 
-  const sorts = [
-    {
-      id: '-created_on',
-      label: intl.formatMessage(
-        commonSortMessages.sortByDescendingCreationDate,
-      ),
-    },
-    {
-      id: 'created_on',
-      label: intl.formatMessage(commonSortMessages.sortByAscendingCreationDate),
-    },
-  ];
-
-  const [currentSort, setCurrentSort] = useState(sorts[0]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { isError, isLoading, data, refetch } = usePortabilityRequests({
-    offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
-    limit: `${ITEM_PER_PAGE}`,
-    ordering: currentSort.id,
-    state: state || '', // disable filter by default
-    for_playlist_id: for_playlist_id || '', // disable filter by default
+  const pagination = usePagination({
+    defaultPage: 1,
+    pageSize: ITEM_PER_PAGE,
   });
 
+  const { page, pageSize, setPagesCount } = pagination;
+
+  const [sortModel, setSortModel] = useState<SortModel>([
+    {
+      field: 'created_on',
+      sort: 'desc',
+    },
+  ]);
+
+  let ordering = '';
+  if (sortModel.length) {
+    ordering = sortModel[0].field;
+    if (sortModel[0].sort === 'desc') {
+      ordering = `-${ordering}`;
+    }
+  }
+
+  const { isError, isLoading, data, refetch, isFetching } =
+    usePortabilityRequests({
+      offset: `${(page - 1) * ITEM_PER_PAGE}`,
+      limit: `${ITEM_PER_PAGE}`,
+      ordering,
+      state, // disable filter by default
+      for_playlist_id, // disable filter by default
+    });
+
   useLtiUserAssociationJwtQueryParam();
+
+  useEffect(() => {
+    setPagesCount(data?.count ? Math.ceil(data?.count / pageSize) : 0);
+  }, [data?.count, pageSize, setPagesCount]);
+
+  const hasNoResult = !isError && data && !data?.count && !isLoading;
+  const hasResult = !isError && data && data?.count && !isLoading;
+
+  const rows = useMemo(
+    () => cleanupPortabilityRequest(data?.results, intl),
+    [data?.results, intl],
+  );
 
   return (
     <Box pad="medium">
@@ -89,8 +200,8 @@ export const PortabilityRequests = ({
             </Heading>
           </Box>
         </Box>
-        {isLoading && <Spinner />}
-        {((!isLoading && !data && !isError) || isError) && (
+        {isLoading && <CenterLoader />}
+        {isError && (
           <Box
             background="content-background"
             margin="auto"
@@ -110,53 +221,84 @@ export const PortabilityRequests = ({
             </Box>
           </Box>
         )}
-        {!isLoading &&
-          !isError &&
-          data &&
-          (data.results.length === 0 ? (
-            <Box
-              background="content-background"
-              margin="auto"
-              pad="medium"
-              round="small"
-            >
-              <Text size="large">
-                {intl.formatMessage(messages.noPortabilityRequest)}
-              </Text>
-            </Box>
-          ) : (
-            <SortableTable
-              loading={isLoading}
-              title={
-                <Box direction="row" align="center">
-                  <CheckListIcon width={30} height={30} />
-                  <Text margin={{ left: 'small' }}>
-                    {intl.formatMessage(messages.tableTitle, {
-                      item_count: data.count,
-                    })}
-                  </Text>
-                </Box>
-              }
-              items={data.results}
-              sortable
-              sortBy={sorts}
-              currentSort={currentSort}
-              onSortChange={(newSort) => {
-                setCurrentSort(newSort);
-                return data.results;
-              }}
-              paginable
-              numberOfItems={data.count}
-              pageSize={ITEM_PER_PAGE}
-              currentPage={currentPage}
-              onPageChange={(newPage) => {
-                setCurrentPage(newPage);
-                return data.results;
-              }}
-            >
-              {(item) => <ItemTableRow item={item} />}
-            </SortableTable>
-          ))}
+        {hasNoResult && (
+          <Box
+            background="content-background"
+            margin="auto"
+            pad="medium"
+            round="small"
+          >
+            <Text size="large">
+              {intl.formatMessage(messages.noPortabilityRequest)}
+            </Text>
+          </Box>
+        )}
+        {hasResult && (
+          <CunninghamProvider>
+            <DataGrid
+              columns={[
+                {
+                  field: 'created_on',
+                  headerName: intl.formatMessage(messages.columnNameCreatedOn),
+                },
+                {
+                  field: 'portabilityRequest',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNamePortabilityRequest,
+                  ),
+                },
+                {
+                  field: 'consumerSite',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameConsumerSite,
+                  ),
+                },
+                {
+                  field: 'fromUserEmail',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameFromUserEmail,
+                  ),
+                },
+                {
+                  field: 'updatedUserEmail',
+                  enableSorting: false,
+                  headerName: intl.formatMessage(
+                    messages.columnNameUpdatedUserEmail,
+                  ),
+                },
+                {
+                  id: 'portability-request-column-state',
+                  headerName: intl.formatMessage(messages.columnNameStatus),
+                  renderCell: ({ row: portabilityRequest }) => (
+                    <PortabilityRequestStateTag
+                      state={portabilityRequest.state}
+                    />
+                  ),
+                },
+                {
+                  id: 'portability-request-column-actions',
+                  headerName: intl.formatMessage(messages.columnNameActions),
+                  renderCell: ({ row: portabilityRequest }) => (
+                    <AcceptRejectButtons
+                      portabilityRequestId={portabilityRequest.id}
+                      canAcceptOrReject={
+                        portabilityRequest.can_accept_or_reject
+                      }
+                    />
+                  ),
+                },
+              ]}
+              rows={rows}
+              pagination={pagination}
+              isLoading={isLoading || isFetching}
+              sortModel={sortModel}
+              onSortModelChange={setSortModel}
+            />
+          </CunninghamProvider>
+        )}
       </WhiteCard>
     </Box>
   );

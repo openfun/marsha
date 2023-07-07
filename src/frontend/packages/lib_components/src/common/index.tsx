@@ -13,6 +13,7 @@ export * from './Headings';
 export * from './ItemList';
 export * from './List';
 export * from './Loader';
+export * from './Loader/CenterLoader';
 export * from './Modal';
 export * from './NoSelectBox';
 export * from './ObjectStatusPicker';

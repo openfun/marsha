@@ -9,20 +9,20 @@ describe('<PortabilityRequestStateTag />', () => {
     render(
       <PortabilityRequestStateTag state={PortabilityRequestState.PENDING} />,
     );
-    expect(screen.getByText('pending')).toBeInTheDocument();
+    expect(screen.getByText(/pending/i)).toBeInTheDocument();
   });
 
   it('renders accepted state', () => {
     render(
       <PortabilityRequestStateTag state={PortabilityRequestState.ACCEPTED} />,
     );
-    expect(screen.getByText('accepted')).toBeInTheDocument();
+    expect(screen.getByText(/accepted/i)).toBeInTheDocument();
   });
 
   it('renders rejected state', () => {
     render(
       <PortabilityRequestStateTag state={PortabilityRequestState.REJECTED} />,
     );
-    expect(screen.getByText('rejected')).toBeInTheDocument();
+    expect(screen.getByText(/rejected/i)).toBeInTheDocument();
   });
 });
