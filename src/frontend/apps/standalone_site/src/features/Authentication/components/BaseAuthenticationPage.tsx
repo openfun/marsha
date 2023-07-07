@@ -1,5 +1,5 @@
 import { Box } from 'grommet';
-import { useResponsive } from 'lib-components';
+import { useResponsive, useSiteConfig } from 'lib-components';
 import React, { Fragment, PropsWithChildren, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -28,6 +28,8 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
   const intl = useIntl();
   const [isViewWidth, setIsViewWidth] = useState(getWindowIsViewWidth());
   const { breakpoint, isSmallerBreakpoint } = useResponsive();
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
 
   useEffect(() => {
     function handleWindowResize() {
@@ -65,12 +67,27 @@ const ResponsiveBox = ({ children }: PropsWithChildren) => {
         background={backgroundImage('center', isViewWidth ? '45vw' : '80vh')}
         style={{ flex: '1' }}
       >
-        <LogoIcon
-          color="white"
-          width="80%"
-          height="30%"
-          aria-label={intl.formatMessage(messages.altLogo)}
-        />
+        {siteConfig.is_default_site ? (
+          <LogoIcon
+            color="white"
+            width="80%"
+            height="30%"
+            aria-label={intl.formatMessage(messages.altLogo)}
+          />
+        ) : (
+          <Box
+            width="large"
+            margin="auto"
+            pad={{ vertical: 'small', horizontal: 'medium' }}
+            align="center"
+          >
+            <div
+              dangerouslySetInnerHTML={{
+                __html: siteConfig.login_html || '',
+              }}
+            />
+          </Box>
+        )}
       </Box>
       {children}
     </Fragment>
