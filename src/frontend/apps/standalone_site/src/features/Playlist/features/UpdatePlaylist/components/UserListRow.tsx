@@ -48,7 +48,7 @@ const messages = defineMessages({
     id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.updatePlaylistAccessError',
   },
   deleteUserLabel: {
-    defaultMessage: 'Delete user {username}.',
+    defaultMessage: 'Delete user.',
     description: 'Delete playlist access button accessibility title.',
     id: 'features.Playlist.features.UpdatePlaylist.components.UserListRow.deleteUserLabel',
   },
@@ -69,21 +69,42 @@ const messages = defineMessages({
 type Option = { label: string; key: PlaylistRole };
 type SelectOnChangeEvent = { option: Option };
 
-interface UserListRowProps {
-  playlistAccess: PlaylistAccess;
+interface UserLabelColumnProps {
+  user: PlaylistAccess['user'];
 }
 
-export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
+export const UserLabelColumn = ({ user }: UserLabelColumnProps) => {
+  const intl = useIntl();
+  let userLabel = intl.formatMessage(messages.anonymousUser, { id: user.id });
+  if (user.full_name && user.email) {
+    userLabel = `${user.full_name} (${user.email})`;
+  } else if (user.full_name) {
+    userLabel = user.full_name;
+  } else if (user.email) {
+    userLabel = user.email;
+  }
+
+  return <Fragment>{userLabel}</Fragment>;
+};
+
+interface UserRolesColumnProps {
+  playlistAccessId: PlaylistAccess['id'];
+  role: PlaylistAccess['role'];
+  userId: PlaylistAccess['user']['id'];
+}
+
+export const UserRolesColumn = ({
+  playlistAccessId,
+  role,
+  userId,
+}: UserRolesColumnProps) => {
   const intl = useIntl();
 
   const options = userRoleOptions(intl);
-  const initialOption = options.find(
-    (option) => option.key === playlistAccess.role,
-  );
+  const initialOption = options.find((option) => option.key === role);
 
   const [userRole, setUserRole] = useState(initialOption);
-  const modalActions = useRef<ModalControlMethods>(null);
-  const { mutate: updateMutation } = useUpdatePlaylistAcess(playlistAccess.id, {
+  const { mutate: updateMutation } = useUpdatePlaylistAcess(playlistAccessId, {
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.updatePlaylistAccessSuccess));
     },
@@ -92,6 +113,40 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
       setUserRole(initialOption);
     },
   });
+  const { currentUser } = useCurrentUser();
+
+  const idUser =
+    currentUser && currentUser !== AnonymousUser.ANONYMOUS
+      ? currentUser.id
+      : undefined;
+
+  return (
+    <Select
+      value={userRole}
+      options={options}
+      labelKey="label"
+      disabled={userId === idUser}
+      onChange={({ option }: SelectOnChangeEvent) => {
+        setUserRole(option);
+        updateMutation({ role: option.key });
+      }}
+      size="var(--c--theme--font--size-datagrid-cell)"
+    />
+  );
+};
+
+interface UserDeleteColumnProps {
+  playlistAccessId: PlaylistAccess['id'];
+  userId: PlaylistAccess['user']['id'];
+}
+
+export const UserDeleteColumn = ({
+  playlistAccessId,
+  userId,
+}: UserDeleteColumnProps) => {
+  const intl = useIntl();
+  const modalActions = useRef<ModalControlMethods>(null);
+
   const { mutate: deleteMutation } = useDeletePlaylistAccess({
     onSuccess: () => {
       toast.success(intl.formatMessage(messages.deletePlaylistAccessSuccess));
@@ -107,16 +162,6 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
       ? currentUser.id
       : undefined;
 
-  const user = playlistAccess.user;
-  let userLabel = intl.formatMessage(messages.anonymousUser, { id: user.id });
-  if (user.full_name && user.email) {
-    userLabel = `${user.full_name} (${user.email})`;
-  } else if (user.full_name) {
-    userLabel = user.full_name;
-  } else if (user.email) {
-    userLabel = user.email;
-  }
-
   return (
     <Fragment>
       <Modal controlMethods={modalActions}>
@@ -126,47 +171,22 @@ export const UserListRow = ({ playlistAccess }: UserListRowProps) => {
         <ModalButton
           label={intl.formatMessage(messages.deleteUserConfirmButtonTitle)}
           onClickCancel={() => modalActions.current?.close()}
-          onClickSubmit={() => deleteMutation(playlistAccess.id)}
+          onClickSubmit={() => deleteMutation(playlistAccessId)}
           style={ButtonLoaderStyle.DESTRUCTIVE}
         />
       </Modal>
 
-      <Box direction="row" flex gap="small">
-        <Box flex={{ grow: 1, shrink: 4 }} margin={{ vertical: 'auto' }}>
-          <Text weight="bold" truncate>
-            {userLabel}
-          </Text>
+      <Button
+        plain
+        margin={{ left: 'medium' }}
+        onClick={() => modalActions.current?.open()}
+        disabled={userId === idUser}
+        a11yTitle={intl.formatMessage(messages.deleteUserLabel)}
+      >
+        <Box pad="xxsmall">
+          <BinSVG iconColor="blue-active" width="18px" height="18px" />
         </Box>
-        <Box
-          direction="row"
-          flex={{ grow: 0, shrink: 0 }}
-          width={{ max: '250px' }}
-        >
-          <Select
-            value={userRole}
-            options={options}
-            labelKey="label"
-            disabled={playlistAccess.user.id === idUser}
-            onChange={({ option }: SelectOnChangeEvent) => {
-              setUserRole(option);
-              updateMutation({ role: option.key });
-            }}
-          />
-          <Button
-            plain
-            margin={{ left: 'medium' }}
-            onClick={() => modalActions.current?.open()}
-            disabled={playlistAccess.user.id === idUser}
-            a11yTitle={intl.formatMessage(messages.deleteUserLabel, {
-              username: playlistAccess.user.full_name,
-            })}
-          >
-            <Box pad="xxsmall">
-              <BinSVG iconColor="blue-active" width="18px" height="18px" />
-            </Box>
-          </Button>
-        </Box>
-      </Box>
+      </Button>
     </Fragment>
   );
 };
