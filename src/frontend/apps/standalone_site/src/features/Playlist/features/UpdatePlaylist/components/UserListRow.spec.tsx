@@ -3,10 +3,43 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { useCurrentUser } from 'lib-components';
 import { Deferred, render } from 'lib-tests';
+import { Fragment } from 'react';
 
 import { PlaylistRole } from '../types/playlistAccess';
 
-import { UserListRow } from './UserListRow';
+import {
+  UserDeleteColumn,
+  UserLabelColumn,
+  UserRolesColumn,
+} from './UserListRow';
+
+const playlistAccess = {
+  playlist: {
+    consumer_site: null,
+    retention_duration: null,
+    created_by: 'nobody',
+    created_on: '2021-03-18T14:00:00Z',
+    duplicated_from: null,
+    is_portable_to_playlist: false,
+    is_portable_to_consumer_site: false,
+    is_public: false,
+    lti_id: 'some lti id',
+    organization: { name: 'my organization', id: 'my orga id' },
+    portable_to: [],
+    title: 'playlist title',
+    users: [],
+    id: 'playlist id',
+  },
+  id: 'some-id',
+  role: PlaylistRole.ADMINISTRATOR,
+  user: {
+    full_name: 'my full name',
+    email: 'my-email@openfun.fr',
+    id: 'my user id',
+    is_staff: false,
+    is_superuser: false,
+  },
+};
 
 describe('<UserListRow />', () => {
   beforeEach(() => {
@@ -25,35 +58,18 @@ describe('<UserListRow />', () => {
 
   it('renders the access row', async () => {
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my user id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
-      />,
+      <Fragment>
+        <UserLabelColumn user={playlistAccess.user} />
+        <UserRolesColumn
+          playlistAccessId={playlistAccess.id}
+          role={playlistAccess.role}
+          userId={playlistAccess.user.id}
+        />
+        <UserDeleteColumn
+          playlistAccessId={playlistAccess.id}
+          userId={playlistAccess.user.id}
+        />
+      </Fragment>,
     );
 
     expect(
@@ -64,7 +80,7 @@ describe('<UserListRow />', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveValue('Administrator');
     expect(
-      screen.getByRole('button', { name: 'Delete user my full name.' }),
+      screen.getByRole('button', { name: 'Delete user.' }),
     ).toBeInTheDocument();
 
     userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
@@ -86,50 +102,23 @@ describe('<UserListRow />', () => {
     );
 
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my user id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
+      <UserRolesColumn
+        playlistAccessId={playlistAccess.id}
+        role={playlistAccess.role}
+        userId={playlistAccess.user.id}
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
 
-    const instructorOption = await screen.findByRole('option', {
+    const instructorOption = screen.getByRole('option', {
       name: 'Instructor',
     });
     expect(instructorOption).toBeInTheDocument();
 
-    userEvent.click(instructorOption);
+    await userEvent.click(instructorOption);
 
-    await waitFor(async () =>
-      expect(await screen.findByRole('textbox')).toHaveValue('Instructor'),
-    );
-
+    expect(screen.getByRole('textbox')).toHaveValue('Instructor');
     expect(
       await screen.findByText('Right has been updated with success.'),
     ).toBeInTheDocument();
@@ -141,56 +130,30 @@ describe('<UserListRow />', () => {
     );
   });
 
-  it('raises an error and reset state if an error occured', async () => {
+  it('updates playlist access role and raises an error and reset state if an error occured', async () => {
     const deferred = new Deferred();
     fetchMock.mock('/api/playlist-accesses/some-id/', deferred.promise, {
       method: 'PATCH',
     });
 
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my user id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
+      <UserRolesColumn
+        playlistAccessId={playlistAccess.id}
+        role={playlistAccess.role}
+        userId={playlistAccess.user.id}
       />,
     );
 
-    userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
+    await userEvent.click(screen.getByRole('button', { name: /Open Drop/ }));
 
-    const instructorOption = await screen.findByRole('option', {
+    const instructorOption = screen.getByRole('option', {
       name: 'Instructor',
     });
     expect(instructorOption).toBeInTheDocument();
 
-    userEvent.click(instructorOption);
+    await userEvent.click(instructorOption);
 
-    await waitFor(async () =>
-      expect(await screen.findByRole('textbox')).toHaveValue('Instructor'),
-    );
+    expect(screen.getByRole('textbox')).toHaveValue('Instructor');
 
     deferred.reject();
 
@@ -209,53 +172,26 @@ describe('<UserListRow />', () => {
     );
 
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my user id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
+      <UserDeleteColumn
+        playlistAccessId={playlistAccess.id}
+        userId={playlistAccess.user.id}
       />,
     );
 
-    userEvent.click(
-      await screen.findByRole('button', { name: 'Delete user my full name.' }),
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Delete user.' }),
     );
 
     expect(
-      await screen.findByText(
+      screen.getByText(
         'Do you want to remove this user access to this playlist ? Beware, this action is not reversible.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
-    expect(
-      await screen.findByText('Right deleted with success.'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Right deleted with success.')).toBeInTheDocument();
 
     await waitFor(() =>
       expect(fetchMock.lastCall()![0]).toEqual(
@@ -274,52 +210,27 @@ describe('<UserListRow />', () => {
     });
 
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my user id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
+      <UserDeleteColumn
+        playlistAccessId={playlistAccess.id}
+        userId={playlistAccess.user.id}
       />,
     );
 
-    userEvent.click(
-      await screen.findByRole('button', { name: 'Delete user my full name.' }),
+    await userEvent.click(
+      await screen.findByRole('button', { name: 'Delete user.' }),
     );
 
     expect(
-      await screen.findByText(
+      screen.getByText(
         'Do you want to remove this user access to this playlist ? Beware, this action is not reversible.',
       ),
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: 'Cancel' })).toBeInTheDocument();
 
-    userEvent.click(screen.getByRole('button', { name: 'Delete' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Delete' }));
 
     expect(
-      await screen.findByText('An error occurred while deleting the right.'),
+      screen.getByText('An error occurred while deleting the right.'),
     ).toBeInTheDocument();
 
     await waitFor(() =>
@@ -335,35 +246,15 @@ describe('<UserListRow />', () => {
 
   it('disables actions for the user currently connected', () => {
     render(
-      <UserListRow
-        playlistAccess={{
-          playlist: {
-            consumer_site: null,
-            retention_duration: null,
-            created_by: 'nobody',
-            created_on: '2021-03-18T14:00:00Z',
-            duplicated_from: null,
-            is_portable_to_playlist: false,
-            is_portable_to_consumer_site: false,
-            is_public: false,
-            lti_id: 'some lti id',
-            organization: { name: 'my organization', id: 'my orga id' },
-            portable_to: [],
-            title: 'playlist title',
-            users: [],
-            id: 'playlist id',
-          },
-          id: 'some-id',
-          role: PlaylistRole.ADMINISTRATOR,
-          user: {
-            full_name: 'my full name',
-            email: 'my-email@openfun.fr',
-            id: 'my-id',
-            is_staff: false,
-            is_superuser: false,
-          },
-        }}
-      />,
+      <Fragment>
+        <UserLabelColumn user={playlistAccess.user} />
+        <UserRolesColumn
+          playlistAccessId={playlistAccess.id}
+          role={playlistAccess.role}
+          userId="my-id"
+        />
+        <UserDeleteColumn playlistAccessId={playlistAccess.id} userId="my-id" />
+      </Fragment>,
     );
 
     expect(
@@ -371,8 +262,6 @@ describe('<UserListRow />', () => {
     ).toBeInTheDocument();
     expect(screen.getByRole('button', { name: /Open Drop/ })).toBeDisabled();
     expect(screen.getByRole('textbox')).toHaveValue('Administrator');
-    expect(
-      screen.getByRole('button', { name: 'Delete user my full name.' }),
-    ).toBeDisabled();
+    expect(screen.getByRole('button', { name: 'Delete user.' })).toBeDisabled();
   });
 });

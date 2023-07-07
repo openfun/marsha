@@ -1,14 +1,22 @@
+import {
+  CunninghamProvider,
+  DataGrid,
+  usePagination,
+} from '@openfun/cunningham-react';
 import { Box, Button, Text } from 'grommet';
 import { Spinner } from 'lib-components';
-import { useState } from 'react';
+import { useEffect } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
-import { SortableTable } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 
 import { usePlaylistAccess } from '../api/usePlaylistAccess';
 
-import { UserListRow } from './UserListRow';
+import {
+  UserDeleteColumn,
+  UserLabelColumn,
+  UserRolesColumn,
+} from './UserListRow';
 
 const messages = defineMessages({
   errorLoadingPlaylist: {
@@ -29,6 +37,16 @@ const messages = defineMessages({
       'Message when there are no playlist access related to a playlist in this playlist page settings.',
     id: 'features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.noAccess',
   },
+  columnNameUsers: {
+    defaultMessage: 'Users',
+    description: 'The column name "Users" on the playlist user datagrid.',
+    id: 'features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.columnNameUsers',
+  },
+  columnNameRoles: {
+    defaultMessage: 'Roles',
+    description: 'The column name "Roles" on the playlist user datagrid.',
+    id: 'features.Playlist.features.UpdatePlaylist.components.PlaylistUserList.columnNameRoles',
+  },
 });
 
 interface PlaylistUserListProps {
@@ -37,12 +55,23 @@ interface PlaylistUserListProps {
 
 export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
   const intl = useIntl();
-  const [currentPage, setCurrentPage] = useState(1);
+
+  const pagination = usePagination({
+    defaultPage: 1,
+    pageSize: ITEM_PER_PAGE,
+  });
+
+  const { page, pageSize, setPagesCount } = pagination;
+
   const { data, isLoading, isError, refetch } = usePlaylistAccess({
     playlist_id: playlistId,
-    offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
+    offset: `${(page - 1) * ITEM_PER_PAGE}`,
     limit: `${ITEM_PER_PAGE}`,
   });
+
+  useEffect(() => {
+    setPagesCount(data?.count ? Math.ceil(data?.count / pageSize) : 0);
+  }, [data?.count, pageSize, setPagesCount]);
 
   if (isLoading && !isError) {
     return (
@@ -73,23 +102,44 @@ export const PlaylistUserList = ({ playlistId }: PlaylistUserListProps) => {
 
   return (
     <Box>
-      {data && data.count > 0 && (
-        <SortableTable
-          loading={isLoading}
-          title={`${data.count} membres`}
-          items={data.results}
-          paginable
-          numberOfItems={data.count}
-          pageSize={ITEM_PER_PAGE}
-          onPageChange={(newPage) => {
-            setCurrentPage(newPage);
-            return data.results;
-          }}
-        >
-          {(playlistAccess) => <UserListRow playlistAccess={playlistAccess} />}
-        </SortableTable>
-      )}
-      {(!data || data.count === 0) && (
+      {data && data.count ? (
+        <CunninghamProvider>
+          <DataGrid
+            columns={[
+              {
+                id: 'column-user',
+                headerName: intl.formatMessage(messages.columnNameUsers),
+                renderCell: ({ row: playlistAccess }) => (
+                  <UserLabelColumn user={playlistAccess.user} />
+                ),
+              },
+              {
+                id: 'column-role',
+                headerName: intl.formatMessage(messages.columnNameRoles),
+                renderCell: ({ row: playlistAccess }) => (
+                  <UserRolesColumn
+                    playlistAccessId={playlistAccess.id}
+                    role={playlistAccess.role}
+                    userId={playlistAccess.user.id}
+                  />
+                ),
+              },
+              {
+                id: 'column-delete-user',
+                renderCell: ({ row: playlistAccess }) => (
+                  <UserDeleteColumn
+                    playlistAccessId={playlistAccess.id}
+                    userId={playlistAccess.user.id}
+                  />
+                ),
+              },
+            ]}
+            rows={data?.results || []}
+            pagination={pagination}
+            isLoading={isLoading}
+          />
+        </CunninghamProvider>
+      ) : (
         <Text>{intl.formatMessage(messages.noAccess)}</Text>
       )}
     </Box>
