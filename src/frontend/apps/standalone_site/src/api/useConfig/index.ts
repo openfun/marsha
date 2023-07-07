@@ -16,6 +16,10 @@ export interface ConfigResponse {
   environment: string;
   release: string;
   inactive_resources: string[];
+  is_default_site: boolean;
+  logo_url?: string;
+  login_html?: string;
+  footer_copyright?: string;
 }
 
 export const getConfig = async () => {

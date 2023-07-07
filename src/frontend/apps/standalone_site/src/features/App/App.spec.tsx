@@ -52,6 +52,7 @@ const frontendConfiguration: ConfigResponse = {
     stunServerUrls: [],
     webTorrentTrackerUrls: [],
   },
+  is_default_site: true,
 };
 
 describe('<App />', () => {

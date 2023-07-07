@@ -1,5 +1,5 @@
 import { IntlErrorCode } from '@formatjs/intl';
-import { useP2PConfig, useSentry } from 'lib-components';
+import { useP2PConfig, useSentry, useSiteConfig } from 'lib-components';
 import { PropsWithChildren, useEffect, useState } from 'react';
 import { IntlProvider } from 'react-intl';
 
@@ -17,6 +17,7 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
   const [isDomReady, setIsDomReady] = useState(false);
   const setSentry = useSentry((state) => state.setSentry);
   const setP2PConfig = useP2PConfig((state) => state.setP2PConfig);
+  const setSiteConfig = useSiteConfig((state) => state.setSiteConfig);
   const { data: config } = useConfig({
     keepPreviousData: true,
     staleTime: Infinity,
@@ -74,7 +75,13 @@ const AppConfig = ({ children }: PropsWithChildren<unknown>) => {
     );
 
     featureContentLoader(config.inactive_resources);
-  }, [setSentry, setP2PConfig, config]);
+    setSiteConfig({
+      is_default_site: config.is_default_site,
+      logo_url: config.logo_url,
+      login_html: config.login_html,
+      footer_copyright: config.footer_copyright,
+    });
+  }, [setSentry, setP2PConfig, config, setSiteConfig]);
 
   if (!isConfigReady) {
     return <ContentSpinner boxProps={{ height: '100vh' }} />;
