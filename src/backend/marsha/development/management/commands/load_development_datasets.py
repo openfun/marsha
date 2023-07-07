@@ -7,6 +7,7 @@ from django.core.management.base import BaseCommand
 from django.db.transaction import atomic
 
 from marsha.bbb.factories import ClassroomFactory
+from marsha.core.defaults import DEPOSIT, DOCUMENT, MARKDOWN, VIDEO, WEBINAR
 from marsha.core.factories import (
     ConsumerSiteFactory,
     DocumentFactory,
@@ -27,9 +28,11 @@ from marsha.core.models import (
     OrganizationAccess,
     Playlist,
     PlaylistAccess,
+    SiteConfig,
 )
 from marsha.deposit.factories import FileDepositoryFactory
 from marsha.markdown.factories import MarkdownDocumentFactory
+from marsha.page.models import Page
 
 
 User = get_user_model()
@@ -70,6 +73,7 @@ class Command(BaseCommand):
             self.stdout.write(" - done.")
 
         self._create_site()
+        self._create_pages()
         self._create_superuser()  # warning: defines self.superuser
         self._create_users()  # warning: defines self.consumer_site_admin, etc.
         localhost_cs = self._create_consumer_sites()
@@ -77,7 +81,98 @@ class Command(BaseCommand):
         self._create_playlists(localhost_cs, organization)
 
     def _create_site(self):
-        Site.objects.get_or_create(domain="localhost:8060", defaults={"name": "Marsha"})
+        self.stdout.write("Creating custom frontend...")
+        site, _ = Site.objects.get_or_create(
+            domain="localhost:3001", defaults={"name": "Custom frontend"}
+        )
+        SiteConfig.objects.get_or_create(
+            site=site,
+            defaults={
+                "inactive_resources": [VIDEO, DOCUMENT, WEBINAR, MARKDOWN, DEPOSIT],
+                "login_html": """
+<style>
+  .container {
+    height: 65vh;
+    display: flex;
+    flex-direction: column
+  }
+  h1 {
+    text-align: center;
+    color: white;
+    line-height: initial;
+    font-family: Roboto-Black;
+  }
+  h1 span {
+    font-family: Roboto-Regular;
+  }
+  .center {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .bottom {
+    margin-top: auto;
+    padding: 0.5rem 1rem;
+    background-color: #0556BF;
+    border-radius: 5rem;
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    justify-content: center;
+  }
+  .bottom p {
+    color: white;
+    font-size: 12px;
+    text-align: right;
+    line-height: 14px;
+  }
+</style>
+
+<div class="container">
+  <h1>Le portail national <br/> des classes virtuelles
+    <br/> <span>de l'enseignement supérieur</span></h1>
+
+  <div class="center">
+    <img src="http://localhost:3001/logos/fun.png" width="150">
+    <img src="http://localhost:3001/logos/bbb.png" width="200">
+  </div>
+
+  <div class="bottom">
+    <p>Financé<br/>par le plan<br/>de relance</p>
+    <img src="http://localhost:3001/logos/ministere.png" width="100">
+    <img src="http://localhost:3001/logos/france-relance.png" width="55">
+    <img src="http://localhost:3001/logos/europe.png" width="100">
+  </div>
+</div>
+""",
+                "logo_url": "http://localhost:3001/logos/fun_blue.png",
+                "footer_copyright": "© 2023 France Université Numérique",
+            },
+        )
+        self.stdout.write(" - done.")
+
+    def _create_pages(self):
+        self.stdout.write("Creating pages...")
+        Page.objects.get_or_create(
+            slug="mentions-legales",
+            site=None,
+            defaults={
+                "name": "Mentions légales site défaut",
+                "content": "bla bla bla",
+                "is_published": True,
+            },
+        )
+        Page.objects.get_or_create(
+            slug="mentions-legales",
+            site=Site.objects.get(domain="localhost:3001"),
+            defaults={
+                "name": "Mentions légales site custom",
+                "content": "bli bli bli",
+                "is_published": True,
+            },
+        )
+        self.stdout.write(" - done.")
 
     def _create_superuser(self):
         """Create a superuser, required for the command."""

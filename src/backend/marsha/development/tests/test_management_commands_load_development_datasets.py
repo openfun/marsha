@@ -22,6 +22,10 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
         self.assertListEqual(
             initial_output.getvalue().splitlines(),
             [
+                "Creating custom frontend...",
+                " - done.",
+                "Creating pages...",
+                " - done.",
                 "Creating superuser...",
                 " - done.",
                 "Creating consumer_site_admin...",
@@ -62,6 +66,10 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
         self.assertListEqual(
             second_output.getvalue().splitlines(),
             [
+                "Creating custom frontend...",
+                " - done.",
+                "Creating pages...",
+                " - done.",
                 "Creating superuser...",
                 " - superuser already exists.",
                 "Creating consumer_site_admin...",
@@ -105,6 +113,10 @@ class LoadDevelopmentDatasetsTestCase(TransactionTestCase):
             with_flush_output.getvalue().splitlines(),
             [
                 "Flushing database...",
+                " - done.",
+                "Creating custom frontend...",
+                " - done.",
+                "Creating pages...",
                 " - done.",
                 "Creating superuser...",
                 " - done.",
