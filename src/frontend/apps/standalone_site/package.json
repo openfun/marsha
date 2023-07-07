@@ -48,6 +48,7 @@
   },
   "scripts": {
     "start": "craco start",
+    "start:custom": "cross-env PORT=3001 yarn start",
     "build": "craco build",
     "postbuild": "./postbuild.sh",
     "test": "cross-env CI=true TZ=UTC craco test",
