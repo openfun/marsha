@@ -76,6 +76,7 @@
   --c--theme--font--sizes--h5: 0.625rem;
   --c--theme--font--sizes--h6: 0.5rem;
   --c--theme--font--sizes--l: 1rem;
+  --c--theme--font--sizes--ml: 0.938rem;
   --c--theme--font--sizes--m: 0.8125rem;
   --c--theme--font--sizes--s: 0.6875rem;
   --c--theme--font--weights--thin: 100;
@@ -96,4 +97,8 @@
   --c--theme--transitions--ease-out: cubic-bezier(0.33, 1, 0.68, 1);
   --c--theme--transitions--ease-in-out: cubic-bezier(0.65, 0, 0.35, 1);
   --c--theme--transitions--duration: 250ms;
+  --c--components--forms-field--color: var(--c--theme--colors--primary-500);
+  --c--theme--font--weights-datagrid-header: var(--c--theme--font--weights--extrabold);
+  --c--theme--font--size-datagrid-header: var(--c--theme--font--sizes--ml);
+  --c--theme--font--size-datagrid-cell: var(--c--theme--font--sizes--ml);
 }

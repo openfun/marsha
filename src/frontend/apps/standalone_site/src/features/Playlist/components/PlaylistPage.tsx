@@ -1,12 +1,18 @@
+import {
+  Button as ButtonCunningham,
+  CunninghamProvider,
+  DataGrid,
+  SortModel,
+  usePagination,
+} from '@openfun/cunningham-react';
 import { Box, Button, Heading, Text } from 'grommet';
-import { Modal, Spinner } from 'lib-components';
-import { Fragment, useEffect, useState } from 'react';
+import { Breakpoints, Maybe } from 'lib-common';
+import { Modal, Playlist, useResponsive } from 'lib-components';
+import { Fragment, useEffect, useMemo, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Route, Routes, useNavigate } from 'react-router-dom';
 
-import { ReactComponent as CheckListIcon } from 'assets/svg/iko_checklistsvg.svg';
 import { WhiteCard } from 'components/Cards';
-import { SortableTable, commonSortMessages } from 'components/SortableTable';
 import { ITEM_PER_PAGE } from 'conf/global';
 import { routes } from 'routes';
 
@@ -30,12 +36,6 @@ const messages = defineMessages({
     description: 'Message displayed when the user has not playlist yet.',
     id: 'features.Playlist.noPlaylists',
   },
-  tableTitle: {
-    defaultMessage:
-      '{item_count, plural, =0 {no playlist} one {# playlist} other {# playlists}}',
-    description: 'Playlist table title.',
-    id: 'features.Playlist.tableTitle',
-  },
   error: {
     defaultMessage: 'An error occurred, please try again later.',
     description: 'Error message on loading playlists',
@@ -51,60 +51,84 @@ const messages = defineMessages({
     description: 'Message for update playlist button.',
     id: 'features.Playlist.updatePlaylist',
   },
+  columnNameCreatedOn: {
+    defaultMessage: 'Created On',
+    description: 'The column name created on date on the playlist datagrid.',
+    id: 'features.Playlist.columnNameCreatedOn',
+  },
+  columnNameTitle: {
+    defaultMessage: 'Title',
+    description: 'The column name title on the playlist datagrid.',
+    id: 'features.Playlist.columnNameTitle',
+  },
+  columnNameOrganization: {
+    defaultMessage: 'Organization',
+    description: 'The column name organization on the playlist datagrid.',
+    id: 'features.Playlist.columnNameOrganization',
+  },
 });
+
+/**
+ * Clean the data to be displayed in the table
+ */
+const cleanupPlaylist = (playlist: Playlist[] | undefined) =>
+  playlist
+    ? playlist.map((playlist) => ({
+        id: playlist.id,
+        created_on: `${new Date(playlist.created_on).toLocaleDateString(
+          navigator.language,
+        )} ${new Date(playlist.created_on).toLocaleTimeString(
+          navigator.language,
+        )}`,
+        title: playlist.title,
+        organization: playlist.organization?.name || '',
+      }))
+    : [];
 
 export const PlaylistPage = () => {
   const intl = useIntl();
   const navigate = useNavigate();
+  const { isSmallerBreakpoint, breakpoint } = useResponsive();
+  const isXxsmallDevice = isSmallerBreakpoint(breakpoint, Breakpoints.xsmall);
   const playlistCreatePath = routes.PLAYLIST.subRoutes.CREATE.pathKey || '';
 
-  const sorts = [
+  const [sortModel, setSortModel] = useState<SortModel>([
     {
-      label: intl.formatMessage(commonSortMessages.sortByAscendingCreationDate),
-      value: PlaylistOrderType.BY_CREATED_ON,
+      field: 'created_on',
+      sort: 'desc',
     },
-    {
-      label: intl.formatMessage(
-        commonSortMessages.sortByDescendingCreationDate,
-      ),
-      value: PlaylistOrderType.BY_CREATED_ON_REVERSED,
-    },
-    {
-      label: intl.formatMessage(commonSortMessages.sortByAscendingTitle),
-      value: PlaylistOrderType.BY_TITLE,
-    },
-    {
-      label: intl.formatMessage(commonSortMessages.sortByDescendingTitle),
-      value: PlaylistOrderType.BY_TITLE_REVERSED,
-    },
-  ];
+  ]);
 
-  const [hasLoadedOnce, setHasLoadedOnce] = useState(false);
-  const [currentSort, setCurrentSort] = useState(sorts[1]);
-  const [currentPage, setCurrentPage] = useState(1);
-  const { isError, isLoading, data, refetch } = usePlaylists({
-    offset: `${(currentPage - 1) * ITEM_PER_PAGE}`,
-    limit: `${ITEM_PER_PAGE}`,
-    ordering: currentSort.value,
+  const pagination = usePagination({
+    defaultPage: 1,
+    pageSize: ITEM_PER_PAGE,
   });
 
-  useEffect(() => {
-    if (!isLoading) {
-      setHasLoadedOnce(true);
-    }
-  }, [isLoading]);
+  const { page, pageSize, setPagesCount } = pagination;
 
-  const [shouldDisplayActions, setShouldDisplayActions] = useState(false);
-  useEffect(() => {
-    if (!shouldDisplayActions && data?.count && hasLoadedOnce) {
-      setShouldDisplayActions(true);
+  let ordering: Maybe<PlaylistOrderType>;
+  if (sortModel.length) {
+    ordering = sortModel[0].field as PlaylistOrderType;
+    if (sortModel[0].sort === 'desc') {
+      ordering = `-${ordering}` as PlaylistOrderType;
     }
-  }, [hasLoadedOnce, data?.count, shouldDisplayActions]);
+  }
+
+  const { isError, isLoading, data, refetch } = usePlaylists({
+    offset: `${(page - 1) * ITEM_PER_PAGE}`,
+    limit: `${ITEM_PER_PAGE}`,
+    ordering,
+  });
+
+  const rows = useMemo(() => cleanupPlaylist(data?.results), [data?.results]);
+
+  useEffect(() => {
+    setPagesCount(data?.count ? Math.ceil(data?.count / pageSize) : 0);
+  }, [data?.count, pageSize, setPagesCount]);
 
   const shouldDisplayError = (!isLoading && !data) || isError;
   const shouldDisplayNoPlaylistYetMessage =
     !isError && data && data.count === 0; // we dont want to show create button and no playlist yet message at the same time
-  const shouldDisplayTable = !isError && data && data.count > 0;
 
   return (
     <Fragment>
@@ -126,13 +150,17 @@ export const PlaylistPage = () => {
 
       <Box pad="medium">
         <WhiteCard direction="column">
-          <Box flex="shrink" direction="row">
+          <Box
+            flex="shrink"
+            direction={isXxsmallDevice ? 'column' : 'row'}
+            align={isXxsmallDevice ? 'center' : 'initiale'}
+          >
             <Box flex>
               <Heading level={3} truncate>
                 {intl.formatMessage(messages.title)}
               </Heading>
             </Box>
-            {shouldDisplayActions && (
+            {!shouldDisplayNoPlaylistYetMessage && (
               <Box
                 flex="shrink"
                 margin={{ vertical: 'auto', left: 'small' }}
@@ -150,102 +178,99 @@ export const PlaylistPage = () => {
               </Box>
             )}
           </Box>
-          {!hasLoadedOnce && <Spinner />}
-          {hasLoadedOnce && (
-            <Fragment>
-              {shouldDisplayError && (
-                <Box
-                  background="content-background"
-                  margin="auto"
-                  pad="medium"
-                  round="small"
-                >
-                  <Text size="large">{intl.formatMessage(messages.error)}</Text>
-                  <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                    <Button
-                      a11yTitle={intl.formatMessage(messages.retry)}
-                      onClick={() => {
-                        refetch();
-                      }}
-                      primary
-                      label={intl.formatMessage(messages.retry)}
-                    />
-                  </Box>
+          <Fragment>
+            {shouldDisplayError && (
+              <Box
+                background="content-background"
+                margin="auto"
+                pad="medium"
+                round="small"
+              >
+                <Text size="large">{intl.formatMessage(messages.error)}</Text>
+                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                  <Button
+                    a11yTitle={intl.formatMessage(messages.retry)}
+                    onClick={() => {
+                      refetch();
+                    }}
+                    primary
+                    label={intl.formatMessage(messages.retry)}
+                  />
                 </Box>
-              )}
-              {shouldDisplayNoPlaylistYetMessage && (
-                <Box
-                  background="content-background"
-                  margin="auto"
-                  pad="medium"
-                  round="small"
-                >
-                  <Text size="large">
-                    {intl.formatMessage(messages.noPlaylists)}
-                  </Text>
-                  <Box margin={{ horizontal: 'auto', top: 'medium' }}>
-                    <Button
-                      primary
-                      onClick={() => {
-                        navigate(playlistCreatePath);
-                      }}
-                      label={intl.formatMessage(messages.create)}
-                    />
-                  </Box>
+              </Box>
+            )}
+            {shouldDisplayNoPlaylistYetMessage && (
+              <Box
+                background="content-background"
+                margin="auto"
+                pad="medium"
+                round="small"
+              >
+                <Text>{intl.formatMessage(messages.noPlaylists)}</Text>
+                <Box margin={{ horizontal: 'auto', top: 'medium' }}>
+                  <Button
+                    onClick={() => {
+                      navigate(playlistCreatePath);
+                    }}
+                    label={intl.formatMessage(messages.create)}
+                  />
                 </Box>
-              )}
-              {shouldDisplayTable && (
-                <SortableTable
-                  loading={isLoading}
-                  title={
-                    <Box direction="row">
-                      <CheckListIcon width={30} height={30} />
-                      <Text margin={{ left: 'small' }}>
-                        {intl.formatMessage(messages.tableTitle, {
-                          item_count: data.count,
-                        })}
-                      </Text>
-                    </Box>
-                  }
-                  items={data.results}
-                  sortable
-                  sortBy={sorts}
-                  currentSort={currentSort}
-                  onSortChange={(newSort) => {
-                    setCurrentSort(newSort);
-                    return data.results;
-                  }}
-                  paginable
-                  numberOfItems={data.count}
-                  pageSize={ITEM_PER_PAGE}
-                  onPageChange={(newPage) => {
-                    setCurrentPage(newPage);
-                    return data.results;
-                  }}
-                >
-                  {(item) => (
-                    <Button
-                      plain
-                      a11yTitle={intl.formatMessage(messages.updatePlaylist, {
-                        playlistName: item.title,
-                      })}
-                      title={intl.formatMessage(messages.updatePlaylist, {
-                        playlistName: item.title,
-                      })}
-                      label={
-                        <Box flex>
-                          <Text wordBreak="break-word">{item.title}</Text>
-                        </Box>
-                      }
-                      onClick={() => {
-                        navigate(`${routes.PLAYLIST.path}/${item.id}/update`);
-                      }}
-                    />
-                  )}
-                </SortableTable>
-              )}
-            </Fragment>
-          )}
+              </Box>
+            )}
+            {!shouldDisplayNoPlaylistYetMessage && (
+              <CunninghamProvider>
+                <DataGrid
+                  columns={[
+                    {
+                      field: 'created_on',
+                      headerName: intl.formatMessage(
+                        messages.columnNameCreatedOn,
+                      ),
+                    },
+                    {
+                      field: 'title',
+                      headerName: intl.formatMessage(messages.columnNameTitle),
+                    },
+                    {
+                      enableSorting: false,
+                      field: 'organization',
+                      headerName: intl.formatMessage(
+                        messages.columnNameOrganization,
+                      ),
+                    },
+                    {
+                      id: 'column-actions',
+                      renderCell: ({ row }) => (
+                        <ButtonCunningham
+                          color="tertiary"
+                          aria-label={intl.formatMessage(
+                            messages.updatePlaylist,
+                            {
+                              playlistName: row.title,
+                            },
+                          )}
+                          size="small"
+                          onClick={() => {
+                            navigate(
+                              `${routes.PLAYLIST.path}/${row.id}/update`,
+                            );
+                          }}
+                          icon={
+                            <span className="material-icons">settings</span>
+                          }
+                        />
+                      ),
+                    },
+                  ]}
+                  rows={rows}
+                  pagination={pagination}
+                  sortModel={sortModel}
+                  onSortModelChange={setSortModel}
+                  isLoading={isLoading}
+                />
+              </CunninghamProvider>
+            )}
+          </Fragment>
         </WhiteCard>
       </Box>
     </Fragment>
