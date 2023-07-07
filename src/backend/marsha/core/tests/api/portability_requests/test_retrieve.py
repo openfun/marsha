@@ -68,6 +68,9 @@ class PortabilityRequestRetrieveAPITest(TestCase):
             jwt_token,
             portability_request.pk,
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(portability_request.for_playlist.pk),
@@ -112,6 +115,9 @@ class PortabilityRequestRetrieveAPITest(TestCase):
             jwt_token,
             portability_request.pk,
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(playlist_owned.pk),  # important
@@ -153,6 +159,9 @@ class PortabilityRequestRetrieveAPITest(TestCase):
             jwt_token,
             portability_request.pk,
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(playlist_with_admin.pk),  # important
@@ -193,6 +202,9 @@ class PortabilityRequestRetrieveAPITest(TestCase):
             jwt_token,
             portability_request.pk,
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(playlist_with_organization_admin.pk),  # important
@@ -235,6 +247,9 @@ class PortabilityRequestRetrieveAPITest(TestCase):
             jwt_token,
             portability_request.pk,
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(playlist_with_consumer_site_admin.pk),

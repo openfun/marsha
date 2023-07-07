@@ -175,6 +175,9 @@ class PortabilityRequestCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(video.playlist.pk),  # important
@@ -253,6 +256,9 @@ class PortabilityRequestCreateAPITest(TestCase):
         self.assertEqual(
             response.json(),
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(video.playlist.pk),  # important
