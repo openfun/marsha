@@ -87,6 +87,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(portability_request.pk),
                     "for_playlist": {
                         "id": str(portability_request.for_playlist.pk),
@@ -134,6 +137,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(portability_request.pk),
                     "for_playlist": {
                         "id": str(playlist_owned.pk),  # important
@@ -175,6 +181,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(portability_request.pk),
                     "for_playlist": {
                         "id": str(playlist_with_admin.pk),  # important
@@ -216,6 +225,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(portability_request.pk),
                     "for_playlist": {
                         "id": str(playlist_with_organization_admin.pk),  # important
@@ -259,6 +271,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(portability_request.pk),
                     "for_playlist": {
                         "id": str(playlist_with_consumer_site_admin.pk),  # important
@@ -295,6 +310,9 @@ class PortabilityRequestListAPITest(TestCase):
 
         expected_results = [
             {
+                "created_on": portability_request.created_on.isoformat().replace(
+                    "+00:00", "Z"
+                ),
                 "id": str(portability_request.pk),
                 "for_playlist": {
                     "id": str(portability_request.for_playlist.pk),  # important
@@ -364,6 +382,7 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": pending.created_on.isoformat().replace("+00:00", "Z"),
                     "id": str(pending.pk),
                     "for_playlist": {
                         "id": str(pending.for_playlist.pk),  # important
@@ -409,6 +428,9 @@ class PortabilityRequestListAPITest(TestCase):
             jwt_token,
             [
                 {
+                    "created_on": linked_portability_request.created_on.isoformat().replace(
+                        "+00:00", "Z"
+                    ),
                     "id": str(linked_portability_request.pk),
                     "for_playlist": {
                         "id": str(

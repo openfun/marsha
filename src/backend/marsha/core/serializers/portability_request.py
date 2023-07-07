@@ -41,6 +41,7 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
         model = PortabilityRequest
         fields = (
             "id",
+            "created_on",
             "for_playlist",
             "from_playlist",
             "from_lti_consumer_site",
@@ -53,6 +54,7 @@ class PortabilityRequestSerializer(serializers.ModelSerializer):
         )
         read_only_fields = (
             "id",
+            "created_on",
             "state",
             "updated_by_user",
         )
