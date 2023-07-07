@@ -7,3 +7,4 @@ export * from './useDocument';
 export * from './useSentry';
 export * from './generics';
 export * from './useP2PVideoConfig';
+export * from './useSiteConfig';
