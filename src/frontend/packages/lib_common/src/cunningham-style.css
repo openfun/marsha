@@ -1,3 +1,51 @@
 @import '@openfun/cunningham-react/icons';
 @import '@openfun/cunningham-react/style';
 @import './cunningham-tokens.css';
+
+.c__field {
+  line-height: initial;
+}
+.c__button--tertiary {
+  color: var(--c--theme--colors--primary-400);
+}
+.labelled-box label {
+  color: var(--c--theme--colors--primary-500);
+}
+.labelled-box label.placeholder {
+  top: 50%;
+  transform: translateY(-50%);
+}
+/**
+ * DataGrid
+*/
+.c__datagrid {
+  display: block;
+  overflow: auto;
+}
+.c__datagrid > table td {
+  max-width: 10rem;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--c--theme--colors--primary-500);
+  font-size: var(--c--theme--font--size-datagrid-cell);
+}
+.c__datagrid > table th {
+  color: var(--c--theme--colors--primary-500);
+  font-weight: var(--c--theme--font--weights-datagrid-header);
+  font-size: var(--c--theme--font--size-datagrid-header);
+}
+.c__datagrid > table tbody tr {
+  border: 1px var(--c--theme--colors--primary-100) solid;
+}
+.c__datagrid > .c__pagination {
+  padding-top: 1rem;
+  justify-content: flex-end;
+}
+@media (max-width: 380px) {
+  .c__datagrid > .c__pagination {
+    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
+  }
+}

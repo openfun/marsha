@@ -39,6 +39,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 - refactor videojs id3 tags handling as videojs plugin
 - refactor videojs xapi handling as videojs plugin
 - upgrade react-query to @tanstack/react-query (v4) (#2340)
+- Replace component SortableTable by Cunningham DataGrid (#2311)
 
 ### Fixed
 
