@@ -1,6 +1,7 @@
-import { Box } from 'grommet';
+import { Box, Image } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
+import { useSiteConfig } from 'lib-components';
 import { forwardRef } from 'react';
 import { Link } from 'react-router-dom';
 
@@ -26,6 +27,36 @@ export const HeaderLight = forwardRef<
   HeaderLightProps
 >(({ bgcolor, color, withLogoLink = false }, ref) => {
   const colorLink = normalizeColor(color || 'blue-active', theme);
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
+  const showSiteConfigLogo =
+    !siteConfig.is_default_site && !!siteConfig.logo_url;
+
+  let Logo = (
+    <LogoIcon
+      width={117}
+      height={80}
+      color={withLogoLink ? undefined : color}
+    />
+  );
+  if (showSiteConfigLogo) {
+    Logo = (
+      <Image
+        src={siteConfig.logo_url}
+        alt="Home"
+        fit="contain"
+        alignSelf="start"
+      />
+    );
+  }
+
+  if (withLogoLink) {
+    Logo = (
+      <Link to={routes.LOGIN.path} style={{ color: colorLink }}>
+        {Logo}
+      </Link>
+    );
+  }
 
   return (
     <Box
@@ -34,13 +65,7 @@ export const HeaderLight = forwardRef<
       pad="small"
       background={{ color: bgcolor || 'bg-marsha' }}
     >
-      {withLogoLink ? (
-        <Link to={routes.LOGIN.path} style={{ color: colorLink }}>
-          <LogoIcon width={117} height={80} />
-        </Link>
-      ) : (
-        <LogoIcon width={117} height={80} color={color} />
-      )}
+      {Logo}
     </Box>
   );
 });

@@ -1,7 +1,8 @@
 import { Box, Text } from 'grommet';
 import { Facebook, Github, Linkedin, Mail, Twitter } from 'grommet-icons';
 import { Breakpoints } from 'lib-common';
-import { StyledLink, useResponsive } from 'lib-components';
+import { StyledLink, useResponsive, useSiteConfig } from 'lib-components';
+import React from 'react';
 
 import { usePagesApi } from 'features/PagesApi';
 
@@ -23,6 +24,10 @@ const Footer = () => {
   `;
 
   const { pagesApi } = usePagesApi();
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
+
+  const defaultFooterCopyright = '© 2023 Marsha Education';
 
   return (
     <Box margin={{ top: 'auto' }} color="white">
@@ -69,44 +74,52 @@ const Footer = () => {
           direction="row"
           align="center"
         >
-          <Text size="small">© 2023 Marsha Education</Text>
-          <Box direction="row" gap="small">
-            <a
-              href="https://twitter.com/FunMooc"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Twitter />
-            </a>
-            <a
-              href="https://www.facebook.com/france.universite.numerique/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Facebook />
-            </a>
-            <a
-              href="https://www.linkedin.com/school/franceuniversitenumerique/"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Linkedin />
-            </a>
-            <a
-              href="https://github.com/openfun"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Github />
-            </a>
-            <a
-              href="mailto:communication@fun-mooc.fr"
-              target="_blank"
-              rel="noreferrer"
-            >
-              <Mail />
-            </a>
-          </Box>
+          {siteConfig.is_default_site ? (
+            <React.Fragment>
+              <Text size="small">{defaultFooterCopyright}</Text>
+              <Box direction="row" gap="small">
+                <a
+                  href="https://twitter.com/FunMooc"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Twitter />
+                </a>
+                <a
+                  href="https://www.facebook.com/france.universite.numerique/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Facebook />
+                </a>
+                <a
+                  href="https://www.linkedin.com/school/franceuniversitenumerique/"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Linkedin />
+                </a>
+                <a
+                  href="https://github.com/openfun"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Github />
+                </a>
+                <a
+                  href="mailto:communication@fun-mooc.fr"
+                  target="_blank"
+                  rel="noreferrer"
+                >
+                  <Mail />
+                </a>
+              </Box>
+            </React.Fragment>
+          ) : (
+            <Text size="small">
+              {siteConfig.footer_copyright || defaultFooterCopyright}
+            </Text>
+          )}
         </Box>
       </Box>
     </Box>

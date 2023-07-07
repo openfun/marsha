@@ -1,14 +1,19 @@
 import { Box, Button, DropButton, Text } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
-import { AnonymousUser, useCurrentUser, useResponsive } from 'lib-components';
+import {
+  AnonymousUser,
+  useCurrentUser,
+  useResponsive,
+  useSiteConfig,
+} from 'lib-components';
 import { forwardRef, useEffect, useState } from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 import { Link, NavLink } from 'react-router-dom';
 import styled from 'styled-components';
 
 import { ReactComponent as AvatarIcon } from 'assets/svg/iko_avatarsvg.svg';
-import { ReactComponent as LogoIcon } from 'assets/svg/logo_marsha.svg';
+import { ReactComponent as MarshaLogoIcon } from 'assets/svg/logo_marsha.svg';
 import { ReactComponent as LogoutIcon } from 'assets/svg/logout.svg';
 import { ReactComponent as SettingsIcon } from 'assets/svg/settings.svg';
 import { logout } from 'features/Authentication';
@@ -98,6 +103,8 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
   }));
   const [fullName, setFullName] = useState<Nullable<string>>();
   const [isDropOpen, setIsDropOpen] = useState(false);
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
 
   useEffect(() => {
     if (currentUser === AnonymousUser.ANONYMOUS) {
@@ -135,7 +142,13 @@ const Header = forwardRef<Nullable<HTMLDivElement>>((_props, ref) => {
       >
         <Burger width={60} height={60} aria-controls="menu" />
         <Link to={routes.HOMEPAGE.path} style={{ color: 'currentColor' }}>
-          <LogoIcon width={117} height={80} />
+          {siteConfig.is_default_site || !siteConfig.logo_url ? (
+            <MarshaLogoIcon width={117} height={80} />
+          ) : (
+            <Box margin={{ top: 'small' }}>
+              <img src={siteConfig.logo_url} alt="Home" />
+            </Box>
+          )}
         </Link>
       </Box>
 

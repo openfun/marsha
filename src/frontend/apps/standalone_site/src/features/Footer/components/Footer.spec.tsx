@@ -1,6 +1,6 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
-import { useJwt } from 'lib-components';
+import { useJwt, useSiteConfig } from 'lib-components';
 import { render } from 'lib-tests';
 import React from 'react';
 
@@ -70,5 +70,50 @@ describe('<Footer />', () => {
       'href',
       'mailto:communication@fun-mooc.fr',
     );
+  });
+
+  test('render Footer custom site', async () => {
+    useJwt.setState({
+      jwt: undefined,
+    });
+    useSiteConfig.setState({
+      siteConfig: {
+        is_default_site: false,
+        footer_copyright: 'custom copyright',
+        logo_url: 'custom logo',
+        login_html: 'custom login markdown',
+      },
+    });
+
+    render(<Footer />);
+    expect(await screen.findByText(/custom copyright/i)).toBeInTheDocument();
+    expect(
+      screen.queryByText(/© 2023 Marsha Education/i),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Twitter' }),
+    ).not.toBeInTheDocument();
+  });
+
+  test('render Footer custom site with default copyright', async () => {
+    useJwt.setState({
+      jwt: undefined,
+    });
+    useSiteConfig.setState({
+      siteConfig: {
+        is_default_site: false,
+        footer_copyright: undefined,
+        logo_url: 'custom logo',
+        login_html: 'custom login markdown',
+      },
+    });
+
+    render(<Footer />);
+    expect(
+      await screen.findByText(/© 2023 Marsha Education/i),
+    ).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: 'Twitter' }),
+    ).not.toBeInTheDocument();
   });
 });
