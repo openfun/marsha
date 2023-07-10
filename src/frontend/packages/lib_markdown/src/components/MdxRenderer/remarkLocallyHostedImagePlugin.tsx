@@ -4,7 +4,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-return */
 import { Image } from 'mdast';
-import { visit } from 'unist-util-visit';
+import { visit, Test } from 'unist-util-visit';
 
 import { fetchOneMarkdownImage } from '@lib-markdown/data/queries';
 
@@ -18,7 +18,7 @@ const remarkLocallyHostedImagePlugin = (
     return async function transformer(ast: any) {
       const instances: [Image][] = [];
 
-      visit<Image>(ast, (node) => {
+      visit<Image, Test>(ast, (node) => {
         if (node.url && node.url.startsWith('/uploaded/image/')) {
           instances.push([node]);
         }

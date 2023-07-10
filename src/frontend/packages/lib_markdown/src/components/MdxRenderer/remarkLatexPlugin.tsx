@@ -8,7 +8,7 @@
 import { fromParse5 } from 'hast-util-from-parse5';
 import { Code, Parent } from 'mdast';
 import { parseFragment } from 'parse5';
-import { visit } from 'unist-util-visit';
+import { visit, Test } from 'unist-util-visit';
 
 import { markdownRenderLatex } from '@lib-markdown/data/queries';
 
@@ -18,7 +18,7 @@ const remarkLatexPlugin = (markdownDocumentId: string) => {
     return async function transformer(ast: any) {
       const instances: [string, number, Parent][] = [];
 
-      visit<Code>(
+      visit<Code, Test>(
         ast,
         // Only cat code block defined by "``` latex svg=true"
         // @ts-ignore
