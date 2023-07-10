@@ -1,18 +1,18 @@
 import { cleanup, screen } from '@testing-library/react';
 import {
-  appState,
   DASHBOARD_ROUTE,
   FULL_SCREEN_ERROR_ROUTE,
+  WithParams,
+  appState,
   modelName,
   uploadState,
   useAppConfig,
   useCurrentResourceContext,
-  WithParams,
 } from 'lib-components';
 import { render } from 'lib-tests';
 
-import { builderPlayerRoute } from 'components/routes';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
+import { builderPlayerRoute } from 'components/routes';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from '../PortabilityRequest/route';
 

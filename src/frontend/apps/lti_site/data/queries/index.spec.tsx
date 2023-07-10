@@ -1,12 +1,12 @@
 import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
   documentMockFactory,
   organizationMockFactory,
   playlistMockFactory,
   portabilityRequestMockFactory,
   thumbnailMockFactory,
+  useJwt,
 } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
 import { setLogger } from 'react-query';
@@ -49,10 +49,9 @@ describe('queries', () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, organization);
 
-      const { result } = renderHook(
-        () => useOrganization(organization.id),
-        { wrapper: WrapperReactQuery },
-      );
+      const { result } = renderHook(() => useOrganization(organization.id), {
+        wrapper: WrapperReactQuery,
+      });
       await waitFor(() => {
         expect(result.current.isSuccess).toBeTruthy();
       });
@@ -75,10 +74,9 @@ describe('queries', () => {
       const organization = organizationMockFactory();
       fetchMock.mock(`/api/organizations/${organization.id}/`, 404);
 
-      const { result } = renderHook(
-        () => useOrganization(organization.id),
-        { wrapper: WrapperReactQuery },
-      );
+      const { result } = renderHook(() => useOrganization(organization.id), {
+        wrapper: WrapperReactQuery,
+      });
 
       await waitFor(() => {
         expect(result.current.isError).toBeTruthy();
@@ -154,12 +152,9 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, playlist);
 
-      const { result } = renderHook(
-        () => useUpdatePlaylist(playlist.id),
-        {
-          wrapper: WrapperReactQuery,
-        },
-      );
+      const { result } = renderHook(() => useUpdatePlaylist(playlist.id), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         title: 'updated title',
       });
@@ -188,12 +183,9 @@ describe('queries', () => {
       const playlist = playlistMockFactory();
       fetchMock.patch(`/api/playlists/${playlist.id}/`, 400);
 
-      const { result } = renderHook(
-        () => useUpdatePlaylist(playlist.id),
-        {
-          wrapper: WrapperReactQuery,
-        },
-      );
+      const { result } = renderHook(() => useUpdatePlaylist(playlist.id), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         title: 'updated title',
       });
@@ -224,12 +216,9 @@ describe('queries', () => {
       const playlists = Array(4).fill(playlistMockFactory());
       fetchMock.mock('/api/playlists/?limit=999&organization=1', playlists);
 
-      const { result } = renderHook(
-        () => usePlaylists({ organization: '1' }),
-        {
-          wrapper: WrapperReactQuery,
-        },
-      );
+      const { result } = renderHook(() => usePlaylists({ organization: '1' }), {
+        wrapper: WrapperReactQuery,
+      });
       await waitFor(() => {
         expect(result.current.isSuccess).toBeTruthy();
       });
@@ -250,10 +239,9 @@ describe('queries', () => {
     it('fails to get the resource list', async () => {
       fetchMock.mock('/api/playlists/?limit=999&organization=1', 404);
 
-      const { result } = renderHook(
-        () => usePlaylists({ organization: '1' }),
-        { wrapper: WrapperReactQuery },
-      );
+      const { result } = renderHook(() => usePlaylists({ organization: '1' }), {
+        wrapper: WrapperReactQuery,
+      });
 
       await waitFor(() => {
         expect(result.current.isError).toBeTruthy();
@@ -396,12 +384,9 @@ describe('queries', () => {
       const portabilityRequest = portabilityRequestMockFactory();
       fetchMock.post('/api/portability-requests/', portabilityRequest);
 
-      const { result } = renderHook(
-        () => useCreatePortabilityRequest(),
-        {
-          wrapper: WrapperReactQuery,
-        },
-      );
+      const { result } = renderHook(() => useCreatePortabilityRequest(), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         for_playlist: portabilityRequest.for_playlist.id,
         from_playlist: portabilityRequest.from_playlist.id,
@@ -434,12 +419,9 @@ describe('queries', () => {
       const portabilityRequest = portabilityRequestMockFactory();
       fetchMock.post('/api/portability-requests/', 400);
 
-      const { result } = renderHook(
-        () => useCreatePortabilityRequest(),
-        {
-          wrapper: WrapperReactQuery,
-        },
-      );
+      const { result } = renderHook(() => useCreatePortabilityRequest(), {
+        wrapper: WrapperReactQuery,
+      });
       result.current.mutate({
         for_playlist: portabilityRequest.for_playlist.id,
         from_playlist: portabilityRequest.from_playlist.id,

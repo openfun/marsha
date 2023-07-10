@@ -1,15 +1,14 @@
 import { act, fireEvent, screen, waitFor } from '@testing-library/react';
-import { render, Deferred } from 'lib-tests';
-import React, { PropsWithChildren } from 'react';
 import fetchMock from 'fetch-mock';
-
 import {
-  UploadManagerStatus,
-  useUploadManager,
-  uploadState,
   DepositedFile,
+  UploadManagerStatus,
   FileDepositoryModelName as modelName,
+  uploadState,
+  useUploadManager,
 } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
+import React, { PropsWithChildren } from 'react';
 
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { depositedFileMockFactory } from 'apps/deposit/utils/tests/factories';

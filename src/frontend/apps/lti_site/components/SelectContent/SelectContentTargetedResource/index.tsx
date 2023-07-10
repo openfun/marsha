@@ -1,25 +1,24 @@
 import { Box, Heading } from 'grommet';
-import React, { Fragment, lazy, Suspense } from 'react';
-import { useIntl } from 'react-intl';
-
 import {
-  Loader,
-  LtiSelectResource,
-  selectableBaseResource,
   Document,
   Live,
   LiveModeType,
+  Loader,
+  LtiSelectResource,
   Playlist,
-  uploadState,
   Video,
+  selectableBaseResource,
+  uploadState,
 } from 'lib-components';
+import { UseCreateVideoData, initiateLive, useCreateVideo } from 'lib-video';
+import React, { Fragment, Suspense, lazy } from 'react';
+import { useIntl } from 'react-intl';
 
 import { useCreateDocument } from 'data/queries';
 
-import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
+import { commonMessages } from '../commonMessages';
 import { buildContentItems } from '../utils';
-import { initiateLive, useCreateVideo, UseCreateVideoData } from 'lib-video';
 
 interface SelectContentVideoProps {
   addMessage: string;
@@ -67,7 +66,7 @@ const SelectContentVideo = ({
         addMessage={addMessage}
         addAndSelectContent={() => {
           const data: UseCreateVideoData = {
-            playlist: playlist!.id,
+            playlist: playlist.id,
             title: lti_select_form_data?.activity_title,
             description: lti_select_form_data?.activity_description,
           };
@@ -78,8 +77,8 @@ const SelectContentVideo = ({
           }
           useCreateVideoMutation.mutate(data);
         }}
-        newLtiUrl={new_video_url!}
-        items={videos!}
+        newLtiUrl={new_video_url}
+        items={videos}
         lti_select_form_data={lti_select_form_data}
         setContentItemsValue={setContentItemsValue}
       />
@@ -125,13 +124,13 @@ const SelectContentDocument = ({
         addMessage={intl.formatMessage(commonMessages.addDocument)}
         addAndSelectContent={() => {
           useCreateDocumentMutation.mutate({
-            playlist: playlist!.id,
+            playlist: playlist.id,
             title: lti_select_form_data?.activity_title,
             description: lti_select_form_data?.activity_description,
           });
         }}
-        newLtiUrl={new_document_url!}
-        items={documents!}
+        newLtiUrl={new_document_url}
+        items={documents}
         lti_select_form_data={lti_select_form_data}
         setContentItemsValue={setContentItemsValue}
       />

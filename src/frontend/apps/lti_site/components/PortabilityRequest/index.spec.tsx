@@ -1,12 +1,11 @@
-import fetchMock from 'fetch-mock';
-import React from 'react';
-
-import { PortabilityConfigMockFactory, useJwt } from 'lib-components';
-
-import { render } from 'lib-tests';
-import { PortabilityRequest } from '.';
 import { act, cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
+import { PortabilityConfigMockFactory, useJwt } from 'lib-components';
+import { render } from 'lib-tests';
+import React from 'react';
+
+import { PortabilityRequest } from '.';
 
 describe('<PortabilityRequest />', () => {
   afterEach(() => {

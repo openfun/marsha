@@ -1,12 +1,11 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
-
 import {
   UploadManagerContext,
   UploadManagerStatus,
   modelName,
 } from 'lib-components';
 import { render } from 'lib-tests';
+import React from 'react';
 
 import { SidebarUploadsIndicator } from '.';
 

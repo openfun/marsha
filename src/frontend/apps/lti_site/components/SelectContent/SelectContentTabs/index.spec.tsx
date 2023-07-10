@@ -5,22 +5,23 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { Tab } from 'grommet';
-import React, { Suspense } from 'react';
-
 import {
   LiveModeType,
-  liveState,
-  uploadState,
   documentMockFactory,
   liveMockFactory,
+  liveState,
   playlistMockFactory,
+  uploadState,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
+import React, { Suspense } from 'react';
+
+import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 
 import { buildContentItems } from '../utils';
-import { SelectContentTabs, SelectContentTabProps } from '.';
-import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
+
+import { SelectContentTabProps, SelectContentTabs } from '.';
 
 const mockAppData = {
   new_document_url: 'https://example.com/lti/documents/',

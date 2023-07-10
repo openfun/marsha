@@ -1,19 +1,18 @@
 import { screen } from '@testing-library/react';
 import {
+  useDocument,
   useJwt,
   useMaintenance,
-  useSentry,
-  useVideo,
-  useTimedTextTrack,
-  useThumbnail,
-  useSharedLiveMedia,
-  useDocument,
   useP2PConfig,
+  useSentry,
+  useSharedLiveMedia,
+  useThumbnail,
+  useTimedTextTrack,
+  useVideo,
 } from 'lib-components';
+import { render } from 'lib-tests';
 import { useAttendance } from 'lib-video';
 import React from 'react';
-
-import { render } from 'lib-tests';
 
 import { AppInitializer } from '.';
 
@@ -73,10 +72,12 @@ describe('<AppInitializer />', () => {
     await screen.findByText('some cool content');
 
     expect(useP2PConfig.getState().isP2PEnabled).toEqual(true);
-    expect(useP2PConfig.getState().stunServersUrls).toEqual(['stun.example.com']);
+    expect(useP2PConfig.getState().stunServersUrls).toEqual([
+      'stun.example.com',
+    ]);
     expect(useP2PConfig.getState().webTorrentServerTrackerUrls).toEqual([
       'tracker.example.com',
-    ])
+    ]);
     expect(useSentry.getState().isSentryReady).toEqual(true);
     expect(useVideo.getState().videos).toEqual({
       ['my-video-id']: mockedVideo,

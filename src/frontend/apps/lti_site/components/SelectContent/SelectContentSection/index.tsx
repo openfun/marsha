@@ -1,18 +1,17 @@
 import { Box, Button, Grid } from 'grommet';
 import { AddCircle, Document as DocumentIcon } from 'grommet-icons';
 import { Nullable } from 'lib-common';
-import React from 'react';
-import { defineMessages, useIntl } from 'react-intl';
-
 import {
   ContentCard,
   Document,
   PlaySVG,
-  WebinarSVG,
   TextTruncated,
   Video,
+  WebinarSVG,
   videoSize,
 } from 'lib-components';
+import React from 'react';
+import { defineMessages, useIntl } from 'react-intl';
 
 import { buildContentItems } from '../utils';
 
@@ -147,13 +146,13 @@ export const SelectContentSection = ({
         {items?.map(
           (item: Video | Document, index: React.Key | null | undefined) => (
             <SelectContentCard
-              content={item!}
+              content={item}
               key={index}
               onClick={() =>
                 buildContentItems(
-                  item!.lti_url!,
-                  item!.title,
-                  item!.description,
+                  item.lti_url!,
+                  item.title,
+                  item.description,
                   lti_select_form_data,
                   setContentItemsValue,
                 )

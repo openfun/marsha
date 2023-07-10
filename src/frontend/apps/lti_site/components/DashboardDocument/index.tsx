@@ -1,23 +1,23 @@
 import { Box } from 'grommet';
+import {
+  Document,
+  ObjectStatusPicker,
+  UploadManagerStatus,
+  UploadableObjectProgress,
+  modelName,
+  uploadState,
+  useDocument,
+  useUploadManager,
+} from 'lib-components';
 import React, { useEffect } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 
 import { DashboardInternalHeading } from 'components/Dashboard/DashboardInternalHeading';
-import {
-  UploadManagerStatus,
-  useUploadManager,
-  useDocument,
-  Document,
-  modelName,
-  uploadState,
-  UploadableObjectProgress,
-  ObjectStatusPicker,
-} from 'lib-components';
 import { pollForTrack } from 'data/sideEffects/pollForTrack';
 
-import { DashboardDocumentTitleForm } from './DashboardDocumentTitleForm';
 import { DashboardDocumentPaneButtons } from './DashboardDocumentPaneButtons';
+import { DashboardDocumentTitleForm } from './DashboardDocumentTitleForm';
 import DocumentPlayer from './DocumentPlayer';
 
 const { ERROR, PENDING, PROCESSING, READY } = uploadState;
@@ -65,7 +65,7 @@ const CommonStatusLine = ({
   document: Document;
   documentUploadStatus?: UploadManagerStatus;
 }) => (
-  <Box align={'center'} direction={'row'}>
+  <Box align="center" direction="row">
     <DashboardDocumentInternalHeading>
       <FormattedMessage {...messages.title} />
     </DashboardDocumentInternalHeading>
@@ -101,25 +101,25 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
   if (document.upload_state === READY) {
     return (
       <DashboardDocumentInnerContainer>
-        <Box direction={'row'}>
-          <Box basis={'1/2'} margin={'small'}>
+        <Box direction="row">
+          <Box basis="1/2" margin="small">
             <CommonStatusLine
               document={document}
               documentUploadStatus={documentUploadState}
             />
             {intl.formatMessage(messages[READY])}
-            <Box align={'center'} direction={'row'} margin={{ top: 'small' }}>
+            <Box align="center" direction="row" margin={{ top: 'small' }}>
               <DashboardDocumentInternalHeading>
                 {intl.formatMessage(messages.filename)}
               </DashboardDocumentInternalHeading>
               <div>{document.filename}</div>
             </Box>
           </Box>
-          <Box basis={'1/2'} margin={'small'}>
+          <Box basis="1/2" margin="small">
             <DocumentPlayer document={document} />
           </Box>
         </Box>
-        <Box margin={'small'}>
+        <Box margin="small">
           <DashboardDocumentTitleForm document={document} />
         </Box>
         <DashboardDocumentPaneButtons document={document} />

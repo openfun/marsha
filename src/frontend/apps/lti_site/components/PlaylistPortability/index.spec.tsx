@@ -1,12 +1,12 @@
 import { act, fireEvent, screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useJwt,
   playlistLiteMockFactory,
   playlistMockFactory,
+  useJwt,
   videoMockFactory,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 
 import { PlaylistPortability } from '.';
@@ -78,7 +78,7 @@ describe('<PlaylistPortability />', () => {
     const input = screen.getByRole('textbox', {
       name: /share with another playlist/i,
     });
-    fireEvent.change(input!, { target: { value: otherPlaylist.id } });
+    fireEvent.change(input, { target: { value: otherPlaylist.id } });
     fireEvent.click(screen.getByRole('button', { name: 'add share' }));
 
     const updatedPlaylistDeferred = new Deferred();
@@ -104,8 +104,8 @@ describe('<PlaylistPortability />', () => {
       },
       method: 'PATCH',
       body: JSON.stringify({
-        portable_to: currentPlaylist
-          .portable_to!.concat(otherPlaylist)
+        portable_to: currentPlaylist.portable_to
+          .concat(otherPlaylist)
           .map((playlist) => playlist.id),
       }),
     });
@@ -146,7 +146,7 @@ describe('<PlaylistPortability />', () => {
     render(<PlaylistPortability object={video} />);
     await act(async () => currentPlaylistDeferred.resolve(currentPlaylist));
 
-    currentPlaylist.portable_to!.map((playlist) => {
+    currentPlaylist.portable_to.map((playlist) => {
       screen.getByRole('listitem', {
         name: `Shared with ${playlist.title}`,
       });

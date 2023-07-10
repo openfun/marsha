@@ -1,9 +1,9 @@
 import * as faker from 'faker';
 import {
-  playlistMockFactory,
-  uploadState,
   DepositedFile,
   FileDepository,
+  playlistMockFactory,
+  uploadState,
 } from 'lib-components';
 
 const { READY } = uploadState;

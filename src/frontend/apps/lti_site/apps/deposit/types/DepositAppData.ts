@@ -1,5 +1,4 @@
 import { Nullable } from 'lib-common';
-
 import {
   AppData,
   FileDepository,

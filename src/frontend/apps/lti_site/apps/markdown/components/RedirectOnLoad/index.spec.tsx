@@ -1,5 +1,4 @@
 import { screen } from '@testing-library/react';
-
 import {
   FULL_SCREEN_ERROR_ROUTE,
   OrganizationAccessRole,
@@ -10,20 +9,19 @@ import {
   useJwt,
 } from 'lib-components';
 import {
-  markdownDocumentMockFactory,
-  markdownTranslationMockFactory,
-} from 'lib-markdown';
-
-import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import { render } from 'lib-tests';
-
-import {
   MARKDOWN_EDITOR_ROUTE,
   MARKDOWN_NOT_FOUND_ROUTE,
   MARKDOWN_VIEWER_ROUTE,
+  markdownDocumentMockFactory,
+  markdownTranslationMockFactory,
 } from 'lib-markdown';
-import { RedirectOnLoad } from '.';
+import { render } from 'lib-tests';
+
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
+
 import { MARKDOWN_WIZARD_ROUTE } from '../MarkdownWizard/route';
+
+import { RedirectOnLoad } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

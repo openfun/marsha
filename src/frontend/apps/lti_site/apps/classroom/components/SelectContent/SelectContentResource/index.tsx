@@ -3,9 +3,9 @@ import { useCreateClassroom } from 'lib-classroom';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
-import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/classroom/components/SelectContent/SelectContentSection';
+import { commonMessages } from 'apps/classroom/components/SelectContent/commonMessages';
+import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
 import { buildContentItems } from 'components/SelectContent/utils';
 
@@ -34,7 +34,7 @@ const SelectContentResource = ({
       <SelectContentSection
         addAndSelectContent={() => {
           useCreateClassroomMutation.mutate({
-            playlist: playlist!.id,
+            playlist: playlist.id,
             title: lti_select_form_data?.activity_title,
             description: lti_select_form_data?.activity_description,
           });

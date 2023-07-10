@@ -15,6 +15,7 @@ import {
   VIDEO_WIZARD_ROUTE,
   builderVideoWizzardRoute,
 } from 'components/routes';
+
 import VideoWizard from '.';
 
 const mockedVideo = videoMockFactory({ live_state: null });

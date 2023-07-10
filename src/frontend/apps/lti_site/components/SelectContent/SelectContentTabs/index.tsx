@@ -1,30 +1,30 @@
 import { Box, Grommet, Tab, Tabs, Text } from 'grommet';
-import { Document as DocumentIcon } from 'grommet-icons';
 import { deepMerge } from 'grommet/utils';
+import { Document as DocumentIcon } from 'grommet-icons';
 import { theme as baseTheme } from 'lib-common';
 import {
-  appNames,
   Document,
-  flags,
   Live,
   LiveModeType,
   Loader,
-  Playlist,
   PlaySVG,
-  uploadState,
+  Playlist,
   Video,
   WebinarSVG,
+  appNames,
+  flags,
+  uploadState,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { appConfigs } from 'data/appConfigs';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
 import { useCreateDocument } from 'data/queries';
 
-import { commonMessages } from '../commonMessages';
 import { SelectContentSection } from '../SelectContentSection';
+import { commonMessages } from '../commonMessages';
 import { buildContentItems } from '../utils';
 
 const customTheme = deepMerge(baseTheme, {
@@ -243,7 +243,7 @@ export const SelectContentTabs = ({
         {appTabs.map((LazyComponent, index) => (
           <Suspense key={index} fallback={<Loader />}>
             <LazyComponent
-              lti_select_form_data={lti_select_form_data!}
+              lti_select_form_data={lti_select_form_data}
               playlist={playlist!}
               setContentItemsValue={setContentItemsValue}
             />

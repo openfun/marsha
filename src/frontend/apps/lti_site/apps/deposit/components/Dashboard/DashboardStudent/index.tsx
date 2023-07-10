@@ -1,8 +1,7 @@
 import { Box, Grid, Heading, Paragraph } from 'grommet';
+import { FileDepository, Loader, useResponsive } from 'lib-components';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
-
-import { Loader, FileDepository, useResponsive } from 'lib-components';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { DepositedFileRow } from 'apps/deposit/components/Dashboard/common/DepositedFileRow';
 import { useDepositedFiles } from 'apps/deposit/data/queries';

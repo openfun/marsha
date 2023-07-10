@@ -4,12 +4,13 @@ import {
   appState,
   useAppConfig,
 } from 'lib-components';
-
-import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { render } from 'lib-tests';
 
-import { RedirectOnLoad } from '.';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
+
 import { DASHBOARD_ROUTE } from '../Dashboard/route';
+
+import { RedirectOnLoad } from '.';
 
 jest.mock('lib-components', () => ({
   ...jest.requireActual('lib-components'),

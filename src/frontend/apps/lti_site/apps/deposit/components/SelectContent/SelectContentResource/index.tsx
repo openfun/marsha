@@ -2,13 +2,12 @@ import { Box, Heading } from 'grommet';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
-import { buildContentItems } from 'components/SelectContent/utils';
-
-import { commonMessages } from 'apps/deposit/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/deposit/components/SelectContent/SelectContentSection';
+import { commonMessages } from 'apps/deposit/components/SelectContent/commonMessages';
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useCreateFileDepository } from 'apps/deposit/data/queries';
+import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
+import { buildContentItems } from 'components/SelectContent/utils';
 
 const SelectContentResource = ({
   playlist,
@@ -35,7 +34,7 @@ const SelectContentResource = ({
       <SelectContentSection
         addAndSelectContent={() => {
           useCreateFileDepositoryMutation.mutate({
-            playlist: playlist!.id,
+            playlist: playlist.id,
             title: lti_select_form_data?.activity_title,
             description: lti_select_form_data?.activity_description,
           });

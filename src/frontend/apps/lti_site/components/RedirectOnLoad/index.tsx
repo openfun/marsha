@@ -1,7 +1,3 @@
-import { Navigate } from 'react-router-dom';
-
-import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 import {
   ErrorComponents,
   appState,
@@ -9,6 +5,10 @@ import {
   modelName,
   useAppConfig,
 } from 'lib-components';
+import { Navigate } from 'react-router-dom';
+
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
+import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
 
 import { RedirectDocument } from './RedirectDocument';
 import { RedirectVideo } from './RedirectVideo';

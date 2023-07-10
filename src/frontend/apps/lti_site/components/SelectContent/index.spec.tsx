@@ -2,24 +2,24 @@ import { act, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
-import React from 'react';
-
 import {
-  selectableBaseResource,
   LiveModeType,
-  liveState,
-  uploadState,
   documentMockFactory,
   liveMockFactory,
+  liveState,
   playlistMockFactory,
+  selectableBaseResource,
+  uploadState,
   videoMockFactory,
 } from 'lib-components';
 import { render } from 'lib-tests';
+import { initiateLive } from 'lib-video';
+import React from 'react';
 
 import { SelectContentTabProps } from './SelectContentTabs';
 import { buildContentItems } from './utils';
+
 import { SelectContent } from '.';
-import { initiateLive } from 'lib-video';
 
 jest.mock(
   'data/hooks/useIsFeatureEnabled',
@@ -177,8 +177,8 @@ describe('<SelectContent />', () => {
         ]}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
 
@@ -239,8 +239,8 @@ describe('<SelectContent />', () => {
         ]}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
     await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
@@ -279,8 +279,8 @@ describe('<SelectContent />', () => {
         ]}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
 
@@ -320,8 +320,8 @@ describe('<SelectContent />', () => {
         ]}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
 
@@ -348,7 +348,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -394,7 +394,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -442,7 +442,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -490,7 +490,7 @@ describe('<SelectContent />', () => {
             is_ready_to_show: false,
           }),
         ]}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
           lti_response_url: 'https://example.com/lti',
           lti_message_type: 'ContentItemSelection',
@@ -538,8 +538,8 @@ describe('<SelectContent />', () => {
         videos={mockAppData.videos}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
     act(() => {
@@ -596,8 +596,8 @@ describe('<SelectContent />', () => {
         videos={mockAppData.videos}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
     await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
@@ -652,9 +652,9 @@ describe('<SelectContent />', () => {
         videos={mockAppData.videos}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
-          ...mockAppData.lti_select_form_data!,
+          ...mockAppData.lti_select_form_data,
           activity_title: 'Activity title',
           activity_description: 'Activity description',
         }}
@@ -716,9 +716,9 @@ describe('<SelectContent />', () => {
         videos={mockAppData.videos}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={{
-          ...mockAppData.lti_select_form_data!,
+          ...mockAppData.lti_select_form_data,
           activity_title: '',
           activity_description: '',
         }}
@@ -785,8 +785,8 @@ describe('<SelectContent />', () => {
         ]}
         new_document_url={mockAppData.new_document_url}
         new_video_url={mockAppData.new_video_url}
-        lti_select_form_action_url={mockAppData.lti_select_form_action_url!}
-        lti_select_form_data={mockAppData.lti_select_form_data!}
+        lti_select_form_action_url={mockAppData.lti_select_form_action_url}
+        lti_select_form_data={mockAppData.lti_select_form_data}
         targeted_resource={selectableBaseResource.VIDEO}
       />,
     );

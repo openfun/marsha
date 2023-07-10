@@ -1,17 +1,16 @@
 import { screen } from '@testing-library/react';
 import {
-  decodeJwt,
-  Loader,
-  useAppConfig,
   Document,
-  modelName,
-  liveState,
-  uploadState,
+  Loader,
   Video,
+  decodeJwt,
+  liveState,
+  modelName,
+  uploadState,
+  useAppConfig,
 } from 'lib-components';
-import React, { Suspense } from 'react';
-
 import { render } from 'lib-tests';
+import React, { Suspense } from 'react';
 
 import Dashboard from '.';
 

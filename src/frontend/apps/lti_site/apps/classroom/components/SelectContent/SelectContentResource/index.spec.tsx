@@ -1,11 +1,10 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import React from 'react';
-
 import { classroomMockFactory } from 'lib-classroom';
 import { playlistMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
+import React from 'react';
 
 import SelectContentResource from '.';
 

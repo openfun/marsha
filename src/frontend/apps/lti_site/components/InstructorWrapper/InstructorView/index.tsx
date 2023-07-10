@@ -1,13 +1,13 @@
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import {
-  useCurrentResourceContext,
-  useMaintenance,
   Document,
   Video,
+  useCurrentResourceContext,
+  useMaintenance,
 } from 'lib-components';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
 import { LTINav } from 'components/LTINav';

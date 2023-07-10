@@ -1,9 +1,9 @@
 import {
-  useJwt,
   API_ENDPOINT,
   DepositedFile,
-  FileDepositoryModelName as modelName,
   fetchWrapper,
+  FileDepositoryModelName as modelName,
+  useJwt,
 } from 'lib-components';
 
 export const createDepositedFile = async (file: {

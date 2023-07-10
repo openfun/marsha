@@ -1,12 +1,11 @@
 import { Box, Button, Heading, Paragraph } from 'grommet';
+import { Clock } from 'grommet-icons';
+import { DecodedJwtLTI, PortabilityConfig, useJwt } from 'lib-components';
 import React from 'react';
 import toast from 'react-hot-toast';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-
-import { DecodedJwtLTI, PortabilityConfig, useJwt } from 'lib-components';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
 import { useCreatePortabilityRequest } from '../../data/queries';
-import { Clock } from 'grommet-icons';
 
 const messages = defineMessages({
   resourceRequiresPortability: {
@@ -63,7 +62,9 @@ export const PortabilityRequest = ({
         '_blank',
         'noopener,noreferrer',
       );
-      if (newWindow) newWindow.opener = null;
+      if (newWindow) {
+        newWindow.opener = null;
+      }
       setPortabilityRequested(true);
     },
     onError: () => {

@@ -1,14 +1,13 @@
 import { cleanup, screen } from '@testing-library/react';
 import {
-  documentMockFactory,
   UploadManagerContext,
   UploadManagerStatus,
+  documentMockFactory,
   modelName,
   uploadState,
 } from 'lib-components';
-import React from 'react';
-
 import { render } from 'lib-tests';
+import React from 'react';
 
 import { DashboardDocumentPaneButtons } from '.';
 

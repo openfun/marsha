@@ -1,15 +1,16 @@
 import { Box } from 'grommet';
-import { builderUploadFormRoute, withLink } from 'lib-components';
-import { FormattedMessage, defineMessages } from 'react-intl';
-
-import { PLAYER_ROUTE } from 'components/routes';
 import {
   DashboardButton,
   Document,
+  builderUploadFormRoute,
   modelName,
   uploadState,
   useUploadManager,
+  withLink,
 } from 'lib-components';
+import { FormattedMessage, defineMessages } from 'react-intl';
+
+import { PLAYER_ROUTE } from 'components/routes';
 
 const DashboardButtonWithLink = withLink(DashboardButton);
 
@@ -51,9 +52,9 @@ export const DashboardDocumentPaneButtons = ({
 
   return (
     <Box
-      direction={'row'}
+      direction="row"
       justify={displayWatchBtn ? 'center' : 'end'}
-      margin={'small'}
+      margin="small"
     >
       <DashboardButtonWithLink
         label={

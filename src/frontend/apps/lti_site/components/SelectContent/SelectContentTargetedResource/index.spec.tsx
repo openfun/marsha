@@ -1,18 +1,16 @@
 import { screen, within } from '@testing-library/react';
-import React from 'react';
-
 import {
-  appNames,
-  selectableBaseResource,
   LiveModeType,
-  liveState,
-  uploadState,
+  appNames,
   documentMockFactory,
   liveMockFactory,
+  liveState,
+  selectableBaseResource,
+  uploadState,
   videoMockFactory,
 } from 'lib-components';
-
 import { render } from 'lib-tests';
+import React from 'react';
 
 import { SelectContentTargetedResource } from '.';
 

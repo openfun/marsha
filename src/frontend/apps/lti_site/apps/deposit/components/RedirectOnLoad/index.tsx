@@ -1,5 +1,3 @@
-import { Navigate } from 'react-router-dom';
-
 import {
   ErrorComponents,
   appState,
@@ -7,6 +5,7 @@ import {
   flags,
   useAppConfig,
 } from 'lib-components';
+import { Navigate } from 'react-router-dom';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';

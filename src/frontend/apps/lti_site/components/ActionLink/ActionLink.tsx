@@ -1,6 +1,6 @@
 import { Button, ButtonProps } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
-import { theme, colors } from 'lib-common';
+import { colors, theme } from 'lib-common';
 import React from 'react';
 import styled from 'styled-components';
 

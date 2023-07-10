@@ -9,12 +9,12 @@ import {
 } from 'apps/deposit/utils/tests/factories';
 
 import {
-  useFileDepository,
-  useFileDepositories,
   useCreateFileDepository,
-  useUpdateFileDepository,
   useDepositedFiles,
+  useFileDepositories,
+  useFileDepository,
   useUpdateDepositedFile,
+  useUpdateFileDepository,
 } from '.';
 
 jest.mock('lib-components', () => ({
@@ -335,7 +335,7 @@ describe('queries', () => {
         depositedFiles.slice(3, 4),
       );
 
-      const { result} = renderHook(
+      const { result } = renderHook(
         () => useDepositedFiles(fileDepository.id, { limit: 3, offset: 3 }),
         {
           wrapper: WrapperReactQuery,

@@ -1,16 +1,15 @@
-import React from 'react';
-import { defineMessages, useIntl } from 'react-intl';
-import { useNavigate } from 'react-router-dom';
-
 import { Box, Button, Text, TextInput } from 'grommet';
 import { Breakpoints } from 'lib-common';
-import { useResponsive, WhiteCard, WizardLayout } from 'lib-components';
+import { WhiteCard, WizardLayout, useResponsive } from 'lib-components';
 import {
   LanguageSelector,
   MARKDOWN_EDITOR_ROUTE,
   useSaveTranslations,
 } from 'lib-markdown';
+import React from 'react';
 import { toast } from 'react-hot-toast';
+import { defineMessages, useIntl } from 'react-intl';
+import { useNavigate } from 'react-router-dom';
 
 const messages = defineMessages({
   markdownCreationTitle: {

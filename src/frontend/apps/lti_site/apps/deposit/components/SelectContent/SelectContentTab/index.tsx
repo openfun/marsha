@@ -1,18 +1,17 @@
 import { Tab } from 'grommet';
 import { DocumentStore } from 'grommet-icons';
 import React from 'react';
+import { useIntl } from 'react-intl';
 
+import { SelectContentSection } from 'apps/deposit/components/SelectContent/SelectContentSection';
+import { commonMessages } from 'apps/deposit/components/SelectContent/commonMessages';
+import { depositAppData } from 'apps/deposit/data/depositAppData';
+import { useCreateFileDepository } from 'apps/deposit/data/queries';
 import {
   RichTabTitle,
   SelectContentTabProps,
 } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
-
-import { SelectContentSection } from 'apps/deposit/components/SelectContent/SelectContentSection';
-import { depositAppData } from 'apps/deposit/data/depositAppData';
-import { useCreateFileDepository } from 'apps/deposit/data/queries';
-import { commonMessages } from 'apps/deposit/components/SelectContent/commonMessages';
-import { useIntl } from 'react-intl';
 
 const Internal = ({
   playlist,
@@ -34,7 +33,7 @@ const Internal = ({
     <SelectContentSection
       addAndSelectContent={() => {
         useCreateFileDepositoryMutation.mutate({
-          playlist: playlist!.id,
+          playlist: playlist.id,
           title: lti_select_form_data?.activity_title,
           description: lti_select_form_data?.activity_description,
         });

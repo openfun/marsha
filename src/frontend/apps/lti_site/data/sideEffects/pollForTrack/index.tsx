@@ -1,14 +1,14 @@
 import {
-  useJwt,
-  addResource,
   API_ENDPOINT,
-  requestStatus,
   Document,
-  fetchWrapper,
-  modelName,
   TimedText,
   Video,
+  addResource,
+  fetchWrapper,
+  modelName,
   report,
+  requestStatus,
+  useJwt,
 } from 'lib-components';
 
 export async function pollForTrack<
@@ -16,8 +16,8 @@ export async function pollForTrack<
 >(
   resourceName: T,
   resourceId: string,
-  timer: number = 15,
-  counter: number = 1,
+  timer = 15,
+  counter = 1,
 ): Promise<requestStatus> {
   try {
     const response = await fetchWrapper(

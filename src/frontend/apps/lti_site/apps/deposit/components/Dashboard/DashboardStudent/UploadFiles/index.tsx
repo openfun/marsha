@@ -1,26 +1,25 @@
 import { Box, Button, Paragraph, Text } from 'grommet';
-import Dropzone from 'react-dropzone';
-import React, { useCallback, useEffect, useState } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
-import { DateTime } from 'luxon';
-import { toast } from 'react-hot-toast';
-
 import {
   PlusSVG,
   UploadManagerStatus,
-  useUploadManager,
-  FileDepositoryModelName as modelName,
   UploadableObjectProgress,
-  truncateFilename,
   formatSizeErrorScale,
+  FileDepositoryModelName as modelName,
   report,
+  truncateFilename,
+  useUploadManager,
 } from 'lib-components';
+import { DateTime } from 'luxon';
+import React, { useCallback, useEffect, useState } from 'react';
+import Dropzone from 'react-dropzone';
+import { toast } from 'react-hot-toast';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
+import { useDepositedFileMetadata } from 'apps/deposit/api/useDepositedFileMetadata';
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useDepositedFiles } from 'apps/deposit/data/queries';
 import { createDepositedFile } from 'apps/deposit/data/sideEffects/createDepositedFile';
 import { bytesToSize } from 'apps/deposit/utils/bytesToSize';
-import { useDepositedFileMetadata } from 'apps/deposit/api/useDepositedFileMetadata';
 
 const messages = defineMessages({
   dropzonePlaceholder: {
