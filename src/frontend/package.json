@@ -58,6 +58,7 @@
     "lib-video": "4.2.1",
     "lib-tests": "4.2.1",
     "marsha-config": "4.2.1",
+    "prettier": "2.8.8",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-router-dom": "6.0.2",
