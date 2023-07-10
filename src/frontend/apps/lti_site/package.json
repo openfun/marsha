@@ -70,7 +70,7 @@
     "jsdom-screenshot": "4.0.0",
     "lib-tests": "*",
     "node-fetch": "2.6.7",
-    "prettier": "3.0.0",
+    "prettier": "*",
     "sass": "1.63.6",
     "source-map-loader": "4.0.1",
     "style-loader": "3.3.3",

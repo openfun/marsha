@@ -61,7 +61,7 @@
     "lib-tests": "*",
     "luxon": "3.3.0",
     "marsha-config": "*",
-    "prettier": "3.0.0",
+    "prettier": "*",
     "react": "*",
     "react-dom": "*",
     "react-hot-toast": "2.4.1",
