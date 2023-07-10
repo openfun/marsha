@@ -1,11 +1,10 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
-
+import { Tabs } from 'grommet';
 import { playlistMockFactory } from 'lib-components';
 import { render } from 'lib-tests';
+import React from 'react';
 
 import SelectContentTab from '.';
-import { Tabs } from 'grommet';
 
 jest.mock('apps/markdown/data/MarkdownAppData', () => ({
   MarkdownAppData: {

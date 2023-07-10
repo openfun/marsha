@@ -1,4 +1,5 @@
 import { screen } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import {
   builderDashboardRoute,
   documentMockFactory,
@@ -9,15 +10,14 @@ import {
   useMaintenance,
   videoMockFactory,
 } from 'lib-components';
+import { render } from 'lib-tests';
+import { Fragment } from 'react';
 import { useLocation } from 'react-router-dom';
 
 import { builderPlaylistRoute } from 'components/PlaylistPortability/route';
 import { builderPlayerRoute } from 'components/routes';
-import { render } from 'lib-tests';
 import { wrapInIntlProvider } from 'utils/tests/intl';
 
-import userEvent from '@testing-library/user-event';
-import { Fragment } from 'react';
 import { LTINav } from '.';
 
 jest.mock('lib-components', () => ({

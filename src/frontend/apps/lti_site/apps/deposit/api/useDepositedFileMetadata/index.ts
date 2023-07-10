@@ -1,6 +1,7 @@
-import { DepositedFileMetadata } from 'apps/deposit/types/metadata';
 import { metadata } from 'lib-components';
-import { useQuery, UseQueryOptions } from 'react-query';
+import { UseQueryOptions, useQuery } from 'react-query';
+
+import { DepositedFileMetadata } from 'apps/deposit/types/metadata';
 
 export const useDepositedFileMetadata = (
   locale: string,

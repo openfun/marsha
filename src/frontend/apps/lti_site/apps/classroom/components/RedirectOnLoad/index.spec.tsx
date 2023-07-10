@@ -1,16 +1,13 @@
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import {
   FULL_SCREEN_ERROR_ROUTE,
-  FullScreenError,
+  WithParams,
   appState,
   useAppConfig,
-  WithParams,
 } from 'lib-components';
-
-import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { render } from 'lib-tests';
 
-import { Fragment } from 'react';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
 import { RedirectOnLoad } from '.';
 

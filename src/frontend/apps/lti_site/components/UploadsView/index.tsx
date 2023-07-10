@@ -3,13 +3,13 @@ import {
   Crumb,
   UploadManagerState,
   UploadManagerStatus,
-  useUploadManager,
-  UploadableObjectProgress,
   UploadSVG,
+  UploadableObjectProgress,
+  useUploadManager,
 } from 'lib-components';
 import { useVideo } from 'lib-video';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 const messages = defineMessages({
   completedUploads: {
@@ -55,7 +55,7 @@ const UploadsListItem = ({ state, progress }: UploadsListItemProps) => {
         <UploadSVG iconColor="brand" />
       </Text>
       <Box direction="column" flex="grow" gap="small">
-        {status === 'success' && !!data!.title ? (
+        {status === 'success' && !!data.title ? (
           <div>
             <Text weight="bold">{data?.title}</Text>
             {' - '}

@@ -1,4 +1,4 @@
-import { renderHook, waitFor} from '@testing-library/react';
+import { renderHook, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import { useJwt } from 'lib-components';
 import { WrapperReactQuery } from 'lib-tests';
@@ -43,15 +43,12 @@ describe('useDepositedFileMetadata', () => {
     };
     fetchMock.mock(`/api/depositedfiles/`, depositedFileMetadata);
 
-    const { result } = renderHook(
-      () => useDepositedFileMetadata('fr'),
-      {
-        wrapper: WrapperReactQuery,
-      },
-    );
+    const { result } = renderHook(() => useDepositedFileMetadata('fr'), {
+      wrapper: WrapperReactQuery,
+    });
     await waitFor(() => {
-        expect(result.current.isSuccess).toBeTruthy();
-      });
+      expect(result.current.isSuccess).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/depositedfiles/`);
     expect(fetchMock.lastCall()![1]).toEqual({
@@ -69,16 +66,13 @@ describe('useDepositedFileMetadata', () => {
   it('fails to get the deposited file metadata', async () => {
     fetchMock.mock(`/api/depositedfiles/`, 404);
 
-    const { result } = renderHook(
-      () => useDepositedFileMetadata('en'),
-      {
-        wrapper: WrapperReactQuery,
-      },
-    );
+    const { result } = renderHook(() => useDepositedFileMetadata('en'), {
+      wrapper: WrapperReactQuery,
+    });
 
     await waitFor(() => {
-        expect(result.current.isError).toBeTruthy();
-      });
+      expect(result.current.isError).toBeTruthy();
+    });
 
     expect(fetchMock.lastCall()![0]).toEqual(`/api/depositedfiles/`);
     expect(fetchMock.lastCall()![1]).toEqual({

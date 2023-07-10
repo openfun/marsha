@@ -65,7 +65,7 @@ describe('<AppContentLoader />', () => {
             isEnabled: false,
             stunServerUrls: [],
             webTorrentTrackerUrls: [],
-          }
+          },
         }}
       >
         <AppContentLoader />
@@ -120,7 +120,7 @@ describe('<AppContentLoader />', () => {
             isEnabled: false,
             stunServerUrls: [],
             webTorrentTrackerUrls: [],
-          }
+          },
         }}
       >
         <AppContentLoader />

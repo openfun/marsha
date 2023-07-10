@@ -8,18 +8,18 @@ import {
   WithParams,
   useAppConfig,
 } from 'lib-components';
-import { Suspense } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
-
-import { PortabilityRequest } from 'components/PortabilityRequest';
-import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
-
-import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
   MARKDOWN_EDITOR_ROUTE,
   MARKDOWN_NOT_FOUND_ROUTE,
   MARKDOWN_VIEWER_ROUTE,
 } from 'lib-markdown';
+import { Suspense } from 'react';
+import { MemoryRouter, Route, Routes } from 'react-router-dom';
+
+import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
+import { PortabilityRequest } from 'components/PortabilityRequest';
+import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
+
 import { MARKDOWN_WIZARD_ROUTE } from './MarkdownWizard/route';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';

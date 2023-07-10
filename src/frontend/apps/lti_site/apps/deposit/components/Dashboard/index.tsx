@@ -1,15 +1,15 @@
 import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
-import { useCurrentResourceContext, UploadManager } from 'lib-components';
+import { UploadManager, useCurrentResourceContext } from 'lib-components';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
 import { useFileDepository } from 'apps/deposit/data/queries';
 
-import { DashboardStudent } from './DashboardStudent';
 import { DashboardInstructor } from './DashboardInstructor';
+import { DashboardStudent } from './DashboardStudent';
 
 const messages = defineMessages({
   loadingFileDepository: {
@@ -106,7 +106,7 @@ const Dashboard = () => {
       <ThemeContext.Extend value={extendedTheme}>
         <Box
           align="center"
-          background={'linear-gradient(-180deg, #dce9fa 0%, #EDF5FA 100%);'}
+          background="linear-gradient(-180deg, #dce9fa 0%, #EDF5FA 100%);"
           pad="small"
         >
           {content}

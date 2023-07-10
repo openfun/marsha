@@ -1,13 +1,14 @@
+import path from 'path';
+
 import { cleanup, render } from '@testing-library/react';
 import { Grommet } from 'grommet';
 import { GenerateImageOptions, generateImage } from 'jsdom-screenshot';
 import { theme } from 'lib-common';
 import { wrapInRouter } from 'lib-tests';
-import path from 'path';
-
-import { wrapInIntlProvider } from './intl';
 
 import { GlobalStyles } from '../theme/baseStyles';
+
+import { wrapInIntlProvider } from './intl';
 
 const checkSnapshot = () => {
   // check if test name contains '[screenshot]'

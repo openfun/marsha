@@ -1,13 +1,14 @@
+import { Maybe } from 'lib-common';
 import {
+  DecodedJwtLTI,
   decodeJwt,
+  flags,
+  useAppConfig,
+  useDocument,
   useJwt,
   useMaintenance,
-  useSentry,
-  useDocument,
-  useAppConfig,
-  flags,
-  DecodedJwtLTI,
   useP2PConfig,
+  useSentry,
 } from 'lib-components';
 import { useAttendance, useSetVideoState } from 'lib-video';
 import React, {
@@ -19,7 +20,6 @@ import React, {
 } from 'react';
 
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-import { Maybe } from 'lib-common';
 
 interface AppInitializerProps {
   jwt: Maybe<string>;
@@ -61,7 +61,12 @@ export const AppInitializer = (
 
   useEffect(() => {
     if (isFeatureEnabled(flags.SENTRY) && appConfig.sentry_dsn) {
-      setSentry(appConfig.sentry_dsn, appConfig.environment, appConfig.release, 'frontend');
+      setSentry(
+        appConfig.sentry_dsn,
+        appConfig.environment,
+        appConfig.release,
+        'frontend',
+      );
     }
   }, [
     appConfig.sentry_dsn,
@@ -73,9 +78,9 @@ export const AppInitializer = (
 
   useEffect(() => {
     setP2PConfig(
-      appConfig.p2p.isEnabled, 
-      appConfig.p2p.stunServerUrls, 
-      appConfig.p2p.webTorrentTrackerUrls
+      appConfig.p2p.isEnabled,
+      appConfig.p2p.stunServerUrls,
+      appConfig.p2p.webTorrentTrackerUrls,
     );
   }, [
     appConfig.p2p.isEnabled,

@@ -1,33 +1,32 @@
 import { Grommet } from 'grommet';
 import { colors, theme } from 'lib-common';
 import {
+  BoundaryScreenError,
   CurrentResourceContextProvider,
-  useJwt,
-  useCurrentSession,
-  useCurrentUser,
+  DecodedJwtLTI,
+  Loader,
   ResourceContext,
   User,
-  BoundaryScreenError,
-  useAppConfig,
   appNames,
-  Loader,
-  DecodedJwtLTI,
+  useAppConfig,
+  useCurrentSession,
+  useCurrentUser,
+  useJwt,
 } from 'lib-components';
 import React, {
   ComponentType,
-  lazy,
   LazyExoticComponent,
   Suspense,
+  lazy,
   useEffect,
   useMemo,
   useState,
 } from 'react';
-import { Toaster } from 'react-hot-toast';
 import { ErrorBoundary } from 'react-error-boundary';
-import { RawIntlProvider } from 'react-intl';
+import { Toaster } from 'react-hot-toast';
+import { RawIntlProvider, defineMessages, useIntl } from 'react-intl';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import { ReactQueryDevtools } from 'react-query/devtools';
-import { defineMessages, useIntl } from 'react-intl';
 
 import { createIntl } from 'utils/lang';
 import { GlobalStyles } from 'utils/theme/baseStyles';
@@ -58,9 +57,13 @@ const AppContent = () => {
   const intlShape = useIntl();
 
   let Content: LazyExoticComponent<ComponentType<any>>;
-  if (appConfig.appName) Content = appsContent[appConfig.appName];
-  else if (appConfig.frontend) Content = appsContent[appConfig.frontend];
-  else throw new Error(intlShape.formatMessage(messages.errorAppSet));
+  if (appConfig.appName) {
+    Content = appsContent[appConfig.appName];
+  } else if (appConfig.frontend) {
+    Content = appsContent[appConfig.frontend];
+  } else {
+    throw new Error(intlShape.formatMessage(messages.errorAppSet));
+  }
 
   const decodedJwt = useMemo(() => {
     const jwt = useJwt.getState().getJwt();

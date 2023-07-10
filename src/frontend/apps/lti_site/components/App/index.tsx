@@ -1,6 +1,6 @@
-import React, { lazy, Suspense } from 'react';
+import { AppConfigProvider, Loader } from 'lib-components';
+import React, { Suspense, lazy } from 'react';
 
-import { Loader, AppConfigProvider } from 'lib-components';
 import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
 
 import { AppInitializer } from './AppInitializer';

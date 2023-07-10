@@ -1,12 +1,5 @@
 import { Box, Button, Text } from 'grommet';
-import { defineMessages, useIntl } from 'react-intl';
-import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
-
-import {
-  VIDEO_WIZARD_ROUTE,
-  VideoWizzardSubPage,
-  builderVideoWizzardRoute,
-} from 'components/routes';
+import { Breakpoints } from 'lib-common';
 import {
   ErrorComponents,
   WhiteCard,
@@ -19,8 +12,14 @@ import {
   withLink,
 } from 'lib-components';
 import { ConfigureLiveButton, CreateVOD } from 'lib-video';
+import { defineMessages, useIntl } from 'react-intl';
+import { Navigate, Route, Routes, useNavigate } from 'react-router-dom';
 
-import { Breakpoints } from 'lib-common';
+import {
+  VIDEO_WIZARD_ROUTE,
+  VideoWizzardSubPage,
+  builderVideoWizzardRoute,
+} from 'components/routes';
 
 const messages = defineMessages({
   chooseActionTitle: {
@@ -80,7 +79,7 @@ const VideoWizard = () => {
           }
         />
         <Route
-          path={'*'}
+          path="*"
           element={
             <WhiteCard title={intl.formatMessage(messages.chooseActionTitle)}>
               <Box

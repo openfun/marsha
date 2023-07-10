@@ -92,13 +92,13 @@ export const SelectContentSection = ({
         {items?.map((item: Classroom) => {
           return (
             <SelectContentCard
-              content={item!}
+              content={item}
               key={item.id}
               onClick={() =>
                 buildContentItems(
-                  item!.lti_url!,
-                  item!.title,
-                  item!.description,
+                  item.lti_url,
+                  item.title,
+                  item.description,
                   lti_select_form_data,
                   setContentItemsValue,
                 )

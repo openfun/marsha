@@ -1,7 +1,7 @@
 import { act, fireEvent, screen } from '@testing-library/react';
-import { useJwt, documentMockFactory, uploadState } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
 import fetchMock from 'fetch-mock';
+import { documentMockFactory, uploadState, useJwt } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 
 import { DashboardDocumentTitleForm } from '.';
@@ -35,7 +35,7 @@ describe('DashboardDocumentTitleForm', () => {
       />,
     );
 
-    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
+    const inputTitle = screen.getByRole('textbox');
 
     expect(inputTitle.value).toEqual('document title');
   });
@@ -52,9 +52,9 @@ describe('DashboardDocumentTitleForm', () => {
 
     render(<DashboardDocumentTitleForm document={document} />);
 
-    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
+    const inputTitle = screen.getByRole('textbox');
 
-    fireEvent.change(inputTitle!, {
+    fireEvent.change(inputTitle, {
       target: { value: 'updated document title' },
     });
     fireEvent.click(screen.getByText('Submit'));
@@ -86,9 +86,9 @@ describe('DashboardDocumentTitleForm', () => {
 
     render(<DashboardDocumentTitleForm document={document} />);
 
-    const inputTitle = screen.getByRole('textbox') as HTMLInputElement;
+    const inputTitle = screen.getByRole('textbox');
 
-    fireEvent.change(inputTitle!, {
+    fireEvent.change(inputTitle, {
       target: { value: 'updated document title' },
     });
     fireEvent.click(screen.getByText('Submit'));

@@ -1,11 +1,10 @@
 import { act, screen, waitForElementToBeRemoved } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
-import { render, Deferred } from 'lib-tests';
+import { APIList, DepositedFile, uploadState } from 'lib-components';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
-
-import { APIList, uploadState, DepositedFile } from 'lib-components';
 
 import {
   depositedFileMockFactory,

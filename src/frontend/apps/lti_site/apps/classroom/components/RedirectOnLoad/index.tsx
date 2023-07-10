@@ -1,5 +1,4 @@
-import { Navigate } from 'react-router-dom';
-
+import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import {
   ErrorComponents,
   appState,
@@ -7,11 +6,10 @@ import {
   flags,
   useAppConfig,
 } from 'lib-components';
+import { Navigate } from 'react-router-dom';
 
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { useIsFeatureEnabled } from 'data/hooks/useIsFeatureEnabled';
-
-import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 
 // RedirectOnLoad assesses the initial state of the application using appData and determines the proper
 // route to load in the Router

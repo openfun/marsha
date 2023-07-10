@@ -1,10 +1,10 @@
 import { Box } from 'grommet';
 import {
-  useJwt,
-  useCurrentSession,
-  useDocument,
   Document,
   DocumentXapiStatement,
+  useCurrentSession,
+  useDocument,
+  useJwt,
 } from 'lib-components';
 import React from 'react';
 import styled from 'styled-components';

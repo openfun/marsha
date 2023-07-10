@@ -1,11 +1,11 @@
 import { screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
+import { playlistMockFactory } from 'lib-components';
+import { render } from 'lib-tests';
 import React from 'react';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
-import { playlistMockFactory } from 'lib-components';
-import { render } from 'lib-tests';
 
 import SelectContentResource from '.';
 

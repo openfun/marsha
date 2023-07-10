@@ -88,13 +88,13 @@ export const SelectContentSection = ({
       <Grid columns="small" gap="small">
         {items?.map((item: FileDepository) => (
           <SelectContentCard
-            content={item!}
+            content={item}
             key={item.id}
             onClick={() =>
               buildContentItems(
-                item!.lti_url!,
-                item!.title,
-                item!.description,
+                item.lti_url,
+                item.title,
+                item.description,
                 lti_select_form_data,
                 setContentItemsValue,
               )

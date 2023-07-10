@@ -1,16 +1,17 @@
 import { screen } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
-  useCurrentResourceContext,
-  useJwt,
   ltiInstructorTokenMockFactory,
   ltiStudentTokenMockFactory,
+  useCurrentResourceContext,
+  useJwt,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 
 import { fileDepositoryMockFactory } from 'apps/deposit/utils/tests/factories';
+
 import DashboardFileDepository from '.';
 
 jest.mock('lib-components', () => ({

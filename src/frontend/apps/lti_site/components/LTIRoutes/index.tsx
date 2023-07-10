@@ -1,19 +1,19 @@
 import {
-  builderFullScreenErrorRoute,
   DASHBOARD_ROUTE,
   ErrorComponents,
   FULL_SCREEN_ERROR_ROUTE,
   FullScreenError,
   Loader,
-  modelName,
   UPLOAD_FORM_ROUTE,
   UploadForm,
   UploadHandlers,
   UploadManager,
-  useAppConfig,
   WithParams,
+  builderFullScreenErrorRoute,
+  modelName,
+  useAppConfig,
 } from 'lib-components';
-import React, { lazy, Suspense } from 'react';
+import React, { Suspense, lazy } from 'react';
 import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { InstructorWrapper } from 'components/InstructorWrapper';
@@ -22,9 +22,9 @@ import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 import { RedirectOnLoad } from 'components/RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from 'components/RedirectOnLoad/route';
-import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
 import { SelectContent } from 'components/SelectContent';
 import { SELECT_CONTENT_ROUTE } from 'components/SelectContent/route';
+import { PLAYER_ROUTE, VIDEO_WIZARD_ROUTE } from 'components/routes';
 
 const Dashboard = lazy(() => import('components/Dashboard'));
 const VideoWizard = lazy(() => import('components/VideoWizard'));

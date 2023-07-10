@@ -1,16 +1,16 @@
 import { screen, waitFor } from '@testing-library/react';
-import { render } from 'lib-tests';
-import React from 'react';
+import userEvent from '@testing-library/user-event';
+import fetchMock from 'fetch-mock';
+import { useJwt } from 'lib-components';
 import {
   MARKDOWN_EDITOR_ROUTE,
   markdownDocumentMockFactory,
   markdownTranslationMockFactory,
 } from 'lib-markdown';
-import fetchMock from 'fetch-mock';
+import { render } from 'lib-tests';
+import React from 'react';
 
 import { MarkdownWizard } from '.';
-import { useJwt } from 'lib-components';
-import userEvent from '@testing-library/user-event';
 
 const mockNavigate = jest.fn();
 jest.mock('react-router-dom', () => ({

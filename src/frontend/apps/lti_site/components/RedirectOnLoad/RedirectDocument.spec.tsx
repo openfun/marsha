@@ -7,9 +7,9 @@ import {
   modelName,
   useCurrentResourceContext,
 } from 'lib-components';
+import { render } from 'lib-tests';
 
 import { builderPlayerRoute } from 'components/routes';
-import { render } from 'lib-tests';
 
 import { RedirectDocument } from './RedirectDocument';
 

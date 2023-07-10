@@ -8,7 +8,6 @@ import {
   useJwt,
   videoMockFactory,
 } from 'lib-components';
-
 import { render } from 'lib-tests';
 
 import PublicVideoDashboard from '.';
@@ -54,7 +53,7 @@ describe('<PublicVideoDashboard />', () => {
   it('renders live component when video is a live', () => {
     const live = liveMockFactory();
 
-    render(<PublicVideoDashboard video={live} playerType={'some_player'} />);
+    render(<PublicVideoDashboard video={live} playerType="some_player" />);
 
     screen.getByText('live student');
   });
@@ -62,7 +61,7 @@ describe('<PublicVideoDashboard />', () => {
   it('renders vod component when video is a vod', () => {
     const video = videoMockFactory();
 
-    render(<PublicVideoDashboard video={video} playerType={'some_player'} />);
+    render(<PublicVideoDashboard video={video} playerType="some_player" />);
 
     screen.getByText('vod student');
   });
@@ -70,7 +69,7 @@ describe('<PublicVideoDashboard />', () => {
   it('redirects to the error page when vod is deleted', () => {
     const video = videoMockFactory({ upload_state: uploadState.DELETED });
 
-    render(<PublicVideoDashboard video={video} playerType={'some_player'} />, {
+    render(<PublicVideoDashboard video={video} playerType="some_player" />, {
       routerOptions: {
         routes: [
           {

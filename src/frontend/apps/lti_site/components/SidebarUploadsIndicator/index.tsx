@@ -3,13 +3,13 @@ import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import {
   Spinner,
-  UploadManagerStatus,
-  useUploadManager,
   StyledLink,
+  UploadManagerStatus,
   UploadSVG,
+  useUploadManager,
 } from 'lib-components';
 import React from 'react';
-import { defineMessages, FormattedMessage } from 'react-intl';
+import { FormattedMessage, defineMessages } from 'react-intl';
 import styled from 'styled-components';
 
 const messages = defineMessages({

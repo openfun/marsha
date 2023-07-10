@@ -1,19 +1,18 @@
 import { Tab } from 'grommet';
 import { TextWrap } from 'grommet-icons';
+import { useCreateMarkdownDocument } from 'lib-markdown';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
+import { SelectContentSection } from 'apps/markdown/components/SelectContent/SelectContentSection';
+import { commonMessages } from 'apps/markdown/components/SelectContent/commonMessages';
+import { browserLanguage } from 'apps/markdown/components/SelectContent/utils';
+import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import {
   RichTabTitle,
   SelectContentTabProps,
 } from 'components/SelectContent/SelectContentTabs';
 import { buildContentItems } from 'components/SelectContent/utils';
-
-import { commonMessages } from 'apps/markdown/components/SelectContent/commonMessages';
-import { SelectContentSection } from 'apps/markdown/components/SelectContent/SelectContentSection';
-import { browserLanguage } from 'apps/markdown/components/SelectContent/utils';
-import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import { useCreateMarkdownDocument } from 'lib-markdown';
 
 const Internal = ({
   playlist,
@@ -35,7 +34,7 @@ const Internal = ({
     <SelectContentSection
       addAndSelectContent={() => {
         useCreateMarkdownDocumentMutation.mutate({
-          playlist: playlist!.id,
+          playlist: playlist.id,
           title: lti_select_form_data?.activity_title,
         });
       }}

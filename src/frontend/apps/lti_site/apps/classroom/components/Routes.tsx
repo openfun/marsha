@@ -11,10 +11,10 @@ import {
 import React, { Fragment, Suspense } from 'react';
 import { MemoryRouter, Route, Routes as RoutesDom } from 'react-router-dom';
 
+import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { PortabilityRequest } from 'components/PortabilityRequest';
 import { RESOURCE_PORTABILITY_REQUEST_ROUTE } from 'components/PortabilityRequest/route';
 
-import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { RedirectOnLoad } from './RedirectOnLoad';
 import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 

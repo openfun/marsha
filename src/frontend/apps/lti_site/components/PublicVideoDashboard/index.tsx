@@ -1,19 +1,19 @@
 import {
+  ErrorComponents,
+  Video,
   builderFullScreenErrorRoute,
   checkToken,
   decodeJwt,
-  ErrorComponents,
   uploadState,
   useJwt,
   useVideo,
-  Video,
 } from 'lib-components';
 import {
+  LiveStudentDashboard,
+  VODStudentDashboard,
   convertVideoToLive,
   generateVideoWebsocketUrl,
   getOrInitAnonymousId,
-  LiveStudentDashboard,
-  VODStudentDashboard,
 } from 'lib-video';
 import { useMemo } from 'react';
 import { Navigate } from 'react-router-dom';

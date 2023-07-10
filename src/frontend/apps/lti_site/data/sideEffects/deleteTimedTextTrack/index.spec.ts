@@ -1,5 +1,5 @@
 import fetchMock from 'fetch-mock';
-import { useJwt, TimedText } from 'lib-components';
+import { TimedText, useJwt } from 'lib-components';
 
 import { deleteTimedTextTrack } from '.';
 
@@ -31,7 +31,7 @@ describe('sideEffects/deleteTimedTextTrack', () => {
 
     await expect(
       deleteTimedTextTrack({ id: '42' } as TimedText),
-    ).rejects.toThrowError('Failed to perform the request');
+    ).rejects.toThrow('Failed to perform the request');
   });
 
   it('throws when it fails to delete the track (API error)', async () => {
@@ -39,6 +39,6 @@ describe('sideEffects/deleteTimedTextTrack', () => {
 
     await expect(
       deleteTimedTextTrack({ id: '42' } as TimedText),
-    ).rejects.toThrowError('Failed to delete timedtexttracks/42.');
+    ).rejects.toThrow('Failed to delete timedtexttracks/42.');
   });
 });

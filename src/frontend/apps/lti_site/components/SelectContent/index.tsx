@@ -1,13 +1,12 @@
 import { Box } from 'grommet';
-import React, { useEffect } from 'react';
-
 import {
-  LtiSelectResource,
   Document,
   Live,
+  LtiSelectResource,
   Playlist,
   Video,
 } from 'lib-components';
+import React, { useEffect } from 'react';
 
 import { SelectContentTabs } from './SelectContentTabs';
 import { SelectContentTargetedResource } from './SelectContentTargetedResource';
@@ -56,7 +55,7 @@ export const SelectContent = ({
         method="POST"
         encType="application/x-www-form-urlencoded"
       >
-        {Object.entries(lti_select_form_data!).map(([name, value]) => (
+        {Object.entries(lti_select_form_data).map(([name, value]) => (
           <input key={name} type="hidden" name={name} value={value} />
         ))}
 

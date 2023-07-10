@@ -1,8 +1,7 @@
 import { screen } from '@testing-library/react';
-import React from 'react';
-
 import { classroomMockFactory } from 'lib-classroom';
 import { render } from 'lib-tests';
+import React from 'react';
 
 import { SelectContentSection } from '.';
 

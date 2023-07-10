@@ -3,15 +3,15 @@ import { normalizeColor } from 'grommet/utils';
 import { Nullable, theme } from 'lib-common';
 import {
   Spinner,
-  modelName,
-  UploadableObject,
   UploadField,
   UploadManagerStatus,
+  UploadableObject,
+  modelName,
   useUploadManager,
 } from 'lib-components';
 import { useCreateVideo } from 'lib-video';
 import React, { useEffect, useState } from 'react';
-import { defineMessages, FormattedMessage, useIntl } from 'react-intl';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 import styled from 'styled-components';
 import { v4 as uuidv4 } from 'uuid';
 

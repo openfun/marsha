@@ -8,13 +8,13 @@ import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { ResponsiveContext } from 'grommet';
 import {
-  useJwt,
   APIList,
-  uploadState,
   DepositedFile,
   truncateFilename,
+  uploadState,
+  useJwt,
 } from 'lib-components';
-import { render, Deferred } from 'lib-tests';
+import { Deferred, render } from 'lib-tests';
 import React from 'react';
 import { QueryClient } from 'react-query';
 

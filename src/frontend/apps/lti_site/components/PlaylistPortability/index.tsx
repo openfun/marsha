@@ -8,10 +8,6 @@ import {
   TextInput,
 } from 'grommet';
 import { AddCircle, Trash } from 'grommet-icons';
-import React, { useState } from 'react';
-import { toast } from 'react-hot-toast';
-import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
-
 import {
   CopyClipboard,
   Document,
@@ -21,6 +17,10 @@ import {
   Playlist,
   Video,
 } from 'lib-components';
+import React, { useState } from 'react';
+import { toast } from 'react-hot-toast';
+import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
+
 import { usePlaylist, useUpdatePlaylist } from '../../data/queries';
 
 const messages = defineMessages({
@@ -122,7 +122,7 @@ export const PlaylistPortabilityList = ({
               plain
               icon={<Trash />}
               onClick={() => {
-                removePlaylistPortability(item.id!);
+                removePlaylistPortability(item.id);
               }}
             />
           )}
@@ -239,7 +239,7 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
 
           <Box width="large">
             <PlaylistPortabilityList
-              playlist={playlist!}
+              playlist={playlist}
               removePlaylistPortability={removePlaylistPortability}
             />
             <Box>

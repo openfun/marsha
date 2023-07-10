@@ -1,15 +1,14 @@
 import { Box, Heading } from 'grommet';
+import { useCreateMarkdownDocument } from 'lib-markdown';
 import React from 'react';
 import { useIntl } from 'react-intl';
 
-import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
-import { buildContentItems } from 'components/SelectContent/utils';
-
-import { commonMessages } from 'apps/markdown/components/SelectContent/commonMessages';
 import { SelectContentSection } from 'apps/markdown/components/SelectContent/SelectContentSection';
+import { commonMessages } from 'apps/markdown/components/SelectContent/commonMessages';
 import { browserLanguage } from 'apps/markdown/components/SelectContent/utils';
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
-import { useCreateMarkdownDocument } from 'lib-markdown';
+import { SelectContentResourceProps } from 'components/SelectContent/SelectContentTargetedResource';
+import { buildContentItems } from 'components/SelectContent/utils';
 
 const SelectContentResource = ({
   playlist,
@@ -36,7 +35,7 @@ const SelectContentResource = ({
       <SelectContentSection
         addAndSelectContent={() => {
           useCreateMarkdownDocumentMutation.mutate({
-            playlist: playlist!.id,
+            playlist: playlist.id,
             title: lti_select_form_data?.activity_title,
           });
         }}

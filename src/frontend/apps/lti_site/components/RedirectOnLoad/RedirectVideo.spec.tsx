@@ -9,6 +9,7 @@ import {
   useCurrentResourceContext,
   videoMockFactory,
 } from 'lib-components';
+import { render } from 'lib-tests';
 
 import {
   VIDEO_WIZARD_ROUTE,
@@ -16,7 +17,6 @@ import {
   builderPlayerRoute,
   builderVideoWizzardRoute,
 } from 'components/routes';
-import { render } from 'lib-tests';
 
 import { RedirectVideo } from './RedirectVideo';
 
