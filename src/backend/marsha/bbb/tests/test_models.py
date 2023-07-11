@@ -7,7 +7,7 @@ from django.test import TestCase
 
 from safedelete.models import SOFT_DELETE_CASCADE
 
-from ..factories import ClassroomFactory
+from ..factories import ClassroomFactory, ClassroomRecordingFactory
 
 
 class ClassroomModelsTestCase(TestCase):
@@ -42,3 +42,21 @@ class ClassroomModelsTestCase(TestCase):
         # Soft deleted classrooms should not count for unicity
         classroom.delete(force_policy=SOFT_DELETE_CASCADE)
         ClassroomFactory(lti_id=classroom.lti_id, playlist=classroom.playlist)
+
+
+class ClassroomClassroomRecordingTestCase(TestCase):
+    """Test the ClassroomRecording model."""
+
+    maxDiff = None
+
+    def test_models_classroomrecording_video_file_url(self):
+        """The video_file_url method should return the video file url."""
+        classroom_recording = ClassroomRecordingFactory()
+        with self.assertRaises(DeprecationWarning) as deprecation:
+            # pylint: disable=pointless-statement
+            classroom_recording.video_file_url
+
+        self.assertEqual(
+            deprecation.exception.args[0],
+            "Access denied to video_file_url: deprecated field",
+        )

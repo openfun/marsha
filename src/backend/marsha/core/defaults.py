@@ -101,6 +101,7 @@ APP_DATA_STATE_SUCCESS = "success"
 
 VIDEO_ATTENDANCE_KEY_CACHE = "attendances:video:"
 XAPI_STATEMENT_ID_CACHE = "xapi:statements:"
+CLASSROOM_RECORDINGS_KEY_CACHE = "classrooms:recordings:"
 
 # Licenses
 

@@ -3,8 +3,10 @@ from datetime import datetime
 import mimetypes
 from os.path import splitext
 from urllib.parse import quote_plus
+from uuid import uuid4
 
 from django.conf import settings
+from django.core.cache import cache
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.urls import reverse
@@ -16,9 +18,10 @@ from marsha.bbb.models import Classroom, ClassroomDocument, ClassroomRecording
 from marsha.bbb.utils.bbb_utils import (
     ApiMeetingException,
     get_meeting_infos,
+    get_recordings,
     get_url as get_document_url,
 )
-from marsha.core.defaults import VOD_CONVERT
+from marsha.core.defaults import CLASSROOM_RECORDINGS_KEY_CACHE, VOD_CONVERT
 from marsha.core.serializers import (
     BaseInitiateUploadSerializer,
     PlaylistLiteSerializer,
@@ -55,6 +58,41 @@ class ClassroomRecordingSerializer(ReadOnlyModelSerializer):
         read_only=True, pk_field=serializers.CharField()
     )
     vod = VideoFromRecordingSerializer(read_only=True)
+    video_file_url = serializers.SerializerMethodField()
+
+    def _get_recording_cache_key(self, obj):
+        """Compute the cache key for the current context."""
+        request = self.context.get("request")
+        if request:
+            if request.resource:
+                # LTI context
+                payload = request.resource.token.payload
+                user_id = payload.get("user", {}).get("id", str(uuid4()))
+            else:
+                user_id = request.user.id
+
+            return f"{CLASSROOM_RECORDINGS_KEY_CACHE}{obj.record_id}:{user_id}"
+
+        return f"{CLASSROOM_RECORDINGS_KEY_CACHE}{str(uuid4())}"
+
+    def get_video_file_url(self, obj):
+        """Method for video_file_url field."""
+        video_file_url = None
+        cache_key = self._get_recording_cache_key(obj)
+
+        video_file_url = cache.get(cache_key)
+
+        if video_file_url is None:
+            # The url timeout has expired.
+            # We must retrieve it from BBB and cache it again.
+            video_file_url = get_recording_url(record_id=obj.record_id)
+            cache.set(
+                cache_key,
+                video_file_url,
+                settings.RECORDINGS_URL_CACHE_TIMEOUT,
+            )
+
+        return video_file_url
 
 
 class ClassroomSerializer(serializers.ModelSerializer):

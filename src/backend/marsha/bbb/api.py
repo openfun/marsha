@@ -754,7 +754,7 @@ class ClassroomRecordingViewSet(
         stamp = to_timestamp(now)
 
         invoke_lambda_convert(
-            classroom_recording.video_file_url,
+            serializer.data["video_file_url"],
             classroom_recording.vod.get_source_s3_key(stamp=stamp),
         )
 

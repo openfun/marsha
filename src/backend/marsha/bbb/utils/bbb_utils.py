@@ -226,16 +226,15 @@ def process_recording(classroom, recording_data):
                     classroom=classroom,
                     record_id=recording_data.get("recordID"),
                 )
-                classroom_recording.video_file_url = recording_format.get("url")
                 classroom_recording.started_at = time_utils.to_datetime(
                     int(recording_data.get("startTime")) / 1000
                 )
-                classroom_recording.save(update_fields=["video_file_url", "started_at"])
+                classroom_recording.save(update_fields=["started_at"])
                 logger.info(
                     "%s recording started at %s with url %s",
                     "Created" if created else "Updated",
                     classroom_recording.started_at.isoformat(),
-                    classroom_recording.video_file_url,
+                    recording_format.get("url"),
                 )
 
 

@@ -19,6 +19,10 @@ from marsha.core.factories import VideoFactory
 class RefreshBBBRecordingsTestCase(TransactionTestCase):
     """Test the ``refresh_bbb_recordings` management command."""
 
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+
     maxDiff = None
 
     @responses.activate
@@ -152,14 +156,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
         )
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        recording = classroom.recordings.get(
-            record_id="c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493"
-        )
-        self.assertEqual(
-            recording.video_file_url,
-            "https://10.7.7.1/presentation/"
-            "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4",
-        )
 
     @responses.activate
     @mock.patch.object(Logger, "info")
@@ -169,7 +165,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
         classroom_recording = ClassroomRecordingFactory(
             classroom=classroom,
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
-            video_file_url="https://example.com/video.mp4",
         )
 
         responses.add(
@@ -251,7 +246,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
         classroom_recording = ClassroomRecordingFactory(
             classroom=classroom,
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
-            video_file_url="https://example.com/video.mp4",
             vod=video,
         )
 
@@ -327,10 +321,9 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
     def test_update_recordings_update_recording(self, logger_mock):
         """When an existing recording is found, it should be updated."""
         classroom = ClassroomFactory(meeting_id="7e1c8b28-cd7a-4abe-93b2-3121366cb049")
-        classroom_recording = ClassroomRecordingFactory(
+        ClassroomRecordingFactory(
             classroom=classroom,
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
-            video_file_url="https://example.com/video.mp4",
         )
 
         responses.add(
@@ -460,12 +453,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
 
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        classroom_recording.refresh_from_db()
-        self.assertEqual(
-            classroom_recording.video_file_url,
-            "https://10.7.7.1/presentation/"
-            "d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234/meeting.mp4",
-        )
 
     @responses.activate
     @mock.patch.object(Logger, "info")
@@ -496,7 +483,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
             id="0fabc045-6b9b-4914-bfbd-8b90c9eee9fc",
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
             classroom=classroom,
-            video_file_url="https://example.com/video.mp4",
         )
 
         responses.add(
@@ -575,12 +561,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
 
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        classroom_recording.refresh_from_db()
-        self.assertEqual(
-            classroom_recording.video_file_url,
-            "https://10.7.7.1/presentation/"
-            "d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234/meeting.mp4",
-        )
 
     @responses.activate
     @mock.patch.object(Logger, "info")
@@ -592,7 +572,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
             id="0fabc045-6b9b-4914-bfbd-8b90c9eee9fc",
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
             classroom=classroom,
-            video_file_url="https://example.com/video.mp4",
             started_at="2023-01-09",
         )
 
@@ -718,11 +697,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
 
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        classroom_recording.refresh_from_db()
-        self.assertEqual(
-            classroom_recording.video_file_url,
-            "https://example.com/video.mp4",
-        )
 
     @responses.activate
     @mock.patch.object(Logger, "info")
@@ -734,7 +708,6 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
             id="0fabc045-6b9b-4914-bfbd-8b90c9eee9fc",
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
             classroom=classroom,
-            video_file_url="https://example.com/video.mp4",
             started_at="2023-01-09",
         )
 
@@ -860,8 +833,3 @@ class RefreshBBBRecordingsTestCase(TransactionTestCase):
 
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        classroom_recording.refresh_from_db()
-        self.assertEqual(
-            classroom_recording.video_file_url,
-            "https://example.com/video.mp4",
-        )

@@ -1,4 +1,5 @@
 """Tests for the get_recordings service in the ``bbb`` app of the Marsha project."""
+from django.core.cache import cache
 from django.test import TestCase, override_settings
 
 import responses
@@ -22,6 +23,9 @@ class ClassroomServiceTestCase(TestCase):
 
         # Force URLs reload to use BBB_ENABLED
         reload_urlconf()
+
+        # Clear cache
+        cache.clear()
 
     @responses.activate
     def test_get_recordings_multiple(self):
@@ -353,7 +357,6 @@ class ClassroomServiceTestCase(TestCase):
         classroom_recording = ClassroomRecordingFactory(
             classroom=classroom,
             record_id="c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493",
-            video_file_url="old_url",
         )
 
         responses.add(

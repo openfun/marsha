@@ -45,4 +45,3 @@ class ClassroomRecordingFactory(DjangoModelFactory):
     classroom = factory.SubFactory(ClassroomFactory)
     record_id = factory.Faker("uuid4")
     started_at = factory.Faker("date_time")
-    video_file_url = factory.Faker("url")
