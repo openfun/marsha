@@ -16,6 +16,7 @@ Versioning](https://semver.org/spec/v2.0.0.html).
 ### Changed
 
 - Replace grommet TextInput by Cunningham Input (#2374)
+- Save classroom recording urls in a cache and remove access from db column
 
 ## [4.3.1] - 2023-08-31
 

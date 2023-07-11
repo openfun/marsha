@@ -138,22 +138,6 @@ class ClassroomRecordingReadyAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ClassroomRecording.objects.count(), 2)
         self.assertEqual(classroom.recordings.count(), 2)
-        recording_1 = classroom.recordings.get(
-            record_id="c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493"
-        )
-        self.assertEqual(
-            recording_1.video_file_url,
-            "https://10.7.7.1/presentation/"
-            "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673282694493/meeting.mp4",
-        )
-        recording_2 = classroom.recordings.get(
-            record_id="c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673255861863"
-        )
-        self.assertEqual(
-            recording_2.video_file_url,
-            "https://10.7.7.1/presentation/"
-            "c62c9c205d37815befe1b75ae6ef5878d8da5bb6-1673255861863/meeting.mp4",
-        )
 
     @responses.activate
     def test_recording_ready_unknown_classroom(self):
@@ -326,10 +310,9 @@ class ClassroomRecordingReadyAPITest(TestCase):
     def test_recording_ready_update(self):
         """When a recording exists, it should be updated."""
         classroom = ClassroomFactory(meeting_id="7e1c8b28-cd7a-4abe-93b2-3121366cb049")
-        classroom_record = ClassroomRecordingFactory(
+        ClassroomRecordingFactory(
             classroom=classroom,
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
-            video_file_url="https://example.com/video.mp4",
         )
         signed_parameters = build_bbb_jwt(
             {
@@ -400,12 +383,6 @@ class ClassroomRecordingReadyAPITest(TestCase):
         self.assertEqual(response.status_code, 200)
         self.assertEqual(ClassroomRecording.objects.count(), 1)
         self.assertEqual(classroom.recordings.count(), 1)
-        classroom_record.refresh_from_db()
-        self.assertEqual(
-            classroom_record.video_file_url,
-            "https://10.7.7.1/presentation/c62c9c205d37815befe1b75ae6ef5878d8da5bb6"
-            "-1673282694493/meeting.mp4",
-        )
 
     @responses.activate
     def test_recording_ready_delete(self):
@@ -414,7 +391,6 @@ class ClassroomRecordingReadyAPITest(TestCase):
         classroom_record = ClassroomRecordingFactory(
             classroom=classroom,
             record_id="d58d38e9e31b71a04b993c041d7ca74ef8d5f0dd-1673007560234",
-            video_file_url="https://example.com/video.mp4",
         )
         signed_parameters = build_bbb_jwt(
             {

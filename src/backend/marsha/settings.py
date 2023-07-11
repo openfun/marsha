@@ -388,6 +388,7 @@ class Base(Configuration):
     ALLOWED_CLASSROOM_DOCUMENT_MIME_TYPES = values.ListValue(["application/pdf"])
     BBB_INVITE_JWT_DEFAULT_DAYS_DURATION = values.PositiveIntegerValue(30)
     BBB_INVITE_JWT_INSTRUCTOR_DAYS_DURATION = values.PositiveIntegerValue(30)
+    RECORDINGS_URL_CACHE_TIMEOUT = values.PositiveIntegerValue(3000)
 
     # deposit application
     DEPOSIT_ENABLED = values.BooleanValue(False)

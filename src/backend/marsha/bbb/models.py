@@ -291,12 +291,13 @@ class ClassroomRecording(BaseModel):
         editable=False,
     )
 
-    video_file_url = models.CharField(
+    _video_file_url = models.CharField(
         max_length=255,
         verbose_name=_("video url"),
         help_text=_("url of the classroom recording"),
         null=True,
         blank=True,
+        db_column="video_file_url",
     )
 
     started_at = models.DateTimeField(
@@ -355,3 +356,8 @@ class ClassroomRecording(BaseModel):
 
         stamp = stamp or to_timestamp(self.vod.uploaded_on)
         return f"{self.classroom.pk}/classroomrecording/{self.pk}/{stamp}{extension}"
+
+    @property
+    def video_file_url(self):
+        """Redefine video_file_url property to raise an exception if used"""
+        raise DeprecationWarning("Access denied to video_file_url: deprecated field")
