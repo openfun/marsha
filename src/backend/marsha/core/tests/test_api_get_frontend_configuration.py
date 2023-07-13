@@ -3,7 +3,7 @@ from django.test import TestCase, override_settings
 
 from waffle.testutils import override_switch
 
-from marsha.core.defaults import SENTRY
+from marsha.core.defaults import SENTRY, VOD_CONVERT
 from marsha.core.factories import SiteConfigFactory
 
 
@@ -37,6 +37,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
+                "vod_conversion_enabled": True,
                 "p2p": {
                     "isEnabled": True,
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
@@ -63,6 +64,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": None,
                 "inactive_resources": [],
+                "vod_conversion_enabled": True,
                 "p2p": {
                     "isEnabled": True,
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
@@ -88,6 +90,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": [],
+                "vod_conversion_enabled": True,
                 "p2p": {
                     "isEnabled": True,
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
@@ -106,6 +109,7 @@ class TestGetFrontendConfiguration(TestCase):
         SiteConfigFactory(
             site__domain="marsha.education",
             inactive_resources=["video"],
+            inactive_features=[VOD_CONVERT],
             login_html="markdown text",
             logo_url="path to logo",
             footer_copyright="footer copyright",
@@ -120,6 +124,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": "https://sentry.dsn",
                 "inactive_resources": ["video"],
+                "vod_conversion_enabled": False,
                 "p2p": {
                     "isEnabled": True,
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],
@@ -147,6 +152,7 @@ class TestGetFrontendConfiguration(TestCase):
                 "release": "1.2.3",
                 "sentry_dsn": None,
                 "inactive_resources": [],
+                "vod_conversion_enabled": True,
                 "p2p": {
                     "isEnabled": True,
                     "stunServerUrls": ["stun:stun.l.google.com:19302"],

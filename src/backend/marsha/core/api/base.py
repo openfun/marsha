@@ -9,7 +9,7 @@ from rest_framework.response import Response
 from waffle import switch_is_active
 
 from .. import defaults, serializers
-from ..defaults import SENTRY
+from ..defaults import SENTRY, VOD_CONVERT
 from ..models import SiteConfig, Video
 from ..signals import signal_object_uploaded
 from ..simple_jwt.tokens import ResourceAccessToken
@@ -229,6 +229,7 @@ def get_frontend_configuration(request):
 
     domain = request.get_host()
     inactive_resources = []
+    vod_conversion_enabled = True
 
     is_default_site = domain in settings.FRONTEND_HOME_URL
 
@@ -242,6 +243,7 @@ def get_frontend_configuration(request):
             "stunServerUrls": settings.P2P_STUN_SERVER_URLS,
         },
         "inactive_resources": inactive_resources,
+        "vod_conversion_enabled": vod_conversion_enabled,
         "is_default_site": is_default_site,
     }
 
@@ -249,6 +251,9 @@ def get_frontend_configuration(request):
         try:
             site_config = SiteConfig.objects.get(site__domain=domain)
             config["inactive_resources"] = site_config.inactive_resources
+            config["vod_conversion_enabled"] = (
+                VOD_CONVERT not in site_config.inactive_features
+            )
             config["logo_url"] = site_config.logo_url
             config["login_html"] = site_config.login_html
             config["footer_copyright"] = site_config.footer_copyright
