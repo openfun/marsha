@@ -57,6 +57,7 @@ describe('<BaseAuthenticationPage />', () => {
         footer_copyright: 'custom copyright',
         logo_url: 'custom logo',
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
 

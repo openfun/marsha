@@ -6,6 +6,7 @@ interface SiteConfig {
   logo_url: Maybe<string>;
   login_html: Maybe<string>;
   footer_copyright: Maybe<string>;
+  vod_conversion_enabled: boolean;
 }
 
 interface SiteConfigStore {
@@ -20,6 +21,7 @@ export const useSiteConfig = create<SiteConfigStore>((set, get) => ({
     logo_url: undefined,
     login_html: undefined,
     footer_copyright: undefined,
+    vod_conversion_enabled: true,
   },
   setSiteConfig: (siteConfig) => {
     set((state) => {

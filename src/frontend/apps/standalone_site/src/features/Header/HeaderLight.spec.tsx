@@ -17,6 +17,7 @@ describe('<HeaderLight />', () => {
         footer_copyright: undefined,
         logo_url: undefined,
         login_html: undefined,
+        vod_conversion_enabled: true,
       },
     });
   });
@@ -39,6 +40,7 @@ describe('<HeaderLight />', () => {
         footer_copyright: 'custom copyright',
         logo_url: 'https://example.com/logo.svg',
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
     render(<HeaderLight />);
@@ -54,6 +56,7 @@ describe('<HeaderLight />', () => {
         footer_copyright: 'custom copyright',
         logo_url: undefined,
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
     render(<HeaderLight />);
@@ -77,6 +80,7 @@ describe('<HeaderLight />', () => {
         footer_copyright: 'custom copyright',
         logo_url: 'https://example.com/logo.svg',
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
     render(<HeaderLightLink />);
@@ -95,6 +99,7 @@ describe('<HeaderLight />', () => {
         footer_copyright: 'custom copyright',
         logo_url: undefined,
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
     render(<HeaderLightLink />);
