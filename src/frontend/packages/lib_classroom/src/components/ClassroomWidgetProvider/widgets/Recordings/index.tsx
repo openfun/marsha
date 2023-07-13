@@ -1,5 +1,10 @@
 import { useCurrentClassroom } from 'lib-classroom';
-import { ClassroomRecording, FoldableItem, ItemList } from 'lib-components';
+import {
+  ClassroomRecording,
+  FoldableItem,
+  ItemList,
+  useSiteConfig,
+} from 'lib-components';
 import React from 'react';
 import { defineMessages, useIntl } from 'react-intl';
 
@@ -37,6 +42,8 @@ const messages = defineMessages({
 export const Recordings = () => {
   const classroom = useCurrentClassroom();
   const intl = useIntl();
+  const { getSiteConfig } = useSiteConfig();
+  const siteConfig = getSiteConfig();
 
   return (
     <FoldableItem
@@ -53,7 +60,10 @@ export const Recordings = () => {
             key={recording.id}
             recording={recording}
             classroomTitle={classroom.title}
-            conversionEnabled={classroom.vod_conversion_enabled}
+            conversionEnabled={
+              classroom.vod_conversion_enabled &&
+              siteConfig.vod_conversion_enabled
+            }
           />
         )}
       </ItemList>
