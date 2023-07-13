@@ -4,6 +4,7 @@ import {
   InfoWidgetModalProvider,
   useCurrentResourceContext,
   useJwt,
+  useSiteConfig,
 } from 'lib-components';
 import { render } from 'lib-tests';
 import { DateTime } from 'luxon';
@@ -107,7 +108,7 @@ describe('<Recordings />', () => {
     ).toBeInTheDocument();
   });
 
-  it('displays a list of available recordings with VOD conversion disabled', () => {
+  it('displays a list of available recordings with VOD conversion disabled in classroom', () => {
     mockedUseCurrentResourceContext.mockReturnValue([
       {
         isFromWebsite: false,
@@ -130,6 +131,64 @@ describe('<Recordings />', () => {
       started: false,
       vod_conversion_enabled: false,
       recordings: classroomRecordings,
+    });
+
+    render(
+      wrapInClassroom(
+        <InfoWidgetModalProvider value={null}>
+          <Recordings />,
+        </InfoWidgetModalProvider>,
+        classroom,
+      ),
+    );
+
+    expect(
+      screen.getByText('Tuesday, March 1, 2022 - 11:00 AM'),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText('Tuesday, February 15, 2022 - 11:00 AM'),
+    ).toBeInTheDocument();
+    const convertButtons = screen.getAllByRole('button', {
+      name: 'VOD conversion is disabled',
+    });
+    expect(convertButtons).toHaveLength(2);
+    for (const convertButton of convertButtons) {
+      expect(convertButton).toBeDisabled();
+    }
+  });
+
+  it('displays a list of available recordings with VOD conversion disabled in siteConfig', () => {
+    mockedUseCurrentResourceContext.mockReturnValue([
+      {
+        isFromWebsite: false,
+      },
+    ] as any);
+    const classroomRecordings = [
+      classroomRecordingMockFactory({
+        started_at: DateTime.fromJSDate(
+          new Date(2022, 1, 29, 11, 0, 0),
+        ).toISO() as string,
+      }),
+      classroomRecordingMockFactory({
+        started_at: DateTime.fromJSDate(
+          new Date(2022, 1, 15, 11, 0, 0),
+        ).toISO() as string,
+      }),
+    ];
+    const classroom = classroomMockFactory({
+      id: '1',
+      started: false,
+      vod_conversion_enabled: true,
+      recordings: classroomRecordings,
+    });
+    useSiteConfig.setState({
+      siteConfig: {
+        is_default_site: false,
+        footer_copyright: 'custom copyright',
+        logo_url: 'https://example.com/logo.svg',
+        login_html: 'custom login markdown',
+        vod_conversion_enabled: false,
+      },
     });
 
     render(
