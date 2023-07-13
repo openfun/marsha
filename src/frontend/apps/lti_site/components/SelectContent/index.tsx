@@ -54,6 +54,7 @@ export const SelectContent = ({
         action={lti_select_form_action_url}
         method="POST"
         encType="application/x-www-form-urlencoded"
+        role="form"
       >
         {Object.entries(lti_select_form_data).map(([name, value]) => (
           <input key={name} type="hidden" name={name} value={value} />
@@ -62,7 +63,7 @@ export const SelectContent = ({
         <input type="hidden" name="content_items" value={contentItemsValue} />
       </form>
 
-      {targeted_resource && (
+      {targeted_resource && playlist && (
         <SelectContentTargetedResource
           playlist={playlist}
           documents={documents}

@@ -55,7 +55,7 @@ describe('<PublicVideoDashboard />', () => {
 
     render(<PublicVideoDashboard video={live} playerType="some_player" />);
 
-    screen.getByText('live student');
+    expect(screen.getByText('live student')).toBeInTheDocument();
   });
 
   it('renders vod component when video is a vod', () => {
@@ -63,7 +63,7 @@ describe('<PublicVideoDashboard />', () => {
 
     render(<PublicVideoDashboard video={video} playerType="some_player" />);
 
-    screen.getByText('vod student');
+    expect(screen.getByText('vod student')).toBeInTheDocument();
   });
 
   it('redirects to the error page when vod is deleted', () => {
@@ -80,6 +80,6 @@ describe('<PublicVideoDashboard />', () => {
       },
     });
 
-    screen.getByText('error page');
+    expect(screen.getByText('error page')).toBeInTheDocument();
   });
 });

@@ -44,7 +44,7 @@ describe('RedirectDocument', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -56,7 +56,7 @@ describe('RedirectDocument', () => {
       },
     });
 
-    screen.getByText('document player');
+    expect(screen.getByText('document player')).toBeInTheDocument();
   });
 
   it('redirects to the dashboard when the user has update permission and the document is not ready to show', () => {
@@ -78,7 +78,7 @@ describe('RedirectDocument', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -90,7 +90,7 @@ describe('RedirectDocument', () => {
       },
     });
 
-    screen.getByText('dashboard');
+    expect(screen.getByText('dashboard')).toBeInTheDocument();
   });
 
   it('redirects to the error view when the user has no update permission and the document is not ready to show', () => {
@@ -112,7 +112,7 @@ describe('RedirectDocument', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -124,6 +124,6 @@ describe('RedirectDocument', () => {
       },
     });
 
-    screen.getByText('Error Component: notFound');
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 });

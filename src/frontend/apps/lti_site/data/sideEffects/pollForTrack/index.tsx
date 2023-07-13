@@ -11,6 +11,14 @@ import {
   useJwt,
 } from 'lib-components';
 
+type PollForTrackType<T> = T extends modelName.TIMEDTEXTTRACKS
+  ? TimedText
+  : T extends modelName.VIDEOS
+  ? Video
+  : T extends modelName.DOCUMENTS
+  ? Document
+  : never;
+
 export async function pollForTrack<
   T extends modelName.TIMEDTEXTTRACKS | modelName.VIDEOS | modelName.DOCUMENTS,
 >(
@@ -19,23 +27,22 @@ export async function pollForTrack<
   timer = 15,
   counter = 1,
 ): Promise<requestStatus> {
+  const jwt = useJwt.getState().getJwt();
+  if (!jwt) {
+    throw new Error('No JWT token found');
+  }
+
   try {
     const response = await fetchWrapper(
       `${API_ENDPOINT}/${resourceName}/${resourceId}/`,
       {
         headers: {
-          Authorization: `Bearer ${useJwt.getState().getJwt()}`,
+          Authorization: `Bearer ${jwt}`,
         },
       },
     );
 
-    const incomingTrack: T extends modelName.TIMEDTEXTTRACKS
-      ? TimedText
-      : T extends modelName.VIDEOS
-      ? Video
-      : T extends modelName.DOCUMENTS
-      ? Document
-      : never = await response.json();
+    const incomingTrack = (await response.json()) as PollForTrackType<T>;
 
     if (incomingTrack.is_ready_to_show) {
       await addResource(resourceName, incomingTrack);

@@ -150,7 +150,7 @@ export const SelectContentSection = ({
               key={index}
               onClick={() =>
                 buildContentItems(
-                  item.lti_url!,
+                  item.lti_url || '',
                   item.title,
                   item.description,
                   lti_select_form_data,

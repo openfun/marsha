@@ -55,7 +55,7 @@ describe('<RedirectOnLoad />', () => {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -77,14 +77,14 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: undefined } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -92,7 +92,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Error Component: notFound')).toBeInTheDocument();
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to the player when the video can be shown', () => {
@@ -108,7 +108,7 @@ describe('<RedirectOnLoad />', () => {
         { permissions: { can_update: false } },
       ] as any);
 
-      const { getByText } = render(<RedirectOnLoad />, {
+      render(<RedirectOnLoad />, {
         routerOptions: {
           routes: [
             {
@@ -119,7 +119,7 @@ describe('<RedirectOnLoad />', () => {
         },
       });
 
-      expect(getByText('video player')).toBeInTheDocument();
+      expect(screen.getByText('video player')).toBeInTheDocument();
       cleanup();
     }
   });
@@ -136,7 +136,7 @@ describe('<RedirectOnLoad />', () => {
         { permissions: { can_update: false } },
       ] as any);
 
-      const { getByText } = render(<RedirectOnLoad />, {
+      render(<RedirectOnLoad />, {
         routerOptions: {
           routes: [
             {
@@ -147,7 +147,7 @@ describe('<RedirectOnLoad />', () => {
         },
       });
 
-      expect(getByText('document player')).toBeInTheDocument();
+      expect(screen.getByText('document player')).toBeInTheDocument();
       cleanup();
     }
   });
@@ -166,14 +166,14 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: true } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: DASHBOARD_ROUTE.default,
             element: (
               <WithParams>
-                {({ objectType }) => <span>{`dashboard ${objectType}`}</span>}
+                {({ objectType }) => <span>{`dashboard ${objectType!}`}</span>}
               </WithParams>
             ),
           },
@@ -181,7 +181,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('dashboard videos')).toBeInTheDocument();
+    expect(screen.getByText('dashboard videos')).toBeInTheDocument();
   });
 
   it('redirects users to /dashboard when document is not ready to be shown and it has permissions to update it', () => {
@@ -198,14 +198,14 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: true } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: DASHBOARD_ROUTE.default,
             element: (
               <WithParams>
-                {({ objectType }) => <span>{`dashboard ${objectType}`}</span>}
+                {({ objectType }) => <span>{`dashboard ${objectType!}`}</span>}
               </WithParams>
             ),
           },
@@ -213,7 +213,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('dashboard documents')).toBeInTheDocument();
+    expect(screen.getByText('dashboard documents')).toBeInTheDocument();
   });
 
   it('redirects users to /error when video is not ready to be shown and it has no permissions to update it', () => {
@@ -230,14 +230,14 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: false } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -245,7 +245,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Error Component: notFound')).toBeInTheDocument();
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to /error when document is not ready to be shown and it has no permissions to update it', () => {
@@ -262,14 +262,14 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: false } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -277,7 +277,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Error Component: notFound')).toBeInTheDocument();
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
   it('redirects users to /select when LTI select data are passed', () => {
@@ -288,7 +288,7 @@ describe('<RedirectOnLoad />', () => {
       { permissions: { can_update: undefined } },
     ] as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -299,15 +299,15 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Select LTI content')).toBeInTheDocument();
+    expect(screen.getByText('Select LTI content')).toBeInTheDocument();
   });
 
-  it('redirects to portability if app state requires it', async () => {
+  it('redirects to portability if app state requires it', () => {
     mockedUseAppConfig.mockReturnValue({
       state: appState.PORTABILITY,
     } as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -318,6 +318,6 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Portability request')).toBeInTheDocument();
+    expect(screen.getByText('Portability request')).toBeInTheDocument();
   });
 });

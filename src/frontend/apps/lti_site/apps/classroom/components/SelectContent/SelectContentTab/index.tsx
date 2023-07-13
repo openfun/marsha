@@ -21,7 +21,7 @@ const Internal = ({
   const useCreateClassroomMutation = useCreateClassroom({
     onSuccess: (classroom) =>
       buildContentItems(
-        classroomAppData.new_classroom_url! + classroom.id,
+        `${classroomAppData.new_classroom_url || ''}${classroom.id}`,
         classroom.title,
         classroom.description,
         lti_select_form_data,
@@ -38,8 +38,8 @@ const Internal = ({
           description: lti_select_form_data?.activity_description,
         });
       }}
-      newLtiUrl={classroomAppData.new_classroom_url!}
-      items={classroomAppData.classrooms!}
+      newLtiUrl={classroomAppData.new_classroom_url || ''}
+      items={classroomAppData.classrooms || null}
       lti_select_form_data={lti_select_form_data}
       setContentItemsValue={setContentItemsValue}
     />

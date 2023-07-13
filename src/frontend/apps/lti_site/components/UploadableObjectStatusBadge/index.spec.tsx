@@ -24,7 +24,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
-    screen.getByText('Ready');
+    expect(screen.getByText('Ready')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PROCESSING', () => {
@@ -34,7 +34,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
-    screen.getByText('Processing');
+    expect(screen.getByText('Processing')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is in ERROR', () => {
@@ -44,7 +44,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
-    screen.getByText('Error');
+    expect(screen.getByText('Error')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with no upload related information', () => {
@@ -54,7 +54,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     render(<UploadableObjectStatusBadge object={object} />);
 
     screen.getByRole('status');
-    screen.getByText('Pending');
+    expect(screen.getByText('Pending')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with an upload just starting', () => {
@@ -81,7 +81,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     );
 
     screen.getByRole('status');
-    screen.getByText('Uploading');
+    expect(screen.getByText('Uploading')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with an upload in progress', () => {
@@ -108,7 +108,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     );
 
     screen.getByRole('status');
-    screen.getByText('Uploading');
+    expect(screen.getByText('Uploading')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with a failed upload (policy)', () => {
@@ -135,7 +135,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     );
 
     screen.getByRole('status');
-    screen.getByText('Error');
+    expect(screen.getByText('Error')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with a failed upload (upload)', () => {
@@ -162,7 +162,7 @@ describe('<UploadableObjectStatusBadge />', () => {
     );
 
     screen.getByRole('status');
-    screen.getByText('Error');
+    expect(screen.getByText('Error')).toBeInTheDocument();
   });
 
   it('shows the status for an object that is PENDING with an upload that succeeded', () => {
@@ -189,6 +189,6 @@ describe('<UploadableObjectStatusBadge />', () => {
     );
 
     screen.getByRole('status');
-    screen.getByText('Processing');
+    expect(screen.getByText('Processing')).toBeInTheDocument();
   });
 });

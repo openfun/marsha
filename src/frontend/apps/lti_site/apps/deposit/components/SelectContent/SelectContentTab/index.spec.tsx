@@ -40,6 +40,6 @@ describe('<SelectContentTab />', () => {
 
     screen.getByRole('tab', { name: 'File Depositories' });
     screen.getByText('Add a file depository');
-    screen.getByLabelText('Select deposit title');
+    expect(screen.getByLabelText('Select deposit title')).toBeInTheDocument();
   });
 });

@@ -17,7 +17,7 @@ import {
   Playlist,
   Video,
 } from 'lib-components';
-import React, { useState } from 'react';
+import React, { Fragment, useState } from 'react';
 import { toast } from 'react-hot-toast';
 import { FormattedMessage, defineMessages, useIntl } from 'react-intl';
 
@@ -174,8 +174,8 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
 
   const addPlaylistPortability = () => {
     mutation.mutate({
-      portable_to: playlist
-        ?.portable_to!.map((portedToPlaylist) => {
+      portable_to: playlist?.portable_to
+        .map((portedToPlaylist) => {
           return portedToPlaylist.id;
         })
         .concat(newPortabilityID),
@@ -185,15 +185,13 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
 
   const removePlaylistPortability = (oldPortabilityID: string) => {
     mutation.mutate({
-      portable_to: playlist
-        ?.portable_to!.filter(
-          (portedToPlaylist) => portedToPlaylist.id !== oldPortabilityID,
-        )
+      portable_to: playlist?.portable_to
+        .filter((portedToPlaylist) => portedToPlaylist.id !== oldPortabilityID)
         .map((portedToPlaylist) => portedToPlaylist.id),
     });
   };
 
-  let content: JSX.Element;
+  let content: JSX.Element = <Fragment></Fragment>;
   switch (usePlaylistStatus) {
     case 'idle':
     case 'loading':
@@ -284,6 +282,8 @@ export const PlaylistPortability = ({ object }: PlaylistPortabilityProps) => {
           </Box>
         </React.Fragment>
       );
+      break;
+    default:
       break;
   }
 

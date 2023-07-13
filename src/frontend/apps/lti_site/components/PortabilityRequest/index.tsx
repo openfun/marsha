@@ -72,14 +72,23 @@ export const PortabilityRequest = ({
     },
   });
 
-  const onRequestBtnClick = async () => {
+  const onRequestBtnClick = () => {
     const decodedJwt = getDecodedJwt() as DecodedJwtLTI;
+
+    if (
+      !decodedJwt.playlist_id ||
+      !decodedJwt.consumer_site ||
+      !decodedJwt.user?.id
+    ) {
+      toast.error(intl.formatMessage(messages.portabilityRequestFailed));
+      return;
+    }
 
     useCreatePortabilityRequestMutation.mutate({
       for_playlist: portability.for_playlist_id,
-      from_playlist: decodedJwt.playlist_id!,
-      from_lti_consumer_site: decodedJwt.consumer_site!,
-      from_lti_user_id: decodedJwt.user!.id!,
+      from_playlist: decodedJwt.playlist_id,
+      from_lti_consumer_site: decodedJwt.consumer_site,
+      from_lti_user_id: decodedJwt.user.id,
     });
   };
 

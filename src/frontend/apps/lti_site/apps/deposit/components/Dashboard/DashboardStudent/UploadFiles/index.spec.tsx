@@ -1,4 +1,5 @@
-import { act, fireEvent, screen, waitFor } from '@testing-library/react';
+import { fireEvent, screen, waitFor } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import {
   DepositedFile,
@@ -62,7 +63,11 @@ describe('<UploadFiles />', () => {
 
   it('renders a Dropzone with the relevant messages', () => {
     render(<UploadFiles />);
-    screen.getByText("Drag 'n' drop some files here, or click to select files");
+    expect(
+      screen.getByText(
+        "Drag 'n' drop some files here, or click to select files",
+      ),
+    ).toBeInTheDocument();
   });
 
   it('passes the file to the callback', async () => {
@@ -76,22 +81,17 @@ describe('<UploadFiles />', () => {
       uploadManagerState: {},
     });
 
-    const { container } = render(<UploadFiles />);
+    render(<UploadFiles />);
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
-    await act(async () => {
-      fireEvent.change(container.querySelector('input[type="file"]')!, {
-        target: {
-          files: [file],
-        },
-      });
-    });
+    await userEvent.upload(screen.getByLabelText('File Upload'), file);
+
     fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
 
     const depositedFile = depositedFileMockFactory();
     createDeferred.resolve(depositedFile);
 
-    await waitFor(() => expect(expect(mockAddUpload).toHaveBeenCalledTimes(1)));
+    await waitFor(() => expect(mockAddUpload).toHaveBeenCalledTimes(1));
     expect(mockAddUpload).toHaveBeenLastCalledWith(
       modelName.DepositedFiles,
       depositedFile.id,
@@ -119,18 +119,12 @@ describe('<UploadFiles />', () => {
       { method: 'OPTIONS' },
     );
 
-    const { container } = render(<UploadFiles />);
+    render(<UploadFiles />);
 
     const file = new File(['(⌐□_□)'], 'course.mp4', { type: 'video/mp4' });
-    await act(async () => {
-      fireEvent.change(container.querySelector('input[type="file"]')!, {
-        target: {
-          files: [file],
-        },
-      });
-    });
+    await userEvent.upload(screen.getByLabelText('File Upload'), file);
 
-    fireEvent.click(screen.getByRole('button', { name: 'Upload' }));
+    await userEvent.click(screen.getByRole('button', { name: 'Upload' }));
     await waitFor(() =>
       expect(mockCreateDepositedFile).toHaveBeenCalledTimes(1),
     );
@@ -163,8 +157,10 @@ describe('<UploadFiles />', () => {
     render(<UploadFiles />);
 
     await screen.findByText('20%');
-    await screen.findByText(
-      'Upload in progress... Please do not close or reload this page.',
-    );
+    expect(
+      await screen.findByText(
+        'Upload in progress... Please do not close or reload this page.',
+      ),
+    ).toBeInTheDocument();
   });
 });

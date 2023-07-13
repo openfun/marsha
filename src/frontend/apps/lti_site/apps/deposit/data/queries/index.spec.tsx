@@ -302,7 +302,7 @@ describe('queries', () => {
       );
 
       const { result } = renderHook(
-        () => useDepositedFiles(fileDepository.id, { limit: 3 }),
+        () => useDepositedFiles(fileDepository.id, { limit: '3' }),
         {
           wrapper: WrapperReactQuery,
         },
@@ -336,7 +336,7 @@ describe('queries', () => {
       );
 
       const { result } = renderHook(
-        () => useDepositedFiles(fileDepository.id, { limit: 3, offset: 3 }),
+        () => useDepositedFiles(fileDepository.id, { limit: '3', offset: '3' }),
         {
           wrapper: WrapperReactQuery,
         },
@@ -370,7 +370,7 @@ describe('queries', () => {
       );
 
       const { result } = renderHook(
-        () => useDepositedFiles(fileDepository.id, { limit: 3 }),
+        () => useDepositedFiles(fileDepository.id, { limit: '3' }),
         {
           wrapper: WrapperReactQuery,
         },

@@ -16,7 +16,7 @@ import {
   uploadState,
 } from 'lib-components';
 import { initiateLive, useCreateVideo } from 'lib-video';
-import React, { Suspense, lazy } from 'react';
+import React, { ComponentType, Suspense, lazy } from 'react';
 import { useIntl } from 'react-intl';
 
 import { appConfigs } from 'data/appConfigs';
@@ -98,7 +98,7 @@ export const SelectContentTabs = ({
         await initiateLive(video, variables.live_type);
       }
       buildContentItems(
-        new_video_url + video.id,
+        `${new_video_url || ''}${video.id}`,
         video.title,
         video.description,
         lti_select_form_data,
@@ -109,7 +109,7 @@ export const SelectContentTabs = ({
   const useCreateDocumentMutation = useCreateDocument({
     onSuccess: (document) =>
       buildContentItems(
-        new_document_url + document.id,
+        `${new_document_url || ''}${document.id}`,
         document.title,
         document.description,
         lti_select_form_data,
@@ -129,7 +129,9 @@ export const SelectContentTabs = ({
     appTabs.push(
       lazy(
         () =>
-          import(`apps/${appName}/components/SelectContent/SelectContentTab`),
+          import(
+            `apps/${appName}/components/SelectContent/SelectContentTab`
+          ) as Promise<{ default: ComponentType<SelectContentTabProps> }>,
       ),
     );
   });
@@ -166,16 +168,16 @@ export const SelectContentTabs = ({
           >
             <SelectContentSection
               addMessage={intl.formatMessage(commonMessages.addWebinar)}
-              addAndSelectContent={async () => {
+              addAndSelectContent={() => {
                 useCreateVideoMutation.mutate({
-                  playlist: playlist!.id,
+                  playlist: playlist?.id || '',
                   title: lti_select_form_data?.activity_title,
                   description: lti_select_form_data?.activity_description,
                   live_type: LiveModeType.JITSI,
                 });
               }}
-              newLtiUrl={new_video_url!}
-              items={webinars!}
+              newLtiUrl={new_video_url || ''}
+              items={webinars || null}
               lti_select_form_data={lti_select_form_data}
               setContentItemsValue={setContentItemsValue}
             />
@@ -196,14 +198,14 @@ export const SelectContentTabs = ({
               addMessage={intl.formatMessage(commonMessages.addVideo)}
               addAndSelectContent={() => {
                 useCreateVideoMutation.mutate({
-                  playlist: playlist!.id,
+                  playlist: playlist?.id || '',
                   title: lti_select_form_data?.activity_title,
                   description: lti_select_form_data?.activity_description,
                   upload_state: uploadState.INITIALIZED,
                 });
               }}
-              newLtiUrl={new_video_url!}
-              items={videos!}
+              newLtiUrl={new_video_url || ''}
+              items={videos || null}
               lti_select_form_data={lti_select_form_data}
               setContentItemsValue={setContentItemsValue}
             />
@@ -228,13 +230,13 @@ export const SelectContentTabs = ({
               addMessage={intl.formatMessage(commonMessages.addDocument)}
               addAndSelectContent={() => {
                 useCreateDocumentMutation.mutate({
-                  playlist: playlist!.id,
+                  playlist: playlist?.id || '',
                   title: lti_select_form_data?.activity_title,
                   description: lti_select_form_data?.activity_description,
                 });
               }}
-              newLtiUrl={new_document_url!}
-              items={documents!}
+              newLtiUrl={new_document_url || ''}
+              items={documents || null}
               lti_select_form_data={lti_select_form_data}
               setContentItemsValue={setContentItemsValue}
             />
@@ -242,11 +244,13 @@ export const SelectContentTabs = ({
         )}
         {appTabs.map((LazyComponent, index) => (
           <Suspense key={index} fallback={<Loader />}>
-            <LazyComponent
-              lti_select_form_data={lti_select_form_data}
-              playlist={playlist!}
-              setContentItemsValue={setContentItemsValue}
-            />
+            {playlist && (
+              <LazyComponent
+                lti_select_form_data={lti_select_form_data}
+                playlist={playlist}
+                setContentItemsValue={setContentItemsValue}
+              />
+            )}
           </Suspense>
         ))}
       </Tabs>

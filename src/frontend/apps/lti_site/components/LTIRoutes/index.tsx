@@ -70,7 +70,7 @@ export const LTIInnerRoutes = () => {
                     <InstructorWrapper resource={appData.video}>
                       <PublicVideoDashboard
                         video={appData.video}
-                        playerType={appData.player!}
+                        playerType={appData.player || ''}
                       />
                     </InstructorWrapper>
                   ) : (
@@ -98,7 +98,11 @@ export const LTIInnerRoutes = () => {
             <Route
               path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
               element={
-                <PortabilityRequest portability={appData.portability!} />
+                appData.portability ? (
+                  <PortabilityRequest portability={appData.portability} />
+                ) : (
+                  <Navigate to={routeNotFound} />
+                )
               }
             />
 
@@ -114,9 +118,9 @@ export const LTIInnerRoutes = () => {
                   new_video_url={appData.new_video_url}
                   new_webinar_url={appData.new_webinar_url}
                   lti_select_form_action_url={
-                    appData.lti_select_form_action_url!
+                    appData.lti_select_form_action_url || ''
                   }
-                  lti_select_form_data={appData.lti_select_form_data!}
+                  lti_select_form_data={appData.lti_select_form_data || {}}
                   targeted_resource={appData.targeted_resource}
                 />
               }
@@ -126,12 +130,18 @@ export const LTIInnerRoutes = () => {
               path={UPLOAD_FORM_ROUTE.default}
               element={
                 <WithParams>
-                  {({ objectId, objectType }) => (
-                    <UploadForm
-                      objectId={objectId!}
-                      objectType={objectType as modelName}
-                    />
-                  )}
+                  {({ objectId, objectType }) =>
+                    objectId && objectType ? (
+                      <UploadForm
+                        objectId={objectId}
+                        objectType={objectType as modelName}
+                      />
+                    ) : (
+                      <Navigate
+                        to={builderFullScreenErrorRoute(ErrorComponents.upload)}
+                      />
+                    )
+                  }
                 </WithParams>
               }
             />

@@ -128,6 +128,8 @@ describe('<SidebarUploadsIndicator />', () => {
       </UploadManagerContext.Provider>,
     );
 
-    screen.getByRole('link', { name: 'File uploads' });
+    expect(
+      screen.getByRole('link', { name: 'File uploads' }),
+    ).toBeInTheDocument();
   });
 });

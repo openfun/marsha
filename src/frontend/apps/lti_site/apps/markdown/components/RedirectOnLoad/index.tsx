@@ -29,6 +29,7 @@ type RedirectOnLoadProps = {
 export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
   const appData = useAppConfig();
   const isFeatureEnabled = useIsFeatureEnabled();
+  const [context] = useCurrentResourceContext();
 
   // Get LTI errors out of the way
   if (appData.state === appState.ERROR) {
@@ -47,8 +48,6 @@ export const RedirectOnLoad = ({ markdownDocument }: RedirectOnLoadProps) => {
   if (!useJwt.getState().getJwt()) {
     return <Navigate to={MARKDOWN_NOT_FOUND_ROUTE()} />;
   }
-
-  const [context] = useCurrentResourceContext();
 
   if (context.permissions.can_update) {
     const isNewDocument =

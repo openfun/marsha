@@ -1,3 +1,4 @@
+import { screen } from '@testing-library/react';
 import { DASHBOARD_CLASSROOM_ROUTE } from 'lib-classroom';
 import {
   FULL_SCREEN_ERROR_ROUTE,
@@ -30,14 +31,14 @@ describe('<RedirectOnLoad />', () => {
       flags: { classroom: true },
     } as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -45,7 +46,7 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    expect(getByText('Error Component: lti')).toBeInTheDocument();
+    expect(screen.getByText('Error Component: lti')).toBeInTheDocument();
   });
 
   it('shows not found error when feature is disabled', () => {
@@ -53,14 +54,14 @@ describe('<RedirectOnLoad />', () => {
       flags: { classroom: false },
     } as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
             path: FULL_SCREEN_ERROR_ROUTE.default,
             element: (
               <WithParams>
-                {({ code }) => <span>{`Error Component: ${code}`}</span>}
+                {({ code }) => <span>{`Error Component: ${code!}`}</span>}
               </WithParams>
             ),
           },
@@ -68,15 +69,15 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Error Component: notFound');
+    expect(screen.getByText('Error Component: notFound')).toBeInTheDocument();
   });
 
-  it('shows dashboard', async () => {
+  it('shows dashboard', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { classroom: true },
     } as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -87,16 +88,16 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Dashboard');
+    expect(screen.getByText('Dashboard')).toBeInTheDocument();
   });
 
-  it('redirects to portability if app state requires it', async () => {
+  it('redirects to portability if app state requires it', () => {
     mockedUseAppConfig.mockReturnValue({
       flags: { classroom: true },
       state: appState.PORTABILITY,
     } as any);
 
-    const { getByText } = render(<RedirectOnLoad />, {
+    render(<RedirectOnLoad />, {
       routerOptions: {
         routes: [
           {
@@ -107,6 +108,6 @@ describe('<RedirectOnLoad />', () => {
       },
     });
 
-    getByText('Portability request');
+    expect(screen.getByText('Portability request')).toBeInTheDocument();
   });
 });

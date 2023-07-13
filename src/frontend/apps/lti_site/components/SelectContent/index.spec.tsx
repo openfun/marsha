@@ -1,4 +1,4 @@
-import { act, screen, waitFor, within } from '@testing-library/react';
+import { screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { Tab } from 'grommet';
@@ -337,7 +337,7 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content', async () => {
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         documents={[
           documentMockFactory({
@@ -364,7 +364,7 @@ describe('<SelectContent />', () => {
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    expect(container!.querySelector('form')).toHaveFormValues({
+    expect(screen.getByRole('form')).toHaveFormValues({
       lti_response_url: 'https://example.com/lti',
       lti_message_type: 'ContentItemSelection',
       content_items: JSON.stringify({
@@ -383,7 +383,7 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with activity title and description', async () => {
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         documents={[
           documentMockFactory({
@@ -412,7 +412,7 @@ describe('<SelectContent />', () => {
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    expect(container!.querySelector('form')).toHaveFormValues({
+    expect(screen.getByRole('form')).toHaveFormValues({
       lti_response_url: 'https://example.com/lti',
       lti_message_type: 'ContentItemSelection',
       content_items: JSON.stringify({
@@ -431,7 +431,7 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content with empty activity title and description', async () => {
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         documents={[
           documentMockFactory({
@@ -460,7 +460,7 @@ describe('<SelectContent />', () => {
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    expect(container!.querySelector('form')).toHaveFormValues({
+    expect(screen.getByRole('form')).toHaveFormValues({
       lti_response_url: 'https://example.com/lti',
       lti_message_type: 'ContentItemSelection',
       content_items: JSON.stringify({
@@ -479,7 +479,7 @@ describe('<SelectContent />', () => {
   });
 
   it('selects content without document title', async () => {
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         documents={[
           documentMockFactory({
@@ -506,7 +506,7 @@ describe('<SelectContent />', () => {
 
     expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    expect(container!.querySelector('form')).toHaveFormValues({
+    expect(screen.getByRole('form')).toHaveFormValues({
       lti_response_url: 'https://example.com/lti',
       lti_message_type: 'ContentItemSelection',
       content_items: JSON.stringify({
@@ -531,7 +531,7 @@ describe('<SelectContent />', () => {
     });
     fetchMock.post('/api/videos/', video);
 
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         playlist={playlist}
         documents={mockAppData.documents}
@@ -542,9 +542,7 @@ describe('<SelectContent />', () => {
         lti_select_form_data={mockAppData.lti_select_form_data}
       />,
     );
-    act(() => {
-      userEvent.click(screen.getByText('Add a webinar'));
-    });
+    await userEvent.click(screen.getByText('Add a webinar'));
 
     await waitFor(() => {
       expect(
@@ -564,7 +562,7 @@ describe('<SelectContent />', () => {
       expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
     });
 
-    const form = container!.querySelector('form');
+    const form = screen.getByRole('form');
     expect(form).toHaveFormValues({
       content_items: JSON.stringify({
         '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
@@ -589,7 +587,7 @@ describe('<SelectContent />', () => {
     });
     fetchMock.post('/api/videos/', video);
 
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         playlist={playlist}
         documents={mockAppData.documents}
@@ -601,9 +599,7 @@ describe('<SelectContent />', () => {
       />,
     );
     await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    act(() => {
-      userEvent.click(screen.getByText('Add a video'));
-    });
+    await userEvent.click(screen.getByText('Add a video'));
 
     await waitFor(() => {
       expect(
@@ -615,11 +611,10 @@ describe('<SelectContent />', () => {
           method: 'POST',
         }),
       ).toBe(true);
-
-      expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
     });
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    const form = container!.querySelector('form');
+    const form = screen.getByRole('form');
     expect(form).toHaveFormValues({
       content_items: JSON.stringify({
         '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
@@ -645,7 +640,7 @@ describe('<SelectContent />', () => {
 
     fetchMock.post('/api/videos/', video);
 
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         playlist={playlist}
         documents={mockAppData.documents}
@@ -661,9 +656,7 @@ describe('<SelectContent />', () => {
       />,
     );
     await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    act(() => {
-      userEvent.click(screen.getByText('Add a video'));
-    });
+    await userEvent.click(screen.getByText('Add a video'));
 
     await waitFor(() => {
       expect(
@@ -677,11 +670,10 @@ describe('<SelectContent />', () => {
           method: 'POST',
         }),
       ).toBe(true);
-
-      expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
     });
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    const form = container!.querySelector('form');
+    const form = screen.getByRole('form');
     expect(form).toHaveFormValues({
       content_items: JSON.stringify({
         '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
@@ -709,7 +701,7 @@ describe('<SelectContent />', () => {
 
     fetchMock.post('/api/videos/', video);
 
-    const { elementContainer: container } = render(
+    render(
       <SelectContent
         playlist={playlist}
         documents={mockAppData.documents}
@@ -725,9 +717,7 @@ describe('<SelectContent />', () => {
       />,
     );
     await userEvent.click(screen.getByRole('tab', { name: /videos/i }));
-    act(() => {
-      userEvent.click(screen.getByText('Add a video'));
-    });
+    await userEvent.click(screen.getByText('Add a video'));
 
     await waitFor(() => {
       expect(
@@ -741,11 +731,10 @@ describe('<SelectContent />', () => {
           method: 'POST',
         }),
       ).toBe(true);
-
-      expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
     });
+    expect(window.HTMLFormElement.prototype.submit).toHaveBeenCalledTimes(1);
 
-    const form = container!.querySelector('form');
+    const form = screen.getByRole('form');
     expect(form).toHaveFormValues({
       content_items: JSON.stringify({
         '@context': 'http://purl.imsglobal.org/ctx/lti/v1/ContentItem',
@@ -788,6 +777,7 @@ describe('<SelectContent />', () => {
         lti_select_form_action_url={mockAppData.lti_select_form_action_url}
         lti_select_form_data={mockAppData.lti_select_form_data}
         targeted_resource={selectableBaseResource.VIDEO}
+        playlist={playlistMockFactory()}
       />,
     );
 

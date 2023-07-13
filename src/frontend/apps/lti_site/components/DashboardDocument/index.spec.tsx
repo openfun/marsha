@@ -123,7 +123,7 @@ describe('<DashboardDocument />', () => {
       />,
     );
 
-    screen.getByText('Upload a document');
+    expect(screen.getByText('Upload a document')).toBeInTheDocument();
   });
 
   it('shows the replace button in error state', () => {
@@ -138,7 +138,9 @@ describe('<DashboardDocument />', () => {
     );
 
     screen.getByText((content) => content.startsWith('Error'));
-    screen.getByRole('button', { name: /Replace the document/i });
+    expect(
+      screen.getByRole('button', { name: /Replace the document/i }),
+    ).toBeInTheDocument();
   });
 
   it('renders in ready state', () => {
@@ -146,7 +148,7 @@ describe('<DashboardDocument />', () => {
       title: 'foo',
       lti_id: 'foo+context_id',
     } as Playlist;
-    const { container } = render(
+    render(
       <DashboardDocument
         document={documentMockFactory({
           id: '45',
@@ -171,7 +173,7 @@ describe('<DashboardDocument />', () => {
 
     // show the player
     screen.getByText('foo');
-    expect(container.getElementsByClassName('icon-file-text2')).toHaveLength(1);
+    expect(screen.getByRole('img')).toHaveClass('icon-file-text2');
   });
 
   it('shows the progress bar when the document is uploading', () => {
@@ -200,6 +202,6 @@ describe('<DashboardDocument />', () => {
     );
 
     screen.getByText('Uploading');
-    screen.getByText('0%');
+    expect(screen.getByText('0%')).toBeInTheDocument();
   });
 });

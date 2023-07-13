@@ -38,7 +38,7 @@ describe('<SelectContentResource />', () => {
     fetchMock.restore();
   });
 
-  it('displays available markdown documents', async () => {
+  it('displays available markdown documents', () => {
     render(
       <SelectContentResource
         playlist={currentPlaylist}
@@ -53,7 +53,9 @@ describe('<SelectContentResource />', () => {
     screen.getByRole('heading', { name: 'Markdown' });
     screen.getByText('Add a markdown document');
 
-    screen.getByLabelText('Select translated title');
+    expect(
+      screen.getByLabelText('Select translated title'),
+    ).toBeInTheDocument();
   });
 
   it('displays available markdown documents and select existing one', async () => {

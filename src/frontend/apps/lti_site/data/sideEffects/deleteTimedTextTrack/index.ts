@@ -11,11 +11,16 @@ import {
  * @param timedtexttrack The timedtexttrack to delete.
  */
 export const deleteTimedTextTrack = async (timedtexttrack: TimedText) => {
+  const jwt = useJwt.getState().getJwt();
+  if (!jwt) {
+    throw new Error('No JWT token found');
+  }
+
   const response = await fetchWrapper(
     `${API_ENDPOINT}/${modelName.TIMEDTEXTTRACKS}/${timedtexttrack.id}/`,
     {
       headers: {
-        Authorization: `Bearer ${useJwt.getState().getJwt()}`,
+        Authorization: `Bearer ${jwt}`,
       },
       method: 'DELETE',
     },

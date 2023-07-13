@@ -6,6 +6,7 @@ import {
   Loader,
   UploadManager,
   WithParams,
+  builderFullScreenErrorRoute,
   useAppConfig,
 } from 'lib-components';
 import {
@@ -14,7 +15,7 @@ import {
   MARKDOWN_VIEWER_ROUTE,
 } from 'lib-markdown';
 import { Suspense } from 'react';
-import { MemoryRouter, Route, Routes } from 'react-router-dom';
+import { MemoryRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { MarkdownAppData } from 'apps/markdown/data/MarkdownAppData';
 import { PortabilityRequest } from 'components/PortabilityRequest';
@@ -65,7 +66,13 @@ const RoutesMarkdown = () => {
             <Route
               path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
               element={
-                <PortabilityRequest portability={appData.portability!} />
+                appData.portability ? (
+                  <PortabilityRequest portability={appData.portability} />
+                ) : (
+                  <Navigate
+                    to={builderFullScreenErrorRoute(ErrorComponents.notFound)}
+                  />
+                )
               }
             />
 

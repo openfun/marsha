@@ -2,7 +2,7 @@ import { Text } from 'grommet';
 import { IFetchResponseError } from 'lib-components';
 import React from 'react';
 
-interface MutationFieldErrorProps<T extends unknown> {
+interface MutationFieldErrorProps<T> {
   errors: IFetchResponseError<T>['errors'];
   fieldName: keyof T;
 }

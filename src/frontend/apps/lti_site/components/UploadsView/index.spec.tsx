@@ -1,4 +1,4 @@
-import { act, screen } from '@testing-library/react';
+import { act, screen, waitFor } from '@testing-library/react';
 import fetchMock from 'fetch-mock';
 import {
   UploadManagerContext,
@@ -10,10 +10,6 @@ import { Deferred, render } from 'lib-tests';
 import React from 'react';
 
 import { UploadsView } from '.';
-
-jest.mock('lib-components', () => ({
-  ...jest.requireActual('lib-components'),
-}));
 
 describe('<UploadsView />', () => {
   afterEach(() => fetchMock.restore());
@@ -71,16 +67,22 @@ describe('<UploadsView />', () => {
     expect(screen.getAllByRole('list').length).toEqual(2);
     expect(screen.getAllByRole('listitem').length).toEqual(3);
 
-    await act(async () => video0Deferred.resolve(video0));
-    expect(screen.queryByText('video0.mp4')).toBeNull();
+    act(() => video0Deferred.resolve(video0));
+    await waitFor(() => {
+      expect(screen.queryByText('video0.mp4')).toBeNull();
+    });
     screen.getByText(video0.title!);
 
-    await act(async () => video1Deferred.resolve(video1));
-    expect(screen.queryByText('video1.mp4')).toBeNull();
+    act(() => video1Deferred.resolve(video1));
+    await waitFor(() => {
+      expect(screen.queryByText('video1.mp4')).toBeNull();
+    });
     screen.getByText(video1.title!);
 
-    await act(async () => video2Deferred.resolve(video2));
-    expect(screen.queryByText('video2.mp4')).toBeNull();
+    act(() => video2Deferred.resolve(video2));
+    await waitFor(() => {
+      expect(screen.queryByText('video2.mp4')).toBeNull();
+    });
     screen.getByText(video2.title!);
   });
 

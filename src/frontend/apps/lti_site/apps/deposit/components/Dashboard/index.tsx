@@ -2,7 +2,7 @@ import { Box, Spinner, ThemeContext, ThemeType } from 'grommet';
 import { normalizeColor } from 'grommet/utils';
 import { theme } from 'lib-common';
 import { UploadManager, useCurrentResourceContext } from 'lib-components';
-import React from 'react';
+import React, { Fragment } from 'react';
 import { FormattedMessage, defineMessages } from 'react-intl';
 
 import { depositAppData } from 'apps/deposit/data/depositAppData';
@@ -70,12 +70,12 @@ const Dashboard = () => {
   const canUpdate = context.permissions.can_update;
 
   const { data: fileDepository, status: useFileDepositoryStatus } =
-    useFileDepository(depositAppData.fileDepository!.id, {
+    useFileDepository(depositAppData.fileDepository?.id || '', {
       refetchInterval: 0,
       refetchOnWindowFocus: false,
     });
 
-  let content: JSX.Element;
+  let content: JSX.Element = <Fragment />;
   switch (useFileDepositoryStatus) {
     case 'idle':
     case 'loading':
@@ -98,6 +98,8 @@ const Dashboard = () => {
         // Instructor dashboard
         content = <DashboardInstructor fileDepository={fileDepository} />;
       }
+      break;
+    default:
       break;
   }
 

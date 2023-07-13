@@ -6,10 +6,16 @@ import {
   FullScreenError,
   Loader,
   WithParams,
+  builderFullScreenErrorRoute,
   useAppConfig,
 } from 'lib-components';
-import React, { Fragment, Suspense } from 'react';
-import { MemoryRouter, Route, Routes as RoutesDom } from 'react-router-dom';
+import React, { Suspense } from 'react';
+import {
+  MemoryRouter,
+  Navigate,
+  Route,
+  Routes as RoutesDom,
+} from 'react-router-dom';
 
 import { classroomAppData } from 'apps/classroom/data/classroomAppData';
 import { PortabilityRequest } from 'components/PortabilityRequest';
@@ -20,7 +26,7 @@ import { REDIRECT_ON_LOAD_ROUTE } from './RedirectOnLoad/route';
 
 const { DashboardClassroom } = lazyImport(() => import('lib-classroom'));
 
-const Wrappers = ({ children }: React.PropsWithChildren<{}>) => (
+const Wrappers = ({ children }: React.PropsWithChildren) => (
   <MemoryRouter>
     <div className={`marsha-${classroomAppData.frontend}`}>{children}</div>
   </MemoryRouter>
@@ -55,7 +61,15 @@ const Routes = () => {
 
           <Route
             path={RESOURCE_PORTABILITY_REQUEST_ROUTE}
-            element={<PortabilityRequest portability={appData.portability!} />}
+            element={
+              appData.portability ? (
+                <PortabilityRequest portability={appData.portability} />
+              ) : (
+                <Navigate
+                  to={builderFullScreenErrorRoute(ErrorComponents.notFound)}
+                />
+              )
+            }
           />
 
           <Route path={REDIRECT_ON_LOAD_ROUTE} element={<RedirectOnLoad />} />

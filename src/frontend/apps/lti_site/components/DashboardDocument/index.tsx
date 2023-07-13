@@ -88,15 +88,15 @@ const DashboardDocument = (props: DashboardDocumentProps) => {
 
   useEffect(() => {
     if ([PENDING, PROCESSING].includes(document.upload_state)) {
-      const timeoutId = window.setTimeout(async () => {
-        await pollForTrack(modelName.DOCUMENTS, document.id);
+      const timeoutId = window.setTimeout(() => {
+        pollForTrack(modelName.DOCUMENTS, document.id);
       }, 1000 * 10);
 
       return () => {
         window.clearTimeout(timeoutId);
       };
     }
-  }, []);
+  }, [document.id, document.upload_state]);
 
   if (document.upload_state === READY) {
     return (

@@ -1,4 +1,4 @@
-import { act, cleanup, screen, waitFor } from '@testing-library/react';
+import { cleanup, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import fetchMock from 'fetch-mock';
 import { PortabilityConfigMockFactory, useJwt } from 'lib-components';
@@ -13,7 +13,7 @@ describe('<PortabilityRequest />', () => {
   });
 
   it('displays button when no request exists', () => {
-    const { getByRole, getByText, queryByText } = render(
+    render(
       <PortabilityRequest
         portability={PortabilityConfigMockFactory({
           portability_request_exists: false,
@@ -21,13 +21,15 @@ describe('<PortabilityRequest />', () => {
       />,
     );
 
-    getByText('The requested resource is not available for this context.');
-    getByText('Please make a request to the playlist owner.');
-    getByRole('button', {
+    screen.getByText(
+      'The requested resource is not available for this context.',
+    );
+    screen.getByText('Please make a request to the playlist owner.');
+    screen.getByRole('button', {
       name: 'Request access',
     });
     expect(
-      queryByText(
+      screen.queryByText(
         'A request for portability has already been made to enabled access.',
       ),
     ).not.toBeInTheDocument();
@@ -36,7 +38,7 @@ describe('<PortabilityRequest />', () => {
   });
 
   it('displays no button when request exists', () => {
-    const { queryByText, queryByRole, getByText } = render(
+    render(
       <PortabilityRequest
         portability={PortabilityConfigMockFactory({
           portability_request_exists: true,
@@ -44,17 +46,19 @@ describe('<PortabilityRequest />', () => {
       />,
     );
 
-    getByText('The requested resource is not available for this context.');
-    getByText(
+    screen.getByText(
+      'The requested resource is not available for this context.',
+    );
+    screen.getByText(
       'A request for portability has already been made to enabled access.',
     );
     expect(
-      queryByRole('button', {
+      screen.queryByRole('button', {
         name: 'Request access',
       }),
     ).not.toBeInTheDocument();
     expect(
-      queryByText('Please make a request to the playlist owner.'),
+      screen.queryByText('Please make a request to the playlist owner.'),
     ).not.toBeInTheDocument();
 
     cleanup();
@@ -75,30 +79,30 @@ describe('<PortabilityRequest />', () => {
     const portabilityAppdata = PortabilityConfigMockFactory({
       portability_request_exists: false,
     });
-    const { getByRole, getByText, queryByText } = render(
-      <PortabilityRequest portability={portabilityAppdata} />,
-    );
+    render(<PortabilityRequest portability={portabilityAppdata} />);
 
-    getByText('The requested resource is not available for this context.');
-    getByText('Please make a request to the playlist owner.');
-    const requestButton = getByRole('button', {
+    screen.getByText(
+      'The requested resource is not available for this context.',
+    );
+    screen.getByText('Please make a request to the playlist owner.');
+    const requestButton = screen.getByRole('button', {
       name: 'Request access',
     });
 
     fetchMock.postOnce('/api/portability-requests/', {});
     windowSpy.mockImplementation(() => null);
 
-    act(() => {
-      userEvent.click(requestButton);
-    });
+    await userEvent.click(requestButton);
 
     await waitFor(() =>
       expect(
-        queryByText('Please make a request to the playlist owner.'),
+        screen.queryByText('Please make a request to the playlist owner.'),
       ).not.toBeInTheDocument(),
     );
-    getByText('The requested resource is not available for this context.');
-    getByText(
+    screen.getByText(
+      'The requested resource is not available for this context.',
+    );
+    screen.getByText(
       'A request for portability has already been made to enabled access.',
     );
     expect(requestButton).not.toBeInTheDocument();
@@ -125,7 +129,7 @@ describe('<PortabilityRequest />', () => {
         } as any),
     });
 
-    const { getByRole } = render(
+    render(
       <PortabilityRequest
         portability={PortabilityConfigMockFactory({
           portability_request_exists: false,
@@ -133,15 +137,13 @@ describe('<PortabilityRequest />', () => {
       />,
     );
 
-    const requestButton = getByRole('button', {
+    const requestButton = screen.getByRole('button', {
       name: 'Request access',
     });
 
     fetchMock.postOnce('/api/portability-requests/', 400);
 
-    act(() => {
-      userEvent.click(requestButton);
-    });
+    await userEvent.click(requestButton);
 
     await waitFor(() =>
       expect(screen.getByRole('status')).toHaveTextContent(

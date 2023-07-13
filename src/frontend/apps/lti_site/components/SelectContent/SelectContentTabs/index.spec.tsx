@@ -191,9 +191,7 @@ describe('SelectContentTabs', () => {
 
     expect(screen.getByRole('tab', { name: 'Webinars' })).toBeInTheDocument();
     expect(screen.getByRole('tab', { name: 'Videos' })).toBeInTheDocument();
-    expect(
-      screen.queryByRole('tab', { name: 'Documents' }),
-    ).toBeInTheDocument();
+    expect(screen.getByRole('tab', { name: 'Documents' })).toBeInTheDocument();
     expect(
       await screen.findByRole('tab', { name: 'Other custom app tab' }),
     ).toBeInTheDocument();
@@ -270,7 +268,7 @@ describe('SelectContentTabs', () => {
     );
   });
 
-  it('renders only active tabs', async () => {
+  it('renders only active tabs', () => {
     mockUseIsFeatureEnabled.mockImplementation(() => {
       return (flag) => {
         const activeResources = ['video'];

@@ -154,7 +154,11 @@ describe('<DashboardInstructor />', () => {
 
     await screen.findByText('Showing 11 - 20 of 40');
     for (let i = 11; i > 20; i++) {
-      await screen.findByText(truncateFilename(depositedFiles[i].filename, 40));
+      expect(
+        await screen.findByText(
+          truncateFilename(depositedFiles[i].filename, 40),
+        ),
+      ).toBeInTheDocument();
     }
   });
 
@@ -235,7 +239,9 @@ describe('<DashboardInstructor />', () => {
 
     await screen.findByText('Showing 1 - 10 of 20');
     for (let i = 0; i < 10; i++) {
-      await screen.findByText(`file${i * 2}_read.txt`);
+      expect(
+        await screen.findByText(`file${i * 2}_read.txt`),
+      ).toBeInTheDocument();
     }
   });
 

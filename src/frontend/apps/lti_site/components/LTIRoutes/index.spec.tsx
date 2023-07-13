@@ -252,7 +252,13 @@ describe('<LTIRoutes />', () => {
   });
 
   describe('checks the portability-request routes', () => {
-    test('matching', async () => {
+    test('matching with portability', async () => {
+      mockedUseAppConfig.mockReturnValue({
+        frontend: 'test',
+        state: appState.PORTABILITY,
+        portability: 'anything',
+      } as any);
+
       render(<LTIInnerRoutes />, {
         routerOptions: {
           history: ['/portability-request/'],
@@ -261,6 +267,23 @@ describe('<LTIRoutes />', () => {
 
       expect(
         await screen.findByText('My PortabilityRequest'),
+      ).toBeInTheDocument();
+    });
+
+    test('matching without portability', async () => {
+      mockedUseAppConfig.mockReturnValue({
+        frontend: 'test',
+        state: appState.PORTABILITY,
+      } as any);
+
+      render(<LTIInnerRoutes />, {
+        routerOptions: {
+          history: ['/portability-request/'],
+        },
+      });
+
+      expect(
+        await screen.findByText('My FullScreenError notFound'),
       ).toBeInTheDocument();
     });
 
@@ -449,6 +472,7 @@ describe('<LTIRoutes />', () => {
       mockedUseAppConfig.mockReturnValue({
         frontend: 'test',
         state: appState.PORTABILITY,
+        portability: 'anything',
       } as any);
 
       render(<LTIInnerRoutes />, {

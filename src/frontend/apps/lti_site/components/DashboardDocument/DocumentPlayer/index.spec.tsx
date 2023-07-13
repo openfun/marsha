@@ -40,14 +40,10 @@ describe('<DocumentPlayer />', () => {
       id: '42',
       title: 'foo.pdf',
     });
-    const { elementContainer: container } = render(
-      <DocumentPlayer document={document} />,
-    );
+    render(<DocumentPlayer document={document} />);
 
     screen.getByRole('link', { name: 'foo.pdf' });
-    expect(container!.getElementsByClassName('icon-file-text2')).toHaveLength(
-      1,
-    );
+    expect(screen.getByRole('img')).toHaveClass('icon-file-text2');
   });
 
   it('defaults to the document from props', () => {
@@ -55,14 +51,10 @@ describe('<DocumentPlayer />', () => {
       id: '43',
       title: 'bar.pdf',
     });
-    const { elementContainer: container } = render(
-      <DocumentPlayer document={document} />,
-    );
+    render(<DocumentPlayer document={document} />);
 
     screen.getByRole('link', { name: 'bar.pdf' });
-    expect(container!.getElementsByClassName('icon-file-text2')).toHaveLength(
-      1,
-    );
+    expect(screen.getByRole('img')).toHaveClass('icon-file-text2');
   });
 
   it('sends the xapi downloaded statement when clicking on the link', async () => {

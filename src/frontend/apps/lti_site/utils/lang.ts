@@ -31,13 +31,15 @@ async function importPolyfill(_locale: string) {
   await import(`@formatjs/intl-pluralrules/locale-data/${unsupportedLocale}`);
 }
 
-export const createIntl = (locale: string) => {
+export const createIntl = async (locale: string) => {
   const locales = getLocales(locale);
   importPolyfill(locales.localeCode);
 
-  let translatedMessages = null;
+  let translatedMessages: Record<string, string> = {};
   try {
-    translatedMessages = require(`translations/${locales.locale}.json`);
+    translatedMessages = (await import(
+      `translations/${locales.locale}.json`
+    )) as Record<string, string>;
   } catch (e) {}
 
   const cache = createIntlCache();

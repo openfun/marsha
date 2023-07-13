@@ -48,7 +48,7 @@ describe('<Dashboard />', () => {
     mockedDecodeJwt.mockReturnValue({} as any);
   });
 
-  it('renders with video', async () => {
+  it('renders with video', () => {
     mockedUseAppConfig.mockReturnValue({
       modelName: modelName.VIDEOS,
       video: {
@@ -65,7 +65,7 @@ describe('<Dashboard />', () => {
         <Dashboard />
       </Suspense>,
     );
-    screen.getByTitle('dd44');
+    expect(screen.getByTitle('dd44')).toBeInTheDocument();
   });
 
   it('renders with document', async () => {
@@ -84,6 +84,6 @@ describe('<Dashboard />', () => {
     );
 
     await screen.findByText('Dashboard');
-    screen.getByTitle('doc1');
+    expect(screen.getByTitle('doc1')).toBeInTheDocument();
   });
 });
