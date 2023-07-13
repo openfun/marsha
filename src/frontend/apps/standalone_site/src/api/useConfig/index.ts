@@ -16,6 +16,7 @@ export interface ConfigResponse {
   environment: string;
   release: string;
   inactive_resources: string[];
+  vod_conversion_enabled: boolean;
   is_default_site: boolean;
   logo_url?: string;
   login_html?: string;

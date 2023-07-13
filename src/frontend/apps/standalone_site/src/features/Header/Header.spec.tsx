@@ -63,6 +63,7 @@ describe('<Header />', () => {
         footer_copyright: 'custom copyright',
         logo_url: 'https://example.com/logo.svg',
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
 
@@ -96,6 +97,7 @@ describe('<Header />', () => {
         footer_copyright: 'custom copyright',
         logo_url: undefined,
         login_html: 'custom login markdown',
+        vod_conversion_enabled: true,
       },
     });
 
