@@ -505,7 +505,7 @@ class PortabilityRequestAdmin(admin.ModelAdmin):
     ]
 
 
-class SiteConfigInline(admin.TabularInline):
+class SiteConfigInline(admin.StackedInline):
     """Inline for sites with config fields."""
 
     model = SiteConfig
