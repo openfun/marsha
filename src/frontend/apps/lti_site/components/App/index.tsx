@@ -6,13 +6,9 @@ import { parseDataElements } from 'utils/parseDataElements/parseDataElements';
 import { AppInitializer } from './AppInitializer';
 
 const AppContentLoader = lazy(() => import('./AppContentLoader'));
-
-const domElementToParse = document.getElementById('marsha-frontend-data');
-if (!domElementToParse) {
-  throw new Error('Appdata are missing from DOM.');
-}
-const { jwt, refresh_token, ...appConfig } =
-  parseDataElements(domElementToParse);
+const { jwt, refresh_token, ...appConfig } = parseDataElements(
+  document.getElementById('marsha-frontend-data'),
+);
 
 export const App = () => {
   return (
